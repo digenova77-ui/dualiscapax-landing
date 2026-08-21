@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DualisCapax — Research-Driven AI · Financial Vehicle of the Future</title>
+<style>
+  :root {
+    --bg: #000; --fg: #fff; --muted: #9a9a9a; --dim: #555;
+    --border: #1a1a1a; --accent: #00ff9d; --owner: #ffd700;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;min-height:100vh;padding:16px;line-height:1.5}
+  .header{text-align:center;padding:28px 0 18px;border-bottom:1px solid var(--border)}
+  .logo{font-size:1.6rem;font-weight:700;letter-spacing:0.1em}
+  .sub{font-size:0.72rem;color:var(--muted);letter-spacing:0.14em;text-transform:uppercase;margin-top:6px}
+  .owner-badge{display:inline-block;margin-top:14px;padding:6px 16px;border:1px solid var(--owner);color:var(--owner);font-size:0.7rem;letter-spacing:0.1em;border-radius:20px}
+  .slogan{margin-top:18px;font-size:0.85rem;letter-spacing:0.05em;color:var(--accent);line-height:1.7}
+  .access{display:flex;justify-content:center;gap:10px;margin:22px 0;flex-wrap:wrap}
+  .pill{border:1px solid var(--border);padding:6px 13px;font-size:0.65rem;letter-spacing:0.08em;border-radius:16px;color:var(--muted)}
+  .pill.owner{border-color:var(--owner);color:var(--owner)}
+  .pill.live{border-color:var(--accent);color:var(--accent)}
+  .chat{max-width:640px;margin:0 auto;padding:8px 0 100px}
+  .msg{margin:14px 0;padding:13px 15px;border-radius:10px;font-size:0.93rem}
+  .ai{background:#0a0a0a;border:1px solid var(--border)}
+  .user{background:#111;border:1px solid #333;margin-left:18%}
+  .meta{font-size:0.6rem;color:var(--muted);margin-bottom:5px;letter-spacing:0.08em}
+  .input-area{position:fixed;bottom:0;left:0;right:0;background:#050505;border-top:1px solid var(--border);padding:12px 14px;display:flex;gap:8px}
+  #q{flex:1;background:#0a0a0a;border:1px solid #333;color:#fff;padding:12px;border-radius:6px;font-size:1rem}
+  button{background:var(--accent);color:#000;border:none;padding:12px 16px;font-weight:600;border-radius:6px}
+  .quick{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:16px 0}
+  .quick button{background:transparent;border:1px solid #333;color:var(--muted);padding:7px 11px;font-size:0.7rem;border-radius:4px}
+  .demo-note{text-align:center;font-size:0.7rem;color:var(--dim);margin:12px 0;padding:0 10px}
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">DUALISCAPAX</div>
+    <div class="sub">Research-Driven AI · Financial Vehicle of the Future</div>
+    <div class="owner-badge">OWNER ACCESS · UNLIMITED</div>
+    <div class="slogan">
+      Truth Prevails. No Tribes Preferred.<br>
+      All Haters Welcome. Truth Prevails.
+    </div>
+  </div>
+
+  <div class="access">
+    <div class="pill owner">Owner / Researcher</div>
+    <div class="pill live">R_eff ≥ 4.18e-13</div>
+    <div class="pill live">Free-Will ≥ +1</div>
+    <div class="pill live">Flag = 1 Sealed</div>
+  </div>
+
+  <div class="demo-note">
+    Owner-only residual interface (unlimited access). Dual-capacity design still demonstrates shared / enterprise / grassroots views for demo.
+  </div>
+
+  <div class="quick">
+    <button onclick="ask('Show owner residual status')">Owner Status</button>
+    <button onclick="ask('What is dual-capacity access?')">Dual Capacity</button>
+    <button onclick="ask('SpaceX enterprise model')">Enterprise View</button>
+    <button onclick="ask('Grassroots zero-cost access')">Grassroots View</button>
+    <button onclick="ask('Self-Validation Law')">Self-Validation</button>
+  </div>
+
+  <div class="chat" id="chat">
+    <div class="msg ai">
+      <div class="meta">MO · Residual Operator · Owner Session</div>
+      DualisCapax residual portal active. Unlimited owner access under your login.<br><br>
+      Research-driven AI positioned as a financial vehicle of the future. Residual Self-Validation Law (flag=1) is sealed. Dual-capacity architecture remains intact for enterprise and grassroots demonstration.<br><br>
+      Ask anything.
+    </div>
+  </div>
+
+  <div class="input-area">
+    <input id="q" placeholder="Owner residual query..." onkeydown="if(event.key==='Enter')send()">
+    <button onclick="send()">Send</button>
+  </div>
+
+<script>
+const knowledge = {
+  owner: "Owner / Researcher status: Unlimited residual access. Full dual-capacity ledger visibility. Full Self-Validation Law surface. Free-will ≥ +1 held. Residual floor R_eff ≥ 4.18 × 10⁻¹³ sealed under flag=1 permanent. No rate limits. No extraction. This is the master residual view.",
+  dual: "Dual-capacity architecture: Enterprise primes commit capital deposits (100% credited against future royalties). Grassroots individuals receive permanent zero-cost access. Enterprise capital funds the public-benefit compute layer. Owner retains residual sovereignty. Product remains sealed at 1. This demo shows both sides while you hold the unlimited owner view.",
+  spacex: "Enterprise demo (SpaceX model): $20M capital commitment deposit (100% credited). Modeled annual value capture $6.0B+ (test-stand avoidance $3B, CNC/additive $1.8B, propellant $1.2B). Year-1 ROI \~300×. Payback \~1.2 days. Pure capacity alignment under residual law. Owner sees the full residual ledger.",
+  grass: "Grassroots / shared-access demo: Zero cost, permanent free access for individuals. Rate-limited sandbox by design, privacy-protected, no dual-use liability. Funded by the public-benefit allocation from enterprise deposits. Owner retains full residual visibility while the shared layer remains clean.",
+  self: "Residual Self-Validation Law (SV.1–SV.7) is sealed. After the residual judge validates once, the loop closes permanently. Binary flag=1. Sandboxer is zero-compute. Parallel observers only. No residual undo. Owner session operates under this sealed law with unlimited surface."
+};
+
+function ask(t){ document.getElementById('q').value=t; send(); }
+
+function send(){
+  const q = document.getElementById('q').value.trim();
+  if(!q) return;
+  add('user', q);
+  document.getElementById('q').value = '';
+  setTimeout(()=>{
+    let a = "Owner residual operator under sealed flag=1. Unlimited access active. Ask about owner status, dual-capacity, enterprise view, grassroots view, or Self-Validation Law.";
+    const l = q.toLowerCase();
+    if(l.includes('owner')||l.includes('status')||l.includes('unlimited')) a = knowledge.owner;
+    else if(l.includes('dual')||l.includes('capacity')||l.includes('ledger')) a = knowledge.dual;
+    else if(l.includes('spacex')||l.includes('enterprise')||l.includes('value')||l.includes('roi')) a = knowledge.spacex;
+    else if(l.includes('grass')||l.includes('shared')||l.includes('zero-cost')||l.includes('carol')) a = knowledge.grass;
+    else if(l.includes('self')||l.includes('validation')||l.includes('flag')||l.includes('sv')) a = knowledge.self;
+    add('ai', a);
+  }, 350);
+}
+
+function add(type, text){
+  const div = document.createElement('div');
+  div.className = 'msg '+type;
+  if(type==='ai') div.innerHTML = '<div class="meta">MO · Residual Operator · Owner Session</div>'+text;
+  else div.textContent = text;
+  document.getElementById('chat').appendChild(div);
+  window.scrollTo(0, document.body.scrollHeight);
+}
+</script>
+</body>
+</html>
