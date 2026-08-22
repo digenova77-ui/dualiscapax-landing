@@ -12,67 +12,151 @@
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <style>
-  :root{
-    --bg:#000;--fg:#fff;--muted:#8a8a8a;--border:#1c1c1c;
-    --accent:#1e90ff;--gold:#d4a017;--surface:#0a0a0a;
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --muted: #8a8a8a;
+    --border: #1c1c1c;
+    --accent: #1e90ff;
+    --gold: #d4a017;
+    --surface: #0a0a0a;
+    /* Fluid type & space */
+    --text-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --text-deck: clamp(0.95rem, 0.9rem + 0.3vw, 1.05rem);
+    --text-title: clamp(1.5rem, 1.25rem + 1.2vw, 2rem);
+    --text-kicker: clamp(0.65rem, 0.62rem + 0.15vw, 0.72rem);
+    --text-h2: clamp(0.68rem, 0.65rem + 0.12vw, 0.75rem);
+    --text-small: clamp(0.7rem, 0.68rem + 0.1vw, 0.78rem);
+    --pad-x: clamp(1.15rem, 3.5vw, 2rem);
+    --pad-y: clamp(2rem, 5vw, 3.5rem);
+    --measure: min(42rem, 100%);
+    --space-law: clamp(1.5rem, 3vw, 2.25rem);
   }
-  @media(prefers-color-scheme:light){
-    :root{
-      --bg:#fafafa;--fg:#0a0a0a;--muted:#555;--border:#e5e5e5;
-      --accent:#1565c0;--gold:#b8860b;--surface:#f0f0f0;
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #fafafa;
+      --fg: #0a0a0a;
+      --muted: #555;
+      --border: #e5e5e5;
+      --accent: #1565c0;
+      --gold: #b8860b;
+      --surface: #f0f0f0;
     }
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    background:var(--bg);color:var(--fg);
-    font-family:system-ui,-apple-system,sans-serif;
-    min-height:100vh;line-height:1.6;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    line-height: 1.6;
+    font-size: var(--text-body);
   }
-  nav{
-    border-bottom:1px solid var(--border);
-    padding:.9rem 1.25rem;
-    display:flex;align-items:center;justify-content:space-between;
-    flex-wrap:wrap;gap:.75rem;
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0.85rem var(--pad-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
-  .brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.9rem}
-  .links{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none;font-size:.78rem}
-  .links a{color:var(--muted);text-decoration:none}
-  .links a:hover{color:var(--fg)}
-  main{max-width:720px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
-  .kicker{
-    font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--accent);margin-bottom:.75rem;
+  .brand {
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: var(--fg);
+    font-size: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
   }
-  h1{font-size:1.5rem;letter-spacing:.04em;margin-bottom:.5rem;font-weight:600}
-  .deck{color:var(--muted);font-size:.95rem;margin-bottom:1.75rem}
-  h2{
-    font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--muted);margin:2rem 0 .75rem;
-    border-bottom:1px solid var(--border);padding-bottom:.4rem;
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    list-style: none;
+    font-size: var(--text-small);
   }
-  p{font-size:.92rem;color:var(--muted);margin-bottom:.9rem}
-  p strong{color:var(--fg);font-weight:600}
-  ul{margin:.25rem 0 1rem 1.15rem;color:var(--muted);font-size:.9rem}
-  li{margin-bottom:.4rem}
-  .eq{
-    border:1px solid var(--border);border-radius:6px;
-    padding:1rem 1.1rem;margin:1rem 0;background:var(--surface);
-    font-size:.95rem;text-align:center;color:var(--fg);
+  .links a { color: var(--muted); text-decoration: none; }
+  .links a:hover { color: var(--fg); }
+  main {
+    width: var(--measure);
+    max-width: 100%;
+    margin: 0 auto;
+    padding: var(--pad-y) var(--pad-x) clamp(3rem, 8vw, 5rem);
   }
-  .paper{
-    border:1px solid var(--border);border-radius:8px;
-    padding:1.1rem 1.2rem;margin:1.5rem 0;
+  .kicker {
+    font-size: var(--text-kicker);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: clamp(0.6rem, 1.5vw, 0.85rem);
   }
-  .paper h3{font-size:.85rem;margin-bottom:.35rem;color:var(--gold)}
-  .paper p{margin-bottom:.5rem;font-size:.85rem}
-  .paper a{color:var(--accent);font-size:.85rem}
-  .note{
-    font-size:.74rem;color:var(--muted);margin-top:2rem;
-    border-left:2px solid var(--border);padding-left:.85rem;
+  h1 {
+    font-size: var(--text-title);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    line-height: 1.2;
   }
-  footer{
-    border-top:1px solid var(--border);
-    padding:1.25rem;text-align:center;font-size:.7rem;color:var(--muted);
+  .deck {
+    color: var(--muted);
+    font-size: var(--text-deck);
+    margin-bottom: clamp(1.25rem, 3vw, 1.85rem);
+  }
+  h2 {
+    font-size: var(--text-h2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: var(--space-law) 0 0.65rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.4rem;
+  }
+  p {
+    font-size: var(--text-body);
+    color: var(--muted);
+    margin-bottom: 0.9rem;
+  }
+  p strong { color: var(--fg); font-weight: 600; }
+  .eq {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: clamp(0.85rem, 2vw, 1.1rem);
+    margin: 1rem 0;
+    background: var(--surface);
+    font-size: var(--text-deck);
+    text-align: center;
+    color: var(--fg);
+  }
+  .paper {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: clamp(1rem, 2.5vw, 1.25rem);
+    margin: clamp(1.25rem, 3vw, 1.75rem) 0;
+  }
+  .paper h3 {
+    font-size: clamp(0.8rem, 0.75rem + 0.2vw, 0.9rem);
+    margin-bottom: 0.35rem;
+    color: var(--gold);
+  }
+  .paper p { margin-bottom: 0.5rem; font-size: var(--text-small); }
+  .note {
+    font-size: var(--text-small);
+    color: var(--muted);
+    margin-top: clamp(1.5rem, 4vw, 2.25rem);
+    border-left: 2px solid var(--border);
+    padding-left: 0.85rem;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: clamp(1rem, 2.5vw, 1.35rem) var(--pad-x);
+    text-align: center;
+    font-size: var(--text-small);
+    color: var(--muted);
+  }
+  footer .slogans {
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.05em;
   }
 </style>
 </head>
@@ -102,9 +186,6 @@
         Replace the placeholder with your canonical title and URL when ready.
       </p>
       <p><em>Paper link: pending owner URL</em></p>
-      <!-- Example when ready:
-      <a href="YOUR_PAPER_URL" target="_blank" rel="noopener">Title of residual law manifesto (PDF / HTML)</a>
-      -->
     </div>
 
     <h2>1. Dual capacity</h2>
@@ -130,7 +211,7 @@
 
     <h2>4. Bounded claims</h2>
     <p>
-      Physical and thermodynamic floors remain. Product “power” at high affinity is mostly
+      Physical and thermodynamic floors remain. Product power at high affinity is mostly
       <strong>compression of waste</strong> (clearer paths, less thrash), not denial of limits.
       A simple public relation for capacity use:
     </p>
@@ -169,19 +250,15 @@
       Crypto settlement and fundraising require counsel before activation.
     </p>
 
-    <h2>Truth</h2>
+    <h2>Truth and Unity</h2>
     <p>
-      <strong>Truth Prevails. No Tribes Preferred.</strong>
       Unity design: black / white, sparse signal color, one emblem — substance over costume.
-    </p>
-
-    <p class="note">
-      This page is a public overview rehash, not the sealed corpus and not legal advice.
-      When your latest manifesto PDF or HTML is hosted, drop the URL into the “Latest paper” slot above
-      (or ask us to wire it). LaTeX-style notation is rendered where used via MathJax.
     </p>
   </main>
 
-  <footer>DualisCapax · Manifesto overview · Residual law · Public surface</footer>
+  <footer>
+    <div class="slogans">No Tribes Preferred. · All Haters Welcome. · Truth and Unity Prevail.</div>
+    DualisCapax · Manifesto · Public surface
+  </footer>
 </body>
 </html>
