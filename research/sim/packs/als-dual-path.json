@@ -1,0 +1,130 @@
+{
+  "id": "als.dual.v0",
+  "disease": "Amyotrophic lateral sclerosis",
+  "icd_hint": "G12.21",
+  "law_version": "2026-08-22",
+  "status": "seed_scaffold",
+  "disclaimer": "Open residual surface. Not medical advice. Not a cure claim. P2 is under model M only.",
+  "paths": {
+    "P1_literature_forward": {
+      "description": "Linear public timeline of major programs and status changes",
+      "events": [
+        {
+          "t": "1995",
+          "actor": "Riluzole (various brands)",
+          "class": "glutamate pathway",
+          "level": "regulatory",
+          "status": "FDA approved (first disease-modifying class for ALS broadly)",
+          "note": "Modest survival extension in historical summaries",
+          "cite_keys": ["augiesquest-2025-approved", "alsnewstoday-2026-treatment"]
+        },
+        {
+          "t": "2017",
+          "actor": "Edaravone (Radicava / formulations)",
+          "class": "oxidative stress",
+          "level": "regulatory",
+          "status": "FDA approved",
+          "note": "Decline slowing in selected cohorts; oral formulation trial results mixed by region/program",
+          "cite_keys": ["augiesquest-2025-approved", "alsnewstoday-2026-treatment"]
+        },
+        {
+          "t": "2022",
+          "actor": "AMX0035 / Relyvrio (Albrioza CA)",
+          "class": "ER stress / mitochondrial (combination)",
+          "level": "regulatory",
+          "status": "FDA approval (2022); voluntary US/CA market withdrawal path after Phase 3 PHOENIX miss (2024)",
+          "note": "Phase 2 promise → Phase 3 primary/secondary miss — graft risk on accelerated path",
+          "cite_keys": ["augiesquest-2025-relyvrio", "phoenix-phase3-2024"]
+        },
+        {
+          "t": "2023",
+          "actor": "Tofersen (Qalsody)",
+          "class": "SOD1 ASO",
+          "level": "regulatory + genetic subset",
+          "status": "FDA accelerated approval for SOD1-ALS; EMA path public 2024-class reporting",
+          "note": "Subset only (~SOD1). Presymptomatic ATLAS and sporadic exploration are separate debates",
+          "cite_keys": ["als-association-genetics-2026", "alsnewstoday-2026-treatment"]
+        },
+        {
+          "t": "2025-2026",
+          "actor": "Pipeline (public)",
+          "class": "mixed (ASO/siRNA/small molecule)",
+          "level": "phase",
+          "status": "Examples: FUS ASO jacifusen Phase 3-class; pridopidine PREVAiLS Phase 3 cleared; SPG302 EAP; multiple SOD1/C9orf72 genetic programs",
+          "note": "Not exhaustive — expand row-by-row",
+          "cite_keys": ["als-association-genetics-2026", "prevails-pridopidine-2025", "spg302-eap-2025"]
+        }
+      ]
+    },
+    "P2_constraint_bottom": {
+      "description": "Bottom-up constraints under model M — parallel residual surface, not Seal",
+      "constraints": [
+        "Motor neuron loss is largely irreversible in time already elapsed for symptomatic patients",
+        "Phenotype heterogeneity (familial vs sporadic; gene subset vs broad) forbids one-molecule universal claim",
+        "Endpoints (ALSFRS-R, survival, NfL) are residual meters — not identity with patient meaning",
+        "Any modality must declare target class and population or fail floor test",
+        "Accelerated approval without confirmatory success is a known graft risk (Relyvrio/PHOENIX pattern)"
+      ],
+      "graft_notes": [
+        "P1 approvals sit on incomplete pathogenesis maps",
+        "Genetic ASO success does not transfer to all ALS without new evidence",
+        "P2 refuses cure language on Open face; Depth packs only under residual cost when live"
+      ],
+      "matrix_status": "Public M pack pending — dual column only"
+    }
+  },
+  "citations": [
+    {
+      "key": "augiesquest-2025-approved",
+      "title": "Riluzole, Edaravone, and Tofersen: The Approved Drugs for ALS Progression",
+      "org": "Augie's Quest",
+      "url": "https://augiesquest.org/riluzole-edaravone-and-tofersen-the-approved-drugs-for-als-progression/",
+      "year": 2025
+    },
+    {
+      "key": "alsnewstoday-2026-treatment",
+      "title": "Amyotrophic Lateral Sclerosis (ALS) Treatment",
+      "org": "ALS News Today",
+      "url": "https://alsnewstoday.com/als-treatment/",
+      "year": 2026
+    },
+    {
+      "key": "als-association-genetics-2026",
+      "title": "Therapies Targeting ALS-Linked Genetic Mutations",
+      "org": "The ALS Association",
+      "url": "https://www.als.org/research/als-research-topics/genetics/therapies-targeting-als-linked-genetic",
+      "year": 2026
+    },
+    {
+      "key": "prevails-pridopidine-2025",
+      "title": "FDA Clears Pivotal Phase 3 PREVAiLS Study of Pridopidine in Early, Rapidly Progressive ALS",
+      "org": "NeurologyLive",
+      "url": "https://www.neurologylive.com/view/fda-clears-pivotal-phase-3-prevails-study-pridopidine-early-rapidly-progressive-als",
+      "year": 2025
+    },
+    {
+      "key": "spg302-eap-2025",
+      "title": "FDA Authorizes Expanded Access Program for ALS Treatment SPG302",
+      "org": "NeurologyLive",
+      "url": "https://www.neurologylive.com/view/fda-authorizes-expanded-access-program-als-treatment-spg302",
+      "year": 2025
+    },
+    {
+      "key": "phoenix-phase3-2024",
+      "title": "PHOENIX Phase 3 / Relyvrio market path (reported 2024 miss; withdrawal narrative)",
+      "org": "Public trial reporting via secondary sources above",
+      "url": "https://augiesquest.org/riluzole-edaravone-and-tofersen-the-approved-drugs-for-als-progression/",
+      "year": 2024
+    }
+  ],
+  "debate_levels_todo": [
+    "definition_phenotype",
+    "biomarker_target",
+    "modality",
+    "endpoints",
+    "regulatory",
+    "access_cost",
+    "graft_risk"
+  ],
+  "content_sha256": "pending_normalize"
+}
