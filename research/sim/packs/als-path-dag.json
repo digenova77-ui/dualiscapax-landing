@@ -1,0 +1,71 @@
+{
+  "spectrum_id": "als",
+  "title": "Amyotrophic lateral sclerosis",
+  "law_version": "2026-08-22",
+  "free_will": {
+    "always_allow_exit": true,
+    "off_spectrum_policy": "dim_until_exhausted_or_opt_out",
+    "opt_out_label": "Leave spectrum"
+  },
+  "nodes": [
+    {
+      "id": "als.def",
+      "order": 1,
+      "title": "Definition / phenotype",
+      "href": "../healthcare/medical/neurological/als.html",
+      "requires": [],
+      "required": true
+    },
+    {
+      "id": "als.p1",
+      "order": 2,
+      "title": "Public programs (P1)",
+      "href": "../healthcare/medical/neurological/als-docs.html#p1",
+      "requires": ["als.def"],
+      "required": true
+    },
+    {
+      "id": "als.graft",
+      "order": 3,
+      "title": "Endpoints and graft risk",
+      "href": "../healthcare/medical/neurological/als-docs.html",
+      "requires": ["als.p1"],
+      "required": true
+    },
+    {
+      "id": "als.targets",
+      "order": 4,
+      "title": "Target classes (SOD1 vs sporadic)",
+      "href": "../healthcare/medical/neurological/als-docs.html",
+      "requires": ["als.graft"],
+      "required": true
+    },
+    {
+      "id": "als.p2",
+      "order": 5,
+      "title": "Constraint-bottom (P2 under M)",
+      "href": "../healthcare/medical/neurological/als-docs.html",
+      "requires": ["als.targets"],
+      "required": true
+    },
+    {
+      "id": "als.mol",
+      "order": 6,
+      "title": "Molecular / structural residual (Open)",
+      "href": "../healthcare/medical/neurological/als.html",
+      "requires": ["als.p2"],
+      "required": true
+    },
+    {
+      "id": "als.assemble",
+      "order": 7,
+      "title": "Assembly tools (Depth)",
+      "href": "#depth-gated",
+      "requires": ["als.mol"],
+      "required": false,
+      "depth": true,
+      "note": "Available when tools + residual cost live; not a clinical claim"
+    }
+  ],
+  "off_spectrum_examples": ["pd", "ad", "osteo", "hgsoc"]
+}
