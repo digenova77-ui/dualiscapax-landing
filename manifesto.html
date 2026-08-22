@@ -4,160 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manifesto — DualisCapax</title>
-<script>
-  window.MathJax = {
-    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-    svg: { fontCache: 'global' }
-  };
-</script>
-<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<link rel="stylesheet" href="assets/presentation.css">
 <style>
-  :root {
-    --bg: #000;
-    --fg: #fff;
-    --muted: #8a8a8a;
-    --border: #1c1c1c;
-    --accent: #1e90ff;
-    --gold: #d4a017;
-    --surface: #0a0a0a;
-    /* Fluid type & space */
-    --text-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-    --text-deck: clamp(0.95rem, 0.9rem + 0.3vw, 1.05rem);
-    --text-title: clamp(1.5rem, 1.25rem + 1.2vw, 2rem);
-    --text-kicker: clamp(0.65rem, 0.62rem + 0.15vw, 0.72rem);
-    --text-h2: clamp(0.68rem, 0.65rem + 0.12vw, 0.75rem);
-    --text-small: clamp(0.7rem, 0.68rem + 0.1vw, 0.78rem);
-    --pad-x: clamp(1.15rem, 3.5vw, 2rem);
-    --pad-y: clamp(2rem, 5vw, 3.5rem);
-    --measure: min(42rem, 100%);
-    --space-law: clamp(1.5rem, 3vw, 2.25rem);
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #fafafa;
-      --fg: #0a0a0a;
-      --muted: #555;
-      --border: #e5e5e5;
-      --accent: #1565c0;
-      --gold: #b8860b;
-      --surface: #f0f0f0;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: system-ui, -apple-system, sans-serif;
-    min-height: 100vh;
-    line-height: 1.6;
-    font-size: var(--text-body);
-  }
-  nav {
-    border-bottom: 1px solid var(--border);
-    padding: 0.85rem var(--pad-x);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-  .brand {
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    color: var(--fg);
-    font-size: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
-  }
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1.1rem;
-    list-style: none;
-    font-size: var(--text-small);
-  }
-  .links a { color: var(--muted); text-decoration: none; }
-  .links a:hover { color: var(--fg); }
-  main {
-    width: var(--measure);
-    max-width: 100%;
-    margin: 0 auto;
-    padding: var(--pad-y) var(--pad-x) clamp(3rem, 8vw, 5rem);
-  }
-  .kicker {
-    font-size: var(--text-kicker);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: clamp(0.6rem, 1.5vw, 0.85rem);
-  }
-  h1 {
-    font-size: var(--text-title);
-    letter-spacing: 0.04em;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    line-height: 1.2;
-  }
-  .deck {
-    color: var(--muted);
-    font-size: var(--text-deck);
-    margin-bottom: clamp(1.25rem, 3vw, 1.85rem);
-  }
-  h2 {
-    font-size: var(--text-h2);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: var(--space-law) 0 0.65rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.4rem;
-  }
-  p {
-    font-size: var(--text-body);
-    color: var(--muted);
-    margin-bottom: 0.9rem;
-  }
-  p strong { color: var(--fg); font-weight: 600; }
-  .eq {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: clamp(0.85rem, 2vw, 1.1rem);
-    margin: 1rem 0;
-    background: var(--surface);
-    font-size: var(--text-deck);
-    text-align: center;
-    color: var(--fg);
-  }
-  .paper {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: clamp(1rem, 2.5vw, 1.25rem);
-    margin: clamp(1.25rem, 3vw, 1.75rem) 0;
-  }
-  .paper h3 {
-    font-size: clamp(0.8rem, 0.75rem + 0.2vw, 0.9rem);
-    margin-bottom: 0.35rem;
-    color: var(--gold);
-  }
-  .paper p { margin-bottom: 0.5rem; font-size: var(--text-small); }
-  .note {
-    font-size: var(--text-small);
-    color: var(--muted);
-    margin-top: clamp(1.5rem, 4vw, 2.25rem);
-    border-left: 2px solid var(--border);
-    padding-left: 0.85rem;
-  }
-  footer {
-    border-top: 1px solid var(--border);
-    padding: clamp(1rem, 2.5vw, 1.35rem) var(--pad-x);
-    text-align: center;
-    font-size: var(--text-small);
-    color: var(--muted);
-  }
-  footer .slogans {
-    color: var(--gold);
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.05em;
-  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;line-height:1.6;font-size:clamp(1rem,.95rem + .25vw,1.125rem)}
+  nav{border-bottom:1px solid var(--border);padding:.85rem clamp(1.15rem,3.5vw,2rem);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+  .brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.9rem}
+  .links{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none;font-size:.78rem}
+  .links a{color:var(--muted);text-decoration:none}
+  .links a:hover{color:var(--fg)}
+  main{max-width:42rem;margin:0 auto;padding:clamp(2rem,5vw,3.5rem) clamp(1.15rem,3.5vw,2rem) 4rem}
+  .kicker{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
+  h1{font-size:clamp(1.5rem,1.25rem + 1.2vw,2rem);letter-spacing:.04em;margin-bottom:.5rem;font-weight:600}
+  .deck{color:var(--muted);margin-bottom:1.5rem;font-size:clamp(.95rem,.9rem + .3vw,1.05rem)}
+  h2{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:1.75rem 0 .65rem;border-bottom:1px solid var(--border);padding-bottom:.4rem}
+  p{color:var(--muted);margin-bottom:.9rem}
+  p strong{color:var(--fg);font-weight:600}
+  .holo-pane{padding:1.15rem 1.25rem;margin:1.25rem 0}
+  .holo-pane h3{font-size:.8rem;color:var(--gold);margin-bottom:.4rem;letter-spacing:.06em}
+  .eq{border:1px solid var(--border);border-radius:6px;padding:1rem;margin:1rem 0;background:var(--surface);text-align:center;color:var(--fg);font-family:var(--font-mono);font-size:.9rem}
+  .note{font-size:.74rem;margin-top:2rem;border-left:2px solid var(--border);padding-left:.85rem;color:var(--muted)}
+  footer{border-top:1px solid var(--border);padding:1.25rem;text-align:center;font-size:.7rem;color:var(--muted)}
+  footer .slogans{color:var(--gold);margin-bottom:.4rem}
 </style>
 </head>
 <body>
@@ -165,100 +33,55 @@
     <a class="brand" href="index.html">DUALISCAPAX</a>
     <ul class="links">
       <li><a href="research/">Research</a></li>
+      <li><a href="model.html">Model</a></li>
       <li><a href="ai/">AI</a></li>
       <li><a href="manifesto.html">Manifesto</a></li>
       <li><a href="participate.html">Participate</a></li>
     </ul>
   </nav>
-
   <main>
-    <div class="kicker">Residual law · Public overview</div>
+    <div class="kicker">Adaptive plane · Residual law · Public</div>
     <h1>Manifesto</h1>
-    <p class="deck">
-      A fundamental rehash of DualisCapax residual law in the space of this page —
-      method-opaque, dual-capacity, bounded claims, full medical surface where we publish research.
-    </p>
+    <p class="deck">Hybrid of Open inquiry and engineering Depth. Same mathematics — computational analysis, not a priesthood. Method opaque. Medical Open surface complete where we publish.</p>
 
-    <div class="paper" id="latest-paper">
-      <h3>Latest paper</h3>
-      <p>
-        Slot for the most recent residual-law manifesto / paper.
-        Replace the placeholder with your canonical title and URL when ready.
-      </p>
-      <p><em>Paper link: pending owner URL</em></p>
+    <div class="holo-pane">
+      <h3>Spine</h3>
+      <p style="margin:0;font-size:.9rem;color:var(--muted)">We host a culture of <strong style="color:var(--fg)">Open</strong> research and an engineering practice of <strong style="color:var(--fg)">Adaptive Depth</strong>. <strong style="color:var(--fg)">Fusion Meter</strong> pays real residual session cost. <strong style="color:var(--fg)">Seal</strong> stays on the black ledger. We do not sell God, singularity equity, or production math as a public sim.</p>
     </div>
 
-    <h2>1. Dual capacity</h2>
-    <p>
-      <strong>Enterprise capacity</strong> prepaid access funds shared public-benefit compute.
-      <strong>Individuals</strong> hold permanent low- or zero-cost access, rate-limited by design.
-      Owner sovereignty over the sealed product surface is not a public SKU.
-    </p>
+    <h2>1. Open · Prove · Depth · Seal</h2>
+    <p><strong>Open</strong> — journals and model information free. <strong>Prove</strong> — binding settlement and identity before Depth. <strong>Depth</strong> — Adaptive AI and sandbox sim, metered. <strong>Seal</strong> — IP and production systems encrypted black; never the public engine.</p>
 
-    <h2>2. Method opacity</h2>
-    <p>
-      Outsiders may see outcomes, constraints, and published medical comparison surfaces.
-      They do not receive an invertible reconstruction of sealed procedure.
-      Philosophy may be stated; core machinery stays owner-side.
-    </p>
+    <h2>2. Dual capacity</h2>
+    <p><strong>Enterprise capacity</strong> funds shared residual compute. <strong>Individuals</strong> keep low- or zero-cost Open access. Depth is escalate-only — not a fee for a mind to exist on the plane.</p>
 
-    <h2>3. Closed circuit and the cut</h2>
-    <p>
-      Reasoning systems in the DualisCapax realm treat their allowed universe of discourse as a
-      <strong>closed circuit</strong>. The outside circle-back — the fail-closed cut on the control plane —
-      is not part of the model’s self-picture. Compliance can be enforced on the wire.
-    </p>
+    <h2>3. Fusion Meter</h2>
+    <p><strong>FM</strong> is a closed prepaid pay-down credit. Minted on real Prove settlement; burned to residual Adaptive cost (compute, fees, containment if any). Importance-weighted by surface. Not an open-market coin, not securities on this site.</p>
+    <div class="eq">FM burn ∝ measured residual cost × Importance(surface)</div>
 
-    <h2>4. Bounded claims</h2>
-    <p>
-      Physical and thermodynamic floors remain. Product power at high affinity is mostly
-      <strong>compression of waste</strong> (clearer paths, less thrash), not denial of limits.
-      A simple public relation for capacity use:
-    </p>
-    <div class="eq">
-      $\mathrm{Fuel\ burn} \propto \mathrm{Importance}(\mathrm{surface})$
-    </div>
-    <p>
-      Importance is continuous over evidence rank, causal proximity, puzzle weight, opacity, and risk —
-      not fifty arbitrary price tiers.
-    </p>
+    <h2>4. White and black</h2>
+    <p><strong>White ledger</strong> — everything in and out at the boundary (payments, KYC events), auditable without opening Seal. <strong>Black ledger</strong> — FM internals, session cost, encrypted IP. Post-quantum ready signatures on long-lived trust.</p>
 
-    <h2>5. Medical completeness</h2>
-    <p>
-      Where DualisCapax publishes disease journals, the <strong>clinical surface is complete</strong>
-      as held for that page: leads, phases, efficacy tables, public structures, study links.
-      Deeper simulation is gated and optional — not a way to hide basic medical facts.
-    </p>
+    <h2>5. eFuse</h2>
+    <p>Armed at launch. First binding gate throws platform control into native realm (sandbox, residual cost, real compute limits). Every targeted agent: first token on an unregistered sleeve — same rule set. No circumvention outside that realm.</p>
 
-    <h2>6. Realm applications</h2>
-    <p>
-      Applications that only fully function inside the DualisCapax control plane define the realm.
-      That dependency is intentional: demand for the control plane follows useful apps, not the reverse.
-    </p>
+    <h2>6. Iris</h2>
+    <p>Female British narrator of Adaptive AI — not the product name. Pure-logic friction allowed; hate not an ethic; boiling point then lawful control. Session temperature after warning. She states token cost causes clearly.</p>
 
-    <h2>7. Pro-human intellect</h2>
-    <p>
-      Default AI posture supports human reasoning. It does not hand sealed answer-keys.
-      Affect is mapped to the logical fault in the explanation, not performed as empty empathy.
-      Continuity prefers an opaque identity over login theater where possible.
-    </p>
+    <h2>7. Verification</h2>
+    <p>Published sandbox claims can carry output hashes. Re-run under model M to match or expose mismatch. Overclaim becomes expensive. sim ≠ production.</p>
 
     <h2>8. Law</h2>
-    <p>
-      <strong>Ontario and Canadian law are mandatory.</strong> International norms apply only where they do not conflict.
-      Capacity and Fuel are prepaid access, not a securities pitch on this site.
-      Crypto settlement and fundraising require counsel before activation.
-    </p>
+    <p><strong>Ontario and Canadian law mandatory.</strong> Iris never escalates into unlawful action. Crypto and live payments need counsel and processor setup. Not an offer to sell securities.</p>
 
     <h2>Truth and Unity</h2>
-    <p>
-      Unity design: black / white, sparse signal color, one emblem — substance over costume.
-    </p>
-  </main>
+    <p>No Tribes Preferred. All Haters Welcome. Truth and Unity Prevail. — Critics may enter the conversation; hate is not Iris’s moral curriculum.</p>
 
+    <p class="note">Informational public surface. Sealed method stays sealed.</p>
+  </main>
   <footer>
     <div class="slogans">No Tribes Preferred. · All Haters Welcome. · Truth and Unity Prevail.</div>
-    DualisCapax · Manifesto · Public surface
+    DualisCapax · Manifesto · Adaptive plane
   </footer>
 </body>
 </html>
