@@ -32,14 +32,117 @@ a{color:inherit;text-decoration:none}
     radial-gradient(ellipse 42% 38% at 60% 55%, rgba(196,160,53,.12), transparent 70%);
 }
 
-.emblem{
-  width:clamp(88px, 22vw, 120px);
-  height:auto;
+/* —— Holograph shell around mark —— */
+.holo-wrap{
+  position:relative;
+  z-index:1;
   margin-bottom:clamp(1.5rem, 3.5vw, 2rem);
-  position:relative;z-index:1;
+  width:clamp(96px, 24vw, 132px);
+  aspect-ratio:1;
+  perspective:600px;
+}
+.holo-wrap::before{
+  content:"";
+  position:absolute;
+  inset:-18%;
+  border-radius:50%;
+  background:conic-gradient(
+    from var(--holo-angle, 0deg),
+    #c4a035, #2a7fd4, #5ec8a0, #e24b4b, #c4a035, #2a7fd4, #c4a035
+  );
+  filter:blur(14px);
+  opacity:.45;
+  animation:holo-spin 8s linear infinite;
+  z-index:0;
+}
+.holo-wrap::after{
+  content:"";
+  position:absolute;
+  inset:-6%;
+  border-radius:50%;
+  background:conic-gradient(
+    from calc(var(--holo-angle, 0deg) + 90deg),
+    transparent 0%,
+    rgba(255,255,255,.35) 8%,
+    transparent 18%,
+    transparent 50%,
+    rgba(42,127,212,.4) 58%,
+    transparent 70%
+  );
+  mix-blend-mode:screen;
+  animation:holo-spin 5.5s linear infinite reverse;
+  pointer-events:none;
+  z-index:2;
+}
+.holo-disc{
+  position:relative;
+  z-index:1;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:#050505;
+  display:grid;
+  place-items:center;
+  transform:rotateY(-8deg) rotateX(6deg);
+  transform-style:preserve-3d;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08),
+    0 12px 40px rgba(0,0,0,.6),
+    inset 0 0 24px rgba(42,127,212,.12);
+  animation:holo-tilt 7s ease-in-out infinite alternate;
+}
+.holo-disc img{
+  width:88%;
+  height:auto;
+  display:block;
+  filter:drop-shadow(0 0 8px rgba(196,160,53,.25));
+}
+/* Foil sweep across face */
+.holo-foil{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255,255,255,.14) 45%,
+    rgba(42,127,212,.2) 50%,
+    rgba(196,160,53,.18) 55%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size:220% 220%;
+  animation:foil-sweep 4.2s ease-in-out infinite;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:3;
+}
+@property --holo-angle{
+  syntax:"<angle>";
+  initial-value:0deg;
+  inherits:false;
+}
+@keyframes holo-spin{
+  to{--holo-angle:360deg}
+}
+@keyframes holo-tilt{
+  from{transform:rotateY(-10deg) rotateX(5deg) translateZ(0)}
+  to{transform:rotateY(10deg) rotateX(8deg) translateZ(6px)}
+}
+@keyframes foil-sweep{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@media (prefers-reduced-motion:reduce){
+  .holo-wrap::before,
+  .holo-wrap::after,
+  .holo-disc,
+  .holo-foil{animation:none}
+  .holo-disc{transform:none}
 }
 
-/* ONE name — white ledger / black ledger */
 .ledger-name{
   display:inline-flex;align-items:stretch;
   margin:0 auto 1.25rem;
@@ -47,9 +150,26 @@ a{color:inherit;text-decoration:none}
   border-radius:2px;overflow:hidden;
   font-size:clamp(1.4rem, 1rem + 2.4vw, 1.95rem);
   font-weight:700;letter-spacing:.03em;line-height:1;
+  isolation:isolate;
 }
 .ledger-name .w{background:#f4f4f2;color:#000;padding:.52em .52em .52em .68em}
 .ledger-name .b{background:#000;color:#f4f4f2;padding:.52em .68em .52em .42em;border:1px solid #2a2a2a;border-left:0}
+/* Thin holo edge on ledger */
+.ledger-name::after{
+  content:"";
+  position:absolute;inset:0;
+  background:linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255,255,255,.2) 48%,
+    rgba(42,127,212,.15) 52%,
+    transparent 70%
+  );
+  background-size:200% 100%;
+  animation:foil-sweep 5s ease-in-out infinite;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+}
 
 .kicker{
   font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;
@@ -88,6 +208,7 @@ a{color:inherit;text-decoration:none}
   :root{--bg:#f3f2ef;--fg:#111;--muted:#5c5c58}
   body,html{background:var(--bg);color:var(--fg)}
   .plane::before{opacity:.4}
+  .holo-disc{background:#f0efe9;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 12px 36px rgba(0,0,0,.12)}
   .ledger-name .w{background:#111;color:#f4f4f2}
   .ledger-name .b{background:#f4f2ef;color:#111;border-color:#ccc}
   .btn-solid{background:#111;color:#f4f4f2}
@@ -95,16 +216,22 @@ a{color:inherit;text-decoration:none}
   .sub{color:#888}
   .slogans{color:#aaa}
   .slogans b{color:#8a7020}
-  .emblem{filter:none}
 }
 </style>
 </head>
 <body>
   <main class="plane">
-    <img class="emblem" src="emblem-ring.svg" width="120" height="120" alt="">
+    <div class="holo-wrap" aria-hidden="true">
+      <div class="holo-disc">
+        <img src="emblem-ring.svg" width="120" height="120" alt="">
+        <span class="holo-foil"></span>
+      </div>
+    </div>
+
     <div class="ledger-name" aria-label="DualisCapax">
       <span class="w">Dualis</span><span class="b">Capax</span>
     </div>
+
     <p class="kicker">Residual plane</p>
     <p class="lead">
       Open research. Adaptive depth when rails are live.
