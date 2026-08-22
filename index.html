@@ -12,7 +12,7 @@
   --bg:#070708;
   --fg:#f3f2ef;
   --muted:#9a9a94;
-  --line:rgba(255,255,255,.08);
+  --line:rgba(255,255,255,.09);
   --gold:#c9a227;
   --blue:#4a9fe0;
   --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
@@ -29,138 +29,150 @@ body{
 }
 a{color:inherit;text-decoration:none}
 
-/* First screen = entire job */
 .frame{
-  min-height:100vh;
-  min-height:100dvh;
+  min-height:100vh;min-height:100dvh;
   display:grid;
   grid-template-rows:auto 1fr auto;
   position:relative;
   overflow:hidden;
 }
 
-/* Quiet residual atmosphere — not the product */
+/* Residual atmosphere + soft helix ghost on the right */
 .frame::before{
   content:"";
   position:absolute;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 90% 70% at 85% 20%, rgba(74,159,224,.14), transparent 55%),
-    radial-gradient(ellipse 70% 60% at 10% 90%, rgba(201,162,39,.09), transparent 50%),
-    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,255,255,.02), transparent 60%);
+    radial-gradient(ellipse 80% 65% at 92% 35%, rgba(74,159,224,.16), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 8% 85%, rgba(201,162,39,.1), transparent 50%);
 }
 .frame::after{
   content:"";
-  position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.035;
+  position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.03;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* Large ghost dual-helix (decorative, not competing with copy) */
+.helix-bg{
+  position:absolute;
+  right:clamp(-2rem, -4vw, 2rem);
+  top:50%;
+  transform:translateY(-50%);
+  width:min(42vw, 320px);
+  height:min(70vh, 520px);
+  z-index:1;
+  pointer-events:none;
+  opacity:.55;
+}
+@media(max-width:640px){
+  .helix-bg{opacity:.28;width:55vw;right:-10vw}
+}
+
 .bar{
-  position:relative;z-index:2;
+  position:relative;z-index:3;
   display:flex;align-items:center;justify-content:space-between;
-  padding:1.1rem clamp(1.25rem,4vw,2.5rem);
+  padding:1rem clamp(1.25rem,4vw,2.5rem);
   border-bottom:1px solid var(--line);
 }
 .brand{
-  display:flex;align-items:center;gap:.75rem;
-  font-weight:700;font-size:1rem;letter-spacing:.02em;
+  display:flex;align-items:center;gap:.7rem;
 }
-.brand img{
-  width:36px;height:36px;
-  filter:drop-shadow(0 0 10px rgba(74,159,224,.35));
+.brand img.mark{
+  width:34px;height:34px;
+  filter:drop-shadow(0 0 12px rgba(74,159,224,.4));
+}
+.brand img.word{
+  height:28px;width:auto;
+  max-width:min(52vw, 220px);
 }
 .bar nav{
-  display:none;gap:1.5rem;
+  display:none;gap:1.4rem;
   font-size:.78rem;color:var(--muted);
 }
 .bar nav a:hover{color:var(--fg)}
-@media(min-width:720px){
+@media(min-width:800px){
   .bar nav{display:flex}
 }
 
 .main{
-  position:relative;z-index:2;
+  position:relative;z-index:3;
   display:flex;flex-direction:column;justify-content:center;
   padding:clamp(2rem,6vw,4rem) clamp(1.25rem,4vw,2.5rem);
-  max-width:52rem;
+  max-width:36rem;
 }
 
-/* The 3-second sentence */
 .kicker{
   font-family:var(--mono);
   font-size:.7rem;
   letter-spacing:.2em;
   text-transform:uppercase;
   color:var(--gold);
-  margin-bottom:1.25rem;
+  margin-bottom:1.2rem;
 }
 
 h1{
-  font-size:clamp(2.1rem, 1.2rem + 3.5vw, 3.4rem);
+  font-size:clamp(2rem, 1.15rem + 3.2vw, 3.25rem);
   font-weight:700;
   letter-spacing:-.03em;
   line-height:1.15;
-  margin-bottom:1.25rem;
-  max-width:18ch;
+  margin-bottom:1.2rem;
+  max-width:16ch;
 }
 
 .promise{
-  font-size:clamp(1.05rem, 0.95rem + 0.5vw, 1.25rem);
+  font-size:clamp(1.02rem, 0.95rem + 0.4vw, 1.2rem);
   color:var(--muted);
-  max-width:36ch;
+  max-width:34ch;
   line-height:1.55;
-  margin-bottom:2rem;
+  margin-bottom:1.85rem;
 }
 
 .actions{
-  display:flex;flex-wrap:wrap;gap:.75rem;
-  margin-bottom:2.75rem;
+  display:flex;flex-wrap:wrap;gap:.7rem;
+  margin-bottom:2.5rem;
 }
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
-  padding:.9rem 1.4rem;
-  font-size:.85rem;font-weight:600;letter-spacing:.03em;
+  padding:.88rem 1.35rem;
+  font-size:.84rem;font-weight:600;letter-spacing:.03em;
   border-radius:2px;
   transition:transform .15s, background .15s, border-color .15s;
 }
 .btn:hover{transform:translateY(-1px)}
-.btn-primary{
-  background:var(--fg);color:#0a0a0a;
-}
+.btn-primary{background:var(--fg);color:#0a0a0a}
 .btn-primary:hover{background:#fff}
 .btn-ghost{
   background:transparent;color:var(--fg);
   border:1px solid var(--line);
 }
-.btn-ghost:hover{border-color:rgba(255,255,255,.25)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.28)}
 
-/* Why stay — three residual facts, scannable */
 .why{
   display:grid;
-  gap:1.25rem;
-  padding-top:1.75rem;
+  gap:1.2rem;
+  padding-top:1.6rem;
   border-top:1px solid var(--line);
-  max-width:40rem;
+  max-width:38rem;
 }
 @media(min-width:640px){
-  .why{grid-template-columns:repeat(3,1fr);gap:1.5rem}
+  .why{grid-template-columns:repeat(3,1fr);gap:1.35rem}
 }
 .why article h2{
-  font-size:.72rem;
+  font-size:.7rem;
   font-family:var(--mono);
   letter-spacing:.12em;
   text-transform:uppercase;
   color:var(--gold);
-  margin-bottom:.4rem;
+  margin-bottom:.35rem;
   font-weight:500;
 }
 .why article p{
-  font-size:.88rem;
+  font-size:.86rem;
   color:var(--muted);
   line-height:1.45;
 }
 
 .foot{
-  position:relative;z-index:2;
+  position:relative;z-index:3;
   padding:1rem clamp(1.25rem,4vw,2.5rem);
   border-top:1px solid var(--line);
   display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;
@@ -173,10 +185,41 @@ h1{
 </head>
 <body>
   <div class="frame">
+    <!-- Decorative dual helix (background elevation) -->
+    <svg class="helix-bg" viewBox="0 0 200 400" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="hb" x1="0" y1="0" x2="0" y2="400" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#4a9fe0" stop-opacity="0"/>
+          <stop offset="0.2" stop-color="#4a9fe0" stop-opacity="0.85"/>
+          <stop offset="0.5" stop-color="#4a9fe0" stop-opacity="0.5"/>
+          <stop offset="0.8" stop-color="#4a9fe0" stop-opacity="0.85"/>
+          <stop offset="1" stop-color="#4a9fe0" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="hg" x1="0" y1="0" x2="0" y2="400" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#c9a227" stop-opacity="0"/>
+          <stop offset="0.2" stop-color="#c9a227" stop-opacity="0.85"/>
+          <stop offset="0.5" stop-color="#c9a227" stop-opacity="0.5"/>
+          <stop offset="0.8" stop-color="#c9a227" stop-opacity="0.85"/>
+          <stop offset="1" stop-color="#c9a227" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="M70 20 C110 55 110 95 70 130 C30 165 30 205 70 240 C110 275 110 315 70 350 C50 368 40 380 35 390" stroke="url(#hb)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M130 20 C90 55 90 95 130 130 C170 165 170 205 130 240 C90 275 90 315 130 350 C150 368 160 380 165 390" stroke="url(#hg)" stroke-width="3" stroke-linecap="round"/>
+      <g stroke="#f3f2ef" stroke-opacity="0.25" stroke-width="1.5" stroke-linecap="round">
+        <path d="M78 55 H122"/><path d="M62 95 H138"/><path d="M78 135 H122"/>
+        <path d="M62 175 H138"/><path d="M78 215 H122"/><path d="M62 255 H138"/>
+        <path d="M78 295 H122"/><path d="M62 335 H138"/>
+      </g>
+      <circle cx="70" cy="55" r="3.5" fill="#4a9fe0"/><circle cx="130" cy="55" r="3.5" fill="#c9a227"/>
+      <circle cx="70" cy="135" r="3.5" fill="#4a9fe0"/><circle cx="130" cy="135" r="3.5" fill="#c9a227"/>
+      <circle cx="70" cy="215" r="3.5" fill="#4a9fe0"/><circle cx="130" cy="215" r="3.5" fill="#c9a227"/>
+      <circle cx="70" cy="295" r="3.5" fill="#4a9fe0"/><circle cx="130" cy="295" r="3.5" fill="#c9a227"/>
+    </svg>
+
     <header class="bar">
       <a class="brand" href="/">
-        <img src="emblem-ring.svg" width="36" height="36" alt="">
-        DualisCapax
+        <img class="mark" src="emblem-ring.svg" width="34" height="34" alt="">
+        <img class="word" src="logo-helix.svg" height="28" alt="DualisCapax">
       </a>
       <nav aria-label="Primary">
         <a href="research/">Research</a>
@@ -188,31 +231,27 @@ h1{
 
     <main class="main">
       <p class="kicker">Ontario · residual plane</p>
-
       <h1>Research that prices the cost of being wrong.</h1>
-
       <p class="promise">
         DualisCapax maps residual cost across healthcare, engineering, and adaptive systems —
         open where it should be open, deep when the rails are live.
       </p>
-
       <div class="actions">
         <a class="btn btn-primary" href="research/">Explore research</a>
         <a class="btn btn-ghost" href="manifesto.html">Read the manifesto</a>
       </div>
-
       <div class="why">
         <article>
           <h2>Open layer</h2>
-          <p>Public research paths, disease maps, and structure you can walk without an account.</p>
+          <p>Public research paths and structure you can walk without an account.</p>
         </article>
         <article>
           <h2>Residual law</h2>
-          <p>Every deeper claim is tied to cost, containment, and rails — not unbound speculation.</p>
+          <p>Deeper claims tied to cost, containment, and rails — not unbound speculation.</p>
         </article>
         <article>
           <h2>Adaptive depth</h2>
-          <p>When you need simulation-grade depth, fuel and access scale with the work — not theatre.</p>
+          <p>Simulation-grade depth scales with fuel and access — not theatre.</p>
         </article>
       </div>
     </main>
