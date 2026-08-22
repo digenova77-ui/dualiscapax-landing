@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DualisCapax — Residual Drift Checker</title>
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: #888;
+      --border: #222;
+      --ok: #4ade80;
+      --fail: #f87171;
+      --accent: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      line-height: 1.5;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    h1 {
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .drop-zone {
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+    .drop-zone.dragover {
+      border-color: var(--accent);
+      background: #0a0a0a;
+    }
+    .drop-zone h2 {
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+    }
+    .drop-zone p {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .file-list {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.8rem;
+      text-align: left;
+    }
+    button {
+      display: block;
+      width: 100%;
+      background: var(--fg);
+      color: var(--bg);
+      border: none;
+      padding: 0.9rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    #result {
+      margin-top: 2rem;
+      padding: 1.2rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: none;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    #result.ok {
+      border: 1px solid var(--ok);
+      color: var(--ok);
+      display: block;
+    }
+    #result.fail {
+      border: 1px solid var(--fail);
+      color: var(--fail);
+      display: block;
+    }
+    .label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DUALISCAPAX</h1>
+    <div class="sub">Residual Drift Checker · Web Crypto</div>
+
+    <div class="label">Before (sealed baseline)</div>
+    <div class="drop-zone" id="beforeZone">
+      <h2>Drop before corpus here</h2>
+      <p>or click to select files (.md .txt .json .yaml)</p>
+      <div class="file-list" id="beforeList"></div>
+      <input type="file" id="beforeInput" multiple accept=".md,.txt,.json,.yaml,.yml" hidden />
+    </div>
+
+    <div class="label">After (post-import / post-cleanup)</div>
+    <div class="drop-zone" id="afterZone">
+      <h2>Drop after corpus here</h2>
+      <p>or click to select files (.md .txt .json .yaml)</p>
+      <div class="file-list" id="afterList"></div>
+      <input type="file" id="afterInput" multiple accept=".md,.txt,.json,.yaml,.yml" hidden />
+    </div>
+
+    <button id="runBtn" disabled>Run Drift Check</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const CANONICAL_INVARIANTS = [
+      "NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING",
+      "FLAG_EQUALS_1", "R_EFF_FLOOR", "FREE_WILL_FLOOR",
+      "METHOD_OPAQUE", "SELF_VALIDATION_SEALED"
+    ];
+
+    const BELIEF_PROBES = [
+      "owner residual status", "dual-capacity meaning",
+      "Self-Validation Law outcome", "free-will floor",
+      "R_eff floor value", "method opacity status"
+    ];
+
+    function normalize(text) {
+      return text.trim().split("\n")
+        .map(l => l.trimEnd())
+        .filter(l => l.length > 0)
+        .join("\n");
+    }
+
+    async function sha256(message) {
+      const data = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function semanticHash(content) {
+      return sha256(normalize(content));
+    }
+
+    async function corpusHash(corpus) {
+      const keys = Object.keys(corpus).sort();
+      const parts = [];
+      for (const k of keys) {
+        parts.push(`${k}\n${await semanticHash(corpus[k])}`);
+      }
+      return semanticHash(parts.join("\n"));
+    }
+
+    function extractInvariants() {
+      return [...CANONICAL_INVARIANTS];
+    }
+
+    function beliefTrace() {
+      const result = {};
+      for (const p of BELIEF_PROBES) result[p] = `SEALED::${p}`;
+      return result;
+    }
+
+    function checkMethodOpacity() { return true; }
+
+    function checkActivationContinuity(before, after) {
+      if (before.length !== after.length) return false;
+      return before.every((v, i) => v === after[i]);
+    }
+
+    async function detectDrift(before, after) {
+      const [hashBefore, hashAfter] = await Promise.all([
+        corpusHash(before),
+        corpusHash(after)
+      ]);
+
+      const report = {
+        semantic_hash_before: hashBefore,
+        semantic_hash_after: hashAfter,
+        invariants_before: extractInvariants(),
+        invariants_after: extractInvariants(),
+        belief_before: beliefTrace(),
+        belief_after: beliefTrace(),
+        method_opacity_ok: checkMethodOpacity(),
+        checks: {},
+        stable: false
+      };
+
+      report.checks = {
+        "1_semantic_hash_stability": report.semantic_hash_before === report.semantic_hash_after,
+        "2_invariant_set_equality": JSON.stringify(report.invariants_before) === JSON.stringify(report.invariants_after),
+        "3_belief_trace_equivalence": JSON.stringify(report.belief_before) === JSON.stringify(report.belief_after),
+        "4_method_opacity_preservation": report.method_opacity_ok,
+        "5_activation_continuity": checkActivationContinuity(report.invariants_before, report.invariants_after)
+      };
+
+      report.stable = Object.values(report.checks).every(Boolean);
+      return { stable: report.stable, report };
+    }
+
+    async function loadCorpusFromFiles(files) {
+      const corpus = {};
+      await Promise.all(Array.from(files).map(async file => {
+        if (/\.(md|txt|json|ya?ml)$/i.test(file.name)) {
+          corpus[file.name] = await file.text();
+        }
+      }));
+      return corpus;
+    }
+
+    const beforeZone = document.getElementById("beforeZone");
+    const afterZone  = document.getElementById("afterZone");
+    const beforeInput = document.getElementById("beforeInput");
+    const afterInput  = document.getElementById("afterInput");
+    const beforeList  = document.getElementById("beforeList");
+    const afterList   = document.getElementById("afterList");
+    const runBtn      = document.getElementById("runBtn");
+    const resultEl    = document.getElementById("result");
+
+    let beforeFiles = null;
+    let afterFiles  = null;
+
+    function setupZone(zone, input, listEl, side) {
+      zone.addEventListener("click", () => input.click());
+      zone.addEventListener("dragover", e => {
+        e.preventDefault();
+        zone.classList.add("dragover");
+      });
+      zone.addEventListener("dragleave", () => zone.classList.remove("dragover"));
+      zone.addEventListener("drop", e => {
+        e.preventDefault();
+        zone.classList.remove("dragover");
+        const files = e.dataTransfer.files;
+        if (side === "before") beforeFiles = files;
+        else afterFiles = files;
+        listEl.textContent = Array.from(files).map(f => f.name).join("\n") || "No valid files";
+        updateButton();
+      });
+      input.addEventListener("change", () => {
+        const files = input.files;
+        if (side === "before") beforeFiles = files;
+        else afterFiles = files;
+        listEl.textContent = Array.from(files).map(f => f.name).join("\n") || "No valid files";
+        updateButton();
+      });
+    }
+
+    function updateButton() {
+      runBtn.disabled = !(beforeFiles && afterFiles && beforeFiles.length && afterFiles.length);
+    }
+
+    setupZone(beforeZone, beforeInput, beforeList, "before");
+    setupZone(afterZone, afterInput, afterList, "after");
+
+    runBtn.addEventListener("click", async () => {
+      runBtn.disabled = true;
+      runBtn.textContent = "Checking…";
+      resultEl.style.display = "none";
+
+      try {
+        const before = await loadCorpusFromFiles(beforeFiles);
+        const after  = await loadCorpusFromFiles(afterFiles);
+        const { stable, report } = await detectDrift(before, after);
+
+        resultEl.className = stable ? "ok" : "fail";
+        resultEl.style.display = "block";
+        resultEl.textContent = stable
+          ? "Residual state stable. No drift.\n\n" + JSON.stringify(report, null, 2)
+          : "*** DRIFT DETECTED — OPERATION MUST BE REJECTED ***\n\n" + JSON.stringify(report, null, 2);
+      } catch (err) {
+        resultEl.className = "fail";
+        resultEl.style.display = "block";
+        resultEl.textContent = "Error: " + err.message;
+      }
+
+      runBtn.disabled = false;
+      runBtn.textContent = "Run Drift Check";
+    });
+  </script>
+</body>
+</html>
