@@ -7,120 +7,147 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.1.0/3Dmol-min.js"></script>
   <style>
     :root {
-      --bg: #000; --fg: #fff; --muted: #888; --border: #222;
+      --bg: #000; --fg: #fff; --muted: #8a8a8a; --border: #222;
       --accent: #1e90ff; --gold: #d4a017; --surface: #0a0a0a;
     }
     @media (prefers-color-scheme: light) {
       :root {
-        --bg: #fff; --fg: #000; --muted: #555; --border: #ddd;
-        --accent: #1565c0; --gold: #b8860b; --surface: #f5f5f5;
+        --bg: #fafafa; --fg: #0a0a0a; --muted: #555; --border: #e0e0e0;
+        --accent: #1565c0; --gold: #b8860b; --surface: #f0f0f0;
       }
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: var(--bg); color: var(--fg);
       font-family: system-ui, -apple-system, sans-serif;
-      min-height: 100vh; line-height: 1.5;
+      min-height: 100vh; line-height: 1.55;
     }
-    header {
+    .crumbs {
       border-bottom: 1px solid var(--border);
-      padding: 0.85rem 1.25rem;
-      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
-      font-size: 0.8rem;
+      padding: 0.75rem 1.25rem;
+      display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;
+      font-size: 0.75rem;
     }
-    header a { color: var(--muted); text-decoration: none; }
-    header a:hover { color: var(--fg); }
-    .crumb-current { color: var(--fg); font-weight: 600; }
+    .crumbs a { color: var(--muted); text-decoration: none; }
+    .crumbs a:hover { color: var(--fg); }
+    .crumbs .now { color: var(--fg); font-weight: 600; }
+    .disease-bar {
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.5rem 1rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .disease-bar h1 {
+      font-size: 1.45rem; letter-spacing: 0.03em; margin-bottom: 0.35rem;
+    }
+    .class-line {
+      font-size: 0.8rem; color: var(--muted); margin-bottom: 0.85rem;
+    }
+    .catalog {
+      display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem;
+      font-size: 0.75rem; margin-bottom: 0.85rem;
+    }
+    .catalog span { color: var(--muted); }
+    .catalog strong { color: var(--fg); font-weight: 600; }
+    .phase-links {
+      display: flex; flex-wrap: wrap; gap: 0.45rem;
+    }
+    .phase-links a {
+      font-size: 0.72rem; letter-spacing: 0.04em;
+      text-decoration: none; color: var(--accent);
+      border: 1px solid var(--border); border-radius: 3px;
+      padding: 0.3rem 0.55rem;
+    }
+    .phase-links a:hover { border-color: var(--accent); }
     .layout {
       display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 0;
-      max-width: 1200px;
-      margin: 0 auto;
-      min-height: calc(100vh - 100px);
+      grid-template-columns: 1fr minmax(300px, 380px);
+      max-width: 1200px; margin: 0 auto;
+      min-height: 60vh;
     }
     @media (max-width: 900px) {
       .layout { grid-template-columns: 1fr; }
     }
     .main {
-      padding: 1.75rem 1.5rem 3rem;
+      padding: 1.5rem 1.5rem 3rem;
       border-right: 1px solid var(--border);
     }
     @media (max-width: 900px) {
       .main { border-right: none; }
     }
-    h1 { font-size: 1.5rem; letter-spacing: 0.04em; margin-bottom: 0.35rem; }
-    .meta {
-      font-size: 0.72rem; color: var(--muted); margin-bottom: 1.25rem;
-      letter-spacing: 0.04em;
-    }
-    .summary {
-      font-size: 0.9rem; color: var(--muted);
-      border-left: 2px solid var(--border); padding-left: 0.9rem;
-      margin-bottom: 1.5rem;
-    }
     h2 {
-      font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted); margin: 1.5rem 0 0.75rem;
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin: 1.35rem 0 0.7rem;
     }
+    h2:first-child { margin-top: 0; }
+    .prose {
+      font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem;
+    }
+    .prose strong { color: var(--fg); font-weight: 600; }
     .facts {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;
-      margin-bottom: 1rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem;
     }
     @media (max-width: 600px) { .facts { grid-template-columns: 1fr; } }
     .fact {
-      border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 0.85rem;
-      font-size: 0.82rem;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 0.65rem 0.8rem; font-size: 0.8rem;
     }
     .fact label {
-      display: block; font-size: 0.68rem; color: var(--muted);
-      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem;
+      display: block; font-size: 0.65rem; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem;
     }
-    .table-wrap { overflow-x: auto; margin-bottom: 1.25rem; }
-    table {
-      width: 100%; border-collapse: collapse; font-size: 0.8rem;
-    }
+    .table-wrap { overflow-x: auto; margin: 0.5rem 0 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
     th, td {
-      border: 1px solid var(--border); padding: 0.55rem 0.7rem; text-align: left;
+      border: 1px solid var(--border); padding: 0.5rem 0.65rem; text-align: left;
     }
     th { background: var(--surface); font-weight: 600; }
     tr.dc td { background: var(--surface); }
-    .yes { color: #4ade80; }
     .no { color: #f87171; }
     a.deep {
-      display: inline-block; margin-top: 0.35rem; margin-right: 0.6rem;
+      display: inline-block; margin: 0.25rem 0.75rem 0 0;
       font-size: 0.8rem; color: var(--accent); text-decoration: none;
-      border-bottom: 1px solid transparent;
     }
-    a.deep:hover { border-bottom-color: var(--accent); }
+    a.deep:hover { text-decoration: underline; }
     .pane {
-      padding: 1.25rem;
+      padding: 1.15rem 1.15rem 2rem;
       background: var(--surface);
-      display: flex; flex-direction: column;
+      position: sticky; top: 0;
+      align-self: start;
     }
     .pane h2 { margin-top: 0; }
     #viewer {
-      width: 100%; height: 280px;
+      width: 100%; height: 320px;
       border: 1px solid var(--border); border-radius: 8px;
-      background: #000;
-      position: relative;
+      background: #050505;
+      cursor: grab;
     }
+    #viewer:active { cursor: grabbing; }
+    .viewer-tools {
+      display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.55rem;
+    }
+    .viewer-tools button {
+      font-size: 0.68rem; letter-spacing: 0.04em;
+      background: transparent; color: var(--fg);
+      border: 1px solid var(--border); border-radius: 3px;
+      padding: 0.3rem 0.5rem; cursor: pointer;
+    }
+    .viewer-tools button:hover { border-color: var(--accent); color: var(--accent); }
     .pane-note {
-      font-size: 0.72rem; color: var(--muted); margin-top: 0.75rem;
+      font-size: 0.7rem; color: var(--muted); margin-top: 0.65rem;
     }
     .pane-meta {
-      font-size: 0.78rem; margin-top: 0.85rem;
+      font-size: 0.78rem; margin-top: 0.75rem; line-height: 1.45;
     }
     .pane-meta strong { color: var(--gold); }
     footer {
       border-top: 1px solid var(--border);
       padding: 1rem 1.25rem; text-align: center;
-      font-size: 0.7rem; color: var(--muted);
+      font-size: 0.68rem; color: var(--muted);
     }
   </style>
 </head>
 <body>
-  <header>
+  <nav class="crumbs">
     <a href="../../../../index.html">DUALISCAPAX</a>
     <span style="color:var(--border)">/</span>
     <a href="../../../index.html">Research</a>
@@ -131,35 +158,64 @@
     <span style="color:var(--border)">/</span>
     <a href="./">Neurological</a>
     <span style="color:var(--border)">/</span>
-    <span class="crumb-current">ALS</span>
-  </header>
+    <span class="now">ALS</span>
+  </nav>
+
+  <div class="disease-bar">
+    <h1>Amyotrophic Lateral Sclerosis (ALS)</h1>
+    <p class="class-line">
+      Healthcare → Medical → Neurological · Motor neuron disease · Subtype focus: general / SOD1-related
+    </p>
+    <div class="catalog">
+      <span>Journal <strong>ED-RES-NEURO-ALS-001</strong></span>
+      <span>MeSH-style class <strong>Neuromuscular · MND</strong></span>
+      <span>Lead ligand CID <strong>5070</strong> (riluzole)</span>
+      <span>Public surface <strong>complete</strong></span>
+    </div>
+    <div class="phase-links" aria-label="Phase and study history links">
+      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:1" target="_blank" rel="noopener">Phase 1 history</a>
+      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:2" target="_blank" rel="noopener">Phase 2 history</a>
+      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:3" target="_blank" rel="noopener">Phase 3 history</a>
+      <a href="https://pubmed.ncbi.nlm.nih.gov/?term=amyotrophic+lateral+sclerosis" target="_blank" rel="noopener">PubMed corpus</a>
+      <a href="https://pubchem.ncbi.nlm.nih.gov/compound/5070" target="_blank" rel="noopener">PubChem 5070</a>
+    </div>
+  </div>
 
   <div class="layout">
     <div class="main">
-      <h1>Amyotrophic Lateral Sclerosis (ALS)</h1>
-      <div class="meta">Journal ID: ED-RES-NEURO-ALS-001 · Status: Sealed · Flag = 1</div>
+      <h2>Where research stands</h2>
+      <p class="prose">
+        ALS remains a progressive motor neuron disease with limited disease-modifying options.
+        <strong>Riluzole</strong> and <strong>edaravone</strong> are established standards with modest effects on survival or decline in selected groups.
+        <strong>Tofersen</strong> addresses SOD1-ALS with clear genetic targeting. Broader Phase 2/3 pipelines continue; results are mixed and trial design is hard.
+      </p>
+      <p class="prose">
+        This page keeps the <strong>full clinical comparison surface</strong> visible. Deeper simulation and AI runs are linked below and only fully function inside the DualisCapax control plane when you choose that depth.
+      </p>
 
-      <p class="summary">
-        Progressive motor neuron disease. One-screen clinical comparison of approved and late-stage approaches against DualisCapax projected efficacy. Detailed simulation and AI layers are linked below — not jammed into this view.
+      <h2>How DualisCapax helps</h2>
+      <p class="prose">
+        Standardized side-by-side of real-world Phase status and efficacy against DualisCapax projected lines — without burying the public medical record.
+        Gated layers are for explicit further work (comparison runs, scenario depth), not for hiding basic disease facts.
       </p>
 
       <h2>Clinical snapshot</h2>
       <div class="facts">
         <div class="fact">
-          <label>Lead treatments (approved)</label>
+          <label>Lead treatments</label>
           Riluzole · Edaravone · Tofersen (SOD1)
         </div>
         <div class="fact">
-          <label>Lead structure shown</label>
-          Riluzole (PubChem CID 5070)
+          <label>Lead structure (right)</label>
+          Riluzole · PubChem CID 5070
         </div>
         <div class="fact">
           <label>Phase landscape</label>
-          Approved + multiple Phase 2/3 candidates
+          Approved agents + active Phase 2/3 field
         </div>
         <div class="fact">
           <label>DualisCapax layer</label>
-          Projected efficacy under sealed invariants
+          Projected comparison via gated simulation / AI
         </div>
       </div>
 
@@ -179,14 +235,14 @@
             <tr>
               <td>Riluzole</td>
               <td>Approved</td>
-              <td>~2–3 mo survival extension</td>
+              <td>~2–3 mo survival extension (typical summary)</td>
               <td>—</td>
               <td class="no">No</td>
             </tr>
             <tr>
               <td>Edaravone</td>
               <td>Approved</td>
-              <td>Slowing of decline (selected cohorts)</td>
+              <td>Slowing of decline in selected cohorts</td>
               <td>—</td>
               <td class="no">No</td>
             </tr>
@@ -198,8 +254,8 @@
               <td class="no">No</td>
             </tr>
             <tr>
-              <td>Phase 3 candidates</td>
-              <td>3</td>
+              <td>Broader pipeline</td>
+              <td>2 / 3</td>
               <td>Mixed / pending</td>
               <td>—</td>
               <td class="no">No</td>
@@ -208,7 +264,7 @@
               <td><strong>DualisCapax</strong></td>
               <td>—</td>
               <td>—</td>
-              <td>See simulation layer</td>
+              <td>Simulation / AI layer</td>
               <td>—</td>
             </tr>
           </tbody>
@@ -217,39 +273,66 @@
 
       <h2>Go deeper</h2>
       <a class="deep" href="/sim/neurological/als">→ Full simulation (gated)</a>
-      <a class="deep" href="../../../../ai/">→ AI portal</a>
-      <a class="deep" href="https://pubchem.ncbi.nlm.nih.gov/compound/5070" target="_blank" rel="noopener">→ PubChem riluzole</a>
+      <a class="deep" href="../../../../ai/">→ AI portal (realm)</a>
     </div>
 
     <aside class="pane">
-      <h2>Structure · 3D</h2>
-      <div id="viewer"></div>
+      <h2>Molecule · 3D</h2>
+      <div id="viewer" title="Drag to rotate · scroll to zoom"></div>
+      <div class="viewer-tools">
+        <button type="button" id="btn-stick">Sticks</button>
+        <button type="button" id="btn-sphere">Spheres</button>
+        <button type="button" id="btn-line">Lines</button>
+        <button type="button" id="btn-reset">Reset view</button>
+      </div>
       <p class="pane-note">
-        Pivot and zoom. Structure loaded from public PubChem data (riluzole). Not a DualisCapax-proprietary model.
+        Drag to rotate · scroll to zoom (reasonable molecular scale — not atomic-planck theatre).
+        Public PubChem geometry for the lead ligand. Color by element.
       </p>
       <div class="pane-meta">
         <strong>Riluzole</strong><br>
         2-amino-6-(trifluoromethoxy)benzothiazole<br>
-        Glutamate-pathway standard of care for ALS
+        Catalog CID 5070 · glutamate-pathway standard of care in ALS
       </div>
     </aside>
   </div>
 
   <footer>
-    DualisCapax Research Journal · Neurological · ALS · Standardized template
+    DualisCapax Research Journal · Neurological · ALS · Full medical surface · Public structure only
   </footer>
 
   <script>
     (function () {
-      var element = document.getElementById('viewer');
-      if (!element || typeof $3Dmol === 'undefined') return;
-      var viewer = $3Dmol.createViewer(element, { backgroundColor: 'black' });
-      // Public PubChem 3D for riluzole (CID 5070)
+      var el = document.getElementById('viewer');
+      if (!el || typeof $3Dmol === 'undefined') return;
+      var viewer = $3Dmol.createViewer(el, { backgroundColor: '0x050505' });
+      var STYLE = { stick: { colorscheme: 'Jmol', radius: 0.15 } };
+
+      function applyStyle(style) {
+        STYLE = style;
+        viewer.setStyle({}, style);
+        viewer.render();
+      }
+
       $3Dmol.download('cid:5070', viewer, {}, function () {
-        viewer.setStyle({}, { stick: { colorscheme: 'default' } });
+        applyStyle(STYLE);
         viewer.zoomTo();
         viewer.render();
       });
+
+      document.getElementById('btn-stick').onclick = function () {
+        applyStyle({ stick: { colorscheme: 'Jmol', radius: 0.15 } });
+      };
+      document.getElementById('btn-sphere').onclick = function () {
+        applyStyle({ sphere: { colorscheme: 'Jmol', scale: 0.3 } });
+      };
+      document.getElementById('btn-line').onclick = function () {
+        applyStyle({ line: { colorscheme: 'Jmol' } });
+      };
+      document.getElementById('btn-reset').onclick = function () {
+        viewer.zoomTo();
+        viewer.render();
+      };
     })();
   </script>
 </body>
