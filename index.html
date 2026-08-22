@@ -12,216 +12,115 @@
   --bg:#000;
   --fg:#f4f4f2;
   --muted:#7a7a76;
-  --line:#1a1a1a;
-  --gold:#c4a035;
-  --blue:#2a7fd4;
   --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;background:var(--bg);color:var(--fg)}
-body{
-  font-family:var(--font);
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-}
+body{font-family:var(--font);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 
 .plane{
-  min-height:100vh;
-  min-height:100dvh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:clamp(1.5rem,4vw,3rem) 1.25rem 4.5rem;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
+  text-align:center;position:relative;overflow:hidden;
 }
-
-/* Soft dual residual field — gold/blue underweight, not chrome */
 .plane::before{
-  content:"";
-  position:absolute;
-  inset:-20% -10% auto;
-  height:70%;
-  pointer-events:none;
+  content:"";position:absolute;inset:-15% -10% auto;height:65%;pointer-events:none;
   background:
-    radial-gradient(ellipse 50% 45% at 38% 48%, rgba(42,127,212,.16), transparent 68%),
-    radial-gradient(ellipse 45% 40% at 62% 52%, rgba(196,160,53,.11), transparent 68%);
-  opacity:.9;
+    radial-gradient(ellipse 48% 42% at 40% 50%, rgba(42,127,212,.18), transparent 70%),
+    radial-gradient(ellipse 42% 38% at 60% 55%, rgba(196,160,53,.12), transparent 70%);
 }
 
-/* Single emblem — geometry only, no second wordmark */
 .emblem{
-  width:clamp(72px, 18vw, 96px);
+  width:clamp(88px, 22vw, 120px);
   height:auto;
-  margin-bottom:clamp(1.75rem, 4vw, 2.25rem);
-  position:relative;
-  z-index:1;
-  filter:drop-shadow(0 0 28px rgba(42,127,212,.15));
+  margin-bottom:clamp(1.5rem, 3.5vw, 2rem);
+  position:relative;z-index:1;
 }
 
-/* ONE company name — half white ledger / half black ledger */
+/* ONE name — white ledger / black ledger */
 .ledger-name{
-  display:inline-flex;
-  align-items:stretch;
-  margin:0 auto 1.35rem;
-  position:relative;
-  z-index:1;
-  border-radius:2px;
-  overflow:hidden;
-  box-shadow:0 12px 40px rgba(0,0,0,.45);
-  font-size:clamp(1.35rem, 1rem + 2.2vw, 1.85rem);
-  font-weight:700;
-  letter-spacing:.04em;
-  line-height:1;
+  display:inline-flex;align-items:stretch;
+  margin:0 auto 1.25rem;
+  position:relative;z-index:1;
+  border-radius:2px;overflow:hidden;
+  font-size:clamp(1.4rem, 1rem + 2.4vw, 1.95rem);
+  font-weight:700;letter-spacing:.03em;line-height:1;
 }
-.ledger-name .w{
-  background:#f4f4f2;
-  color:#000;
-  padding:.55em .55em .55em .7em;
-}
-.ledger-name .b{
-  background:#000;
-  color:#f4f4f2;
-  padding:.55em .7em .55em .45em;
-  border:1px solid #2a2a2a;
-  border-left:none;
-}
+.ledger-name .w{background:#f4f4f2;color:#000;padding:.52em .52em .52em .68em}
+.ledger-name .b{background:#000;color:#f4f4f2;padding:.52em .68em .52em .42em;border:1px solid #2a2a2a;border-left:0}
 
 .kicker{
-  font-size:.65rem;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:1.1rem;
-  position:relative;
-  z-index:1;
+  font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:1rem;position:relative;z-index:1;
 }
-
 .lead{
-  max-width:19.5rem;
-  font-size:.88rem;
-  line-height:1.6;
-  color:var(--muted);
-  margin:0 auto 2rem;
-  position:relative;
-  z-index:1;
+  max-width:19rem;font-size:.86rem;line-height:1.6;color:var(--muted);
+  margin:0 auto 1.85rem;position:relative;z-index:1;
 }
-
 .actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.5rem;
-  justify-content:center;
-  position:relative;
-  z-index:1;
+  display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;
+  position:relative;z-index:1;
 }
 .btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:.65rem 1.15rem;
-  font-size:.75rem;
-  font-weight:600;
-  letter-spacing:.06em;
-  border-radius:3px;
-  border:1px solid transparent;
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:.65rem 1.15rem;font-size:.74rem;font-weight:600;letter-spacing:.06em;
+  border-radius:3px;border:1px solid transparent;
 }
-.btn-solid{
-  background:#f4f4f2;
-  color:#000;
-}
+.btn-solid{background:#f4f4f2;color:#000}
 .btn-solid:hover{background:#fff}
-.btn-line{
-  background:transparent;
-  color:var(--fg);
-  border-color:#2e2e2e;
-}
+.btn-line{background:transparent;color:var(--fg);border-color:#2e2e2e}
 .btn-line:hover{border-color:#555}
-
 .sub{
-  margin-top:2.25rem;
-  display:flex;
-  flex-wrap:wrap;
-  gap:.65rem 1.35rem;
-  justify-content:center;
-  font-size:.68rem;
-  letter-spacing:.04em;
-  color:#555;
-  position:relative;
-  z-index:1;
+  margin-top:2.1rem;display:flex;flex-wrap:wrap;gap:.65rem 1.35rem;
+  justify-content:center;font-size:.66rem;letter-spacing:.04em;color:#555;
+  position:relative;z-index:1;
 }
 .sub a:hover{color:var(--muted)}
-
 .slogans{
-  position:absolute;
-  bottom:1.35rem;
-  left:1rem;right:1rem;
-  font-size:.58rem;
-  letter-spacing:.08em;
-  color:#3a3a3a;
-  z-index:1;
+  position:absolute;bottom:1.3rem;left:1rem;right:1rem;
+  font-size:.56rem;letter-spacing:.08em;color:#3a3a3a;z-index:1;
 }
 .slogans b{color:#5a5040;font-weight:500}
 
 @media (prefers-color-scheme: light){
-  :root{
-    --bg:#f3f2ef;
-    --fg:#111;
-    --muted:#5c5c58;
-    --line:#ddd9d2;
-  }
+  :root{--bg:#f3f2ef;--fg:#111;--muted:#5c5c58}
   body,html{background:var(--bg);color:var(--fg)}
-  .plane::before{opacity:.45}
-  .ledger-name .w{
-    background:#111;
-    color:#f4f4f2;
-  }
-  .ledger-name .b{
-    background:#f4f4f2;
-    color:#111;
-    border-color:#ccc;
-  }
+  .plane::before{opacity:.4}
+  .ledger-name .w{background:#111;color:#f4f4f2}
+  .ledger-name .b{background:#f4f2ef;color:#111;border-color:#ccc}
   .btn-solid{background:#111;color:#f4f4f2}
-  .btn-solid:hover{background:#000}
-  .btn-line{border-color:#ccc;color:var(--fg)}
+  .btn-line{border-color:#ccc}
   .sub{color:#888}
   .slogans{color:#aaa}
   .slogans b{color:#8a7020}
+  .emblem{filter:none}
 }
 </style>
 </head>
 <body>
   <main class="plane">
-    <!-- Geometry only — company name appears once, below -->
-    <img class="emblem" src="emblem-ring.svg" width="96" height="96" alt="">
-
+    <img class="emblem" src="emblem-ring.svg" width="120" height="120" alt="">
     <div class="ledger-name" aria-label="DualisCapax">
       <span class="w">Dualis</span><span class="b">Capax</span>
     </div>
-
     <p class="kicker">Residual plane</p>
-
     <p class="lead">
       Open research. Adaptive depth when rails are live.
       One underweight point under playground expanse.
     </p>
-
     <div class="actions">
       <a class="btn btn-solid" href="research/">Research</a>
       <a class="btn btn-line" href="manifesto.html">Manifesto</a>
       <a class="btn btn-line" href="residual-law.html">Residual Law</a>
     </div>
-
     <nav class="sub" aria-label="More">
       <a href="model.html">Model</a>
       <a href="gateway.html">Gateway</a>
       <a href="participate.html">Participate</a>
       <a href="research/healthcare/">Healthcare</a>
     </nav>
-
     <p class="slogans">
       <b>No Tribes Preferred</b> · All Haters Welcome · Truth and Unity Prevail
     </p>
