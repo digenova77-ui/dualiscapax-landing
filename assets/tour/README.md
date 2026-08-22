@@ -1,18 +1,24 @@
-# Model tour — 12 second section spots
+# Model tour — consistent brand · path-aware VO
 
-One clip per step. Fade-in on **Next** in the model viewing area.
+## Always on every clip
+- DualisCapax **logo** (wordmark or ring emblem) visible
+- Same **theme**: black/white, blue/gold accent, sparse motion
+- Same **pace family** within a path (see below)
+- **12 seconds** · 16:9
 
-| File | Section | Commercial intent (≈12s) |
-|------|---------|---------------------------|
-| `open.mp4` | Open | Research free, clinical surface, no paywall to learn |
-| `prove.mp4` | Prove | Settlement + KYC at the boundary |
-| `depth.mp4` | Depth | Adaptive AI + sandbox; FM pays cost |
-| `seal.mp4` | Seal | Black ledger IP; method opaque |
-| `fm.mp4` | Fusion Meter | Closed pay-down, not a listed coin |
-| `dual.mp4` | Dual capacity | Enterprise funds plane; Open for individuals |
-| `clock.mp4` | Singularity clock | Residual progress ≠ wallet |
-| `unity.mp4` | Unity | Same mathematics; analysis not priesthood |
+## Narrator
+- Site toggle: **female / male** (preference saved)
+- Optional burned-in VO files later: `open-female.mp4`, `open-male.mp4`
+- Until then: Web Speech uses path rate + gender preference
 
-Optional posters: `open.jpg` … same ids.
+## Path tone (directory structure)
 
-Specs: 12s, silent or soft VO, black/white + blue/gold, no sealed IP visuals.
+| Path | Pace | Narration character |
+|------|------|---------------------|
+| `/research/.../healthcare` | Measured | What-if; why therapies fail; why ALS framing can make sense — no cure hype |
+| `/research/.../neurological` | Measured | Mechanism gaps, phases, patient-serious |
+| `/research/.../engineering` | Tight | Technical precision, systems language |
+| `/model.html` (default) | Even | Institutional Open · Prove · Depth · Seal |
+
+## Files
+`open.mp4` `prove.mp4` `depth.mp4` `seal.mp4` `fm.mp4` `dual.mp4` `clock.mp4` `unity.mp4`
