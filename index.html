@@ -3,154 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DualisCapax — Research-Driven AI · Financial Vehicle of the Future</title>
-<meta name="description" content="DualisCapax: research-driven AI, healthcare simulation, and dual-capacity financial vehicles. Unity Framework. Truth Prevails.">
+<title>DualisCapax — Research-Driven AI · Dual-Capacity Access</title>
+<meta name="description" content="DualisCapax: full medical research surface, dual-capacity access, and gated AI simulation. Unity design. Truth Prevails.">
 <style>
   :root {
-    --bg: #000; --fg: #fff; --muted: #888; --border: #1a1a1a;
-    --accent: #00ff9d; --surface: #0a0a0a;
+    --bg: #000; --fg: #fff; --muted: #8a8a8a; --border: #1c1c1c;
+    --accent: #1e90ff; --gold: #d4a017; --surface: #0a0a0a;
   }
   @media (prefers-color-scheme: light) {
     :root {
-      --bg: #fff; --fg: #000; --muted: #555; --border: #e0e0e0;
-      --accent: #00a86b; --surface: #f5f5f5;
+      --bg: #fafafa; --fg: #0a0a0a; --muted: #5a5a5a; --border: #e5e5e5;
+      --accent: #1565c0; --gold: #b8860b; --surface: #f0f0f0;
     }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: var(--bg); color: var(--fg);
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
     min-height: 100vh; line-height: 1.55;
   }
-  /* Ticker */
-  .ticker {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    overflow: hidden; white-space: nowrap; font-size: 0.78rem;
-    letter-spacing: 0.04em;
+  /* Baked-in status strip — professional, not a loud ticker */
+  .status {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    overflow: hidden;
   }
-  .ticker-track {
-    display: inline-block; padding: 0.55rem 0;
-    animation: ticker 42s linear infinite;
+  .status-inner {
+    display: flex; gap: 2rem; padding: 0.5rem 1.25rem;
+    white-space: nowrap;
+    width: max-content;
+    animation: drift 48s linear infinite;
   }
-  .ticker-track span { margin-right: 3rem; color: var(--muted); }
-  .ticker-track .hot { color: var(--accent); }
-  @keyframes ticker {
+  .status-inner span { color: var(--muted); }
+  .status-inner .mark { color: var(--accent); font-weight: 600; }
+  @keyframes drift {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
-  /* Nav */
+  @media (prefers-reduced-motion: reduce) {
+    .status-inner { animation: none; flex-wrap: wrap; width: auto; }
+  }
   nav {
     border-bottom: 1px solid var(--border);
-    padding: 0.9rem 1.25rem;
+    padding: 0.95rem 1.25rem;
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 0.75rem;
   }
   .nav-brand {
-    font-weight: 700; letter-spacing: 0.08em; text-decoration: none; color: var(--fg);
-    font-size: 0.95rem;
+    font-weight: 700; letter-spacing: 0.1em; text-decoration: none; color: var(--fg);
+    font-size: 0.9rem;
   }
   .nav-links {
-    display: flex; flex-wrap: wrap; gap: 0.35rem 1rem;
-    list-style: none; font-size: 0.8rem;
+    display: flex; flex-wrap: wrap; gap: 0.4rem 1.15rem;
+    list-style: none; font-size: 0.78rem;
   }
   .nav-links a {
-    color: var(--muted); text-decoration: none; letter-spacing: 0.04em;
+    color: var(--muted); text-decoration: none; letter-spacing: 0.05em;
   }
   .nav-links a:hover { color: var(--fg); }
-  .nav-links a.accent { color: var(--accent); }
-  /* Hero */
+  .nav-links a.gold { color: var(--gold); }
   .hero {
-    max-width: 900px; margin: 0 auto; padding: 3.5rem 1.25rem 2.5rem;
+    max-width: 920px; margin: 0 auto; padding: 3.25rem 1.25rem 2.25rem;
     text-align: center;
   }
-  .logo-wrap { margin-bottom: 1.25rem; }
-  .logo-img { max-width: 340px; width: 100%; height: auto; }
-  .logo-dark { display: block; margin: 0 auto; }
-  .logo-light { display: none; margin: 0 auto; }
+  .emblem {
+    width: 64px; height: 64px; margin: 0 auto 1.1rem; display: block;
+  }
+  .logo-img { max-width: 320px; width: 100%; height: auto; }
+  .logo-dark { display: block; margin: 0 auto 1rem; }
+  .logo-light { display: none; margin: 0 auto 1rem; }
   @media (prefers-color-scheme: light) {
     .logo-dark { display: none; }
     .logo-light { display: block; }
   }
   .hero h1 {
-    font-size: 1.15rem; font-weight: 600; letter-spacing: 0.12em;
-    text-transform: uppercase; margin-bottom: 0.75rem;
+    font-size: 1.05rem; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 0.85rem;
   }
   .hero p {
-    color: var(--muted); font-size: 0.95rem; max-width: 520px; margin: 0 auto 1.5rem;
+    color: var(--muted); font-size: 0.92rem; max-width: 480px;
+    margin: 0 auto 1.6rem;
   }
   .hero-cta {
-    display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center;
+    display: flex; flex-wrap: wrap; gap: 0.55rem; justify-content: center;
   }
   .btn {
-    display: inline-block; padding: 0.65rem 1.2rem; font-size: 0.8rem;
-    letter-spacing: 0.06em; text-decoration: none; border-radius: 4px;
+    display: inline-block; padding: 0.62rem 1.15rem; font-size: 0.78rem;
+    letter-spacing: 0.07em; text-decoration: none; border-radius: 3px;
     border: 1px solid var(--border); color: var(--fg);
   }
   .btn-primary {
-    background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600;
+    background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600;
   }
   .btn:hover { border-color: var(--fg); }
-  /* Sections */
   section {
-    max-width: 900px; margin: 0 auto; padding: 2rem 1.25rem;
+    max-width: 920px; margin: 0 auto; padding: 1.75rem 1.25rem;
   }
   section h2 {
-    font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 1.1rem; border-bottom: 1px solid var(--border);
-    padding-bottom: 0.5rem;
+    font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1rem; border-bottom: 1px solid var(--border);
+    padding-bottom: 0.45rem;
   }
   .grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1rem;
+    gap: 0.85rem;
   }
   .card {
-    border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem;
+    border: 1px solid var(--border); border-radius: 6px; padding: 1.15rem;
     text-decoration: none; color: var(--fg); display: block;
   }
   .card:hover { border-color: var(--accent); }
-  .card h3 { font-size: 0.95rem; letter-spacing: 0.04em; margin-bottom: 0.4rem; }
-  .card p { font-size: 0.8rem; color: var(--muted); }
-  ul.vehicles {
-    list-style: none; font-size: 0.9rem;
-  }
+  .card h3 { font-size: 0.9rem; letter-spacing: 0.04em; margin-bottom: 0.35rem; }
+  .card p { font-size: 0.78rem; color: var(--muted); }
+  ul.vehicles { list-style: none; font-size: 0.88rem; }
   ul.vehicles li {
-    border-bottom: 1px solid var(--border); padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border); padding: 0.8rem 0;
   }
   ul.vehicles li:last-child { border-bottom: none; }
-  ul.vehicles strong { display: block; margin-bottom: 0.25rem; letter-spacing: 0.03em; }
-  ul.vehicles span { color: var(--muted); font-size: 0.85rem; }
+  ul.vehicles strong { display: block; margin-bottom: 0.2rem; letter-spacing: 0.03em; }
+  ul.vehicles span { color: var(--muted); font-size: 0.82rem; }
   .note {
-    font-size: 0.78rem; color: var(--muted); margin-top: 1rem;
-    border-left: 2px solid var(--border); padding-left: 0.85rem;
+    font-size: 0.74rem; color: var(--muted); margin-top: 1rem;
+    border-left: 2px solid var(--border); padding-left: 0.8rem;
   }
   footer {
     border-top: 1px solid var(--border); margin-top: 2rem;
-    padding: 1.5rem 1.25rem; text-align: center;
-    font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em;
+    padding: 1.4rem 1.25rem; text-align: center;
+    font-size: 0.7rem; color: var(--muted); letter-spacing: 0.05em;
   }
 </style>
 </head>
 <body>
 
-  <!-- Onboarding / incentive ticker -->
-  <div class="ticker" aria-label="Onboarding and updates">
-    <div class="ticker-track">
-      <span class="hot">ONBOARDING OPEN</span>
-      <span>Enterprise capacity deposits — 100% credited against future royalties</span>
-      <span class="hot">GRASSROOTS ACCESS</span>
-      <span>Zero-cost individual access tier available</span>
-      <span>Research portal live — Healthcare · Neurological · ALS benchmark</span>
-      <span class="hot">PARTICIPATE</span>
-      <span>Buy-in and donation pathways now listed</span>
+  <div class="status" aria-label="Status">
+    <div class="status-inner">
+      <span class="mark">ONBOARDING OPEN</span>
+      <span>Enterprise capacity deposits — credited toward agreed commercial terms</span>
+      <span class="mark">RESEARCH LIVE</span>
+      <span>Healthcare · Neurological · ALS journal — full clinical surface</span>
+      <span class="mark">GRASSROOTS</span>
+      <span>Low- and zero-cost individual access funded by public-benefit allocation</span>
       <span>Truth Prevails. No Tribes Preferred.</span>
-      <!-- duplicate for seamless loop -->
-      <span class="hot">ONBOARDING OPEN</span>
-      <span>Enterprise capacity deposits — 100% credited against future royalties</span>
-      <span class="hot">GRASSROOTS ACCESS</span>
-      <span>Zero-cost individual access tier available</span>
-      <span>Research portal live — Healthcare · Neurological · ALS benchmark</span>
-      <span class="hot">PARTICIPATE</span>
-      <span>Buy-in and donation pathways now listed</span>
+      <span class="mark">ONBOARDING OPEN</span>
+      <span>Enterprise capacity deposits — credited toward agreed commercial terms</span>
+      <span class="mark">RESEARCH LIVE</span>
+      <span>Healthcare · Neurological · ALS journal — full clinical surface</span>
+      <span class="mark">GRASSROOTS</span>
+      <span>Low- and zero-cost individual access funded by public-benefit allocation</span>
       <span>Truth Prevails. No Tribes Preferred.</span>
     </div>
   </div>
@@ -162,17 +163,16 @@
       <li><a href="ai/">AI</a></li>
       <li><a href="finance.html">Finance</a></li>
       <li><a href="onboarding.html">Onboarding</a></li>
-      <li><a class="accent" href="participate.html">Participate</a></li>
+      <li><a class="gold" href="participate.html">Participate</a></li>
     </ul>
   </nav>
 
   <header class="hero">
-    <div class="logo-wrap">
-      <img class="logo-img logo-dark" src="logo-dark.svg" alt="DualisCapax">
-      <img class="logo-img logo-light" src="logo-light.svg" alt="DualisCapax">
-    </div>
-    <h1>Research-Driven AI · Financial Vehicle of the Future</h1>
-    <p>Unity Framework. Healthcare simulation. Dual-capacity access. Owner and enterprise paths under sealed method-opaque design.</p>
+    <img class="emblem" src="emblem-sphere.svg" alt="">
+    <img class="logo-img logo-dark" src="logo-dark.svg" alt="DualisCapax">
+    <img class="logo-img logo-light" src="logo-light.svg" alt="DualisCapax">
+    <h1>Research-Driven AI · Dual-Capacity Access</h1>
+    <p>Full medical research surface. Gated simulation and AI. Enterprise capacity funds shared compute; individuals keep permanent low- or zero-cost access.</p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="research/">Enter Research</a>
       <a class="btn" href="ai/">AI Portal</a>
@@ -185,44 +185,44 @@
     <div class="grid">
       <a class="card" href="research/">
         <h3>Research Hierarchy</h3>
-        <p>Healthcare → Medical → Neurological · Cancers · Infectious. Standardized comparison tables and simulation links.</p>
+        <p>Healthcare → Medical → Neurological · Cancers · Infectious. Full clinical comparison tables on every disease page.</p>
       </a>
       <a class="card" href="research/healthcare/medical/neurological/als.html">
-        <h3>ALS Benchmark</h3>
-        <p>First sealed disease page: real-world Phase status vs DualisCapax projected efficacy, with separate simulation document.</p>
+        <h3>ALS Journal</h3>
+        <p>Lead treatments, Phase landscape, efficacy table, pivotable public structure, links into deeper gated layers.</p>
       </a>
       <a class="card" href="ai/">
         <h3>AI Portal</h3>
-        <p>Grok-base residual interface. Access-gated. Multi-key ready. Path to own light model under Unity invariants.</p>
+        <p>Access-gated. Grok base for now. Built for paid simulation when you explicitly want to carry work further.</p>
       </a>
     </div>
   </section>
 
   <section>
-    <h2>Financial Vehicles</h2>
+    <h2>Capacity & Fuel</h2>
     <ul class="vehicles">
       <li>
         <strong>Enterprise Capacity Deposit</strong>
-        <span>Capital commitment fully credited against future royalties. Funds public-benefit compute. Modeled for high-ROI industrial alignment (e.g. aerospace, manufacturing).</span>
+        <span>Prepaid access credited toward agreed commercial terms. Funds public-benefit compute for shared research capacity.</span>
+      </li>
+      <li>
+        <strong>Fuel</strong>
+        <span>One prepaid unit. Higher-value surfaces burn more. Importance-weighted — not fifty price tiers.</span>
       </li>
       <li>
         <strong>Grassroots Access</strong>
-        <span>Permanent zero-cost or low-cost access for individuals. Rate-limited by design. Funded by enterprise public-benefit allocation.</span>
+        <span>Permanent low- or zero-cost access for individuals. Rate-limited. Funded by enterprise public-benefit allocation.</span>
       </li>
       <li>
-        <strong>Owner / Researcher Seat</strong>
-        <span>Unlimited surface under sealed Self-Validation. Full ledger visibility. Not for public sale.</span>
+        <strong>Research & Simulation</strong>
+        <span>Full medical information on public journals. Deeper simulation and AI behind Access and Fuel when you choose to go further.</span>
       </li>
       <li>
-        <strong>Research & Simulation Capacity</strong>
-        <span>Paid or credited capacity for healthcare and domain simulation runs. Linked to standardized disease and field pages.</span>
-      </li>
-      <li>
-        <strong>Participate · Buy-in & Donations</strong>
-        <span>Direct participation and donation pathways. Optional 50/50 community fundraiser structure (legal review required before activation).</span>
+        <strong>Safeguards</strong>
+        <span>Circuit-level access controls on gated surfaces — method stays opaque; medical content stays complete.</span>
       </li>
     </ul>
-    <p class="note">Financial instruments and fundraiser structures are described for orientation only. Formal offerings require appropriate registration, counsel, and jurisdiction-specific compliance. DualisCapax does not solicit investment via this page alone.</p>
+    <p class="note">Informational only. Not an offer to sell securities. Ontario and Canadian law apply. Any fundraiser or crypto settlement requires legal review before activation.</p>
   </section>
 
   <section>
@@ -230,18 +230,18 @@
     <div class="grid">
       <a class="card" href="onboarding.html">
         <h3>Start Here</h3>
-        <p>How enterprise, grassroots, and researcher paths work. Capacity deposits, access tiers, and next steps.</p>
+        <p>Enterprise, grassroots, and research paths. How capacity and Fuel work.</p>
       </a>
       <a class="card" href="participate.html">
         <h3>Participate</h3>
-        <p>Buy-in, interact, or donate. Portal entry for capacity and community support pathways.</p>
+        <p>Fuel packs, capacity interest, and donation pathways (when legally cleared).</p>
       </a>
     </div>
   </section>
 
   <footer>
-    DualisCapax · Unity Framework · Truth Prevails. No Tribes Preferred.<br>
-    Method-opaque · Flag = 1 sealed · Research-driven AI
+    DualisCapax · Unity · Truth Prevails. No Tribes Preferred.<br>
+    Medical surface complete · Method opaque · Ontario & Canada first
   </footer>
 
 </body>
