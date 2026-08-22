@@ -22,8 +22,13 @@
   .tour-stage{
     border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#050505;
     opacity:0;transform:translateY(6px);transition:opacity .7s ease,transform .7s ease;
+    position:relative;
   }
   .tour-stage.is-in{opacity:1;transform:none}
+  .tour-logo{
+    position:absolute;top:.65rem;left:.75rem;z-index:2;
+    height:22px;width:auto;opacity:.92;pointer-events:none;
+  }
   .tour-stage video{
     display:block;width:100%;aspect-ratio:16/9;background:#0a0a0a;object-fit:cover;
   }
@@ -31,12 +36,14 @@
   .tour-step{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem}
   .tour-title{font-size:1.05rem;letter-spacing:.04em;margin-bottom:.35rem;color:var(--fg)}
   .tour-line{font-size:.85rem;color:var(--muted);margin-bottom:.85rem}
-  .tour-nav{display:flex;gap:.5rem;flex-wrap:wrap}
+  .tour-nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
   .tour-nav button{
     background:transparent;border:1px solid var(--border);color:var(--fg);
     padding:.45rem .9rem;font-size:.75rem;letter-spacing:.06em;border-radius:3px;cursor:pointer;
   }
   .tour-nav button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .tour-nav button.active{border-color:var(--gold);color:var(--gold)}
+  .voice-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:.25rem}
   .ops{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.75rem}
   @media(max-width:520px){.ops{grid-template-columns:1fr}}
   .op{border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;background:var(--surface)}
@@ -51,7 +58,6 @@
   summary::before{content:"+";display:inline-block;width:1rem;color:var(--gold);font-weight:700}
   details[open] summary::before{content:"–"}
   .deep{padding:0 1rem 1rem;font-size:.85rem;color:var(--muted)}
-  .deep p{font-size:.85rem}
   .note{font-size:.74rem;border-left:2px solid var(--border);padding-left:.75rem;margin-top:1.5rem;color:var(--muted)}
   footer{border-top:1px solid var(--border);padding:1.25rem;text-align:center;font-size:.7rem;color:var(--muted)}
   a.inline{color:var(--accent)}
@@ -73,10 +79,11 @@
   </nav>
   <main>
     <h1>Model</h1>
-    <p class="lead">Free information. Use <strong style="color:var(--fg)">Next</strong> for a 12-second company spot on each step of complexity. Expand text sections anytime.</p>
+    <p class="lead">Free information. <strong style="color:var(--fg)">Next</strong> plays each complexity step (fade-in). Narrator toggle below. Tone follows your path when this tour is embedded under Research.</p>
 
     <div id="tour-root">
       <div class="tour-stage">
+        <img class="tour-logo logo-on-dark" src="logo-dark.svg" alt="DualisCapax">
         <video playsinline muted loop preload="metadata" aria-label="Section commercial"></video>
         <div class="tour-meta">
           <div class="tour-step">1 / 8</div>
@@ -85,6 +92,9 @@
           <div class="tour-nav">
             <button type="button" data-tour-prev>Back</button>
             <button type="button" class="primary" data-tour-next>Next</button>
+            <span class="voice-label">Narrator</span>
+            <button type="button" data-voice="female">Female</button>
+            <button type="button" data-voice="male">Male</button>
           </div>
         </div>
       </div>
@@ -97,39 +107,27 @@
       <div class="op"><strong>Seal</strong><p>IP and production math stay on the black ledger.</p></div>
     </div>
 
-    <h2>In one breath</h2>
-    <p>DualisCapax is a <strong>research-driven Adaptive plane</strong>. You can <strong>read without paying</strong>. Deeper Adaptive compute uses <strong>Fusion Meter (FM)</strong> to pay down <strong>real session cost</strong>. Sealed IP stays off the public page.</p>
+    <h2>Path tone</h2>
+    <p><strong>Healthcare / ALS:</strong> measured pace — what-if, why therapies stall, why a residual Adaptive framing can make sense (no cure hype). <strong>Engineering:</strong> tight technical precision. <strong>Logo, theme, and narrator family</strong> stay consistent across the tree.</p>
 
     <h2>Go deeper</h2>
-
     <details>
       <summary>Dual capacity</summary>
-      <div class="deep"><p><strong>Enterprise capacity</strong> funds shared residual compute. <strong>Individuals</strong> keep low- or zero-cost Open research. Depth is escalate-only.</p></div>
+      <div class="deep"><p>Enterprise funds residual compute. Individuals keep Open research access.</p></div>
     </details>
     <details>
       <summary>Fusion Meter (FM)</summary>
-      <div class="deep"><p>Closed prepaid <strong>pay-down</strong>. Not an open-market coin. Burns with real Adaptive cost. Early: revenue prioritizes the AI reserve.</p></div>
+      <div class="deep"><p>Closed prepaid pay-down for Adaptive depth. Not an open-market coin.</p></div>
     </details>
     <details>
-      <summary>White ledger and black ledger</summary>
-      <div class="deep"><p><strong>White:</strong> in/out and KYC events. <strong>Black:</strong> FM internals and encrypted IP.</p></div>
-    </details>
-    <details>
-      <summary>Adaptive depth</summary>
-      <div class="deep"><p>Sandbox Adaptive AI and sim — useful analysis, not production math.</p></div>
-    </details>
-    <details>
-      <summary>Singularity clock</summary>
-      <div class="deep"><p>Plane residual progress readout. Not your FM wallet.</p></div>
-    </details>
-    <details>
-      <summary>What we do not claim</summary>
-      <div class="deep"><p>Not the meaning of life or monopoly on truth — another way to look at the same mathematics. Not beyond lawful process. Disciplined custody and a sealed core.</p></div>
+      <summary>White / black ledger</summary>
+      <div class="deep"><p>White: boundary in/out and KYC. Black: FM internals and encrypted IP.</p></div>
     </details>
 
-    <p class="note">Informational only. Not an offer to sell securities. Ontario and Canadian law apply. 12s media files optional under <code>assets/tour/</code>. <a class="inline" href="manifesto.html">Manifesto</a> · <a class="inline" href="participate.html">Participate</a></p>
+    <p class="note">Informational only. Not an offer to sell securities. Ontario and Canadian law apply. <a class="inline" href="manifesto.html">Manifesto</a> · <a class="inline" href="participate.html">Participate</a></p>
   </main>
-  <footer>DualisCapax · Model tour · 12s per step</footer>
+  <footer>DualisCapax · Model tour · logo · narrator · path pace</footer>
+  <script src="js/tour-voice.js"></script>
   <script src="js/model-tour.js"></script>
 </body>
 </html>
