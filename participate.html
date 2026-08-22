@@ -6,102 +6,74 @@
 <title>Participate — DualisCapax</title>
 <link rel="stylesheet" href="assets/presentation.css">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{min-height:100vh;line-height:1.55}
-  nav{border-bottom:1px solid var(--border);padding:.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
-  .brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.9rem}
-  .links{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none;font-size:.78rem}
-  .links a{color:var(--muted);text-decoration:none}
-  main{max-width:720px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
-  h1{font-size:1.35rem;letter-spacing:.06em;margin-bottom:.5rem}
-  .lead{color:var(--muted);margin-bottom:1.5rem;font-size:.95rem}
-  h2{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1.75rem 0 .85rem;border-bottom:1px solid var(--border);padding-bottom:.4rem}
-  p{font-size:.9rem;color:var(--muted);margin-bottom:.85rem}
-  p strong{color:var(--fg)}
-  .waterfall{font-size:.8rem;color:var(--muted);margin:1rem 0;padding:1rem;border:1px solid var(--border);border-radius:10px;box-shadow:var(--depth)}
-  .lane{border:1px solid var(--border);border-radius:10px;padding:1.15rem 1.2rem;margin-bottom:.75rem;background:var(--surface);box-shadow:var(--depth)}
-  .lane h3{font-size:.95rem;margin-bottom:.35rem;color:var(--fg)}
-  .lane .tag{display:inline-block;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
-  .lane p{margin-bottom:.85rem;font-size:.85rem}
-  .pay{display:inline-block;padding:.55rem 1rem;font-size:.78rem;letter-spacing:.06em;text-decoration:none;border-radius:3px;border:1px solid var(--border);color:var(--fg)}
-  .pay.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-  .pay[aria-disabled="true"]{opacity:.45;pointer-events:none}
-  .note{font-size:.74rem;color:var(--muted);margin-top:1.5rem;border-left:2px solid var(--border);padding-left:.8rem}
-  footer{border-top:1px solid var(--border);padding:1.25rem;text-align:center;font-size:.7rem;color:var(--muted)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;line-height:1.55}
+nav{border-bottom:1px solid var(--border);padding:.9rem 1.25rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.88rem}
+.links{display:flex;gap:1rem;list-style:none;font-size:.76rem}
+.links a{color:var(--muted);text-decoration:none}
+main{max-width:36rem;margin:0 auto;padding:2.25rem 1.25rem 3rem}
+h1{font-size:1.25rem;margin-bottom:.5rem}
+.lead{color:var(--muted);margin-bottom:1.25rem;font-size:.92rem}
+h2{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 .75rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+.lane{border:1px solid var(--border);border-radius:8px;padding:1.05rem;margin-bottom:.65rem;background:var(--surface);box-shadow:var(--depth)}
+.lane .tag{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+.lane h3{font-size:.9rem;margin-bottom:.3rem}
+.lane p{font-size:.82rem;color:var(--muted);margin-bottom:.75rem}
+.pay{display:inline-block;padding:.5rem .9rem;font-size:.74rem;border:1px solid var(--border);border-radius:3px;color:var(--fg);text-decoration:none}
+.pay[aria-disabled="true"]{opacity:.4;pointer-events:none}
+.note{font-size:.72rem;color:var(--muted);margin-top:1.25rem;border-left:2px solid var(--border);padding-left:.75rem}
+footer{border-top:1px solid var(--border);padding:1rem;text-align:center;font-size:.68rem;color:var(--muted)}
 </style>
 </head>
 <body>
-  <nav>
-    <a class="brand" href="index.html">DUALISCAPAX</a>
-    <ul class="links">
-      <li><a href="research/">Research</a></li>
-      <li><a href="model.html">Model</a></li>
-      <li><a href="manifesto.html">Manifesto</a></li>
-      <li><a href="participate.html">Participate</a></li>
-    </ul>
-  </nav>
-  <main>
-    <h1>Participate</h1>
-    <p class="lead">Lanes for the Adaptive plane. <strong>Fusion Meter</strong> is prepaid Depth. Buttons live when your processor links are set. Not a securities offering.</p>
+<nav>
+  <a class="brand" href="index.html">DUALISCAPAX</a>
+  <ul class="links">
+    <li><a href="gateway.html">Gateway</a></li>
+    <li><a href="participate.html">Participate</a></li>
+  </ul>
+</nav>
+<main>
+  <h1>Participate</h1>
+  <p class="lead">Same lattice as the gateway. External money in · residual allocation · Fusion Meter for Depth only.</p>
 
-    <div class="waterfall">
-      <strong style="color:var(--fg)">Allocation</strong><br>
-      Cost-lane → residual plane first. Capacity → enterprise terms + plane residual. <strong style="color:var(--fg)">Fusion Meter</strong> → AI reserve / session pay-down (early: prioritize solvency). UBI after cost policy.
-    </div>
+  <h2>Lanes</h2>
+  <div class="lane">
+    <div class="tag">Plane residual</div>
+    <h3>Cost reduction</h3>
+    <p>Offsets hosting and baseline residual burn. Highest priority for plane solvency.</p>
+    <a class="pay" id="pay-cost" href="#" aria-disabled="true">Pay · Cost</a>
+  </div>
+  <div class="lane">
+    <div class="tag">Enterprise</div>
+    <h3>Capacity</h3>
+    <p>Prepaid commercial terms. Funds shared residual compute.</p>
+    <a class="pay" id="pay-capacity" href="#" aria-disabled="true">Pay · Capacity</a>
+  </div>
+  <div class="lane">
+    <div class="tag">Depth</div>
+    <h3>Fusion Meter</h3>
+    <p>Internal prepaid Adaptive credit. Burns with real residual cost. Not a coin market.</p>
+    <a class="pay" id="pay-fuel" href="#" aria-disabled="true">Pay · FM</a>
+  </div>
+  <div class="lane">
+    <div class="tag">After cost</div>
+    <h3>UBI floor</h3>
+    <p>Tagged support after residual cost policy.</p>
+    <a class="pay" id="pay-ubi" href="#" aria-disabled="true">Pay · UBI</a>
+  </div>
 
-    <h2>Lanes</h2>
-
-    <div class="lane" data-lane="cost_reduction">
-      <div class="tag">Waterfall · Cost</div>
-      <h3>Plane cost reduction</h3>
-      <p>Offsets residual plane burn (edge, hosting, baseline under eFuse). Highest priority for residual runway.</p>
-      <a class="pay primary" id="pay-cost" href="#" aria-disabled="true">Pay · Cost reduction</a>
-    </div>
-
-    <div class="lane" data-lane="capacity">
-      <div class="tag">Enterprise</div>
-      <h3>Capacity deposit</h3>
-      <p>Prepaid commercial terms. Funds shared residual of the Adaptive plane.</p>
-      <a class="pay primary" id="pay-capacity" href="#" aria-disabled="true">Pay · Capacity</a>
-    </div>
-
-    <div class="lane" data-lane="fuel">
-      <div class="tag">Depth · FM</div>
-      <h3>Fusion Meter</h3>
-      <p>Closed pay-down for Adaptive Depth. Burns with real residual cost × Importance. Not an open-market coin.</p>
-      <a class="pay" id="pay-fuel" href="#" aria-disabled="true">Pay · Fusion Meter</a>
-    </div>
-
-    <div class="lane" data-lane="ubi">
-      <div class="tag">After cost</div>
-      <h3>UBI / grassroots floor</h3>
-      <p>Tagged support for the shared floor after residual cost policy.</p>
-      <a class="pay" id="pay-ubi" href="#" aria-disabled="true">Pay · UBI floor</a>
-    </div>
-
-    <h2>Processor</h2>
-    <p>Create Payment Links in Stripe (or your processor). Paste into <code class="mono">js/payments-config.js</code>. Crypto settlement after counsel.</p>
-
-    <p class="note">Informational. Ontario &amp; Canada first. Not an offer to sell securities. Live collection requires your account and legal review.</p>
-  </main>
-  <footer>DualisCapax · Participate · Fusion Meter · Adaptive plane</footer>
-  <script src="js/payments-config.js"></script>
-  <script>
-    (function () {
-      var cfg = window.DC_PAYMENTS || {};
-      function wire(id, url) {
-        var a = document.getElementById(id);
-        if (!a) return;
-        if (url && String(url).indexOf("http") === 0) {
-          a.href = url;
-          a.removeAttribute("aria-disabled");
-        }
-      }
-      wire("pay-cost", cfg.cost_reduction);
-      wire("pay-capacity", cfg.capacity);
-      wire("pay-fuel", cfg.fuel || cfg.fusion_meter);
-      wire("pay-ubi", cfg.ubi);
-    })();
-  </script>
+  <p class="note">Buttons enable when Payment Link URLs are set in <code>js/payments-config.js</code>. Not securities. Ontario &amp; Canada. Counsel before go-live.</p>
+</main>
+<footer>DualisCapax · Participate</footer>
+<script src="js/payments-config.js"></script>
+<script>
+(function(){
+  var c=window.DC_PAYMENTS||{};
+  function w(id,u){var a=document.getElementById(id);if(!a)return;if(u&&String(u).indexOf('http')===0){a.href=u;a.removeAttribute('aria-disabled');}}
+  w('pay-cost',c.cost_reduction);w('pay-capacity',c.capacity);w('pay-fuel',c.fuel||c.fusion_meter);w('pay-ubi',c.ubi);
+})();
+</script>
 </body>
 </html>

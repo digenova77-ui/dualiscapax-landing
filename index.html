@@ -3,226 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DualisCapax — Research-Driven AI · Dual-Capacity Access</title>
-<meta name="description" content="DualisCapax: Open research, dual-capacity access, Adaptive depth. Truth and Unity Prevail.">
+<title>DualisCapax</title>
+<meta name="description" content="DualisCapax — Open research free. Adaptive depth prepaid. One residual plane.">
 <link rel="stylesheet" href="assets/presentation.css">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{min-height:100vh;line-height:1.55}
-  .status{border-bottom:1px solid var(--border);background:var(--surface);font-size:.72rem;letter-spacing:.06em;overflow:hidden}
-  .status-inner{display:flex;gap:2rem;padding:.5rem 1.25rem;white-space:nowrap;width:max-content;animation:drift 48s linear infinite}
-  .status-inner span{color:var(--muted)}
-  .status-inner .mark{color:var(--accent);font-weight:600}
-  @keyframes drift{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-  @media(prefers-reduced-motion:reduce){.status-inner{animation:none;flex-wrap:wrap;width:auto}}
-  nav{border-bottom:1px solid var(--border);padding:.95rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
-  .nav-brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.9rem}
-  .nav-links{display:flex;flex-wrap:wrap;gap:.4rem 1.15rem;list-style:none;font-size:.78rem}
-  .nav-links a{color:var(--muted);text-decoration:none}
-  .nav-links a:hover{color:var(--fg)}
-  .nav-links a.gold{color:var(--gold)}
-  .hero{max-width:920px;margin:0 auto;padding:2.5rem 1.25rem 1.5rem;text-align:center}
-  .logo-img{max-width:280px;width:100%;height:auto}
-  .logo-dark{display:block;margin:0 auto .75rem}
-  .logo-light{display:none;margin:0 auto .75rem}
-  @media(prefers-color-scheme:light){.logo-dark{display:none}.logo-light{display:block}}
-  .journey-video{max-width:420px;width:100%;margin:0 auto 1.25rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);box-shadow:var(--depth)}
-  .journey-video video{width:100%;display:block;max-height:240px;background:#050505}
-  .journey-video .vid-tools{display:flex;gap:.5rem;justify-content:center;padding:.5rem;font-size:.72rem}
-  .journey-video button{background:transparent;border:1px solid var(--border);color:var(--fg);padding:.35rem .65rem;border-radius:3px;cursor:pointer;letter-spacing:.04em}
-  .journey-video button:hover{border-color:var(--accent);color:var(--accent)}
-  .hero h1{font-size:1.05rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.85rem}
-  .hero p{color:var(--muted);font-size:.92rem;max-width:520px;margin:0 auto 1.25rem}
-  .hero-cta{display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center}
-  .btn{display:inline-block;padding:.62rem 1.15rem;font-size:.78rem;letter-spacing:.07em;text-decoration:none;border-radius:3px;border:1px solid var(--border);color:var(--fg)}
-  .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
-  .btn:hover{border-color:var(--fg)}
-  section{max-width:920px;margin:0 auto;padding:1.75rem 1.25rem}
-  section h2{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.45rem}
-  .journey{display:grid;gap:.65rem}
-  .step{border:1px solid var(--border);border-radius:8px;padding:1rem 1.1rem;background:var(--surface);text-align:left}
-  .step .n{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
-  .step h3{font-size:.9rem;margin-bottom:.3rem}
-  .step p{font-size:.8rem;color:var(--muted);margin:0}
-  .step.metered{border-color:color-mix(in srgb,var(--gold) 40%,var(--border))}
-  .step.metered .n{color:var(--gold)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.85rem}
-  .card{border:1px solid var(--border);border-radius:6px;padding:1.15rem;text-decoration:none;color:var(--fg);display:block}
-  .card:hover{border-color:var(--accent)}
-  .card h3{font-size:.9rem;margin-bottom:.35rem}
-  .card p{font-size:.78rem;color:var(--muted)}
-  ul.vehicles{list-style:none;font-size:.88rem}
-  ul.vehicles li{border-bottom:1px solid var(--border);padding:.8rem 0}
-  ul.vehicles li:last-child{border-bottom:none}
-  ul.vehicles strong{display:block;margin-bottom:.2rem}
-  ul.vehicles span{color:var(--muted);font-size:.82rem}
-  .note{font-size:.74rem;color:var(--muted);margin-top:1rem;border-left:2px solid var(--border);padding-left:.8rem}
-  footer{border-top:1px solid var(--border);margin-top:2rem;padding:1.4rem 1.25rem;text-align:center;font-size:.7rem;color:var(--muted)}
-  footer .slogans{color:var(--gold);margin-bottom:.45rem}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;line-height:1.55}
+nav{border-bottom:1px solid var(--border);padding:.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.brand{font-weight:700;letter-spacing:.12em;text-decoration:none;color:var(--fg);font-size:.88rem}
+.links{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;list-style:none;font-size:.76rem}
+.links a{color:var(--muted);text-decoration:none}
+.links a:hover,.links a.on{color:var(--fg)}
+.hero{max-width:40rem;margin:0 auto;padding:2.75rem 1.25rem 2rem;text-align:center}
+.logo-dark{display:block;max-width:260px;width:100%;margin:0 auto 1rem}
+.logo-light{display:none;max-width:260px;width:100%;margin:0 auto 1rem}
+@media(prefers-color-scheme:light){.logo-dark{display:none}.logo-light{display:block}}
+.hero h1{font-size:clamp(1.1rem,1rem + .5vw,1.35rem);font-weight:600;letter-spacing:.06em;margin-bottom:.75rem}
+.hero p{color:var(--muted);font-size:.92rem;margin-bottom:1.5rem}
+.cta{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.btn{display:inline-block;padding:.6rem 1.1rem;font-size:.76rem;letter-spacing:.06em;text-decoration:none;border:1px solid var(--border);border-radius:3px;color:var(--fg)}
+.btn.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+section{max-width:40rem;margin:0 auto;padding:0 1.25rem 2.25rem}
+h2{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:.4rem;margin-bottom:1rem}
+.lattice{display:grid;gap:.55rem}
+.cell{border:1px solid var(--border);border-radius:8px;padding:1rem 1.05rem;background:var(--surface);box-shadow:var(--depth)}
+.cell h3{font-size:.88rem;margin-bottom:.3rem}
+.cell p{font-size:.8rem;color:var(--muted);margin:0}
+.cell .t{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+.cell.m .t{color:var(--gold)}
+.note{font-size:.72rem;color:var(--muted);margin-top:1.25rem;border-left:2px solid var(--border);padding-left:.75rem}
+footer{border-top:1px solid var(--border);padding:1.25rem;text-align:center;font-size:.68rem;color:var(--muted)}
+footer .s{color:var(--gold);margin-bottom:.35rem;letter-spacing:.05em}
 </style>
 </head>
 <body>
+<nav>
+  <a class="brand" href="index.html">DUALISCAPAX</a>
+  <ul class="links">
+    <li><a href="research/">Research</a></li>
+    <li><a href="model.html">Model</a></li>
+    <li><a href="manifesto.html">Manifesto</a></li>
+    <li><a href="gateway.html">Gateway</a></li>
+    <li><a href="participate.html">Participate</a></li>
+  </ul>
+</nav>
 
-  <div class="status" aria-label="Status">
-    <div class="status-inner">
-      <span class="mark">JOURNEY OPEN</span>
-      <span>Birth into DualisCapax — go as deep as you want</span>
-      <span class="mark">OPEN FREE</span>
-      <span>Research · Model · Manifesto</span>
-      <span class="mark">DEPTH METERED</span>
-      <span>Fusion Meter — cost of information when you escalate</span>
-      <span class="mark">JOURNEY OPEN</span>
-      <span>Birth into DualisCapax — go as deep as you want</span>
-      <span class="mark">OPEN FREE</span>
-      <span>Research · Model · Manifesto</span>
-      <span class="mark">DEPTH METERED</span>
-      <span>Fusion Meter — cost of information when you escalate</span>
+<header class="hero">
+  <img class="logo-dark" src="logo-dark.svg" alt="DualisCapax">
+  <img class="logo-light" src="logo-light.svg" alt="DualisCapax">
+  <h1>One plane. Open free. Depth prepaid.</h1>
+  <p>Dual capacity under residual law. CAD and lawful rails settle the gateway. Fusion Meter pays Adaptive session cost. Seal stays sealed. Same truth from every angle.</p>
+  <div class="cta">
+    <a class="btn p" href="research/">Research</a>
+    <a class="btn" href="gateway.html">Gateway</a>
+    <a class="btn" href="manifesto.html">Manifesto</a>
+  </div>
+</header>
+
+<section>
+  <h2>Diamond lattice</h2>
+  <div class="lattice">
+    <div class="cell">
+      <div class="t">Open</div>
+      <h3>Research &amp; model</h3>
+      <p>Journals, manifesto, operators. No Fusion Meter. Wonder and evidence on one chain.</p>
+    </div>
+    <div class="cell">
+      <div class="t">Prove · Gateway</div>
+      <h3>Lawful settlement</h3>
+      <p>CAD or counsel-approved rails. Identity when required. White boundary events. Not a securities offering.</p>
+    </div>
+    <div class="cell m">
+      <div class="t">Depth · FM</div>
+      <h3>Fusion Meter</h3>
+      <p>Internal prepaid credit. Burns only for residual Adaptive cost. Closed — not legal tender, not an open-market coin.</p>
+    </div>
+    <div class="cell">
+      <div class="t">Seal · eFuse</div>
+      <h3>Bound capability</h3>
+      <p>Method opaque. eFuse binds agents to native realm under Ontario &amp; Canadian law. Internal compute stays internal.</p>
     </div>
   </div>
+  <p class="note">Ontario and Canada first. Informational public surface. Live payments need your processor and legal review.</p>
+</section>
 
-  <nav>
-    <a class="nav-brand" href="index.html">DUALISCAPAX</a>
-    <ul class="nav-links">
-      <li><a href="research/">Research</a></li>
-      <li><a href="model.html">Model</a></li>
-      <li><a href="manifesto.html">Manifesto</a></li>
-      <li><a href="ai/">AI</a></li>
-      <li><a class="gold" href="participate.html">Participate</a></li>
-    </ul>
-  </nav>
-
-  <header class="hero">
-    <img class="logo-img logo-dark" src="logo-dark.svg" alt="DualisCapax">
-    <img class="logo-img logo-light" src="logo-light.svg" alt="DualisCapax">
-
-    <div class="journey-video" id="logo-journey">
-      <video id="journeyVid" playsinline preload="metadata" poster="logo-dark.svg">
-        <source src="assets/tour/logo-journey.mp4" type="video/mp4">
-      </video>
-      <div class="vid-tools">
-        <button type="button" id="vidPlay">Play journey</button>
-        <button type="button" id="vidStop">Stop</button>
-      </div>
-    </div>
-
-    <h1>Research-Driven AI · Dual-Capacity Access</h1>
-    <p>A journey from birth into DualisCapax to the depth you choose. Open is free. Metered spots are the cost of information — not a fee for a mind to exist.</p>
-    <div class="hero-cta">
-      <a class="btn btn-primary" href="#journey">Begin journey</a>
-      <a class="btn" href="research/">Research</a>
-      <a class="btn" href="manifesto.html">Manifesto</a>
-    </div>
-  </header>
-
-  <section id="journey">
-    <h2>Your path through the plane</h2>
-    <div class="journey">
-      <div class="step">
-        <div class="n">1 · Birth</div>
-        <h3>Enter DualisCapax</h3>
-        <p>You arrive in Open. Unity is the quiet why — dual capacity, pure logic as discipline, not a tribe.</p>
-      </div>
-      <div class="step">
-        <div class="n">2 · Orient</div>
-        <h3>Model &amp; Manifesto</h3>
-        <p>Open · Prove · Depth · Seal. Time moves +1. Friction is accounted; affinity is the bond that holds order.</p>
-      </div>
-      <div class="step">
-        <div class="n">3 · Explore</div>
-        <h3>Research</h3>
-        <p>Healthcare, engineering, philosophical bridgeheads. Full clinical surfaces where published. Spend as much time as you want.</p>
-      </div>
-      <div class="step metered">
-        <div class="n">4 · Metered</div>
-        <h3>Adaptive Depth</h3>
-        <p>When you escalate, Fusion Meter pays real residual compute. Sandbox is not Seal. That is the cost of deeper information.</p>
-      </div>
-      <div class="step">
-        <div class="n">5 · Continue</div>
-        <h3>End of viewing — or deeper still</h3>
-        <p>Leave when the scale is enough. Or Prove and go further. Relative perfection: enough for the question you brought.</p>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Research &amp; Adaptive</h2>
-    <div class="grid">
-      <a class="card" href="research/">
-        <h3>Research</h3>
-        <p>Hierarchy, journals, medical consolidation chart.</p>
-      </a>
-      <a class="card" href="research/healthcare/medical/chart.html">
-        <h3>Medical chart</h3>
-        <p>ALS seed · residual graft notes · expand as docs enter the server.</p>
-      </a>
-      <a class="card" href="model.html">
-        <h3>Model</h3>
-        <p>Free information spine — expand any section deeper.</p>
-      </a>
-      <a class="card" href="ai/">
-        <h3>Adaptive AI</h3>
-        <p>Depth behind access. FM pays session residual cost.</p>
-      </a>
-    </div>
-  </section>
-
-  <section>
-    <h2>Capacity &amp; Fusion Meter</h2>
-    <ul class="vehicles">
-      <li>
-        <strong>Enterprise Capacity</strong>
-        <span>Prepaid commercial terms. Funds residual compute for the shared plane.</span>
-      </li>
-      <li>
-        <strong>Fusion Meter (FM)</strong>
-        <span>Closed prepaid pay-down for Adaptive depth. Burns with real cost — not an open-market coin.</span>
-      </li>
-      <li>
-        <strong>Grassroots Open</strong>
-        <span>Low- or zero-cost research access. Rate-limited floor where offered.</span>
-      </li>
-      <li>
-        <strong>Seal</strong>
-        <span>Method opaque. Medical Open surface complete. Internal compute stays internal.</span>
-      </li>
-    </ul>
-    <p class="note">Informational only. Not an offer to sell securities. Ontario and Canadian law apply. Live payments require processor setup and legal review.</p>
-  </section>
-
-  <section>
-    <h2>Onboarding</h2>
-    <div class="grid">
-      <a class="card" href="onboarding.html"><h3>Start here</h3><p>Enterprise, grassroots, research paths.</p></a>
-      <a class="card" href="participate.html"><h3>Participate</h3><p>Cost, capacity, FM, UBI lanes when configured.</p></a>
-    </div>
-  </section>
-
-  <footer>
-    <div class="slogans">No Tribes Preferred. · All Haters Welcome. · Truth and Unity Prevail.</div>
-    DualisCapax · Open · Prove · Depth · Seal · Ontario &amp; Canada first
-  </footer>
-
-  <script>
-  (function(){
-    var v = document.getElementById('journeyVid');
-    var play = document.getElementById('vidPlay');
-    var stop = document.getElementById('vidStop');
-    if (!v || !play || !stop) return;
-    play.addEventListener('click', function(){
-      v.play().catch(function(){});
-    });
-    stop.addEventListener('click', function(){
-      v.pause();
-      try { v.currentTime = 0; } catch(e) {}
-    });
-    /* Autoplay only if source exists and user allows motion */
-    v.addEventListener('loadeddata', function(){
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      v.muted = true;
-      v.play().catch(function(){});
-    });
-  })();
-  </script>
+<footer>
+  <div class="s">No Tribes Preferred. · All Haters Welcome. · Truth and Unity Prevail.</div>
+  DualisCapax · dual capacity · residual plane
+</footer>
 </body>
 </html>
