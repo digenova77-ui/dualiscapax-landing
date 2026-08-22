@@ -1,0 +1,119 @@
+name: residual-ring
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Daily observe — ring does not sleep just because chat is idle
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  A_build:
+    name: A · Build manifest
+    runs-on: ubuntu-latest
+    outputs:
+      manifest_sha: ${{ steps.hash.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build critical-path manifest
+        id: hash
+        run: |
+          set -euo pipefail
+          paths=(
+            index.html
+            residual-law.html
+            gateway.html
+            research/sim/METHOD.md
+            research/sim/packs/als-dual-path.json
+            research/sim/storage/RESIDUAL-VAULT.md
+          )
+          : > /tmp/manifest.txt
+          for p in "${paths[@]}"; do
+            if [ -f "$p" ]; then
+              h=$(sha256sum "$p" | awk '{print $1}')
+              echo "$p $h" >> /tmp/manifest.txt
+            else
+              echo "$p MISSING" >> /tmp/manifest.txt
+            fi
+          done
+          cat /tmp/manifest.txt
+          msha=$(sha256sum /tmp/manifest.txt | awk '{print $1}')
+          echo "sha=$msha" >> "$GITHUB_OUTPUT"
+          mkdir -p artifacts
+          cp /tmp/manifest.txt artifacts/critical-manifest.txt
+          echo "$msha" > artifacts/manifest.sha
+      - name: Upload manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: residual-manifest
+          path: artifacts/
+
+  B_verify:
+    name: B · Verify vs previous
+    needs: A_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Diff critical paths against previous commit
+        run: |
+          set -euo pipefail
+          paths=(
+            index.html
+            residual-law.html
+            gateway.html
+            research/sim/METHOD.md
+            research/sim/packs/als-dual-path.json
+            research/sim/storage/RESIDUAL-VAULT.md
+          )
+          echo "=== git diff HEAD~1 (critical paths) ==="
+          if git rev-parse HEAD~1 >/dev/null 2>&1; then
+            git diff --stat HEAD~1 -- "${paths[@]}" || true
+            if git diff --name-only HEAD~1 -- residual-law.html research/sim/METHOD.md research/sim/storage/RESIDUAL-VAULT.md | grep -q .; then
+              echo "LAW_SURFACE_CHANGED=1"
+              if ! git log -1 --pretty=%B | grep -qiE 'law|residual|vault|method'; then
+                echo "::warning::Law-related paths changed without law/residual/vault/method in commit message"
+              fi
+            fi
+          else
+            echo "First commit — no previous baseline"
+          fi
+          echo "A_manifest=${{ needs.A_build.outputs.manifest_sha }}"
+
+  C_observe:
+    name: C · Observe live surface
+    needs: [A_build, B_verify]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch public endpoints
+        run: |
+          set -euo pipefail
+          LIVE="${LIVE_URL:-https://www.dualiscapax.ai/}"
+          RAW="https://raw.githubusercontent.com/digenova77-ui/dualiscapax-landing/main/index.html"
+          echo "LIVE=$LIVE"
+          code_live=$(curl -sL -o /tmp/live.html -w "%{http_code}" "$LIVE" || echo 000)
+          code_raw=$(curl -sL -o /tmp/raw.html -w "%{http_code}" "$RAW" || echo 000)
+          echo "live_http=$code_live raw_http=$code_raw"
+          echo "=== live head ==="
+          head -c 400 /tmp/live.html | tr '\n' ' ' || true
+          echo
+          echo "=== raw head ==="
+          head -c 400 /tmp/raw.html | tr '\n' ' ' || true
+          echo
+          if grep -q "Sandbox surface\|residual plane\|DualisCapax" /tmp/raw.html 2>/dev/null; then
+            echo "RAW_OK=1"
+          else
+            echo "::warning::Raw main index missing expected residual markers"
+          fi
+          if grep -qi "Residual-Tax Software Control Plane\|Unity Framework" /tmp/live.html 2>/dev/null; then
+            if ! grep -q "Sandbox surface" /tmp/live.html 2>/dev/null; then
+              echo "::warning::LIVE_URL still looks like alternate control-plane surface — bind CF Pages to dualiscapax-landing main to close the ring"
+            fi
+          fi
+          echo "manifest_sha=${{ needs.A_build.outputs.manifest_sha }}"
+          echo "Ring position: A built → B verified → C observed. Green checkpoint promotes this manifest to next baseline on following run."
