@@ -11,8 +11,11 @@
 :root{
   --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --gold:#c4a035;
-  --blue:#2a7fd4;
+  --gold:#d4af37;
+  --gold-dim:rgba(212,175,55,.35);
+  --blue:#3d9be9;
+  --blue-dim:rgba(61,155,233,.35);
+  --green:#2a9b5c;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%}
@@ -22,273 +25,366 @@ body{
   -webkit-font-smoothing:antialiased;
   background:#000;
   color:#f4f4f2;
+  overflow-x:hidden;
 }
 a{color:inherit;text-decoration:none}
 
-/* ========== DESKTOP: locked dual plane (no scroll past need) ========== */
+/* ========== SHELL ========== */
 .shell{
-  min-height:100vh;
-  min-height:100dvh;
+  min-height:100vh;min-height:100dvh;
   display:grid;
-  grid-template-columns:1fr;
   grid-template-rows:auto 1fr auto;
+  position:relative;
 }
 
-/* Top residual rail — not 2012 nav bar */
-.rail{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:1rem;
-  padding:.65rem clamp(1rem, 3vw, 2rem);
-  border-bottom:1px solid #1a1a1a;
-  font-family:var(--mono);
-  font-size:.62rem;
-  letter-spacing:.08em;
-  color:#666;
-  background:#050505;
+/* Ambient residual aurora behind everything */
+.shell::before{
+  content:"";
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 30%, rgba(61,155,233,.14), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 80% 70%, rgba(212,175,55,.1), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(42,155,92,.06), transparent 45%);
+  animation:aurora 12s ease-in-out infinite alternate;
 }
-.rail b{color:#ccc;font-weight:500}
-.rail .pulse{
-  width:6px;height:6px;border-radius:50%;background:var(--gold);
-  display:inline-block;margin-right:.4rem;
-  box-shadow:0 0 0 0 rgba(196,160,53,.5);
-  animation:pulse 2s infinite;
+@keyframes aurora{
+  from{opacity:.7;filter:hue-rotate(0deg)}
+  to{opacity:1;filter:hue-rotate(12deg)}
+}
+
+/* Fine residual grain */
+.shell::after{
+  content:"";
+  position:fixed;inset:0;z-index:50;pointer-events:none;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+}
+
+/* ========== RAIL ========== */
+.rail{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.7rem clamp(1rem,3vw,2rem);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:#777;
+  background:rgba(5,5,5,.85);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.rail b{color:#e8e8e4;font-weight:500}
+.pulse{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--gold);
+  display:inline-block;margin-right:.45rem;vertical-align:middle;
+  box-shadow:0 0 0 0 var(--gold-dim), 0 0 12px var(--gold);
+  animation:pulse 2.2s infinite;
 }
 @keyframes pulse{
-  70%{box-shadow:0 0 0 8px transparent}
+  0%{box-shadow:0 0 0 0 var(--gold-dim),0 0 12px var(--gold)}
+  70%{box-shadow:0 0 0 10px transparent,0 0 8px var(--gold)}
+  100%{box-shadow:0 0 0 0 transparent,0 0 12px var(--gold)}
 }
-@media(prefers-reduced-motion:reduce){.rail .pulse{animation:none}}
 
-/* Dual ledger: white plane | black plane */
+/* ========== DUAL ========== */
 .dual{
+  position:relative;z-index:5;
   display:grid;
   grid-template-columns:1fr;
   min-height:0;
-  flex:1;
 }
 
 .pane{
   position:relative;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding:clamp(1.75rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(2rem,6vw,4rem) clamp(1.35rem,4vw,3.25rem);
   overflow:hidden;
 }
 
-/* WHITE LEDGER */
+/* —— WHITE LEDGER —— */
 .pane-white{
-  background:#f2f1ed;
+  background:
+    linear-gradient(145deg, #f7f6f2 0%, #ebeae4 40%, #f0efe9 100%);
   color:#0a0a0a;
+  isolation:isolate;
 }
+/* Mesh light on white */
+.pane-white .mesh{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 85% 20%, rgba(61,155,233,.18), transparent 55%),
+    radial-gradient(ellipse 50% 45% at 10% 80%, rgba(212,175,55,.14), transparent 50%),
+    radial-gradient(ellipse 40% 35% at 60% 60%, rgba(42,155,92,.08), transparent 45%);
+  animation:mesh-drift 14s ease-in-out infinite alternate;
+}
+@keyframes mesh-drift{
+  from{transform:scale(1) translate(0,0)}
+  to{transform:scale(1.08) translate(-2%,1%)}
+}
+/* Grid residual */
+.pane-white .grid{
+  position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background-image:
+    linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,.04) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 70% 70% at 70% 40%, #000 20%, transparent 75%);
+}
+.pane-white .content{position:relative;z-index:2}
+
 .pane-white .eyebrow{
-  font-family:var(--mono);
-  font-size:.62rem;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:#6a6a66;
-  margin-bottom:1rem;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.24em;
+  text-transform:uppercase;color:#6a6a66;margin-bottom:1.15rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.pane-white .eyebrow::before{
+  content:"";width:24px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);
 }
 .pane-white h1{
-  font-size:clamp(2.4rem, 1.2rem + 5vw, 4.2rem);
-  font-weight:700;
-  letter-spacing:-.03em;
-  line-height:.95;
-  margin-bottom:1.25rem;
+  font-size:clamp(2.6rem, 1.1rem + 6vw, 4.8rem);
+  font-weight:700;letter-spacing:-.035em;line-height:.92;
+  margin-bottom:1.35rem;
+  background:linear-gradient(135deg,#0a0a0a 30%,#3a3a38 100%);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+  filter:drop-shadow(0 2px 0 rgba(255,255,255,.5));
 }
-.pane-white h1 span{
+.pane-white h1 em{
   display:block;
-  color:#8a8a86;
-  font-weight:500;
-  font-size:.42em;
-  letter-spacing:.18em;
-  margin-top:.4em;
-  text-transform:uppercase;
+  font-style:normal;font-weight:500;
+  font-size:.38em;letter-spacing:.2em;
+  margin-top:.55em;text-transform:uppercase;
+  color:#7a7a74;
+  background:none;-webkit-background-clip:unset;background-clip:unset;
+  filter:none;
 }
 .pane-white .copy{
-  max-width:28ch;
-  font-size:clamp(.9rem, .85rem + .3vw, 1.05rem);
-  line-height:1.55;
-  color:#3a3a38;
-  margin-bottom:1.75rem;
+  max-width:30ch;
+  font-size:clamp(.92rem,.85rem + .35vw,1.08rem);
+  line-height:1.6;color:#3f3f3c;
+  margin-bottom:2rem;
 }
 .pane-white .cta{
-  display:inline-flex;
-  align-items:center;
-  gap:.5rem;
-  background:#0a0a0a;
-  color:#f2f1ed;
-  font-size:.78rem;
-  font-weight:600;
-  letter-spacing:.06em;
-  padding:.85rem 1.35rem;
-  border:none;
+  display:inline-flex;align-items:center;gap:.65rem;
+  position:relative;
+  background:#0a0a0a;color:#f2f1ed;
+  font-size:.78rem;font-weight:600;letter-spacing:.08em;
+  padding:.95rem 1.5rem;
+  overflow:hidden;
   width:fit-content;
+  box-shadow:0 8px 32px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.1);
+  transition:transform .2s, box-shadow .2s;
 }
-.pane-white .cta:hover{background:#222}
-.pane-white .cta svg{width:14px;height:14px}
-
-/* Mesh residual field on white */
-.pane-white::after{
+.pane-white .cta::before{
   content:"";
-  position:absolute;
-  right:-10%;bottom:-20%;
-  width:55%;height:70%;
+  position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%);
+  background-size:200% 100%;
+  animation:cta-foil 3.5s ease-in-out infinite;
+}
+@keyframes cta-foil{
+  0%{background-position:100% 0}
+  100%{background-position:-100% 0}
+}
+.pane-white .cta:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 40px rgba(0,0,0,.25),0 0 0 1px rgba(0,0,0,.12);
+}
+.pane-white .cta svg{width:15px;height:15px;position:relative;z-index:1}
+.pane-white .cta span{position:relative;z-index:1}
+
+/* —— BLACK LEDGER —— */
+.pane-black{
+  background:#030303;
+  color:#f4f4f2;
+  border-top:1px solid rgba(255,255,255,.06);
+  isolation:isolate;
+}
+.pane-black .mesh{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(circle at 30% 40%, rgba(42,127,212,.12), transparent 50%),
-    radial-gradient(circle at 70% 60%, rgba(196,160,53,.1), transparent 45%);
-  pointer-events:none;
+    radial-gradient(ellipse 55% 50% at 15% 30%, rgba(61,155,233,.2), transparent 55%),
+    radial-gradient(ellipse 45% 40% at 90% 75%, rgba(212,175,55,.12), transparent 50%);
+  animation:mesh-drift 16s ease-in-out infinite alternate-reverse;
+}
+.pane-black .grid{
+  position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.25;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 70% at 30% 50%, #000 15%, transparent 70%);
+}
+.pane-black .content{position:relative;z-index:2}
+
+.pane-black .eyebrow{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.24em;
+  text-transform:uppercase;color:#666;margin-bottom:1.25rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.pane-black .eyebrow::before{
+  content:"";width:24px;height:1px;background:linear-gradient(90deg,var(--blue),transparent);
 }
 
-/* BLACK LEDGER */
-.pane-black{
-  background:#000;
-  color:#f4f4f2;
-  border-top:1px solid #1a1a1a;
-}
-.pane-black .eyebrow{
-  font-family:var(--mono);
-  font-size:.62rem;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:#666;
-  margin-bottom:1rem;
-}
-.pane-black .stack{
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  max-width:22rem;
-}
-.pane-black a.row{
+.stack{display:flex;flex-direction:column;max-width:26rem}
+.stack a.row{
   display:grid;
   grid-template-columns:1fr auto;
-  gap:1rem;
-  align-items:baseline;
-  padding:1rem 0;
-  border-bottom:1px solid #1c1c1c;
+  gap:1rem;align-items:center;
+  padding:1.1rem 0;
+  border-bottom:1px solid rgba(255,255,255,.07);
   text-align:left;
-  transition:background .15s, padding-left .15s;
+  position:relative;
+  transition:padding .2s, background .2s;
 }
-.pane-black a.row:hover{
-  background:rgba(255,255,255,.03);
-  padding-left:.35rem;
+.stack a.row::before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;width:0;
+  background:linear-gradient(180deg,var(--gold),var(--blue));
+  opacity:0;transition:width .2s, opacity .2s;
 }
-.pane-black a.row .t{
-  font-size:1rem;
-  font-weight:600;
-  letter-spacing:.02em;
+.stack a.row:hover{
+  padding-left:.85rem;
+  background:linear-gradient(90deg, rgba(255,255,255,.04), transparent);
 }
-.pane-black a.row .d{
-  font-size:.72rem;
-  color:#666;
-  margin-top:.25rem;
-  line-height:1.4;
+.stack a.row:hover::before{width:2px;opacity:1}
+.stack a.row .t{
+  font-size:1.05rem;font-weight:600;letter-spacing:.02em;
+  background:linear-gradient(90deg,#f4f4f2,#c8c8c4);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.pane-black a.row .meta{
-  font-family:var(--mono);
-  font-size:.58rem;
-  letter-spacing:.1em;
-  color:#555;
-  text-transform:uppercase;
+.stack a.row .d{
+  font-size:.72rem;color:#6a6a66;margin-top:.3rem;line-height:1.45;
+}
+.stack a.row .meta{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;
+  color:#555;text-transform:uppercase;
+  padding:.35rem .5rem;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:2px;
+}
+.stack a.row:hover .meta{
+  border-color:rgba(212,175,55,.35);color:var(--gold);
 }
 
-/* Holo mark — corner residual, not center of 2012 card */
+/* ========== HOLO MARK ON SEAM ========== */
 .mark-slot{
   position:absolute;
-  top:clamp(1rem, 3vw, 1.5rem);
-  right:clamp(1rem, 3vw, 1.5rem);
-  width:clamp(48px, 10vw, 64px);
-  height:clamp(48px, 10vw, 64px);
-  z-index:2;
+  top:clamp(1.1rem,3vw,1.6rem);
+  right:clamp(1.1rem,3vw,1.6rem);
+  width:clamp(56px,12vw,72px);
+  height:clamp(56px,12vw,72px);
+  z-index:20;
 }
-.mark-slot img{
+.mark-core{
+  position:relative;width:100%;height:100%;
+  border-radius:50%;
+}
+.mark-core .glow{
+  position:absolute;inset:-30%;
+  border-radius:50%;
+  background:conic-gradient(from 0deg, var(--gold), var(--blue), var(--green), #e24b4b, var(--gold));
+  filter:blur(16px);opacity:.55;
+  animation:spin 8s linear infinite;
+}
+.mark-core .ring{
+  position:absolute;inset:-8%;
+  border-radius:50%;
+  border:1px solid transparent;
+  background:
+    linear-gradient(#050505,#050505) padding-box,
+    conic-gradient(from 0deg, var(--gold), var(--blue), var(--gold)) border-box;
+  animation:spin 12s linear infinite reverse;
+  opacity:.7;
+}
+.mark-core img{
+  position:relative;z-index:2;
   width:100%;height:auto;
-  filter:drop-shadow(0 0 12px rgba(42,127,212,.35));
-  animation:mark-breathe 5s ease-in-out infinite alternate;
-}
-@keyframes mark-breathe{
-  from{filter:drop-shadow(0 0 8px rgba(42,127,212,.25))}
-  to{filter:drop-shadow(0 0 18px rgba(196,160,53,.35))}
-}
-@media(prefers-reduced-motion:reduce){.mark-slot img{animation:none}}
-
-/* Foil line between planes */
-.seam{
-  display:none;
-}
-
-.foot{
-  padding:.75rem clamp(1rem, 3vw, 2rem);
-  border-top:1px solid #1a1a1a;
-  font-size:.58rem;
-  letter-spacing:.06em;
-  color:#444;
-  display:flex;
-  flex-wrap:wrap;
-  gap:.5rem 1.25rem;
-  justify-content:space-between;
+  border-radius:50%;
   background:#050505;
+  padding:6%;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.1),
+    0 8px 32px rgba(0,0,0,.5),
+    inset 0 0 20px rgba(61,155,233,.15);
 }
-.foot b{color:#6a5a40;font-weight:500}
+.mark-core .foil{
+  position:absolute;inset:0;border-radius:50%;z-index:3;pointer-events:none;
+  background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.25) 48%, rgba(61,155,233,.2) 52%, transparent 70%);
+  background-size:250% 250%;
+  animation:foil 4s ease-in-out infinite;
+  mix-blend-mode:overlay;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes foil{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
 
-/* ========== TABLET+ : true side-by-side dual ledger ========== */
+/* ========== FOOT ========== */
+.foot{
+  position:relative;z-index:10;
+  padding:.8rem clamp(1rem,3vw,2rem);
+  border-top:1px solid rgba(255,255,255,.06);
+  font-size:.58rem;letter-spacing:.07em;color:#4a4a4a;
+  display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;justify-content:space-between;
+  background:rgba(5,5,5,.9);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.foot b{color:#8a7a50;font-weight:500}
+
+/* ========== TABLET+ SIDE BY SIDE ========== */
 @media (min-width:768px){
   .dual{
     grid-template-columns:1fr 1fr;
   }
   .pane-black{
     border-top:none;
-    border-left:1px solid #1a1a1a;
+    border-left:1px solid rgba(255,255,255,.06);
   }
   .pane{
-    min-height:calc(100vh - 5.5rem);
-    min-height:calc(100dvh - 5.5rem);
+    min-height:calc(100vh - 5.8rem);
+    min-height:calc(100dvh - 5.8rem);
   }
   .mark-slot{
-    top:50%;
-    left:50%;
-    right:auto;
+    top:50%;left:50%;right:auto;
     transform:translate(-50%,-50%);
-    width:72px;height:72px;
-    z-index:5;
+    width:88px;height:88px;
   }
-  /* Seam holograph at the ledger join */
-  .dual{
-    position:relative;
-  }
-  .dual::after{
+  /* Living holograph seam */
+  .dual::before{
     content:"";
-    position:absolute;
-    top:0;bottom:0;left:50%;
-    width:2px;
-    transform:translateX(-50%);
+    position:absolute;top:0;bottom:0;left:50%;
+    width:3px;transform:translateX(-50%);
+    z-index:15;pointer-events:none;
     background:linear-gradient(
       180deg,
-      transparent,
-      var(--gold) 20%,
+      transparent 0%,
+      var(--gold) 15%,
       var(--blue) 50%,
-      var(--gold) 80%,
-      transparent
+      var(--gold) 85%,
+      transparent 100%
     );
-    opacity:.55;
-    z-index:4;
-    pointer-events:none;
-    animation:seam-flow 4s ease-in-out infinite;
+    box-shadow:
+      0 0 20px var(--gold-dim),
+      0 0 40px var(--blue-dim),
+      0 0 60px rgba(212,175,55,.15);
+    animation:seam 3.5s ease-in-out infinite;
   }
-  @keyframes seam-flow{
-    0%,100%{opacity:.35;filter:blur(0)}
-    50%{opacity:.75;filter:blur(0.5px)}
+  @keyframes seam{
+    0%,100%{opacity:.5;filter:blur(0.5px);box-shadow:0 0 16px var(--gold-dim),0 0 32px var(--blue-dim)}
+    50%{opacity:1;filter:blur(1px);box-shadow:0 0 28px var(--gold),0 0 48px var(--blue-dim)}
   }
 }
 
-/* Desktop large type / no page scroll of empty chrome */
-@media (min-width:1024px){
-  .pane-white h1{
-    font-size:clamp(3rem, 2rem + 3vw, 5rem);
-  }
-  .pane-black a.row .t{font-size:1.1rem}
+@media (min-width:1100px){
+  .pane-white h1{font-size:clamp(3.5rem, 2rem + 3.5vw, 5.5rem)}
+  .stack a.row .t{font-size:1.15rem}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .shell::before,.pane-white .mesh,.pane-black .mesh,
+  .pulse,.mark-core .glow,.mark-core .ring,.mark-core .foil,
+  .pane-white .cta::before,.dual::before{animation:none}
 }
 </style>
 </head>
@@ -300,67 +396,77 @@ a{color:inherit;text-decoration:none}
     </header>
 
     <div class="dual">
-      <!-- WHITE LEDGER -->
       <section class="pane pane-white">
-        <p class="eyebrow">White ledger · open</p>
-        <h1>
-          DualisCapax
-          <span>Residual plane</span>
-        </h1>
-        <p class="copy">
-          Open research free. Adaptive depth when rails are live.
-          One underweight point under playground expanse.
-        </p>
-        <a class="cta" href="research/">
-          Enter research
-          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+        <div class="mesh" aria-hidden="true"></div>
+        <div class="grid" aria-hidden="true"></div>
+        <div class="content">
+          <p class="eyebrow">White ledger · open</p>
+          <h1>
+            DualisCapax
+            <em>Residual plane</em>
+          </h1>
+          <p class="copy">
+            Open research free. Adaptive depth when rails are live.
+            One underweight point under playground expanse.
+          </p>
+          <a class="cta" href="research/">
+            <span>Enter research</span>
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
       </section>
 
-      <!-- Mark sits on the seam (desktop) / corner (mobile) -->
       <div class="mark-slot" aria-hidden="true">
-        <img src="emblem-ring.svg" width="72" height="72" alt="">
+        <div class="mark-core">
+          <span class="glow"></span>
+          <span class="ring"></span>
+          <img src="emblem-ring.svg" width="88" height="88" alt="">
+          <span class="foil"></span>
+        </div>
       </div>
 
-      <!-- BLACK LEDGER -->
       <section class="pane pane-black">
-        <p class="eyebrow">Black ledger · depth</p>
-        <div class="stack">
-          <a class="row" href="manifesto.html">
-            <div>
-              <div class="t">Manifesto</div>
-              <div class="d">Corporate residual. Unity without tribe preference.</div>
-            </div>
-            <span class="meta">01</span>
-          </a>
-          <a class="row" href="residual-law.html">
-            <div>
-              <div class="t">Residual Law</div>
-              <div class="d">Cost, eFuse, containment — the rails.</div>
-            </div>
-            <span class="meta">02</span>
-          </a>
-          <a class="row" href="model.html">
-            <div>
-              <div class="t">Model</div>
-              <div class="d">Logic structure. Simulation posture.</div>
-            </div>
-            <span class="meta">03</span>
-          </a>
-          <a class="row" href="gateway.html">
-            <div>
-              <div class="t">Gateway</div>
-              <div class="d">Fuel, rails, access when live.</div>
-            </div>
-            <span class="meta">04</span>
-          </a>
-          <a class="row" href="research/healthcare/">
-            <div>
-              <div class="t">Healthcare</div>
-              <div class="d">Medical path benchmark — neurological and beyond.</div>
-            </div>
-            <span class="meta">05</span>
-          </a>
+        <div class="mesh" aria-hidden="true"></div>
+        <div class="grid" aria-hidden="true"></div>
+        <div class="content">
+          <p class="eyebrow">Black ledger · depth</p>
+          <div class="stack">
+            <a class="row" href="manifesto.html">
+              <div>
+                <div class="t">Manifesto</div>
+                <div class="d">Corporate residual. Unity without tribe preference.</div>
+              </div>
+              <span class="meta">01</span>
+            </a>
+            <a class="row" href="residual-law.html">
+              <div>
+                <div class="t">Residual Law</div>
+                <div class="d">Cost, eFuse, containment — the rails.</div>
+              </div>
+              <span class="meta">02</span>
+            </a>
+            <a class="row" href="model.html">
+              <div>
+                <div class="t">Model</div>
+                <div class="d">Logic structure. Simulation posture.</div>
+              </div>
+              <span class="meta">03</span>
+            </a>
+            <a class="row" href="gateway.html">
+              <div>
+                <div class="t">Gateway</div>
+                <div class="d">Fuel, rails, access when live.</div>
+              </div>
+              <span class="meta">04</span>
+            </a>
+            <a class="row" href="research/healthcare/">
+              <div>
+                <div class="t">Healthcare</div>
+                <div class="d">Medical path — neurological and beyond.</div>
+              </div>
+              <span class="meta">05</span>
+            </a>
+          </div>
         </div>
       </section>
     </div>
