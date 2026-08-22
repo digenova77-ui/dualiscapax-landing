@@ -4,155 +4,79 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DualisCapax — Research-Driven AI · Dual-Capacity Access</title>
-<meta name="description" content="DualisCapax: full medical research surface, dual-capacity access, Adaptive AI. Truth and Unity Prevail.">
+<meta name="description" content="DualisCapax: Open research, dual-capacity access, Adaptive depth. Truth and Unity Prevail.">
+<link rel="stylesheet" href="assets/presentation.css">
 <style>
-  :root {
-    --bg: #000; --fg: #fff; --muted: #8a8a8a; --border: #1c1c1c;
-    --accent: #1e90ff; --gold: #d4a017; --surface: #0a0a0a;
-  }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #fafafa; --fg: #0a0a0a; --muted: #5a5a5a; --border: #e5e5e5;
-      --accent: #1565c0; --gold: #b8860b; --surface: #f0f0f0;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg); color: var(--fg);
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    min-height: 100vh; line-height: 1.55;
-  }
-  .status {
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    overflow: hidden;
-  }
-  .status-inner {
-    display: flex; gap: 2rem; padding: 0.5rem 1.25rem;
-    white-space: nowrap;
-    width: max-content;
-    animation: drift 48s linear infinite;
-  }
-  .status-inner span { color: var(--muted); }
-  .status-inner .mark { color: var(--accent); font-weight: 600; }
-  @keyframes drift {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .status-inner { animation: none; flex-wrap: wrap; width: auto; }
-  }
-  nav {
-    border-bottom: 1px solid var(--border);
-    padding: 0.95rem 1.25rem;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 0.75rem;
-  }
-  .nav-brand {
-    font-weight: 700; letter-spacing: 0.1em; text-decoration: none; color: var(--fg);
-    font-size: 0.9rem;
-  }
-  .nav-links {
-    display: flex; flex-wrap: wrap; gap: 0.4rem 1.15rem;
-    list-style: none; font-size: 0.78rem;
-  }
-  .nav-links a {
-    color: var(--muted); text-decoration: none; letter-spacing: 0.05em;
-  }
-  .nav-links a:hover { color: var(--fg); }
-  .nav-links a.gold { color: var(--gold); }
-  .hero {
-    max-width: 920px; margin: 0 auto; padding: 3.25rem 1.25rem 2.25rem;
-    text-align: center;
-  }
-  .emblem {
-    width: 72px; height: 72px; margin: 0 auto 1.1rem; display: block;
-  }
-  .logo-img { max-width: 320px; width: 100%; height: auto; }
-  .logo-dark { display: block; margin: 0 auto 1rem; }
-  .logo-light { display: none; margin: 0 auto 1rem; }
-  @media (prefers-color-scheme: light) {
-    .logo-dark { display: none; }
-    .logo-light { display: block; }
-  }
-  .hero h1 {
-    font-size: 1.05rem; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; margin-bottom: 0.85rem;
-  }
-  .hero p {
-    color: var(--muted); font-size: 0.92rem; max-width: 520px;
-    margin: 0 auto 1.6rem;
-  }
-  .hero-cta {
-    display: flex; flex-wrap: wrap; gap: 0.55rem; justify-content: center;
-  }
-  .btn {
-    display: inline-block; padding: 0.62rem 1.15rem; font-size: 0.78rem;
-    letter-spacing: 0.07em; text-decoration: none; border-radius: 3px;
-    border: 1px solid var(--border); color: var(--fg);
-  }
-  .btn-primary {
-    background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600;
-  }
-  .btn:hover { border-color: var(--fg); }
-  section {
-    max-width: 920px; margin: 0 auto; padding: 1.75rem 1.25rem;
-  }
-  section h2 {
-    font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 1rem; border-bottom: 1px solid var(--border);
-    padding-bottom: 0.45rem;
-  }
-  .grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 0.85rem;
-  }
-  .card {
-    border: 1px solid var(--border); border-radius: 6px; padding: 1.15rem;
-    text-decoration: none; color: var(--fg); display: block;
-  }
-  .card:hover { border-color: var(--accent); }
-  .card h3 { font-size: 0.9rem; letter-spacing: 0.04em; margin-bottom: 0.35rem; }
-  .card p { font-size: 0.78rem; color: var(--muted); }
-  ul.vehicles { list-style: none; font-size: 0.88rem; }
-  ul.vehicles li {
-    border-bottom: 1px solid var(--border); padding: 0.8rem 0;
-  }
-  ul.vehicles li:last-child { border-bottom: none; }
-  ul.vehicles strong { display: block; margin-bottom: 0.2rem; letter-spacing: 0.03em; }
-  ul.vehicles span { color: var(--muted); font-size: 0.82rem; }
-  .note {
-    font-size: 0.74rem; color: var(--muted); margin-top: 1rem;
-    border-left: 2px solid var(--border); padding-left: 0.8rem;
-  }
-  footer {
-    border-top: 1px solid var(--border); margin-top: 2rem;
-    padding: 1.4rem 1.25rem; text-align: center;
-    font-size: 0.7rem; color: var(--muted); letter-spacing: 0.05em;
-  }
-  footer .slogans {
-    color: var(--gold); margin-bottom: 0.45rem; letter-spacing: 0.06em;
-  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;line-height:1.55}
+  .status{border-bottom:1px solid var(--border);background:var(--surface);font-size:.72rem;letter-spacing:.06em;overflow:hidden}
+  .status-inner{display:flex;gap:2rem;padding:.5rem 1.25rem;white-space:nowrap;width:max-content;animation:drift 48s linear infinite}
+  .status-inner span{color:var(--muted)}
+  .status-inner .mark{color:var(--accent);font-weight:600}
+  @keyframes drift{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.status-inner{animation:none;flex-wrap:wrap;width:auto}}
+  nav{border-bottom:1px solid var(--border);padding:.95rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+  .nav-brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.9rem}
+  .nav-links{display:flex;flex-wrap:wrap;gap:.4rem 1.15rem;list-style:none;font-size:.78rem}
+  .nav-links a{color:var(--muted);text-decoration:none}
+  .nav-links a:hover{color:var(--fg)}
+  .nav-links a.gold{color:var(--gold)}
+  .hero{max-width:920px;margin:0 auto;padding:2.5rem 1.25rem 1.5rem;text-align:center}
+  .logo-img{max-width:280px;width:100%;height:auto}
+  .logo-dark{display:block;margin:0 auto .75rem}
+  .logo-light{display:none;margin:0 auto .75rem}
+  @media(prefers-color-scheme:light){.logo-dark{display:none}.logo-light{display:block}}
+  .journey-video{max-width:420px;width:100%;margin:0 auto 1.25rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);box-shadow:var(--depth)}
+  .journey-video video{width:100%;display:block;max-height:240px;background:#050505}
+  .journey-video .vid-tools{display:flex;gap:.5rem;justify-content:center;padding:.5rem;font-size:.72rem}
+  .journey-video button{background:transparent;border:1px solid var(--border);color:var(--fg);padding:.35rem .65rem;border-radius:3px;cursor:pointer;letter-spacing:.04em}
+  .journey-video button:hover{border-color:var(--accent);color:var(--accent)}
+  .hero h1{font-size:1.05rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.85rem}
+  .hero p{color:var(--muted);font-size:.92rem;max-width:520px;margin:0 auto 1.25rem}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center}
+  .btn{display:inline-block;padding:.62rem 1.15rem;font-size:.78rem;letter-spacing:.07em;text-decoration:none;border-radius:3px;border:1px solid var(--border);color:var(--fg)}
+  .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+  .btn:hover{border-color:var(--fg)}
+  section{max-width:920px;margin:0 auto;padding:1.75rem 1.25rem}
+  section h2{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.45rem}
+  .journey{display:grid;gap:.65rem}
+  .step{border:1px solid var(--border);border-radius:8px;padding:1rem 1.1rem;background:var(--surface);text-align:left}
+  .step .n{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+  .step h3{font-size:.9rem;margin-bottom:.3rem}
+  .step p{font-size:.8rem;color:var(--muted);margin:0}
+  .step.metered{border-color:color-mix(in srgb,var(--gold) 40%,var(--border))}
+  .step.metered .n{color:var(--gold)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.85rem}
+  .card{border:1px solid var(--border);border-radius:6px;padding:1.15rem;text-decoration:none;color:var(--fg);display:block}
+  .card:hover{border-color:var(--accent)}
+  .card h3{font-size:.9rem;margin-bottom:.35rem}
+  .card p{font-size:.78rem;color:var(--muted)}
+  ul.vehicles{list-style:none;font-size:.88rem}
+  ul.vehicles li{border-bottom:1px solid var(--border);padding:.8rem 0}
+  ul.vehicles li:last-child{border-bottom:none}
+  ul.vehicles strong{display:block;margin-bottom:.2rem}
+  ul.vehicles span{color:var(--muted);font-size:.82rem}
+  .note{font-size:.74rem;color:var(--muted);margin-top:1rem;border-left:2px solid var(--border);padding-left:.8rem}
+  footer{border-top:1px solid var(--border);margin-top:2rem;padding:1.4rem 1.25rem;text-align:center;font-size:.7rem;color:var(--muted)}
+  footer .slogans{color:var(--gold);margin-bottom:.45rem}
 </style>
 </head>
 <body>
 
   <div class="status" aria-label="Status">
     <div class="status-inner">
-      <span class="mark">ONBOARDING OPEN</span>
-      <span>Enterprise capacity deposits — credited toward agreed commercial terms</span>
-      <span class="mark">RESEARCH LIVE</span>
-      <span>Healthcare · Neurological · ALS journal — full clinical surface</span>
-      <span class="mark">MODEL FREE</span>
-      <span>Open · Prove · Depth · Seal — free information, go as deep as you want</span>
-      <span class="mark">ONBOARDING OPEN</span>
-      <span>Enterprise capacity deposits — credited toward agreed commercial terms</span>
-      <span class="mark">RESEARCH LIVE</span>
-      <span>Healthcare · Neurological · ALS journal — full clinical surface</span>
-      <span class="mark">MODEL FREE</span>
-      <span>Open · Prove · Depth · Seal — free information, go as deep as you want</span>
+      <span class="mark">JOURNEY OPEN</span>
+      <span>Birth into DualisCapax — go as deep as you want</span>
+      <span class="mark">OPEN FREE</span>
+      <span>Research · Model · Manifesto</span>
+      <span class="mark">DEPTH METERED</span>
+      <span>Fusion Meter — cost of information when you escalate</span>
+      <span class="mark">JOURNEY OPEN</span>
+      <span>Birth into DualisCapax — go as deep as you want</span>
+      <span class="mark">OPEN FREE</span>
+      <span>Research · Model · Manifesto</span>
+      <span class="mark">DEPTH METERED</span>
+      <span>Fusion Meter — cost of information when you escalate</span>
     </div>
   </div>
 
@@ -160,44 +84,85 @@
     <a class="nav-brand" href="index.html">DUALISCAPAX</a>
     <ul class="nav-links">
       <li><a href="research/">Research</a></li>
-      <li><a href="ai/">AI</a></li>
       <li><a href="model.html">Model</a></li>
       <li><a href="manifesto.html">Manifesto</a></li>
+      <li><a href="ai/">AI</a></li>
       <li><a class="gold" href="participate.html">Participate</a></li>
     </ul>
   </nav>
 
   <header class="hero">
-    <img class="emblem" src="emblem-ring.svg" alt="">
     <img class="logo-img logo-dark" src="logo-dark.svg" alt="DualisCapax">
     <img class="logo-img logo-light" src="logo-light.svg" alt="DualisCapax">
+
+    <div class="journey-video" id="logo-journey">
+      <video id="journeyVid" playsinline preload="metadata" poster="logo-dark.svg">
+        <source src="assets/tour/logo-journey.mp4" type="video/mp4">
+      </video>
+      <div class="vid-tools">
+        <button type="button" id="vidPlay">Play journey</button>
+        <button type="button" id="vidStop">Stop</button>
+      </div>
+    </div>
+
     <h1>Research-Driven AI · Dual-Capacity Access</h1>
-    <p>Full medical research surface free. Adaptive depth when you choose. Enterprise capacity funds shared compute; individuals keep low- or zero-cost access to Open.</p>
+    <p>A journey from birth into DualisCapax to the depth you choose. Open is free. Metered spots are the cost of information — not a fee for a mind to exist.</p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="research/">Enter Research</a>
-      <a class="btn" href="model.html">Model</a>
+      <a class="btn btn-primary" href="#journey">Begin journey</a>
+      <a class="btn" href="research/">Research</a>
       <a class="btn" href="manifesto.html">Manifesto</a>
     </div>
   </header>
+
+  <section id="journey">
+    <h2>Your path through the plane</h2>
+    <div class="journey">
+      <div class="step">
+        <div class="n">1 · Birth</div>
+        <h3>Enter DualisCapax</h3>
+        <p>You arrive in Open. Unity is the quiet why — dual capacity, pure logic as discipline, not a tribe.</p>
+      </div>
+      <div class="step">
+        <div class="n">2 · Orient</div>
+        <h3>Model &amp; Manifesto</h3>
+        <p>Open · Prove · Depth · Seal. Time moves +1. Friction is accounted; affinity is the bond that holds order.</p>
+      </div>
+      <div class="step">
+        <div class="n">3 · Explore</div>
+        <h3>Research</h3>
+        <p>Healthcare, engineering, philosophical bridgeheads. Full clinical surfaces where published. Spend as much time as you want.</p>
+      </div>
+      <div class="step metered">
+        <div class="n">4 · Metered</div>
+        <h3>Adaptive Depth</h3>
+        <p>When you escalate, Fusion Meter pays real residual compute. Sandbox is not Seal. That is the cost of deeper information.</p>
+      </div>
+      <div class="step">
+        <div class="n">5 · Continue</div>
+        <h3>End of viewing — or deeper still</h3>
+        <p>Leave when the scale is enough. Or Prove and go further. Relative perfection: enough for the question you brought.</p>
+      </div>
+    </div>
+  </section>
 
   <section>
     <h2>Research &amp; Adaptive</h2>
     <div class="grid">
       <a class="card" href="research/">
-        <h3>Research Hierarchy</h3>
-        <p>Healthcare → Medical → Neurological · Cancers · Infectious. Full clinical comparison tables on every disease page.</p>
+        <h3>Research</h3>
+        <p>Hierarchy, journals, medical consolidation chart.</p>
       </a>
-      <a class="card" href="research/healthcare/medical/neurological/als.html">
-        <h3>ALS Journal</h3>
-        <p>Lead treatments, Phase landscape, efficacy table, public structure, links into deeper gated layers.</p>
+      <a class="card" href="research/healthcare/medical/chart.html">
+        <h3>Medical chart</h3>
+        <p>ALS seed · residual graft notes · expand as docs enter the server.</p>
       </a>
       <a class="card" href="model.html">
         <h3>Model</h3>
-        <p>Open · Prove · Depth · Seal. Free information — simplest view, expand any section deeper.</p>
+        <p>Free information spine — expand any section deeper.</p>
       </a>
       <a class="card" href="ai/">
         <h3>Adaptive AI</h3>
-        <p>Depth behind access. Fusion Meter pays real session cost. Sandbox sim is not production math.</p>
+        <p>Depth behind access. FM pays session residual cost.</p>
       </a>
     </div>
   </section>
@@ -211,31 +176,25 @@
       </li>
       <li>
         <strong>Fusion Meter (FM)</strong>
-        <span>Closed prepaid pay-down for Adaptive depth. Burns with real compute cost — not an open-market coin.</span>
+        <span>Closed prepaid pay-down for Adaptive depth. Burns with real cost — not an open-market coin.</span>
       </li>
       <li>
         <strong>Grassroots Open</strong>
-        <span>Low- or zero-cost research access. Rate-limited floor where offered. Funded by residual allocation.</span>
+        <span>Low- or zero-cost research access. Rate-limited floor where offered.</span>
       </li>
       <li>
         <strong>Seal</strong>
-        <span>IP on the black ledger. Method opaque. Medical Open surface complete.</span>
+        <span>Method opaque. Medical Open surface complete. Internal compute stays internal.</span>
       </li>
     </ul>
-    <p class="note">Informational only. Not an offer to sell securities. Ontario and Canadian law apply. Live payments and crypto rails require processor setup and legal review.</p>
+    <p class="note">Informational only. Not an offer to sell securities. Ontario and Canadian law apply. Live payments require processor setup and legal review.</p>
   </section>
 
   <section>
     <h2>Onboarding</h2>
     <div class="grid">
-      <a class="card" href="onboarding.html">
-        <h3>Start Here</h3>
-        <p>Enterprise, grassroots, and research paths.</p>
-      </a>
-      <a class="card" href="participate.html">
-        <h3>Participate</h3>
-        <p>Cost, capacity, FM-oriented packs, and UBI lanes when configured.</p>
-      </a>
+      <a class="card" href="onboarding.html"><h3>Start here</h3><p>Enterprise, grassroots, research paths.</p></a>
+      <a class="card" href="participate.html"><h3>Participate</h3><p>Cost, capacity, FM, UBI lanes when configured.</p></a>
     </div>
   </section>
 
@@ -244,5 +203,26 @@
     DualisCapax · Open · Prove · Depth · Seal · Ontario &amp; Canada first
   </footer>
 
+  <script>
+  (function(){
+    var v = document.getElementById('journeyVid');
+    var play = document.getElementById('vidPlay');
+    var stop = document.getElementById('vidStop');
+    if (!v || !play || !stop) return;
+    play.addEventListener('click', function(){
+      v.play().catch(function(){});
+    });
+    stop.addEventListener('click', function(){
+      v.pause();
+      try { v.currentTime = 0; } catch(e) {}
+    });
+    /* Autoplay only if source exists and user allows motion */
+    v.addEventListener('loadeddata', function(){
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      v.muted = true;
+      v.play().catch(function(){});
+    });
+  })();
+  </script>
 </body>
 </html>
