@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Participate — DualisCapax</title>
+<style>
+  :root{--bg:#000;--fg:#fff;--muted:#8a8a8a;--border:#1c1c1c;--accent:#1e90ff;--gold:#d4a017;--surface:#0a0a0a}
+  @media(prefers-color-scheme:light){:root{--bg:#fafafa;--fg:#0a0a0a;--muted:#555;--border:#e5e5e5;--accent:#1565c0;--gold:#b8860b;--surface:#f0f0f0}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;min-height:100vh;line-height:1.55}
+  nav{border-bottom:1px solid var(--border);padding:.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+  .brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.9rem}
+  .links{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none;font-size:.78rem}
+  .links a{color:var(--muted);text-decoration:none}
+  main{max-width:720px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+  h1{font-size:1.35rem;letter-spacing:.06em;margin-bottom:.5rem}
+  .lead{color:var(--muted);margin-bottom:1.5rem;font-size:.95rem}
+  h2{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1.75rem 0 .85rem;border-bottom:1px solid var(--border);padding-bottom:.4rem}
+  p{font-size:.9rem;color:var(--muted);margin-bottom:.85rem}
+  p strong{color:var(--fg)}
+  .lane{
+    border:1px solid var(--border);border-radius:8px;padding:1.15rem 1.2rem;
+    margin-bottom:.75rem;background:var(--surface);
+  }
+  .lane h3{font-size:.95rem;margin-bottom:.35rem;color:var(--fg)}
+  .lane .tag{
+    display:inline-block;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:.5rem;
+  }
+  .lane p{margin-bottom:.85rem;font-size:.85rem}
+  .pay{
+    display:inline-block;padding:.55rem 1rem;font-size:.78rem;letter-spacing:.06em;
+    text-decoration:none;border-radius:3px;border:1px solid var(--border);color:var(--fg);
+  }
+  .pay.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .pay:hover{border-color:var(--fg)}
+  .pay[aria-disabled="true"]{opacity:.45;pointer-events:none}
+  .waterfall{font-size:.8rem;color:var(--muted);margin:1rem 0;padding:.85rem;border-left:2px solid var(--gold)}
+  .note{font-size:.74rem;color:var(--muted);margin-top:1.5rem;border-left:2px solid var(--border);padding-left:.8rem}
+  footer{border-top:1px solid var(--border);padding:1.25rem;text-align:center;font-size:.7rem;color:var(--muted)}
+</style>
+</head>
+<body>
+  <nav>
+    <a class="brand" href="index.html">DUALISCAPAX</a>
+    <ul class="links">
+      <li><a href="research/">Research</a></li>
+      <li><a href="ai/">AI</a></li>
+      <li><a href="onboarding.html">Onboarding</a></li>
+      <li><a href="participate.html">Participate</a></li>
+    </ul>
+  </nav>
+  <main>
+    <h1>Participate</h1>
+    <p class="lead">
+      Payment lanes for the Unity playground. Connect your processor; buttons go live when Payment Link / Checkout IDs are set.
+      Cards and common methods via your gateway — not a securities offering.
+    </p>
+
+    <div class="waterfall">
+      <strong style="color:var(--fg)">Locked allocation</strong><br>
+      Donations to the L2 playground: <strong style="color:var(--fg)">cost reduction → UBI → enhancements</strong>.
+      Cost-lane payments advance residual offset first. Fuel is escalate-only (not “AI exists” fee).
+    </div>
+
+    <h2>Lanes</h2>
+
+    <div class="lane" data-lane="cost_reduction">
+      <div class="tag">Waterfall #1 · Cost</div>
+      <h3>Playground cost reduction</h3>
+      <p>Offsets residual plane burn (edge, hosting, baseline AI under eFuse). Highest priority. Advances Unity ETA when wired.</p>
+      <a class="pay primary" id="pay-cost" href="#" aria-disabled="true" data-stripe-link="">Pay · Cost reduction</a>
+    </div>
+
+    <div class="lane" data-lane="capacity">
+      <div class="tag">Enterprise</div>
+      <h3>Capacity deposit</h3>
+      <p>Prepaid access credited toward agreed commercial terms. Funds public-benefit residual of the playground.</p>
+      <a class="pay primary" id="pay-capacity" href="#" aria-disabled="true" data-stripe-link="">Pay · Capacity</a>
+    </div>
+
+    <div class="lane" data-lane="fuel">
+      <div class="tag">Escalate only</div>
+      <h3>Fuel</h3>
+      <p>Voluntary deeper pull — Importance-weighted depth, not payment for the brain to exist.</p>
+      <a class="pay" id="pay-fuel" href="#" aria-disabled="true" data-stripe-link="">Pay · Fuel</a>
+    </div>
+
+    <div class="lane" data-lane="ubi">
+      <div class="tag">Waterfall #2 · After cost</div>
+      <h3>UBI / grassroots floor</h3>
+      <p>Tagged support for the shared floor. Operationally applied after residual cost is addressed (locked waterfall).</p>
+      <a class="pay" id="pay-ubi" href="#" aria-disabled="true" data-stripe-link="">Pay · UBI floor</a>
+    </div>
+
+    <h2>Connect your processor</h2>
+    <p>
+      <strong>You</strong> create products / Payment Links in Stripe (or your processor) and paste the URLs below into site config when ready.
+      Prefer one link per lane so allocation stays auditable.
+    </p>
+    <p style="font-size:.8rem">
+      Suggested Stripe products: <code>dc_cost_reduction</code>, <code>dc_capacity</code>, <code>dc_fuel</code>, <code>dc_ubi</code>.
+      Enable card wallets your processor supports (Apple Pay / Google Pay where available).
+      Crypto settlement only after Ontario/Canada counsel.
+    </p>
+
+    <p class="note">
+      Informational. Not an offer to sell securities. Live collection requires your processor account, correct tax settings, and legal review.
+      Buttons stay disabled until link URLs are configured (see <code>js/payments-config.js</code>).
+    </p>
+  </main>
+  <footer>DualisCapax · Participate · Cost → UBI → Enhancements</footer>
+
+  <script src="js/payments-config.js"></script>
+  <script>
+    (function () {
+      var cfg = window.DC_PAYMENTS || {};
+      function wire(id, url) {
+        var a = document.getElementById(id);
+        if (!a) return;
+        if (url && String(url).indexOf('http') === 0) {
+          a.href = url;
+          a.setAttribute('aria-disabled', 'false');
+          a.removeAttribute('aria-disabled');
+        }
+      }
+      wire('pay-cost', cfg.cost_reduction);
+      wire('pay-capacity', cfg.capacity);
+      wire('pay-fuel', cfg.fuel);
+      wire('pay-ubi', cfg.ubi);
+    })();
+  </script>
+</body>
+</html>
