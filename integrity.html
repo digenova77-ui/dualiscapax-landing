@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Residual integrity — DualisCapax</title>
+<meta name="description" content="Cryptographic residual lock: SHA-256 table of plane files and root hash. Proves published bytes, not scientific truth.">
+<link rel="stylesheet" href="assets/medical-docs.css">
+<style>
+  .qr-box {
+    display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-start;
+    margin: 1.25rem 0 1.75rem;
+  }
+  .qr-box img {
+    border: 1px solid var(--md-border);
+    background: #fff;
+    padding: 0.5rem;
+    width: 180px; height: 180px;
+  }
+  .root {
+    font-family: var(--md-font-data);
+    font-size: 0.72rem;
+    word-break: break-all;
+    color: var(--md-fg);
+    background: var(--md-surface-2);
+    border: 1px solid var(--md-border);
+    padding: 0.75rem 0.85rem;
+    margin: 0.5rem 0 1rem;
+  }
+</style>
+</head>
+<body class="md-body">
+  <nav class="md-crumbs">
+    <a href="index.html">DualisCapax</a>
+    <span>/</span>
+    <span class="now">Residual integrity</span>
+  </nav>
+  <main class="md-shell">
+    <p class="md-kicker">Cryptographic residual · published bytes</p>
+    <h1 class="md-title">Integrity lock</h1>
+    <p class="md-subtitle">Table of contents of locked plane files. Each path is SHA-256 hashed. Root hash is the hash of those path:hash lines. Scan the QR to return here and compare history.</p>
+
+    <div class="md-callout constraint">
+      <strong>Dual-column.</strong> Column A — these hashes prove the <em>published files</em> match this snapshot.
+      Column B — they do <em>not</em> prove medical or scientific claims. Citations in packs remain residual evidence, not Seal.
+    </div>
+
+    <h2 class="md-h2">Root</h2>
+    <div class="root" id="root">1e7dbec28aaa0cdc05cb81a10df9a1bd9318e3271f0a36659cb9955e4c788346</div>
+    <p class="md-prose" style="font-size:0.85rem;color:var(--md-muted)">Generated UTC: 2026-08-22T22:40:42Z · law 2026-08-22 · 15 entries</p>
+
+    <div class="qr-box">
+      <div>
+        <p class="md-kicker">QR · verify surface</p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://digenova77-ui.github.io/dualiscapax-landing/integrity.html" width="180" height="180" alt="QR code linking to residual integrity page">
+      </div>
+      <div>
+        <p class="md-prose">Scan to open this integrity page. Compare the root hash to any archived print, PDF, or prior commit. If the root changed, history moved — check the entry table for which path broke.</p>
+        <p class="md-footer-note">Machine manifest: <span class="mono">residual-integrity.json</span></p>
+      </div>
+    </div>
+
+    <h2 class="md-h2">Table of contents · locked paths</h2>
+    <div class="md-table-wrap">
+      <table class="md-table">
+        <thead>
+          <tr>
+            <th scope="col">Path</th>
+            <th scope="col">SHA-256 (prefix)</th>
+            <th scope="col">Bytes</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td class="mono">index.html</td><td class="mono">2c17a31e5008ce58…</td><td class="mono">12042</td></tr>
+<tr><td class="mono">residual-law.html</td><td class="mono">7b09c323ba898592…</td><td class="mono">6109</td></tr>
+<tr><td class="mono">manifesto.html</td><td class="mono">b607756bad531261…</td><td class="mono">3907</td></tr>
+<tr><td class="mono">model.html</td><td class="mono">c32dabdb6d9fbb1a…</td><td class="mono">7572</td></tr>
+<tr><td class="mono">gateway.html</td><td class="mono">ee379ed0ef9c734c…</td><td class="mono">4714</td></tr>
+<tr><td class="mono">onboarding.html</td><td class="mono">7bfdce938af7f1db…</td><td class="mono">5899</td></tr>
+<tr><td class="mono">canon.html</td><td class="mono">0304735461d34afb…</td><td class="mono">5900</td></tr>
+<tr><td class="mono">drift-checker.html</td><td class="mono">7cdcbed47383dd1a…</td><td class="mono">9336</td></tr>
+<tr><td class="mono">assets/presentation.css</td><td class="mono">6c3e2e035abc48e7…</td><td class="mono">3325</td></tr>
+<tr><td class="mono">assets/medical-docs.css</td><td class="mono">ba67fa5fae91f11b…</td><td class="mono">5477</td></tr>
+<tr><td class="mono">research/sim/PATH-EXHAUST.md</td><td class="mono">93217b7889cefaf1…</td><td class="mono">2374</td></tr>
+<tr><td class="mono">research/sim/packs/als-path-dag.json</td><td class="mono">e8e401235109a161…</td><td class="mono">1934</td></tr>
+<tr><td class="mono">research/healthcare/medical/chart.html</td><td class="mono">d7cdbb8eb288e7c6…</td><td class="mono">3484</td></tr>
+<tr><td class="mono">research/healthcare/medical/neurological/als-docs.html</td><td class="mono">75578cfe02e5dc29…</td><td class="mono">6772</td></tr>
+<tr><td class="mono">.github/workflows/residual-ring.yml</td><td class="mono">aca7ff244c40e985…</td><td class="mono">4398</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="md-h2">How to validate</h2>
+    <ol class="md-list">
+      <li>Fetch each path from the same commit or release you trust.</li>
+      <li>Compute SHA-256 of the raw bytes.</li>
+      <li>Match against <span class="mono">residual-integrity.json</span> entries.</li>
+      <li>Recompute root = SHA-256 of sorted <span class="mono">path:sha256</span> lines (newline-separated).</li>
+      <li>Match root to this page and to any QR / printed residual you kept.</li>
+    </ol>
+
+    <p class="md-footer-note">
+      Residual ring (A→B→C) can re-emit this manifest on each promote so history is a chain of roots, not a single frozen moment.
+      Citations inside medical packs stay dual-column; the lock is on the plane’s published residual bytes.
+    </p>
+  </main>
+</body>
+</html>

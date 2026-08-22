@@ -1,0 +1,32 @@
+{
+  "schema": "dualiscapax.residual.integrity.v1",
+  "law_version": "2026-08-22",
+  "generated_utc": "2026-08-22T22:40:42Z",
+  "repo": "digenova77-ui/dualiscapax-landing",
+  "branch": "main",
+  "root_sha256": "1e7dbec28aaa0cdc05cb81a10df9a1bd9318e3271f0a36659cb9955e4c788346",
+  "entry_count": 15,
+  "entries": [
+    {"path": "index.html", "sha256": "2c17a31e5008ce581e4c323c88e8ff91b305c0f2e2b2921c672eb09d9a1465e5", "bytes": 12042},
+    {"path": "residual-law.html", "sha256": "7b09c323ba898592c4f8611748dcb6c664e63e046f1bdaca6153d5c1983b5162", "bytes": 6109},
+    {"path": "manifesto.html", "sha256": "b607756bad5312613366bfa233d5c54a6221b6c2e71a56f24c7ffb47e59aa925", "bytes": 3907},
+    {"path": "model.html", "sha256": "c32dabdb6d9fbb1a16a5922ad9c5cfa6ac931ab15c98c6756b06468c71e2cc45", "bytes": 7572},
+    {"path": "gateway.html", "sha256": "ee379ed0ef9c734c3aa0379f30d724a9d5edf664d05003f44d4a32f296e063d2", "bytes": 4714},
+    {"path": "onboarding.html", "sha256": "7bfdce938af7f1db25e4fc7324d8a74fc250caa11d86b0b9087fce3f67bdbc97", "bytes": 5899},
+    {"path": "canon.html", "sha256": "0304735461d34afb70657a454feb42c517a2256ee20eafaef22db81e775641a6", "bytes": 5900},
+    {"path": "drift-checker.html", "sha256": "7cdcbed47383dd1a51ff61cb4b8daa98a3c3b8ca628440192d65ee513f5537c3", "bytes": 9336},
+    {"path": "assets/presentation.css", "sha256": "6c3e2e035abc48e71847f7e51e872a1772db397d2e71e8e0420f33cae6c88eae", "bytes": 3325},
+    {"path": "assets/medical-docs.css", "sha256": "ba67fa5fae91f11bac403e924005022384f1c349458ab60e075a252b7f36d8f4", "bytes": 5477},
+    {"path": "research/sim/PATH-EXHAUST.md", "sha256": "93217b7889cefaf1ff7472c521f685b3c2ba80d188823f59e350b660fbc18fe8", "bytes": 2374},
+    {"path": "research/sim/packs/als-path-dag.json", "sha256": "e8e401235109a161dafa647672a612921300b98a273288980d149915fcf7c205", "bytes": 1934},
+    {"path": "research/healthcare/medical/chart.html", "sha256": "d7cdbb8eb288e7c65d7a7c954194db155e895a912e617b50a8cf7a0792f8281a", "bytes": 3484},
+    {"path": "research/healthcare/medical/neurological/als-docs.html", "sha256": "75578cfe02e5dc29738a4fb1dd315b0f8a47bb7e1305222c3b22fac0bc40c25d", "bytes": 6772},
+    {"path": ".github/workflows/residual-ring.yml", "sha256": "aca7ff244c40e985340c60d36358fc22b4f965fc53da3e4b309f2e25a49a011f", "bytes": 4398}
+  ],
+  "verify": {
+    "human_toc": "integrity.html",
+    "machine": "residual-integrity.json",
+    "method": "SHA-256 of each path; root = SHA-256 of sorted path:hash lines"
+  },
+  "disclaimer": "Integrity of listed plane files only. Does not prove scientific claims. Citations remain dual-column residual."
+}
