@@ -3,291 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DUALISCAPAX — Residual Plane</title>
-<meta name="description" content="DualisCapax residual plane. Open research free. Adaptive depth when rails are live. Ontario · Canada.">
+<title>DualisCapax</title>
+<meta name="description" content="DualisCapax — residual plane. Research free. Depth when rails are live.">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
 <style>
 :root{
-  --bg:#000;--surface:#0a0a0a;--surface2:#111;--border:#222;--border2:#333;
-  --text:#fff;--muted:#888;--gold:#c4a035;--blue:#2a7fd4;
-  --font-sans:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --bg:#000;
+  --fg:#f5f5f3;
+  --muted:#8a8a86;
+  --line:#1c1c1c;
+  --gold:#c4a035;
+  --blue:#2a7fd4;
+  --font:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html,body{min-height:100%}
 body{
-  font-family:var(--font-sans);background:var(--bg);color:var(--text);
-  min-height:100vh;-webkit-font-smoothing:antialiased;
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--fg);
+  -webkit-font-smoothing:antialiased;
 }
 a{color:inherit;text-decoration:none}
 
-/* Status bar — matches live control plane */
-.status-bar{
-  background:#050505;border-bottom:1px solid var(--border);
-  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.06em;
-  color:var(--muted);padding:.45rem 1rem;overflow-x:auto;white-space:nowrap;
+/* Full-viewport distinct face — not control-plane chrome */
+.stage{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:2rem 1.25rem 3rem;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
 }
-.status-bar .row{display:flex;gap:1.1rem;align-items:center;max-width:72rem;margin:0 auto}
-.status-bar b{color:var(--text);font-weight:500}
-.pulse{
-  display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);
-  margin-right:.35rem;box-shadow:0 0 0 0 rgba(196,160,53,.45);animation:p 2.2s infinite
+.stage::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 40% at 50% 42%, rgba(42,127,212,.14), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 50% 55%, rgba(196,160,53,.08), transparent 70%);
 }
-@keyframes p{0%{box-shadow:0 0 0 0 rgba(196,160,53,.4)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
-@media(prefers-reduced-motion:reduce){.pulse{animation:none}}
 
-/* Header */
-.header{
-  position:sticky;top:0;z-index:50;
-  background:rgba(0,0,0,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
+.mark{
+  width:min(42vw, 140px);
+  height:auto;
+  margin-bottom:1.5rem;
+  position:relative;
+  z-index:1;
 }
-.header-inner{
-  max-width:72rem;margin:0 auto;padding:.75rem 1rem;
-  display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;
+
+.word{
+  width:min(78vw, 320px);
+  height:auto;
+  margin-bottom:1.25rem;
+  position:relative;
+  z-index:1;
 }
-.brand{display:flex;align-items:center;gap:.65rem;min-width:0}
-.brand img.wordmark{height:28px;width:auto;max-width:min(52vw,240px)}
-.brand .mark{width:28px;height:28px;flex-shrink:0}
-.actions{display:flex;align-items:center;gap:.5rem}
+
+h1{
+  font-size:clamp(1.05rem, 0.9rem + 0.8vw, 1.25rem);
+  font-weight:500;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:1rem;
+  position:relative;
+  z-index:1;
+}
+
+.lead{
+  max-width:22rem;
+  font-size:.95rem;
+  line-height:1.55;
+  color:var(--muted);
+  margin:0 auto 2rem;
+  position:relative;
+  z-index:1;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.6rem;
+  justify-content:center;
+  position:relative;
+  z-index:1;
+}
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  font-family:var(--font-sans);font-weight:600;font-size:.78rem;
-  padding:.55rem 1rem;border-radius:4px;border:1px solid transparent;cursor:pointer;
-  white-space:nowrap;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:.7rem 1.25rem;
+  font-size:.8rem;
+  font-weight:600;
+  letter-spacing:.04em;
+  border-radius:4px;
+  border:1px solid transparent;
 }
-.btn-primary{background:#fff;color:#000;border-color:#fff}
-.btn-primary:hover{background:#e8e8e8}
-.btn-ghost{
-  background:transparent;color:var(--text);border-color:var(--border2);
-  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.04em;
+.btn-w{background:#fff;color:#000}
+.btn-w:hover{background:#e8e8e8}
+.btn-g{
+  background:transparent;
+  color:var(--fg);
+  border-color:#333;
 }
-.btn-ghost:hover{border-color:#555;background:var(--surface2)}
+.btn-g:hover{border-color:#666}
 
-/* Drawer — single panel, no second hop */
-.drawer-backdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,.72);
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  z-index:80;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;
+.foot{
+  position:absolute;
+  bottom:1.25rem;
+  left:0;right:0;
+  text-align:center;
+  font-size:.62rem;
+  letter-spacing:.06em;
+  color:#555;
+  z-index:1;
 }
-.drawer-backdrop.open{opacity:1;visibility:visible}
-.drawer{
-  position:fixed;top:0;right:0;bottom:0;width:min(100vw,18rem);
-  background:#0a0a0a;border-left:1px solid var(--border);z-index:90;
-  transform:translateX(100%);transition:transform .22s ease;padding:1rem;
-  display:flex;flex-direction:column;gap:.25rem;
-}
-.drawer-backdrop.open .drawer{transform:translateX(0)}
-.drawer a{
-  display:block;padding:.7rem .55rem;font-size:.82rem;color:var(--muted);
-  border-bottom:1px solid var(--border);
-}
-.drawer a:hover,.drawer a.on{color:var(--text)}
-.drawer .close{
-  align-self:flex-end;background:transparent;border:1px solid var(--border2);
-  color:var(--text);padding:.35rem .65rem;border-radius:4px;cursor:pointer;
-  font-family:var(--font-mono);font-size:.7rem;margin-bottom:.5rem;
-}
+.foot span{color:var(--gold)}
 
-/* Hero */
-.hero{
-  position:relative;text-align:center;
-  padding:2.75rem 1.15rem 2.25rem;
-  background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-  background-size:48px 48px;
+/* Secondary strip — still residual, not status-bar clone */
+.links{
+  margin-top:2.5rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.75rem 1.25rem;
+  justify-content:center;
+  font-size:.72rem;
+  color:var(--muted);
+  position:relative;
+  z-index:1;
 }
-.hero::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 50% 40% at 50% 35%,rgba(42,127,212,.12),transparent 70%);
-}
-.emblem{width:112px;height:112px;margin:0 auto 1.15rem;position:relative;z-index:1}
-.chips{display:flex;flex-wrap:wrap;gap:.45rem;justify-content:center;margin:0 auto 1.25rem;position:relative;z-index:1}
-.chip{
-  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.04em;
-  color:var(--muted);border:1px solid var(--border);border-radius:999px;
-  padding:.28rem .7rem;background:rgba(10,10,10,.85);
-}
-.hero h1{
-  font-size:clamp(1.55rem,1.2rem + 1.4vw,2.15rem);font-weight:700;
-  letter-spacing:.08em;margin-bottom:.65rem;position:relative;z-index:1;
-}
-.hero .lead{
-  color:var(--muted);font-size:.92rem;max-width:28rem;margin:0 auto 1.35rem;
-  line-height:1.55;position:relative;z-index:1;
-}
-.cta{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;position:relative;z-index:1}
-.btn-outline{
-  background:transparent;color:var(--text);border:1px solid var(--border2);
-  font-weight:500;font-size:.78rem;padding:.55rem 1rem;border-radius:4px;
-}
-.btn-outline:hover{border-color:#666;background:var(--surface2)}
-
-/* Sections */
-section{max-width:52rem;margin:0 auto;padding:0 1.15rem 2.5rem}
-h2{
-  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:.4rem;margin-bottom:1rem;
-}
-.grid{display:grid;gap:.65rem}
-@media(min-width:720px){.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:1fr 1fr 1fr}}
-.card{
-  border:1px solid var(--border);border-radius:8px;padding:1.05rem 1.1rem;
-  background:linear-gradient(160deg,var(--surface2) 0%,var(--bg) 100%);
-}
-.card .k{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:.35rem}
-.card .k.gold{color:var(--gold)}
-.card h3{font-size:.9rem;margin-bottom:.35rem;font-weight:600}
-.card p{font-size:.78rem;color:var(--muted);margin:0;line-height:1.5}
-.desire{display:grid;gap:.5rem}
-@media(min-width:640px){.desire{grid-template-columns:1fr 1fr}}
-.desire a{
-  display:block;border:1px solid var(--border);border-radius:8px;padding:.85rem .95rem;
-  background:var(--surface);transition:border-color .15s;
-}
-.desire a:hover{border-color:#444}
-.desire .k{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:.25rem}
-.desire h3{font-size:.84rem;margin-bottom:.25rem}
-.desire p{font-size:.74rem;color:var(--muted);margin:0}
-.note{
-  font-size:.7rem;color:var(--muted);border-left:2px solid var(--border);
-  padding-left:.75rem;margin-top:1.1rem;line-height:1.45;
-}
-footer{
-  border-top:1px solid var(--border);padding:1.35rem 1rem;text-align:center;
-  font-size:.66rem;color:var(--muted);
-}
-footer .s{color:var(--gold);margin-bottom:.4rem;letter-spacing:.04em}
+.links a:hover{color:var(--fg)}
 </style>
 </head>
 <body>
-
-<div class="status-bar" role="status">
-  <div class="row">
-    <span><span class="pulse"></span><b>ONTARIO OPCO</b></span>
-    <span>2P5L <b>ACTIVE</b></span>
-    <span>BREAKER <b>ARMED</b></span>
-    <span>FRAMEWORK <b>v0.40</b></span>
-    <span>PLANE <b>RESIDUAL</b></span>
-  </div>
-</div>
-
-<header class="header">
-  <div class="header-inner">
-    <a class="brand" href="index.html">
-      <img class="mark" src="emblem-ring.svg" alt="">
-      <img class="wordmark" src="logo-dark.svg" alt="DualisCapax">
-    </a>
+  <main class="stage">
+    <img class="mark" src="emblem-ring.svg" alt="">
+    <img class="word" src="logo-dark.svg" alt="DualisCapax">
+    <h1>Residual plane</h1>
+    <p class="lead">
+      Open research. Adaptive depth when rails are live.
+      Black and white residual — one underweight point under playground expanse.
+    </p>
     <div class="actions">
-      <a class="btn btn-primary" href="research/">Research</a>
-      <button type="button" class="btn btn-ghost" id="menuBtn" aria-label="Menu">MENU ≡</button>
+      <a class="btn btn-w" href="research/">Research</a>
+      <a class="btn btn-g" href="manifesto.html">Manifesto</a>
+      <a class="btn btn-g" href="residual-law.html">Residual Law</a>
     </div>
-  </div>
-</header>
-
-<div class="drawer-backdrop" id="drawer" aria-hidden="true">
-  <nav class="drawer" aria-label="Site">
-    <button type="button" class="close" id="drawerClose">CLOSE</button>
-    <a class="on" href="index.html">Plane</a>
-    <a href="research/">Research</a>
-    <a href="research/healthcare/">Healthcare</a>
-    <a href="model.html">Model</a>
-    <a href="manifesto.html">Manifesto</a>
-    <a href="residual-law.html">Residual Law</a>
-    <a href="gateway.html">Gateway</a>
-    <a href="participate.html">Participate</a>
-    <a href="onboarding.html">Onboarding</a>
-    <a href="integrity.html">Integrity</a>
-  </nav>
-</div>
-
-<section class="hero">
-  <img class="emblem" src="emblem-ring.svg" alt="DualisCapax residual mark">
-  <div class="chips">
-    <span class="chip">Control ID · ED-LEG-20260816-PF-001</span>
-    <span class="chip">Commercial Gateway · Unity Framework (v0.40)</span>
-    <span class="chip">Belleville, Ontario, Canada</span>
-  </div>
-  <h1>DUALISCAPAX</h1>
-  <p class="lead">Residual plane for research, model, and adaptive depth — black / white residual, DNA mark, one underweight point under playground expanse.</p>
-  <div class="cta">
-    <a class="btn btn-primary" href="research/">Open Research</a>
-    <a class="btn btn-outline" href="residual-law.html">Residual Law</a>
-    <a class="btn btn-outline" href="manifesto.html">Manifesto</a>
-  </div>
-</section>
-
-<section>
-  <h2>Same-origin residual · no second hop</h2>
-  <div class="grid two">
-    <div class="card">
-      <div class="k gold">Research</div>
-      <h3>Open journals &amp; charts</h3>
-      <p>Healthcare and engineering paths free on the face. Simulation depth only when rails and residual cost are live.</p>
-    </div>
-    <div class="card">
-      <div class="k">Law</div>
-      <h3>Inverted pyramid</h3>
-      <p>Playground expanse on underweight residual cost. Affinity governs the orbit; size does not.</p>
-    </div>
-    <div class="card">
-      <div class="k">Model</div>
-      <h3>Dual column honesty</h3>
-      <p>Surface returns and local floors. Emulated instruments labeled until payment and compute rails connect.</p>
-    </div>
-    <div class="card">
-      <div class="k gold">Mark</div>
-      <h3>DNA · V from one point</h3>
-      <p>Gold / blue dual strand from underweight origin — token and company, same residual geometry.</p>
-    </div>
-  </div>
-  <p class="note">All menu and CTA links stay on this site (relative paths). No workers.dev bounce. No double redirect.</p>
-</section>
-
-<section id="desires">
-  <h2>Desires on one lattice</h2>
-  <div class="desire">
-    <a href="manifesto.html">
-      <div class="k">Philosophical</div>
-      <h3>Wonder · meaning · middle</h3>
-      <p>Pure logic as discipline. Affinity toward the center.</p>
-    </a>
-    <a href="model.html">
-      <div class="k">Empirical</div>
-      <h3>Measure · dual column</h3>
-      <p>You do not measure below what you can see.</p>
-    </a>
-    <a href="gateway.html">
-      <div class="k">Financial</div>
-      <h3>Cost down · surplus accounted</h3>
-      <p>Residual cost path first. Edge can refuel without a downline.</p>
-    </a>
-    <a href="research/healthcare/">
-      <div class="k">Healthcare</div>
-      <h3>Research free · depth prepaid</h3>
-      <p>Journals open. Depth behind lawful residual when live.</p>
-    </a>
-  </div>
-</section>
-
-<footer>
-  <div class="s">No Tribes Preferred. · All Haters Welcome. · Truth and Unity Prevail.</div>
-  DualisCapax Inc. · Ontario · residual plane · law_version 2026-08-22
-</footer>
-
-<script>
-(function(){
-  var backdrop = document.getElementById('drawer');
-  var openBtn = document.getElementById('menuBtn');
-  var closeBtn = document.getElementById('drawerClose');
-  function open(){ backdrop.classList.add('open'); backdrop.setAttribute('aria-hidden','false'); }
-  function close(){ backdrop.classList.remove('open'); backdrop.setAttribute('aria-hidden','true'); }
-  if(openBtn) openBtn.addEventListener('click', open);
-  if(closeBtn) closeBtn.addEventListener('click', close);
-  if(backdrop) backdrop.addEventListener('click', function(e){ if(e.target === backdrop) close(); });
-})();
-</script>
+    <nav class="links" aria-label="More">
+      <a href="model.html">Model</a>
+      <a href="gateway.html">Gateway</a>
+      <a href="participate.html">Participate</a>
+      <a href="research/healthcare/">Healthcare</a>
+    </nav>
+    <p class="foot">
+      <span>No Tribes Preferred · All Haters Welcome · Truth and Unity Prevail</span>
+    </p>
+  </main>
 </body>
 </html>
