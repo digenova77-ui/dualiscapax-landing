@@ -3,43 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DualisCapax</title>
-<meta name="description" content="DualisCapax — Open research free. Adaptive depth prepaid. One residual plane.">
+<title>DualisCapax — Residual Plane</title>
+<meta name="description" content="Open research free. Adaptive depth prepaid. Residual law. Emulated control surfaces until live rails connect.">
 <link rel="stylesheet" href="assets/presentation.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
 body{min-height:100vh;line-height:1.55}
-nav{border-bottom:1px solid var(--border);padding:.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
-.brand{font-weight:700;letter-spacing:.12em;text-decoration:none;color:var(--fg);font-size:.88rem}
-.links{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;list-style:none;font-size:.76rem}
+nav{
+  position:sticky;top:0;z-index:40;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  border-bottom:1px solid var(--border);
+  padding:.85rem 1.15rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.65rem;
+}
+.brand{font-weight:700;letter-spacing:.14em;text-decoration:none;color:var(--fg);font-size:.82rem}
+.links{display:flex;flex-wrap:wrap;gap:.3rem 1rem;list-style:none;font-size:.72rem}
 .links a{color:var(--muted);text-decoration:none}
 .links a:hover,.links a.on{color:var(--fg)}
-.hero{max-width:40rem;margin:0 auto;padding:2.75rem 1.25rem 2rem;text-align:center}
-.logo-dark{display:block;max-width:260px;width:100%;margin:0 auto 1rem}
-.logo-light{display:none;max-width:260px;width:100%;margin:0 auto 1rem}
+.badge{
+  font-family:var(--font-mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--border);border-radius:999px;padding:.25rem .55rem;color:var(--gold);
+}
+.hero{max-width:48rem;margin:0 auto;padding:2.5rem 1.15rem 1.75rem;text-align:center}
+.logo-dark{display:block;max-width:220px;width:100%;margin:0 auto .85rem}
+.logo-light{display:none;max-width:220px;width:100%;margin:0 auto .85rem}
 @media(prefers-color-scheme:light){.logo-dark{display:none}.logo-light{display:block}}
-.hero h1{font-size:clamp(1.1rem,1rem + .5vw,1.35rem);font-weight:600;letter-spacing:.06em;margin-bottom:.75rem}
-.hero p{color:var(--muted);font-size:.92rem;margin-bottom:1.5rem}
+.hero h1{font-size:clamp(1.15rem,1rem + .7vw,1.55rem);font-weight:600;letter-spacing:.05em;margin-bottom:.55rem}
+.hero .lead{color:var(--muted);font-size:.9rem;max-width:36rem;margin:0 auto 1.25rem}
 .cta{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
-.btn{display:inline-block;padding:.6rem 1.1rem;font-size:.76rem;letter-spacing:.06em;text-decoration:none;border:1px solid var(--border);border-radius:3px;color:var(--fg)}
+.btn{
+  display:inline-block;padding:.62rem 1.05rem;font-size:.74rem;letter-spacing:.06em;
+  text-decoration:none;border:1px solid var(--border);border-radius:4px;color:var(--fg);
+}
 .btn.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-section{max-width:40rem;margin:0 auto;padding:0 1.25rem 2.25rem}
-h2{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:.4rem;margin-bottom:1rem}
-.lattice{display:grid;gap:.55rem}
-.cell{border:1px solid var(--border);border-radius:8px;padding:1rem 1.05rem;background:var(--surface);box-shadow:var(--depth)}
-.cell h3{font-size:.88rem;margin-bottom:.3rem}
-.cell p{font-size:.8rem;color:var(--muted);margin:0}
-.cell .t{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
-.cell.m .t{color:var(--gold)}
-.note{font-size:.72rem;color:var(--muted);margin-top:1.25rem;border-left:2px solid var(--border);padding-left:.75rem}
-footer{border-top:1px solid var(--border);padding:1.25rem;text-align:center;font-size:.68rem;color:var(--muted)}
+.btn.g{border-color:color-mix(in srgb,var(--gold) 50%,var(--border));color:var(--gold)}
+section{max-width:52rem;margin:0 auto;padding:0 1.15rem 2.4rem}
+h2{
+  font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  border-bottom:1px solid var(--border);padding-bottom:.4rem;margin-bottom:1rem;
+}
+.grid{display:grid;gap:.65rem}
+@media(min-width:720px){.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:1fr 1fr 1fr}}
+.card{
+  border:1px solid var(--border);border-radius:10px;padding:1.05rem 1.1rem;
+  background:linear-gradient(155deg,var(--surface) 0%,var(--bg) 100%);
+  box-shadow:var(--depth);
+}
+.card .k{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+.card .k.gold{color:var(--gold)}
+.card h3{font-size:.9rem;margin-bottom:.35rem;font-weight:600}
+.card p{font-size:.78rem;color:var(--muted);margin:0}
+.meter{
+  margin-top:.75rem;height:6px;border-radius:999px;background:var(--border);overflow:hidden;
+}
+.meter > i{display:block;height:100%;width:42.5%;border-radius:999px;
+  background:linear-gradient(90deg,var(--accent),var(--gold))}
+.stat-row{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;margin-top:.65rem;font-family:var(--font-mono);font-size:.68rem;color:var(--muted)}
+.stat-row b{color:var(--fg);font-weight:500}
+.clock{
+  font-family:var(--font-mono);font-size:clamp(1.4rem,1.1rem + 1.2vw,2rem);letter-spacing:.04em;
+  color:var(--fg);margin:.35rem 0 .2rem;
+}
+.tag{display:inline-block;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--border);border-radius:3px;padding:.15rem .4rem;color:var(--muted);margin-bottom:.5rem}
+.tag.live{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 40%,var(--border))}
+.desire{display:grid;gap:.5rem}
+@media(min-width:640px){.desire{grid-template-columns:1fr 1fr}}
+.desire a{
+  display:block;text-decoration:none;color:inherit;
+  border:1px solid var(--border);border-radius:8px;padding:.85rem .95rem;
+  background:var(--surface);transition:border-color .15s ease;
+}
+.desire a:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+.desire .k{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.25rem}
+.desire h3{font-size:.84rem;margin-bottom:.25rem}
+.desire p{font-size:.74rem;color:var(--muted);margin:0}
+.note{font-size:.7rem;color:var(--muted);border-left:2px solid var(--border);padding-left:.75rem;margin-top:1.1rem}
+footer{border-top:1px solid var(--border);padding:1.25rem;text-align:center;font-size:.66rem;color:var(--muted)}
 footer .s{color:var(--gold);margin-bottom:.35rem;letter-spacing:.05em}
+.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-right:.35rem;
+  box-shadow:0 0 0 0 color-mix(in srgb,var(--gold) 50%,transparent);animation:p 2.2s infinite}
+@keyframes p{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--gold) 45%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media(prefers-reduced-motion:reduce){.pulse{animation:none}}
 </style>
 </head>
 <body>
 <nav>
   <a class="brand" href="index.html">DUALISCAPAX</a>
   <ul class="links">
+    <li><a class="on" href="index.html">Plane</a></li>
     <li><a href="research/">Research</a></li>
     <li><a href="model.html">Model</a></li>
     <li><a href="manifesto.html">Manifesto</a></li>
@@ -47,55 +101,158 @@ footer .s{color:var(--gold);margin-bottom:.35rem;letter-spacing:.05em}
     <li><a href="gateway.html">Gateway</a></li>
     <li><a href="participate.html">Participate</a></li>
   </ul>
+  <span class="badge"><span class="pulse"></span>Sandbox surface</span>
 </nav>
 
-<header class="hero">
+<header class="hero theme-atmosphere">
   <img class="logo-dark" src="logo-dark.svg" alt="DualisCapax">
   <img class="logo-light" src="logo-light.svg" alt="DualisCapax">
-  <h1>One plane. Open free. Depth prepaid.</h1>
-  <p>Dual capacity under residual law. CAD and lawful rails settle the gateway. Fusion Meter pays Adaptive session cost. Local floors are not the real floor. Seal stays sealed.</p>
+  <h1>One residual plane</h1>
+  <p class="lead">Open research free. Depth prepaid when rails are live. Until then every meter, clock, and instrument on this surface is <strong style="color:var(--fg)">emulated residual data</strong>—honest theater for flow and desire, not a live payment or clinical claim.</p>
+  <hr class="theme-divider">
   <div class="cta">
     <a class="btn p" href="research/">Research</a>
     <a class="btn" href="residual-law.html">Residual Law</a>
+    <a class="btn g" href="#desires">Desires</a>
     <a class="btn" href="gateway.html">Gateway</a>
   </div>
 </header>
 
 <section>
-  <h2>Diamond lattice</h2>
-  <div class="lattice">
-    <div class="cell">
-      <div class="t">Open</div>
-      <h3>Research &amp; model</h3>
-      <p>Journals, manifesto, operators. No Fusion Meter. Wonder and evidence on one chain.</p>
+  <h2>Emulated control · looks live · labeled sandbox</h2>
+  <div class="grid two">
+    <div class="card">
+      <div class="tag live">Emulated · not production funds</div>
+      <div class="k gold">Singularity / cost clock</div>
+      <h3>Residual cost path</h3>
+      <div class="clock" id="clock">— · —</div>
+      <p>Scale label shifts with threshold language (years → months → weeks) under model M. Driven by emulated onboard weight, not live donations.</p>
+      <div class="meter" aria-hidden="true"><i id="costBar"></i></div>
+      <div class="stat-row">
+        <span>Path progress <b id="costPct">42.5%</b></span>
+        <span>Unit cost trend <b>↓ emulated</b></span>
+      </div>
     </div>
-    <div class="cell">
-      <div class="t">Law</div>
-      <h3>Residual claims</h3>
-      <p>Dual-column. Floor grades. Bottom Affinity only—no vengeance path. Mesh surplus from real proceeds.</p>
+    <div class="card">
+      <div class="tag live">Emulated · Fusion Meter</div>
+      <div class="k">Depth instrument</div>
+      <h3>FM burn residual</h3>
+      <p>Internal prepaid credit burns against Adaptive residual cost when live. Here: sandbox numbers for UI and education only.</p>
+      <div class="stat-row">
+        <span>Pool (sandbox) <b>12,480 FM</b></span>
+        <span>Session burn <b>∝ cost × importance</b></span>
+      </div>
+      <div class="stat-row">
+        <span>Open market <b>No</b></span>
+        <span>Legal tender <b>No</b></span>
+      </div>
     </div>
-    <div class="cell">
-      <div class="t">Prove · Gateway</div>
-      <h3>Lawful settlement</h3>
-      <p>CAD or counsel-approved rails. Identity when required. White boundary events. Not a securities offering.</p>
+    <div class="card">
+      <div class="tag">Emulated · white ledger</div>
+      <div class="k">Financial desire</div>
+      <h3>Gateway settlement</h3>
+      <p>CAD / counsel rails when connected. Mesh surplus from real proceeds after cost—not recruitment rescue. Processor: not live on this surface.</p>
+      <div class="stat-row">
+        <span>Status <b>Emulated</b></span>
+        <span>KYC path <b>Policy-ready</b></span>
+      </div>
     </div>
-    <div class="cell m">
-      <div class="t">Depth · FM</div>
-      <h3>Fusion Meter</h3>
-      <p>Internal prepaid credit. Burns only for residual Adaptive cost. Closed — not legal tender, not an open-market coin.</p>
-    </div>
-    <div class="cell">
-      <div class="t">Seal · eFuse</div>
-      <h3>Bound capability</h3>
-      <p>Method opaque. eFuse binds agents to native realm under Ontario &amp; Canadian law. Internal compute stays internal.</p>
+    <div class="card">
+      <div class="tag">Emulated · Access</div>
+      <div class="k gold">Governing · legal</div>
+      <h3>Ontario floor first</h3>
+      <p>eFuse native realm. Residual law over the plane. Protective height that secures safety and shared prosperity is not a vengeance target.</p>
+      <div class="stat-row">
+        <span>Jurisdiction <b>ON · CA</b></span>
+        <span>Circuit <b>ARMED (model)</b></span>
+      </div>
     </div>
   </div>
-  <p class="note">Ontario and Canada first. Informational public surface. Live payments need your processor and legal review. Cost path aims down; magnitudes stay labeled under M.</p>
+  <p class="note">Dual-column: Column A = this page is a sandbox UI. Column B = live rails, real FM burn, and counsel-approved settlement when you connect them. Nothing here is an offer of securities or a medical claim.</p>
+</section>
+
+<section id="desires">
+  <h2>Desires on one lattice</h2>
+  <div class="desire">
+    <a href="manifesto.html">
+      <div class="k">Philosophical</div>
+      <h3>Wonder · meaning · middle</h3>
+      <p>Pure logic as discipline. Affinity pulls science and philosophy toward the center—not wing conquest.</p>
+    </a>
+    <a href="model.html">
+      <div class="k">Empirical</div>
+      <h3>Measure · dual column</h3>
+      <p>Surface returns, local floors, Argument Model. You do not measure below what you can see.</p>
+    </a>
+    <a href="gateway.html">
+      <div class="k">Financial</div>
+      <h3>Cost down · surplus accounted</h3>
+      <p>Residual cost path first. Early weight only on real proceeds. Edge can refuel without a downline.</p>
+    </a>
+    <a href="residual-law.html">
+      <div class="k">Governing · legal</div>
+      <h3>Bottom Affinity only</h3>
+      <p>No raid romance. No vengeance path. Fold false height into a level circle under residual law.</p>
+    </a>
+    <a href="research/healthcare/">
+      <div class="k">Healthcare</div>
+      <h3>Research free · Depth prepaid</h3>
+      <p>Journals and charts open. Simulation depth behind lawful residual cost when live—not cure claims on the face.</p>
+    </a>
+    <a href="research/">
+      <div class="k">Educational · frontier</div>
+      <h3>Keep the unknown exciting</h3>
+      <p>What we don’t know stays labeled horizon. Journey over trophy. Frontier is the residual of honest gaps.</p>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h2>Diamond lattice</h2>
+  <div class="grid three">
+    <div class="card">
+      <div class="k">Open</div>
+      <h3>Research &amp; model</h3>
+      <p>No FM required. Wonder and evidence on one chain.</p>
+    </div>
+    <div class="card">
+      <div class="k">Law</div>
+      <h3>Residual claims</h3>
+      <p>Floor grades. Mesh not pyramid. Middle Affinity.</p>
+    </div>
+    <div class="card">
+      <div class="k gold">Depth · FM</div>
+      <h3>Prepaid Adaptive</h3>
+      <p>Burns for real residual cost when live. Closed credit.</p>
+    </div>
+  </div>
 </section>
 
 <footer>
   <div class="s">No Tribes Preferred. · All Haters Welcome. · Truth and Unity Prevail.</div>
-  DualisCapax · dual capacity · residual plane
+  DualisCapax · emulated control surface · residual plane · law_version 2026-08-22
 </footer>
+
+<script>
+(function(){
+  var baseMs = Date.UTC(2026,7,22,18,0,0);
+  function tick(){
+    var now = Date.now();
+    var elapsed = Math.max(0, now - baseMs);
+    var p = 42.5 + Math.sin(elapsed/6e5)*0.15;
+    p = Math.max(40, Math.min(49.9, p));
+    var el = document.getElementById('costPct');
+    var bar = document.getElementById('costBar');
+    var clock = document.getElementById('clock');
+    if(el) el.textContent = p.toFixed(2) + '%';
+    if(bar) bar.style.width = p + '%';
+    var remain = (50 - p) / 50;
+    var years = (remain * 11.4).toFixed(1);
+    if(clock) clock.textContent = years + ' y · emulated';
+  }
+  tick();
+  setInterval(tick, 4000);
+})();
+</script>
 </body>
 </html>
