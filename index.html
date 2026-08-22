@@ -4,253 +4,371 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DualisCapax</title>
-<meta name="description" content="DualisCapax residual plane. Open research. Adaptive depth when rails are live.">
+<meta name="description" content="DualisCapax — residual plane. Open research. Adaptive depth when rails are live.">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
 <style>
 :root{
-  --bg:#000;
-  --fg:#f4f4f2;
-  --muted:#7a7a76;
   --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --gold:#c4a035;
+  --blue:#2a7fd4;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;background:var(--bg);color:var(--fg)}
-body{font-family:var(--font);-webkit-font-smoothing:antialiased}
+html{height:100%}
+body{
+  font-family:var(--font);
+  min-height:100%;
+  -webkit-font-smoothing:antialiased;
+  background:#000;
+  color:#f4f4f2;
+}
 a{color:inherit;text-decoration:none}
 
-.plane{
-  min-height:100vh;min-height:100dvh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:clamp(1.5rem,4vw,3rem) 1.25rem 4.5rem;
-  text-align:center;position:relative;overflow:hidden;
-}
-.plane::before{
-  content:"";position:absolute;inset:-15% -10% auto;height:65%;pointer-events:none;
-  background:
-    radial-gradient(ellipse 48% 42% at 40% 50%, rgba(42,127,212,.18), transparent 70%),
-    radial-gradient(ellipse 42% 38% at 60% 55%, rgba(196,160,53,.12), transparent 70%);
+/* ========== DESKTOP: locked dual plane (no scroll past need) ========== */
+.shell{
+  min-height:100vh;
+  min-height:100dvh;
+  display:grid;
+  grid-template-columns:1fr;
+  grid-template-rows:auto 1fr auto;
 }
 
-/* —— Holograph shell around mark —— */
-.holo-wrap{
+/* Top residual rail — not 2012 nav bar */
+.rail{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.65rem clamp(1rem, 3vw, 2rem);
+  border-bottom:1px solid #1a1a1a;
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.08em;
+  color:#666;
+  background:#050505;
+}
+.rail b{color:#ccc;font-weight:500}
+.rail .pulse{
+  width:6px;height:6px;border-radius:50%;background:var(--gold);
+  display:inline-block;margin-right:.4rem;
+  box-shadow:0 0 0 0 rgba(196,160,53,.5);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  70%{box-shadow:0 0 0 8px transparent}
+}
+@media(prefers-reduced-motion:reduce){.rail .pulse{animation:none}}
+
+/* Dual ledger: white plane | black plane */
+.dual{
+  display:grid;
+  grid-template-columns:1fr;
+  min-height:0;
+  flex:1;
+}
+
+.pane{
   position:relative;
-  z-index:1;
-  margin-bottom:clamp(1.5rem, 3.5vw, 2rem);
-  width:clamp(96px, 24vw, 132px);
-  aspect-ratio:1;
-  perspective:600px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:clamp(1.75rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem);
+  overflow:hidden;
 }
-.holo-wrap::before{
+
+/* WHITE LEDGER */
+.pane-white{
+  background:#f2f1ed;
+  color:#0a0a0a;
+}
+.pane-white .eyebrow{
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:#6a6a66;
+  margin-bottom:1rem;
+}
+.pane-white h1{
+  font-size:clamp(2.4rem, 1.2rem + 5vw, 4.2rem);
+  font-weight:700;
+  letter-spacing:-.03em;
+  line-height:.95;
+  margin-bottom:1.25rem;
+}
+.pane-white h1 span{
+  display:block;
+  color:#8a8a86;
+  font-weight:500;
+  font-size:.42em;
+  letter-spacing:.18em;
+  margin-top:.4em;
+  text-transform:uppercase;
+}
+.pane-white .copy{
+  max-width:28ch;
+  font-size:clamp(.9rem, .85rem + .3vw, 1.05rem);
+  line-height:1.55;
+  color:#3a3a38;
+  margin-bottom:1.75rem;
+}
+.pane-white .cta{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  background:#0a0a0a;
+  color:#f2f1ed;
+  font-size:.78rem;
+  font-weight:600;
+  letter-spacing:.06em;
+  padding:.85rem 1.35rem;
+  border:none;
+  width:fit-content;
+}
+.pane-white .cta:hover{background:#222}
+.pane-white .cta svg{width:14px;height:14px}
+
+/* Mesh residual field on white */
+.pane-white::after{
   content:"";
   position:absolute;
-  inset:-18%;
-  border-radius:50%;
-  background:conic-gradient(
-    from var(--holo-angle, 0deg),
-    #c4a035, #2a7fd4, #5ec8a0, #e24b4b, #c4a035, #2a7fd4, #c4a035
-  );
-  filter:blur(14px);
-  opacity:.45;
-  animation:holo-spin 8s linear infinite;
-  z-index:0;
-}
-.holo-wrap::after{
-  content:"";
-  position:absolute;
-  inset:-6%;
-  border-radius:50%;
-  background:conic-gradient(
-    from calc(var(--holo-angle, 0deg) + 90deg),
-    transparent 0%,
-    rgba(255,255,255,.35) 8%,
-    transparent 18%,
-    transparent 50%,
-    rgba(42,127,212,.4) 58%,
-    transparent 70%
-  );
-  mix-blend-mode:screen;
-  animation:holo-spin 5.5s linear infinite reverse;
+  right:-10%;bottom:-20%;
+  width:55%;height:70%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(42,127,212,.12), transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(196,160,53,.1), transparent 45%);
   pointer-events:none;
+}
+
+/* BLACK LEDGER */
+.pane-black{
+  background:#000;
+  color:#f4f4f2;
+  border-top:1px solid #1a1a1a;
+}
+.pane-black .eyebrow{
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:#666;
+  margin-bottom:1rem;
+}
+.pane-black .stack{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  max-width:22rem;
+}
+.pane-black a.row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:1rem;
+  align-items:baseline;
+  padding:1rem 0;
+  border-bottom:1px solid #1c1c1c;
+  text-align:left;
+  transition:background .15s, padding-left .15s;
+}
+.pane-black a.row:hover{
+  background:rgba(255,255,255,.03);
+  padding-left:.35rem;
+}
+.pane-black a.row .t{
+  font-size:1rem;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.pane-black a.row .d{
+  font-size:.72rem;
+  color:#666;
+  margin-top:.25rem;
+  line-height:1.4;
+}
+.pane-black a.row .meta{
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.1em;
+  color:#555;
+  text-transform:uppercase;
+}
+
+/* Holo mark — corner residual, not center of 2012 card */
+.mark-slot{
+  position:absolute;
+  top:clamp(1rem, 3vw, 1.5rem);
+  right:clamp(1rem, 3vw, 1.5rem);
+  width:clamp(48px, 10vw, 64px);
+  height:clamp(48px, 10vw, 64px);
   z-index:2;
 }
-.holo-disc{
-  position:relative;
-  z-index:1;
-  width:100%;
-  height:100%;
-  border-radius:50%;
+.mark-slot img{
+  width:100%;height:auto;
+  filter:drop-shadow(0 0 12px rgba(42,127,212,.35));
+  animation:mark-breathe 5s ease-in-out infinite alternate;
+}
+@keyframes mark-breathe{
+  from{filter:drop-shadow(0 0 8px rgba(42,127,212,.25))}
+  to{filter:drop-shadow(0 0 18px rgba(196,160,53,.35))}
+}
+@media(prefers-reduced-motion:reduce){.mark-slot img{animation:none}}
+
+/* Foil line between planes */
+.seam{
+  display:none;
+}
+
+.foot{
+  padding:.75rem clamp(1rem, 3vw, 2rem);
+  border-top:1px solid #1a1a1a;
+  font-size:.58rem;
+  letter-spacing:.06em;
+  color:#444;
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem 1.25rem;
+  justify-content:space-between;
   background:#050505;
-  display:grid;
-  place-items:center;
-  transform:rotateY(-8deg) rotateX(6deg);
-  transform-style:preserve-3d;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.08),
-    0 12px 40px rgba(0,0,0,.6),
-    inset 0 0 24px rgba(42,127,212,.12);
-  animation:holo-tilt 7s ease-in-out infinite alternate;
 }
-.holo-disc img{
-  width:88%;
-  height:auto;
-  display:block;
-  filter:drop-shadow(0 0 8px rgba(196,160,53,.25));
-}
-/* Foil sweep across face */
-.holo-foil{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  background:linear-gradient(
-    115deg,
-    transparent 0%,
-    transparent 40%,
-    rgba(255,255,255,.14) 45%,
-    rgba(42,127,212,.2) 50%,
-    rgba(196,160,53,.18) 55%,
-    transparent 60%,
-    transparent 100%
-  );
-  background-size:220% 220%;
-  animation:foil-sweep 4.2s ease-in-out infinite;
-  mix-blend-mode:overlay;
-  pointer-events:none;
-  z-index:3;
-}
-@property --holo-angle{
-  syntax:"<angle>";
-  initial-value:0deg;
-  inherits:false;
-}
-@keyframes holo-spin{
-  to{--holo-angle:360deg}
-}
-@keyframes holo-tilt{
-  from{transform:rotateY(-10deg) rotateX(5deg) translateZ(0)}
-  to{transform:rotateY(10deg) rotateX(8deg) translateZ(6px)}
-}
-@keyframes foil-sweep{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-@media (prefers-reduced-motion:reduce){
-  .holo-wrap::before,
-  .holo-wrap::after,
-  .holo-disc,
-  .holo-foil{animation:none}
-  .holo-disc{transform:none}
+.foot b{color:#6a5a40;font-weight:500}
+
+/* ========== TABLET+ : true side-by-side dual ledger ========== */
+@media (min-width:768px){
+  .dual{
+    grid-template-columns:1fr 1fr;
+  }
+  .pane-black{
+    border-top:none;
+    border-left:1px solid #1a1a1a;
+  }
+  .pane{
+    min-height:calc(100vh - 5.5rem);
+    min-height:calc(100dvh - 5.5rem);
+  }
+  .mark-slot{
+    top:50%;
+    left:50%;
+    right:auto;
+    transform:translate(-50%,-50%);
+    width:72px;height:72px;
+    z-index:5;
+  }
+  /* Seam holograph at the ledger join */
+  .dual{
+    position:relative;
+  }
+  .dual::after{
+    content:"";
+    position:absolute;
+    top:0;bottom:0;left:50%;
+    width:2px;
+    transform:translateX(-50%);
+    background:linear-gradient(
+      180deg,
+      transparent,
+      var(--gold) 20%,
+      var(--blue) 50%,
+      var(--gold) 80%,
+      transparent
+    );
+    opacity:.55;
+    z-index:4;
+    pointer-events:none;
+    animation:seam-flow 4s ease-in-out infinite;
+  }
+  @keyframes seam-flow{
+    0%,100%{opacity:.35;filter:blur(0)}
+    50%{opacity:.75;filter:blur(0.5px)}
+  }
 }
 
-.ledger-name{
-  display:inline-flex;align-items:stretch;
-  margin:0 auto 1.25rem;
-  position:relative;z-index:1;
-  border-radius:2px;overflow:hidden;
-  font-size:clamp(1.4rem, 1rem + 2.4vw, 1.95rem);
-  font-weight:700;letter-spacing:.03em;line-height:1;
-  isolation:isolate;
-}
-.ledger-name .w{background:#f4f4f2;color:#000;padding:.52em .52em .52em .68em}
-.ledger-name .b{background:#000;color:#f4f4f2;padding:.52em .68em .52em .42em;border:1px solid #2a2a2a;border-left:0}
-/* Thin holo edge on ledger */
-.ledger-name::after{
-  content:"";
-  position:absolute;inset:0;
-  background:linear-gradient(
-    100deg,
-    transparent 30%,
-    rgba(255,255,255,.2) 48%,
-    rgba(42,127,212,.15) 52%,
-    transparent 70%
-  );
-  background-size:200% 100%;
-  animation:foil-sweep 5s ease-in-out infinite;
-  mix-blend-mode:overlay;
-  pointer-events:none;
-}
-
-.kicker{
-  font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:1rem;position:relative;z-index:1;
-}
-.lead{
-  max-width:19rem;font-size:.86rem;line-height:1.6;color:var(--muted);
-  margin:0 auto 1.85rem;position:relative;z-index:1;
-}
-.actions{
-  display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;
-  position:relative;z-index:1;
-}
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:.65rem 1.15rem;font-size:.74rem;font-weight:600;letter-spacing:.06em;
-  border-radius:3px;border:1px solid transparent;
-}
-.btn-solid{background:#f4f4f2;color:#000}
-.btn-solid:hover{background:#fff}
-.btn-line{background:transparent;color:var(--fg);border-color:#2e2e2e}
-.btn-line:hover{border-color:#555}
-.sub{
-  margin-top:2.1rem;display:flex;flex-wrap:wrap;gap:.65rem 1.35rem;
-  justify-content:center;font-size:.66rem;letter-spacing:.04em;color:#555;
-  position:relative;z-index:1;
-}
-.sub a:hover{color:var(--muted)}
-.slogans{
-  position:absolute;bottom:1.3rem;left:1rem;right:1rem;
-  font-size:.56rem;letter-spacing:.08em;color:#3a3a3a;z-index:1;
-}
-.slogans b{color:#5a5040;font-weight:500}
-
-@media (prefers-color-scheme: light){
-  :root{--bg:#f3f2ef;--fg:#111;--muted:#5c5c58}
-  body,html{background:var(--bg);color:var(--fg)}
-  .plane::before{opacity:.4}
-  .holo-disc{background:#f0efe9;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 12px 36px rgba(0,0,0,.12)}
-  .ledger-name .w{background:#111;color:#f4f4f2}
-  .ledger-name .b{background:#f4f2ef;color:#111;border-color:#ccc}
-  .btn-solid{background:#111;color:#f4f4f2}
-  .btn-line{border-color:#ccc}
-  .sub{color:#888}
-  .slogans{color:#aaa}
-  .slogans b{color:#8a7020}
+/* Desktop large type / no page scroll of empty chrome */
+@media (min-width:1024px){
+  .pane-white h1{
+    font-size:clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .pane-black a.row .t{font-size:1.1rem}
 }
 </style>
 </head>
 <body>
-  <main class="plane">
-    <div class="holo-wrap" aria-hidden="true">
-      <div class="holo-disc">
-        <img src="emblem-ring.svg" width="120" height="120" alt="">
-        <span class="holo-foil"></span>
+  <div class="shell">
+    <header class="rail">
+      <span><span class="pulse"></span><b>RESIDUAL</b> · PLANE LIVE</span>
+      <span>ONTARIO · CA</span>
+    </header>
+
+    <div class="dual">
+      <!-- WHITE LEDGER -->
+      <section class="pane pane-white">
+        <p class="eyebrow">White ledger · open</p>
+        <h1>
+          DualisCapax
+          <span>Residual plane</span>
+        </h1>
+        <p class="copy">
+          Open research free. Adaptive depth when rails are live.
+          One underweight point under playground expanse.
+        </p>
+        <a class="cta" href="research/">
+          Enter research
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </section>
+
+      <!-- Mark sits on the seam (desktop) / corner (mobile) -->
+      <div class="mark-slot" aria-hidden="true">
+        <img src="emblem-ring.svg" width="72" height="72" alt="">
       </div>
+
+      <!-- BLACK LEDGER -->
+      <section class="pane pane-black">
+        <p class="eyebrow">Black ledger · depth</p>
+        <div class="stack">
+          <a class="row" href="manifesto.html">
+            <div>
+              <div class="t">Manifesto</div>
+              <div class="d">Corporate residual. Unity without tribe preference.</div>
+            </div>
+            <span class="meta">01</span>
+          </a>
+          <a class="row" href="residual-law.html">
+            <div>
+              <div class="t">Residual Law</div>
+              <div class="d">Cost, eFuse, containment — the rails.</div>
+            </div>
+            <span class="meta">02</span>
+          </a>
+          <a class="row" href="model.html">
+            <div>
+              <div class="t">Model</div>
+              <div class="d">Logic structure. Simulation posture.</div>
+            </div>
+            <span class="meta">03</span>
+          </a>
+          <a class="row" href="gateway.html">
+            <div>
+              <div class="t">Gateway</div>
+              <div class="d">Fuel, rails, access when live.</div>
+            </div>
+            <span class="meta">04</span>
+          </a>
+          <a class="row" href="research/healthcare/">
+            <div>
+              <div class="t">Healthcare</div>
+              <div class="d">Medical path benchmark — neurological and beyond.</div>
+            </div>
+            <span class="meta">05</span>
+          </a>
+        </div>
+      </section>
     </div>
 
-    <div class="ledger-name" aria-label="DualisCapax">
-      <span class="w">Dualis</span><span class="b">Capax</span>
-    </div>
-
-    <p class="kicker">Residual plane</p>
-    <p class="lead">
-      Open research. Adaptive depth when rails are live.
-      One underweight point under playground expanse.
-    </p>
-    <div class="actions">
-      <a class="btn btn-solid" href="research/">Research</a>
-      <a class="btn btn-line" href="manifesto.html">Manifesto</a>
-      <a class="btn btn-line" href="residual-law.html">Residual Law</a>
-    </div>
-    <nav class="sub" aria-label="More">
-      <a href="model.html">Model</a>
-      <a href="gateway.html">Gateway</a>
-      <a href="participate.html">Participate</a>
-      <a href="research/healthcare/">Healthcare</a>
-    </nav>
-    <p class="slogans">
-      <b>No Tribes Preferred</b> · All Haters Welcome · Truth and Unity Prevail
-    </p>
-  </main>
+    <footer class="foot">
+      <span><b>No Tribes Preferred</b> · All Haters Welcome · Truth and Unity Prevail</span>
+      <span>DualisCapax · residual</span>
+    </footer>
+  </div>
 </body>
 </html>
