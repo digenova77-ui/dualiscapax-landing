@@ -1,0 +1,31 @@
+/* Sparse dual-capacity theme — blue + gold, minimal use */
+.theme-atmosphere {
+  position: relative;
+  isolation: isolate;
+}
+.theme-atmosphere::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 70%;
+  z-index: -1;
+  opacity: 0.14;
+  background:
+    radial-gradient(ellipse 55% 50% at 30% 40%, rgba(30, 144, 255, 0.45), transparent 70%),
+    radial-gradient(ellipse 55% 50% at 70% 40%, rgba(212, 160, 23, 0.4), transparent 70%);
+}
+@media (prefers-color-scheme: light) {
+  .theme-atmosphere::before { opacity: 0.08; }
+}
+.theme-divider {
+  height: 1px;
+  border: none;
+  margin: 0.5rem auto 1.25rem;
+  max-width: 12rem;
+  background: linear-gradient(90deg, transparent, #1e90ff, #d4a017, transparent);
+  opacity: 0.55;
+}
+.card-dual {
+  border-image: linear-gradient(135deg, rgba(30,144,255,0.35), rgba(212,160,23,0.35)) 1;
+}
