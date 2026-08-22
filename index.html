@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DualisCapax — Research-Driven AI · Dual-Capacity Access</title>
-<meta name="description" content="DualisCapax: full medical research surface, dual-capacity access, and gated AI simulation. Unity design. Truth Prevails.">
+<meta name="description" content="DualisCapax: full medical research surface, dual-capacity access, gated AI. No Tribes Preferred. All haters welcome. Truth and Unity Prevail.">
 <style>
   :root {
     --bg: #000; --fg: #fff; --muted: #8a8a8a; --border: #1c1c1c;
@@ -22,7 +22,6 @@
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
     min-height: 100vh; line-height: 1.55;
   }
-  /* Baked-in status strip — professional, not a loud ticker */
   .status {
     border-bottom: 1px solid var(--border);
     background: var(--surface);
@@ -38,6 +37,7 @@
   }
   .status-inner span { color: var(--muted); }
   .status-inner .mark { color: var(--accent); font-weight: 600; }
+  .status-inner .slogan { color: var(--gold); }
   @keyframes drift {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
@@ -86,6 +86,11 @@
     color: var(--muted); font-size: 0.92rem; max-width: 480px;
     margin: 0 auto 1.6rem;
   }
+  .slogans {
+    font-size: 0.72rem; letter-spacing: 0.06em; color: var(--muted);
+    margin: 0 auto 1.5rem; max-width: 520px;
+  }
+  .slogans span { white-space: nowrap; }
   .hero-cta {
     display: flex; flex-wrap: wrap; gap: 0.55rem; justify-content: center;
   }
@@ -141,18 +146,22 @@
     <div class="status-inner">
       <span class="mark">ONBOARDING OPEN</span>
       <span>Enterprise capacity deposits — credited toward agreed commercial terms</span>
+      <span class="slogan">No Tribes Preferred.</span>
       <span class="mark">RESEARCH LIVE</span>
       <span>Healthcare · Neurological · ALS journal — full clinical surface</span>
+      <span class="slogan">All haters welcome.</span>
       <span class="mark">GRASSROOTS</span>
       <span>Low- and zero-cost individual access funded by public-benefit allocation</span>
-      <span>Truth Prevails. No Tribes Preferred.</span>
+      <span class="slogan">Truth and Unity Prevail.</span>
       <span class="mark">ONBOARDING OPEN</span>
       <span>Enterprise capacity deposits — credited toward agreed commercial terms</span>
+      <span class="slogan">No Tribes Preferred.</span>
       <span class="mark">RESEARCH LIVE</span>
       <span>Healthcare · Neurological · ALS journal — full clinical surface</span>
+      <span class="slogan">All haters welcome.</span>
       <span class="mark">GRASSROOTS</span>
       <span>Low- and zero-cost individual access funded by public-benefit allocation</span>
-      <span>Truth Prevails. No Tribes Preferred.</span>
+      <span class="slogan">Truth and Unity Prevail.</span>
     </div>
   </div>
 
@@ -161,8 +170,8 @@
     <ul class="nav-links">
       <li><a href="research/">Research</a></li>
       <li><a href="ai/">AI</a></li>
+      <li><a href="manifesto.html">Manifesto</a></li>
       <li><a href="finance.html">Finance</a></li>
-      <li><a href="onboarding.html">Onboarding</a></li>
       <li><a class="gold" href="participate.html">Participate</a></li>
     </ul>
   </nav>
@@ -173,10 +182,15 @@
     <img class="logo-img logo-light" src="logo-light.svg" alt="DualisCapax">
     <h1>Research-Driven AI · Dual-Capacity Access</h1>
     <p>Full medical research surface. Gated simulation and AI. Enterprise capacity funds shared compute; individuals keep permanent low- or zero-cost access.</p>
+    <p class="slogans">
+      <span>No Tribes Preferred.</span> ·
+      <span>All haters welcome.</span> ·
+      <span>Truth and Unity Prevail.</span>
+    </p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="research/">Enter Research</a>
       <a class="btn" href="ai/">AI Portal</a>
-      <a class="btn" href="participate.html">Participate</a>
+      <a class="btn" href="manifesto.html">Manifesto</a>
     </div>
   </header>
 
@@ -240,8 +254,8 @@
   </section>
 
   <footer>
-    DualisCapax · Unity · Truth Prevails. No Tribes Preferred.<br>
-    Medical surface complete · Method opaque · Ontario & Canada first
+    No Tribes Preferred. · All haters welcome. · Truth and Unity Prevail.<br>
+    DualisCapax · Medical surface complete · Method opaque · Ontario & Canada first
   </footer>
 
 </body>
