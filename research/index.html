@@ -4,72 +4,205 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Research — DualisCapax</title>
+<meta name="description" content="DualisCapax research paths: healthcare, engineering, energy, scientific fields.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/svg+xml" href="../emblem-ring.svg">
 <style>
-  :root {
-    --bg: #000; --fg: #fff; --muted: #9a9a9a; --border: #1a1a1a; --accent: #00ff9d;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg); color: var(--fg);
-    font-family: system-ui, -apple-system, sans-serif;
-    min-height: 100vh; line-height: 1.5; padding: 1.5rem 1rem;
-  }
-  .container { max-width: 720px; margin: 0 auto; }
-  header { text-align: center; padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); }
-  .logo-wrap { max-width: 320px; margin: 0 auto 1rem; }
-  .logo-wrap img { width: 100%; height: auto; display: block; }
-  .logo-light { display: none; }
-  h1 { font-size: 1.6rem; letter-spacing: 0.12em; margin-bottom: 0.4rem; }
-  .sub { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
-  nav { margin: 2rem 0; }
-  nav a {
-    display: block; padding: 0.9rem 1rem;
-    border: 1px solid var(--border); border-radius: 6px;
-    color: var(--fg); text-decoration: none; margin-bottom: 0.6rem;
-    font-size: 0.95rem; transition: border-color 0.2s;
-  }
-  nav a:hover { border-color: var(--fg); }
-  .meta { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
-  footer { margin-top: 3rem; text-align: center; font-size: 0.7rem; color: var(--muted); }
-  @media (prefers-color-scheme: light) {
-    :root { --bg: #fff; --fg: #000; --muted: #555; --border: #e0e0e0; --accent: #008f5a; }
-    .logo-dark { display: none; }
-    .logo-light { display: block; }
-  }
+:root{
+  --bg:#070708;
+  --fg:#f3f2ef;
+  --muted:#8e8e88;
+  --line:rgba(255,255,255,.09);
+  --card:rgba(255,255,255,.03);
+  --gold:#c9a227;
+  --blue:#4a9fe0;
+  --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--fg);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+a{color:inherit;text-decoration:none}
+
+.wrap{
+  min-height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  position:relative;
+}
+.wrap::before{
+  content:"";
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(74,159,224,.12), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(201,162,39,.08), transparent 45%);
+}
+
+.top{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;
+  padding:1rem clamp(1.15rem,4vw,2rem);
+  border-bottom:1px solid var(--line);
+}
+.top a.home{
+  display:flex;align-items:center;gap:.65rem;
+  font-size:.9rem;font-weight:600;letter-spacing:.02em;
+}
+.top a.home img{
+  width:32px;height:32px;
+  filter:drop-shadow(0 0 10px rgba(74,159,224,.35));
+}
+.top a.back{
+  font-size:.75rem;color:var(--muted);letter-spacing:.04em;
+}
+.top a.back:hover{color:var(--fg)}
+
+.main{
+  position:relative;z-index:2;
+  max-width:40rem;
+  margin:0 auto;
+  padding:clamp(1.75rem,5vw,3rem) clamp(1.15rem,4vw,2rem) 3rem;
+  width:100%;
+}
+
+/* Single symmetry mark — no double wordmark */
+.identity{
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+  margin-bottom:2rem;
+}
+.identity .mark{
+  width:56px;height:56px;
+  margin-bottom:1.25rem;
+  filter:drop-shadow(0 0 16px rgba(74,159,224,.3));
+}
+.identity h1{
+  font-size:clamp(1.5rem, 1.2rem + 1.5vw, 1.85rem);
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.identity .sub{
+  font-family:var(--mono);
+  font-size:.65rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  max-width:28ch;
+}
+
+/* Dual residual seam under title — unity without repeating the name */
+.seam{
+  width:min(12rem, 50%);
+  height:2px;
+  margin:1.35rem auto 0;
+  background:linear-gradient(90deg, var(--blue), var(--gold));
+  border-radius:1px;
+  opacity:.7;
+}
+
+.paths{
+  display:flex;flex-direction:column;gap:.65rem;
+  margin-top:2rem;
+}
+.paths a{
+  display:block;
+  padding:1.1rem 1.15rem;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:4px;
+  transition:border-color .15s, background .15s, transform .15s;
+}
+.paths a:hover{
+  border-color:rgba(255,255,255,.2);
+  background:rgba(255,255,255,.05);
+  transform:translateY(-1px);
+}
+.paths a .t{
+  font-size:1.02rem;
+  font-weight:600;
+  letter-spacing:.02em;
+  margin-bottom:.25rem;
+}
+.paths a .d{
+  font-size:.78rem;
+  color:var(--muted);
+  line-height:1.4;
+}
+.paths a .tag{
+  display:inline-block;
+  margin-top:.55rem;
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--gold);
+  opacity:.85;
+}
+
+.foot{
+  position:relative;z-index:2;
+  padding:1rem clamp(1.15rem,4vw,2rem);
+  border-top:1px solid var(--line);
+  text-align:center;
+  font-size:.65rem;
+  color:#555;
+}
+.foot b{color:#7a6a40;font-weight:500}
 </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo-wrap">
-        <img class="logo-dark" src="../logo-dark.svg" alt="DualisCapax">
-        <img class="logo-light" src="../logo-light.svg" alt="DualisCapax">
-      </div>
-      <h1>RESEARCH</h1>
-      <div class="sub">Residual-Tax Control Plane · Method-Opaque</div>
+  <div class="wrap">
+    <header class="top">
+      <a class="home" href="../">
+        <img src="../emblem-ring.svg" width="32" height="32" alt="">
+        DualisCapax
+      </a>
+      <a class="back" href="../">← Home</a>
     </header>
 
-    <nav>
-      <a href="healthcare/">
-        Healthcare
-        <div class="meta">Medical · Neurological · Oncology · Infectious · Life Systems</div>
-      </a>
-      <a href="engineering/">
-        Engineering
-        <div class="meta">Systems · Materials · Computation</div>
-      </a>
-      <a href="energy/">
-        Energy
-        <div class="meta">Systems · Storage · Conversion</div>
-      </a>
-      <a href="fields/">
-        Scientific Fields (A–Z)
-        <div class="meta">Cross-cutting residual math surface</div>
-      </a>
-    </nav>
+    <main class="main">
+      <div class="identity">
+        <img class="mark" src="../emblem-ring.svg" width="56" height="56" alt="">
+        <h1>Research</h1>
+        <p class="sub">Open paths · residual depth when rails are live</p>
+        <div class="seam" aria-hidden="true"></div>
+      </div>
 
-    <footer>
-      DualisCapax · Residual Self-Validation Law sealed · Flag = 1
+      <nav class="paths" aria-label="Research domains">
+        <a href="healthcare/">
+          <div class="t">Healthcare</div>
+          <div class="d">Medical · Neurological · Oncology · Infectious · Life systems</div>
+          <span class="tag">Domain 01</span>
+        </a>
+        <a href="engineering/">
+          <div class="t">Engineering</div>
+          <div class="d">Systems · Materials · Computation</div>
+          <span class="tag">Domain 02</span>
+        </a>
+        <a href="energy/">
+          <div class="t">Energy</div>
+          <div class="d">Systems · Storage · Conversion</div>
+          <span class="tag">Domain 03</span>
+        </a>
+        <a href="fields/">
+          <div class="t">Scientific fields</div>
+          <div class="d">Cross-cutting residual math surface · A–Z</div>
+          <span class="tag">Domain 04</span>
+        </a>
+      </nav>
+    </main>
+
+    <footer class="foot">
+      <b>No Tribes Preferred</b> · All Haters Welcome · Truth and Unity Prevail
     </footer>
   </div>
 </body>
