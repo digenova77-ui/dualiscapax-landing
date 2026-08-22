@@ -1,0 +1,85 @@
+/**
+ * DualisCapax layout law
+ * Mobile:  document flow (WordPress-like vertical stack)
+ * Desktop: static panes — do not scroll past the pane that holds the needed info
+ * Tablet:  hybrid — overlay / popout for overflow that is too much for one mobile screen
+ */
+
+:root {
+  --pane-max: 42rem;
+  --header-h: 3.25rem;
+}
+
+/* —— Mobile first: flowing document —— */
+.dc-shell {
+  min-height: 100dvh;
+}
+.dc-pane {
+  width: 100%;
+  padding: 1rem 1.25rem 2rem;
+}
+.dc-overlay {
+  display: none;
+}
+.dc-overlay.is-open {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.72);
+  padding: 1rem;
+  overflow: auto;
+}
+.dc-overlay-card {
+  background: var(--bg, #000);
+  color: var(--fg, #fff);
+  border: 1px solid var(--border, #1c1c1c);
+  border-radius: 8px;
+  max-width: 36rem;
+  margin: 2rem auto;
+  padding: 1.25rem;
+}
+
+/* —— Tablet hybrid (~768–1023) —— */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dc-desktop-only-scroll {
+    /* allow limited internal scroll inside overlay only */
+  }
+  .dc-pane--secondary {
+    /* secondary detail prefers overlay trigger on tablet */
+  }
+}
+
+/* —— Desktop: static pane grid, no page-long scroll past the active pane —— */
+@media (min-width: 1024px) {
+  html, body {
+    height: 100%;
+    overflow: hidden; /* page itself does not roam */
+  }
+  .dc-shell {
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+  }
+  .dc-main {
+    display: grid;
+    grid-template-columns: minmax(12rem, 18rem) 1fr;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .dc-side {
+    border-right: 1px solid var(--border, #1c1c1c);
+    overflow: auto; /* nav list only */
+    min-height: 0;
+  }
+  .dc-pane {
+    min-height: 0;
+    overflow: auto; /* scroll INSIDE the pane if needed, not the whole site past the pane */
+    max-width: none;
+    padding: 1.5rem 2rem 2rem;
+  }
+  .dc-pane--fit {
+    overflow: hidden; /* strict: information designed to fit */
+  }
+}
