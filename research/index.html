@@ -4,206 +4,173 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Research — DualisCapax</title>
-<meta name="description" content="DualisCapax research paths: healthcare, engineering, energy, scientific fields.">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#020203">
 <link rel="icon" type="image/svg+xml" href="../emblem-ring.svg">
 <style>
 :root{
-  --bg:#070708;
-  --fg:#f3f2ef;
-  --muted:#8e8e88;
-  --line:rgba(255,255,255,.09);
-  --card:rgba(255,255,255,.03);
-  --gold:#c9a227;
-  --blue:#4a9fe0;
   --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:var(--font);
-  background:var(--bg);
-  color:var(--fg);
+  background:#020203;
+  color:rgba(243,242,239,.9);
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
-  line-height:1.5;
 }
 a{color:inherit;text-decoration:none}
 
-.wrap{
-  min-height:100vh;
-  display:grid;
-  grid-template-rows:auto 1fr auto;
-  position:relative;
-}
-.wrap::before{
-  content:"";
-  position:fixed;inset:0;z-index:0;pointer-events:none;
+.void{min-height:100vh;position:relative;isolation:isolate}
+.L0{position:fixed;inset:0;z-index:0;background:#010102}
+.L1{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
   background:
-    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(74,159,224,.12), transparent 50%),
-    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(201,162,39,.08), transparent 45%);
+    radial-gradient(ellipse 100% 70% at 50% 100%, #0a1520 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(40,90,140,.18), transparent 50%);
+}
+.L2{
+  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.06;
+  background-image:
+    linear-gradient(rgba(255,255,255,.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.4) 1px, transparent 1px);
+  background-size:64px 64px;
+  transform:perspective(500px) rotateX(52deg) scale(1.6);
+  transform-origin:center 130%;
+  mask-image:linear-gradient(180deg, transparent, #000 25%, #000 55%, transparent);
+}
+
+.ui{
+  position:relative;z-index:10;
+  max-width:36rem;
+  margin:0 auto;
+  padding:clamp(1.5rem,4vw,2.5rem);
+  min-height:100vh;
+  display:flex;flex-direction:column;
 }
 
 .top{
-  position:relative;z-index:2;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:1rem;
-  padding:1rem clamp(1.15rem,4vw,2rem);
-  border-bottom:1px solid var(--line);
-}
-.top a.home{
-  display:flex;align-items:center;gap:.65rem;
-  font-size:.9rem;font-weight:600;letter-spacing:.02em;
-}
-.top a.home img{
-  width:32px;height:32px;
-  filter:drop-shadow(0 0 10px rgba(74,159,224,.35));
-}
-.top a.back{
-  font-size:.75rem;color:var(--muted);letter-spacing:.04em;
-}
-.top a.back:hover{color:var(--fg)}
-
-.main{
-  position:relative;z-index:2;
-  max-width:40rem;
-  margin:0 auto;
-  padding:clamp(1.75rem,5vw,3rem) clamp(1.15rem,4vw,2rem) 3rem;
-  width:100%;
-}
-
-/* Single symmetry mark — no double wordmark */
-.identity{
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;
-  margin-bottom:2rem;
-}
-.identity .mark{
-  width:56px;height:56px;
-  margin-bottom:1.25rem;
-  filter:drop-shadow(0 0 16px rgba(74,159,224,.3));
-}
-.identity h1{
-  font-size:clamp(1.5rem, 1.2rem + 1.5vw, 1.85rem);
-  font-weight:700;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  margin-bottom:.5rem;
-}
-.identity .sub{
+  display:flex;justify-content:space-between;align-items:center;
+  opacity:.5;
   font-family:var(--mono);
-  font-size:.65rem;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--muted);
-  max-width:28ch;
+  font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:clamp(2.5rem, 8vw, 4rem);
 }
+.top a:hover{opacity:1}
 
-/* Dual residual seam under title — unity without repeating the name */
-.seam{
-  width:min(12rem, 50%);
-  height:2px;
-  margin:1.35rem auto 0;
-  background:linear-gradient(90deg, var(--blue), var(--gold));
-  border-radius:1px;
-  opacity:.7;
-}
-
-.paths{
-  display:flex;flex-direction:column;gap:.65rem;
-  margin-top:2rem;
-}
-.paths a{
-  display:block;
-  padding:1.1rem 1.15rem;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:4px;
-  transition:border-color .15s, background .15s, transform .15s;
-}
-.paths a:hover{
-  border-color:rgba(255,255,255,.2);
-  background:rgba(255,255,255,.05);
-  transform:translateY(-1px);
-}
-.paths a .t{
-  font-size:1.02rem;
+h1{
+  font-size:clamp(1.75rem, 1rem + 2vw, 2.25rem);
   font-weight:600;
-  letter-spacing:.02em;
-  margin-bottom:.25rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  margin-bottom:.75rem;
+  text-shadow:0 20px 50px rgba(0,0,0,.8);
 }
-.paths a .d{
-  font-size:.78rem;
-  color:var(--muted);
+.sub{
+  font-size:.85rem;
+  color:rgba(255,255,255,.35);
+  margin-bottom:2.5rem;
+  max-width:28ch;
+  line-height:1.5;
+}
+.seam{
+  width:5rem;height:1px;
+  background:linear-gradient(90deg,#4a9fe0,#c9a227);
+  margin-bottom:2.5rem;
+  opacity:.6;
+}
+
+.paths{display:flex;flex-direction:column;gap:0;flex:1}
+.paths a{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:1rem;
+  align-items:baseline;
+  padding:1.25rem 0;
+  border-top:1px solid rgba(255,255,255,.06);
+  transition:padding-left .2s, background .2s;
+}
+.paths a:last-child{border-bottom:1px solid rgba(255,255,255,.06)}
+.paths a:hover{
+  padding-left:.5rem;
+  background:linear-gradient(90deg, rgba(255,255,255,.03), transparent);
+}
+.paths .t{
+  font-size:1.05rem;
+  font-weight:500;
+  letter-spacing:.04em;
+  margin-bottom:.2rem;
+}
+.paths .d{
+  font-size:.75rem;
+  color:rgba(255,255,255,.32);
   line-height:1.4;
 }
-.paths a .tag{
-  display:inline-block;
-  margin-top:.55rem;
+.paths .n{
   font-family:var(--mono);
-  font-size:.58rem;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:var(--gold);
-  opacity:.85;
+  font-size:.6rem;
+  letter-spacing:.12em;
+  color:rgba(201,162,39,.5);
 }
 
 .foot{
-  position:relative;z-index:2;
-  padding:1rem clamp(1.15rem,4vw,2rem);
-  border-top:1px solid var(--line);
-  text-align:center;
-  font-size:.65rem;
-  color:#555;
+  margin-top:3rem;
+  font-size:.6rem;
+  letter-spacing:.08em;
+  color:rgba(255,255,255,.2);
 }
-.foot b{color:#7a6a40;font-weight:500}
+.foot b{color:rgba(201,162,39,.4);font-weight:500}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="top">
-      <a class="home" href="../">
-        <img src="../emblem-ring.svg" width="32" height="32" alt="">
-        DualisCapax
-      </a>
-      <a class="back" href="../">← Home</a>
-    </header>
+  <div class="void">
+    <div class="L0" aria-hidden="true"></div>
+    <div class="L1" aria-hidden="true"></div>
+    <div class="L2" aria-hidden="true"></div>
 
-    <main class="main">
-      <div class="identity">
-        <img class="mark" src="../emblem-ring.svg" width="56" height="56" alt="">
-        <h1>Research</h1>
-        <p class="sub">Open paths · residual depth when rails are live</p>
-        <div class="seam" aria-hidden="true"></div>
+    <div class="ui">
+      <div class="top">
+        <a href="../">DualisCapax</a>
+        <a href="../">←</a>
       </div>
 
-      <nav class="paths" aria-label="Research domains">
+      <h1>Research</h1>
+      <p class="sub">Open paths. Residual depth when the rails are live.</p>
+      <div class="seam" aria-hidden="true"></div>
+
+      <nav class="paths">
         <a href="healthcare/">
-          <div class="t">Healthcare</div>
-          <div class="d">Medical · Neurological · Oncology · Infectious · Life systems</div>
-          <span class="tag">Domain 01</span>
+          <div>
+            <div class="t">Healthcare</div>
+            <div class="d">Medical · Neurological · Oncology · Infectious · Life systems</div>
+          </div>
+          <span class="n">01</span>
         </a>
         <a href="engineering/">
-          <div class="t">Engineering</div>
-          <div class="d">Systems · Materials · Computation</div>
-          <span class="tag">Domain 02</span>
+          <div>
+            <div class="t">Engineering</div>
+            <div class="d">Systems · Materials · Computation</div>
+          </div>
+          <span class="n">02</span>
         </a>
         <a href="energy/">
-          <div class="t">Energy</div>
-          <div class="d">Systems · Storage · Conversion</div>
-          <span class="tag">Domain 03</span>
+          <div>
+            <div class="t">Energy</div>
+            <div class="d">Systems · Storage · Conversion</div>
+          </div>
+          <span class="n">03</span>
         </a>
         <a href="fields/">
-          <div class="t">Scientific fields</div>
-          <div class="d">Cross-cutting residual math surface · A–Z</div>
-          <span class="tag">Domain 04</span>
+          <div>
+            <div class="t">Scientific fields</div>
+            <div class="d">Cross-cutting residual surface · A–Z</div>
+          </div>
+          <span class="n">04</span>
         </a>
       </nav>
-    </main>
 
-    <footer class="foot">
-      <b>No Tribes Preferred</b> · All Haters Welcome · Truth and Unity Prevail
-    </footer>
+      <p class="foot"><b>No Tribes Preferred</b> · All Haters Welcome · Truth and Unity Prevail</p>
+    </div>
   </div>
 </body>
 </html>
