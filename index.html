@@ -4,43 +4,148 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DualisCapax</title>
-<meta name="description" content="DualisCapax — residual research plane.">
+<meta name="description" content="DualisCapax — residual research plane. Open where it should be. Deep when the rails are live.">
 <meta name="theme-color" content="#020203">
 <link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
 <style>
-:root{--font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--lab:none}
+:root{
+  --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --lab:none;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{font-family:var(--font);background:#020203;color:rgba(243,242,239,.92);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{
+  font-family:var(--font);
+  background:#020203;
+  color:rgba(243,242,239,.92);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
 a{color:inherit;text-decoration:none}
-.void{min-height:100vh;min-height:100dvh;position:relative;display:flex;flex-direction:column;isolation:isolate}
-.photo{position:fixed;inset:0;z-index:0;background:#020203 center/cover no-repeat;background-image:var(--lab);transform:scale(1.05);filter:saturate(.88) contrast(1.06)}
-.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,2,3,.9) 0%,rgba(2,2,3,.58) 40%,rgba(2,2,3,.32) 68%,rgba(2,2,3,.5) 100%),linear-gradient(180deg,rgba(2,2,3,.45) 0%,transparent 28%,transparent 52%,rgba(2,2,3,.93) 100%)}
-.L2{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 72% 38%,rgba(74,159,224,.14),transparent 55%);mix-blend-mode:screen}
-.L3{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.04;background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:72px 72px;transform:perspective(600px) rotateX(55deg) scale(1.7);transform-origin:center 125%;mask-image:linear-gradient(180deg,transparent,#000 35%,#000 55%,transparent)}
-.ui{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.5rem,4vw,2.75rem);max-width:40rem}
-.top{display:flex;align-items:center;gap:.75rem;opacity:.7;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase}
-.top img{width:22px;height:22px;filter:drop-shadow(0 0 8px rgba(74,159,224,.5))}
-.center{padding:2rem 0}
-.k{font-family:var(--mono);font-size:.65rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(201,162,39,.9);margin-bottom:1.75rem;text-shadow:0 2px 14px rgba(0,0,0,.85)}
-h1{font-size:clamp(2.3rem,1.2rem + 3.8vw,3.6rem);font-weight:600;letter-spacing:-.035em;line-height:1.08;max-width:12ch;margin-bottom:1.5rem;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.95),0 16px 48px rgba(0,0,0,.9)}
-.p{font-size:clamp(.95rem,.9rem + .3vw,1.08rem);line-height:1.65;color:rgba(255,255,255,.58);max-width:30ch;margin-bottom:2.5rem;text-shadow:0 2px 16px rgba(0,0,0,.95)}
-.cta{display:inline-flex;align-items:center;gap:.6rem;font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#fff;padding-bottom:.35rem;border-bottom:1px solid rgba(255,255,255,.4);text-shadow:0 2px 12px rgba(0,0,0,.85);transition:border-color .2s,letter-spacing .2s}
-.cta:hover{border-color:rgba(201,162,39,.9);letter-spacing:.14em}
-.bottom{display:flex;flex-wrap:wrap;gap:1rem 1.75rem;align-items:center;font-size:.65rem;letter-spacing:.08em;text-shadow:0 2px 10px rgba(0,0,0,.95)}
-.bottom a{color:rgba(255,255,255,.55);transition:color .15s}
-.bottom a:hover{color:#fff}
-.bottom .s{color:rgba(201,162,39,.55)}
+.void{
+  min-height:100vh;min-height:100dvh;
+  position:relative;
+  display:flex;flex-direction:column;
+  isolation:isolate;
+}
+.photo{
+  position:fixed;inset:0;z-index:0;
+  background:#020203 center/cover no-repeat;
+  background-image:var(--lab);
+  transform:scale(1.04);
+  filter:saturate(.75) contrast(1.08) brightness(.92);
+}
+.photo::after{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    linear-gradient(105deg,
+      rgba(2,2,3,.94) 0%,
+      rgba(2,2,3,.72) 28%,
+      rgba(2,2,3,.35) 55%,
+      rgba(2,2,3,.55) 100%),
+    linear-gradient(180deg,
+      rgba(2,2,3,.55) 0%,
+      transparent 25%,
+      transparent 50%,
+      rgba(2,2,3,.95) 100%);
+}
+.glow{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 70% 45% at 75% 40%, rgba(74,159,224,.11), transparent 55%);
+  mix-blend-mode:screen;
+}
+.lattice{
+  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.035;
+  background-image:
+    linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px);
+  background-size:68px 68px;
+  transform:perspective(640px) rotateX(56deg) scale(1.65);
+  transform-origin:center 130%;
+  mask-image:linear-gradient(180deg, transparent, #000 32%, #000 58%, transparent);
+}
+.ui{
+  position:relative;z-index:10;
+  flex:1;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  padding:clamp(1.4rem, 3.5vw, 2.5rem);
+  max-width:38rem;
+}
+.top{
+  display:flex;align-items:center;gap:.7rem;
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.55);
+}
+.top img{
+  width:20px;height:20px;
+  filter:drop-shadow(0 0 10px rgba(74,159,224,.45));
+}
+.center{padding:2.25rem 0 2rem}
+.k{
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:rgba(201,162,39,.85);
+  margin-bottom:1.6rem;
+  text-shadow:0 2px 16px rgba(0,0,0,.9);
+}
+h1{
+  font-size:clamp(2.15rem, 1.1rem + 3.5vw, 3.35rem);
+  font-weight:600;
+  letter-spacing:-.034em;
+  line-height:1.1;
+  max-width:11ch;
+  margin-bottom:1.35rem;
+  color:#fff;
+  text-shadow:0 2px 6px rgba(0,0,0,.95), 0 18px 50px rgba(0,0,0,.85);
+}
+.p{
+  font-size:clamp(.92rem, .88rem + .25vw, 1.05rem);
+  line-height:1.6;
+  color:rgba(255,255,255,.52);
+  max-width:28ch;
+  margin-bottom:2.25rem;
+  text-shadow:0 2px 18px rgba(0,0,0,.95);
+}
+.cta{
+  display:inline-flex;
+  font-size:.74rem;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#fff;
+  padding-bottom:.4rem;
+  border-bottom:1px solid rgba(255,255,255,.35);
+  text-shadow:0 2px 12px rgba(0,0,0,.9);
+  transition:border-color .2s, letter-spacing .2s;
+}
+.cta:hover{border-color:rgba(201,162,39,.85);letter-spacing:.16em}
+.bottom{
+  display:flex;flex-wrap:wrap;gap:.85rem 1.5rem;
+  font-size:.62rem;
+  letter-spacing:.1em;
+  text-shadow:0 2px 12px rgba(0,0,0,.95);
+}
+.bottom a{color:rgba(255,255,255,.42);transition:color .15s}
+.bottom a:hover{color:rgba(255,255,255,.9)}
+.bottom .s{color:rgba(201,162,39,.45)}
 </style>
 </head>
 <body>
   <div class="void">
     <div class="photo" role="img" aria-label="Research laboratory"></div>
-    <div class="L2" aria-hidden="true"></div>
-    <div class="L3" aria-hidden="true"></div>
+    <div class="glow" aria-hidden="true"></div>
+    <div class="lattice" aria-hidden="true"></div>
     <div class="ui">
       <div class="top">
-        <img src="emblem-ring.svg" width="22" height="22" alt="">
+        <img src="emblem-ring.svg" width="20" height="20" alt="">
         <span>DualisCapax</span>
       </div>
       <div class="center">
@@ -58,6 +163,9 @@ h1{font-size:clamp(2.3rem,1.2rem + 3.8vw,3.6rem);font-weight:600;letter-spacing:
       </div>
     </div>
   </div>
+  <script src="lab-p0.js"></script>
+  <script src="lab-p1.js"></script>
+  <script src="lab-p2.js"></script>
   <script src="lab-bg.js" defer></script>
 </body>
 </html>
