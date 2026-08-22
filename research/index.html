@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research — DualisCapax</title>
+<style>
+  :root {
+    --bg: #000; --fg: #fff; --muted: #9a9a9a; --border: #1a1a1a; --accent: #00ff9d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh; line-height: 1.5; padding: 1.5rem 1rem;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  header { text-align: center; padding: 2rem 0 1.5rem; border-bottom: 1px solid var(--border); }
+  .logo-wrap { max-width: 320px; margin: 0 auto 1rem; }
+  .logo-wrap img { width: 100%; height: auto; display: block; }
+  .logo-light { display: none; }
+  h1 { font-size: 1.6rem; letter-spacing: 0.12em; margin-bottom: 0.4rem; }
+  .sub { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  nav { margin: 2rem 0; }
+  nav a {
+    display: block; padding: 0.9rem 1rem;
+    border: 1px solid var(--border); border-radius: 6px;
+    color: var(--fg); text-decoration: none; margin-bottom: 0.6rem;
+    font-size: 0.95rem; transition: border-color 0.2s;
+  }
+  nav a:hover { border-color: var(--fg); }
+  .meta { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
+  footer { margin-top: 3rem; text-align: center; font-size: 0.7rem; color: var(--muted); }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #fff; --fg: #000; --muted: #555; --border: #e0e0e0; --accent: #008f5a; }
+    .logo-dark { display: none; }
+    .logo-light { display: block; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-wrap">
+        <img class="logo-dark" src="../logo-dark.svg" alt="DualisCapax">
+        <img class="logo-light" src="../logo-light.svg" alt="DualisCapax">
+      </div>
+      <h1>RESEARCH</h1>
+      <div class="sub">Residual-Tax Control Plane · Method-Opaque</div>
+    </header>
+
+    <nav>
+      <a href="healthcare/">
+        Healthcare
+        <div class="meta">Medical · Neurological · Oncology · Infectious · Life Systems</div>
+      </a>
+      <a href="engineering/">
+        Engineering
+        <div class="meta">Systems · Materials · Computation</div>
+      </a>
+      <a href="energy/">
+        Energy
+        <div class="meta">Systems · Storage · Conversion</div>
+      </a>
+      <a href="fields/">
+        Scientific Fields (A–Z)
+        <div class="meta">Cross-cutting residual math surface</div>
+      </a>
+    </nav>
+
+    <footer>
+      DualisCapax · Residual Self-Validation Law sealed · Flag = 1
+    </footer>
+  </div>
+</body>
+</html>
