@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALS Simulation Report — DualisCapax Research Journal</title>
+  <meta name="description" content="Serialized ALS residual surface: simulation imaging, pharmacology 3D, full report, parallel index, citations. Not medical advice.">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.1.0/3Dmol-min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <style>
+    :root { --bg:#000; --fg:#f2f2f2; --muted:#8a8a8a; --border:#222; --surface:#0a0a0a; --surface2:#111; --mono:"JetBrains Mono",Menlo,Consolas,monospace; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif;line-height:1.55;min-height:100vh}
+    a{color:#c8c8c8}
+    .crumbs{border-bottom:1px solid var(--border);padding:.7rem 1.2rem;font-size:.72rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+    .crumbs a{color:var(--muted);text-decoration:none}
+    .crumbs .now{color:var(--fg);font-weight:600}
+    .head{max-width:1280px;margin:0 auto;padding:1.25rem 1.4rem 1rem;border-bottom:1px solid var(--border)}
+    .head h1{font-size:1.35rem;margin-bottom:.35rem}
+    .head .meta{font-size:.75rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;margin-bottom:.75rem}
+    .head .meta strong{color:var(--fg)}
+    .disclaimer{font-size:.72rem;color:var(--muted);border:1px solid var(--border);background:var(--surface);padding:.65rem .85rem;border-radius:4px}
+    .tabs{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.35rem;padding:.85rem 1.4rem 0;border-bottom:1px solid var(--border)}
+    .tabs button{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--muted);border:1px solid var(--border);padding:.45rem .7rem;border-radius:3px 3px 0 0;cursor:pointer;border-bottom:none}
+    .tabs button[aria-selected="true"]{color:var(--fg);background:var(--surface2);border-color:#444}
+    .panel{display:none;max-width:1280px;margin:0 auto;padding:1.25rem 1.4rem 3rem}
+    .panel.active{display:block}
+    h2{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1.4rem 0 .7rem}
+    h2:first-child{margin-top:0}
+    h3{font-size:.95rem;margin:1rem 0 .5rem}
+    p,li{font-size:.88rem;color:var(--muted)}
+    p strong,li strong{color:var(--fg)}
+    .split{display:grid;grid-template-columns:1.15fr .85fr;gap:1rem}
+    @media(max-width:960px){.split{grid-template-columns:1fr}}
+    .card{border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:.9rem}
+    .card h3{margin-top:0;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    #simCanvas{width:100%;height:360px;display:block;background:#050505;border:1px solid var(--border);border-radius:6px}
+    .legend{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.55rem;font-size:.7rem;font-family:var(--mono);color:var(--muted)}
+    .mol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+    @media(max-width:900px){.mol-grid{grid-template-columns:1fr}}
+    .mol-card{border:1px solid var(--border);background:var(--surface);border-radius:6px;overflow:hidden}
+    .mol-card .viewer{width:100%;height:280px;background:#050505;cursor:grab}
+    .mol-card .body{padding:.75rem .85rem 1rem}
+    .mol-card .name{font-weight:600;font-size:.95rem}
+    .mol-card .chem{font-size:.75rem;color:var(--muted);margin:.2rem 0 .45rem}
+    .mol-card .tools{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem}
+    .mol-card button{font-size:.65rem;background:transparent;color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:.25rem .45rem;cursor:pointer}
+    table{width:100%;border-collapse:collapse;font-size:.78rem;margin:.5rem 0 1rem}
+    th,td{border:1px solid var(--border);padding:.45rem .55rem;text-align:left;vertical-align:top}
+    th{background:var(--surface2)}
+    .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.55rem}
+    .idx{border:1px solid var(--border);background:var(--surface);border-radius:4px;padding:.65rem .75rem;font-size:.75rem;font-family:var(--mono)}
+    .idx .k{color:var(--muted);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase}
+    .idx .v{color:var(--fg);margin-top:.2rem;word-break:break-all}
+    .cite{border-left:2px solid #444;padding:.55rem .75rem;margin:.45rem 0;background:var(--surface)}
+    .cite .t{color:var(--fg);font-size:.85rem}
+    .cite .m{font-size:.72rem;color:var(--muted);margin-top:.2rem}
+    footer{border-top:1px solid var(--border);padding:1rem 1.4rem;text-align:center;font-size:.68rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <nav class="crumbs">
+    <a href="../../../../index.html">DUALISCAPAX</a><span>/</span>
+    <a href="../../../index.html">Research</a><span>/</span>
+    <a href="../../">Healthcare</a><span>/</span>
+    <a href="../">Medical</a><span>/</span>
+    <a href="./">Neurological</a><span>/</span>
+    <a href="als.html">ALS</a><span>/</span>
+    <span class="now">Simulation Report</span>
+  </nav>
+  <header class="head">
+    <h1>ALS — Full Simulation Report</h1>
+    <div class="meta">
+      <span>Journal <strong>ED-RES-NEURO-ALS-SIM-002</strong></span>
+      <span>Pack <strong>als.dual.v0 → report.v1</strong></span>
+      <span>Serialize <strong>parallel · indexed</strong></span>
+    </div>
+    <p class="disclaimer"><strong>Not medical advice. Not a cure claim.</strong> Open residual surface. Simulation panes use public literature endpoints and PubChem geometries. DualisCapax columns are model-labeled, not regulatory findings.</p>
+  </header>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-tab="imaging">01 Simulation imaging</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="pharm">02 Pharmacology · 3D</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="report">03 Full report</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="index">04 Serial index</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="cites">05 Citations</button>
+  </div>
+  <section id="panel-imaging" class="panel active">
+    <div class="split">
+      <div>
+        <h2>Simulation data — single pane</h2>
+        <p style="margin-bottom:.75rem">Educational reconstruction of published <strong>ALSFRS-R</strong> and relative <strong>NfL</strong> directionality (VALOR SOD1-ALS). Not patient-level imaging.</p>
+        <canvas id="simCanvas" width="900" height="360"></canvas>
+        <div class="legend">
+          <span>White: placebo faster-prog. trajectory (lit.)</span>
+          <span>Gray: tofersen 28w→52w narrative (lit.)</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Pane metrics (serialized)</h3>
+        <table>
+          <tr><th>Key</th><th>Value</th></tr>
+          <tr><td>valor.tofersen.w28</td><td>−6.98 ALSFRS-R</td></tr>
+          <tr><td>valor.placebo.w28</td><td>−8.14 ALSFRS-R</td></tr>
+          <tr><td>valor.diff</td><td>1.2 (95% CI −3.2 to 5.5; P=0.97)</td></tr>
+          <tr><td>biomarker.nfl</td><td>Greater reduction vs placebo</td></tr>
+          <tr><td>biomarker.sod1_csf</td><td>Greater reduction vs placebo</td></tr>
+          <tr><td>ext.52w.early_vs_delayed</td><td>−6.0 vs −9.5 (diff 3.5; CI 0.4–6.7)</td></tr>
+          <tr><td>population</td><td>SOD1-ALS only</td></tr>
+        </table>
+        <p style="font-size:.72rem">Miller et al., NEJM 2022; NCT02623699 / NCT03070119.</p>
+      </div>
+    </div>
+  </section>
+  <section id="panel-pharm" class="panel">
+    <h2>Pharmacology — molecular structures</h2>
+    <p style="margin-bottom:1rem">PubChem 3D. Tofersen is an ASO (sequence-directed); third pane uses nucleotide reference for scale, not the full 20-mer therapeutic coordinates.</p>
+    <div class="mol-grid">
+      <div class="mol-card"><div class="viewer" id="mol-riluzole"></div><div class="body"><div class="name">Riluzole</div><div class="chem">CID 5070</div><div class="tools"><button type="button" data-mol="riluzole" data-style="stick">Sticks</button><button type="button" data-mol="riluzole" data-style="sphere">Spheres</button><button type="button" data-mol="riluzole" data-style="reset">Reset</button></div></div></div>
+      <div class="mol-card"><div class="viewer" id="mol-edaravone"></div><div class="body"><div class="name">Edaravone</div><div class="chem">CID 176870</div><div class="tools"><button type="button" data-mol="edaravone" data-style="stick">Sticks</button><button type="button" data-mol="edaravone" data-style="sphere">Spheres</button><button type="button" data-mol="edaravone" data-style="reset">Reset</button></div></div></div>
+      <div class="mol-card"><div class="viewer" id="mol-proxy"></div><div class="body"><div class="name">Tofersen class (ASO)</div><div class="chem">SOD1 ASO · nucleotide reference CID 190</div><div class="tools"><button type="button" data-mol="proxy" data-style="stick">Sticks</button><button type="button" data-mol="proxy" data-style="sphere">Spheres</button><button type="button" data-mol="proxy" data-style="reset">Reset</button></div><p style="font-size:.75rem;color:#8a8a8a">Mechanism: RNase H–mediated SOD1 mRNA knockdown. Population: SOD1-ALS only.</p></div></div>
+    </div>
+  </section>
+  <section id="panel-report" class="panel">
+    <h2>Full report</h2>
+    <h3>1. Scope</h3>
+    <p>Public ALS disease-modifying context with SOD1 tofersen (VALOR) endpoints parallel to riluzole and edaravone. Not a substitute for primary publications or labels.</p>
+    <h3>2. VALOR spine</h3>
+    <p>Miller et al., N Engl J Med 2022;387:1099-1110. SOD1-ALS, 2:1 tofersen 100 mg vs placebo, primary ALSFRS-R at week 28 in faster-progression subgroup: −6.98 vs −8.14 (diff 1.2; P=0.97). Biomarkers (CSF SOD1, plasma NfL) reduced vs placebo. OLE 52-week early vs delayed ALSFRS-R −6.0 vs −9.5. LP-related AEs common; neurologic SAEs 7% tofersen recipients.</p>
+    <h3>3. Model constraints</h3>
+    <ul style="margin:.5rem 0 1rem 1.2rem">
+      <li>Heterogeneity forbids one-molecule universal claims.</li>
+      <li>ASO success does not transfer to all ALS without new evidence.</li>
+      <li>Open face refuses cure language.</li>
+    </ul>
+  </section>
+  <section id="panel-index" class="panel">
+    <h2>Serial · parallel index</h2>
+    <div class="index-grid" id="serial-index"></div>
+  </section>
+  <section id="panel-cites" class="panel">
+    <h2>Citations</h2>
+    <div class="cite"><div class="t">Miller TM, et al. Trial of Antisense Oligonucleotide Tofersen for SOD1 ALS.</div><div class="m">N Engl J Med. 2022;387:1099-1110. doi:10.1056/NEJMoa2204705 · PMID 36129998 · NCT02623699 / NCT03070119</div></div>
+    <div class="cite"><div class="t">PubChem: Riluzole CID 5070 · Edaravone CID 176870</div><div class="m">NCBI PubChem</div></div>
+    <div class="cite"><div class="t">DualisCapax pack als.dual.v0</div><div class="m">seed_scaffold · not Seal · law_version 2026-08-22</div></div>
+  </section>
+  <footer>DualisCapax Research Journal · ALS Simulation Report · Not medical advice</footer>
+  <script>
+  (function(){
+    var tabs=document.querySelectorAll('.tabs button');
+    tabs.forEach(function(btn){btn.addEventListener('click',function(){
+      tabs.forEach(function(b){b.setAttribute('aria-selected','false')});
+      btn.setAttribute('aria-selected','true');
+      document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+      var p=document.getElementById('panel-'+btn.getAttribute('data-tab'));
+      if(p)p.classList.add('active');
+      if(btn.getAttribute('data-tab')==='pharm')ensureMols();
+      if(btn.getAttribute('data-tab')==='imaging')drawSim();
+    })});
+    var rows=[['disease.icd_hint','G12.21'],['pack.id','als.dual.v0/report.v1'],['agent.riluzole.cid','5070'],['agent.edaravone.cid','176870'],['agent.tofersen.class','SOD1_ASO'],['trial.valor.nct','NCT02623699'],['endpoint.alsfrs_r.w28.tofersen','-6.98'],['endpoint.alsfrs_r.w28.placebo','-8.14'],['endpoint.alsfrs_r.w28.p','0.97'],['endpoint.alsfrs_r.w52.early','-6.0'],['endpoint.alsfrs_r.w52.delayed','-9.5'],['biomarker.nfl','reduced_vs_placebo'],['constraint.population','SOD1_ALS_subset'],['constraint.cure_language','forbidden_on_open_face'],['cite.primary','NEJM_2022_387_1099'],['journal.id','ED-RES-NEURO-ALS-SIM-002']];
+    var box=document.getElementById('serial-index');
+    rows.forEach(function(r){var d=document.createElement('div');d.className='idx';d.innerHTML='<div class="k">'+r[0]+'</div><div class="v">'+r[1]+'</div>';box.appendChild(d)});
+    function drawSim(){var c=document.getElementById('simCanvas');if(!c)return;var ctx=c.getContext('2d');var dpr=Math.min(devicePixelRatio||1,2);var w=c.clientWidth||900,h=360;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#050505';ctx.fillRect(0,0,w,h);ctx.strokeStyle='rgba(255,255,255,0.06)';for(var x=40;x<w;x+=40){ctx.beginPath();ctx.moveTo(x,20);ctx.lineTo(x,h-30);ctx.stroke()}for(var y=20;y<h-20;y+=40){ctx.beginPath();ctx.moveTo(40,y);ctx.lineTo(w-20,y);ctx.stroke()}ctx.fillStyle='#666';ctx.font='11px monospace';ctx.fillText('ALSFRS-R Δ (illustrative)',40,16);ctx.fillText('0w',40,h-12);ctx.fillText('28w',w*0.55,h-12);ctx.fillText('52w',w*0.88,h-12);function Y(d){return 50+(-d)*12}function X(week){return 40+(week/52)*(w-70)}ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(28),Y(-8.14));ctx.lineTo(X(52),Y(-9.5));ctx.stroke();ctx.strokeStyle='#888';ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(28),Y(-6.98));ctx.lineTo(X(52),Y(-6.0));ctx.stroke();ctx.fillStyle='#888';ctx.fillText('Educational reconstruction from published point estimates',40,h-28)}
+    drawSim();window.addEventListener('resize',function(){if(document.getElementById('panel-imaging').classList.contains('active'))drawSim()});
+    var viewers={},loaded=false;
+    function styleOf(k){if(k==='sphere')return{sphere:{colorscheme:'Jmol',scale:0.28}};return{stick:{colorscheme:'Jmol',radius:0.14}}}
+    function loadMol(elId,cid,key){var el=document.getElementById(elId);if(!el||typeof $3Dmol==='undefined')return;var v=$3Dmol.createViewer(el,{backgroundColor:'0x050505'});viewers[key]=v;$3Dmol.download('cid:'+cid,v,{},function(){v.setStyle({},styleOf('stick'));v.zoomTo();v.render()})}
+    function ensureMols(){if(loaded||typeof $3Dmol==='undefined')return;loaded=true;loadMol('mol-riluzole',5070,'riluzole');loadMol('mol-edaravone',176870,'edaravone');loadMol('mol-proxy',190,'proxy')}
+    document.querySelectorAll('.mol-card button').forEach(function(b){b.addEventListener('click',function(){var key=b.getAttribute('data-mol'),st=b.getAttribute('data-style'),v=viewers[key];if(!v)return;if(st==='reset'){v.zoomTo();v.render();return}v.setStyle({},styleOf(st));v.render()})});
+  })();
+  </script>
+</body>
+</html>
