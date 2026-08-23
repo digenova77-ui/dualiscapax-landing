@@ -3,15 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DualisCapax</title>
-<meta name="description" content="DualisCapax — residual research plane. Open where it should be. Deep when the rails are live.">
+<title>DualisCapax — Unity · Residual · Equal Toll</title>
+<meta name="description" content="DualisCapax: one mirror, equal toll, residual priced in the open. Research plane for healthcare, engineering, and adaptive systems. No tribe preferred.">
 <meta name="theme-color" content="#020203">
 <link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
 <style>
 :root{
   --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --lab:none;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -31,48 +30,31 @@ a{color:inherit;text-decoration:none}
 }
 .photo{
   position:fixed;inset:0;z-index:0;
-  background:#020203 center/cover no-repeat;
-  background-image:var(--lab);
-  transform:scale(1.04);
-  filter:saturate(.75) contrast(1.08) brightness(.92);
+  background:#020203;
 }
 .photo::after{
   content:"";
   position:absolute;inset:0;
   background:
-    linear-gradient(105deg,
-      rgba(2,2,3,.94) 0%,
-      rgba(2,2,3,.72) 28%,
-      rgba(2,2,3,.35) 55%,
-      rgba(2,2,3,.55) 100%),
-    linear-gradient(180deg,
-      rgba(2,2,3,.55) 0%,
-      transparent 25%,
-      transparent 50%,
-      rgba(2,2,3,.95) 100%);
-}
-.glow{
-  position:fixed;inset:0;z-index:1;pointer-events:none;
-  background:radial-gradient(ellipse 70% 45% at 75% 40%, rgba(74,159,224,.11), transparent 55%);
-  mix-blend-mode:screen;
+    radial-gradient(ellipse 80% 50% at 70% 35%, rgba(255,255,255,.04), transparent 55%),
+    linear-gradient(105deg, rgba(2,2,3,.96) 0%, rgba(2,2,3,.75) 32%, rgba(2,2,3,.4) 58%, rgba(2,2,3,.7) 100%),
+    linear-gradient(180deg, rgba(2,2,3,.5) 0%, transparent 28%, transparent 55%, rgba(2,2,3,.97) 100%);
 }
 .lattice{
-  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.035;
+  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.04;
   background-image:
-    linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px);
-  background-size:68px 68px;
-  transform:perspective(640px) rotateX(56deg) scale(1.65);
-  transform-origin:center 130%;
-  mask-image:linear-gradient(180deg, transparent, #000 32%, #000 58%, transparent);
+    linear-gradient(rgba(255,255,255,.55) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.55) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent);
 }
 .ui{
   position:relative;z-index:10;
   flex:1;
   display:flex;flex-direction:column;
   justify-content:space-between;
-  padding:clamp(1.4rem, 3.5vw, 2.5rem);
-  max-width:38rem;
+  padding:clamp(1.4rem, 3.5vw, 2.6rem);
+  max-width:42rem;
 }
 .top{
   display:flex;align-items:center;gap:.7rem;
@@ -82,38 +64,40 @@ a{color:inherit;text-decoration:none}
   text-transform:uppercase;
   color:rgba(255,255,255,.55);
 }
-.top img{
-  width:20px;height:20px;
-  filter:drop-shadow(0 0 10px rgba(74,159,224,.45));
-}
-.center{padding:2.25rem 0 2rem}
+.top img{width:20px;height:20px}
+.center{padding:2.1rem 0 1.75rem}
 .k{
   font-family:var(--mono);
   font-size:.62rem;
-  letter-spacing:.3em;
+  letter-spacing:.28em;
   text-transform:uppercase;
-  color:rgba(201,162,39,.85);
-  margin-bottom:1.6rem;
-  text-shadow:0 2px 16px rgba(0,0,0,.9);
+  color:rgba(201,162,39,.88);
+  margin-bottom:1.35rem;
 }
 h1{
-  font-size:clamp(2.15rem, 1.1rem + 3.5vw, 3.35rem);
+  font-size:clamp(2rem, 1rem + 3.2vw, 3.1rem);
   font-weight:600;
   letter-spacing:-.034em;
-  line-height:1.1;
-  max-width:11ch;
-  margin-bottom:1.35rem;
+  line-height:1.12;
+  max-width:16ch;
+  margin-bottom:1.15rem;
   color:#fff;
-  text-shadow:0 2px 6px rgba(0,0,0,.95), 0 18px 50px rgba(0,0,0,.85);
 }
 .p{
-  font-size:clamp(.92rem, .88rem + .25vw, 1.05rem);
-  line-height:1.6;
-  color:rgba(255,255,255,.52);
-  max-width:28ch;
-  margin-bottom:2.25rem;
-  text-shadow:0 2px 18px rgba(0,0,0,.95);
+  font-size:clamp(.9rem, .86rem + .2vw, 1.02rem);
+  line-height:1.62;
+  color:rgba(255,255,255,.55);
+  max-width:36ch;
+  margin-bottom:1.1rem;
 }
+.p2{
+  font-size:.82rem;
+  line-height:1.55;
+  color:rgba(255,255,255,.4);
+  max-width:40ch;
+  margin-bottom:2rem;
+}
+.cta-row{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;align-items:center}
 .cta{
   display:inline-flex;
   font-size:.74rem;
@@ -123,25 +107,49 @@ h1{
   color:#fff;
   padding-bottom:.4rem;
   border-bottom:1px solid rgba(255,255,255,.35);
-  text-shadow:0 2px 12px rgba(0,0,0,.9);
   transition:border-color .2s, letter-spacing .2s;
 }
 .cta:hover{border-color:rgba(201,162,39,.85);letter-spacing:.16em}
+.cta.ghost{
+  border-bottom-color:rgba(255,255,255,.18);
+  color:rgba(255,255,255,.7);
+}
+.pillars{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0,1fr));
+  gap:.65rem;
+  margin:1.5rem 0 0;
+  max-width:36rem;
+}
+@media(max-width:520px){.pillars{grid-template-columns:1fr}}
+.pillar{
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(0,0,0,.35);
+  padding:.7rem .75rem;
+  border-radius:4px;
+}
+.pillar .t{
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.45);
+  margin-bottom:.35rem;
+}
+.pillar .b{font-size:.78rem;line-height:1.4;color:rgba(255,255,255,.72)}
 .bottom{
-  display:flex;flex-wrap:wrap;gap:.85rem 1.5rem;
+  display:flex;flex-wrap:wrap;gap:.75rem 1.35rem;
   font-size:.62rem;
   letter-spacing:.1em;
-  text-shadow:0 2px 12px rgba(0,0,0,.95);
 }
 .bottom a{color:rgba(255,255,255,.42);transition:color .15s}
 .bottom a:hover{color:rgba(255,255,255,.9)}
-.bottom .s{color:rgba(201,162,39,.45)}
+.bottom .s{color:rgba(201,162,39,.5)}
 </style>
 </head>
 <body>
   <div class="void">
-    <div class="photo" role="img" aria-label="Research laboratory"></div>
-    <div class="glow" aria-hidden="true"></div>
+    <div class="photo" aria-hidden="true"></div>
     <div class="lattice" aria-hidden="true"></div>
     <div class="ui">
       <div class="top">
@@ -149,10 +157,20 @@ h1{
         <span>DualisCapax</span>
       </div>
       <div class="center">
-        <p class="k">Residual plane</p>
-        <h1>Research that prices the cost of being wrong.</h1>
-        <p class="p">Healthcare. Engineering. Adaptive systems. Open where it should be. Deep when the rails are live.</p>
-        <a class="cta" href="research/">Enter research</a>
+        <p class="k">Unity · Residual plane</p>
+        <h1>One mirror. Equal toll. Open residual.</h1>
+        <p class="p">Healthcare. Engineering. Adaptive systems. Same door for every onboarder. Cost of being wrong priced in the open.</p>
+        <p class="p2">Not a tribe. Not a throne. A measuring stick held to the same standard in every land the law allows us to serve.</p>
+        <div class="cta-row">
+          <a class="cta" href="research/">Enter research</a>
+          <a class="cta ghost" href="research/healthcare/medical/neurological/als-simulation-report.html">ALS simulation report</a>
+          <a class="cta ghost" href="manifesto.html">Manifesto</a>
+        </div>
+        <div class="pillars" aria-label="Unity pillars">
+          <div class="pillar"><div class="t">Mirror</div><div class="b">One KYC path. One published standard. No founder lane.</div></div>
+          <div class="pillar"><div class="t">Toll</div><div class="b">Exit free. Bind optional. Residual tracked—not sold as ransom.</div></div>
+          <div class="pillar"><div class="t">World</div><div class="b">No tribe preferred. Merit, integrity, knowledge, truth.</div></div>
+        </div>
       </div>
       <div class="bottom">
         <a href="manifesto.html">Manifesto</a>
@@ -160,13 +178,10 @@ h1{
         <a href="residual-weight.html">Residual Weight</a>
         <a href="model.html">Model</a>
         <a href="gateway.html">Gateway</a>
+        <a href="research/healthcare/medical/neurological/als.html">ALS journal</a>
         <span class="s">No Tribes Preferred</span>
       </div>
     </div>
   </div>
-  <script src="lab-p0.js"></script>
-  <script src="lab-p1.js"></script>
-  <script src="lab-p2.js"></script>
-  <script src="lab-bg.js" defer></script>
 </body>
 </html>
