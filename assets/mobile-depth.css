@@ -1,0 +1,100 @@
+/**
+ * DualisCapax mobile dual-scroll depth
+ * WordPress-like vertical flow + opposing layer shift → height on the frame.
+ * Mobile / narrow only. Desktop layout-law stays static panes.
+ * Respects prefers-reduced-motion.
+ */
+
+.dc-depth {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Counter-layer: drifts opposite to scroll for depth */
+.dc-depth-shift {
+  pointer-events: none;
+  position: absolute;
+  inset: -8% -4%;
+  z-index: 0;
+  opacity: 0.14;
+  background:
+    radial-gradient(ellipse 55% 40% at 20% 30%, rgba(42, 127, 212, 0.55), transparent 70%),
+    radial-gradient(ellipse 50% 35% at 80% 70%, rgba(196, 160, 53, 0.28), transparent 70%);
+  will-change: transform;
+  transform: translate3d(0, var(--dc-shift-y, 0px), 0);
+}
+
+@media (prefers-color-scheme: light) {
+  .dc-depth-shift { opacity: 0.08; }
+}
+
+/* Content layer rides with scroll (natural); optional micro lag */
+.dc-depth-content {
+  position: relative;
+  z-index: 1;
+  will-change: transform;
+  transform: translate3d(0, var(--dc-content-y, 0px), 0);
+}
+
+/* Stacked info frames (mobile slides) */
+.dc-frame {
+  position: relative;
+  margin: 0 0 1.25rem;
+  padding: 1.15rem 1.15rem 1.25rem;
+  border: 1px solid var(--border, #1a1a1a);
+  border-radius: 6px;
+  background: var(--surface, #0c0c0c);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.dc-frame-shift {
+  pointer-events: none;
+  position: absolute;
+  inset: -20% -10%;
+  z-index: 0;
+  opacity: 0.12;
+  background:
+    linear-gradient(165deg, rgba(42, 127, 212, 0.25), transparent 55%),
+    linear-gradient(345deg, rgba(196, 160, 53, 0.12), transparent 50%);
+  will-change: transform;
+  transform: translate3d(0, var(--dc-frame-shift, 0px), 0);
+}
+
+.dc-frame > *:not(.dc-frame-shift) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Desktop / wide: kill parallax — layout law owns the pane */
+@media (min-width: 1024px) {
+  .dc-depth-shift,
+  .dc-frame-shift {
+    display: none;
+  }
+  .dc-depth-content {
+    transform: none !important;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .dc-depth-shift,
+  .dc-depth-content,
+  .dc-frame-shift {
+    transform: none !important;
+    will-change: auto;
+  }
+}
+
+/* Mobile only: slightly stronger frame edge depth */
+@media (max-width: 1023px) {
+  .dc-frame {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  }
+  @media (prefers-color-scheme: light) {
+    .dc-frame {
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+    }
+  }
+}

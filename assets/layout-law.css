@@ -1,6 +1,6 @@
 /**
  * DualisCapax layout law
- * Mobile:  document flow (WordPress-like vertical stack)
+ * Mobile:  document flow (WordPress-like vertical stack) + dual-scroll depth
  * Desktop: static panes — do not scroll past the pane that holds the needed info
  * Tablet:  hybrid — overlay / popout for overflow that is too much for one mobile screen
  */
@@ -8,6 +8,8 @@
 :root {
   --pane-max: 42rem;
   --header-h: 3.25rem;
+  --dc-shift-y: 0px;
+  --dc-content-y: 0px;
 }
 
 /* —— Mobile first: flowing document —— */
