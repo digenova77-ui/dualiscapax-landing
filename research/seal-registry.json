@@ -1,0 +1,112 @@
+{
+  "registry_id": "dualis.seal.registry.v1",
+  "law_version": "2026-08-23",
+  "seal_standard": "ALS-SIM-002 five-panel machine",
+  "disclaimer": "Catalog and residual surface only. Not medical, veterinary, or ecological treatment advice. Not cure or eradication claims.",
+  "domains": {
+    "human.cancer": {
+      "label": "Human oncology",
+      "entries": [
+        {"id": "ca.breast", "name": "Breast cancer", "status": "indexed_seed", "icd_hint": "C50"},
+        {"id": "ca.lung", "name": "Lung cancer (NSCLC/SCLC)", "status": "indexed_seed", "icd_hint": "C34"},
+        {"id": "ca.colorectal", "name": "Colorectal cancer", "status": "indexed_seed", "icd_hint": "C18-C20"},
+        {"id": "ca.prostate", "name": "Prostate cancer", "status": "indexed_seed", "icd_hint": "C61"},
+        {"id": "ca.pancreatic", "name": "Pancreatic cancer", "status": "indexed_seed", "icd_hint": "C25"},
+        {"id": "ca.melanoma", "name": "Melanoma", "status": "indexed_seed", "icd_hint": "C43"},
+        {"id": "ca.lymphoma", "name": "Lymphoma (HL/NHL class)", "status": "indexed_seed", "icd_hint": "C81-C85"},
+        {"id": "ca.leukemia", "name": "Leukemia (class)", "status": "indexed_seed", "icd_hint": "C91-C95"},
+        {"id": "ca.ovarian", "name": "Ovarian cancer", "status": "indexed_seed", "icd_hint": "C56"},
+        {"id": "ca.hepatic", "name": "Hepatocellular carcinoma", "status": "indexed_seed", "icd_hint": "C22.0"},
+        {"id": "ca.gastric", "name": "Gastric cancer", "status": "indexed_seed", "icd_hint": "C16"},
+        {"id": "ca.renal", "name": "Renal cell carcinoma", "status": "indexed_seed", "icd_hint": "C64"},
+        {"id": "ca.bladder", "name": "Bladder cancer", "status": "indexed_seed", "icd_hint": "C67"},
+        {"id": "ca.brain", "name": "Primary brain tumors (class)", "status": "indexed_seed", "icd_hint": "C71"},
+        {"id": "ca.thyroid", "name": "Thyroid cancer", "status": "indexed_seed", "icd_hint": "C73"},
+        {"id": "ca.cervical", "name": "Cervical cancer", "status": "indexed_seed", "icd_hint": "C53"},
+        {"id": "ca.esophagus", "name": "Esophageal cancer", "status": "indexed_seed", "icd_hint": "C15"},
+        {"id": "ca.myeloma", "name": "Multiple myeloma", "status": "indexed_seed", "icd_hint": "C90"}
+      ]
+    },
+    "human.neurological": {
+      "label": "Human neurological",
+      "entries": [
+        {"id": "neuro.als", "name": "Amyotrophic lateral sclerosis", "status": "report_v1", "icd_hint": "G12.21", "report": "healthcare/medical/neurological/als-simulation-report.html"}
+      ]
+    },
+    "human.communicable": {
+      "label": "Human communicable (seed index)",
+      "entries": [
+        {"id": "inf.tb", "name": "Tuberculosis", "status": "indexed_seed", "icd_hint": "A15-A19"},
+        {"id": "inf.hiv", "name": "HIV / AIDS", "status": "indexed_seed", "icd_hint": "B20-B24"},
+        {"id": "inf.malaria", "name": "Malaria", "status": "indexed_seed", "icd_hint": "B50-B54"},
+        {"id": "inf.influenza", "name": "Influenza", "status": "indexed_seed", "icd_hint": "J09-J11"},
+        {"id": "inf.covid19", "name": "COVID-19 (SARS-CoV-2)", "status": "indexed_seed", "icd_hint": "U07.1"},
+        {"id": "inf.hepatitis_b", "name": "Hepatitis B", "status": "indexed_seed"},
+        {"id": "inf.hepatitis_c", "name": "Hepatitis C", "status": "indexed_seed"},
+        {"id": "inf.measles", "name": "Measles", "status": "indexed_seed"},
+        {"id": "inf.dengue", "name": "Dengue", "status": "indexed_seed"},
+        {"id": "inf.cholera", "name": "Cholera", "status": "indexed_seed"},
+        {"id": "inf.ebola", "name": "Ebola virus disease", "status": "indexed_seed"},
+        {"id": "inf.mpox", "name": "Mpox", "status": "indexed_seed"},
+        {"id": "inf.polio", "name": "Poliomyelitis", "status": "indexed_seed"},
+        {"id": "inf.rabies", "name": "Rabies", "status": "indexed_seed"},
+        {"id": "inf.syphilis", "name": "Syphilis", "status": "indexed_seed"},
+        {"id": "inf.gonorrhea", "name": "Gonorrhea", "status": "indexed_seed"},
+        {"id": "inf.cdiff", "name": "Clostridioides difficile", "status": "indexed_seed"},
+        {"id": "inf.mrsa", "name": "MRSA / resistant Staph class", "status": "indexed_seed"},
+        {"id": "inf.candida_auris", "name": "Candida auris", "status": "indexed_seed"},
+        {"id": "inf.neglected_tropical", "name": "Neglected tropical diseases (class)", "status": "indexed_seed"}
+      ]
+    },
+    "animal.health": {
+      "label": "Animal health (One Health)",
+      "entries": [
+        {"id": "vet.avian_influenza", "name": "Avian influenza (animal)", "status": "indexed_seed"},
+        {"id": "vet.asf", "name": "African swine fever", "status": "indexed_seed"},
+        {"id": "vet.fmd", "name": "Foot-and-mouth disease", "status": "indexed_seed"},
+        {"id": "vet.rabies_animal", "name": "Rabies (animal hosts)", "status": "indexed_seed"},
+        {"id": "vet.bovine_tb", "name": "Bovine tuberculosis", "status": "indexed_seed"},
+        {"id": "vet.canine_parvo", "name": "Canine parvovirus", "status": "indexed_seed"},
+        {"id": "vet.white_nose", "name": "White-nose syndrome (bats)", "status": "indexed_seed"},
+        {"id": "vet.cwd", "name": "Chronic wasting disease", "status": "indexed_seed"}
+      ]
+    },
+    "ocean.life": {
+      "label": "Ocean / marine systems",
+      "entries": [
+        {"id": "mar.coral_bleaching", "name": "Coral bleaching / thermal stress", "status": "indexed_seed"},
+        {"id": "mar.harmful_algal", "name": "Harmful algal blooms", "status": "indexed_seed"},
+        {"id": "mar.fisheries_collapse", "name": "Fisheries stock residual (class)", "status": "indexed_seed"},
+        {"id": "mar.marine_mammal_morbillivirus", "name": "Marine mammal morbillivirus", "status": "indexed_seed"},
+        {"id": "mar.ocean_acidification", "name": "Ocean acidification residual", "status": "indexed_seed"},
+        {"id": "mar.plastic_burden", "name": "Plastic / chemical burden (class)", "status": "indexed_seed"}
+      ]
+    },
+    "plant.fungi": {
+      "label": "Plant world & fungi",
+      "entries": [
+        {"id": "bot.wheat_rust", "name": "Wheat rust complex", "status": "indexed_seed"},
+        {"id": "bot.rice_blast", "name": "Rice blast (Magnaporthe)", "status": "indexed_seed"},
+        {"id": "bot.potato_late_blight", "name": "Potato late blight", "status": "indexed_seed"},
+        {"id": "bot.ash_dieback", "name": "Ash dieback", "status": "indexed_seed"},
+        {"id": "bot.dutch_elm", "name": "Dutch elm disease", "status": "indexed_seed"},
+        {"id": "bot.citrus_greening", "name": "Citrus greening (HLB)", "status": "indexed_seed"},
+        {"id": "fun.candida_human", "name": "Candida (human path class)", "status": "indexed_seed"},
+        {"id": "fun.aspergillus", "name": "Aspergillus (class)", "status": "indexed_seed"},
+        {"id": "fun.chytrid_amphibian", "name": "Amphibian chytridiomycosis", "status": "indexed_seed"},
+        {"id": "fun.mycorrhizal_collapse", "name": "Mycorrhizal residual (class)", "status": "indexed_seed"}
+      ]
+    },
+    "natural.systems": {
+      "label": "Natural systems residual (class)",
+      "entries": [
+        {"id": "nat.pollination", "name": "Pollinator residual", "status": "indexed_seed"},
+        {"id": "nat.soil_microbiome", "name": "Soil microbiome residual", "status": "indexed_seed"},
+        {"id": "nat.freshwater", "name": "Freshwater system residual", "status": "indexed_seed"},
+        {"id": "nat.biodiversity", "name": "Biodiversity residual (class)", "status": "indexed_seed"}
+      ]
+    }
+  },
+  "expansion_queue": "Depth packs generated under residual cost; open face keeps full index visible.",
+  "reference_implementation": "research/healthcare/medical/neurological/als-simulation-report.html"
+}

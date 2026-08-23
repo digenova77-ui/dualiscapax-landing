@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEAL Registry — DualisCapax Research</title>
+  <meta name="description" content="Master index: cancer, communicable disease, animal health, ocean life, plant and fungi — SEAL five-panel standard. Not medical advice.">
+  <style>
+    :root { --bg:#000; --fg:#f2f2f2; --muted:#8a8a8a; --border:#222; --surface:#0a0a0a; --mono:ui-monospace,Menlo,Consolas,monospace; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif;line-height:1.5;min-height:100vh}
+    a{color:#c8c8c8}
+    .wrap{max-width:1100px;margin:0 auto;padding:1.25rem 1.35rem 3rem}
+    .crumbs{font-size:.72rem;color:var(--muted);margin-bottom:1rem}
+    .crumbs a{color:var(--muted);text-decoration:none}
+    h1{font-size:1.4rem;margin-bottom:.4rem}
+    .meta{font-size:.75rem;color:var(--muted);margin-bottom:1rem}
+    .disclaimer{font-size:.72rem;color:var(--muted);border:1px solid var(--border);padding:.7rem .85rem;background:var(--surface);border-radius:4px;margin-bottom:1.25rem}
+    h2{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 .65rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.5rem}
+    .card{border:1px solid var(--border);background:var(--surface);border-radius:4px;padding:.65rem .75rem;font-size:.8rem}
+    .card .id{font-family:var(--mono);font-size:.62rem;color:var(--muted)}
+    .card .name{font-weight:600;margin:.15rem 0}
+    .card .st{font-size:.68rem;color:var(--muted)}
+    .card .st.live{color:#c9a227}
+    .stats{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-bottom:1rem}
+    .stats strong{color:var(--fg)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="crumbs"><a href="../index.html">DualisCapax</a> / <a href="index.html">Research</a> / <span>SEAL Registry</span></p>
+    <h1>SEAL Registry</h1>
+    <p class="meta">Standard = ALS five-panel machine · law_version 2026-08-23 · <a href="SEAL-STANDARD.md">SEAL-STANDARD.md</a></p>
+    <p class="disclaimer"><strong>Not medical, veterinary, or ecological treatment advice.</strong> Not cure or eradication claims. Indexed seeds are catalog addresses; full reports expand under residual cost. ALS is the reference implementation with report_v1 depth.</p>
+    <div class="stats" id="stats"></div>
+    <div id="domains"></div>
+  </div>
+  <script>
+  fetch('seal-registry.json').then(function(r){return r.json()}).then(function(reg){
+    var total=0, live=0;
+    var root=document.getElementById('domains');
+    Object.keys(reg.domains).forEach(function(dk){
+      var dom=reg.domains[dk];
+      var h=document.createElement('h2');
+      h.textContent=dom.label+' · '+dk;
+      root.appendChild(h);
+      var g=document.createElement('div');
+      g.className='grid';
+      (dom.entries||[]).forEach(function(e){
+        total++;
+        if(e.status==='report_v1') live++;
+        var c=document.createElement('div');
+        c.className='card';
+        var link=e.report?('<a href="'+e.report+'">Open report</a>'):('status · '+e.status);
+        c.innerHTML='<div class="id">'+e.id+'</div><div class="name">'+e.name+'</div><div class="st '+(e.status==='report_v1'?'live':'')+'">'+link+(e.icd_hint?' · '+e.icd_hint:'')+'</div>';
+        g.appendChild(c);
+      });
+      root.appendChild(g);
+    });
+    document.getElementById('stats').innerHTML='<span>Entries <strong>'+total+'</strong></span><span>Report depth <strong>'+live+'</strong></span><span>Indexed seed <strong>'+(total-live)+'</strong></span><span>Registry <strong>'+reg.registry_id+'</strong></span>';
+  }).catch(function(){
+    document.getElementById('stats').textContent='Load seal-registry.json from same directory.';
+  });
+  </script>
+</body>
+</html>
