@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>SEAL Registry — DualisCapax Research</title>
-  <meta name="description" content="Master index: cancer, communicable disease, animal health, ocean life, plant and fungi — SEAL five-panel standard. Not medical advice.">
+  <meta name="description" content="Master index: cancer, communicable, animal, ocean, plant and fungi — SEAL five-panel standard. Not medical advice.">
+  <meta name="theme-color" content="#020203">
+  <link rel="stylesheet" href="../assets/css/mobile-life.css">
   <style>
     :root { --bg:#000; --fg:#f2f2f2; --muted:#8a8a8a; --border:#222; --surface:#0a0a0a; --mono:ui-monospace,Menlo,Consolas,monospace; }
     *{box-sizing:border-box;margin:0;padding:0}
@@ -25,6 +27,14 @@
     .card .st.live{color:#c9a227}
     .stats{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-bottom:1rem}
     .stats strong{color:var(--fg)}
+    @media (max-width: 720px) {
+      .wrap { padding: 0.85rem 1rem 4rem; }
+      h1 { font-size: 1.55rem; letter-spacing: -0.02em; }
+      .grid { grid-template-columns: 1fr; gap: 0.55rem; }
+      .card { padding: 0.85rem 0.95rem; border-radius: 10px; }
+      .card .name { font-size: 0.95rem; }
+      h2 { position: sticky; top: 48px; background: rgba(0,0,0,0.92); z-index: 5; padding: 0.55rem 0; }
+    }
   </style>
 </head>
 <body>
@@ -36,6 +46,7 @@
     <div class="stats" id="stats"></div>
     <div id="domains"></div>
   </div>
+  <script src="../assets/js/mobile-life.js"></script>
   <script>
   fetch('seal-registry.json').then(function(r){return r.json()}).then(function(reg){
     var total=0, live=0;
