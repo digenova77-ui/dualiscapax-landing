@@ -1,73 +1,119 @@
-/* DualisCapax — mobile life layer */
+/* DualisCapax — Mobile Life Layer ED-UI-20260823-MOBILE-LIFE-V1 */
 :root {
   --life-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --safe-b: env(safe-area-inset-bottom, 0px);
-  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+  --touch: 44px;
 }
-html { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-body { padding-bottom: calc(12px + var(--safe-b)); }
-.quark-flash {
-  position: fixed; width: 12px; height: 12px; margin: -6px 0 0 -6px;
-  border-radius: 50%; pointer-events: none; z-index: 9999;
-  background: radial-gradient(circle, #fff 0%, rgba(255,255,255,.55) 35%, transparent 70%);
-  box-shadow: 0 0 18px 6px rgba(255,255,255,.4);
-  animation: quarkBurst 0.55s var(--life-ease) forwards;
-  mix-blend-mode: screen;
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  padding-top: var(--safe-top);
+  overscroll-behavior-y: none;
 }
-@keyframes quarkBurst {
-  0% { transform: scale(0.2); opacity: 1; }
-  40% { transform: scale(1.8); opacity: 0.9; }
-  100% { transform: scale(3.2); opacity: 0; }
+.quark-field {
+  position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden;
 }
-.spirit-field {
-  position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; opacity: 0.5;
+.quark-spirit {
+  position: absolute; width: 4px; height: 4px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 12px 2px rgba(255,255,255,.55);
+  opacity: 0; transform: scale(.2); will-change: transform, opacity;
 }
-.spirit-field canvas { width: 100%; height: 100%; display: block; }
-.life-press {
-  transition: transform 0.2s var(--life-ease), border-color 0.2s;
-  touch-action: manipulation;
+.quark-spirit.go { animation: quarkPop .7s var(--life-ease) forwards; }
+@keyframes quarkPop {
+  0% { opacity: 0; transform: scale(.2); }
+  25% { opacity: 1; transform: scale(1.4); }
+  100% { opacity: 0; transform: scale(.1) translateY(-28px); }
 }
-.life-press:active { transform: scale(0.97); }
-.life-dock {
-  position: fixed; left: 12px; right: 12px; bottom: calc(12px + var(--safe-b));
-  z-index: 50; display: flex; gap: 8px; padding: 8px; border-radius: 16px;
-  background: rgba(8,8,10,0.84); border: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 8px 32px rgba(0,0,0,.45);
+.collapse-flash {
+  position: fixed; left: 50%; top: 42%; width: 12px; height: 12px;
+  margin: -6px 0 0 -6px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 40px 16px rgba(255,255,255,.35);
+  opacity: 0; pointer-events: none; z-index: 60;
 }
-.life-dock a, .life-dock button {
-  flex: 1; min-height: 44px; border: none; border-radius: 12px;
-  background: rgba(255,255,255,.06); color: rgba(255,255,255,.9);
-  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em;
+.collapse-flash.go { animation: collapseBurst .55s var(--life-ease) forwards; }
+@keyframes collapseBurst {
+  0% { opacity: 0; transform: scale(.3); }
+  30% { opacity: 1; transform: scale(1.8); }
+  100% { opacity: 0; transform: scale(3.2); }
+}
+.mob-chrome {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  min-height: var(--touch);
+  padding: .55rem 1rem; padding-top: max(.55rem, var(--safe-top));
+  background: rgba(2,2,3,.82);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.mob-chrome .brand {
+  display: flex; align-items: center; gap: .5rem;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: .62rem; letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(255,255,255,.7); text-decoration: none;
+}
+.mob-chrome .brand img { width: 18px; height: 18px; }
+.mob-actions { display: flex; gap: .4rem; }
+.mob-actions button, .mob-actions a {
+  min-height: 36px; min-width: 36px; padding: 0 .7rem; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.85); font-size: .65rem; letter-spacing: .08em;
   text-transform: uppercase; text-decoration: none;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; touch-action: manipulation;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: background .2s var(--life-ease), transform .15s;
 }
-.life-dock a:active, .life-dock button:active {
-  transform: scale(0.96); background: rgba(255,255,255,.14);
+.mob-actions button:active, .mob-actions a:active {
+  transform: scale(.96); background: rgba(255,255,255,.12);
 }
-.life-dock .primary { background: rgba(255,255,255,.14); }
-.life-chip {
-  position: fixed; top: calc(10px + var(--safe-t)); right: 12px; z-index: 50;
-  font-family: ui-monospace, Menlo, monospace; font-size: 0.58rem;
-  letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,.55);
-  padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.55); backdrop-filter: blur(10px);
-  display: flex; align-items: center; gap: 6px;
+.life-card {
+  border: 1px solid rgba(255,255,255,.1); background: rgba(10,10,10,.75);
+  border-radius: 12px; padding: 1rem 1.05rem;
+  transition: transform .25s var(--life-ease), border-color .25s;
+  -webkit-tap-highlight-color: transparent;
 }
-.life-chip .dot {
-  width: 6px; height: 6px; border-radius: 50%; background: #fff;
-  box-shadow: 0 0 8px rgba(255,255,255,.7);
-  animation: chipPulse 2s ease-in-out infinite;
+.life-card:active {
+  transform: scale(.985); border-color: rgba(255,255,255,.28);
 }
-@keyframes chipPulse { 0%,100%{opacity:.35} 50%{opacity:1} }
-.life-reveal {
-  opacity: 0; transform: translateY(14px);
-  transition: opacity 0.55s var(--life-ease), transform 0.55s var(--life-ease);
+.life-rise {
+  opacity: 0; transform: translateY(16px);
+  animation: lifeRise .7s var(--life-ease) forwards;
 }
-.life-reveal.in { opacity: 1; transform: none; }
-body.has-life-dock { padding-bottom: calc(72px + var(--safe-b)); }
+@keyframes lifeRise { to { opacity: 1; transform: translateY(0); } }
+.mob-dock {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+  display: none; padding: .45rem .75rem max(.45rem, var(--safe-bot));
+  background: rgba(2,2,3,.9);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(255,255,255,.1);
+  justify-content: space-around; gap: .25rem;
+}
+@media (max-width: 720px) {
+  .mob-dock { display: flex; }
+  body.has-mob-dock { padding-bottom: calc(56px + var(--safe-bot)); }
+}
+.mob-dock a {
+  flex: 1; text-align: center; padding: .45rem .2rem;
+  font-size: .58rem; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.45); text-decoration: none; border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.mob-dock a:active, .mob-dock a.on {
+  color: #fff; background: rgba(255,255,255,.08);
+}
+@media (max-width: 720px) {
+  .cta, .tabs button, a.deep {
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .tabs {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap; scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { flex: 0 0 auto; white-space: nowrap; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .quark-flash, .life-chip .dot, .spirit-field { animation: none !important; display: none !important; }
-  .life-reveal { opacity: 1; transform: none; transition: none; }
+  .quark-spirit.go, .collapse-flash.go, .life-rise {
+    animation: none !important; opacity: 1; transform: none;
+  }
 }
