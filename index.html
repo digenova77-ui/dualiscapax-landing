@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DualisCapax — Unity · Residual · Equal Toll</title>
 <meta name="description" content="DualisCapax: one mirror, equal toll, residual priced in the open. Research plane for healthcare, engineering, and adaptive systems. No tribe preferred.">
 <meta name="theme-color" content="#020203">
 <link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
+<link rel="stylesheet" href="assets/css/mobile-life.css">
 <style>
 :root{
   --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
@@ -54,6 +55,7 @@ a{color:inherit;text-decoration:none}
   display:flex;flex-direction:column;
   justify-content:space-between;
   padding:clamp(1.4rem, 3.5vw, 2.6rem);
+  padding-top:calc(clamp(1.4rem, 3.5vw, 2.6rem) + env(safe-area-inset-top, 0px));
   max-width:42rem;
 }
 .top{
@@ -100,6 +102,8 @@ h1{
 .cta-row{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;align-items:center}
 .cta{
   display:inline-flex;
+  align-items:center;
+  min-height:44px;
   font-size:.74rem;
   font-weight:500;
   letter-spacing:.14em;
@@ -125,8 +129,8 @@ h1{
 .pillar{
   border:1px solid rgba(255,255,255,.1);
   background:rgba(0,0,0,.35);
-  padding:.7rem .75rem;
-  border-radius:4px;
+  padding:.85rem .85rem;
+  border-radius:10px;
 }
 .pillar .t{
   font-family:var(--mono);
@@ -141,8 +145,9 @@ h1{
   display:flex;flex-wrap:wrap;gap:.75rem 1.35rem;
   font-size:.62rem;
   letter-spacing:.1em;
+  padding-bottom:env(safe-area-inset-bottom, 0px);
 }
-.bottom a{color:rgba(255,255,255,.42);transition:color .15s}
+.bottom a{color:rgba(255,255,255,.42);transition:color .15s;min-height:44px;display:inline-flex;align-items:center}
 .bottom a:hover{color:rgba(255,255,255,.9)}
 .bottom .s{color:rgba(201,162,39,.5)}
 </style>
@@ -163,8 +168,8 @@ h1{
         <p class="p2">Not a tribe. Not a throne. A measuring stick held to the same standard in every land the law allows us to serve.</p>
         <div class="cta-row">
           <a class="cta" href="research/">Enter research</a>
-          <a class="cta ghost" href="research/healthcare/medical/neurological/als-simulation-report.html">ALS simulation report</a>
-          <a class="cta ghost" href="manifesto.html">Manifesto</a>
+          <a class="cta ghost" href="research/seal-index.html">SEAL registry</a>
+          <a class="cta ghost" href="research/healthcare/medical/neurological/als-simulation-report.html">ALS report</a>
         </div>
         <div class="pillars" aria-label="Unity pillars">
           <div class="pillar"><div class="t">Mirror</div><div class="b">One KYC path. One published standard. No founder lane.</div></div>
@@ -183,5 +188,6 @@ h1{
       </div>
     </div>
   </div>
+  <script src="assets/js/mobile-life.js"></script>
 </body>
 </html>
