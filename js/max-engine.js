@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-/** DualisCapax Max Engine — unrestricted full-field WebGL */
+/** DualisCapax Max Engine — unrestricted full-field WebGL, no fake ambient buzz */
 export function startMaxEngine(canvas, options = {}) {
   if (!canvas) return { destroy() {}, playNarration() {}, stopNarration() {} };
 
@@ -91,32 +91,11 @@ export function startMaxEngine(canvas, options = {}) {
   grid.material.opacity = 0.32;
   scene.add(grid);
 
+  // Audio: real narrator file only. No oscillator drone.
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   const audioCtx = AudioCtx ? new AudioCtx() : null;
   let narratorBuffer = null;
   let narratorSource = null;
-  let ambientNodes = [];
-
-  function startAmbient() {
-    if (!audioCtx || reduceMotion) return;
-    const master = audioCtx.createGain();
-    master.gain.value = 0.045;
-    master.connect(audioCtx.destination);
-    const makeDrone = (freq, type, gainVal) => {
-      const osc = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      g.gain.value = gainVal;
-      osc.connect(g);
-      g.connect(master);
-      osc.start();
-      ambientNodes.push(osc, g);
-    };
-    makeDrone(48, 'sine', 0.9);
-    makeDrone(96.1, 'sine', 0.35);
-    makeDrone(144.4, 'triangle', 0.08);
-  }
 
   async function loadNarrator(url) {
     if (!audioCtx) return false;
@@ -125,20 +104,22 @@ export function startMaxEngine(canvas, options = {}) {
       if (!res.ok) return false;
       narratorBuffer = await audioCtx.decodeAudioData(await res.arrayBuffer());
       return true;
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   }
 
   async function playNarration() {
     if (!audioCtx) return { ok: false, reason: 'no-audio' };
     if (audioCtx.state === 'suspended') await audioCtx.resume();
     if (!narratorBuffer) {
-      const ok = await loadNarrator(options.narratorUrl || '/assets/audio/narrator.mp3');
+      const ok = await loadNarrator(options.narratorUrl || './assets/audio/narrator.mp3');
       if (!ok) return { ok: false, reason: 'missing-narrator-file' };
     }
     stopNarration();
     const src = audioCtx.createBufferSource();
     const g = audioCtx.createGain();
-    g.gain.value = 0.95;
+    g.gain.value = 1;
     src.buffer = narratorBuffer;
     src.connect(g);
     g.connect(audioCtx.destination);
@@ -170,13 +151,7 @@ export function startMaxEngine(canvas, options = {}) {
   };
   window.addEventListener('resize', onResize);
 
-  const unlock = async () => {
-    if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
-    if (ambientNodes.length === 0) startAmbient();
-    window.removeEventListener('pointerdown', unlock);
-  };
-  window.addEventListener('pointerdown', unlock, { passive: true });
-  loadNarrator(options.narratorUrl || '/assets/audio/narrator.mp3');
+  loadNarrator(options.narratorUrl || './assets/audio/narrator.mp3');
 
   const clock = new THREE.Clock();
   let running = true;
@@ -213,16 +188,12 @@ export function startMaxEngine(canvas, options = {}) {
   function destroy() {
     running = false;
     stopNarration();
-    ambientNodes.forEach((n) => {
-      try { n.stop && n.stop(); } catch {}
-      try { n.disconnect && n.disconnect(); } catch {}
-    });
-    ambientNodes = [];
     window.removeEventListener('pointermove', onMove);
     window.removeEventListener('resize', onResize);
-    window.removeEventListener('pointerdown', unlock);
     renderer.dispose();
-    if (audioCtx) { try { audioCtx.close(); } catch {} }
+    if (audioCtx) {
+      try { audioCtx.close(); } catch {}
+    }
   }
 
   return { destroy, playNarration, stopNarration, audioCtx };
