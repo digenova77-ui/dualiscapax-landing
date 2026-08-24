@@ -1,46 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Fuel · DualisCapax</title>
-<meta name="theme-color" content="#020203">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,sans-serif;background:#020203;color:#f3f2ef;min-height:100dvh;
-padding:calc(1.25rem + env(safe-area-inset-top)) 1.25rem 3rem;line-height:1.5}
-a{color:#C9A227;text-decoration:none}
-h1{font-size:1.75rem;margin:1rem 0 .75rem;letter-spacing:-.02em}
-p{color:rgba(255,255,255,.65);margin-bottom:1rem;font-size:1.05rem}
-.card{border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:1.15rem;margin:1rem 0;background:rgba(12,16,28,.5)}
-.card h2{font-size:1.1rem;margin-bottom:.35rem}
-.card .price{color:#C9A227;font-size:1.25rem;font-weight:600;margin:.5rem 0}
-.note{font-size:.9rem;color:rgba(255,255,255,.4);margin-top:2rem}
-.back{font-size:.95rem}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Fuel · DualisCapax</title>
+  <meta name="description" content="Prepaid Fuel capacity for DualisCapax adaptive depth." />
+  <meta name="theme-color" content="#020203" />
+  <link rel="icon" href="brand/emblem-helix.svg" />
+  <link rel="stylesheet" href="skin/v2.css?v=2" />
+  <style>
+    .wrap { max-width: 720px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+    .back { display: inline-block; margin-bottom: 1rem; color: var(--text-muted); }
+    .back:hover { color: var(--accent); }
+    h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
+    .lead { color: var(--text-muted); margin-bottom: 1.5rem; }
+    .grid { display: grid; gap: 1rem; }
+    @media (min-width: 720px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+    }
+    .card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 0.35rem; }
+    .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.75rem; }
+    .price { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .note { margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem; }
+    .actions { display: grid; gap: 0.75rem; margin-top: 1.25rem; max-width: 320px; }
+  </style>
 </head>
 <body>
-<a class="back" href="index.html">← DualisCapax</a>
-<h1>Fuel</h1>
-<p>Prepaid credit for Adaptive Intelligence depth. Open research stays free. Depth burns Fuel so the Grok-backed backend is not run at a loss.</p>
+  <div class="wrap">
+    <a class="back" href="index.html">← DualisCapax</a>
+    <h1>Fuel</h1>
+    <p class="lead">Prepaid capacity for adaptive depth. Open research stays free. Fuel is capacity for use — not a speculative token.</p>
 
-<div class="card">
-  <h2>Starter</h2>
-  <p>Enough for light dialogue sessions.</p>
-  <div class="price">Pack · demo pricing TBD</div>
-</div>
-<div class="card">
-  <h2>Standard</h2>
-  <p>Regular depth use.</p>
-  <div class="price">Pack · demo pricing TBD</div>
-</div>
-<div class="card">
-  <h2>Pro</h2>
-  <p>Heavier adaptive work.</p>
-  <div class="price">Pack · demo pricing TBD</div>
-</div>
+    <div class="grid">
+      <div class="card">
+        <h2>Starter</h2>
+        <p>Light adaptive sessions.</p>
+        <div class="price">$20 · 40 Fuel</div>
+      </div>
+      <div class="card">
+        <h2>Standard</h2>
+        <p>Regular depth use.</p>
+        <div class="price">$50 · 120 Fuel</div>
+      </div>
+      <div class="card">
+        <h2>Pro</h2>
+        <p>Heavier adaptive work.</p>
+        <div class="price">$120 · 320 Fuel</div>
+      </div>
+    </div>
 
-<p class="note">Live purchase hooks to your gateway / bank path when enabled. Fuel is capacity — not a speculative token. See docs/FUEL.md.</p>
-<p><a href="ai/chat.html">Open AI chat</a></p>
+    <div class="actions">
+      <a class="btn-primary" href="pay.html">Continue to payment</a>
+      <a class="btn-secondary" href="ai/chat.html">Open AI chat</a>
+    </div>
+
+    <p class="note">Payment gateway is in test mode until fiat destination and crypto addresses are locked. Depth credits only after confirmed payment.</p>
+  </div>
 </body>
 </html>
