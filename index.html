@@ -8,12 +8,48 @@
   <meta name="theme-color" content="#050505" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
+    /* —— Dark mode color variables (default / only theme) —— */
+    :root {
+      color-scheme: dark;
+
+      --bg: #050505;
+      --bg-elevated: #0c0c0c;
+      --fg: #f5f5f5;
+      --fg-muted: rgba(245, 245, 245, 0.75);
+      --fg-soft: rgba(245, 245, 245, 0.72);
+
+      --quark: #7eb6ff;
+      --quark-glow: rgba(126, 182, 255, 0.85);
+      --quark-glow-soft: rgba(90, 150, 255, 0.35);
+
+      --logo-glow-core: rgba(180, 220, 255, 0.95);
+      --logo-glow-mid: rgba(120, 190, 255, 0.75);
+      --logo-glow-outer: rgba(90, 160, 255, 0.45);
+      --logo-glow-core-peak: rgba(220, 240, 255, 1);
+      --logo-glow-mid-peak: rgba(140, 200, 255, 0.9);
+      --logo-glow-outer-peak: rgba(100, 180, 255, 0.55);
+
+      --spark: #eaf4ff;
+      --spark-glow: rgba(200, 230, 255, 1);
+      --spark-glow-soft: rgba(120, 190, 255, 0.85);
+
+      --nav: var(--fg-muted);
+      --theme-color: #050505;
+    }
+
+    /* Optional: respect system preference without changing the look today */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+      }
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; -webkit-text-size-adjust: 100%; }
     body {
       font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: #050505;
-      color: #f5f5f5;
+      background: var(--bg);
+      color: var(--fg);
       -webkit-font-smoothing: antialiased;
       overflow: hidden;
     }
@@ -24,8 +60,10 @@
     }
     .quark {
       position: absolute; width: 2px; height: 2px; border-radius: 50%;
-      background: #7eb6ff;
-      box-shadow: 0 0 4px 1px rgba(126,182,255,0.85), 0 0 10px 2px rgba(90,150,255,0.35);
+      background: var(--quark);
+      box-shadow:
+        0 0 4px 1px var(--quark-glow),
+        0 0 10px 2px var(--quark-glow-soft);
       opacity: 0.55; animation: quarkPulse 3.8s ease-in-out infinite;
     }
     .quark:nth-child(1)  { left: 8%;  top: 12%; animation-delay: 0s; opacity: 0.4; }
@@ -68,7 +106,7 @@
     }
     header nav a {
       font-size: 0.88rem; font-weight: 600;
-      color: rgba(245,245,245,0.75); letter-spacing: 0.01em;
+      color: var(--nav); letter-spacing: 0.01em;
       white-space: nowrap;
     }
 
@@ -79,7 +117,6 @@
       padding: 0.35rem 0;
     }
 
-    /* Logo: same SVG file, no redraw — glow only */
     .wordmark {
       position: relative;
       display: flex; justify-content: center; width: 100%;
@@ -91,36 +128,34 @@
       z-index: 1;
       width: min(88vw, 22rem);
       height: auto; display: block; object-fit: contain;
-      /* brighten presence without changing artwork */
       filter:
-        drop-shadow(0 0 6px rgba(180, 220, 255, 0.95))
-        drop-shadow(0 0 14px rgba(120, 190, 255, 0.75))
-        drop-shadow(0 0 28px rgba(90, 160, 255, 0.45));
+        drop-shadow(0 0 6px var(--logo-glow-core))
+        drop-shadow(0 0 14px var(--logo-glow-mid))
+        drop-shadow(0 0 28px var(--logo-glow-outer));
       animation: logoAura 2.8s ease-in-out infinite;
     }
     @keyframes logoAura {
       0%, 100% {
         filter:
-          drop-shadow(0 0 5px rgba(180, 220, 255, 0.85))
-          drop-shadow(0 0 12px rgba(120, 190, 255, 0.55))
-          drop-shadow(0 0 22px rgba(90, 160, 255, 0.35));
+          drop-shadow(0 0 5px var(--logo-glow-core))
+          drop-shadow(0 0 12px var(--logo-glow-mid))
+          drop-shadow(0 0 22px var(--logo-glow-outer));
       }
       50% {
         filter:
-          drop-shadow(0 0 8px rgba(220, 240, 255, 1))
-          drop-shadow(0 0 18px rgba(140, 200, 255, 0.9))
-          drop-shadow(0 0 36px rgba(100, 180, 255, 0.55));
+          drop-shadow(0 0 8px var(--logo-glow-core-peak))
+          drop-shadow(0 0 18px var(--logo-glow-mid-peak))
+          drop-shadow(0 0 36px var(--logo-glow-outer-peak));
       }
     }
-    /* sparkles around logo — brighter / larger than background quarks */
     .wordmark .spark {
       position: absolute;
       width: 3px; height: 3px;
       border-radius: 50%;
-      background: #eaf4ff;
+      background: var(--spark);
       box-shadow:
-        0 0 6px 2px rgba(200, 230, 255, 1),
-        0 0 14px 4px rgba(120, 190, 255, 0.85);
+        0 0 6px 2px var(--spark-glow),
+        0 0 14px 4px var(--spark-glow-soft);
       pointer-events: none;
       z-index: 2;
       animation: sparkFlash 2.2s ease-in-out infinite;
@@ -157,6 +192,7 @@
       font-size: clamp(2.6rem, 11vw, 4.5rem); font-weight: 900;
       line-height: 0.9; letter-spacing: -0.05em; text-transform: uppercase;
       margin: 0 0 0.65rem;
+      color: var(--fg);
     }
 
     .lines {
@@ -166,7 +202,7 @@
     }
     .line {
       font-size: clamp(0.98rem, 3.4vw, 1.15rem); font-weight: 600;
-      color: rgba(245,245,245,0.72); line-height: 1.35; margin: 0 0 0.12rem;
+      color: var(--fg-soft); line-height: 1.35; margin: 0 0 0.12rem;
     }
 
     @media (max-height: 640px) {
