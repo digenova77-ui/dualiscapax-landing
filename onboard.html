@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Residual Cost Peg — DualisCapax</title>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Inter,system-ui,sans-serif;
+  background:#000;
+  color:#f5f5f5;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.55;
+}
+a{color:inherit;text-decoration:none}
+.wrap{
+  max-width:40rem;
+  margin:0 auto;
+  padding:
+    max(1rem, env(safe-area-inset-top))
+    max(1.15rem, env(safe-area-inset-right))
+    max(2.5rem, env(safe-area-inset-bottom))
+    max(1.15rem, env(safe-area-inset-left));
+}
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0.4rem 0 1.4rem;
+}
+.top a{
+  font-size:0.88rem;
+  font-weight:600;
+  color:rgba(245,245,245,0.72);
+}
+.kicker{
+  font-size:0.78rem;
+  font-weight:700;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:rgba(245,245,245,0.55);
+  margin-bottom:0.55rem;
+}
+h1{
+  font-size:clamp(1.85rem, 7vw, 2.6rem);
+  font-weight:900;
+  letter-spacing:-0.03em;
+  line-height:1.05;
+  margin-bottom:0.65rem;
+}
+.lede{
+  font-size:clamp(1.05rem, 3.6vw, 1.2rem);
+  font-weight:500;
+  color:rgba(245,245,245,0.78);
+  margin-bottom:1.75rem;
+}
+.gauge{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  border:1px solid rgba(245,245,245,0.18);
+  border-radius:1rem;
+  padding:1rem 1.1rem;
+  margin-bottom:1.75rem;
+}
+.ring{
+  width:4.5rem;
+  height:4.5rem;
+  border-radius:50%;
+  flex-shrink:0;
+  background:
+    conic-gradient(#f5f5f5 0 62%, rgba(245,245,245,0.12) 0);
+  mask:radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+}
+.gauge-copy strong{
+  display:block;
+  font-size:1rem;
+  font-weight:800;
+  margin-bottom:0.2rem;
+}
+.gauge-copy span{
+  font-size:0.88rem;
+  color:rgba(245,245,245,0.65);
+}
+.timer{
+  font-variant-numeric:tabular-nums;
+  font-weight:700;
+  letter-spacing:0.06em;
+  color:rgba(245,245,245,0.9);
+}
+h2{
+  font-size:1.05rem;
+  font-weight:800;
+  margin:1.6rem 0 0.55rem;
+  letter-spacing:-0.01em;
+}
+p{
+  font-size:1.02rem;
+  color:rgba(245,245,245,0.82);
+  margin-bottom:0.85rem;
+}
+ul{
+  list-style:none;
+  margin:0 0 1rem;
+}
+li{
+  position:relative;
+  padding-left:1.1rem;
+  margin-bottom:0.55rem;
+  font-size:1.02rem;
+  color:rgba(245,245,245,0.82);
+}
+li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0.55em;
+  width:0.4rem;
+  height:0.4rem;
+  border-radius:50%;
+  background:#f5f5f5;
+}
+.note{
+  margin-top:1.75rem;
+  padding-top:1rem;
+  border-top:1px solid rgba(245,245,245,0.14);
+  font-size:0.86rem;
+  color:rgba(245,245,245,0.55);
+}
+.cta{
+  display:inline-block;
+  margin-top:1.4rem;
+  padding:0.85rem 1.25rem;
+  border:1px solid rgba(245,245,245,0.35);
+  border-radius:999px;
+  font-weight:700;
+  font-size:0.95rem;
+}
+.cta:active{opacity:0.75}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a href="index.html">← DualisCapax</a>
+      <a href="corporate.html">Financial</a>
+    </div>
+
+    <p class="kicker">Residual Cost Peg</p>
+    <h1>Lock capacity.<br>Price the residual.</h1>
+    <p class="lede">Onboarding is a prepaid residual seat — not a subscription, not a tip jar. You fund capacity; DualisCapax pegs residual cost against what that capacity can still carry.</p>
+
+    <div class="gauge" aria-label="Residual capacity gauge">
+      <div class="ring" aria-hidden="true"></div>
+      <div class="gauge-copy">
+        <strong>Open residual window</strong>
+        <span>Singularity clock · <span class="timer" id="clock">--:--:--</span></span>
+      </div>
+    </div>
+
+    <h2>What you are locking into</h2>
+    <p>Capital placed here is allocated against residual capacity: research, adaptive AI runs, and financial structure that does not float free of cost. The peg is simple — residual burn is measured; unused capacity stays on the book until it is spent or released under the terms of the seat.</p>
+    <ul>
+      <li>Prepaid residual seat (capacity, not equity by default)</li>
+      <li>Cost pegged to measured residual, not marketing tiers</li>
+      <li>Clear line between operating burn and locked reserve</li>
+    </ul>
+
+    <h2>Corporate frame</h2>
+    <p>For major corporations, residual cost pegging is a way to pre-fund constrained technical and research capacity with a traceable cost basis. Depending on jurisdiction and structure, prepaid capacity and qualified research spend can sit in familiar tax and accounting lanes — R&D treatment, prepaid expense recognition, or structured service agreements — when counsel and auditors agree the facts support it.</p>
+    <ul>
+      <li>Budget residual as a known cost line, not an open-ended vendor bleed</li>
+      <li>Align spend with documented research and adaptive systems work</li>
+      <li>Keep the residual ledger inspectable for internal control</li>
+    </ul>
+    <p>This is not tax advice. Corporate treatment depends on how the seat is contracted, where the entity sits, and what the capacity is actually used for.</p>
+
+    <h2>Grassroots, bottom up</h2>
+    <p>The same peg works small. Individuals and small teams can lock modest residual seats, share pooled capacity, and climb the same cost structure without needing a corporate treasury. Bottom-up seats still buy measured residual — not a softer product — so grassroots access stays honest to the same ledger major corps read.</p>
+    <ul>
+      <li>Small seats still clear against residual cost, not charity tiers</li>
+      <li>Pooling can aggregate capacity without erasing individual residual</li>
+      <li>No preferred tribe: the peg does not care who funds the seat</li>
+    </ul>
+
+    <h2>What happens next</h2>
+    <p>This page is the brief. Settlement rails (fiat and crypto) attach when the seat is issued. Until then, the residual cost peg is the contract language: you fund capacity; residual is priced; nothing is free that still burns.</p>
+
+    <a class="cta" href="corporate.html">Continue to Financial</a>
+
+    <p class="note">DualisCapax · Residual Law Finance. Informational only — not an offer of securities, not tax, legal, or investment advice. Confirm structure with your own counsel and tax advisor before locking capital.</p>
+  </div>
+  <script>
+  (function(){
+    var el=document.getElementById('clock');
+    function tick(){
+      var d=new Date();
+      var h=String(d.getUTCHours()).padStart(2,'0');
+      var m=String(d.getUTCMinutes()).padStart(2,'0');
+      var s=String(d.getUTCSeconds()).padStart(2,'0');
+      el.textContent=h+':'+m+':'+s+' UTC';
+    }
+    tick();
+    setInterval(tick,1000);
+  })();
+  </script>
+</body>
+</html>
