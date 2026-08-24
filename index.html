@@ -225,8 +225,9 @@
   let done=false, phase='question', residualLive=false, crossfading=false;
   let audioCtx=null, osc=null, gain=null;
 
-  /* Video ~27s. Late expansion / settle phase starts crossfade. */
-  const CROSSFADE_AT = 0.74; // ~20s into 27s — cosmos expanded, bang settled
+  /* 2x playback = 50% wall time. Crossfade still at 74% of video timeline. */
+  const PLAYBACK_RATE = 2;
+  const CROSSFADE_AT = 0.74;
 
   function buzz(pattern){
     try{
@@ -301,7 +302,6 @@
     if(typeof then==='function') then();
   }
 
-  /* Matched crossfade: Big Bang out + landing in together */
   function beginCrossfade(){
     if(done || crossfading) return;
     crossfading=true;
@@ -331,6 +331,7 @@
     credit.classList.add('is-on');
     video.classList.add('is-on');
     seed.classList.add('is-gone');
+    try{ video.playbackRate = PLAYBACK_RATE; }catch(e){}
     buzz([40, 20, 55, 15, 30]);
     const p=video.play();
     if(p && p.catch) p.catch(function(){});
@@ -346,7 +347,6 @@
     setTimeout(startVideo, 1200);
   }
 
-  /* Drive crossfade from video clock — late expansion phase */
   video.addEventListener('timeupdate', function(){
     if(phase!=='video' || done) return;
     const d=video.duration;
@@ -372,12 +372,13 @@
     beginCrossfade();
   });
 
+  /* Safety windows scaled for 2x video (~13.5s wall) */
   setTimeout(function(){
     if(!done && phase==='video' && video.readyState<2) beginCrossfade();
-  }, 14000);
+  }, 9000);
   setTimeout(function(){
     if(!done) beginCrossfade();
-  }, 32000);
+  }, 22000);
 })();
 </script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
