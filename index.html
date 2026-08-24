@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>DualisCapax</title>
-  <meta name="description" content="Truth prevails. DualisCapax — Financial, Research, AI." />
+  <meta name="description" content="No tribes preferred. Truth prevails. DualisCapax — Financial, Research, AI." />
   <meta name="theme-color" content="#050508" />
   <link rel="icon" href="brand/emblem-helix.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,10 +46,10 @@
       gap: 1rem;
     }
     .brand {
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: rgba(255,255,255,0.9);
+      font-size: clamp(1.25rem, 3.5vw, 1.65rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: rgba(255,255,255,0.95);
       text-decoration: none;
     }
     .menu {
@@ -80,14 +80,27 @@
       text-align: center;
       pointer-events: none;
     }
+    .center-copy {
+      display: grid;
+      gap: 0.55rem;
+      justify-items: center;
+      max-width: min(72vw, 18rem);
+    }
+    .subtitle {
+      font-size: clamp(0.78rem, 2.2vw, 0.95rem);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+    }
     .title {
-      font-size: clamp(2.4rem, 10vw, 5.5rem);
-      line-height: 0.95;
+      font-size: clamp(1.55rem, 5.5vw, 2.75rem);
+      line-height: 1.05;
       font-weight: 800;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.03em;
       text-transform: uppercase;
       text-shadow: 0 0 40px rgba(255,255,255,0.18);
-      max-width: 10ch;
+      max-width: 12ch;
     }
     .bottom {
       display: flex;
@@ -127,7 +140,10 @@
     </header>
 
     <main class="center">
-      <h1 class="title">Truth prevails</h1>
+      <div class="center-copy">
+        <p class="subtitle">No Tribes Preferred.</p>
+        <h1 class="title">Truth Prevails.</h1>
+      </div>
     </main>
 
     <footer class="bottom">
