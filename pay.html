@@ -3,251 +3,130 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Pay · DualisCapax</title>
-  <meta name="description" content="Prepaid Fuel capacity for DualisCapax adaptive depth. Open research stays free." />
-  <meta name="theme-color" content="#020203" />
+  <title>Buy Fuel · DualisCapax</title>
+  <meta name="theme-color" content="#050505" />
   <link rel="icon" href="brand/emblem-helix.svg" />
-  <link rel="stylesheet" href="skin/v2.css?v=2" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    .wrap { max-width: 720px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
-    .back { display: inline-block; margin-bottom: 1rem; color: var(--text-muted); }
-    .back:hover { color: var(--accent); }
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 0.25rem 0.5rem;
-      border-radius: 999px;
-      margin-bottom: 1rem;
-    }
-    .badge.test { border-color: #444; color: #ccc; }
-    h1 { font-size: 1.75rem; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
-    .lead { color: var(--text-muted); margin-bottom: 1.5rem; }
-    .grid { display: grid; gap: 1rem; }
-    @media (min-width: 720px) { .grid.packs { grid-template-columns: repeat(3, 1fr); } }
-    .card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem;
-    }
-    .card h2 { font-size: 1.1rem; margin-bottom: 0.35rem; color: var(--accent); }
-    .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.75rem; }
-    .price { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
-    .card.selected { border-color: var(--accent-dim); box-shadow: 0 0 0 1px var(--accent-dim); }
-    .pay-box { margin-top: 1.5rem; }
-    .pay-box h3 { font-size: 1rem; margin-bottom: 0.5rem; }
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.9rem;
-      word-break: break-all;
-      background: #0d0d10;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem;
-      margin: 0.5rem 0 1rem;
-    }
-    .row { display: grid; gap: 0.75rem; margin-bottom: 1rem; }
-    label { font-size: 0.85rem; color: var(--text-muted); }
-    input, select {
-      width: 100%;
-      background: #0d0d10;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem;
-      font: inherit;
-    }
-    .actions-row { display: grid; gap: 0.75rem; margin-top: 1rem; }
-    @media (min-width: 560px) { .actions-row { grid-template-columns: 1fr 1fr; } }
-    .note { margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted); }
-    .rules { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
-    .rules li { margin: 0.35rem 0 0.35rem 1rem; color: var(--text-muted); }
-    .hidden { display: none; }
+    :root { --bg:#050505; --card:#0c0c0c; --line:#222; --text:#f2f2f2; --muted:#9b9b9b; --white:#fff; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg); color:var(--text); font-family:"Libre Baskerville",Georgia,serif; line-height:1.5; min-height:100dvh; padding:1.5rem 1.25rem 3rem; }
+    .wrap { max-width:640px; margin:0 auto; }
+    .back { font-family:"IBM Plex Mono",monospace; font-size:0.8rem; color:var(--muted); text-decoration:none; }
+    .badge { display:inline-block; margin:1rem 0; font-family:"IBM Plex Mono",monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); padding:0.25rem 0.55rem; border-radius:999px; }
+    h1 { font-size:clamp(2rem,6vw,2.8rem); line-height:1.05; margin-bottom:0.6rem; }
+    .lead { color:var(--muted); margin-bottom:1.5rem; max-width:32ch; }
+    .warn { font-family:"IBM Plex Mono",monospace; font-size:0.82rem; color:var(--muted); border:1px solid var(--line); background:var(--card); padding:0.9rem 1rem; border-radius:10px; margin-bottom:1.5rem; }
+    .packs { display:grid; gap:0.75rem; margin-bottom:1.25rem; }
+    .pack { text-align:left; width:100%; background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:12px; padding:1rem; cursor:pointer; font:inherit; }
+    .pack.selected { border-color:#888; }
+    .pack h2 { font-size:1.05rem; margin-bottom:0.2rem; }
+    .pack p { font-family:"IBM Plex Mono",monospace; font-size:0.8rem; color:var(--muted); }
+    .pack .price { margin-top:0.45rem; font-weight:700; }
+    label { display:block; font-family:"IBM Plex Mono",monospace; font-size:0.75rem; color:var(--muted); margin:0.8rem 0 0.35rem; }
+    input, select { width:100%; background:#0a0a0a; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:0.75rem; font:inherit; }
+    .mono { font-family:"IBM Plex Mono",monospace; font-size:0.85rem; border:1px solid var(--line); background:#0a0a0a; border-radius:8px; padding:0.75rem; word-break:break-all; }
+    .btn { margin-top:1rem; width:100%; border:0; border-radius:999px; padding:0.9rem 1rem; font-family:"IBM Plex Mono",monospace; font-weight:600; cursor:pointer; }
+    .btn-primary { background:var(--white); color:#111; }
+    .btn-secondary { background:transparent; color:var(--text); border:1px solid var(--line); margin-top:0.6rem; }
+    .status { margin-top:1rem; font-family:"IBM Plex Mono",monospace; font-size:0.82rem; color:var(--muted); }
   </style>
 </head>
 <body>
   <div class="wrap">
     <a class="back" href="index.html">← DualisCapax</a>
-    <div class="badge test" id="mode-badge">TEST MODE</div>
-    <h1>Fuel Payment</h1>
-    <p class="lead">Prepaid capacity for adaptive depth. Open research stays free. Capacity is for use, not spectacle.</p>
+    <div class="badge">Test mode · manual settlement</div>
+    <h1>Buy Fuel</h1>
+    <p class="lead">Prepaid capacity for adaptive depth. Not a live card processor yet.</p>
 
-    <div class="grid packs" id="packs">
-      <button type="button" class="card" data-pack="starter" data-price="20" data-fuel="40">
+    <div class="warn">
+      This page creates an Order ID and payment instructions only.<br />
+      It does not charge a card and does not connect to Stripe/PayPal yet.<br />
+      Live e-Transfer / crypto destinations must be locked before real settlement.
+    </div>
+
+    <div class="packs" id="packs">
+      <button type="button" class="pack" data-pack="starter" data-price="20" data-fuel="40">
         <h2>Starter</h2>
-        <p>Light adaptive sessions.</p>
+        <p>Light adaptive sessions</p>
         <div class="price">$20 · 40 Fuel</div>
       </button>
-      <button type="button" class="card selected" data-pack="standard" data-price="50" data-fuel="120">
+      <button type="button" class="pack selected" data-pack="standard" data-price="50" data-fuel="120">
         <h2>Standard</h2>
-        <p>Regular depth use.</p>
+        <p>Regular depth use</p>
         <div class="price">$50 · 120 Fuel</div>
       </button>
-      <button type="button" class="card" data-pack="pro" data-price="120" data-fuel="320">
+      <button type="button" class="pack" data-pack="pro" data-price="120" data-fuel="320">
         <h2>Pro</h2>
-        <p>Heavier adaptive work.</p>
+        <p>Heavier adaptive work</p>
         <div class="price">$120 · 320 Fuel</div>
       </button>
     </div>
 
-    <section class="pay-box card" style="margin-top:1.5rem">
-      <h3>Order</h3>
-      <div class="row">
-        <div>
-          <label for="order-id">Order ID</label>
-          <div class="mono" id="order-id">—</div>
-        </div>
-        <div>
-          <label for="buyer-email">Your email (for receipt / credit)</label>
-          <input id="buyer-email" type="email" placeholder="you@example.com" autocomplete="email" />
-        </div>
-        <div>
-          <label for="method">Payment method</label>
-          <select id="method">
-            <option value="etransfer">Fiat · Interac e-Transfer (CIBC path)</option>
-            <option value="crypto">Crypto · manual confirm</option>
-          </select>
-        </div>
-      </div>
+    <label for="email">Email for receipt</label>
+    <input id="email" type="email" placeholder="you@example.com" />
 
-      <div id="fiat-panel">
-        <h3>Fiat instructions</h3>
-        <p class="lead" style="margin-bottom:0.5rem">Send Interac e-Transfer using the Order ID as the message/reference.</p>
-        <div class="mono" id="fiat-target">e-Transfer target: [SET CIBC / e-Transfer destination]</div>
-        <div class="mono" id="fiat-amount">Amount: $50.00 CAD</div>
-      </div>
+    <label for="method">Method</label>
+    <select id="method">
+      <option value="etransfer">Interac e-Transfer (CIBC path)</option>
+      <option value="crypto">Crypto (manual confirm)</option>
+    </select>
 
-      <div id="crypto-panel" class="hidden">
-        <h3>Crypto instructions</h3>
-        <p class="lead" style="margin-bottom:0.5rem">Send exact amount with Order ID noted in your records. Manual confirmation in test mode.</p>
-        <div class="mono" id="crypto-asset">Asset: [SET BTC / ETH / USDC]</div>
-        <div class="mono" id="crypto-address">Address: [SET ADDRESS]</div>
-        <div class="mono" id="crypto-amount">Amount due: [SET]</div>
-      </div>
+    <label>Order ID</label>
+    <div class="mono" id="order-id">Generate order to create ID</div>
 
-      <div class="actions-row">
-        <button type="button" class="btn-primary" id="btn-create">Generate order</button>
-        <button type="button" class="btn-secondary" id="btn-copy">Copy order summary</button>
-      </div>
+    <label>Amount</label>
+    <div class="mono" id="amount">$50.00 CAD</div>
 
-      <div class="rules">
-        <h3>Rules</h3>
-        <ul>
-          <li>Open research remains free.</li>
-          <li>Depth credits only after payment is confirmed.</li>
-          <li>Fuel is prepaid capacity, not a speculative token.</li>
-          <li>Test mode: no live settlement until targets are locked and mode is flipped.</li>
-        </ul>
-      </div>
+    <label>Destination</label>
+    <div class="mono" id="dest">[Not locked — set CIBC e-Transfer target or crypto address]</div>
 
-      <p class="note" id="status">Select a pack and generate an order to begin the sandbox payment loop.</p>
-    </section>
+    <button type="button" class="btn btn-primary" id="create">Generate order</button>
+    <button type="button" class="btn btn-secondary" id="copy">Copy order summary</button>
+
+    <p class="status" id="status">No live processor is connected. This is the manual gateway scaffold.</p>
   </div>
 
   <script>
-    (function () {
-      const packs = document.querySelectorAll('[data-pack]');
-      const orderIdEl = document.getElementById('order-id');
-      const emailEl = document.getElementById('buyer-email');
-      const methodEl = document.getElementById('method');
-      const fiatPanel = document.getElementById('fiat-panel');
-      const cryptoPanel = document.getElementById('crypto-panel');
-      const fiatAmount = document.getElementById('fiat-amount');
-      const statusEl = document.getElementById('status');
-      const btnCreate = document.getElementById('btn-create');
-      const btnCopy = document.getElementById('btn-copy');
+    const packs = [...document.querySelectorAll('.pack')];
+    let selected = { pack: 'standard', price: 50, fuel: 120 };
+    const orderEl = document.getElementById('order-id');
+    const amountEl = document.getElementById('amount');
+    const statusEl = document.getElementById('status');
+    const emailEl = document.getElementById('email');
+    const methodEl = document.getElementById('method');
 
-      let selected = {
-        pack: 'standard',
-        price: 50,
-        fuel: 120
-      };
+    function uid() {
+      return 'DC-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+    }
 
-      function uid() {
-        const t = Date.now().toString(36).toUpperCase();
-        const r = Math.random().toString(36).slice(2, 6).toUpperCase();
-        return 'DC-' + t + '-' + r;
-      }
+    packs.forEach(btn => btn.addEventListener('click', () => {
+      packs.forEach(p => p.classList.remove('selected'));
+      btn.classList.add('selected');
+      selected = { pack: btn.dataset.pack, price: Number(btn.dataset.price), fuel: Number(btn.dataset.fuel) };
+      amountEl.textContent = '$' + selected.price.toFixed(2) + ' CAD';
+    }));
 
-      function selectPack(btn) {
-        packs.forEach(p => p.classList.remove('selected'));
-        btn.classList.add('selected');
-        selected = {
-          pack: btn.dataset.pack,
-          price: Number(btn.dataset.price),
-          fuel: Number(btn.dataset.fuel)
-        };
-        fiatAmount.textContent = 'Amount: $' + selected.price.toFixed(2) + ' CAD';
-      }
+    document.getElementById('create').addEventListener('click', () => {
+      const id = uid();
+      orderEl.textContent = id;
+      statusEl.textContent = 'Order ' + id + ' created. Send payment with this ID as reference. Fuel credits only after manual confirmation.';
+      try {
+        const ledger = JSON.parse(localStorage.getItem('dc_fuel_ledger') || '[]');
+        ledger.unshift({ order_id: id, pack: selected.pack, price_cad: selected.price, fuel: selected.fuel, method: methodEl.value, email: emailEl.value || null, status: 'awaiting_payment', mode: 'test', created_at: new Date().toISOString() });
+        localStorage.setItem('dc_fuel_ledger', JSON.stringify(ledger.slice(0, 50)));
+      } catch (e) {}
+    });
 
-      packs.forEach(btn => {
-        btn.addEventListener('click', () => selectPack(btn));
-      });
-
-      methodEl.addEventListener('change', () => {
-        const crypto = methodEl.value === 'crypto';
-        fiatPanel.classList.toggle('hidden', crypto);
-        cryptoPanel.classList.toggle('hidden', !crypto);
-      });
-
-      btnCreate.addEventListener('click', () => {
-        const id = uid();
-        orderIdEl.textContent = id;
-        const email = (emailEl.value || '').trim();
-        statusEl.textContent = 'Order ' + id + ' created for ' + selected.pack +
-          ' (' + selected.fuel + ' Fuel, $' + selected.price +
-          '). ' + (email ? 'Receipt target: ' + email + '. ' : '') +
-          'Complete payment with this Order ID as reference, then await confirmation before Fuel credit.';
-
-        // Local sandbox ledger stub
-        try {
-          const ledger = JSON.parse(localStorage.getItem('dc_fuel_ledger') || '[]');
-          ledger.unshift({
-            order_id: id,
-            pack: selected.pack,
-            price_cad: selected.price,
-            fuel: selected.fuel,
-            method: methodEl.value,
-            email: email || null,
-            status: 'awaiting_payment',
-            mode: 'test',
-            created_at: new Date().toISOString()
-          });
-          localStorage.setItem('dc_fuel_ledger', JSON.stringify(ledger.slice(0, 50)));
-        } catch (e) {}
-      });
-
-      btnCopy.addEventListener('click', async () => {
-        const id = orderIdEl.textContent;
-        if (!id || id === '—') {
-          statusEl.textContent = 'Generate an order first.';
-          return;
-        }
-        const summary = [
-          'DualisCapax Fuel Order',
-          'Order ID: ' + id,
-          'Pack: ' + selected.pack,
-          'Fuel: ' + selected.fuel,
-          'Amount: $' + selected.price.toFixed(2) + ' CAD',
-          'Method: ' + methodEl.value,
-          'Email: ' + (emailEl.value || 'n/a'),
-          'Mode: TEST'
-        ].join('\n');
-        try {
-          await navigator.clipboard.writeText(summary);
-          statusEl.textContent = 'Order summary copied.';
-        } catch (e) {
-          statusEl.textContent = 'Copy failed. Select and copy manually.';
-        }
-      });
-
-      // init
-      fiatAmount.textContent = 'Amount: $50.00 CAD';
-    })();
+    document.getElementById('copy').addEventListener('click', async () => {
+      const id = orderEl.textContent;
+      if (!id || id.includes('Generate')) { statusEl.textContent = 'Generate an order first.'; return; }
+      const text = ['DualisCapax Fuel Order', 'Order ID: ' + id, 'Pack: ' + selected.pack, 'Fuel: ' + selected.fuel, 'Amount: $' + selected.price.toFixed(2) + ' CAD', 'Method: ' + methodEl.value, 'Email: ' + (emailEl.value || 'n/a'), 'Mode: TEST / manual'].join('\n');
+      try { await navigator.clipboard.writeText(text); statusEl.textContent = 'Order summary copied.'; }
+      catch (e) { statusEl.textContent = 'Copy failed.'; }
+    });
   </script>
 </body>
 </html>
