@@ -9,141 +9,33 @@
 <link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
 <link rel="stylesheet" href="assets/mobile-life.css">
 <style>
-:root{
-  --font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-}
+:root{--font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{
-  font-family:var(--font);
-  background:#020203;
-  color:rgba(243,242,239,.92);
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
+body{font-family:var(--font);background:#020203;color:rgba(243,242,239,.92);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
-.void{
-  min-height:100vh;min-height:100dvh;
-  position:relative;
-  display:flex;flex-direction:column;
-  isolation:isolate;
-}
-.photo{
-  position:fixed;inset:0;z-index:0;
-  background:#020203;
-}
-.photo::after{
-  content:"";
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80% 50% at 70% 35%, rgba(255,255,255,.04), transparent 55%),
-    linear-gradient(105deg, rgba(2,2,3,.96) 0%, rgba(2,2,3,.75) 32%, rgba(2,2,3,.4) 58%, rgba(2,2,3,.7) 100%),
-    linear-gradient(180deg, rgba(2,2,3,.5) 0%, transparent 28%, transparent 55%, rgba(2,2,3,.97) 100%);
-}
-.lattice{
-  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.04;
-  background-image:
-    linear-gradient(rgba(255,255,255,.55) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.55) 1px, transparent 1px);
-  background-size:64px 64px;
-  mask-image:linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent);
-}
-.ui{
-  position:relative;z-index:10;
-  flex:1;
-  display:flex;flex-direction:column;
-  justify-content:space-between;
-  padding:clamp(1.4rem, 3.5vw, 2.6rem);
-  max-width:42rem;
-}
-.top{
-  display:flex;align-items:center;gap:.7rem;
-  font-family:var(--mono);
-  font-size:.6rem;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.55);
-}
+.void{min-height:100vh;min-height:100dvh;position:relative;display:flex;flex-direction:column;isolation:isolate}
+.photo{position:fixed;inset:0;z-index:0;background:#020203}
+.photo::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 70% 35%, rgba(255,255,255,.04), transparent 55%),linear-gradient(105deg, rgba(2,2,3,.96) 0%, rgba(2,2,3,.75) 32%, rgba(2,2,3,.4) 58%, rgba(2,2,3,.7) 100%),linear-gradient(180deg, rgba(2,2,3,.5) 0%, transparent 28%, transparent 55%, rgba(2,2,3,.97) 100%)}
+.lattice{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.04;background-image:linear-gradient(rgba(255,255,255,.55) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.55) 1px, transparent 1px);background-size:64px 64px;mask-image:linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent)}
+.ui{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.4rem, 3.5vw, 2.6rem);max-width:42rem}
+.top{display:flex;align-items:center;gap:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.55)}
 .top img{width:20px;height:20px}
 .center{padding:2.1rem 0 1.75rem}
-.k{
-  font-family:var(--mono);
-  font-size:.62rem;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  color:rgba(201,162,39,.88);
-  margin-bottom:1.35rem;
-}
-h1{
-  font-size:clamp(2rem, 1rem + 3.2vw, 3.1rem);
-  font-weight:600;
-  letter-spacing:-.034em;
-  line-height:1.12;
-  max-width:16ch;
-  margin-bottom:1.15rem;
-  color:#fff;
-}
-.p{
-  font-size:clamp(.9rem, .86rem + .2vw, 1.02rem);
-  line-height:1.62;
-  color:rgba(255,255,255,.55);
-  max-width:36ch;
-  margin-bottom:1.1rem;
-}
-.p2{
-  font-size:.82rem;
-  line-height:1.55;
-  color:rgba(255,255,255,.4);
-  max-width:40ch;
-  margin-bottom:2rem;
-}
+.k{font-family:var(--mono);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(201,162,39,.88);margin-bottom:1.35rem}
+h1{font-size:clamp(2rem, 1rem + 3.2vw, 3.1rem);font-weight:600;letter-spacing:-.034em;line-height:1.12;max-width:16ch;margin-bottom:1.15rem;color:#fff}
+.p{font-size:clamp(.9rem, .86rem + .2vw, 1.02rem);line-height:1.62;color:rgba(255,255,255,.55);max-width:36ch;margin-bottom:1.1rem}
+.p2{font-size:.82rem;line-height:1.55;color:rgba(255,255,255,.4);max-width:40ch;margin-bottom:2rem}
 .cta-row{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;align-items:center}
-.cta{
-  display:inline-flex;
-  font-size:.74rem;
-  font-weight:500;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#fff;
-  padding-bottom:.4rem;
-  border-bottom:1px solid rgba(255,255,255,.35);
-  transition:border-color .2s, letter-spacing .2s;
-}
+.cta{display:inline-flex;font-size:.74rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#fff;padding-bottom:.4rem;border-bottom:1px solid rgba(255,255,255,.35);transition:border-color .2s, letter-spacing .2s}
 .cta:hover{border-color:rgba(201,162,39,.85);letter-spacing:.16em}
-.cta.ghost{
-  border-bottom-color:rgba(255,255,255,.18);
-  color:rgba(255,255,255,.7);
-}
-.pillars{
-  display:grid;
-  grid-template-columns:repeat(3, minmax(0,1fr));
-  gap:.65rem;
-  margin:1.5rem 0 0;
-  max-width:36rem;
-}
+.cta.ghost{border-bottom-color:rgba(255,255,255,.18);color:rgba(255,255,255,.7)}
+.pillars{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:.65rem;margin:1.5rem 0 0;max-width:36rem}
 @media(max-width:520px){.pillars{grid-template-columns:1fr}}
-.pillar{
-  border:1px solid rgba(255,255,255,.1);
-  background:rgba(0,0,0,.35);
-  padding:.7rem .75rem;
-  border-radius:12px;
-}
-.pillar .t{
-  font-family:var(--mono);
-  font-size:.58rem;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.45);
-  margin-bottom:.35rem;
-}
+.pillar{border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.35);padding:.7rem .75rem;border-radius:12px}
+.pillar .t{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.35rem}
 .pillar .b{font-size:.78rem;line-height:1.4;color:rgba(255,255,255,.72)}
-.bottom{
-  display:flex;flex-wrap:wrap;gap:.75rem 1.35rem;
-  font-size:.62rem;
-  letter-spacing:.1em;
-  margin-bottom:3.5rem;
-}
+.bottom{display:flex;flex-wrap:wrap;gap:.75rem 1.35rem;font-size:.62rem;letter-spacing:.1em;margin-bottom:3.5rem}
 .bottom a{color:rgba(255,255,255,.42);transition:color .15s}
 .bottom a:hover{color:rgba(255,255,255,.9)}
 .bottom .s{color:rgba(201,162,39,.5)}
@@ -164,8 +56,9 @@ h1{
         <p class="p">Healthcare. Engineering. Adaptive systems. Same door for every onboarder. Cost of being wrong priced in the open.</p>
         <p class="p2">Not a tribe. Not a throne. A measuring stick held to the same standard in every land the law allows us to serve.</p>
         <div class="cta-row">
-          <a class="cta" href="research/" data-life="tap">Enter research</a>
-          <a class="cta ghost" href="research/healthcare/medical/neurological/als-simulation-report.html" data-life="tap">ALS simulation report</a>
+          <a class="cta" href="engine.html" data-life="tap">Residual engine · XR</a>
+          <a class="cta" href="model.html" data-life="tap">Model tour</a>
+          <a class="cta ghost" href="research/" data-life="tap">Enter research</a>
           <a class="cta ghost" href="manifesto.html" data-life="tap">Manifesto</a>
         </div>
         <div class="pillars" aria-label="Unity pillars">
@@ -175,10 +68,11 @@ h1{
         </div>
       </div>
       <div class="bottom">
+        <a href="engine.html" data-life="tap">Engine</a>
+        <a href="model.html" data-life="tap">Model</a>
         <a href="manifesto.html" data-life="tap">Manifesto</a>
         <a href="residual-law.html" data-life="tap">Residual Law</a>
         <a href="residual-weight.html" data-life="tap">Residual Weight</a>
-        <a href="model.html" data-life="tap">Model</a>
         <a href="gateway.html" data-life="tap">Gateway</a>
         <a href="research/healthcare/medical/neurological/als.html" data-life="tap">ALS journal</a>
         <span class="s">No Tribes Preferred</span>
