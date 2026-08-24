@@ -1,11 +1,6 @@
 import * as THREE from 'three';
 
-/**
- * DualisCapax Max Engine
- * - Pure WebGL geometry only (no JPEG/PNG/clipart)
- * - Dome occupies ~75% visual weight, biased upward
- * - Web Audio residual bed + optional narrator
- */
+/** DualisCapax Max Engine — unrestricted full-field WebGL */
 export function startMaxEngine(canvas, options = {}) {
   if (!canvas) return { destroy() {}, playNarration() {}, stopNarration() {} };
 
@@ -17,65 +12,44 @@ export function startMaxEngine(canvas, options = {}) {
     powerPreference: 'high-performance'
   });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setSize(canvas.clientWidth || innerWidth, canvas.clientHeight || innerHeight);
+  renderer.setSize(innerWidth, innerHeight);
   renderer.setClearColor(0x030308, 1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x030308, 0.03);
+  scene.fog = new THREE.FogExp2(0x030308, 0.026);
 
-  const camera = new THREE.PerspectiveCamera(
-    46,
-    (canvas.clientWidth || innerWidth) / (canvas.clientHeight || innerHeight),
-    0.1,
-    120
-  );
-  camera.position.set(0, 0.05, 6.4);
+  const camera = new THREE.PerspectiveCamera(48, innerWidth / innerHeight, 0.1, 120);
+  camera.position.set(0, 0.2, 6.2);
 
   const root = new THREE.Group();
-  // Dome only ~75% of full visual scale
-  root.scale.setScalar(0.75);
-  root.position.y = 0.35;
   scene.add(root);
 
   const shell = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.7, 3),
-    new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.45
-    })
+    new THREE.IcosahedronGeometry(1.75, 3),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.45 })
   );
   root.add(shell);
 
   const shellGlow = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.66, 2),
+    new THREE.IcosahedronGeometry(1.7, 2),
     new THREE.MeshBasicMaterial({
-      color: 0xa8b4ff,
-      transparent: true,
-      opacity: 0.07,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
+      color: 0xa8b4ff, transparent: true, opacity: 0.07,
+      blending: THREE.AdditiveBlending, depthWrite: false
     })
   );
   root.add(shellGlow);
 
   const core = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(0.42, 1),
-    new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.55
-    })
+    new THREE.IcosahedronGeometry(0.45, 1),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.55 })
   );
   root.add(core);
 
   const rings = [];
   for (let i = 0; i < 4; i++) {
     const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(1.2 + i * 0.35, 0.01 + i * 0.0015, 12, 220),
+      new THREE.TorusGeometry(1.25 + i * 0.36, 0.01 + i * 0.0015, 12, 220),
       new THREE.MeshBasicMaterial({
         color: i % 2 ? 0xffffff : 0xc5ceff,
         transparent: true,
@@ -90,14 +64,14 @@ export function startMaxEngine(canvas, options = {}) {
     rings.push(ring);
   }
 
-  const count = 1100;
+  const count = 1400;
   const positions = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
-    const r = 2.0 + Math.random() * 9;
+    const r = 2.2 + Math.random() * 11;
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);
     positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.55;
+    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.65;
     positions[i * 3 + 2] = r * Math.cos(phi);
   }
   const pGeo = new THREE.BufferGeometry();
@@ -105,23 +79,16 @@ export function startMaxEngine(canvas, options = {}) {
   const dust = new THREE.Points(
     pGeo,
     new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 0.02,
-      transparent: true,
-      opacity: 0.55,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      sizeAttenuation: true
+      color: 0xffffff, size: 0.022, transparent: true, opacity: 0.7,
+      depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
     })
   );
-  dust.scale.setScalar(0.75);
-  dust.position.y = 0.25;
   scene.add(dust);
 
-  const grid = new THREE.GridHelper(18, 28, 0x2a2a40, 0x151522);
-  grid.position.y = -1.55;
+  const grid = new THREE.GridHelper(24, 36, 0x2a2a40, 0x151522);
+  grid.position.y = -2.15;
   grid.material.transparent = true;
-  grid.material.opacity = 0.28;
+  grid.material.opacity = 0.32;
   scene.add(grid);
 
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -133,7 +100,7 @@ export function startMaxEngine(canvas, options = {}) {
   function startAmbient() {
     if (!audioCtx || reduceMotion) return;
     const master = audioCtx.createGain();
-    master.gain.value = 0.04;
+    master.gain.value = 0.045;
     master.connect(audioCtx.destination);
     const makeDrone = (freq, type, gainVal) => {
       const osc = audioCtx.createOscillator();
@@ -147,8 +114,8 @@ export function startMaxEngine(canvas, options = {}) {
       ambientNodes.push(osc, g);
     };
     makeDrone(48, 'sine', 0.9);
-    makeDrone(96.1, 'sine', 0.3);
-    makeDrone(144.4, 'triangle', 0.07);
+    makeDrone(96.1, 'sine', 0.35);
+    makeDrone(144.4, 'triangle', 0.08);
   }
 
   async function loadNarrator(url) {
@@ -156,12 +123,9 @@ export function startMaxEngine(canvas, options = {}) {
     try {
       const res = await fetch(url, { cache: 'force-cache' });
       if (!res.ok) return false;
-      const arr = await res.arrayBuffer();
-      narratorBuffer = await audioCtx.decodeAudioData(arr);
+      narratorBuffer = await audioCtx.decodeAudioData(await res.arrayBuffer());
       return true;
-    } catch {
-      return false;
-    }
+    } catch { return false; }
   }
 
   async function playNarration() {
@@ -200,11 +164,9 @@ export function startMaxEngine(canvas, options = {}) {
   window.addEventListener('pointermove', onMove, { passive: true });
 
   const onResize = () => {
-    const w = canvas.clientWidth || innerWidth;
-    const h = canvas.clientHeight || innerHeight;
-    camera.aspect = w / h;
+    camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(w, h, false);
+    renderer.setSize(innerWidth, innerHeight);
   };
   window.addEventListener('resize', onResize);
 
@@ -231,7 +193,7 @@ export function startMaxEngine(canvas, options = {}) {
     my += (ty - my) * 0.045;
 
     root.rotation.y = t * 0.16 + mx * 0.35;
-    root.rotation.x = my * 0.16;
+    root.rotation.x = my * 0.18;
     shell.rotation.y = t * 0.05;
     core.rotation.y = -t * 0.7;
     core.rotation.z = t * 0.35;
@@ -241,15 +203,12 @@ export function startMaxEngine(canvas, options = {}) {
     });
     dust.rotation.y = t * 0.03;
 
-    camera.position.x = mx * 0.18;
-    camera.position.y = 0.05 - my * 0.1;
-    camera.lookAt(0, 0.25, 0);
+    camera.position.x = mx * 0.22;
+    camera.position.y = 0.2 - my * 0.14;
+    camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
   }
   loop();
-
-  // Ensure correct size after layout
-  requestAnimationFrame(onResize);
 
   function destroy() {
     running = false;
@@ -263,9 +222,7 @@ export function startMaxEngine(canvas, options = {}) {
     window.removeEventListener('resize', onResize);
     window.removeEventListener('pointerdown', unlock);
     renderer.dispose();
-    if (audioCtx) {
-      try { audioCtx.close(); } catch {}
-    }
+    if (audioCtx) { try { audioCtx.close(); } catch {} }
   }
 
   return { destroy, playNarration, stopNarration, audioCtx };
