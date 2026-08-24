@@ -51,6 +51,11 @@
 
     .quark-field {
       position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+      opacity: 0;
+      animation: fieldIn 1.4s ease-out 0.15s forwards;
+    }
+    @keyframes fieldIn {
+      to { opacity: 1; }
     }
     .quark {
       position: absolute; width: 2px; height: 2px; border-radius: 50%;
@@ -93,16 +98,37 @@
       display: flex; flex-direction: column;
     }
 
+    /* shared arrive: final layout never changes — only opacity/blur/offset into place */
+    .arrive {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(14px) scale(0.96);
+      animation: arriveIn 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes arriveIn {
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0) scale(1);
+      }
+    }
+
     header { flex: 0 0 auto; }
     header nav {
       display: flex; justify-content: space-between; align-items: center;
       width: 100%; gap: 0.35rem;
+      animation-delay: 3.55s;
     }
     header nav a {
       font-size: 0.88rem; font-weight: 600;
       color: var(--nav); letter-spacing: 0.01em;
       white-space: nowrap;
+      opacity: 0;
+      animation: arriveIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
+    header nav a:nth-child(1) { animation-delay: 3.55s; }
+    header nav a:nth-child(2) { animation-delay: 3.7s; }
+    header nav a:nth-child(3) { animation-delay: 3.85s; }
 
     main {
       flex: 1 1 auto;
@@ -117,6 +143,12 @@
       margin: 0 0 0.75rem;
       flex-shrink: 0;
       display: block;
+      /* canvas draws itself; soft frame arrive so it doesn't pop */
+      opacity: 0;
+      animation: logoFrameIn 0.6s ease-out 0.05s forwards;
+    }
+    @keyframes logoFrameIn {
+      to { opacity: 1; }
     }
 
     .geo-wrap {
@@ -126,6 +158,7 @@
       flex-shrink: 0;
       overflow: visible;
       background: transparent;
+      animation-delay: 2.65s;
     }
     #geo-earth {
       width: 100%; height: 100%;
@@ -138,6 +171,7 @@
       line-height: 0.9; letter-spacing: -0.05em; text-transform: uppercase;
       margin: 0 0 0.65rem;
       color: var(--fg);
+      animation-delay: 3.05s;
     }
 
     .lines {
@@ -148,13 +182,30 @@
     .line {
       font-size: clamp(0.98rem, 3.4vw, 1.15rem); font-weight: 600;
       color: var(--fg-soft); line-height: 1.35; margin: 0 0 0.12rem;
+      opacity: 0;
+      filter: blur(8px);
+      transform: translateY(10px);
+      animation: arriveIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
+    .line:nth-child(1) { animation-delay: 3.25s; }
+    .line:nth-child(2) { animation-delay: 3.4s; }
+    .line:nth-child(3) { animation-delay: 3.55s; }
+    .line:nth-child(4) { animation-delay: 3.7s; }
 
     @media (max-height: 640px) {
       .logo-particles { height: clamp(4rem, 16vw, 5.5rem); margin-bottom: 0.5rem; }
       .geo-wrap { width: min(40vw, 140px); height: min(40vw, 140px); margin-bottom: 0.7rem; }
       h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); margin-bottom: 0.45rem; }
       .line { font-size: 0.95rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .arrive, header nav a, .line, .quark-field, .logo-particles {
+        animation: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+        transform: none !important;
+      }
     }
   </style>
 </head>
@@ -176,10 +227,10 @@
     </header>
     <main>
       <canvas class="logo-particles" id="logo-particles" width="720" height="180" aria-label="DualisCapax" role="img"></canvas>
-      <div class="geo-wrap">
+      <div class="geo-wrap arrive">
         <canvas id="geo-earth" width="360" height="360" aria-hidden="true"></canvas>
       </div>
-      <h1>Truth<br>Prevails</h1>
+      <h1 class="arrive">Truth<br>Prevails</h1>
       <div class="lines">
         <p class="line">Residual Law Finance.</p>
         <p class="line">Cutting Edge Technology.</p>
@@ -262,7 +313,7 @@
       targets.sort(function (a, b) {
         return a.x - b.x || a.y - b.y;
       });
-      return { targets, w, h, tw: tw, fontSize: fontSize };
+      return { targets, w, h };
     }
 
     function rebuild() {
@@ -277,8 +328,7 @@
         const angle = Math.random() * Math.PI * 2;
         const dist = (0.4 + Math.random() * 1.1) * Math.max(w, h);
         return {
-          tx: t.x,
-          ty: t.y,
+          tx: t.x, ty: t.y,
           x: w / 2 + Math.cos(angle) * dist,
           y: h / 2 + Math.sin(angle) * dist,
           r: 0.85 + Math.random() * 1.35,
@@ -288,18 +338,14 @@
         };
       });
 
-      /* free quarks that will glisten around the formed logo */
-      const cx = w / 2;
-      const cy = h / 2;
-      const orbitCount = 48;
+      const cx = w / 2, cy = h / 2;
       orbiters = [];
-      for (let i = 0; i < orbitCount; i++) {
-        const a0 = (i / orbitCount) * Math.PI * 2 + Math.random() * 0.4;
+      for (let i = 0; i < 48; i++) {
+        const a0 = (i / 48) * Math.PI * 2 + Math.random() * 0.4;
         const radius = (0.28 + Math.random() * 0.42) * Math.min(w, h * 2.2);
         orbiters.push({
           a: a0,
           speed: 0.00035 + Math.random() * 0.00055,
-          radius: radius,
           rx: radius * (0.85 + Math.random() * 0.35),
           ry: radius * (0.35 + Math.random() * 0.25),
           cx: cx + (Math.random() - 0.5) * w * 0.08,
@@ -310,13 +356,10 @@
           flashSpeed: 0.002 + Math.random() * 0.004
         });
       }
-
       start = performance.now();
     }
 
-    function easeOutCubic(t) {
-      return 1 - Math.pow(1 - t, 3);
-    }
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
     function smoothstep(edge0, edge1, x) {
       const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
       return t * t * (3 - 2 * t);
@@ -331,24 +374,20 @@
       const t = Math.min(1, (now - start) / ASSEMBLE_MS);
       const density = easeOutCubic(t);
       const front = density * 1.15;
-      const shine = smoothstep(0.72, 1, t); /* logo starts shining near end of assemble */
-      const glisten = smoothstep(0.88, 1, t); /* orbiters appear after word is mostly solid */
+      const shine = smoothstep(0.72, 1, t);
+      const glisten = smoothstep(0.88, 1, t);
 
-      /* —— core word particles —— */
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         const local = smoothstep(p.rank - 0.08, p.rank + 0.02, front);
         if (local <= 0.001) continue;
-
         const pull = 0.04 + local * 0.18;
         p.x += (p.tx - p.x) * pull;
         p.y += (p.ty - p.y) * pull;
-
         const pulse = 0.7 + 0.3 * Math.sin(now * 0.004 + p.phase);
         const shineBoost = 1 + shine * 0.55 * pulse;
         const alpha = local * p.bright * pulse * (0.4 + 0.6 * density) * shineBoost;
         const radius = p.r * (0.55 + 0.55 * local) * (0.75 + 0.4 * pulse) * (1 + shine * 0.15);
-
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(200, 230, 255, ' + Math.min(1, alpha) + ')';
@@ -357,20 +396,16 @@
         ctx.fill();
       }
 
-      /* —— glistening orbiters around the shining logo —— */
       if (glisten > 0.01) {
         for (let i = 0; i < orbiters.length; i++) {
           const o = orbiters[i];
-          o.a += o.speed * (16);
+          o.a += o.speed * 16;
           const x = o.cx + Math.cos(o.a) * o.rx;
           const y = o.cy + Math.sin(o.a) * o.ry;
-
-          /* sharp glisten flashes */
           const flash = Math.pow(0.5 + 0.5 * Math.sin(now * o.flashSpeed + o.flash), 8);
           const pulse = 0.5 + 0.5 * Math.sin(now * 0.0035 + o.phase);
           const alpha = glisten * (0.25 + 0.75 * flash) * (0.55 + 0.45 * pulse);
           const radius = o.r * (0.6 + 1.1 * flash);
-
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(230, 245, 255, ' + alpha + ')';
