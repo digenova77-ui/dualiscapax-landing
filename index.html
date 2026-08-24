@@ -2,154 +2,140 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DualisCapax</title>
+<meta name="description" content="DualisCapax — financial and emerging AI networking plane.">
 <meta name="theme-color" content="#020203">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/svg+xml" href="brand/emblem-helix.svg">
+<link rel="stylesheet" href="assets/layout-law.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;height:100dvh;overflow:hidden;background:#020203;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-.deck{
-  display:flex;height:100%;height:100dvh;width:100%;
-  overflow-x:auto;overflow-y:hidden;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
+:root{--bg:#020203;--fg:#f3f2ef;--muted:rgba(243,242,239,.55);--gold:#C9A227;--line:rgba(255,255,255,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;min-height:100dvh}
+a{color:var(--gold);text-decoration:none}
+/* #MOBILE_FLOW vertical document */
+.dc-shell{position:relative;min-height:100dvh;isolation:isolate}
+.holo{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:#020203 url('brand/holo-helix.svg') center top / cover no-repeat;
+  opacity:.55;
 }
-.deck::-webkit-scrollbar{display:none}
-.slide{
-  flex:0 0 100%;width:100%;height:100%;height:100dvh;
-  scroll-snap-align:start;scroll-snap-stop:always;
-  position:relative;display:flex;flex-direction:column;justify-content:flex-end;
-  padding:0 1.25rem calc(5.5rem + env(safe-area-inset-bottom));
-  overflow:hidden;
+.holo::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(2,2,3,.25) 0%,rgba(2,2,3,.55) 45%,rgba(2,2,3,.92) 100%);
 }
-.slide canvas.bg{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.slide .copy{position:relative;z-index:2;max-width:22rem}
-.kicker{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:#C9A227;margin-bottom:.5rem;font-family:ui-monospace,Menlo,monospace}
-.slide h1,.slide h2{font-size:clamp(1.75rem,7vw,2.35rem);font-weight:600;letter-spacing:-.03em;line-height:1.12;margin-bottom:.65rem}
-.slide p{font-size:.95rem;line-height:1.5;color:rgba(255,255,255,.58)}
-.chrome{
-  position:fixed;left:0;right:0;top:0;z-index:20;
-  display:flex;align-items:center;gap:.6rem;
-  padding:.75rem 1rem;
-  padding-top:calc(.65rem + env(safe-area-inset-top));
-  background:linear-gradient(180deg,rgba(2,2,3,.85),transparent);
-  pointer-events:none;
+.dc-main{position:relative;z-index:1}
+.dc-pane{padding:1.15rem 1.25rem 2.5rem;max-width:42rem}
+.brand{
+  display:flex;align-items:center;gap:.75rem;margin-bottom:1.75rem;
+  padding-top:.35rem;
 }
-.chrome img.wm{height:22px;width:auto;pointer-events:auto}
-.chrome img.em{width:22px;height:22px;border-radius:50%}
-.dots{
-  position:fixed;left:0;right:0;bottom:0;z-index:20;
-  display:flex;justify-content:center;align-items:center;gap:.45rem;
-  padding:0 1rem calc(.85rem + env(safe-area-inset-bottom));
-  background:linear-gradient(0deg,rgba(2,2,3,.9),transparent);
-  min-height:3.25rem;
+.brand .wm{height:40px;width:auto;max-width:min(100%,300px);display:block}
+.brand .em{
+  width:44px;height:44px;border-radius:50%;
+  box-shadow:0 0 24px rgba(59,130,246,.35),0 0 40px rgba(201,162,39,.15);
 }
-.dots button{width:7px;height:7px;border-radius:50%;border:none;background:rgba(255,255,255,.25);padding:0;cursor:pointer}
-.dots button.on{background:#C9A227;width:18px;border-radius:4px}
-.swipe-hint{
-  position:fixed;right:1rem;top:50%;transform:translateY(-50%);z-index:15;
-  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(255,255,255,.28);writing-mode:vertical-rl;pointer-events:none;
+.kicker{font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;font-family:ui-monospace,Menlo,Consolas,monospace}
+h1{font-size:clamp(1.65rem,5vw,2.35rem);font-weight:600;letter-spacing:-.03em;line-height:1.15;margin-bottom:.85rem;color:#fff}
+.lead{font-size:1.02rem;line-height:1.6;color:var(--muted);margin-bottom:1.5rem;max-width:36ch}
+.actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-bottom:2rem}
+.actions a{
+  display:inline-flex;align-items:center;
+  padding:.7rem 1.05rem;border-radius:999px;font-size:.8rem;font-weight:500;
+  border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.88);
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(8px);
+}
+.actions a.primary{border-color:rgba(201,162,39,.55);color:#fff;background:rgba(201,162,39,.12)}
+.actions a:hover{border-color:var(--gold)}
+.card{
+  border:1px solid var(--line);border-radius:16px;padding:1.1rem 1.15rem;
+  background:rgba(8,10,18,.55);backdrop-filter:blur(12px);
+  margin-bottom:.85rem;
+}
+.card h2{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.4rem;font-weight:600}
+.card p{font-size:.9rem;line-height:1.5;color:rgba(255,255,255,.7)}
+nav.site{display:flex;flex-wrap:wrap;gap:.75rem 1.1rem;margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--line);font-size:.75rem}
+nav.site a{color:rgba(255,255,255,.4)}
+nav.site a:hover{color:#fff}
+/* #DESKTOP_PANES */
+@media (min-width:1024px){
+  html,body{height:100%;overflow:hidden}
+  .dc-shell{height:100dvh;display:grid;grid-template-rows:1fr;overflow:hidden}
+  .holo{opacity:.4}
+  .dc-main{display:grid;grid-template-columns:minmax(14rem,18rem) 1fr;min-height:0;overflow:hidden;height:100%}
+  .dc-side{
+    border-right:1px solid var(--line);padding:1.5rem 1.25rem;overflow:auto;
+    background:rgba(0,0,0,.35);backdrop-filter:blur(10px);
+  }
+  .dc-side a{display:block;padding:.45rem 0;color:rgba(255,255,255,.5);font-size:.82rem}
+  .dc-side a:hover{color:var(--gold)}
+  .dc-pane{overflow:auto;min-height:0;padding:2rem 2.5rem 3rem;max-width:none}
+  .brand .wm{height:48px}
+}
+@media (min-width:768px) and (max-width:1023px){
+  .dc-pane{padding:1.5rem 1.75rem 2.5rem}
 }
 </style>
 </head>
 <body>
-  <div class="chrome">
-    <img class="wm" src="brand/wordmark.svg" alt="DualisCapax">
-    <img class="em" src="brand/emblem-helix.svg" alt="">
+<div class="dc-shell">
+  <div class="holo" aria-hidden="true"></div>
+  <div class="dc-main">
+    <aside class="dc-side" style="display:none" id="side">
+      <div class="brand" style="margin-bottom:1.5rem">
+        <img class="em" src="brand/emblem-helix.svg" alt="">
+      </div>
+      <a href="index.html">Home</a>
+      <a href="tour.html">Tour</a>
+      <a href="corporate.html">Corporate</a>
+      <a href="ai/">Adaptive Intelligence</a>
+      <a href="research/">Research</a>
+      <a href="model.html">Model</a>
+      <a href="narrative.html">Narrative</a>
+    </aside>
+    <main class="dc-pane">
+      <div class="brand">
+        <img class="wm" src="brand/wordmark.svg" alt="DualisCapax">
+        <img class="em" src="brand/emblem-helix.svg" alt="">
+      </div>
+      <p class="kicker">Financial · Emerging AI · Networked access</p>
+      <h1>Same standard. Open research. Adaptive depth.</h1>
+      <p class="lead">A networked plane for open knowledge and metered adaptive intelligence — equal rules, residual in the open.</p>
+      <div class="actions">
+        <a class="primary" href="tour.html">Enter tour</a>
+        <a href="corporate.html">Corporate</a>
+        <a href="ai/">AI portal</a>
+      </div>
+      <div class="card">
+        <h2>Network</h2>
+        <p>One published standard for every onboarder — human or agent path.</p>
+      </div>
+      <div class="card">
+        <h2>Access</h2>
+        <p>Research open. Deeper adaptive capacity metered and trackable.</p>
+      </div>
+      <div class="card">
+        <h2>Obligation</h2>
+        <p>Account-local control. Equal rules. No tribe preferred.</p>
+      </div>
+      <nav class="site">
+        <a href="tour.html">Tour</a>
+        <a href="narrative.html">Narrative</a>
+        <a href="research/">Research</a>
+        <a href="model.html">Model</a>
+        <a href="food-for-thought.html">Food for thought</a>
+      </nav>
+    </main>
   </div>
-  <p class="swipe-hint">swipe</p>
-  <div class="deck" id="deck">
-    <section class="slide"><canvas class="bg" data-scene="open"></canvas><div class="copy"><div class="kicker">01 · Open</div><h1>Research free. Full surface.</h1><p>Learn without a gate. The plane starts open.</p></div></section>
-    <section class="slide"><canvas class="bg" data-scene="prove"></canvas><div class="copy"><div class="kicker">02 · Prove</div><h2>Boundary first.</h2><p>Settlement and identity before adaptive depth.</p></div></section>
-    <section class="slide"><canvas class="bg" data-scene="depth"></canvas><div class="copy"><div class="kicker">03 · Depth</div><h2>Adaptive intelligence.</h2><p>Real session cost. Real work. Not theater.</p></div></section>
-    <section class="slide"><canvas class="bg" data-scene="seal"></canvas><div class="copy"><div class="kicker">04 · Seal</div><h2>Production math sealed.</h2><p>Truth stays in the residual. IP stays protected.</p></div></section>
-    <section class="slide"><canvas class="bg" data-scene="fm"></canvas><div class="copy"><div class="kicker">05 · Fusion Meter</div><h2>Closed prepaid capacity.</h2><p>Not an open-market toy coin.</p></div></section>
-    <section class="slide"><canvas class="bg" data-scene="dual"></canvas><div class="copy"><div class="kicker">06 · Dual capacity</div><h2>Enterprise funds the plane.</h2><p>Individuals keep Open access.</p></div></section>
-    <section class="slide"><canvas class="bg" data-scene="clock"></canvas><div class="copy"><div class="kicker">07 · Singularity clock</div><h2>Plane residual advances.</h2><p>Not a wallet spectacle.</p></div></section>
-    <section class="slide"><canvas class="bg" data-scene="unity"></canvas><div class="copy"><div class="kicker">08 · Unity</div><h2>Same standard. Same math.</h2><p>Truth and Unity. No tribe preferred.</p></div></section>
-  </div>
-  <div class="dots" id="dots"></div>
+</div>
 <script>
-(function () {
-  var COLORS = { open:'#3B82F6', prove:'#C9A227', depth:'#22C55E', seal:'#EF4444', fm:'#EAB308', dual:'#60A5FA', clock:'#A78BFA', unity:'#C9A227' };
-  var deck = document.getElementById('deck');
-  var slides = [].slice.call(document.querySelectorAll('.slide'));
-  var dots = document.getElementById('dots');
-  slides.forEach(function (_, i) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    if (i === 0) b.className = 'on';
-    b.onclick = function () { deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' }); };
-    dots.appendChild(b);
-  });
-  var dotBtns = [].slice.call(dots.querySelectorAll('button'));
-  deck.addEventListener('scroll', function () {
-    var i = Math.round(deck.scrollLeft / Math.max(1, deck.clientWidth));
-    dotBtns.forEach(function (d, j) { d.className = j === i ? 'on' : ''; });
-  }, { passive: true });
-  function paint(canvas, key) {
-    var color = COLORS[key] || '#C9A227';
-    var ctx = canvas.getContext('2d');
-    var t0 = performance.now();
-    function frame(now) {
-      var dpr = Math.min(devicePixelRatio || 1, 2);
-      var cw = canvas.clientWidth || window.innerWidth;
-      var ch = canvas.clientHeight || window.innerHeight;
-      canvas.width = Math.floor(cw * dpr);
-      canvas.height = Math.floor(ch * dpr);
-      var w = canvas.width, h = canvas.height, t = (now - t0) / 1000;
-      ctx.fillStyle = '#020203';
-      ctx.fillRect(0, 0, w, h);
-      var g = ctx.createRadialGradient(w * 0.5, h * 0.35, 0, w * 0.5, h * 0.35, w * 0.6);
-      g.addColorStop(0, color + '40');
-      g.addColorStop(1, 'rgba(2,2,3,0)');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-      for (var i = 0; i < 60; i++) {
-        ctx.globalAlpha = 0.2 + (i % 4) * 0.1;
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(((i * 89 + t * 12) % w), (i * 47) % h, 2, 2);
-      }
-      ctx.globalAlpha = 1;
-      ctx.save();
-      ctx.translate(0, h * 0.38);
-      for (var s = 0; s < 2; s++) {
-        ctx.beginPath();
-        for (var x = 0; x <= w; x += 5) {
-          var y = Math.sin(x * 0.014 + t * 1.3 + s * Math.PI) * h * 0.1;
-          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = s ? 'rgba(96,165,250,0.55)' : color;
-        ctx.lineWidth = Math.max(2, w * 0.004);
-        ctx.stroke();
-      }
-      ctx.restore();
-      var cx = w * 0.5, cy = h * 0.36, R = Math.min(w, h) * 0.16;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = Math.max(2, w * 0.005);
-      ctx.beginPath();
-      ctx.arc(cx, cy, R, t * 0.6, t * 0.6 + Math.PI * 1.6);
-      ctx.stroke();
-      var nodes = ['#EF4444', '#3B82F6', '#22C55E', '#EAB308', '#777'];
-      for (var n = 0; n < 5; n++) {
-        var a = t * 0.4 + n * Math.PI * 2 / 5;
-        ctx.fillStyle = nodes[n];
-        ctx.beginPath();
-        ctx.arc(cx + Math.cos(a) * R * 0.7, cy + Math.sin(a) * R * 0.7, Math.max(4, w * 0.01), 0, Math.PI * 2);
-        ctx.fill();
-      }
-      requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
+(function(){
+  if (window.matchMedia('(min-width:1024px)').matches) {
+    var s = document.getElementById('side');
+    if (s) s.style.display = 'block';
   }
-  slides.forEach(function (slide) {
-    var c = slide.querySelector('canvas.bg');
-    paint(c, c.getAttribute('data-scene'));
-  });
 })();
 </script>
 </body>
