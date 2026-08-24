@@ -113,7 +113,7 @@
 
     .logo-particles {
       width: min(92vw, 24rem);
-      height: clamp(4.5rem, 18vw, 6.5rem);
+      height: clamp(5rem, 20vw, 7.25rem);
       margin: 0 0 0.75rem;
       flex-shrink: 0;
       display: block;
@@ -151,7 +151,7 @@
     }
 
     @media (max-height: 640px) {
-      .logo-particles { height: clamp(3.5rem, 14vw, 5rem); margin-bottom: 0.5rem; }
+      .logo-particles { height: clamp(4rem, 16vw, 5.5rem); margin-bottom: 0.5rem; }
       .geo-wrap { width: min(40vw, 140px); height: min(40vw, 140px); margin-bottom: 0.7rem; }
       h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); margin-bottom: 0.45rem; }
       .line { font-size: 0.95rem; }
@@ -175,7 +175,7 @@
       </nav>
     </header>
     <main>
-      <canvas class="logo-particles" id="logo-particles" width="720" height="160" aria-label="DualisCapax" role="img"></canvas>
+      <canvas class="logo-particles" id="logo-particles" width="720" height="180" aria-label="DualisCapax" role="img"></canvas>
       <div class="geo-wrap">
         <canvas id="geo-earth" width="360" height="360" aria-hidden="true"></canvas>
       </div>
@@ -197,8 +197,8 @@
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     let particles = [];
+    let orbiters = [];
     let start = null;
-    /* long enough that density visibly climbs: sparse → dense */
     const ASSEMBLE_MS = 3800;
 
     function sampleTargets() {
@@ -217,7 +217,7 @@
       o.fillStyle = '#fff';
       o.textAlign = 'center';
       o.textBaseline = 'middle';
-      const fontSize = Math.min(w * 0.14, h * 0.72);
+      const fontSize = Math.min(w * 0.14, h * 0.62);
       o.font = '800 ' + fontSize + 'px Inter, system-ui, sans-serif';
       o.fillText(TEXT, w / 2, h / 2);
 
@@ -250,7 +250,6 @@
 
       const data = o.getImageData(0, 0, off.width, off.height).data;
       const targets = [];
-      /* denser sample grid so the end state is solid */
       const step = Math.max(1, Math.floor(1.5 * dpr));
       for (let y = 0; y < off.height; y += step) {
         for (let x = 0; x < off.width; x += step) {
@@ -260,18 +259,20 @@
           }
         }
       }
-      /* left → right: information flows into the word */
       targets.sort(function (a, b) {
         return a.x - b.x || a.y - b.y;
       });
-      return { targets, w, h };
+      return { targets, w, h, tw: tw, fontSize: fontSize };
     }
 
     function rebuild() {
-      const { targets, w, h } = sampleTargets();
+      const sample = sampleTargets();
+      const targets = sample.targets;
+      const w = sample.w;
+      const h = sample.h;
       const n = targets.length;
+
       particles = targets.map(function (t, i) {
-        /* rank 0..1 along the word — when this particle is “allowed in” */
         const rank = n <= 1 ? 0 : i / (n - 1);
         const angle = Math.random() * Math.PI * 2;
         const dist = (0.4 + Math.random() * 1.1) * Math.max(w, h);
@@ -286,6 +287,30 @@
           rank: rank
         };
       });
+
+      /* free quarks that will glisten around the formed logo */
+      const cx = w / 2;
+      const cy = h / 2;
+      const orbitCount = 48;
+      orbiters = [];
+      for (let i = 0; i < orbitCount; i++) {
+        const a0 = (i / orbitCount) * Math.PI * 2 + Math.random() * 0.4;
+        const radius = (0.28 + Math.random() * 0.42) * Math.min(w, h * 2.2);
+        orbiters.push({
+          a: a0,
+          speed: 0.00035 + Math.random() * 0.00055,
+          radius: radius,
+          rx: radius * (0.85 + Math.random() * 0.35),
+          ry: radius * (0.35 + Math.random() * 0.25),
+          cx: cx + (Math.random() - 0.5) * w * 0.08,
+          cy: cy + (Math.random() - 0.5) * h * 0.12,
+          r: 1.1 + Math.random() * 1.8,
+          phase: Math.random() * Math.PI * 2,
+          flash: Math.random() * Math.PI * 2,
+          flashSpeed: 0.002 + Math.random() * 0.004
+        });
+      }
+
       start = performance.now();
     }
 
@@ -304,14 +329,14 @@
       ctx.clearRect(0, 0, w, h);
 
       const t = Math.min(1, (now - start) / ASSEMBLE_MS);
-      /* density ramp: early = few points, late = full set */
       const density = easeOutCubic(t);
-      /* soft front so particles stream in rather than hard cut */
       const front = density * 1.15;
+      const shine = smoothstep(0.72, 1, t); /* logo starts shining near end of assemble */
+      const glisten = smoothstep(0.88, 1, t); /* orbiters appear after word is mostly solid */
 
+      /* —— core word particles —— */
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        /* how far this particle is into the “allowed” set */
         const local = smoothstep(p.rank - 0.08, p.rank + 0.02, front);
         if (local <= 0.001) continue;
 
@@ -319,17 +344,42 @@
         p.x += (p.tx - p.x) * pull;
         p.y += (p.ty - p.y) * pull;
 
-        const pulse = 0.65 + 0.35 * Math.sin(now * 0.004 + p.phase);
-        const alpha = local * p.bright * pulse * (0.4 + 0.6 * density);
-        const radius = p.r * (0.55 + 0.55 * local) * (0.75 + 0.35 * pulse);
+        const pulse = 0.7 + 0.3 * Math.sin(now * 0.004 + p.phase);
+        const shineBoost = 1 + shine * 0.55 * pulse;
+        const alpha = local * p.bright * pulse * (0.4 + 0.6 * density) * shineBoost;
+        const radius = p.r * (0.55 + 0.55 * local) * (0.75 + 0.4 * pulse) * (1 + shine * 0.15);
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(180, 220, 255, ' + alpha + ')';
-        ctx.shadowColor = 'rgba(120, 190, 255, ' + (0.85 * alpha) + ')';
-        ctx.shadowBlur = 6 + 8 * pulse * local;
+        ctx.fillStyle = 'rgba(200, 230, 255, ' + Math.min(1, alpha) + ')';
+        ctx.shadowColor = 'rgba(140, 200, 255, ' + (0.9 * Math.min(1, alpha)) + ')';
+        ctx.shadowBlur = 6 + 10 * pulse * local * (1 + shine);
         ctx.fill();
       }
+
+      /* —— glistening orbiters around the shining logo —— */
+      if (glisten > 0.01) {
+        for (let i = 0; i < orbiters.length; i++) {
+          const o = orbiters[i];
+          o.a += o.speed * (16);
+          const x = o.cx + Math.cos(o.a) * o.rx;
+          const y = o.cy + Math.sin(o.a) * o.ry;
+
+          /* sharp glisten flashes */
+          const flash = Math.pow(0.5 + 0.5 * Math.sin(now * o.flashSpeed + o.flash), 8);
+          const pulse = 0.5 + 0.5 * Math.sin(now * 0.0035 + o.phase);
+          const alpha = glisten * (0.25 + 0.75 * flash) * (0.55 + 0.45 * pulse);
+          const radius = o.r * (0.6 + 1.1 * flash);
+
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(230, 245, 255, ' + alpha + ')';
+          ctx.shadowColor = 'rgba(180, 220, 255, ' + (0.95 * alpha) + ')';
+          ctx.shadowBlur = 4 + 16 * flash;
+          ctx.fill();
+        }
+      }
+
       ctx.shadowBlur = 0;
       requestAnimationFrame(frame);
     }
