@@ -9,18 +9,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
     body {
       font-family: Inter, system-ui, -apple-system, sans-serif;
       background: #050505;
       color: #f5f5f5;
       -webkit-font-smoothing: antialiased;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
     }
     a { color: inherit; text-decoration: none; }
     .shell {
       max-width: 44rem;
       margin: 0 auto;
-      padding: 0 1.25rem 3.5rem;
+      padding: 0 1.25rem;
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
     header {
       display: flex;
@@ -34,20 +40,36 @@
     nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.7); }
     nav a.on { color: #f5f5f5; }
     h1 {
-      font-size: clamp(3rem, 12vw, 4.75rem);
+      font-size: clamp(2.75rem, 11vw, 4.25rem);
       font-weight: 900;
       line-height: 0.88;
       letter-spacing: -0.05em;
       text-transform: uppercase;
-      margin: 2.25rem 0 1.5rem;
+      margin: 2rem 0 1.25rem;
     }
     article p {
-      font-size: clamp(1.35rem, 4.6vw, 1.7rem);
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
       line-height: 1.35;
       font-weight: 500;
-      margin: 0 0 1.5rem;
+      margin: 0 0 1.25rem;
     }
-    article p:last-child { margin-bottom: 0; }
+    .depth {
+      margin-top: auto;
+      padding: 2rem 0 1.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      border-top: 1px solid rgba(255,255,255,0.09);
+    }
+    .depth a {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.65rem 1rem;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 999px;
+      color: rgba(245,245,245,0.85);
+    }
   </style>
 </head>
 <body>
@@ -63,9 +85,15 @@
     <h1>Research</h1>
     <article>
       <p>DualisCapax research is cutting-edge math and cutting-edge science in service of a residual-law financial firm. Adaptive AI sits with that work. The public research text on this surface stays open to read under Ontario and Canadian law.</p>
-      <p>This is not a storefront. Published research is not sold as a product on these pages, and no return is promised from reading it. Deeper engagement, when it exists, is separate from this open surface and is not marketed here as a checkout for simulations.</p>
-      <p>Healthcare, engineering, energy, and cross-field work are held under the same rule: public material remains readable; the firm does not use this page to sell securities, tokens, or investment interest. Further depth will be filled in on this surface in the same format as the financial page.</p>
+      <p>This is not a storefront. Published research is not sold as a product on these pages, and no return is promised from reading it. Deeper rooms on this surface stay in the same format as the financial pages.</p>
+      <p>Healthcare, engineering, energy, and math and science are held under the same rule: public material remains readable; this page does not sell securities, tokens, or investment interest.</p>
     </article>
+    <div class="depth">
+      <a href="math-science.html">Math &amp; Science</a>
+      <a href="healthcare/">Healthcare</a>
+      <a href="engineering/">Engineering</a>
+      <a href="energy/">Energy</a>
+    </div>
   </div>
 </body>
 </html>
