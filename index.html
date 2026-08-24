@@ -3,199 +3,213 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>DualisCapax</title>
-  <meta name="description" content="No tribes preferred. Truth prevails." />
-  <meta name="theme-color" content="#020206" />
-  <link rel="icon" href="brand/emblem-helix.svg" />
+  <title>DualisCapax — Truth Prevails</title>
+  <meta name="description" content="No tribes preferred. Truth prevails. DualisCapax." />
+  <meta name="theme-color" content="#000000" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      width: 100%; height: 100%;
-      overflow: hidden;
-      background: #020206;
-      color: #f4f4f5;
-      font-family: Inter, system-ui, sans-serif;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: #000;
+      color: #fff;
+      line-height: 1.5;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
     }
-    #stage {
-      position: fixed; inset: 0;
-      width: 100vw; height: 100dvh;
-      display: block; z-index: 0;
+    a { color: inherit; text-decoration: none; }
+
+    /* Layout */
+    .wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .hud {
-      position: fixed; inset: 0; z-index: 2;
-      pointer-events: none;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      padding:
-        calc(0.8rem + env(safe-area-inset-top))
-        0.85rem
-        calc(0.9rem + env(safe-area-inset-bottom));
-      gap: 0.75rem;
-    }
-    .hud a, .hud button { pointer-events: auto; }
-
-    .glass {
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(10, 12, 20, 0.42);
-      backdrop-filter: blur(18px) saturate(1.2);
-      -webkit-backdrop-filter: blur(18px) saturate(1.2);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
-    }
-
-    /* Tier 1 — nav plane */
-    .tier-nav {
+    /* Header */
+    header {
+      padding: 1.1rem 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.6rem;
-      padding: 0.65rem 0.75rem;
-      border-radius: 18px;
-      transform: translateY(-12px);
-      opacity: 0;
-      animation: slideIn 0.7s ease forwards 0.1s;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    .brand {
-      font-weight: 800;
-      font-size: clamp(1.05rem, 3.6vw, 1.35rem);
-      letter-spacing: -0.03em;
-      text-decoration: none;
-      color: #fff;
-      white-space: nowrap;
+    .logo {
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
     }
-    .menu {
-      display: flex; flex-direction: row; flex-wrap: nowrap; gap: 0.35rem;
+    nav {
+      display: flex;
+      gap: 1.1rem;
     }
-    .menu a {
-      text-decoration: none;
-      color: rgba(255,255,255,0.88);
-      font-size: clamp(0.72rem, 2.4vw, 0.88rem);
-      font-weight: 600;
-      padding: 0.45rem 0.62rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      white-space: nowrap;
+    nav a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.65);
     }
+    nav a:hover { color: #fff; }
 
-    /* Tier 2 — center breath */
-    .tier-core {
-      display: grid;
-      place-items: center;
-      text-align: center;
-      pointer-events: none;
-    }
-    .core-copy {
-      transform: translateY(18px);
-      opacity: 0;
-      animation: slideIn 0.8s ease forwards 0.25s;
+    /* Hero */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3.5rem 0 2.5rem;
     }
     .kicker {
-      font-size: 0.78rem;
-      font-weight: 700;
+      font-size: 0.72rem;
+      font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.55);
-      margin-bottom: 0.45rem;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 0.85rem;
     }
-    .headline {
-      font-size: clamp(2rem, 8vw, 3.4rem);
-      line-height: 0.98;
+    h1 {
+      font-size: clamp(2.4rem, 11vw, 3.4rem);
       font-weight: 800;
-      letter-spacing: -0.04em;
+      line-height: 0.95;
+      letter-spacing: -0.035em;
       text-transform: uppercase;
-      text-shadow: 0 10px 40px rgba(0,0,0,0.55);
+      margin-bottom: 1.4rem;
+    }
+    .lede {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.7);
+      max-width: 22rem;
+      margin-bottom: 2.2rem;
     }
 
-    /* Tier 3 — action plane */
-    .tier-actions {
-      display: grid;
-      gap: 0.55rem;
-      padding: 0.8rem;
-      border-radius: 20px;
-      transform: translateY(16px);
-      opacity: 0;
-      animation: slideIn 0.7s ease forwards 0.4s;
-    }
-    .tier-actions p {
-      font-size: 0.86rem;
-      color: rgba(255,255,255,0.62);
-      text-align: center;
-    }
-    .row {
+    /* Actions */
+    .actions {
       display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .row a, .row button {
-      font: inherit;
-      font-size: 0.88rem;
-      font-weight: 700;
-      text-decoration: none;
+      height: 3rem;
+      padding: 0 1.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
       border-radius: 999px;
-      padding: 0.7rem 1rem;
-      border: 1px solid rgba(255,255,255,0.14);
-      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s, color 0.15s;
     }
-    .primary {
+    .btn-primary {
       background: #fff;
-      color: #0a0a0c;
-      border-color: #fff;
+      color: #000;
     }
-    .ghost {
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.9);
+    .btn-primary:hover { background: #e8e8e8; }
+    .btn-ghost {
+      background: transparent;
+      color: #fff;
+      border-color: rgba(255,255,255,0.2);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.45); }
+
+    /* Sections */
+    section {
+      padding: 2.8rem 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    section h2 {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 1.1rem;
+    }
+    section p {
+      font-size: 0.98rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 0.9rem;
+    }
+    section p:last-child { margin-bottom: 0; }
+
+    /* Crypto */
+    .crypto-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.1rem 1.2rem;
+      margin-top: 1rem;
+    }
+    .crypto-box code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      word-break: break-all;
+      color: rgba(255,255,255,0.85);
+    }
+    .crypto-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 0.35rem;
     }
 
-    @keyframes slideIn {
-      to { transform: translateY(0); opacity: 1; }
+    /* Footer */
+    footer {
+      padding: 1.8rem 0 2.2rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <canvas id="stage" aria-hidden="true"></canvas>
-
-  <div class="hud">
-    <div class="tier-nav glass">
-      <a class="brand" href="index.html">DualisCapax</a>
-      <nav class="menu">
-        <a href="corporate.html">Financial</a>
-        <a href="research/">Research</a>
-        <a href="ai/chat.html">AI</a>
+  <div class="wrap">
+    <header>
+      <a href="/" class="logo">DualisCapax</a>
+      <nav>
+        <a href="#research">Research</a>
+        <a href="#access">Access</a>
       </nav>
-    </div>
+    </header>
 
-    <div class="tier-core">
-      <div class="core-copy">
-        <div class="kicker">No Tribes Preferred</div>
-        <h1 class="headline">Truth Prevails.</h1>
+    <main class="hero">
+      <div class="kicker">No Tribes Preferred</div>
+      <h1>Truth<br>Prevails.</h1>
+      <p class="lede">Independent analysis. No affiliation required. Open research stays free. Depth is earned.</p>
+      <div class="actions">
+        <a href="#access" class="btn btn-primary">Request Access</a>
+        <a href="#research" class="btn btn-ghost">View Research</a>
       </div>
-    </div>
+    </main>
 
-    <div class="tier-actions glass">
-      <p>Open research free · Depth prepaid · Same rules</p>
-      <div class="row">
-        <a class="primary" href="ai/chat.html">Enter AI</a>
-        <a class="ghost" href="pay.html">Fuel</a>
-        <a class="ghost" href="faq.html">FAQ</a>
+    <section id="research">
+      <h2>Research</h2>
+      <p>Open materials remain free. No paywall on published work.</p>
+      <p>Depth layers (Adaptive systems, sandbox, clinical surfaces) require verified participation.</p>
+    </section>
+
+    <section id="access">
+      <h2>Access</h2>
+      <p>We do not run a conventional payment gateway. Access to deeper layers is handled through direct crypto settlement or by participation in the L2 playground.</p>
+      <p>Fiat is not the primary path. This is intentional.</p>
+
+      <div class="crypto-box">
+        <div class="crypto-label">Crypto (placeholder — replace with your addresses)</div>
+        <code>BTC / ETH / USDC addresses go here</code>
       </div>
-    </div>
+    </section>
+
+    <footer>
+      DualisCapax · No tribes preferred · Truth prevails
+    </footer>
   </div>
-
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-    }
-  }
-  </script>
-  <script type="module">
-    import { startPlaneStage } from './js/plane-stage.js?v=1';
-    startPlaneStage(document.getElementById('stage'));
-  </script>
 </body>
 </html>
