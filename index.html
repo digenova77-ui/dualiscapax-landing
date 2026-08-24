@@ -19,8 +19,9 @@ a{color:inherit;text-decoration:none}
 .photo::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 70% 35%, rgba(255,255,255,.04), transparent 55%),linear-gradient(105deg, rgba(2,2,3,.96) 0%, rgba(2,2,3,.75) 32%, rgba(2,2,3,.4) 58%, rgba(2,2,3,.7) 100%),linear-gradient(180deg, rgba(2,2,3,.5) 0%, transparent 28%, transparent 55%, rgba(2,2,3,.97) 100%)}
 .lattice{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.04;background-image:linear-gradient(rgba(255,255,255,.55) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.55) 1px, transparent 1px);background-size:64px 64px;mask-image:linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent)}
 .ui{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.4rem, 3.5vw, 2.6rem);max-width:42rem}
-.top{display:flex;align-items:center;gap:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.top{display:flex;align-items:center;gap:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.55);flex-wrap:wrap}
 .top img{width:20px;height:20px}
+.beta-pill{margin-left:auto;font-size:.55rem;letter-spacing:.14em;color:rgba(201,162,39,.9);border:1px solid rgba(201,162,39,.4);padding:.2rem .45rem;border-radius:3px}
 .center{padding:2.1rem 0 1.75rem}
 .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(201,162,39,.88);margin-bottom:1.35rem}
 h1{font-size:clamp(2rem, 1rem + 3.2vw, 3.1rem);font-weight:600;letter-spacing:-.034em;line-height:1.12;max-width:16ch;margin-bottom:1.15rem;color:#fff}
@@ -49,6 +50,7 @@ h1{font-size:clamp(2rem, 1rem + 3.2vw, 3.1rem);font-weight:600;letter-spacing:-.
       <div class="top">
         <img src="emblem-ring.svg" width="20" height="20" alt="">
         <span>DualisCapax</span>
+        <span class="beta-pill">Full beta</span>
       </div>
       <div class="center">
         <p class="k">Unity · Residual plane</p>
@@ -56,10 +58,10 @@ h1{font-size:clamp(2rem, 1rem + 3.2vw, 3.1rem);font-weight:600;letter-spacing:-.
         <p class="p">Healthcare. Engineering. Adaptive systems. Same door for every onboarder. Cost of being wrong priced in the open.</p>
         <p class="p2">Not a tribe. Not a throne. A measuring stick held to the same standard in every land the law allows us to serve.</p>
         <div class="cta-row">
+          <a class="cta" href="tour.html" data-life="tap">Family tour</a>
           <a class="cta" href="ai/" data-life="tap">Adaptive Intelligence</a>
-          <a class="cta" href="narrative.html" data-life="tap">Narrative</a>
-          <a class="cta ghost" href="research/" data-life="tap">Enter research</a>
-          <a class="cta ghost" href="model.html" data-life="tap">Model tour</a>
+          <a class="cta ghost" href="narrative.html" data-life="tap">Narrative</a>
+          <a class="cta ghost" href="research/" data-life="tap">Research</a>
         </div>
         <div class="pillars" aria-label="Unity pillars">
           <div class="pillar life-card" data-life="soft"><div class="t">Mirror</div><div class="b">One KYC path. One published standard. No founder lane.</div></div>
@@ -68,13 +70,13 @@ h1{font-size:clamp(2rem, 1rem + 3.2vw, 3.1rem);font-weight:600;letter-spacing:-.
         </div>
       </div>
       <div class="bottom">
+        <a href="tour.html" data-life="tap">Family tour</a>
         <a href="ai/" data-life="tap">Adaptive Intelligence</a>
         <a href="narrative.html" data-life="tap">Narrative</a>
-        <a href="engine.html" data-life="tap">Engine</a>
-        <a href="model.html" data-life="tap">Model</a>
         <a href="research/" data-life="tap">Research</a>
+        <a href="model.html" data-life="tap">Model</a>
+        <a href="participate.html" data-life="tap">Participate</a>
         <a href="gateway.html" data-life="tap">Gateway</a>
-        <a href="manifesto.html" data-life="tap">Manifesto</a>
         <span class="s">No Tribes Preferred</span>
       </div>
     </div>
