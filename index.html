@@ -112,17 +112,32 @@
   header nav a{font-size:.88rem;font-weight:600;color:rgba(245,245,245,.75)}
   main{
     flex:1;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;text-align:center;
+    align-items:center;justify-content:flex-start;
+    text-align:center;
+    padding-top:clamp(0.4rem, 2.5vh, 1.2rem);
   }
+  /* Logomark 2x — proportions locked */
   .logo-stage{
-    width:min(96vw,44rem);
-    height:clamp(7rem,28vw,11rem);
-    margin-bottom:.2rem;
+    width:min(98vw, 88rem);
+    height:clamp(14rem, 56vw, 22rem);
+    margin-bottom:0.15rem;
+    flex-shrink:0;
   }
   .logo-stage img{width:100%;height:100%;object-fit:contain;display:block}
+  .motto{
+    margin:0.15rem 0 0.55rem;
+  }
+  .motto p{
+    font-size:clamp(0.95rem, 3.2vw, 1.15rem);
+    font-weight:600;
+    color:var(--fg-soft);
+    line-height:1.35;
+    margin:0;
+  }
   .geo-wrap{
     width:min(48vw,160px);height:min(48vw,160px);
     margin-bottom:.8rem;
+    flex-shrink:0;
   }
   #geo-earth{width:100%;height:100%;display:block}
   h1{
@@ -175,6 +190,10 @@
     <main>
       <div class="logo-stage">
         <img src="brand/logo-dna-x.svg" alt="DualisCapax" width="900" height="200"/>
+      </div>
+      <div class="motto">
+        <p>All haters welcome.</p>
+        <p>No tribes preferred.</p>
       </div>
       <div class="geo-wrap">
         <canvas id="geo-earth" width="360" height="360"></canvas>
@@ -237,7 +256,6 @@
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.exponentialRampToValueAtTime(0.22, now+1.2);
 
-      // silent resume if browser held context until first input
       ['pointerdown','touchstart','click'].forEach(function(ev){
         document.addEventListener(ev, kick, { once:true, passive:true });
       });
@@ -311,7 +329,6 @@
     setTimeout(startVideo, 1200);
   }
 
-  // Auto-start residual with the intro — no tap prompt
   startResidual();
   setTimeout(function(){ question.classList.add('is-in'); }, 400);
   setTimeout(collapseToOrb, 4800);
