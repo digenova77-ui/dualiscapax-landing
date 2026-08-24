@@ -47,6 +47,7 @@
     object-fit:cover;background:#000;opacity:0;
   }
   .intro video.is-on{opacity:1}
+  .intro video.is-fade{opacity:0}
   .question{
     position:relative;z-index:3;
     max-width:22rem;padding:0 1.5rem;text-align:center;
@@ -84,7 +85,7 @@
   .smoke{
     position:fixed;inset:0;z-index:var(--z-smoke);
     pointer-events:none;opacity:0;
-    background:radial-gradient(ellipse 80% 60% at 50% 45%,rgba(180,200,220,.18),transparent 60%),#000;
+    background:radial-gradient(ellipse 80% 60% at 50% 45%,rgba(180,200,220,.12),transparent 62%),transparent;
   }
   .smoke.is-on{opacity:1}
   .smoke.is-clear{opacity:0}
@@ -116,98 +117,57 @@
     display:flex;
     flex-direction:column;
   }
-  header{
-    flex-shrink:0;
-  }
-  header nav{
-    display:flex;
-    justify-content:space-between;
-    width:100%;
-  }
-  header nav a{
-    font-size:.88rem;
-    font-weight:600;
-    color:rgba(245,245,245,.75);
-  }
-  /* Main pane: true center on X and Y */
+  header{flex-shrink:0}
+  header nav{display:flex;justify-content:space-between;width:100%}
+  header nav a{font-size:.88rem;font-weight:600;color:rgba(245,245,245,.75)}
   main{
-    flex:1;
-    min-height:0;
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
+    flex:1;min-height:0;width:100%;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
   }
   .stack{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    width:100%;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;width:100%;
   }
   .logo-stage{
     width:min(98vw, 88rem);
     height:clamp(14rem, 56vw, 22rem);
-    margin:0 0 0.15rem;
-    flex-shrink:0;
+    margin:0 0 0.15rem;flex-shrink:0;
   }
-  .logo-stage img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    display:block;
-  }
-  .motto{
-    margin:0.15rem 0 0.55rem;
-  }
+  .logo-stage img{width:100%;height:100%;object-fit:contain;display:block}
+  .motto{margin:0.15rem 0 0.55rem}
   .motto p{
     font-size:clamp(0.95rem, 3.2vw, 1.15rem);
-    font-weight:600;
-    color:var(--fg-soft);
-    line-height:1.35;
-    margin:0;
+    font-weight:600;color:var(--fg-soft);line-height:1.35;margin:0;
   }
   .geo-wrap{
-    width:min(48vw,160px);
-    height:min(48vw,160px);
-    margin:0 0 0.8rem;
-    flex-shrink:0;
+    width:min(48vw,160px);height:min(48vw,160px);
+    margin:0 0 0.8rem;flex-shrink:0;
   }
-  #geo-earth{
-    width:100%;
-    height:100%;
-    display:block;
-  }
+  #geo-earth{width:100%;height:100%;display:block}
   h1{
-    font-size:clamp(2.4rem,10vw,4.2rem);
-    font-weight:900;
-    line-height:.9;
-    letter-spacing:-.05em;
-    text-transform:uppercase;
+    font-size:clamp(2.4rem,10vw,4.2rem);font-weight:900;
+    line-height:.9;letter-spacing:-.05em;text-transform:uppercase;
     margin:0 0 0.5rem;
   }
   .line{
-    font-size:clamp(.95rem,3.2vw,1.12rem);
-    font-weight:600;
-    color:var(--fg-soft);
-    margin:0 0 0.1rem;
+    font-size:clamp(.95rem,3.2vw,1.12rem);font-weight:600;
+    color:var(--fg-soft);margin:0 0 0.1rem;
   }
 }
 
 @layer motion {
-  .intro{transition:opacity 1.1s ease}
-  .intro video{transition:opacity 1.2s ease}
+  .intro{transition:opacity 2.4s ease}
+  .intro video{transition:opacity 2.4s ease}
   .question{transition:opacity 1.4s ease,transform 1.4s ease,filter 1.4s ease}
   .seed{transition:opacity .5s ease,transform 1.1s cubic-bezier(.22,1,.36,1)}
   .seed.is-bloom{transition:opacity .9s ease,transform 1.35s cubic-bezier(.22,1,.36,1)}
   .seed.is-gone{transition:opacity .6s ease}
   .intro .credit{transition:opacity .6s ease}
-  .smoke{transition:opacity .9s ease}
-  .smoke.is-clear{transition:opacity 1.4s ease}
-  .site{transition:opacity 1.2s ease,visibility 0s linear 1.2s}
-  body.is-live .site{transition:opacity 1.2s ease,visibility 0s}
+  .smoke{transition:opacity 2s ease}
+  .smoke.is-clear{transition:opacity 2s ease}
+  .site{transition:opacity 2.4s ease,visibility 0s linear 2.4s}
+  body.is-live .site{transition:opacity 2.4s ease,visibility 0s}
 }
 </style>
 </head>
@@ -262,8 +222,11 @@
   const question=document.getElementById('question');
   const seed=document.getElementById('seed');
   const credit=document.getElementById('credit');
-  let done=false, phase='question', residualLive=false;
+  let done=false, phase='question', residualLive=false, crossfading=false;
   let audioCtx=null, osc=null, gain=null;
+
+  /* Video ~27s. Late expansion / settle phase starts crossfade. */
+  const CROSSFADE_AT = 0.74; // ~20s into 27s — cosmos expanded, bang settled
 
   function buzz(pattern){
     try{
@@ -322,13 +285,13 @@
         gain.gain.cancelScheduledValues(now);
         const cur=Math.max(gain.gain.value, 0.0001);
         gain.gain.setValueAtTime(cur, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now+0.28);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now+0.4);
         setTimeout(function(){
           try{ if(osc) osc.stop(); }catch(e){}
           try{ if(audioCtx) audioCtx.close(); }catch(e){}
           osc=null; gain=null; audioCtx=null;
           if(typeof then==='function') then();
-        }, 320);
+        }, 420);
         return;
       }catch(e){}
     }
@@ -338,20 +301,27 @@
     if(typeof then==='function') then();
   }
 
-  function startSite(){
-    if(done) return;
+  /* Matched crossfade: Big Bang out + landing in together */
+  function beginCrossfade(){
+    if(done || crossfading) return;
+    crossfading=true;
     done=true;
+
     stopResidual(function(){
+      video.classList.add('is-fade');
       smoke.classList.add('is-on');
       intro.classList.add('is-out');
       document.body.classList.add('is-live');
-      setTimeout(function(){ buzz([12, 40, 10]); }, 400);
+      setTimeout(function(){ buzz([12, 40, 10]); }, 500);
+
       setTimeout(function(){
         smoke.classList.add('is-clear');
-        setTimeout(function(){
-          try{ intro.remove(); smoke.remove(); }catch(e){}
-        }, 1600);
-      }, 700);
+      }, 1200);
+
+      setTimeout(function(){
+        try{ video.pause(); }catch(e){}
+        try{ intro.remove(); smoke.remove(); }catch(e){}
+      }, 2600);
     });
   }
 
@@ -376,19 +346,38 @@
     setTimeout(startVideo, 1200);
   }
 
+  /* Drive crossfade from video clock — late expansion phase */
+  video.addEventListener('timeupdate', function(){
+    if(phase!=='video' || done) return;
+    const d=video.duration;
+    if(!d || !isFinite(d)) return;
+    if(video.currentTime / d >= CROSSFADE_AT){
+      beginCrossfade();
+    }
+  });
+
+  video.addEventListener('ended', function(){
+    if(!done) beginCrossfade();
+  });
+  video.addEventListener('error', function(){
+    if(phase==='video' && !done) beginCrossfade();
+  });
+
   startResidual();
   setTimeout(function(){ question.classList.add('is-in'); }, 400);
   setTimeout(collapseToOrb, 4800);
 
   skip.addEventListener('click', function(){
     try{ video.pause(); }catch(e){}
-    startSite();
+    beginCrossfade();
   });
 
-  video.addEventListener('ended', startSite);
-  video.addEventListener('error', function(){ if(phase==='video') startSite(); });
-  setTimeout(function(){ if(!done && phase==='video' && video.readyState<2) startSite(); }, 14000);
-  setTimeout(function(){ if(!done) startSite(); }, 28000);
+  setTimeout(function(){
+    if(!done && phase==='video' && video.readyState<2) beginCrossfade();
+  }, 14000);
+  setTimeout(function(){
+    if(!done) beginCrossfade();
+  }, 32000);
 })();
 </script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
