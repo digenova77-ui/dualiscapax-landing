@@ -22,19 +22,65 @@ html,body{
   padding-bottom:env(safe-area-inset-bottom);
 }
 .top{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
   display:grid;
   grid-template-columns:auto 1fr auto;
   align-items:center;
   gap:.65rem;
-  padding:.85rem 1rem .95rem;
+  min-height:4.6rem;
+  padding:1rem 1rem 1.1rem;
   border-bottom:1px solid rgba(255,255,255,.1);
   flex-shrink:0;
-  background:rgba(5,5,8,.92);
-  backdrop-filter:blur(10px);
+  background:#07070c;
 }
+.top::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 90% 120% at 70% 120%, rgba(120,140,180,.18), transparent 55%),
+    radial-gradient(ellipse 60% 80% at 15% 0%, rgba(255,255,255,.06), transparent 50%),
+    linear-gradient(180deg, rgba(8,10,18,.2), rgba(5,5,8,.75) 70%, #050508),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 47px,
+      rgba(255,255,255,.035) 48px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 23px,
+      rgba(255,255,255,.03) 24px
+    ),
+    linear-gradient(180deg, #0b0d14, #06070c);
+  opacity:1;
+}
+.top::after{
+  content:"";
+  position:absolute;
+  left:-5%;
+  right:-5%;
+  bottom:-40%;
+  height:90%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg, transparent, rgba(5,5,8,.55)),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(160,175,210,.12), transparent 70%);
+  border-top:1px solid rgba(255,255,255,.06);
+  transform:perspective(420px) rotateX(58deg);
+  transform-origin:center bottom;
+  opacity:.9;
+}
+.top > *{ position:relative; z-index:1; }
 .top a.back{
   font-size:1.25rem;
-  color:rgba(255,255,255,.55);
+  color:rgba(255,255,255,.7);
   text-decoration:none;
   padding:.25rem .35rem;
   line-height:1;
@@ -52,16 +98,17 @@ html,body{
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-  text-shadow:0 0 28px rgba(255,255,255,.12);
+  text-shadow:0 1px 0 rgba(0,0,0,.55), 0 0 28px rgba(255,255,255,.14);
 }
 .fuel{
   font-size:.72rem;
   font-weight:600;
   padding:.35rem .65rem;
   border-radius:999px;
-  border:1px solid rgba(255,255,255,.2);
-  color:rgba(255,255,255,.85);
-  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.22);
+  color:rgba(255,255,255,.9);
+  background:rgba(0,0,0,.28);
+  backdrop-filter:blur(6px);
   white-space:nowrap;
 }
 .fuel.empty{
