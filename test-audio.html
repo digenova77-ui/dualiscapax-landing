@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Residual Test</title>
+<style>
+  html,body{height:100%;margin:0;background:#000;color:#f5f5f5;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center}
+  .box{max-width:20rem;padding:1.5rem}
+  h1{font-size:1.4rem;margin:0 0 1rem}
+  p{font-size:1rem;opacity:.8;margin:0 0 1.5rem;line-height:1.4}
+  button{font-size:1.1rem;font-weight:700;padding:.9rem 1.6rem;border:none;border-radius:999px;background:#7eb6ff;color:#000;cursor:pointer}
+  button:active{transform:scale(.97)}
+  #status{margin-top:1.5rem;font-size:.9rem;min-height:3rem;opacity:.9}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Residual Test</h1>
+  <p>Tap the button once.<br>You should hear a low drone and feel the phone pulse.</p>
+  <button id="go" type="button">Tap for residual</button>
+  <div id="status"></div>
+</div>
+<script>
+(function(){
+  const btn=document.getElementById('go');
+  const status=document.getElementById('status');
+  let running=false, ctx=null, osc=null, gain=null, raf=null;
+
+  function log(msg){ status.innerHTML = msg; }
+
+  btn.addEventListener('click', function(){
+    if(running){
+      // stop
+      running=false;
+      if(raf) cancelAnimationFrame(raf);
+      try{ if(osc) osc.stop(); }catch(e){}
+      try{ if(ctx) ctx.close(); }catch(e){}
+      ctx=null; osc=null; gain=null;
+      btn.textContent='Tap for residual';
+      log('Stopped.');
+      return;
+    }
+
+    running=true;
+    btn.textContent='Stop';
+    log('Starting…');
+
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC){ log('No AudioContext on this browser.'); return; }
+      ctx=new AC();
+      if(ctx.state==='suspended'){
+        ctx.resume().then(function(){ log('AudioContext resumed.'); }).catch(function(e){ log('Resume failed: '+e); });
+      }
+
+      osc=ctx.createOscillator();
+      gain=ctx.createGain();
+      const filter=ctx.createBiquadFilter();
+      filter.type='lowpass';
+      filter.frequency.value=180;
+      osc.type='sawtooth';
+      osc.frequency.value=42;
+      gain.gain.value=0.0001;
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+
+      const now=ctx.currentTime;
+      gain.gain.exponentialRampToValueAtTime(0.22, now+1.2);
+
+      let hasVibrate = typeof navigator.vibrate === 'function';
+      log(
+        'Drone running.<br>' +
+        (hasVibrate ? 'Vibration API present — pulsing…' : 'No Vibration API (common on iPhone).') +
+        '<br>Audio state: '+ctx.state
+      );
+
+      (function loop(){
+        if(!running) return;
+        const intensity = 0.35 + 0.5 * Math.abs(Math.sin(performance.now()*0.0025));
+        if(hasVibrate){
+          try{
+            if(intensity>0.65) navigator.vibrate([30,12,24]);
+            else if(intensity>0.4) navigator.vibrate(18);
+            else navigator.vibrate(9);
+          }catch(e){}
+        }
+        raf=requestAnimationFrame(loop);
+      })();
+    }catch(e){
+      log('Error: '+e.message);
+      running=false;
+      btn.textContent='Tap for residual';
+    }
+  });
+})();
+</script>
+</body>
+</html>
