@@ -205,7 +205,13 @@
   const credit=document.getElementById('credit');
   const tapHint=document.getElementById('tap-hint');
   let done=false, phase='question', unlocked=false, residualLive=false;
-  let audioCtx=null, osc=null, gain=null, hapticRaf=null;
+  let audioCtx=null, osc=null, gain=null;
+
+  function buzz(pattern){
+    try{
+      if(typeof navigator.vibrate==='function') navigator.vibrate(pattern);
+    }catch(e){}
+  }
 
   function unlockAndPlay(){
     if(unlocked) return;
@@ -214,7 +220,7 @@
     startResidual();
   }
 
-  /* Proven residual model from test-audio.html */
+  /* Residual = sound only. No continuous haptic. */
   function startResidual(){
     if(residualLive) return;
     residualLive=true;
@@ -243,34 +249,14 @@
       gain.gain.cancelScheduledValues(now);
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.exponentialRampToValueAtTime(0.22, now+1.2);
-
-      const hasVibrate=typeof navigator.vibrate==='function';
-      (function loop(){
-        if(!residualLive) return;
-        const intensity=0.35+0.5*Math.abs(Math.sin(performance.now()*0.0025));
-        if(seed && phase!=='video'){
-          seed.style.transform='scale('+(1+intensity*0.9)+')';
-        }
-        if(hasVibrate){
-          try{
-            if(intensity>0.65) navigator.vibrate([30,12,24]);
-            else if(intensity>0.4) navigator.vibrate(18);
-            else navigator.vibrate(9);
-          }catch(e){}
-        }
-        hapticRaf=requestAnimationFrame(loop);
-      })();
     }catch(e){
       residualLive=false;
       console.warn('residual fail', e);
     }
   }
 
-  /* Clean stop — ramp down before killing oscillator (kills the pop) */
   function stopResidual(then){
     residualLive=false;
-    if(hapticRaf){ cancelAnimationFrame(hapticRaf); hapticRaf=null; }
-    try{ if(navigator.vibrate) navigator.vibrate(0); }catch(e){}
     seed.style.transform='';
 
     if(audioCtx && gain){
@@ -302,6 +288,8 @@
       smoke.classList.add('is-on');
       intro.classList.add('is-out');
       document.body.classList.add('is-live');
+      /* Faint pulse as logo lands */
+      setTimeout(function(){ buzz([12, 40, 10]); }, 400);
       setTimeout(function(){
         smoke.classList.add('is-clear');
         setTimeout(function(){
@@ -317,6 +305,8 @@
     credit.classList.add('is-on');
     video.classList.add('is-on');
     seed.classList.add('is-gone');
+    /* Big Bang moment — one solid hit */
+    buzz([40, 20, 55, 15, 30]);
     const p=video.play();
     if(p && p.catch) p.catch(function(){});
   }
