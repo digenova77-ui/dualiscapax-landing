@@ -57,18 +57,22 @@
       margin-top: auto;
       padding: 2rem 0 1.75rem;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
+      flex-wrap: nowrap;
+      gap: 0.5rem;
       border-top: 1px solid rgba(255,255,255,0.09);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .depth a {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 0.65rem 1rem;
+      letter-spacing: 0.03em;
+      padding: 0.6rem 0.85rem;
       border: 1px solid rgba(255,255,255,0.18);
       border-radius: 999px;
       color: rgba(245,245,245,0.85);
+      white-space: nowrap;
+      flex: 0 0 auto;
     }
   </style>
 </head>
