@@ -1,25 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="DualisCapax emblem">
-  <rect width="200" height="200" fill="#020203"/>
-  <circle cx="100" cy="100" r="78" fill="none" stroke="url(#rg)" stroke-width="5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="DualisCapax emblem">
   <defs>
-    <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#C9A227"/>
       <stop offset="100%" stop-color="#3B82F6"/>
     </linearGradient>
-    <linearGradient id="hx" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="strand" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#F5D76E"/>
-      <stop offset="50%" stop-color="#3B82F6"/>
-      <stop offset="100%" stop-color="#60A5FA"/>
+      <stop offset="50%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#2563EB"/>
     </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
-  <path d="M70 40 C110 70, 110 130, 70 160" fill="none" stroke="url(#hx)" stroke-width="10" stroke-linecap="round"/>
-  <path d="M130 40 C90 70, 90 130, 130 160" fill="none" stroke="url(#hx)" stroke-width="10" stroke-linecap="round"/>
-  <line x1="78" y1="60" x2="122" y2="72" stroke="#1e3a5f" stroke-width="4"/>
-  <line x1="76" y1="90" x2="124" y2="100" stroke="#1e3a5f" stroke-width="4"/>
-  <line x1="78" y1="120" x2="122" y2="132" stroke="#1e3a5f" stroke-width="4"/>
-  <circle cx="78" cy="62" r="6" fill="#EF4444"/>
-  <circle cx="122" cy="74" r="6" fill="#3B82F6"/>
-  <circle cx="88" cy="100" r="6" fill="#22C55E"/>
-  <circle cx="118" cy="118" r="6" fill="#EAB308"/>
-  <circle cx="95" cy="145" r="6" fill="#111111" stroke="#666" stroke-width="1"/>
+  <circle cx="128" cy="128" r="108" fill="none" stroke="url(#ring)" stroke-width="6" filter="url(#glow)" opacity="0.95"/>
+  <path d="M88 48 C148 88, 148 168, 88 208" fill="none" stroke="url(#strand)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M168 48 C108 88, 108 168, 168 208" fill="none" stroke="url(#strand)" stroke-width="12" stroke-linecap="round"/>
+  <line x1="100" y1="78" x2="156" y2="92" stroke="#1e3a5f" stroke-width="5"/>
+  <line x1="96" y1="112" x2="160" y2="124" stroke="#1e3a5f" stroke-width="5"/>
+  <line x1="96" y1="146" x2="160" y2="158" stroke="#1e3a5f" stroke-width="5"/>
+  <line x1="100" y1="180" x2="156" y2="192" stroke="#1e3a5f" stroke-width="5"/>
+  <circle cx="100" cy="78" r="8" fill="#EF4444"/>
+  <circle cx="156" cy="92" r="8" fill="#3B82F6"/>
+  <circle cx="112" cy="128" r="8" fill="#22C55E"/>
+  <circle cx="152" cy="152" r="8" fill="#EAB308"/>
+  <circle cx="120" cy="188" r="8" fill="#0a0a0a" stroke="#666" stroke-width="1.5"/>
 </svg>
