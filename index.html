@@ -198,7 +198,8 @@
 
     let particles = [];
     let start = null;
-    const ASSEMBLE_MS = 2200;
+    /* long enough that density visibly climbs: sparse → dense */
+    const ASSEMBLE_MS = 3800;
 
     function sampleTargets() {
       const w = canvas.clientWidth || 360;
@@ -220,7 +221,6 @@
       o.font = '800 ' + fontSize + 'px Inter, system-ui, sans-serif';
       o.fillText(TEXT, w / 2, h / 2);
 
-      // DNA accent to the right of the word
       const tw = o.measureText(TEXT).width;
       const hx = w / 2 + tw * 0.5 + fontSize * 0.28;
       const hy = h / 2;
@@ -250,7 +250,8 @@
 
       const data = o.getImageData(0, 0, off.width, off.height).data;
       const targets = [];
-      const step = Math.max(2, Math.floor(2 * dpr));
+      /* denser sample grid so the end state is solid */
+      const step = Math.max(1, Math.floor(1.5 * dpr));
       for (let y = 0; y < off.height; y += step) {
         for (let x = 0; x < off.width; x += step) {
           const a = data[(y * off.width + x) * 4 + 3];
@@ -259,22 +260,30 @@
           }
         }
       }
+      /* left → right: information flows into the word */
+      targets.sort(function (a, b) {
+        return a.x - b.x || a.y - b.y;
+      });
       return { targets, w, h };
     }
 
     function rebuild() {
       const { targets, w, h } = sampleTargets();
-      particles = targets.map((t) => {
+      const n = targets.length;
+      particles = targets.map(function (t, i) {
+        /* rank 0..1 along the word — when this particle is “allowed in” */
+        const rank = n <= 1 ? 0 : i / (n - 1);
         const angle = Math.random() * Math.PI * 2;
-        const dist = (0.35 + Math.random() * 0.9) * Math.max(w, h);
+        const dist = (0.4 + Math.random() * 1.1) * Math.max(w, h);
         return {
           tx: t.x,
           ty: t.y,
           x: w / 2 + Math.cos(angle) * dist,
           y: h / 2 + Math.sin(angle) * dist,
-          r: 0.9 + Math.random() * 1.4,
+          r: 0.85 + Math.random() * 1.35,
           phase: Math.random() * Math.PI * 2,
-          bright: 0.55 + Math.random() * 0.45
+          bright: 0.5 + Math.random() * 0.5,
+          rank: rank
         };
       });
       start = performance.now();
@@ -283,6 +292,10 @@
     function easeOutCubic(t) {
       return 1 - Math.pow(1 - t, 3);
     }
+    function smoothstep(edge0, edge1, x) {
+      const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+      return t * t * (3 - 2 * t);
+    }
 
     function frame(now) {
       if (start == null) start = now;
@@ -290,23 +303,31 @@
       const h = canvas.clientHeight;
       ctx.clearRect(0, 0, w, h);
 
-      const assemble = Math.min(1, (now - start) / ASSEMBLE_MS);
-      const e = easeOutCubic(assemble);
+      const t = Math.min(1, (now - start) / ASSEMBLE_MS);
+      /* density ramp: early = few points, late = full set */
+      const density = easeOutCubic(t);
+      /* soft front so particles stream in rather than hard cut */
+      const front = density * 1.15;
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        p.x += (p.tx - p.x) * (0.08 + e * 0.12);
-        p.y += (p.ty - p.y) * (0.08 + e * 0.12);
+        /* how far this particle is into the “allowed” set */
+        const local = smoothstep(p.rank - 0.08, p.rank + 0.02, front);
+        if (local <= 0.001) continue;
+
+        const pull = 0.04 + local * 0.18;
+        p.x += (p.tx - p.x) * pull;
+        p.y += (p.ty - p.y) * pull;
 
         const pulse = 0.65 + 0.35 * Math.sin(now * 0.004 + p.phase);
-        const alpha = (0.35 + 0.65 * e) * p.bright * pulse;
-        const radius = p.r * (0.7 + 0.5 * pulse);
+        const alpha = local * p.bright * pulse * (0.4 + 0.6 * density);
+        const radius = p.r * (0.55 + 0.55 * local) * (0.75 + 0.35 * pulse);
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(180, 220, 255, ' + alpha + ')';
-        ctx.shadowColor = 'rgba(120, 190, 255, ' + (0.9 * alpha) + ')';
-        ctx.shadowBlur = 8 + 6 * pulse;
+        ctx.shadowColor = 'rgba(120, 190, 255, ' + (0.85 * alpha) + ')';
+        ctx.shadowBlur = 6 + 8 * pulse * local;
         ctx.fill();
       }
       ctx.shadowBlur = 0;
