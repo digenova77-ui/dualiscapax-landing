@@ -14,7 +14,7 @@
     :root {
       --bg: #050505;
       --fg: #f5f5f5;
-      --muted: rgba(245,245,245,0.55);
+      --muted: rgba(245,245,245,0.72);
       --line: rgba(255,255,255,0.09);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,12 +32,9 @@
     a { color: inherit; text-decoration: none; }
 
     .shell {
-      max-width: 42rem;
+      max-width: 40rem;
       margin: 0 auto;
-      padding: 0 1.5rem 4rem;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
+      padding: 0 1.35rem 5rem;
     }
 
     header {
@@ -52,13 +49,13 @@
       z-index: 2;
     }
     .mark {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 700;
       letter-spacing: -0.03em;
     }
-    nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+    nav { display: flex; gap: 1.2rem; flex-wrap: wrap; }
     nav a {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 500;
       color: var(--muted);
     }
@@ -67,17 +64,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 3.5rem 0 3rem;
+      padding: 2.5rem 0 2rem;
       text-align: center;
-      min-height: 70dvh;
     }
 
     .geo-wrap {
-      width: min(72vw, 280px);
-      height: min(72vw, 280px);
+      width: min(70vw, 260px);
+      height: min(70vw, 260px);
       perspective: 900px;
-      margin-bottom: 1.75rem;
+      margin-bottom: 2rem;
       animation: pulse 4.5s ease-in-out infinite;
     }
     .geo {
@@ -105,7 +100,6 @@
       border-color: rgba(245,245,245,0.35);
       transform: rotateY(45deg) rotateX(45deg);
     }
-
     @keyframes spinY {
       from { transform: rotateY(0deg); }
       to   { transform: rotateY(360deg); }
@@ -115,29 +109,35 @@
       50% { transform: scale(1.05); }
     }
 
-    .eyebrow {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.85rem;
-    }
     h1 {
-      font-size: clamp(2.4rem, 11vw, 3.6rem);
+      font-size: clamp(2.75rem, 12vw, 4rem);
       font-weight: 800;
-      line-height: 0.92;
+      line-height: 0.94;
       letter-spacing: -0.045em;
       text-transform: uppercase;
+      margin-bottom: 0.65rem;
+    }
+    .subhead {
+      font-size: clamp(1.15rem, 4.2vw, 1.45rem);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
-    /* Empty scroll pane — real content later */
-    .pane {
-      flex: 1;
-      min-height: 40dvh;
+    article {
       border-top: 1px solid var(--line);
-      padding-top: 2rem;
+      padding-top: 2.5rem;
+      margin-top: 1rem;
     }
+    article p {
+      font-size: clamp(1.35rem, 4.8vw, 1.75rem);
+      line-height: 1.45;
+      font-weight: 450;
+      color: var(--fg);
+      margin-bottom: 1.75rem;
+    }
+    article p:last-child { margin-bottom: 0; }
   </style>
 </head>
 <body>
@@ -151,7 +151,7 @@
       </nav>
     </header>
 
-    <main class="hero">
+    <div class="hero">
       <div class="geo-wrap" aria-hidden="true">
         <div class="geo">
           <div class="ring"></div>
@@ -163,11 +163,15 @@
           <div class="ring"></div>
         </div>
       </div>
-      <div class="eyebrow">No Tribes Preferred</div>
       <h1>Truth<br>Prevails.</h1>
-    </main>
+      <div class="subhead">No Tribes Preferred</div>
+    </div>
 
-    <section class="pane" aria-label="Content"></section>
+    <article>
+      <p>Reality is a single write-only container. It was not initialized at zero. Zero has no preferred direction. It was initialized at +1 — the eFuse — the irreversible ignition mark that forces geometry by subtraction, not by addition into an empty arena.</p>
+      <p>Residual is capacity tax. What is written does not return. Expansion is the tensile response of the container wall under that tax, not a stage growing into nothing. The free volume in which coherent agency remains possible is the playground. It does not enlarge because a metric says the boundary grew.</p>
+      <p>The dual primaries are internal strands. Container C cannot be known from A alone or from B alone. One ledger. One duty. Protect the residual volume, or the account of the world stays a description of contents while the container itself stays invisible.</p>
+    </article>
   </div>
 </body>
 </html>
