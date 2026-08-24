@@ -1,0 +1,121 @@
+/* DualisCapax skin — change THESE to reskin without rebuilding content */
+:root {
+  --bg: #020203;
+  --fg: #f3f2ef;
+  --muted: rgba(255, 255, 255, 0.68);
+  --gold: #c9a227;
+  --line: rgba(255, 255, 255, 0.1);
+
+  /* mobile-first type scale — tune here */
+  --brand-size: clamp(2.8rem, 12vw, 4.2rem);
+  --title-size: clamp(2rem, 8.5vw, 2.85rem);
+  --body-size: 1.15rem;
+  --tag-size: 1rem;
+  --pad: 1.4rem;
+  --screen-pad-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; background: var(--bg); }
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+#webgl {
+  position: fixed; inset: 0; z-index: 0;
+  width: 100%; height: 100%; pointer-events: none;
+}
+.ui { position: relative; z-index: 2; }
+.em {
+  position: fixed;
+  top: calc(0.7rem + env(safe-area-inset-top));
+  right: 0.9rem;
+  z-index: 5;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.35);
+}
+
+.screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem var(--pad) var(--screen-pad-bottom);
+  padding-top: calc(1.2rem + env(safe-area-inset-top));
+  background: linear-gradient(180deg, transparent 20%, rgba(2, 2, 3, 0.85) 62%, var(--bg) 100%);
+}
+
+.brand {
+  font-size: var(--brand-size);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: 1rem;
+}
+.tag {
+  font-size: var(--tag-size);
+  line-height: 1.55;
+  color: var(--gold);
+  margin-bottom: 1.25rem;
+}
+.intro {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.25rem;
+  max-width: 22em;
+}
+.hint {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+.num {
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+.title {
+  font-size: var(--title-size);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  margin-bottom: 1rem;
+}
+.body {
+  font-size: var(--body-size);
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 24em;
+}
+
+.links {
+  padding: 2.5rem var(--pad) 4rem;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+.links h3 {
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 1.25rem;
+}
+.links a {
+  display: block;
+  font-size: 1.2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (min-width: 900px) {
+  .screen { padding-left: 10vw; padding-right: 10vw; }
+}

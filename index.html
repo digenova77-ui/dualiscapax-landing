@@ -5,206 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache">
 <title>DualisCapax</title>
-<meta name="description" content="DualisCapax — financial and emerging AI. Full public narrative.">
 <meta name="theme-color" content="#020203">
 <link rel="icon" href="brand/emblem-helix.svg">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;background:#020203}
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-  color:#f3f2ef;background:#020203;-webkit-font-smoothing:antialiased;
-}
-a{color:inherit;text-decoration:none}
-#webgl{position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
-.ui{position:relative;z-index:2}
-.em{
-  position:fixed;top:calc(.7rem + env(safe-area-inset-top));right:.9rem;z-index:5;
-  width:44px;height:44px;border-radius:50%;
-  box-shadow:0 0 20px rgba(201,162,39,.35);
-}
-.screen{
-  min-height:100dvh;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:1.5rem 1.4rem calc(2.5rem + env(safe-area-inset-bottom));
-  padding-top:calc(1.2rem + env(safe-area-inset-top));
-  background:linear-gradient(180deg,transparent 20%,rgba(2,2,3,.85) 62%,#020203 100%);
-}
-.brand{
-  font-size:clamp(2.8rem,12vw,4.2rem);
-  font-weight:700;letter-spacing:-.04em;line-height:.95;
-  margin-bottom:1rem;color:#fff;
-}
-.tag{
-  font-size:1rem;line-height:1.55;color:#C9A227;
-  margin-bottom:1.25rem;letter-spacing:.04em;
-}
-.intro{
-  font-size:1.2rem;line-height:1.5;color:rgba(255,255,255,.7);
-  margin-bottom:1.25rem;max-width:22em;
-}
-.hint{font-size:.95rem;color:rgba(255,255,255,.35);letter-spacing:.08em}
-.num{
-  font-size:1rem;letter-spacing:.18em;text-transform:uppercase;
-  color:#C9A227;margin-bottom:.75rem;
-  font-family:ui-monospace,Menlo,Consolas,monospace;
-}
-.title{
-  font-size:clamp(2rem,8.5vw,2.85rem);
-  font-weight:600;letter-spacing:-.03em;line-height:1.12;
-  margin-bottom:1rem;color:#fff;
-}
-.body{
-  font-size:1.15rem;line-height:1.55;color:rgba(255,255,255,.68);
-  max-width:24em;margin-bottom:.5rem;
-}
-.links{
-  padding:2.5rem 1.4rem 4rem;background:#020203;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.links h3{
-  font-size:1rem;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(255,255,255,.4);margin-bottom:1.25rem;
-}
-.links a{
-  display:block;font-size:1.2rem;padding:1rem 0;
-  border-bottom:1px solid rgba(255,255,255,.1);
-  color:rgba(255,255,255,.8);
-}
-@media(min-width:900px){
-  .screen{padding-left:10vw;padding-right:10vw;max-width:52rem}
-}
-</style>
+<link rel="stylesheet" href="skin/default.css">
 </head>
 <body>
 <canvas id="webgl"></canvas>
 <img class="em" src="brand/emblem-helix.svg" alt="">
-
-<div class="ui">
-  <section class="screen">
-    <div class="brand">DualisCapax</div>
-    <p class="tag">Financial · Emerging AI · Networked access</p>
-    <p class="intro">DualisCapax is a financial and emerging-AI company building a networked plane: open research, metered adaptive intelligence, and accountable access under the same rules for everyone.</p>
-    <p class="hint">Scroll through the full story ↓</p>
-  </section>
-
-  <section class="screen">
-    <div class="num">01 · Open</div>
-    <h2 class="title">Research free. Full surface.</h2>
-    <p class="body">Anyone can enter the open research layer. Literature, simulation notes, and published standards are visible without a paywall. You should be able to learn the plane before you commit capacity.</p>
-  </section>
-
-  <section class="screen">
-    <div class="num">02 · Prove</div>
-    <h2 class="title">Boundary before depth.</h2>
-    <p class="body">Settlement and identity come first. Adaptive depth is not offered as an anonymous free-for-all. The boundary protects both the user and the system that has to stay honest.</p>
-  </section>
-
-  <section class="screen">
-    <div class="num">03 · Depth</div>
-    <h2 class="title">Adaptive intelligence.</h2>
-    <p class="body">Deeper sessions run real work: analysis, simulation, and adaptive assistance. Those sessions carry real cost. The meter exists so depth is not theater and not an infinite free drain.</p>
-  </section>
-
-  <section class="screen">
-    <div class="num">04 · Seal</div>
-    <h2 class="title">Production math sealed.</h2>
-    <p class="body">Core production methods and sealed IP stay off the open brochure. What must be public for trust is public. What must remain residual stays residual — by design, not by accident.</p>
-  </section>
-
-  <section class="screen">
-    <div class="num">05 · Fusion Meter</div>
-    <h2 class="title">Closed prepaid capacity.</h2>
-    <p class="body">Fusion Meter is prepaid capacity for depth — a closed meter for work on the plane. It is not positioned as a casual open-market meme coin. Capacity is for use, not spectacle.</p>
-  </section>
-
-  <section class="screen">
-    <div class="num">06 · Dual capacity</div>
-    <h2 class="title">Enterprise funds the plane.</h2>
-    <p class="body">Institutions and enterprises can fund sustained capacity. Individuals keep access to the open layer. Dual capacity means the plane can scale without erasing equal open entry.</p>
-  </section>
-
-  <section class="screen">
-    <div class="num">07 · Singularity clock</div>
-    <h2 class="title">Plane residual advances.</h2>
-    <p class="body">Progress is measured on the plane’s residual work — not as a performance about anyone’s wallet. The clock tracks system advancement, not a scoreboard for private flex.</p>
-  </section>
-
-  <section class="screen">
-    <div class="num">08 · Unity</div>
-    <h2 class="title">Same standard. Same math.</h2>
-    <p class="body">One published standard. No preferred tribe. No founder exemption lane. Truth and unity mean the same rules hold whether you arrive as a person, a team, or an agent path.</p>
-  </section>
-
-  <nav class="links">
-    <h3>Continue</h3>
-    <a href="corporate.html">Corporate</a>
-    <a href="ai/">Adaptive Intelligence</a>
-    <a href="research/">Research</a>
-    <a href="tour.html">Tour</a>
-    <a href="narrative.html">Narrative</a>
-    <a href="model.html">Model</a>
-  </nav>
-</div>
+<div class="ui" id="app">Loading…</div>
 
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}
 </script>
 <script type="module">
-import * as THREE from 'three';
-const canvas = document.getElementById('webgl');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(innerWidth, innerHeight);
-renderer.setClearColor(0x020203, 1);
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 100);
-camera.position.set(0, 0, 7);
-const group = new THREE.Group();
-scene.add(group);
-function strand(color, phase) {
-  const pts = [];
-  for (let i = 0; i <= 160; i++) {
-    const t = i / 160 * Math.PI * 5;
-    const y = (i / 160) * 7 - 3.5;
-    pts.push(new THREE.Vector3(Math.cos(t + phase) * 1.2, y, Math.sin(t + phase) * 1.2));
-  }
-  const curve = new THREE.CatmullRomCurve3(pts);
-  return new THREE.Mesh(
-    new THREE.TubeGeometry(curve, 180, 0.05, 8, false),
-    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.88 })
-  );
+import { startPlaneEngine } from './js/plane-engine.js';
+
+async function boot() {
+  const res = await fetch('content/story.json?v=1');
+  const data = await res.json();
+  const app = document.getElementById('app');
+
+  let html = '';
+  html += '<section class="screen">';
+  html += '<div class="brand">' + data.brand + '</div>';
+  html += '<p class="tag">' + data.tag + '</p>';
+  html += '<p class="intro">' + data.intro + '</p>';
+  html += '<p class="hint">' + data.hint + ' ↓</p>';
+  html += '</section>';
+
+  data.beats.forEach(function (b) {
+    html += '<section class="screen">';
+    html += '<div class="num">' + b.n + '</div>';
+    html += '<h2 class="title">' + b.title + '</h2>';
+    html += '<p class="body">' + b.body + '</p>';
+    html += '</section>';
+  });
+
+  html += '<nav class="links"><h3>Continue</h3>';
+  data.links.forEach(function (l) {
+    html += '<a href="' + l.href + '">' + l.label + '</a>';
+  });
+  html += '</nav>';
+
+  app.innerHTML = html;
+  startPlaneEngine(document.getElementById('webgl'));
 }
-group.add(strand(0xC9A227, 0));
-group.add(strand(0x3B82F6, Math.PI));
-const pCount = 280;
-const pPos = new Float32Array(pCount * 3);
-for (let i = 0; i < pCount; i++) {
-  pPos[i*3] = (Math.random()-0.5)*12;
-  pPos[i*3+1] = (Math.random()-0.5)*10;
-  pPos[i*3+2] = (Math.random()-0.5)*8;
-}
-const pGeo = new THREE.BufferGeometry();
-pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.025, transparent: true, opacity: 0.28 })));
-let target = 0;
-addEventListener('scroll', () => {
-  const max = document.body.scrollHeight - innerHeight;
-  target = max > 0 ? scrollY / max : 0;
-}, { passive: true });
-addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
+
+boot().catch(function (e) {
+  document.getElementById('app').textContent = 'Could not load story.';
+  console.error(e);
 });
-const clock = new THREE.Clock();
-(function loop() {
-  requestAnimationFrame(loop);
-  const t = clock.getElapsedTime();
-  group.rotation.y += (target * Math.PI * 2 + t * 0.12 - group.rotation.y) * 0.05;
-  group.position.y = (target - 0.5) * 1.2;
-  renderer.render(scene, camera);
-})();
 </script>
 </body>
 </html>
