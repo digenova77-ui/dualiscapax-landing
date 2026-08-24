@@ -225,7 +225,6 @@
   let done=false, phase='question', residualLive=false, crossfading=false;
   let audioCtx=null, osc=null, gain=null;
 
-  /* 2x playback = 50% wall time. Crossfade still at 74% of video timeline. */
   const PLAYBACK_RATE = 2;
   const CROSSFADE_AT = 0.74;
 
@@ -235,23 +234,35 @@
     }catch(e){}
   }
 
-  function startResidual(){
-    if(residualLive) return;
-    residualLive=true;
+  function ensureCtx(){
     try{
       const AC=window.AudioContext||window.webkitAudioContext;
-      if(!AC) return;
-      audioCtx=new AC();
-      const kick=function(){
-        if(audioCtx.state==='suspended'){
-          audioCtx.resume().catch(function(){});
-        }
-      };
-      kick();
+      if(!AC) return null;
+      if(!audioCtx || audioCtx.state==='closed'){
+        audioCtx=new AC();
+      }
+      if(audioCtx.state==='suspended'){
+        audioCtx.resume().catch(function(){});
+      }
+      return audioCtx;
+    }catch(e){
+      return null;
+    }
+  }
 
-      osc=audioCtx.createOscillator();
-      gain=audioCtx.createGain();
-      const filter=audioCtx.createBiquadFilter();
+  function startResidual(){
+    if(residualLive && audioCtx && audioCtx.state!=='closed'){
+      ensureCtx();
+      return;
+    }
+    residualLive=true;
+    try{
+      const ctx=ensureCtx();
+      if(!ctx) return;
+
+      osc=ctx.createOscillator();
+      gain=ctx.createGain();
+      const filter=ctx.createBiquadFilter();
       filter.type='lowpass';
       filter.frequency.value=180;
       osc.type='sawtooth';
@@ -259,20 +270,73 @@
       gain.gain.value=0.0001;
       osc.connect(filter);
       filter.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(ctx.destination);
       osc.start();
 
-      const now=audioCtx.currentTime;
+      const now=ctx.currentTime;
       gain.gain.cancelScheduledValues(now);
       gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.22, now+1.2);
-
-      ['pointerdown','touchstart','click'].forEach(function(ev){
-        document.addEventListener(ev, kick, { once:true, passive:true });
-      });
+      gain.gain.exponentialRampToValueAtTime(0.22, now+1.0);
     }catch(e){
       residualLive=false;
       console.warn('residual fail', e);
+    }
+  }
+
+  /* Hard bang at the visual moment — sound + haptic together */
+  function fireBang(){
+    const ctx=ensureCtx();
+    buzz([50, 18, 70, 14, 40, 12, 25]);
+
+    if(!ctx) return;
+    try{
+      const now=ctx.currentTime;
+
+      // Keep residual present and push it up for the hit
+      if(gain){
+        gain.gain.cancelScheduledValues(now);
+        const cur=Math.max(gain.gain.value, 0.0001);
+        gain.gain.setValueAtTime(cur, now);
+        gain.gain.exponentialRampToValueAtTime(0.32, now+0.05);
+        gain.gain.exponentialRampToValueAtTime(0.18, now+0.9);
+      }
+
+      // Short sub impact
+      const boom=ctx.createOscillator();
+      const boomGain=ctx.createGain();
+      boom.type='sine';
+      boom.frequency.setValueAtTime(55, now);
+      boom.frequency.exponentialRampToValueAtTime(28, now+0.55);
+      boomGain.gain.setValueAtTime(0.0001, now);
+      boomGain.gain.exponentialRampToValueAtTime(0.55, now+0.03);
+      boomGain.gain.exponentialRampToValueAtTime(0.0001, now+0.7);
+      boom.connect(boomGain);
+      boomGain.connect(ctx.destination);
+      boom.start(now);
+      boom.stop(now+0.75);
+
+      // Noise crack for the edge of the bang
+      const frames=Math.floor(ctx.sampleRate*0.18);
+      const buffer=ctx.createBuffer(1, frames, ctx.sampleRate);
+      const data=buffer.getChannelData(0);
+      for(let i=0;i<frames;i++){
+        data[i]=(Math.random()*2-1)*Math.pow(1-i/frames, 2.2);
+      }
+      const noise=ctx.createBufferSource();
+      noise.buffer=buffer;
+      const noiseFilter=ctx.createBiquadFilter();
+      noiseFilter.type='bandpass';
+      noiseFilter.frequency.value=420;
+      noiseFilter.Q.value=0.7;
+      const noiseGain=ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.28, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now+0.18);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(now);
+    }catch(e){
+      console.warn('bang fail', e);
     }
   }
 
@@ -332,7 +396,12 @@
     video.classList.add('is-on');
     seed.classList.add('is-gone');
     try{ video.playbackRate = PLAYBACK_RATE; }catch(e){}
-    buzz([40, 20, 55, 15, 30]);
+
+    // Ensure residual is alive, then hit the bang
+    startResidual();
+    ensureCtx();
+    fireBang();
+
     const p=video.play();
     if(p && p.catch) p.catch(function(){});
   }
@@ -346,6 +415,15 @@
     setTimeout(function(){ seed.classList.add('is-bloom'); }, 380);
     setTimeout(startVideo, 1200);
   }
+
+  // Unlock audio on first real input (browser policy) — no UI prompt
+  function unlock(){
+    ensureCtx();
+    startResidual();
+  }
+  ['pointerdown','touchstart','click','keydown'].forEach(function(ev){
+    document.addEventListener(ev, unlock, { once:true, passive:true });
+  });
 
   video.addEventListener('timeupdate', function(){
     if(phase!=='video' || done) return;
@@ -368,11 +446,11 @@
   setTimeout(collapseToOrb, 4800);
 
   skip.addEventListener('click', function(){
+    unlock();
     try{ video.pause(); }catch(e){}
     beginCrossfade();
   });
 
-  /* Safety windows scaled for 2x video (~13.5s wall) */
   setTimeout(function(){
     if(!done && phase==='video' && video.readyState<2) beginCrossfade();
   }, 9000);
