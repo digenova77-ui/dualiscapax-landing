@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Food for thought — ID &amp; Unity Framework Standard · DualisCapax</title>
+<meta name="theme-color" content="#020203">
+<meta name="description" content="Food for thought: Unity Framework Standard draft, Unity ID, white/black ledger, account sovereignty. Beta notes — not legal advice.">
+<link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
+<style>
+:root{--bg:#020203;--fg:rgba(243,242,239,.92);--muted:rgba(243,242,239,.55);--gold:#C9A227;--line:rgba(255,255,255,.1);--card:#0a0a0c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg);line-height:1.55;min-height:100vh}
+a{color:var(--gold);text-decoration:none}
+.wrap{max-width:42rem;margin:0 auto;padding:1.5rem 1.25rem 3.5rem}
+.pill{display:inline-block;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,162,39,.4);padding:.25rem .55rem;border-radius:3px;margin-bottom:1rem}
+h1{font-size:1.45rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:1.25rem}
+.note{font-size:.78rem;color:var(--muted);border:1px solid var(--line);background:#08080a;padding:.85rem 1rem;border-radius:8px;margin-bottom:1.75rem}
+h2{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:1.75rem 0 .65rem}
+h3{font-size:1rem;font-weight:600;margin:1.1rem 0 .4rem}
+p,li{font-size:.9rem;color:var(--muted);margin-bottom:.5rem}
+ul,ol{padding-left:1.2rem;margin-bottom:.75rem}
+li{margin-bottom:.35rem}
+strong{color:var(--fg);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.82rem;margin:0.75rem 0 1rem}
+th,td{border:1px solid var(--line);padding:.45rem .5rem;text-align:left;vertical-align:top}
+th{color:var(--fg);font-weight:600;background:#0c0c0e}
+code,pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem}
+pre{background:#0c0c0e;border:1px solid var(--line);padding:.75rem;border-radius:8px;overflow-x:auto;color:rgba(243,242,239,.8);margin:.5rem 0 1rem}
+.nav{display:flex;flex-wrap:wrap;gap:.75rem 1.1rem;margin-top:2rem;padding-top:1.25rem;border-top:1px solid var(--line);font-size:.75rem}
+.nav a{color:var(--muted)} .nav a:hover{color:var(--fg)}
+footer{margin-top:1.5rem;font-size:.7rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="pill">Food for thought · Beta stash</span>
+  <h1>ID and other items</h1>
+  <p class="sub">Stashed notes toward a Unity Framework Standard — identity, ledger classes, admission, and account limits. Starting point: one holder graph. Not a securities offer. Not legal advice.</p>
+
+  <div class="note">
+    <strong>Stash label:</strong> food for thought — ID and other items.<br>
+    Draft for product thinking and family/corporate context. Laws L1–L7 are design intent for the plane, not legislation.
+  </div>
+
+  <h2>Unity Framework Standard — UFS-0.1 (bootstrap)</h2>
+  <p><strong>Status:</strong> Draft beta · holder-first<br>
+  <strong>Scope:</strong> One Unity ID graph first; same core laws for later principals.</p>
+
+  <h3>Core laws</h3>
+  <table>
+    <tr><th>ID</th><th>Law</th></tr>
+    <tr><td><strong>L1</strong></td><td><strong>Account sovereignty</strong> — Control only over the holder’s Unity ID, binds, and explicit grants.</td></tr>
+    <tr><td><strong>L2</strong></td><td><strong>No adjacency authority</strong> — Shards, fusion, or shared pipes never control another account.</td></tr>
+    <tr><td><strong>L3</strong></td><td><strong>Admit only legitimacy</strong> — Validatable, trackable, citable, logic-legitimate.</td></tr>
+    <tr><td><strong>L4</strong></td><td><strong>Black / white ledger</strong> — Black never revealed; white only under grants.</td></tr>
+    <tr><td><strong>L5</strong></td><td><strong>Equal access obligation</strong> — Same published rules; no founder lane in policy.</td></tr>
+    <tr><td><strong>L6</strong></td><td><strong>Fail closed</strong> — Uncertainty denies side effects.</td></tr>
+    <tr><td><strong>L7</strong></td><td><strong>Intake is holder-fed</strong> — No crawl mandate; pull when needed, still through gates.</td></tr>
+  </table>
+
+  <h3>Principal Zero</h3>
+  <p>First holder is the reference graph: issue a Unity ID (<code>UIN-01-…</code>), bind only what the holder chooses (devices, wallets, agents, people), grants empty until explicit. Not “admin of everyone” — admin of <strong>one</strong> account under the same laws every later account gets.</p>
+
+  <h3>Unity ID (shape)</h3>
+  <pre>UIN-01-XXXXXXXX
+  UIN   = Unity Identity Number
+  01    = scheme version
+  XXXX  = Crockford-ish entropy (no ambiguous 0/O/I/L)</pre>
+  <p>Optional later: <code>did:unity:01:…</code> for DID alignment.</p>
+
+  <h3>Wallet / ID fusion</h3>
+  <p>Wallets are links, not the principal. Bind by signature challenge where possible. Roles: treasury · ops · agent · receive. One Unity ID → many wallets; agent limits stay narrow.</p>
+
+  <h3>White / black ledger</h3>
+  <table>
+    <tr><th>Class</th><th>Rule</th></tr>
+    <tr><td><strong>Black</strong></td><td>Never reveal, never clear-text on shared plane (e.g. full ID numbers, card images, raw secrets).</td></tr>
+    <tr><td><strong>White</strong></td><td>Need-to-know assertions shareable under holder grants (e.g. “asserted valid at time T”, jurisdiction class).</td></tr>
+    <tr><td><strong>Grey</strong></td><td>Holder-internal only.</td></tr>
+  </table>
+  <p>Sensitive credentials: prefer local or authorized validation that <strong>emits white only</strong>. This site does not collect health-card numbers.</p>
+
+  <h3>Admission gates</h3>
+  <pre>ACCEPT iff structure ∧ types ∧ integrity
+         ∧ provenance ∧ policy
+         ∧ black not exported</pre>
+
+  <h3>Access</h3>
+  <pre>ALLOW on resource iff
+  owner == session.principal
+  OR explicit grant (owner → session, action, scope)</pre>
+  <p>Layer and data control: granular or encompassing — <strong>holder’s choice</strong>, same account only.</p>
+
+  <h3>Networking posture (company wedge)</h3>
+  <p>DualisCapax: <strong>financial + emerging AI</strong>, networked access. Open research; metered adaptive depth; settlement trackable. Token separate from company equity. DeFi leadership is a horizon; the niche is equal-access AI–value networking.</p>
+
+  <h3>One-line standard</h3>
+  <p><strong>Legitimate, tracked, citable data under account-sovereign control; equal rules for onboarders; black never revealed; no power over others by adjacency.</strong></p>
+
+  <h2>Other items (stash)</h2>
+  <ul>
+    <li>v2 conduit sleeve + capability intersection (UX) vs server enforcement (side effects)</li>
+    <li>Idempotency keys + Durable Object serialization for meter paths (when built)</li>
+    <li>Corporate beta and family tour live on GitHub Pages; dualiscapax.ai still needs host cutover from old site</li>
+    <li>Commercial brief: focus networking, finance, emerging AI — not mirror-as-prop</li>
+  </ul>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="corporate.html">Corporate</a>
+    <a href="tour.html">Family tour</a>
+    <a href="ai/">Adaptive Intelligence</a>
+    <a href="research/">Research</a>
+  </nav>
+  <footer>DualisCapax · Food for thought · UFS-0.1 draft · Not legal advice · No tribes preferred</footer>
+</div>
+</body>
+</html>
