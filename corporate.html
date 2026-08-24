@@ -4,74 +4,91 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Financial — DualisCapax</title>
-  <meta name="description" content="DualisCapax financial surface. Product preview only. Not a securities offer." />
+  <meta name="description" content="No tribes preferred. Truth prevails." />
   <meta name="theme-color" content="#050505" />
   <link rel="icon" type="image/svg+xml" href="emblem-ring.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root{--bg:#050505;--fg:#f5f5f5;--muted:rgba(245,245,245,0.55);--faint:rgba(245,245,245,0.28);--line:rgba(255,255,255,0.09);--white:#ffffff}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;min-height:100dvh;-webkit-font-smoothing:antialiased}
-    a{color:inherit;text-decoration:none}
-    .site{max-width:42rem;margin:0 auto;padding:0 1.5rem;min-height:100dvh;display:flex;flex-direction:column}
-    header{display:flex;align-items:center;justify-content:space-between;padding:1.35rem 0;border-bottom:1px solid var(--line);gap:1rem}
-    .mark{display:inline-flex;align-items:center;gap:0.55rem;font-size:0.9rem;font-weight:700;letter-spacing:-0.03em}
-    .mark img{width:1.55rem;height:1.55rem;display:block;flex-shrink:0}
-    nav{display:flex;gap:1.25rem;flex-wrap:wrap}
-    nav a{font-size:0.8rem;font-weight:500;color:var(--muted)}
-    nav a:hover,nav a.on{color:var(--fg)}
-    .page-hero{padding:3rem 0 1.5rem}
-    .eyebrow{font-size:0.7rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:1.1rem}
-    h1{font-size:clamp(2.1rem,9vw,3.2rem);font-weight:800;line-height:0.92;letter-spacing:-0.045em;text-transform:uppercase;margin-bottom:1.1rem}
-    .statement{font-size:1.125rem;line-height:1.55;color:var(--muted);max-width:28rem}
-    section{padding:3.25rem 0;border-top:1px solid var(--line)}
-    .section-label{font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);margin-bottom:1.25rem}
-    section p{font-size:1.05rem;line-height:1.6;color:var(--muted);margin-bottom:1rem}
-    .strong{color:var(--fg);font-weight:500}
-    .list a{display:block;padding:1.25rem 0;border-top:1px solid var(--line)}
-    .list a:last-child{border-bottom:1px solid var(--line)}
-    .list .t{font-size:1.05rem;font-weight:500;color:var(--fg)}
-    .list .d{font-size:0.92rem;color:var(--muted);margin-top:0.3rem}
-    footer{padding:2.25rem 0 2.75rem;border-top:1px solid var(--line);font-size:0.75rem;color:var(--faint);text-align:center}
+    :root {
+      --bg: #050505;
+      --fg: #f5f5f5;
+      --muted: rgba(245,245,245,0.72);
+      --line: rgba(255,255,255,0.09);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .shell {
+      max-width: 40rem;
+      margin: 0 auto;
+      padding: 0 1.35rem 5rem;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 0;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 2;
+    }
+    .mark {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    nav { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    nav a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba(245,245,245,0.55);
+    }
+    nav a.on { color: var(--fg); }
+    h1 {
+      font-size: clamp(2.4rem, 10vw, 3.4rem);
+      font-weight: 800;
+      line-height: 0.94;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      margin: 2.5rem 0 2rem;
+    }
+    article p {
+      font-size: clamp(1.35rem, 4.8vw, 1.75rem);
+      line-height: 1.45;
+      margin-bottom: 1.75rem;
+      color: var(--fg);
+    }
+    article p:last-child { margin-bottom: 0; }
   </style>
 </head>
 <body>
-  <div class="site">
+  <div class="shell">
     <header>
-      <a href="index.html" class="mark"><img src="emblem-ring.svg" alt="" width="28" height="28" />DualisCapax</a>
+      <a href="index.html" class="mark">DualisCapax</a>
       <nav>
         <a href="research/">Research</a>
         <a href="corporate.html" class="on">Financial</a>
         <a href="ai/">AI</a>
       </nav>
     </header>
-    <main class="page-hero">
-      <div class="eyebrow">Financial</div>
-      <h1>No fiat path.</h1>
-      <p class="statement">Simulations are not for sale. Capacity, if it exists later, is playground residual — not a store checkout.</p>
-    </main>
-    <section>
-      <div class="section-label">Rule</div>
-      <p class="strong">L2 Playground only.</p>
-      <p>There is no direct purchase path for the simulations.</p>
-      <p>There is no founder lane and no preferred tribe.</p>
-    </section>
-    <section>
-      <div class="section-label">Preview only</div>
-      <p>This page is a product and research preview. It is not an offer to sell securities, tokens, or any investment interest. No return is promised.</p>
-      <p>Ontario and Canadian law first. Any future financing would be separate, with counsel, off this surface.</p>
-    </section>
-    <section>
-      <div class="section-label">What is open</div>
-      <div class="list">
-        <a href="research/"><div class="t">Research</div><div class="d">Public journals and field libraries stay free.</div></a>
-        <a href="playground.html"><div class="t">L2 Playground</div><div class="d">The only access door for depth.</div></a>
-        <a href="faq.html"><div class="t">FAQ</div><div class="d">Fuel, residual, and payment posture in plain language.</div></a>
-      </div>
-    </section>
-    <footer>DualisCapax · No tribes preferred · Truth prevails</footer>
+
+    <h1>Financial</h1>
+
+    <article>
+      <p>This surface is a product and research preview under Ontario and Canadian law. It is not an offer to sell securities, tokens, or any investment interest, and no return is promised on this page.</p>
+      <p>Public research text stays open to read. Depth does not run through a store checkout in dollars. Capacity, when it exists, is residual under the same write-only account as the rest of the work, not a preferred lane for any tribe.</p>
+      <p>Any future financing would be separate from this surface, with counsel, and would not be marketed as a purchase button for simulations on this site.</p>
+    </article>
   </div>
 </body>
 </html>
