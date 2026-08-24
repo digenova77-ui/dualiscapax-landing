@@ -1,1 +1,106 @@
-PLACEHOLDER2
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adaptive Intelligence — DualisCapax</title>
+<meta name="theme-color" content="#020203">
+<meta name="description" content="Adaptive Intelligence hybrid access portal — research grounding, narrative, residual dialogue.">
+<link rel="icon" type="image/svg+xml" href="../emblem-ring.svg">
+<style>
+:root{--bg:#020203;--fg:rgba(243,242,239,.92);--muted:rgba(243,242,239,.55);--gold:#C9A227;--line:rgba(255,255,255,.1);--surface:#0a0a0c;--accent:#1e90ff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg);min-height:100vh;line-height:1.5}
+a{color:var(--gold);text-decoration:none}
+nav{display:flex;justify-content:space-between;align-items:center;padding:.9rem 1.2rem;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:.5rem}
+.brand{letter-spacing:.14em;font-size:.75rem;font-weight:700;color:var(--fg)}
+nav ul{display:flex;gap:.9rem;list-style:none;font-size:.75rem;flex-wrap:wrap}
+nav a{color:var(--muted)} nav a:hover,nav a.active{color:var(--fg)}
+.layout{display:grid;grid-template-columns:1fr;gap:1rem;max-width:1100px;margin:0 auto;padding:1rem 1.2rem 2.5rem}
+@media(min-width:880px){.layout{grid-template-columns:1.1fr .9fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:1rem 1.1rem}
+.badge{display:inline-block;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,162,39,.35);padding:.2rem .5rem;border-radius:3px;margin-bottom:.6rem}
+h1{font-size:1.35rem;font-weight:600;margin-bottom:.35rem}
+.lead{color:var(--muted);font-size:.9rem;margin-bottom:1rem}
+h2{font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:1rem 0 .5rem}
+.status{font-size:.78rem;padding:.55rem .7rem;border-radius:4px;background:#0e0e12;border:1px solid var(--line);margin-bottom:.75rem}
+.status.ok{border-color:rgba(30,144,255,.4)}
+.status.warn{border-color:rgba(201,162,39,.45)}
+.tour-stage{width:100%;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#050508}
+.tour-stage video,.tour-stage canvas{width:100%;aspect-ratio:16/9;display:block;background:#050508}
+.tour-line{font-size:.82rem;color:var(--muted);margin-top:.5rem}
+.controls{display:flex;gap:.4rem;margin-top:.6rem;flex-wrap:wrap}
+button{background:transparent;border:1px solid var(--line);color:var(--fg);padding:.45rem .85rem;border-radius:4px;font-size:.75rem;cursor:pointer}
+button:hover{border-color:var(--gold);color:var(--gold)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.chat{display:flex;flex-direction:column;height:min(52vh,420px)}
+.chat-log{flex:1;overflow:auto;padding:.5rem;background:#050508;border-radius:6px;border:1px solid var(--line);font-size:.85rem}
+.msg{margin:.4rem 0;padding:.55rem .65rem;border-radius:6px;max-width:95%}
+.msg.user{background:#12141a;margin-left:auto}
+.msg.bot{background:#0c0e14;border:1px solid var(--line)}
+.msg .who{font-size:.65rem;color:var(--gold);margin-bottom:.2rem}
+.composer{display:flex;gap:.4rem;margin-top:.55rem}
+.composer input{flex:1;background:#050508;border:1px solid var(--line);color:var(--fg);padding:.55rem .7rem;border-radius:4px;font-size:.85rem}
+.links{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.links a{font-size:.75rem;padding:.35rem .6rem;border:1px solid var(--line);border-radius:4px;color:var(--muted)}
+.links a:hover{color:var(--fg);border-color:var(--gold)}
+footer{border-top:1px solid var(--line);padding:1rem;text-align:center;font-size:.68rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav>
+  <a class="brand" href="../index.html">DUALISCAPAX</a>
+  <ul>
+    <li><a href="../research/">Research</a></li>
+    <li><a class="active" href="index.html">Adaptive Intelligence</a></li>
+    <li><a href="../narrative.html">Narrative</a></li>
+    <li><a href="../model.html">Model</a></li>
+    <li><a href="../participate.html">Participate</a></li>
+  </ul>
+</nav>
+<div class="layout">
+  <section class="panel">
+    <span class="badge">Hybrid access</span>
+    <h1>Adaptive Intelligence</h1>
+    <p class="lead">Working portal surface: narrative grounding, residual dialogue, open research links. Full model depth attaches when Cloudflare Access / capacity is live.</p>
+    <div id="session-status" class="status warn">Session: open hybrid (edge gate not detected). Research paths remain public.</div>
+    <h2>Storyboard</h2>
+    <div id="tour-root">
+      <div class="tour-stage"><video playsinline muted loop preload="metadata"></video></div>
+      <p class="tour-line tour-line"></p>
+      <div class="controls">
+        <button type="button" data-tour="prev">Back</button>
+        <button type="button" data-tour="next">Next</button>
+      </div>
+    </div>
+    <h2>Open research</h2>
+    <div class="links">
+      <a href="../research/">Research hub</a>
+      <a href="../research/healthcare/">Healthcare</a>
+      <a href="../research/engineering/">Engineering</a>
+      <a href="../research/philosophy/">Philosophy</a>
+      <a href="../narrative.html">Full narrative</a>
+    </div>
+  </section>
+  <section class="panel">
+    <span class="badge">Residual dialogue</span>
+    <h2 style="margin-top:0">Portal dialogue</h2>
+    <p class="lead" style="margin-bottom:.5rem">Local residual engine — grounds answers in hybrid policy and storyboard. Not a sealed production model.</p>
+    <div class="chat">
+      <div class="chat-log" id="chat-log" aria-live="polite"></div>
+      <form class="composer" id="chat-form">
+        <input id="chat-input" type="text" placeholder="Ask about hybrid access, research, narrative…" autocomplete="off" />
+        <button class="primary" type="submit">Send</button>
+      </form>
+    </div>
+    <div class="controls" style="margin-top:.75rem">
+      <button type="button" id="btn-suggest-access">What is hybrid access?</button>
+      <button type="button" id="btn-suggest-research">Research vs AI depth</button>
+    </div>
+  </section>
+</div>
+<footer>Adaptive Intelligence · Hybrid access · Ontario / Canadian law first · Method opacity where required</footer>
+<script src="../js/video-engine.js"></script>
+<script src="portal.js"></script>
+</body>
+</html>
