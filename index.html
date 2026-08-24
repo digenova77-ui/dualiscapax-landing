@@ -4,89 +4,95 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DualisCapax — Financial · Emerging AI · Networked Access</title>
-<meta name="description" content="DualisCapax public beta: financial and emerging AI networking plane. Open research, adaptive intelligence, equal-access standard. No tribe preferred.">
+<meta name="description" content="DualisCapax: financial and emerging AI networking plane. Living narrative stage, open research, equal-access standard.">
 <meta name="theme-color" content="#020203">
 <link rel="canonical" href="https://dualiscapax.ai/">
-<meta property="og:url" content="https://dualiscapax.ai/">
-<meta property="og:title" content="DualisCapax — Public Beta">
-<meta property="og:description" content="Financial + emerging AI · Networked access. Open research. Adaptive intelligence. Equal standard.">
+<meta property="og:title" content="DualisCapax">
+<meta property="og:description" content="Financial + emerging AI. Networked access. Living stage.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
-<link rel="stylesheet" href="assets/mobile-life.css">
 <style>
-:root{--font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+:root{--font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace;--gold:#C9A227}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{font-family:var(--font);background:#020203;color:rgba(243,242,239,.92);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html,body{min-height:100%;background:#020203;color:rgba(243,242,239,.92);font-family:var(--font);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.void{min-height:100vh;min-height:100dvh;position:relative;display:flex;flex-direction:column;isolation:isolate}
-.photo{position:fixed;inset:0;z-index:0;background:#020203}
-.photo::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 70% 35%, rgba(255,255,255,.04), transparent 55%),linear-gradient(105deg, rgba(2,2,3,.96) 0%, rgba(2,2,3,.75) 32%, rgba(2,2,3,.4) 58%, rgba(2,2,3,.7) 100%),linear-gradient(180deg, rgba(2,2,3,.5) 0%, transparent 28%, transparent 55%, rgba(2,2,3,.97) 100%)}
-.lattice{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.04;background-image:linear-gradient(rgba(255,255,255,.55) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,.55) 1px, transparent 1px);background-size:64px 64px;mask-image:linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent)}
-.ui{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.4rem, 3.5vw, 2.6rem);max-width:42rem}
-.top{display:flex;align-items:center;gap:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.55);flex-wrap:wrap}
+.wrap{max-width:56rem;margin:0 auto;padding:1.25rem 1.25rem 3rem}
+.top{display:flex;align-items:center;gap:.65rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1.25rem;flex-wrap:wrap}
 .top img{width:20px;height:20px}
-.beta-pill{margin-left:auto;font-size:.55rem;letter-spacing:.14em;color:rgba(201,162,39,.95);border:1px solid rgba(201,162,39,.45);padding:.2rem .5rem;border-radius:3px}
-.center{padding:2.1rem 0 1.75rem}
-.k{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,162,39,.88);margin-bottom:1.2rem}
-h1{font-size:clamp(1.85rem, 1rem + 2.8vw, 2.85rem);font-weight:600;letter-spacing:-.034em;line-height:1.14;max-width:18ch;margin-bottom:1.05rem;color:#fff}
-.p{font-size:clamp(.9rem, .86rem + .2vw, 1.02rem);line-height:1.62;color:rgba(255,255,255,.55);max-width:38ch;margin-bottom:1rem}
-.p2{font-size:.82rem;line-height:1.55;color:rgba(255,255,255,.4);max-width:42ch;margin-bottom:1.75rem}
-.cta-row{display:flex;flex-wrap:wrap;gap:1rem 1.4rem;align-items:center}
-.cta{display:inline-flex;font-size:.74rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#fff;padding-bottom:.4rem;border-bottom:1px solid rgba(255,255,255,.35);transition:border-color .2s, letter-spacing .2s}
-.cta:hover{border-color:rgba(201,162,39,.85);letter-spacing:.14em}
-.cta.ghost{border-bottom-color:rgba(255,255,255,.18);color:rgba(255,255,255,.7)}
-.pillars{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:.65rem;margin:1.5rem 0 0;max-width:36rem}
-@media(max-width:520px){.pillars{grid-template-columns:1fr}}
-.pillar{border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.35);padding:.7rem .75rem;border-radius:12px}
-.pillar .t{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.35rem}
-.pillar .b{font-size:.78rem;line-height:1.4;color:rgba(255,255,255,.72)}
-.bottom{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;font-size:.62rem;letter-spacing:.08em;margin-bottom:3.5rem}
-.bottom a{color:rgba(255,255,255,.42);transition:color .15s}
-.bottom a:hover{color:rgba(255,255,255,.9)}
-.bottom .s{color:rgba(201,162,39,.5)}
+.pill{margin-left:auto;font-size:.55rem;letter-spacing:.12em;color:rgba(201,162,39,.95);border:1px solid rgba(201,162,39,.45);padding:.2rem .5rem;border-radius:3px}
+h1{font-size:clamp(1.6rem,.9rem + 2.5vw,2.4rem);font-weight:600;letter-spacing:-.03em;line-height:1.15;margin-bottom:.65rem;color:#fff}
+.lead{font-size:.95rem;line-height:1.55;color:rgba(255,255,255,.55);max-width:40ch;margin-bottom:1.25rem}
+.stage-wrap{border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;background:#050508;margin-bottom:1rem}
+.tour-stage{position:relative;width:100%}
+.tour-stage video,.tour-stage canvas{display:block;width:100%;aspect-ratio:16/9;background:#050508}
+.meta{padding:.9rem 1rem 1rem}
+.tour-step{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;color:var(--gold)}
+.tour-title{display:block;font-size:1.2rem;font-weight:600;margin:.25rem 0 .35rem;color:#fff}
+.tour-line{font-size:.9rem;line-height:1.45;color:rgba(255,255,255,.55)}
+.controls{display:flex;flex-wrap:wrap;gap:.5rem;padding:0 1rem 1rem}
+.controls button{background:transparent;border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.85);padding:.55rem 1rem;border-radius:6px;font-size:.78rem;cursor:pointer}
+.controls button:hover{border-color:var(--gold);color:var(--gold)}
+.beats{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.5rem,1fr));gap:.4rem;padding:0 1rem 1rem}
+.beats button{text-align:left;font-size:.68rem;padding:.45rem .55rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.7);border-radius:6px;cursor:pointer}
+.beats button:hover{border-color:rgba(201,162,39,.5);color:#fff}
+.note{font-size:.75rem;color:rgba(255,255,255,.35);margin:0 0 1.5rem;line-height:1.4}
+nav.links{display:flex;flex-wrap:wrap;gap:.65rem 1.1rem;font-size:.72rem;letter-spacing:.06em}
+nav.links a{color:rgba(255,255,255,.45)}
+nav.links a:hover{color:#fff}
 </style>
 </head>
 <body>
-  <div class="void">
-    <div class="photo" aria-hidden="true"></div>
-    <div class="lattice" aria-hidden="true"></div>
-    <div class="ui">
-      <div class="top">
-        <img src="emblem-ring.svg" width="20" height="20" alt="">
-        <span>DualisCapax</span>
-        <span class="beta-pill">Public beta</span>
-      </div>
-      <div class="center">
-        <p class="k">Financial · Emerging AI · Networked access</p>
-        <h1>Same standard. Open research. Adaptive depth.</h1>
-        <p class="p">DualisCapax is a financial and emerging-AI company building a networked plane: open knowledge, metered adaptive intelligence, and accountable access under equal rules.</p>
-        <p class="p2">No tribe preferred. No founder lane. Canonical public domain: dualiscapax.ai — engineering mirrors resolve there when DNS is live.</p>
-        <div class="cta-row">
-          <a class="cta" href="tour.html" data-life="tap">Start tour</a>
-          <a class="cta" href="ai/" data-life="tap">Adaptive Intelligence</a>
-          <a class="cta ghost" href="corporate.html" data-life="tap">Corporate</a>
-          <a class="cta ghost" href="research/" data-life="tap">Research</a>
-        </div>
-        <div class="pillars" aria-label="Unity pillars">
-          <div class="pillar life-card" data-life="soft"><div class="t">Network</div><div class="b">One published standard for every onboarder — human or agent path.</div></div>
-          <div class="pillar life-card" data-life="soft"><div class="t">Access</div><div class="b">Research open. Deeper adaptive capacity metered and trackable.</div></div>
-          <div class="pillar life-card" data-life="soft"><div class="t">Obligation</div><div class="b">Account-local control. Equal rules. Residual in the open.</div></div>
-        </div>
-      </div>
-      <div class="bottom">
-        <a href="tour.html" data-life="tap">Tour</a>
-        <a href="corporate.html" data-life="tap">Corporate</a>
-        <a href="ai/" data-life="tap">AI portal</a>
-        <a href="narrative.html" data-life="tap">Narrative</a>
-        <a href="research/" data-life="tap">Research</a>
-        <a href="model.html" data-life="tap">Model</a>
-        <a href="food-for-thought.html" data-life="tap">Food for thought</a>
-        <a href="CANONICAL_DOMAIN.md" data-life="tap">Domain law</a>
-        <span class="s">dualiscapax.ai</span>
-      </div>
+  <div class="wrap">
+    <div class="top">
+      <img src="emblem-ring.svg" width="20" height="20" alt="">
+      <span>DualisCapax</span>
+      <span class="pill">Living stage</span>
     </div>
+    <h1>Same standard. Open research. Adaptive depth.</h1>
+    <p class="lead">Financial and emerging-AI networking plane. This stage runs the narrative now — motion first, not a dead brochure.</p>
+
+    <div id="tour-root" class="stage-wrap">
+      <div class="tour-stage"><video playsinline muted loop preload="metadata"></video></div>
+      <div class="meta">
+        <span class="tour-step"></span>
+        <span class="tour-title"></span>
+        <p class="tour-line"></p>
+      </div>
+      <div class="controls">
+        <button type="button" data-tour="prev">Back</button>
+        <button type="button" data-tour="next">Next</button>
+        <button type="button" data-tour="play">Replay beat</button>
+      </div>
+      <div class="beats" id="beat-list"></div>
+    </div>
+    <p class="note">If a full video file is present it plays here. If not, the residual motion stage runs so the page is never empty.</p>
+
+    <nav class="links" aria-label="Site">
+      <a href="tour.html">Tour</a>
+      <a href="narrative.html">Narrative</a>
+      <a href="corporate.html">Corporate</a>
+      <a href="ai/">AI</a>
+      <a href="research/">Research</a>
+      <a href="model.html">Model</a>
+      <a href="engine.html">Engine</a>
+    </nav>
   </div>
-  <script src="assets/mobile-life.js" defer></script>
+  <script src="js/video-engine.js"></script>
+  <script>
+  (function () {
+    var eng = new DualisVideoEngine({ root: '#tour-root', mediaBase: 'assets/tour/', autoplay: true }).start();
+    document.querySelector('[data-tour=next]').onclick = function () { eng.next(); };
+    document.querySelector('[data-tour=prev]').onclick = function () { eng.prev(); };
+    document.querySelector('[data-tour=play]').onclick = function () { eng.go(eng.i); };
+    var list = document.getElementById('beat-list');
+    (window.DUALIS_STORYBOARD_STEPS || []).forEach(function (s, idx) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = (idx + 1) + '. ' + s.title;
+      b.onclick = function () { eng.go(idx); };
+      list.appendChild(b);
+    });
+  })();
+  </script>
 </body>
 </html>
