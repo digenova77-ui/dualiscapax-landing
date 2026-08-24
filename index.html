@@ -7,31 +7,31 @@
   <meta name="description" content="Financial and emerging AI. Open research. Equal rules. Prepaid depth capacity on a shared plane." />
   <meta name="theme-color" content="#020203" />
   <link rel="icon" href="brand/emblem-helix.svg" />
-  <link rel="stylesheet" href="skin/v2.css?v=3" />
+  <link rel="stylesheet" href="skin/v2.css?v=4" />
   <style>
     .content-block {
-      max-width: 720px;
+      max-width: 800px;
       margin: 0 auto;
       padding: 0 1.5rem 2rem;
     }
     .content-block h2 {
       font-size: 1.25rem;
-      margin: 1.75rem 0 0.5rem;
+      margin: 2rem 0 0.6rem;
       color: var(--accent);
     }
     .content-block p, .content-block li {
       color: var(--text-muted);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.7rem;
     }
-    .content-block ul { padding-left: 1.2rem; }
+    .content-block ul, .content-block ol { padding-left: 1.2rem; }
     .content-block strong { color: var(--text); font-weight: 600; }
     .data-grid {
       display: grid;
       gap: 1rem;
-      padding: 0 1.5rem 2rem;
+      padding: 0 1.5rem 1.5rem;
     }
     @media (min-width: 768px) {
-      .data-grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; padding: 0 2rem 2.5rem; }
+      .data-grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; padding: 0 2rem 2rem; }
     }
     .data-card {
       background: var(--bg-elevated);
@@ -42,13 +42,43 @@
     .data-card h3 {
       font-size: 1rem;
       color: var(--accent);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.45rem;
     }
     .data-card p, .data-card li {
       font-size: 0.95rem;
       color: var(--text-muted);
     }
     .data-card ul { padding-left: 1.1rem; margin-top: 0.35rem; }
+    .beat {
+      border-top: 1px solid var(--border);
+      padding: 1rem 0;
+    }
+    .beat:first-of-type { border-top: none; }
+    .beat .n {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .beat h3 {
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+    .table-wrap { overflow-x: auto; margin: 0.75rem 0 1rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.55rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    th { color: var(--text); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -92,53 +122,47 @@
       </section>
 
       <section class="content-block" aria-label="What DualisCapax is">
-        <h2>What this is</h2>
-        <p>DualisCapax is a financial and emerging-AI plane with one public standard:</p>
+        <h2>What DualisCapax is</h2>
+        <p>DualisCapax is a financial and emerging-AI company building a networked plane: open research, metered adaptive intelligence, and accountable access under the same rules for everyone.</p>
         <ul>
           <li><strong>Open research is free.</strong> Learn the surface without a paywall.</li>
           <li><strong>Adaptive depth is prepaid.</strong> Real work costs real capacity.</li>
           <li><strong>Same rules for everyone.</strong> No preferred tribe. No founder exemption lane.</li>
         </ul>
 
-        <h2>Plane residual</h2>
-        <p>Residual is the system’s remaining capacity. Every definite action costs residual. It is pure tax. Once used, it is gone.</p>
-        <p>Residual does not live in a personal wallet. It lives on the shared plane. That is the Singularity Clock: the residual of the system, not of any single person.</p>
-
-        <h2>Fusion Meter / Fuel</h2>
-        <p>Fuel is closed prepaid capacity for adaptive depth. It is not an open-market coin. It is capacity for use.</p>
-        <ul>
-          <li>Open layer burns zero</li>
-          <li>Depth burns Fuel</li>
-          <li>Empty meter pauses depth; open access remains</li>
-          <li>Enterprise may fund pools; individuals keep Open</li>
-        </ul>
+        <h2>Operating model</h2>
+        <p>Anyone can enter the open research layer. Literature, simulation notes, and published standards are visible without a paywall. You should be able to learn the plane before you commit capacity.</p>
+        <p>Settlement and identity come first. Adaptive depth is not an anonymous free-for-all. The boundary protects both the user and the system that has to stay honest.</p>
+        <p>Deeper sessions run real work: analysis, simulation, and adaptive assistance. Those sessions carry real cost. The meter exists so depth is not theater and not an infinite free drain.</p>
       </section>
 
-      <section class="data-grid" aria-label="Operating data">
+      <section class="data-grid" aria-label="Core data">
         <div class="data-card">
           <h3>Fuel packs</h3>
           <ul>
-            <li>Starter — $20 — 40 Fuel</li>
-            <li>Standard — $50 — 120 Fuel</li>
-            <li>Pro — $120 — 320 Fuel</li>
+            <li>Starter — $20 CAD — 40 Fuel</li>
+            <li>Standard — $50 CAD — 120 Fuel</li>
+            <li>Pro — $120 CAD — 320 Fuel</li>
           </ul>
         </div>
         <div class="data-card">
-          <h3>Hybrid burn (design)</h3>
+          <h3>Hybrid burn rates</h3>
           <ul>
-            <li>Light reply — 1 Fuel</li>
+            <li>Light adaptive reply — 1 Fuel</li>
             <li>Standard session — 2 Fuel + sustained</li>
             <li>Heavy analysis — 5 Fuel + sustained</li>
-            <li>Open research — 0</li>
+            <li>Long-running depth — 8 Fuel + sustained</li>
+            <li>Open research — 0 Fuel</li>
           </ul>
         </div>
         <div class="data-card">
           <h3>Payment path</h3>
           <ul>
             <li>Fiat: Interac e-Transfer (CIBC path)</li>
-            <li>Crypto: manual confirm addresses</li>
-            <li>Order ID required as reference</li>
-            <li>Credit only after confirmation</li>
+            <li>Crypto: published addresses, manual confirm</li>
+            <li>Order ID required as payment reference</li>
+            <li>Fuel credited only after confirmation</li>
+            <li>Gateway live in test mode until destinations locked</li>
           </ul>
         </div>
         <div class="data-card">
@@ -148,22 +172,135 @@
             <li>Depth is prepaid</li>
             <li>Capacity is for use, not spectacle</li>
             <li>Residual belongs to the plane</li>
+            <li>Same mathematics for every participant</li>
           </ul>
         </div>
       </section>
 
-      <section class="content-block" aria-label="Identity and control">
-        <h2>Identity</h2>
+      <section class="content-block" aria-label="Plane residual and Fuel">
+        <h2>Plane residual</h2>
+        <p>Residual is the system’s remaining capacity. Every definite action costs residual. It is pure tax. Once used, it is gone. Residual cannot be recreated after ignition.</p>
+        <p>Residual does not live in a personal wallet. It lives on the shared plane. That is the <strong>Singularity Clock</strong>: the residual of the system, not of any single person.</p>
+
+        <h2>Fusion Meter / Fuel</h2>
+        <p>Fusion Meter is closed prepaid capacity for adaptive depth. It is not positioned as an open-market coin. Capacity is for use, not spectacle.</p>
+        <ul>
+          <li>Open layer burns zero</li>
+          <li>Depth burns Fuel according to hybrid rates</li>
+          <li>Empty meter pauses depth; open access remains</li>
+          <li>Enterprise may fund capacity pools</li>
+          <li>Individuals keep Open under the same rules</li>
+        </ul>
+
+        <h2>Sustained burn design</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Base</th>
+                <th>Sustained</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Light reply</td>
+                <td>1 Fuel</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Standard session</td>
+                <td>2 Fuel</td>
+                <td>+1 / 30s after first minute</td>
+              </tr>
+              <tr>
+                <td>Heavy analysis</td>
+                <td>5 Fuel</td>
+                <td>+2 / 30s</td>
+              </tr>
+              <tr>
+                <td>Long-running depth</td>
+                <td>8 Fuel</td>
+                <td>+3 / 30s</td>
+              </tr>
+              <tr>
+                <td>Open research</td>
+                <td>0</td>
+                <td>0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Soft caps: max 25 Fuel per single request; idle timeout 2 minutes; warn at 10 Fuel and 3 Fuel remaining.</p>
+      </section>
+
+      <section class="content-block" aria-label="Model tour beats">
+        <h2>Model tour — eight beats</h2>
+
+        <article class="beat">
+          <div class="n">01 · Open</div>
+          <h3>Research free. Full surface.</h3>
+          <p>Anyone can enter the open research layer. Literature, simulation notes, and published standards are visible without a paywall.</p>
+        </article>
+
+        <article class="beat">
+          <div class="n">02 · Prove</div>
+          <h3>Boundary before depth.</h3>
+          <p>Settlement and identity come first. Adaptive depth is not offered as an anonymous free-for-all.</p>
+        </article>
+
+        <article class="beat">
+          <div class="n">03 · Depth</div>
+          <h3>Adaptive intelligence.</h3>
+          <p>Deeper sessions run real work. The meter exists so depth is not theater and not an infinite free drain.</p>
+        </article>
+
+        <article class="beat">
+          <div class="n">04 · Seal</div>
+          <h3>Production math sealed.</h3>
+          <p>Core production methods and sealed IP stay off the open brochure. What must be public for trust is public. What must remain residual stays residual.</p>
+        </article>
+
+        <article class="beat">
+          <div class="n">05 · Fusion Meter</div>
+          <h3>Closed prepaid capacity.</h3>
+          <p>Prepaid capacity for depth — a closed meter for work on the plane. Not a casual open-market meme coin.</p>
+        </article>
+
+        <article class="beat">
+          <div class="n">06 · Dual capacity</div>
+          <h3>Enterprise funds the plane.</h3>
+          <p>Institutions can fund sustained capacity. Individuals keep access to the open layer. Scale without erasing equal open entry.</p>
+        </article>
+
+        <article class="beat">
+          <div class="n">07 · Singularity clock</div>
+          <h3>Plane residual advances.</h3>
+          <p>Progress is measured on the plane’s residual work — not as a performance about anyone’s wallet.</p>
+        </article>
+
+        <article class="beat">
+          <div class="n">08 · Unity</div>
+          <h3>Same standard. Same math.</h3>
+          <p>One published standard. No preferred tribe. No founder exemption lane. Same rules for person, team, or agent path.</p>
+        </article>
+      </section>
+
+      <section class="content-block" aria-label="Identity and links">
+        <h2>Identity and control</h2>
         <p>DualisCapax operates under one coherent identity: domain, accounts, payment rails, and published rules bound to the same authority. Structure without operating control is dead by default.</p>
 
-        <h2>Canonical links</h2>
+        <h2>Canonical surface</h2>
         <ul>
-          <li><a href="https://dualiscapax.ai">https://dualiscapax.ai</a> (apex — primary)</li>
-          <li><a href="pay.html">Payment gateway</a> (test mode until destinations locked)</li>
-          <li><a href="fuel.html">Fuel details</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-          <li><a href="ai/chat.html">AI chat</a></li>
+          <li><a href="https://dualiscapax.ai">https://dualiscapax.ai</a> — primary apex</li>
+          <li><a href="pay.html">Payment gateway</a> — order ID + fiat/crypto path</li>
+          <li><a href="fuel.html">Fuel</a> — pack details</li>
+          <li><a href="faq.html">FAQ</a> — Fuel, residual, enterprise, payment</li>
+          <li><a href="ai/chat.html">AI chat</a> — adaptive surface</li>
           <li><a href="manifesto.html">Manifesto</a></li>
+          <li><a href="model.html">Model</a></li>
+          <li><a href="narrative.html">Narrative</a></li>
+          <li><a href="tour.html">Tour / video</a></li>
         </ul>
       </section>
     </main>
