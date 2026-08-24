@@ -75,17 +75,25 @@
       display: flex;
       flex-direction: column;
     }
+
+    /* Three topics only — spaced across full top, no logo in header */
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.25rem 0 0;
-      gap: 1rem;
       flex: 0 0 auto;
+      padding: 1.15rem 0 0;
     }
-    .mark { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.04em; }
-    nav { display: flex; gap: 1.35rem; flex-wrap: wrap; }
-    nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.7); }
+    header nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 0.5rem;
+    }
+    header nav a {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: rgba(245,245,245,0.75);
+      letter-spacing: 0.02em;
+    }
 
     main {
       flex: 1 1 auto;
@@ -95,13 +103,34 @@
       justify-content: center;
       text-align: center;
       min-height: 0;
-      gap: 0.55rem;
+      gap: 0.45rem;
+    }
+
+    /* Brand above geodesic — swap src to your DNA-X file when locked */
+    .brand-above {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.15rem;
+    }
+    .brand-above img {
+      width: min(42vw, 120px);
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+    .brand-above .word {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: rgba(245,245,245,0.92);
     }
 
     #geo-earth {
       width: min(44vw, 156px);
       height: min(44vw, 156px);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
       flex-shrink: 0;
       display: block;
     }
@@ -132,14 +161,17 @@
   </div>
   <div class="shell">
     <header>
-      <a href="index.html" class="mark">DualisCapax</a>
-      <nav>
+      <nav aria-label="Primary">
         <a href="research/">Research</a>
         <a href="corporate.html">Financial</a>
         <a href="ai/">AI</a>
       </nav>
     </header>
     <main>
+      <div class="brand-above">
+        <!-- Your black DNA-strand-from-X mark: send the file and we lock brand/logo-dna-x.png here -->
+        <span class="word">DualisCapax</span>
+      </div>
       <canvas id="geo-earth" width="312" height="312" aria-hidden="true"></canvas>
       <h1>Truth<br>Prevails.</h1>
       <p class="line">Residual Law Finance.</p>
@@ -184,30 +216,26 @@
   fill.position.set(-2, -0.5, 1.5);
   scene.add(fill);
 
-  // Faceted geodesic (subdivided icosahedron) — mathematical bucky structure
   const geometry = new THREE.IcosahedronGeometry(1, 3);
 
-  // Procedural Earth-like map on canvas (no external texture dependency)
   function makeEarthTexture() {
     const s = 1024;
     const c = document.createElement('canvas');
     c.width = s;
     c.height = s;
     const ctx = c.getContext('2d');
-    // ocean
     const ocean = ctx.createLinearGradient(0, 0, s, s);
     ocean.addColorStop(0, '#0a2a4a');
     ocean.addColorStop(0.5, '#0d3d6b');
     ocean.addColorStop(1, '#0a3058');
     ctx.fillStyle = ocean;
     ctx.fillRect(0, 0, s, s);
-    // continents — irregular blobs, recognizable as land masses
     const lands = [
-      [0.18, 0.32, 0.14, 0.22], [0.28, 0.28, 0.10, 0.16], // Americas-ish
-      [0.48, 0.30, 0.08, 0.14], [0.55, 0.38, 0.12, 0.20], // Africa/Europe-ish
-      [0.62, 0.28, 0.16, 0.14], [0.72, 0.36, 0.12, 0.18], // Asia-ish
-      [0.78, 0.62, 0.10, 0.10], // Australia-ish
-      [0.42, 0.68, 0.20, 0.12]  // southern band
+      [0.18, 0.32, 0.14, 0.22], [0.28, 0.28, 0.10, 0.16],
+      [0.48, 0.30, 0.08, 0.14], [0.55, 0.38, 0.12, 0.20],
+      [0.62, 0.28, 0.16, 0.14], [0.72, 0.36, 0.12, 0.18],
+      [0.78, 0.62, 0.10, 0.10],
+      [0.42, 0.68, 0.20, 0.12]
     ];
     for (const [u, v, w, h] of lands) {
       const x = u * s, y = v * s, bw = w * s, bh = h * s;
@@ -220,11 +248,9 @@
       ctx.ellipse(x, y, bw, bh, 0.3, 0, Math.PI * 2);
       ctx.fill();
     }
-    // ice caps
     ctx.fillStyle = 'rgba(220,230,240,0.55)';
     ctx.fillRect(0, 0, s, s * 0.08);
     ctx.fillRect(0, s * 0.92, s, s * 0.08);
-    // subtle noise for density
     const img = ctx.getImageData(0, 0, s, s);
     for (let i = 0; i < img.data.length; i += 4) {
       const n = (Math.random() - 0.5) * 12;
@@ -240,8 +266,6 @@
   }
 
   const earthMap = makeEarthTexture();
-
-  // Opaque faceted body — carbon-gray base with Earth map (flatShading = mathematical faces)
   const bodyMat = new THREE.MeshStandardMaterial({
     map: earthMap,
     color: 0x9aa3ad,
@@ -252,27 +276,18 @@
     emissiveIntensity: 0.15
   });
   const body = new THREE.Mesh(geometry, bodyMat);
-  scene.add(body);
 
-  // Dense carbon wire geodesic overlay (edges of same geometry)
   const edges = new THREE.EdgesGeometry(geometry, 15);
-  const wireMat = new THREE.LineBasicMaterial({
-    color: 0x2a2e32,
-    transparent: true,
-    opacity: 0.85
-  });
-  const wire = new THREE.LineSegments(edges, wireMat);
+  const wire = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
+    color: 0x2a2e32, transparent: true, opacity: 0.85
+  }));
   wire.scale.setScalar(1.002);
-  scene.add(wire);
 
-  // Soft outer shell hint (slightly larger, very dark carbon)
   const shellGeo = new THREE.IcosahedronGeometry(1.04, 2);
-  const shellEdges = new THREE.EdgesGeometry(shellGeo, 20);
   const shellWire = new THREE.LineSegments(
-    shellEdges,
+    new THREE.EdgesGeometry(shellGeo, 20),
     new THREE.LineBasicMaterial({ color: 0x1a1c1e, transparent: true, opacity: 0.35 })
   );
-  scene.add(shellWire);
 
   const group = new THREE.Group();
   group.add(body);
@@ -280,13 +295,11 @@
   group.add(shellWire);
   scene.add(group);
 
-  // ~Earth display pace (slow Y)
   const Y_SPEED = (Math.PI * 2) / 48;
 
   function frame(t) {
     const sec = t * 0.001;
     group.rotation.y = sec * Y_SPEED;
-    // slight tilt so facets read in depth (not pure billboard)
     group.rotation.x = 0.22;
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
