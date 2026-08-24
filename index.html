@@ -7,10 +7,18 @@
 <title>DualisCapax</title>
 <meta name="theme-color" content="#020203">
 <link rel="icon" href="brand/emblem-helix.svg">
-<link rel="stylesheet" href="skin/default.css">
+<link rel="stylesheet" href="skin/default.css?v=glass1">
 </head>
 <body>
 <canvas id="webgl"></canvas>
+
+<!-- three layered glass depth planes -->
+<div class="depth-layers" aria-hidden="true">
+  <div class="pane"></div>
+  <div class="pane"></div>
+  <div class="pane"></div>
+</div>
+
 <img class="em" src="brand/emblem-helix.svg" alt="">
 <div class="ui" id="app">Loading…</div>
 
@@ -21,24 +29,24 @@
 import { startPlaneEngine } from './js/plane-engine.js';
 
 async function boot() {
-  const res = await fetch('content/story.json?v=1');
+  const res = await fetch('content/story.json?v=2');
   const data = await res.json();
   const app = document.getElementById('app');
 
   let html = '';
-  html += '<section class="screen">';
+  html += '<section class="screen"><div class="glass">';
   html += '<div class="brand">' + data.brand + '</div>';
   html += '<p class="tag">' + data.tag + '</p>';
   html += '<p class="intro">' + data.intro + '</p>';
   html += '<p class="hint">' + data.hint + ' ↓</p>';
-  html += '</section>';
+  html += '</div></section>';
 
   data.beats.forEach(function (b) {
-    html += '<section class="screen">';
+    html += '<section class="screen"><div class="glass">';
     html += '<div class="num">' + b.n + '</div>';
     html += '<h2 class="title">' + b.title + '</h2>';
     html += '<p class="body">' + b.body + '</p>';
-    html += '</section>';
+    html += '</div></section>';
   });
 
   html += '<nav class="links"><h3>Continue</h3>';
@@ -49,6 +57,27 @@ async function boot() {
 
   app.innerHTML = html;
   startPlaneEngine(document.getElementById('webgl'));
+
+  // reveal glass panes as they enter view
+  const panes = document.querySelectorAll('.glass');
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) e.target.classList.add('is-in');
+    });
+  }, { threshold: 0.25 });
+  panes.forEach(function (p) { io.observe(p); });
+
+  // parallax depth layers on scroll
+  const layers = document.querySelectorAll('.depth-layers .pane');
+  addEventListener('scroll', function () {
+    const max = document.body.scrollHeight - innerHeight;
+    const p = max > 0 ? scrollY / max : 0;
+    layers.forEach(function (el, i) {
+      const z = -12 - i * 34;
+      const y = p * (8 + i * 12);
+      el.style.transform = 'translateY(' + y + 'px) translateZ(' + z + 'px) scale(' + (1.02 + i * 0.02) + ')';
+    });
+  }, { passive: true });
 }
 
 boot().catch(function (e) {
