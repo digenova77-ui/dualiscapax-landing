@@ -10,285 +10,244 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;background:#020203}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#f4f3f0;background:#020203;-webkit-font-smoothing:antialiased}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:#fff;background:#020203;-webkit-font-smoothing:antialiased;
+}
 a{color:inherit;text-decoration:none}
-/* fixed WebGL stage */
-#webgl{
-  position:fixed;inset:0;z-index:0;
-  width:100%;height:100%;
-  pointer-events:none;
-}
+#webgl{position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
 .ui{position:relative;z-index:2}
-/* oversized brand */
-.hero{
+
+/* each screen = one idea, large type */
+.screen{
   min-height:100dvh;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:1.25rem 1.25rem calc(2.5rem + env(safe-area-inset-bottom));
-  padding-top:calc(1rem + env(safe-area-inset-top));
-  background:linear-gradient(180deg, transparent 30%, rgba(2,2,3,.75) 70%, #020203 100%);
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding: 1.5rem 1.35rem calc(2.75rem + env(safe-area-inset-bottom));
+  padding-top: calc(1.25rem + env(safe-area-inset-top));
+  background: linear-gradient(180deg, transparent 25%, rgba(2,2,3,.82) 65%, #020203 100%);
 }
-.logo-name{
-  font-size:clamp(2.75rem, 12.5vw, 5rem);
-  font-weight:700;letter-spacing:-.045em;line-height:0.95;
-  color:#fff;margin-bottom:.75rem;
+
+.brand{
+  font-size: clamp(3rem, 13vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: 1.5rem;
 }
-.logo-sub{
-  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
-  color:#C9A227;margin-bottom:1.25rem;
-  font-family:ui-monospace,Menlo,Consolas,monospace;
+
+.tag{
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C9A227;
+  margin-bottom: 1.25rem;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  line-height: 1.4;
 }
-.hero p{
-  font-size:1.05rem;line-height:1.55;color:rgba(255,255,255,.55);
-  max-width:28ch;margin-bottom:1.5rem;
+
+.line{
+  font-size: clamp(1.35rem, 5.5vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgba(255,255,255,0.7);
+  max-width: 12ch;
+  margin-bottom: 2rem;
 }
-.scroll-cue{
-  font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(255,255,255,.35);
+
+.hint{
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
 }
-/* storyboard film — vertical scroll beats */
-.film-beat{
-  min-height:100dvh;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:2rem 1.25rem calc(3rem + env(safe-area-inset-bottom));
-  background:linear-gradient(180deg, transparent 40%, rgba(2,2,3,.88) 100%);
-  border-top:1px solid rgba(255,255,255,.04);
+
+.num{
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C9A227;
+  margin-bottom: 1rem;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
 }
-.film-beat .n{
-  font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
-  color:#C9A227;margin-bottom:.6rem;
-  font-family:ui-monospace,Menlo,Consolas,monospace;
+
+.title{
+  font-size: clamp(2.1rem, 9vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 1.15rem;
+  max-width: 10ch;
 }
-.film-beat h2{
-  font-size:clamp(1.85rem, 7vw, 3rem);
-  font-weight:600;letter-spacing:-.03em;line-height:1.1;
-  margin-bottom:.75rem;max-width:12ch;
+
+.body{
+  font-size: clamp(1.2rem, 4.5vw, 1.45rem);
+  line-height: 1.45;
+  color: rgba(255,255,255,0.62);
+  max-width: 16ch;
+  margin-bottom: 1.5rem;
 }
-.film-beat p{
-  font-size:1rem;line-height:1.5;color:rgba(255,255,255,.55);
-  max-width:30ch;margin-bottom:1.25rem;
+
+.links{
+  padding: 3rem 1.35rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: #020203;
 }
-.film-beat .bar{
-  height:2px;width:100%;max-width:12rem;
-  background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;
+.links a{
+  font-size: 1.15rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.75);
 }
-.film-beat .bar > i{
-  display:block;height:100%;width:0;background:#C9A227;
-  transition:width .15s linear;
+.links a:active{color:#C9A227}
+
+.em{
+  position: fixed;
+  top: calc(0.75rem + env(safe-area-inset-top));
+  right: 1rem;
+  z-index: 5;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
 }
-.end{
-  padding:4rem 1.25rem 5rem;text-align:center;
-  background:#020203;
-}
-.end a{
-  display:inline-block;margin:.4rem .6rem;
-  font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(255,255,255,.45);border-bottom:1px solid rgba(255,255,255,.2);
-  padding-bottom:.25rem;
-}
-.end a:hover{color:#C9A227;border-color:#C9A227}
-.emblem-float{
-  position:fixed;top:calc(.85rem + env(safe-area-inset-top));right:1rem;z-index:5;
-  width:44px;height:44px;border-radius:50%;
-  box-shadow:0 0 24px rgba(201,162,39,.3);
-}
-@media(min-width:900px){
-  .hero,.film-beat{padding-left:8vw;padding-right:8vw}
-  .logo-name{font-size:clamp(3.5rem, 8vw, 6rem)}
+
+@media (min-width: 900px) {
+  .screen { padding-left: 10vw; padding-right: 10vw; }
+  .brand { font-size: 5rem; }
+  .title { font-size: 3.5rem; }
 }
 </style>
 </head>
 <body>
 <canvas id="webgl"></canvas>
-<img class="emblem-float" src="brand/emblem-helix.svg" alt="">
+<img class="em" src="brand/emblem-helix.svg" alt="">
 
 <div class="ui">
-  <section class="hero">
-    <div class="logo-name">DualisCapax</div>
-    <div class="logo-sub">Financial · Emerging AI · Networked access</div>
-    <p>One plane. Open research. Adaptive depth under equal rules.</p>
-    <div class="scroll-cue">Scroll the film ↓</div>
+  <section class="screen">
+    <div class="brand">DualisCapax</div>
+    <div class="tag">Financial<br>Emerging AI<br>Networked access</div>
+    <p class="line">Open research. Equal rules.</p>
+    <div class="hint">Scroll ↓</div>
   </section>
 
-  <section class="film-beat" data-c="#3B82F6">
-    <div class="n">01 · Open</div>
-    <h2>Research free. Full surface.</h2>
-    <p>Learn without a gate. The plane starts open.</p>
-    <div class="bar"><i></i></div>
-  </section>
-  <section class="film-beat" data-c="#C9A227">
-    <div class="n">02 · Prove</div>
-    <h2>Boundary first.</h2>
-    <p>Settlement and identity before adaptive depth.</p>
-    <div class="bar"><i></i></div>
-  </section>
-  <section class="film-beat" data-c="#22C55E">
-    <div class="n">03 · Depth</div>
-    <h2>Adaptive intelligence.</h2>
-    <p>Real session cost. Real work. Not theater.</p>
-    <div class="bar"><i></i></div>
-  </section>
-  <section class="film-beat" data-c="#EF4444">
-    <div class="n">04 · Seal</div>
-    <h2>Production math sealed.</h2>
-    <p>Truth in the residual. IP protected.</p>
-    <div class="bar"><i></i></div>
-  </section>
-  <section class="film-beat" data-c="#EAB308">
-    <div class="n">05 · Fusion Meter</div>
-    <h2>Closed prepaid capacity.</h2>
-    <p>Not an open-market toy coin.</p>
-    <div class="bar"><i></i></div>
-  </section>
-  <section class="film-beat" data-c="#60A5FA">
-    <div class="n">06 · Dual capacity</div>
-    <h2>Enterprise funds the plane.</h2>
-    <p>Individuals keep Open access.</p>
-    <div class="bar"><i></i></div>
-  </section>
-  <section class="film-beat" data-c="#A78BFA">
-    <div class="n">07 · Singularity clock</div>
-    <h2>Plane residual advances.</h2>
-    <p>Not a wallet spectacle.</p>
-    <div class="bar"><i></i></div>
-  </section>
-  <section class="film-beat" data-c="#C9A227">
-    <div class="n">08 · Unity</div>
-    <h2>Same standard. Same math.</h2>
-    <p>Truth and Unity. No tribe preferred.</p>
-    <div class="bar"><i></i></div>
+  <section class="screen">
+    <div class="num">01</div>
+    <h2 class="title">Open</h2>
+    <p class="body">Research free. No gate to learn.</p>
   </section>
 
-  <footer class="end">
+  <section class="screen">
+    <div class="num">02</div>
+    <h2 class="title">Prove</h2>
+    <p class="body">Identity before depth.</p>
+  </section>
+
+  <section class="screen">
+    <div class="num">03</div>
+    <h2 class="title">Depth</h2>
+    <p class="body">Adaptive AI. Real cost.</p>
+  </section>
+
+  <section class="screen">
+    <div class="num">04</div>
+    <h2 class="title">Seal</h2>
+    <p class="body">Core math stays sealed.</p>
+  </section>
+
+  <section class="screen">
+    <div class="num">05</div>
+    <h2 class="title">Fusion Meter</h2>
+    <p class="body">Prepaid capacity. Not a toy coin.</p>
+  </section>
+
+  <section class="screen">
+    <div class="num">06</div>
+    <h2 class="title">Dual</h2>
+    <p class="body">Enterprise funds. You stay open.</p>
+  </section>
+
+  <section class="screen">
+    <div class="num">07</div>
+    <h2 class="title">Clock</h2>
+    <p class="body">Plane moves. Not your wallet show.</p>
+  </section>
+
+  <section class="screen">
+    <div class="num">08</div>
+    <h2 class="title">Unity</h2>
+    <p class="body">Same standard. Same math.</p>
+  </section>
+
+  <nav class="links">
     <a href="corporate.html">Corporate</a>
     <a href="ai/">Adaptive Intelligence</a>
     <a href="research/">Research</a>
-    <a href="narrative.html">Narrative</a>
-    <a href="model.html">Model</a>
-  </footer>
+    <a href="tour.html">Tour</a>
+  </nav>
 </div>
 
 <script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-  }
-}
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}
 </script>
 <script type="module">
 import * as THREE from 'three';
-
 const canvas = document.getElementById('webgl');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.setClearColor(0x020203, 1);
-
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.1, 100);
-camera.position.set(0, 0, 6.5);
-
-// dual helix
+const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 0, 7);
 const group = new THREE.Group();
 scene.add(group);
-
-function makeStrand(color, phase) {
+function strand(color, phase) {
   const pts = [];
-  for (let i = 0; i <= 180; i++) {
-    const t = i / 180 * Math.PI * 6;
-    const y = (i / 180) * 8 - 4;
-    pts.push(new THREE.Vector3(Math.cos(t + phase) * 1.15, y, Math.sin(t + phase) * 1.15));
+  for (let i = 0; i <= 160; i++) {
+    const t = i / 160 * Math.PI * 5;
+    const y = (i / 160) * 7 - 3.5;
+    pts.push(new THREE.Vector3(Math.cos(t + phase) * 1.2, y, Math.sin(t + phase) * 1.2));
   }
   const curve = new THREE.CatmullRomCurve3(pts);
-  const geo = new THREE.TubeGeometry(curve, 200, 0.045, 8, false);
-  const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85 });
-  return new THREE.Mesh(geo, mat);
-}
-group.add(makeStrand(0xC9A227, 0));
-group.add(makeStrand(0x3B82F6, Math.PI));
-
-// rungs
-const rungMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
-for (let i = 0; i < 24; i++) {
-  const y = (i / 23) * 8 - 4;
-  const t = (i / 23) * Math.PI * 6;
-  const a = new THREE.Vector3(Math.cos(t) * 1.15, y, Math.sin(t) * 1.15);
-  const b = new THREE.Vector3(Math.cos(t + Math.PI) * 1.15, y, Math.sin(t + Math.PI) * 1.15);
-  const geo = new THREE.BufferGeometry().setFromPoints([a, b]);
-  const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.12 }));
-  group.add(line);
-}
-
-// residual nodes
-const nodeColors = [0xEF4444, 0x3B82F6, 0x22C55E, 0xEAB308, 0x888888];
-const nodes = [];
-nodeColors.forEach((col, i) => {
-  const m = new THREE.Mesh(
-    new THREE.SphereGeometry(0.09, 16, 16),
-    new THREE.MeshBasicMaterial({ color: col })
+  return new THREE.Mesh(
+    new THREE.TubeGeometry(curve, 180, 0.05, 8, false),
+    new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9 })
   );
-  nodes.push({ mesh: m, i });
-  group.add(m);
-});
-
-// soft particles
-const pCount = 400;
+}
+group.add(strand(0xC9A227, 0));
+group.add(strand(0x3B82F6, Math.PI));
+const pCount = 280;
 const pPos = new Float32Array(pCount * 3);
 for (let i = 0; i < pCount; i++) {
-  pPos[i * 3] = (Math.random() - 0.5) * 14;
-  pPos[i * 3 + 1] = (Math.random() - 0.5) * 12;
-  pPos[i * 3 + 2] = (Math.random() - 0.5) * 10;
+  pPos[i*3] = (Math.random()-0.5)*12;
+  pPos[i*3+1] = (Math.random()-0.5)*10;
+  pPos[i*3+2] = (Math.random()-0.5)*8;
 }
 const pGeo = new THREE.BufferGeometry();
 pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-const points = new THREE.Points(
-  pGeo,
-  new THREE.PointsMaterial({ color: 0xffffff, size: 0.02, transparent: true, opacity: 0.35 })
-);
-scene.add(points);
-
-let targetRot = 0;
-let accent = new THREE.Color(0xC9A227);
-
-function onScroll() {
+scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.025, transparent: true, opacity: 0.3 })));
+let target = 0;
+addEventListener('scroll', () => {
   const max = document.body.scrollHeight - innerHeight;
-  const p = max > 0 ? scrollY / max : 0;
-  targetRot = p * Math.PI * 2;
-  group.position.y = (p - 0.5) * 1.5;
-
-  document.querySelectorAll('.film-beat').forEach((sec) => {
-    const r = sec.getBoundingClientRect();
-    const vis = 1 - Math.min(1, Math.abs(r.top + r.height * 0.3 - innerHeight * 0.5) / (innerHeight * 0.6));
-    const bar = sec.querySelector('.bar > i');
-    if (bar) bar.style.width = Math.max(0, vis) * 100 + '%';
-    if (vis > 0.55) {
-      const c = sec.getAttribute('data-c');
-      if (c) accent.set(c);
-    }
-  });
-}
-addEventListener('scroll', onScroll, { passive: true });
-onScroll();
-
+  target = max > 0 ? scrollY / max : 0;
+}, { passive: true });
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
-
 const clock = new THREE.Clock();
-function animate() {
-  requestAnimationFrame(animate);
+(function loop() {
+  requestAnimationFrame(loop);
   const t = clock.getElapsedTime();
-  group.rotation.y += (targetRot + t * 0.15 - group.rotation.y) * 0.04;
-  group.rotation.x = Math.sin(t * 0.2) * 0.08;
-  nodes.forEach((n, i) => {
-    const a = t * 0.4 + i * (Math.PI * 2 / 5);
-    n.mesh.position.set(Math.cos(a) * 1.6, Math.sin(t * 0.3 + i) * 0.4, Math.sin(a) * 1.6);
-  });
-  points.rotation.y = t * 0.02;
+  group.rotation.y += (target * Math.PI * 2 + t * 0.12 - group.rotation.y) * 0.05;
+  group.position.y = (target - 0.5) * 1.2;
   renderer.render(scene, camera);
-}
-animate();
+})();
 </script>
 </body>
 </html>
