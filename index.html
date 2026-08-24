@@ -76,10 +76,7 @@
       flex-direction: column;
     }
 
-    header {
-      flex: 0 0 auto;
-      padding: 1.15rem 0 0;
-    }
+    header { flex: 0 0 auto; padding: 1.15rem 0 0; }
     header nav {
       display: flex;
       justify-content: space-between;
@@ -119,14 +116,15 @@
       object-fit: contain;
     }
 
+    /* Isolated 3D stage — no plate, quarks show through */
     .geo-wrap {
       width: min(52vw, 180px);
       height: min(52vw, 180px);
       margin: 0 0 1.35rem;
       flex-shrink: 0;
-      /* no square crop — full transparent field */
       overflow: visible;
       background: transparent;
+      isolation: isolate;
     }
     #geo-earth {
       width: 100%;
@@ -183,11 +181,7 @@
     </main>
   </div>
   <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.170.0/build/three.module.js"
-    }
-  }
+  { "imports": { "three": "https://unpkg.com/three@0.170.0/build/three.module.js" } }
   </script>
   <script type="module">
   import * as THREE from 'three';
@@ -208,42 +202,52 @@
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  // Wider FOV / farther cam so geodesic sits fully inside frame — no square crop
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 20);
   camera.position.z = 3.55;
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-  const key = new THREE.DirectionalLight(0xffffff, 1.35);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+  const key = new THREE.DirectionalLight(0xffffff, 1.2);
   key.position.set(2.4, 1.6, 3.0);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0x8899aa, 0.45);
+  const fill = new THREE.DirectionalLight(0x8899aa, 0.5);
   fill.position.set(-2, -0.5, 1.5);
   scene.add(fill);
 
-  // Scale mesh slightly under 1 so silhouette never hits canvas edge
   const geo = new THREE.IcosahedronGeometry(0.92, 2);
 
+  // Hologram body ~60% translucent — quarks can read through
   const body = new THREE.Mesh(
     geo,
     new THREE.MeshStandardMaterial({
-      color: 0x2a2e32,
+      color: 0x6a7a88,
       flatShading: true,
-      metalness: 0.55,
-      roughness: 0.4,
-      emissive: 0x0a0c0e,
-      emissiveIntensity: 0.2
+      metalness: 0.35,
+      roughness: 0.35,
+      transparent: true,
+      opacity: 0.55,
+      depthWrite: false,
+      emissive: 0x1a2838,
+      emissiveIntensity: 0.35
     })
   );
 
   const wire = new THREE.LineSegments(
     new THREE.EdgesGeometry(geo, 1),
-    new THREE.LineBasicMaterial({ color: 0xc8ced4, transparent: true, opacity: 0.9 })
+    new THREE.LineBasicMaterial({
+      color: 0xd0d8e0,
+      transparent: true,
+      opacity: 0.7
+    })
   );
   wire.scale.setScalar(1.002);
 
   const wireOuter = new THREE.LineSegments(
     new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(0.97, 1), 1),
-    new THREE.LineBasicMaterial({ color: 0x6a7078, transparent: true, opacity: 0.45 })
+    new THREE.LineBasicMaterial({
+      color: 0x8a98a8,
+      transparent: true,
+      opacity: 0.4
+    })
   );
 
   const points = new THREE.Points(
@@ -253,7 +257,7 @@
       size: 0.032,
       sizeAttenuation: true,
       transparent: true,
-      opacity: 0.85
+      opacity: 0.65
     })
   );
 
