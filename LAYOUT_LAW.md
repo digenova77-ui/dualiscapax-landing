@@ -1,68 +1,26 @@
 # #LAYOUT_LAW — DualisCapax (LOCKED)
 
-**Status:** LOCKED · Do not invent a different layout in a later session  
-**Source recovered:** `assets/layout-law.css`  
-**Locked:** 2026-08-24 (session recovery after drift)
+**Phone users get a mobile product. Desktop users get a desktop product. Not one design squeezed.**
 
----
+## #MOBILE (default — primary)
+- Full-width brand, large type
+- One idea per scroll screen
+- Engagement: helix + glass story film
+- **No noise:** no sidebars, no dense link grids, no desktop chrome
+- Thumb-friendly Continue list at end only
 
-## #HASH tags (search these before changing UI)
+## #DESKTOP (≥1024px)
+- Static pane shell: side nav + main stage
+- Helix can sit in main stage; story in readable column
+- Navigation always visible in side pane
+- Does **not** inherit mobile-only full-bleed constraints as a compromise
 
-| Tag | Meaning |
-|-----|--------|
-| `#LAYOUT_LAW` | This document — authoritative |
-| `#MOBILE_FLOW` | Vertical document stack (WordPress-like flow) |
-| `#DESKTOP_PANES` | Static panes — no long page scroll past the active pane |
-| `#TABLET_HYBRID` | Overlay / popout for overflow |
-| `#DUAL_SCROLL` | Mobile dual-scroll depth when needed |
-| `#NO_DESKTOP_ON_MOBILE` | Do not ship squeezed desktop chrome on phones |
-| `#BRAND_LOCKUP` | DualisCapax wordmark + DNA helix — not random icons |
+## #TABLET (768–1023)
+- Hybrid: mobile story flow + optional overlay for secondary links
 
----
+## Files
+- `skin/default.css` — both skins via media queries
+- `content/story.json` — shared words
+- `js/plane-engine.js` — shared engine
 
-## Device law (determined earlier — not optional)
-
-### Mobile — `#MOBILE_FLOW`
-- **Document flow** — vertical stack, like a clean long-form site (WordPress-like reading flow)
-- Dual-scroll depth where the product needs depth
-- **Not** a horizontal “stories” deck unless explicitly ordered as a *tour mode*
-- **Not** desktop sidebar/header chrome squeezed onto a phone
-
-### Tablet (~768–1023) — `#TABLET_HYBRID`
-- Hybrid of flow + **overlay / popout** when one screen cannot hold the detail
-- Secondary detail prefers overlay trigger
-
-### Desktop (≥1024) — `#DESKTOP_PANES`
-- **Static panes**
-- Page itself does **not** roam in a long scroll past the pane that holds the needed info
-- Scroll **inside** the active pane if needed
-- Typical shell: side nav + main pane grid (`dc-shell` / `dc-main` / `dc-side` / `dc-pane`)
-
----
-
-## Implementation anchors
-
-- CSS law file: `assets/layout-law.css`
-- Classes: `.dc-shell` `.dc-main` `.dc-side` `.dc-pane` `.dc-overlay` `.dc-overlay-card`
-
----
-
-## Session rule
-
-Before any homepage or shell redesign:
-
-1. Open `#LAYOUT_LAW` / this file  
-2. Open `assets/layout-law.css`  
-3. Match mobile / tablet / desktop to the law  
-4. Do **not** replace with a one-off pattern because a single chat was frustrated
-
-**Drift that violated this:** horizontal full-viewport snap slides shipped as the only mobile home (2026-08-24). That pattern may exist as an optional **tour film** route — it is **not** a replacement for `#MOBILE_FLOW` site law.
-
----
-
-## Encryption note (continuity)
-
-“Encrypted” here means **immutable product law in-repo**, not cryptography.  
-Hashtags exist so agents and humans can **grep** the lock: `#LAYOUT_LAW` `#MOBILE_FLOW` `#DESKTOP_PANES` `#TABLET_HYBRID`.
-
-— DualisCapax layout lock
+Agents: do not ship desktop layout as the mobile experience.
