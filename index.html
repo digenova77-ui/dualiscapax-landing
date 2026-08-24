@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>DualisCapax</title>
   <meta name="description" content="Residual Law Finance. Cutting Edge Technology. Adaptive AI. Research." />
-  <meta name="theme-color" content="#050505" />
+  <meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* —— Dark mode color variables (default / only theme) —— */
+    /* —— Dark mode (default) —— */
     :root {
       color-scheme: dark;
 
@@ -35,12 +36,42 @@
 
       --nav: var(--fg-muted);
       --theme-color: #050505;
+
+      /* logo stays as-authored on dark */
+      --logo-filter: none;
     }
 
-    /* Optional: respect system preference without changing the look today */
-    @media (prefers-color-scheme: dark) {
+    /* —— Light mode fallback —— */
+    @media (prefers-color-scheme: light) {
       :root {
-        color-scheme: dark;
+        color-scheme: light;
+
+        --bg: #f4f5f7;
+        --bg-elevated: #ffffff;
+        --fg: #0a0a0a;
+        --fg-muted: rgba(10, 10, 10, 0.72);
+        --fg-soft: rgba(10, 10, 10, 0.68);
+
+        --quark: #2a6fd4;
+        --quark-glow: rgba(42, 111, 212, 0.55);
+        --quark-glow-soft: rgba(42, 111, 212, 0.25);
+
+        --logo-glow-core: rgba(40, 100, 200, 0.45);
+        --logo-glow-mid: rgba(40, 100, 200, 0.28);
+        --logo-glow-outer: rgba(40, 100, 200, 0.14);
+        --logo-glow-core-peak: rgba(40, 100, 200, 0.6);
+        --logo-glow-mid-peak: rgba(40, 100, 200, 0.38);
+        --logo-glow-outer-peak: rgba(40, 100, 200, 0.2);
+
+        --spark: #1a4a9a;
+        --spark-glow: rgba(42, 111, 212, 0.9);
+        --spark-glow-soft: rgba(42, 111, 212, 0.45);
+
+        --nav: var(--fg-muted);
+        --theme-color: #f4f5f7;
+
+        /* white wordmark SVG → readable on light bg without redrawing the file */
+        --logo-filter: invert(1) brightness(0.12);
       }
     }
 
@@ -128,7 +159,9 @@
       z-index: 1;
       width: min(88vw, 22rem);
       height: auto; display: block; object-fit: contain;
+      /* base artwork filter (light mode only) + glow layers */
       filter:
+        var(--logo-filter)
         drop-shadow(0 0 6px var(--logo-glow-core))
         drop-shadow(0 0 14px var(--logo-glow-mid))
         drop-shadow(0 0 28px var(--logo-glow-outer));
@@ -137,12 +170,14 @@
     @keyframes logoAura {
       0%, 100% {
         filter:
+          var(--logo-filter)
           drop-shadow(0 0 5px var(--logo-glow-core))
           drop-shadow(0 0 12px var(--logo-glow-mid))
           drop-shadow(0 0 22px var(--logo-glow-outer));
       }
       50% {
         filter:
+          var(--logo-filter)
           drop-shadow(0 0 8px var(--logo-glow-core-peak))
           drop-shadow(0 0 18px var(--logo-glow-mid-peak))
           drop-shadow(0 0 36px var(--logo-glow-outer-peak));
