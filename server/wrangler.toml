@@ -1,0 +1,10 @@
+name = "dualiscapax-depth"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+# Secrets (do not put real keys here):
+# wrangler secret put XAI_API_KEY
+
+[vars]
+MODEL = "grok-4-fast"
+SYSTEM_PROMPT = "You are DualisCapax Adaptive Intelligence. Be clear and direct. Open research is free; depth is Fuel-metered. Do not claim medical cures or securities offers."
