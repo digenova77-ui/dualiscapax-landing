@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DualisCapax — WebXR Controllers + Haptic</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; background: #020203; color: #e8e6e3; font-family: system-ui, sans-serif; }
+    #info {
+      position: absolute; top: 16px; left: 16px; z-index: 10;
+      background: rgba(0,0,0,0.7); padding: 12px 16px; border-radius: 8px;
+      font-size: 14px; max-width: 360px; line-height: 1.4;
+    }
+    #info h1 { font-size: 16px; margin-bottom: 6px; color: #c9a227; }
+    button {
+      margin-top: 12px; padding: 10px 18px; background: #c9a227; color: #020203;
+      border: none; border-radius: 6px; font-weight: 600; cursor: pointer;
+    }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    canvas { display: block; }
+    a { color: #c9a227; }
+  </style>
+</head>
+<body>
+  <div id="info">
+    <h1>DualisCapax · XR Controllers + Haptic</h1>
+    <div id="status">Checking WebXR support…</div>
+    <button id="startBtn" disabled>Enter VR</button>
+    <div style="margin-top:10px;font-size:12px"><a href="engine.html">Full residual engine</a> · <a href="index.html">Home</a></div>
+  </div>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+      "@webxr-input-profiles/motion-controllers": "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/motion-controllers@1.0.0/dist/motion-controllers.module.js"
+    }
+  }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { fetchProfile, MotionController } from '@webxr-input-profiles/motion-controllers';
+    const DEFAULT_PROFILES_PATH = 'https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles';
+    const statusEl = document.getElementById('status');
+    const startBtn = document.getElementById('startBtn');
+    let renderer, scene, camera, session = null, refSpace = null;
+    const loader = new GLTFLoader();
+    const motionControllers = new Map();
+    const controllerMeshes = new Map();
+    async function pulse(source, intensity = 0.55, duration = 35) {
+      const actuators = source.hapticActuators ?? source.gamepad?.hapticActuators;
+      if (!actuators || actuators.length === 0) return false;
+      try {
+        return await actuators[0].pulse(Math.max(0, Math.min(1, intensity)), Math.max(1, Math.min(400, duration)));
+      } catch { return false; }
+    }
+    async function createController(source) {
+      if (source.targetRayMode !== 'tracked-pointer') return;
+      try {
+        const { profile, assetPath } = await fetchProfile(source, DEFAULT_PROFILES_PATH);
+        const motionController = new MotionController(source, profile, assetPath);
+        motionControllers.set(source, motionController);
+        const gltf = await loader.loadAsync(assetPath);
+        const mesh = gltf.scene;
+        controllerMeshes.set(source, mesh);
+        scene.add(mesh);
+        statusEl.textContent = `Loaded: ${source.profiles[0] || 'controller'}`;
+      } catch (err) {
+        console.warn('Controller load failed', err);
+        statusEl.textContent = 'Controller model load failed (haptics still work)';
+      }
+    }
+    async function init() {
+      if (!navigator.xr) { statusEl.textContent = 'WebXR not available in this browser'; return; }
+      const supported = await navigator.xr.isSessionSupported('immersive-vr');
+      if (!supported) { statusEl.textContent = 'Immersive VR not supported on this device'; return; }
+      statusEl.textContent = 'WebXR ready. Click Enter VR (requires headset).';
+      startBtn.disabled = false;
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x020203);
+      camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 50);
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.xr.enabled = true;
+      document.body.appendChild(renderer.domElement);
+      const light = new THREE.DirectionalLight(0xffffff, 1.2);
+      light.position.set(2, 4, 3);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0x404040, 0.6));
+      const floor = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.9 }));
+      floor.rotation.x = -Math.PI / 2;
+      scene.add(floor);
+      startBtn.addEventListener('click', async () => {
+        try {
+          session = await navigator.xr.requestSession('immersive-vr', {
+            requiredFeatures: ['local-floor'],
+            optionalFeatures: ['hand-tracking', 'local']
+          });
+          await renderer.xr.setSession(session);
+          refSpace = await session.requestReferenceSpace('local-floor');
+          statusEl.textContent = 'Session started. Controllers + haptics active.';
+          session.addEventListener('inputsourceschange', (event) => {
+            for (const source of event.added) createController(source);
+            for (const source of event.removed) {
+              const mesh = controllerMeshes.get(source);
+              if (mesh) { scene.remove(mesh); controllerMeshes.delete(source); }
+              motionControllers.delete(source);
+            }
+          });
+          session.addEventListener('selectstart', (e) => { pulse(e.inputSource, 0.7, 40); });
+          session.addEventListener('squeezestart', (e) => { pulse(e.inputSource, 0.45, 28); });
+          session.addEventListener('end', () => { statusEl.textContent = 'Session ended.'; startBtn.disabled = false; });
+          startBtn.disabled = true;
+          renderer.setAnimationLoop(onFrame);
+        } catch (err) {
+          console.error(err);
+          statusEl.textContent = 'Failed to start session: ' + err.message;
+        }
+      });
+    }
+    function onFrame(time, frame) {
+      if (!frame || !refSpace) return;
+      for (const [source, motionController] of motionControllers) {
+        motionController.updateFromGamepad();
+        const mesh = controllerMeshes.get(source);
+        if (!mesh || !source.gripSpace) continue;
+        const pose = frame.getPose(source.gripSpace, refSpace);
+        if (pose) {
+          mesh.position.copy(pose.transform.position);
+          mesh.quaternion.copy(pose.transform.orientation);
+        }
+      }
+      renderer.render(scene, camera);
+    }
+    init();
+  </script>
+</body>
+</html>
