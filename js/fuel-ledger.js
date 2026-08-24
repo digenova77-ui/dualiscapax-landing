@@ -1,48 +1,45 @@
-/**
- * DualisCapax Fuel ledger (client demo + interface for future API)
- * Production debits must happen server-side after payment verification.
- */
-(function (global) {
+/** DualisCapax Fuel ledger — local demo stub until server + xAI API */
+(function (g) {
   var KEY = 'dc_fuel_balance_v1';
-  var DEFAULT_DEMO = 25; // starter demo credits for beta UX
+  var START = 25; // demo credits for beta
 
   function read() {
     try {
       var v = localStorage.getItem(KEY);
-      if (v === null || v === '') return DEFAULT_DEMO;
-      var n = parseInt(v, 10);
-      return isNaN(n) ? DEFAULT_DEMO : Math.max(0, n);
+      if (v === null || v === '') {
+        localStorage.setItem(KEY, String(START));
+        return START;
+      }
+      return Math.max(0, parseInt(v, 10) || 0);
     } catch (e) {
-      return DEFAULT_DEMO;
+      return START;
     }
   }
 
   function write(n) {
-    try { localStorage.setItem(KEY, String(Math.max(0, n | 0))); } catch (e) {}
+    try {
+      localStorage.setItem(KEY, String(Math.max(0, n)));
+    } catch (e) {}
   }
 
-  var Fuel = {
-    balance: function () { return read(); },
-    /** @returns {{ok:boolean, balance:number, reason?:string}} */
+  g.DCFuel = {
+    balance: read,
     burn: function (units) {
-      units = units || 1;
+      units = Math.max(1, units || 1);
       var b = read();
-      if (b < units) return { ok: false, balance: b, reason: 'insufficient_fuel' };
+      if (b < units) return { ok: false, balance: b };
       b -= units;
       write(b);
-      return { ok: true, balance: b };
+      return { ok: true, balance: b, burned: units };
     },
     grant: function (units) {
-      var b = read() + (units || 0);
+      var b = read() + Math.max(0, units || 0);
       write(b);
       return b;
     },
-    /** Future: exchange Stripe session / server token for credits */
-    redeemServerGrant: function (token) {
-      console.info('Fuel.redeemServerGrant: wire to Dualis API when live', token);
-      return read();
+    resetDemo: function () {
+      write(START);
+      return START;
     }
   };
-
-  global.DCFuel = Fuel;
 })(typeof window !== 'undefined' ? window : globalThis);
