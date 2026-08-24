@@ -3,148 +3,211 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>DualisCapax — Truth Prevails</title>
-  <meta name="description" content="No tribes preferred. Truth prevails. DualisCapax." />
-  <meta name="theme-color" content="#000000" />
+  <title>DualisCapax</title>
+  <meta name="description" content="No tribes preferred. Truth prevails." />
+  <meta name="theme-color" content="#050505" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg: #050505;
+      --fg: #f5f5f5;
+      --muted: rgba(245,245,245,0.55);
+      --faint: rgba(245,245,245,0.28);
+      --line: rgba(255,255,255,0.09);
+      --white: #ffffff;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: #000;
-      color: #fff;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
       line-height: 1.5;
       min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-    a { color: inherit; text-decoration: none; }
 
-    .wrap {
-      max-width: 480px;
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ========== STRUCTURE ========== */
+    .site {
+      max-width: 42rem;
       margin: 0 auto;
-      padding: 0 1.25rem;
+      padding: 0 1.5rem;
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
     }
 
+    /* ========== HEADER ========== */
     header {
-      padding: 1.1rem 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 1.35rem 0;
+      border-bottom: 1px solid var(--line);
     }
-    .logo {
+
+    .mark {
+      font-size: 0.9rem;
       font-weight: 700;
-      font-size: 0.95rem;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
     }
+
     nav {
       display: flex;
-      gap: 1.1rem;
+      gap: 1.75rem;
     }
+
     nav a {
       font-size: 0.8rem;
       font-weight: 500;
-      color: rgba(255,255,255,0.65);
+      color: var(--muted);
+      transition: color 0.15s ease;
     }
-    nav a:hover { color: #fff; }
 
+    nav a:hover {
+      color: var(--fg);
+    }
+
+    /* ========== HERO ========== */
     .hero {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 3.5rem 0 2.5rem;
-    }
-    .kicker {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 0.85rem;
-    }
-    h1 {
-      font-size: clamp(2.4rem, 11vw, 3.4rem);
-      font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -0.035em;
-      text-transform: uppercase;
-      margin-bottom: 1.4rem;
-    }
-    .lede {
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.7);
-      max-width: 22rem;
-      margin-bottom: 2.2rem;
+      padding: 4.5rem 0 3.5rem;
     }
 
-    .actions {
+    .eyebrow {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+
+    h1 {
+      font-size: clamp(2.75rem, 12vw, 4.1rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      margin-bottom: 1.6rem;
+    }
+
+    .statement {
+      font-size: 1.125rem;
+      line-height: 1.55;
+      color: var(--muted);
+      max-width: 28rem;
+      margin-bottom: 2.75rem;
+    }
+
+    .cta-row {
       display: flex;
       flex-direction: column;
-      gap: 0.7rem;
+      gap: 0.75rem;
     }
+
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      height: 3rem;
-      padding: 0 1.4rem;
+      height: 3.15rem;
+      padding: 0 1.6rem;
       font-size: 0.9rem;
       font-weight: 600;
       border-radius: 999px;
       border: 1px solid transparent;
-      transition: background 0.15s, color 0.15s;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
     }
-    .btn-primary {
-      background: #fff;
-      color: #000;
+
+    .btn-solid {
+      background: var(--white);
+      color: #050505;
     }
-    .btn-primary:hover { background: #e8e8e8; }
-    .btn-ghost {
+
+    .btn-solid:hover {
+      background: #eaeaea;
+    }
+
+    .btn-line {
       background: transparent;
-      color: #fff;
-      border-color: rgba(255,255,255,0.2);
+      color: var(--fg);
+      border-color: rgba(255,255,255,0.18);
     }
-    .btn-ghost:hover { border-color: rgba(255,255,255,0.45); }
 
+    .btn-line:hover {
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* ========== SECTIONS ========== */
     section {
-      padding: 2.8rem 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 3.25rem 0;
+      border-top: 1px solid var(--line);
     }
-    section h2 {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 1.1rem;
-    }
-    section p {
-      font-size: 0.98rem;
-      color: rgba(255,255,255,0.75);
-      margin-bottom: 0.9rem;
-    }
-    section p:last-child { margin-bottom: 0; }
 
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 1.25rem;
+    }
+
+    section p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .strong {
+      color: var(--fg);
+      font-weight: 500;
+    }
+
+    /* ========== FOOTER ========== */
     footer {
-      padding: 1.8rem 0 2.2rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 2.25rem 0 2.75rem;
+      border-top: 1px solid var(--line);
       font-size: 0.75rem;
-      color: rgba(255,255,255,0.35);
+      color: var(--faint);
       text-align: center;
+      letter-spacing: 0.01em;
+    }
+
+    /* ========== SMALL SCREENS ========== */
+    @media (min-width: 480px) {
+      .cta-row {
+        flex-direction: row;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="site">
     <header>
-      <a href="/" class="logo">DualisCapax</a>
+      <a href="/" class="mark">DualisCapax</a>
       <nav>
         <a href="#research">Research</a>
         <a href="#access">Access</a>
@@ -152,26 +215,30 @@
     </header>
 
     <main class="hero">
-      <div class="kicker">No Tribes Preferred</div>
+      <div class="eyebrow">No Tribes Preferred</div>
       <h1>Truth<br>Prevails.</h1>
-      <p class="lede">Independent analysis. No affiliation required. Open research stays free. Simulations are not for sale.</p>
-      <div class="actions">
-        <a href="#access" class="btn btn-primary">Enter L2 Playground</a>
-        <a href="#research" class="btn btn-ghost">View Research</a>
+      <p class="statement">
+        Independent analysis. Open research remains free.
+        Simulations and deeper systems are not for sale.
+      </p>
+      <div class="cta-row">
+        <a href="#access" class="btn btn-solid">Enter L2 Playground</a>
+        <a href="#research" class="btn btn-line">View Research</a>
       </div>
     </main>
 
     <section id="research">
-      <h2>Research</h2>
-      <p>Open materials remain free. No paywall on published work.</p>
-      <p>Depth layers and simulations are closed to direct purchase.</p>
+      <div class="section-label">Research</div>
+      <p>Published materials stay open. No paywall on the public surface.</p>
+      <p>Depth layers, adaptive systems, and simulations are closed to purchase.</p>
     </section>
 
     <section id="access">
-      <h2>Access</h2>
-      <p>Simulations and deeper systems are available through the L2 playground only.</p>
-      <p>There is no fiat path. There is no direct crypto purchase path for the simulations.</p>
-      <p>You come onto the playground, or you do not get in.</p>
+      <div class="section-label">Access</div>
+      <p class="strong">L2 Playground only.</p>
+      <p>There is no fiat path.</p>
+      <p>There is no direct purchase path for the simulations.</p>
+      <p>You enter the playground, or you do not enter.</p>
     </section>
 
     <footer>
