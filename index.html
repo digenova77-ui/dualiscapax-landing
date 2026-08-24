@@ -3,214 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>DualisCapax</title>
-<meta name="description" content="DualisCapax — financial and emerging AI networking plane.">
 <meta name="theme-color" content="#020203">
-<link rel="icon" type="image/svg+xml" href="brand/emblem-helix.svg">
-<link rel="stylesheet" href="assets/layout-law.css">
+<link rel="icon" type="image/svg+xml" href="brand/emblem-helix.svg?v=3">
 <style>
-:root{
-  --bg:#020203;--fg:rgba(243,242,239,.94);--muted:rgba(243,242,239,.55);
-  --gold:#C9A227;--line:rgba(255,255,255,.08);
-  --font:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-}
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg)}
-body{
-  font-family:var(--font);color:var(--fg);background:var(--bg);
-  -webkit-font-smoothing:antialiased;min-height:100dvh;position:relative;
-}
+html,body{background:#020203;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;min-height:100%;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.hologram{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.hologram canvas{width:100%;height:100%;display:block;opacity:.5}
-.dc-shell{position:relative;z-index:1;min-height:100dvh}
+.holo{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45}
+.holo canvas{width:100%;height:100%}
+.page{position:relative;z-index:1;min-height:100dvh;padding:calc(1rem + env(safe-area-inset-top)) 1rem 3rem}
 
-/* MOBILE: logo is the hero — large, readable, full strand */
-.brand-block{
-  padding:1.25rem 1.15rem 0.5rem;
-  padding-top:calc(1.15rem + env(safe-area-inset-top));
+/* LOGO — large on purpose */
+.logo{
   text-align:center;
+  padding:1.5rem 0 1rem;
 }
-.brand-block .wordmark{
-  display:block;
-  width:min(92vw, 520px);
-  height:auto;
-  margin:0 auto;
+.logo-name{
+  font-size:clamp(2.4rem, 11vw, 3.75rem);
+  font-weight:700;
+  letter-spacing:-0.04em;
+  line-height:1.05;
+  color:#fff;
+  margin:0;
 }
-.brand-block .emblem{
+.logo-dna{
   display:block;
-  width:min(42vw, 168px);
+  width:min(88vw, 420px);
   height:auto;
-  margin:1.35rem auto 0.5rem;
-  filter:drop-shadow(0 0 28px rgba(201,162,39,.28)) drop-shadow(0 0 48px rgba(59,130,246,.18));
+  margin:1.25rem auto 0;
+}
+.logo-emblem{
+  display:block;
+  width:min(56vw, 220px);
+  height:auto;
+  margin:1.5rem auto 0.5rem;
+  filter:drop-shadow(0 0 32px rgba(201,162,39,.35));
 }
 
-.dc-pane{
-  width:100%;max-width:42rem;margin:0 auto;
-  padding:0.75rem 1.25rem 3rem;
-}
 .kicker{
-  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--gold);margin:1rem 0 .85rem;text-align:center;
+  text-align:center;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:#C9A227;margin:1.25rem 0 .75rem;
   font-family:ui-monospace,Menlo,Consolas,monospace;
 }
 h1{
-  font-size:clamp(1.55rem, 5.2vw, 2.25rem);
-  font-weight:600;letter-spacing:-.03em;line-height:1.15;
-  margin-bottom:1rem;color:#fff;text-align:center;
+  text-align:center;
+  font-size:clamp(1.45rem, 5vw, 2rem);
+  font-weight:600;letter-spacing:-.03em;line-height:1.2;
+  margin:0 auto 1rem;max-width:18ch;
 }
 .lead{
-  font-size:1.02rem;line-height:1.6;color:var(--muted);
-  margin:0 auto 1.75rem;max-width:34ch;text-align:center;
+  text-align:center;font-size:1rem;line-height:1.55;
+  color:rgba(255,255,255,.55);max-width:32ch;margin:0 auto 1.75rem;
 }
-.cta-row{display:flex;flex-wrap:wrap;gap:.75rem 1.1rem;margin-bottom:2.5rem;justify-content:center}
-.cta{
-  font-size:.78rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
-  color:#fff;padding-bottom:.35rem;border-bottom:1px solid rgba(255,255,255,.35);
+.ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-bottom:2rem}
+.ctas a{
+  font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+  border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:.3rem;
 }
-.cta:hover{border-color:var(--gold);color:var(--gold)}
-.cta.ghost{border-bottom-color:rgba(255,255,255,.15);color:rgba(255,255,255,.65)}
+.ctas a.g{border-bottom-color:rgba(255,255,255,.15);color:rgba(255,255,255,.65)}
 .card{
-  border:1px solid var(--line);border-radius:14px;
-  background:rgba(8,10,18,.55);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  padding:1.1rem 1.15rem;margin-bottom:.85rem;
+  max-width:28rem;margin:0 auto .75rem;
+  border:1px solid rgba(255,255,255,.1);border-radius:14px;
+  background:rgba(8,10,18,.55);padding:1rem 1.1rem;
 }
-.card h2{
-  font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(255,255,255,.45);margin-bottom:.4rem;
-  font-family:ui-monospace,Menlo,Consolas,monospace;
-}
-.card p{font-size:.9rem;line-height:1.5;color:rgba(255,255,255,.72)}
-.nav-bottom{
-  display:flex;flex-wrap:wrap;gap:.65rem 1.15rem;justify-content:center;
-  margin-top:2rem;padding-top:1.25rem;border-top:1px solid var(--line);
-  font-size:.72rem;
-}
-.nav-bottom a{color:rgba(255,255,255,.4)}
-.nav-bottom a:hover{color:#fff}
-
-@media (min-width:1024px){
-  html,body{height:100%;overflow:hidden}
-  .dc-shell{height:100dvh;display:grid;grid-template-rows:auto 1fr;overflow:hidden}
-  .brand-block{
-    display:flex;align-items:center;justify-content:flex-start;gap:1.25rem;
-    text-align:left;padding:1.25rem 2rem 0.75rem;
-  }
-  .brand-block .wordmark{width:min(380px, 36vw);margin:0}
-  .brand-block .emblem{width:56px;margin:0}
-  .dc-main{display:grid;grid-template-columns:minmax(14rem,18rem) 1fr;min-height:0;overflow:hidden}
-  .dc-side{
-    border-right:1px solid var(--line);overflow:auto;min-height:0;
-    padding:1.25rem 1rem 2rem;
-  }
-  .dc-side a{
-    display:block;padding:.45rem .5rem;font-size:.8rem;
-    color:rgba(255,255,255,.45);border-radius:6px;
-  }
-  .dc-side a:hover{color:#fff;background:rgba(255,255,255,.04)}
-  .dc-pane{overflow:auto;min-height:0;max-width:none;padding:1.5rem 2.5rem 2.5rem}
-  h1,.lead,.kicker,.cta-row,.nav-bottom{text-align:left;justify-content:flex-start}
-  .lead{margin-left:0}
-}
-@media (max-width:1023px){
-  .dc-side{display:none}
-}
+.card h2{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.35rem}
+.card p{font-size:.9rem;line-height:1.45;color:rgba(255,255,255,.7)}
+.more{text-align:center;margin-top:2rem;font-size:.75rem}
+.more a{color:rgba(255,255,255,.4);margin:0 .5rem}
 </style>
 </head>
 <body>
-  <div class="hologram" aria-hidden="true"><canvas id="holo"></canvas></div>
-
-  <div class="dc-shell">
-    <div class="brand-block">
-      <img class="wordmark" src="brand/wordmark.svg" alt="DualisCapax">
-      <img class="emblem" src="brand/emblem-helix.svg" alt="">
-    </div>
-
-    <div class="dc-main">
-      <nav class="dc-side" aria-label="Sections">
-        <a href="tour.html">Tour</a>
-        <a href="narrative.html">Narrative</a>
-        <a href="corporate.html">Corporate</a>
-        <a href="ai/">Adaptive Intelligence</a>
-        <a href="research/">Research</a>
-        <a href="model.html">Model</a>
-        <a href="food-for-thought.html">Food for thought</a>
-      </nav>
-
-      <main class="dc-pane">
-        <p class="kicker">Financial · Emerging AI · Networked access</p>
-        <h1>Same standard. Open research. Adaptive depth.</h1>
-        <p class="lead">DualisCapax builds a networked plane: open knowledge, metered adaptive intelligence, accountable access under equal rules.</p>
-        <div class="cta-row">
-          <a class="cta" href="tour.html">Start tour</a>
-          <a class="cta" href="ai/">Adaptive Intelligence</a>
-          <a class="cta ghost" href="corporate.html">Corporate</a>
-        </div>
-
-        <article class="card">
-          <h2>Network</h2>
-          <p>One published standard for every onboarder — human or agent path.</p>
-        </article>
-        <article class="card">
-          <h2>Access</h2>
-          <p>Research open. Deeper adaptive capacity metered and trackable.</p>
-        </article>
-        <article class="card">
-          <h2>Obligation</h2>
-          <p>Account-local control. Equal rules. Residual in the open.</p>
-        </article>
-
-        <nav class="nav-bottom" aria-label="More">
-          <a href="tour.html">Tour</a>
-          <a href="narrative.html">Narrative</a>
-          <a href="research/">Research</a>
-          <a href="model.html">Model</a>
-          <a href="food-for-thought.html">Food for thought</a>
-        </nav>
-      </main>
-    </div>
+<div class="holo" aria-hidden="true"><canvas id="h"></canvas></div>
+<div class="page">
+  <div class="logo">
+    <p class="logo-name">DualisCapax</p>
+    <!-- full DNA strand — wide -->
+    <svg class="logo-dna" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round">
+        <path d="M40 10 C100 35, 100 65, 40 90"/>
+        <path d="M100 10 C40 35, 40 65, 100 90"/>
+        <line x1="52" y1="22" x2="88" y2="30"/>
+        <line x1="48" y1="38" x2="92" y2="46"/>
+        <line x1="48" y1="54" x2="92" y2="62"/>
+        <line x1="52" y1="70" x2="88" y2="78"/>
+      </g>
+      <g fill="none" stroke="#C9A227" stroke-width="2.5" stroke-linecap="round" opacity="0.9">
+        <path d="M160 15 C210 40, 210 60, 160 85"/>
+        <path d="M210 15 C160 40, 160 60, 210 85"/>
+      </g>
+      <g fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" opacity="0.85">
+        <path d="M240 20 C290 42, 290 58, 240 80"/>
+        <path d="M290 20 C240 42, 240 58, 290 80"/>
+      </g>
+    </svg>
+    <img class="logo-emblem" src="brand/emblem-helix.svg?v=3" alt="">
   </div>
 
+  <p class="kicker">Financial · Emerging AI · Networked access</p>
+  <h1>Same standard. Open research. Adaptive depth.</h1>
+  <p class="lead">Networked plane: open knowledge, metered adaptive intelligence, equal rules.</p>
+  <div class="ctas">
+    <a href="tour.html">Tour</a>
+    <a href="ai/">AI</a>
+    <a class="g" href="corporate.html">Corporate</a>
+  </div>
+
+  <div class="card"><h2>Network</h2><p>One published standard for every onboarder.</p></div>
+  <div class="card"><h2>Access</h2><p>Research open. Deeper capacity metered.</p></div>
+  <div class="card"><h2>Obligation</h2><p>Equal rules. Residual in the open.</p></div>
+
+  <p class="more">
+    <a href="narrative.html">Narrative</a>
+    <a href="research/">Research</a>
+    <a href="model.html">Model</a>
+  </p>
+</div>
 <script>
-(function () {
-  var c = document.getElementById('holo');
-  if (!c) return;
-  var ctx = c.getContext('2d');
-  var t0 = performance.now();
-  function frame(now) {
-    var dpr = Math.min(devicePixelRatio || 1, 2);
-    c.width = Math.floor(innerWidth * dpr);
-    c.height = Math.floor(innerHeight * dpr);
-    c.style.width = innerWidth + 'px';
-    c.style.height = innerHeight + 'px';
-    var w = c.width, h = c.height, t = (now - t0) / 1000;
-    ctx.fillStyle = '#020203';
-    ctx.fillRect(0, 0, w, h);
-    var g1 = ctx.createRadialGradient(w * 0.7, h * 0.25, 0, w * 0.7, h * 0.25, w * 0.5);
-    g1.addColorStop(0, 'rgba(201,162,39,0.07)');
-    g1.addColorStop(1, 'transparent');
-    ctx.fillStyle = g1; ctx.fillRect(0, 0, w, h);
-    var g2 = ctx.createRadialGradient(w * 0.2, h * 0.7, 0, w * 0.2, h * 0.7, w * 0.45);
-    g2.addColorStop(0, 'rgba(59,130,246,0.08)');
-    g2.addColorStop(1, 'transparent');
-    ctx.fillStyle = g2; ctx.fillRect(0, 0, w, h);
-    ctx.save();
-    ctx.globalAlpha = 0.32;
-    for (var s = 0; s < 2; s++) {
-      ctx.beginPath();
-      for (var x = -20; x <= w + 20; x += 6) {
-        var y = h * 0.5 + Math.sin(x * 0.008 + t * 0.55 + s * Math.PI) * h * 0.14;
-        if (x === -20) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+(function(){
+  var c=document.getElementById('h');if(!c)return;
+  var x=c.getContext('2d'),t0=performance.now();
+  function f(n){
+    var d=Math.min(devicePixelRatio||1,2);
+    c.width=innerWidth*d;c.height=innerHeight*d;
+    c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';
+    var w=c.width,h=c.height,t=(n-t0)/1000;
+    x.fillStyle='#020203';x.fillRect(0,0,w,h);
+    x.globalAlpha=0.28;
+    for(var s=0;s<2;s++){
+      x.beginPath();
+      for(var i=0;i<=w;i+=5){
+        var y=h*0.55+Math.sin(i*0.01+t*0.5+s*Math.PI)*h*0.12;
+        if(i===0)x.moveTo(i,y);else x.lineTo(i,y);
       }
-      ctx.strokeStyle = s ? 'rgba(96,165,250,0.9)' : 'rgba(201,162,39,0.85)';
-      ctx.lineWidth = Math.max(1.5, w * 0.0018);
-      ctx.stroke();
+      x.strokeStyle=s?'#60A5FA':'#C9A227';x.lineWidth=2*d;x.stroke();
     }
-    ctx.restore();
-    requestAnimationFrame(frame);
+    x.globalAlpha=1;requestAnimationFrame(f);
   }
-  requestAnimationFrame(frame);
+  requestAnimationFrame(f);
 })();
 </script>
 </body>
