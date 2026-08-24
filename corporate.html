@@ -35,10 +35,18 @@
       padding: 1.25rem 0 0;
       gap: 1rem;
     }
-    .mark { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.04em; }
-    nav { display: flex; gap: 1.35rem; flex-wrap: wrap; }
-    nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.7); }
-    nav a.on { color: #f5f5f5; }
+    .mark { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.04em; }
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: nowrap;
+    }
+    nav a {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: rgba(245,245,245,0.75);
+      white-space: nowrap;
+    }
     h1 {
       font-size: clamp(2.75rem, 11vw, 4.25rem);
       font-weight: 900;
@@ -53,14 +61,14 @@
       font-weight: 500;
       margin: 0 0 1.25rem;
     }
-    article p:last-child { margin-bottom: 0; }
     .depth {
       margin-top: auto;
       padding: 2rem 0 1.75rem;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
+      flex-wrap: nowrap;
+      gap: 0.5rem;
       border-top: 1px solid rgba(255,255,255,0.09);
+      overflow-x: auto;
     }
     .depth a {
       font-size: 0.85rem;
@@ -70,6 +78,8 @@
       border: 1px solid rgba(255,255,255,0.18);
       border-radius: 999px;
       color: rgba(245,245,245,0.85);
+      white-space: nowrap;
+      flex: 0 0 auto;
     }
   </style>
 </head>
@@ -77,10 +87,9 @@
   <div class="shell">
     <header>
       <a href="index.html" class="mark">DualisCapax</a>
-      <nav>
+      <nav aria-label="Primary">
         <a href="research/">Research</a>
-        <a href="corporate.html" class="on">Financial</a>
-        <a href="ai/">AI</a>
+        <a href="ai/">Technology</a>
       </nav>
     </header>
     <h1>Financial</h1>
