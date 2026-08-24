@@ -163,7 +163,6 @@
       flex-shrink: 0;
       overflow: visible;
       background: transparent;
-      /* visible early — Three.js owns the orb → zoom birth */
       opacity: 1;
     }
     #geo-earth {
@@ -462,10 +461,34 @@
   fill.position.set(-2, -0.5, 1.5);
   scene.add(fill);
 
+  /* target geodesic positions from icosahedron vertices */
   const geo = new THREE.IcosahedronGeometry(0.92, 2);
+  const posAttr = geo.attributes.position;
+  const targetCount = posAttr.count;
+  const targets = new Float32Array(targetCount * 3);
+  for (let i = 0; i < targetCount; i++) {
+    targets[i * 3] = posAttr.getX(i);
+    targets[i * 3 + 1] = posAttr.getY(i);
+    targets[i * 3 + 2] = posAttr.getZ(i);
+  }
+
+  /* burst particles start at center, fly out to digitize the shell */
+  const burstGeo = new THREE.BufferGeometry();
+  const burstPos = new Float32Array(targetCount * 3); /* all at 0 */
+  burstGeo.setAttribute('position', new THREE.BufferAttribute(burstPos, 3));
+  const burstMat = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 0.055,
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 0,
+    depthWrite: false
+  });
+  const burst = new THREE.Points(burstGeo, burstMat);
+
   const bodyMat = new THREE.MeshStandardMaterial({
     color: 0x6a7a88, flatShading: true, metalness: 0.35, roughness: 0.35,
-    transparent: true, opacity: 0.55, depthWrite: false,
+    transparent: true, opacity: 0, depthWrite: false,
     emissive: 0xffffff, emissiveIntensity: 0
   });
   const body = new THREE.Mesh(geo, bodyMat);
@@ -486,32 +509,32 @@
   });
   const points = new THREE.Points(geo.clone(), pointsMat);
 
-  /* bright seed orb — brighter than the blue quarks */
   const coreMat = new THREE.MeshBasicMaterial({
-    color: 0xffffff, transparent: true, opacity: 1, depthWrite: false
+    color: 0xffffff, transparent: true, opacity: 0, depthWrite: false
   });
-  const core = new THREE.Mesh(new THREE.SphereGeometry(0.12, 24, 24), coreMat);
+  const core = new THREE.Mesh(new THREE.SphereGeometry(0.14, 24, 24), coreMat);
   const haloMat = new THREE.MeshBasicMaterial({
-    color: 0xffffff, transparent: true, opacity: 0.55, depthWrite: false
+    color: 0xffffff, transparent: true, opacity: 0, depthWrite: false
   });
-  const halo = new THREE.Mesh(new THREE.SphereGeometry(0.22, 24, 24), haloMat);
+  const halo = new THREE.Mesh(new THREE.SphereGeometry(0.28, 24, 24), haloMat);
 
   const group = new THREE.Group();
   group.add(core);
   group.add(halo);
+  group.add(burst);
   group.add(body);
   group.add(wire);
   group.add(wireOuter);
   group.add(points);
   scene.add(group);
 
-  /* birth timeline (seconds from page load) */
-  const BIRTH_DELAY = 2.35;   /* when the seed appears */
-  const FLASH_MS = 420;       /* rapid white flash */
-  const ZOOM_MS = 1100;       /* zoom out into full geodesic */
+  /* timeline */
+  const BIRTH_DELAY = 2.3;
+  const FLASH_MS = 380;
+  const BURST_MS = 900;   /* particles fly out / digitize */
+  const ZOOM_MS = 750;    /* rapid zoom concurrent with burst */
   const pageStart = performance.now();
   let last = pageStart;
-
   const Y_SPEED = (Math.PI * 2) / 22;
 
   function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
@@ -525,49 +548,68 @@
     last = now;
 
     const age = (now - pageStart) / 1000;
-    const sinceBirth = age - BIRTH_DELAY;
+    const since = age - BIRTH_DELAY;
 
     let scale = 0.001;
-    let coreOpacity = 0;
-    let haloOpacity = 0;
-    let meshOpacity = 0;
-    let wireOpacity = 0;
-    let emissive = 0;
+    let coreOp = 0, haloOp = 0, burstOp = 0;
+    let meshOp = 0, wireOp = 0, emissive = 0;
+    let assemble = 0;
 
-    if (sinceBirth >= 0) {
-      const flashT = Math.min(1, (sinceBirth * 1000) / FLASH_MS);
-      const zoomT = Math.min(1, Math.max(0, (sinceBirth * 1000 - FLASH_MS) / ZOOM_MS));
+    if (since >= 0) {
+      const ms = since * 1000;
+      const flashT = Math.min(1, ms / FLASH_MS);
+      const burstT = Math.min(1, Math.max(0, (ms - FLASH_MS * 0.35) / BURST_MS));
+      const zoomT = Math.min(1, Math.max(0, (ms - FLASH_MS * 0.2) / ZOOM_MS));
 
-      /* rapid flash: brightness spikes hard */
-      const flashPulse = Math.sin(flashT * Math.PI * 3.2) * (1 - flashT * 0.35);
-      const flashBoost = Math.max(0, flashPulse) * (1 - zoomT);
+      const flashPulse = Math.max(0, Math.sin(flashT * Math.PI * 3.5)) * (1 - flashT * 0.4);
+      const flashBoost = flashPulse * (1 - burstT * 0.85);
 
-      /* scale: tiny seed → full */
-      const seedScale = 0.045 + flashBoost * 0.04;
-      scale = seedScale + (1 - seedScale) * easeOutCubic(zoomT);
+      assemble = easeOutCubic(burstT);
 
-      coreOpacity = (0.95 + 0.05 * flashBoost) * (1 - smoothstep(0.35, 0.95, zoomT));
-      haloOpacity = (0.5 + 0.45 * flashBoost) * (1 - smoothstep(0.2, 0.85, zoomT));
-      meshOpacity = 0.55 * smoothstep(0.15, 0.75, zoomT);
-      wireOpacity = 0.7 * smoothstep(0.25, 0.9, zoomT);
-      emissive = (2.8 + 4.5 * flashBoost) * (1 - smoothstep(0.4, 1, zoomT))
-               + 0.35 * smoothstep(0.6, 1, zoomT);
+      /* rapid zoom from seed → full */
+      const seed = 0.05 + flashBoost * 0.06;
+      scale = seed + (1 - seed) * easeOutCubic(zoomT);
+
+      coreOp = (0.98 + 0.02 * flashBoost) * (1 - smoothstep(0.25, 0.85, burstT));
+      haloOp = (0.55 + 0.4 * flashBoost) * (1 - smoothstep(0.1, 0.7, burstT));
+      burstOp = smoothstep(0.05, 0.25, burstT) * (1 - smoothstep(0.55, 1, burstT)) * 0.95
+               + smoothstep(0.2, 0.6, burstT) * 0.35;
+      meshOp = 0.55 * smoothstep(0.35, 0.9, burstT);
+      wireOp = 0.72 * smoothstep(0.4, 0.95, burstT);
+      emissive = (3.2 + 5 * flashBoost) * (1 - smoothstep(0.3, 0.95, burstT))
+               + 0.35 * smoothstep(0.7, 1, burstT);
     }
+
+    /* particulate digitize: vertices expand from center → shell */
+    const arr = burstGeo.attributes.position.array;
+    for (let i = 0; i < targetCount; i++) {
+      const j = i * 3;
+      /* slight stagger by index so it reads as a wave, not a rigid scale */
+      const lag = (i % 17) / 17;
+      const local = smoothstep(lag * 0.35, lag * 0.35 + 0.65, assemble);
+      arr[j]     = targets[j] * local;
+      arr[j + 1] = targets[j + 1] * local;
+      arr[j + 2] = targets[j + 2] * local;
+    }
+    burstGeo.attributes.position.needsUpdate = true;
 
     group.scale.setScalar(scale);
     group.rotation.y += Y_SPEED * dt;
     group.rotation.x = 0.25;
 
-    coreMat.opacity = coreOpacity;
-    haloMat.opacity = haloOpacity;
-    bodyMat.opacity = meshOpacity;
+    coreMat.opacity = coreOp;
+    haloMat.opacity = haloOp;
+    burstMat.opacity = burstOp;
+    burstMat.size = 0.04 + 0.04 * (1 - assemble);
+    bodyMat.opacity = meshOp;
     bodyMat.emissiveIntensity = emissive;
-    wireMat.opacity = wireOpacity;
-    wireOuterMat.opacity = wireOpacity * 0.55;
-    pointsMat.opacity = wireOpacity * 0.9;
+    wireMat.opacity = wireOp;
+    wireOuterMat.opacity = wireOp * 0.55;
+    pointsMat.opacity = wireOp * 0.85;
 
-    core.visible = coreOpacity > 0.01;
-    halo.visible = haloOpacity > 0.01;
+    core.visible = coreOp > 0.01;
+    halo.visible = haloOp > 0.01;
+    burst.visible = burstOp > 0.01;
 
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
