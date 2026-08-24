@@ -1,15 +1,11 @@
-# DualisCapax — Public beta share links
+# DualisCapax — public site links
 
-**Canonical public beta (use these):**
+**Official name:** DualisCapax  
+**Official domain (when connected):** https://dualiscapax.ai
 
-- Home: https://digenova77-ui.github.io/dualiscapax-landing/
-- Tour (family / general): https://digenova77-ui.github.io/dualiscapax-landing/tour.html
-- Corporate / early preview: https://digenova77-ui.github.io/dualiscapax-landing/corporate.html
-- Adaptive Intelligence: https://digenova77-ui.github.io/dualiscapax-landing/ai/
-- Narrative: https://digenova77-ui.github.io/dualiscapax-landing/narrative.html
-- Research: https://digenova77-ui.github.io/dualiscapax-landing/research/
-- Food for thought (UFS / ID): https://digenova77-ui.github.io/dualiscapax-landing/food-for-thought.html
+**Working site today:**
+https://digenova77-ui.github.io/dualiscapax-landing/
 
-**Note:** `dualiscapax.ai` may still show a legacy site until DNS/Pages cutover. Prefer github.io links for public beta demos.
+(The word “landing” is only a folder name on GitHub. The product is DualisCapax.)
 
-Not an offer to sell securities or tokens.
+Not an offer to sell securities.
