@@ -1,7 +1,7 @@
 # DualisCapax Model Tour — Storyboard
 
-| # | id | Title | Duration | Line |
-|---|-----|-------|----------|------|
+| # | id | Title | Duration | VO / line |
+|---|-----|-------|----------|-----------|
 | 1 | open | Open | 8–12s | Research free. Full clinical surface. |
 | 2 | prove | Prove | 8–12s | Boundary first before Adaptive depth. |
 | 3 | depth | Depth | 8–12s | Adaptive AI. Fusion Meter pays cost. |
@@ -11,8 +11,8 @@
 | 7 | clock | Singularity clock | 8–12s | Plane residual — not your wallet. |
 | 8 | unity | Unity | 8–12s | Truth and Unity. Same mathematics. |
 
-Visual system: black `#020203` / `#050508`, gold `#C9A227`, wordmark, residual ring.
+**Visual system:** black void `#020203` / `#050508`, gold accent `#C9A227`, wordmark DUALISCAPAX, residual ring + particles.
 
-Engine: `js/video-engine.js` — `assets/tour/{id}.mp4` or residual canvas.
+**Engine:** `js/video-engine.js` — plays `assets/tour/{id}.mp4` or residual canvas fallback.
 
-Clips generated offline as `storyboard-full.mp4` (8×8s ≈ 64s).
+**Full cut:** `storyboard-full.mp4` (concat of all beats).
