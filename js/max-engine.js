@@ -3,8 +3,8 @@ import * as THREE from 'three';
 /**
  * DualisCapax Max Engine
  * - Pure WebGL geometry only (no JPEG/PNG/clipart)
- * - Web Audio residual bed
- * - Optional real narrator buffer from /assets/audio/narrator.mp3
+ * - Dome occupies ~75% visual weight, biased upward
+ * - Web Audio residual bed + optional narrator
  */
 export function startMaxEngine(canvas, options = {}) {
   if (!canvas) return { destroy() {}, playNarration() {}, stopNarration() {} };
@@ -17,27 +17,34 @@ export function startMaxEngine(canvas, options = {}) {
     powerPreference: 'high-performance'
   });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setSize(innerWidth, innerHeight);
+  renderer.setSize(canvas.clientWidth || innerWidth, canvas.clientHeight || innerHeight);
   renderer.setClearColor(0x030308, 1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x030308, 0.028);
+  scene.fog = new THREE.FogExp2(0x030308, 0.03);
 
-  const camera = new THREE.PerspectiveCamera(48, innerWidth / innerHeight, 0.1, 120);
-  camera.position.set(0, 0.15, 6.2);
+  const camera = new THREE.PerspectiveCamera(
+    46,
+    (canvas.clientWidth || innerWidth) / (canvas.clientHeight || innerHeight),
+    0.1,
+    120
+  );
+  camera.position.set(0, 0.05, 6.4);
 
   const root = new THREE.Group();
+  // Dome only ~75% of full visual scale
+  root.scale.setScalar(0.75);
+  root.position.y = 0.35;
   scene.add(root);
 
-  // Primary geodesic (bucky / residual sphere)
   const shell = new THREE.Mesh(
     new THREE.IcosahedronGeometry(1.7, 3),
     new THREE.MeshBasicMaterial({
       color: 0xffffff,
       wireframe: true,
       transparent: true,
-      opacity: 0.42
+      opacity: 0.45
     })
   );
   root.add(shell);
@@ -47,7 +54,7 @@ export function startMaxEngine(canvas, options = {}) {
     new THREE.MeshBasicMaterial({
       color: 0xa8b4ff,
       transparent: true,
-      opacity: 0.06,
+      opacity: 0.07,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     })
@@ -65,7 +72,6 @@ export function startMaxEngine(canvas, options = {}) {
   );
   root.add(core);
 
-  // Orbital rings
   const rings = [];
   for (let i = 0; i < 4; i++) {
     const ring = new THREE.Mesh(
@@ -84,15 +90,14 @@ export function startMaxEngine(canvas, options = {}) {
     rings.push(ring);
   }
 
-  // Vector particle field
-  const count = 1400;
+  const count = 1100;
   const positions = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
-    const r = 2.2 + Math.random() * 11;
+    const r = 2.0 + Math.random() * 9;
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);
     positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.65;
+    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.55;
     positions[i * 3 + 2] = r * Math.cos(phi);
   }
   const pGeo = new THREE.BufferGeometry();
@@ -101,24 +106,24 @@ export function startMaxEngine(canvas, options = {}) {
     pGeo,
     new THREE.PointsMaterial({
       color: 0xffffff,
-      size: 0.022,
+      size: 0.02,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.55,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
       sizeAttenuation: true
     })
   );
+  dust.scale.setScalar(0.75);
+  dust.position.y = 0.25;
   scene.add(dust);
 
-  // Floor plane residual grid (geometry only)
-  const grid = new THREE.GridHelper(24, 36, 0x2a2a40, 0x151522);
-  grid.position.y = -2.1;
+  const grid = new THREE.GridHelper(18, 28, 0x2a2a40, 0x151522);
+  grid.position.y = -1.55;
   grid.material.transparent = true;
-  grid.material.opacity = 0.35;
+  grid.material.opacity = 0.28;
   scene.add(grid);
 
-  // ---------- Audio ----------
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   const audioCtx = AudioCtx ? new AudioCtx() : null;
   let narratorBuffer = null;
@@ -128,9 +133,8 @@ export function startMaxEngine(canvas, options = {}) {
   function startAmbient() {
     if (!audioCtx || reduceMotion) return;
     const master = audioCtx.createGain();
-    master.gain.value = 0.045;
+    master.gain.value = 0.04;
     master.connect(audioCtx.destination);
-
     const makeDrone = (freq, type, gainVal) => {
       const osc = audioCtx.createOscillator();
       const g = audioCtx.createGain();
@@ -142,10 +146,9 @@ export function startMaxEngine(canvas, options = {}) {
       osc.start();
       ambientNodes.push(osc, g);
     };
-
     makeDrone(48, 'sine', 0.9);
-    makeDrone(96.1, 'sine', 0.35);
-    makeDrone(144.4, 'triangle', 0.08);
+    makeDrone(96.1, 'sine', 0.3);
+    makeDrone(144.4, 'triangle', 0.07);
   }
 
   async function loadNarrator(url) {
@@ -164,12 +167,10 @@ export function startMaxEngine(canvas, options = {}) {
   async function playNarration() {
     if (!audioCtx) return { ok: false, reason: 'no-audio' };
     if (audioCtx.state === 'suspended') await audioCtx.resume();
-
     if (!narratorBuffer) {
       const ok = await loadNarrator(options.narratorUrl || '/assets/audio/narrator.mp3');
       if (!ok) return { ok: false, reason: 'missing-narrator-file' };
     }
-
     stopNarration();
     const src = audioCtx.createBufferSource();
     const g = audioCtx.createGain();
@@ -189,7 +190,6 @@ export function startMaxEngine(canvas, options = {}) {
     }
   }
 
-  // ---------- Interaction ----------
   let mx = 0, my = 0, tx = 0, ty = 0;
   const onMove = (e) => {
     const x = e.touches ? e.touches[0].clientX : e.clientX;
@@ -200,21 +200,20 @@ export function startMaxEngine(canvas, options = {}) {
   window.addEventListener('pointermove', onMove, { passive: true });
 
   const onResize = () => {
-    camera.aspect = innerWidth / innerHeight;
+    const w = canvas.clientWidth || innerWidth;
+    const h = canvas.clientHeight || innerHeight;
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
+    renderer.setSize(w, h, false);
   };
   window.addEventListener('resize', onResize);
 
-  // Unlock audio on first gesture
   const unlock = async () => {
     if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
     if (ambientNodes.length === 0) startAmbient();
     window.removeEventListener('pointerdown', unlock);
   };
   window.addEventListener('pointerdown', unlock, { passive: true });
-
-  // Preload narrator if present
   loadNarrator(options.narratorUrl || '/assets/audio/narrator.mp3');
 
   const clock = new THREE.Clock();
@@ -232,7 +231,7 @@ export function startMaxEngine(canvas, options = {}) {
     my += (ty - my) * 0.045;
 
     root.rotation.y = t * 0.16 + mx * 0.35;
-    root.rotation.x = my * 0.18;
+    root.rotation.x = my * 0.16;
     shell.rotation.y = t * 0.05;
     core.rotation.y = -t * 0.7;
     core.rotation.z = t * 0.35;
@@ -241,14 +240,16 @@ export function startMaxEngine(canvas, options = {}) {
       ring.rotation.z = t * (0.12 + i * 0.04) * (i % 2 ? -1 : 1);
     });
     dust.rotation.y = t * 0.03;
-    grid.position.x = mx * 0.15;
 
-    camera.position.x = mx * 0.22;
-    camera.position.y = 0.15 - my * 0.14;
-    camera.lookAt(0, 0, 0);
+    camera.position.x = mx * 0.18;
+    camera.position.y = 0.05 - my * 0.1;
+    camera.lookAt(0, 0.25, 0);
     renderer.render(scene, camera);
   }
   loop();
+
+  // Ensure correct size after layout
+  requestAnimationFrame(onResize);
 
   function destroy() {
     running = false;
