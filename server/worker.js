@@ -1,16 +1,16 @@
 /**
- * DualisCapax API v2 — depth proxy (Cloudflare Worker)
+ * DualisCapax depth API v2 — Cloudflare Worker
  * Secret: wrangler secret put XAI_API_KEY
  */
 
 const XAI_URL = 'https://api.x.ai/v1/chat/completions';
-const SERVER_CAPS = ['text'];
+const API_VERSION = '2';
 
 export default {
   async fetch(request, env) {
     const cors = {
       'Access-Control-Allow-Origin': env.CORS_ORIGIN || '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-DC-Fuel, X-DC-Session',
     };
 
@@ -19,183 +19,141 @@ export default {
     }
 
     const url = new URL(request.url);
+    const path = url.pathname.replace(/\/$/, '') || '/';
 
-    if (request.method === 'GET' && (url.pathname === '/' || url.pathname === '/health' || url.pathname === '/api/v2/health')) {
-      return envelope(
-        {
-          v: 2,
-          ok: true,
-          type: 'health',
-          payload: {
-            service: 'dualiscapax-depth',
-            hasKey: Boolean(env.XAI_API_KEY),
-            capabilities: { have: SERVER_CAPS },
-          },
-        },
-        cors
-      );
+    if (request.method === 'GET' && (path === '/' || path === '/health')) {
+      return json({ ok: true, api_version: API_VERSION, service: 'dualiscapax-depth', has_key: Boolean(env.XAI_API_KEY) }, cors);
     }
 
-    const isV2 = url.pathname.endsWith('/api/v2/chat');
-    const isLegacy = url.pathname.endsWith('/api/chat');
-    if (request.method !== 'POST' || (!isV2 && !isLegacy)) {
-      return envelope({ v: 2, ok: false, error: { code: 'NOT_FOUND', message: 'Not found' } }, cors, 404);
+    if (request.method === 'GET' && path === '/v2/capabilities') {
+      return json({
+        api_version: API_VERSION,
+        service: 'dualiscapax-depth',
+        features: ['chat', 'fuel_gate', 'system_prompt'],
+        models: [env.MODEL || 'grok-4-fast'],
+        fuel: { required_for_depth: true, open_research: false },
+        has_key: Boolean(env.XAI_API_KEY),
+      }, cors);
     }
 
-    if (!env.XAI_API_KEY) {
-      return envelope(
-        {
-          v: 2,
-          ok: false,
-          error: { code: 'NO_KEY', message: 'XAI_API_KEY not configured', hint: 'wrangler secret put XAI_API_KEY' },
-        },
-        cors,
-        503
-      );
+    const isChat =
+      request.method === 'POST' &&
+      (path === '/v2/chat' || path === '/api/chat');
+
+    if (!isChat) {
+      return json({ api_version: API_VERSION, error: 'Not found', code: 'NOT_FOUND' }, cors, 404);
     }
 
-    let raw;
-    try {
-      raw = await request.json();
-    } catch {
-      return envelope({ v: 2, ok: false, error: { code: 'BAD_REQUEST', message: 'Invalid JSON' } }, cors, 400);
-    }
-
-    // Normalize legacy → v2
-    const req = normalizeRequest(raw);
-    if (req.error) {
-      return envelope({ v: 2, ok: false, id: raw.id || null, error: req.error }, cors, 400);
-    }
-
-    const fuelHdr = request.headers.get('X-DC-Fuel');
-    if (req.channel === 'depth' && fuelHdr !== null && fuelHdr !== '' && Number(fuelHdr) <= 0) {
-      return envelope(
-        {
-          v: 2,
-          ok: false,
-          id: req.id,
-          error: { code: 'FUEL_EMPTY', message: 'Fuel empty' },
-          fuel: { burned: 0, balance: 0 },
-        },
-        cors,
-        402
-      );
-    }
-
-    const model = req.model || env.MODEL || 'grok-4-fast';
-    const system = env.SYSTEM_PROMPT || 'You are DualisCapax Adaptive Intelligence. Clear and direct. Open research free; depth is Fuel-metered.';
-
-    const payload = {
-      model,
-      messages: [{ role: 'system', content: system }, ...req.messages],
-      temperature: req.temperature,
-      max_tokens: req.max_tokens,
-    };
-
-    let xaiRes;
-    try {
-      xaiRes = await fetch(XAI_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + env.XAI_API_KEY,
-        },
-        body: JSON.stringify(payload),
-      });
-    } catch (e) {
-      return envelope(
-        { v: 2, ok: false, id: req.id, error: { code: 'UPSTREAM', message: 'Upstream unreachable', detail: String(e) } },
-        cors,
-        502
-      );
-    }
-
-    const data = await xaiRes.json().catch(() => ({}));
-    if (!xaiRes.ok) {
-      return envelope(
-        {
-          v: 2,
-          ok: false,
-          id: req.id,
-          error: { code: 'UPSTREAM', message: 'xAI error', status: xaiRes.status, detail: data.error || data },
-        },
-        cors,
-        502
-      );
-    }
-
-    const text =
-      data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content
-        ? data.choices[0].message.content
-        : '';
-
-    const burn = req.channel === 'depth' ? req.fuelUnits : 0;
-
-    return envelope(
-      {
-        v: 2,
-        ok: true,
-        id: req.id,
-        type: 'chat.completion',
-        payload: {
-          content: text,
-          model: data.model || model,
-          usage: data.usage || null,
-        },
-        fuel: {
-          burned: burn,
-          balance: null,
-          code: null,
-        },
-        capabilities: { have: SERVER_CAPS, effective: ['text'] },
-      },
-      cors
-    );
+    return handleChat(request, env, cors);
   },
 };
 
-function normalizeRequest(raw) {
-  // Already v2
-  if (raw && raw.v === 2) {
-    if (raw.type && raw.type !== 'chat.completion') {
-      return { error: { code: 'BAD_REQUEST', message: 'Unsupported type' } };
-    }
-    const messages = raw.payload && Array.isArray(raw.payload.messages) ? raw.payload.messages : null;
-    if (!messages || !messages.length) {
-      return { error: { code: 'BAD_REQUEST', message: 'payload.messages[] required' } };
-    }
-    return {
-      id: raw.id || null,
-      channel: raw.channel === 'open' ? 'open' : 'depth',
-      messages: messages.filter((m) => m && m.role !== 'system'),
-      model: (raw.payload && raw.payload.model) || null,
-      temperature: typeof (raw.payload && raw.payload.temperature) === 'number' ? raw.payload.temperature : 0.5,
-      max_tokens: Math.min((raw.payload && raw.payload.max_tokens) || 1024, 4096),
-      fuelUnits: (raw.fuel && raw.fuel.units) || 1,
-    };
+async function handleChat(request, env, cors) {
+  if (!env.XAI_API_KEY) {
+    return json({
+      api_version: API_VERSION,
+      ok: false,
+      error: 'XAI_API_KEY not configured',
+      code: 'NO_KEY',
+      hint: 'wrangler secret put XAI_API_KEY',
+    }, cors, 503);
   }
 
-  // Legacy { messages }
-  if (raw && Array.isArray(raw.messages) && raw.messages.length) {
-    return {
-      id: raw.id || null,
-      channel: 'depth',
-      messages: raw.messages.filter((m) => m && m.role !== 'system'),
-      model: raw.model || null,
-      temperature: typeof raw.temperature === 'number' ? raw.temperature : 0.5,
-      max_tokens: Math.min(raw.max_tokens || 1024, 4096),
-      fuelUnits: 1,
-    };
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ api_version: API_VERSION, ok: false, error: 'Invalid JSON', code: 'BAD_REQUEST' }, cors, 400);
   }
 
-  if (raw && raw.v && raw.v !== 2) {
-    return { error: { code: 'UNSUPPORTED_V', message: 'Only v:2 supported' } };
+  const messages = Array.isArray(body.messages) ? body.messages : null;
+  if (!messages || !messages.length) {
+    return json({ api_version: API_VERSION, ok: false, error: 'messages[] required', code: 'BAD_REQUEST' }, cors, 400);
   }
 
-  return { error: { code: 'BAD_REQUEST', message: 'v2 envelope or legacy messages[] required' } };
+  // Fuel gate (client-reported until server ledger)
+  const fuelBal =
+    body.fuel && typeof body.fuel.balance === 'number'
+      ? body.fuel.balance
+      : Number(request.headers.get('X-DC-Fuel'));
+  const burn = (body.fuel && body.fuel.burn) || 1;
+
+  if (!Number.isNaN(fuelBal) && fuelBal <= 0) {
+    return json({
+      api_version: API_VERSION,
+      ok: false,
+      error: 'Fuel empty',
+      code: 'FUEL_EMPTY',
+    }, cors, 402);
+  }
+
+  const model = body.model || env.MODEL || 'grok-4-fast';
+  const system =
+    env.SYSTEM_PROMPT ||
+    'You are DualisCapax Adaptive Intelligence (API v2). Clear and direct. Open research is free; depth is Fuel-metered. No medical cure claims; no securities offers.';
+
+  const payload = {
+    model,
+    messages: [
+      { role: 'system', content: system },
+      ...messages.filter((m) => m && m.role && m.content && m.role !== 'system'),
+    ],
+    temperature: typeof body.temperature === 'number' ? body.temperature : 0.5,
+    max_tokens: Math.min(Number(body.max_tokens) || 1024, 4096),
+  };
+
+  let xaiRes;
+  try {
+    xaiRes = await fetch(XAI_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + env.XAI_API_KEY,
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    return json({
+      api_version: API_VERSION,
+      ok: false,
+      error: 'Upstream unreachable',
+      code: 'UPSTREAM',
+      detail: String(e),
+    }, cors, 502);
+  }
+
+  const data = await xaiRes.json().catch(() => ({}));
+  if (!xaiRes.ok) {
+    return json({
+      api_version: API_VERSION,
+      ok: false,
+      error: 'xAI error',
+      code: 'UPSTREAM',
+      status: xaiRes.status,
+      detail: data.error || data,
+    }, cors, 502);
+  }
+
+  const text =
+    data.choices && data.choices[0] && data.choices[0].message
+      ? data.choices[0].message.content || ''
+      : '';
+
+  return json({
+    api_version: API_VERSION,
+    ok: true,
+    content: text,
+    model: data.model || model,
+    usage: data.usage || null,
+    fuel: {
+      burned: burn,
+      note: 'client_authoritative_until_server_ledger',
+    },
+    session_id: body.session_id || null,
+  }, cors);
 }
 
-function envelope(obj, cors, status) {
+function json(obj, cors, status) {
   return new Response(JSON.stringify(obj), {
     status: status || 200,
     headers: { 'Content-Type': 'application/json', ...cors },
