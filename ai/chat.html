@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#020203">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>AI · DualisCapax</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;overflow:hidden;background:#020203;color:#f3f2ef;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.app{
+  height:100%;height:100dvh;
+  display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.top{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.85rem 1rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+.top a.back{
+  font-size:1.4rem;color:rgba(255,255,255,.5);text-decoration:none;
+  padding:.25rem .4rem;line-height:1;
+}
+.top .title{flex:1;font-size:1rem;font-weight:600;letter-spacing:-.01em}
+.top .dot{
+  width:8px;height:8px;border-radius:50%;background:#22c55e;
+  box-shadow:0 0 10px rgba(34,197,94,.6);
+}
+.log{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:1rem 1rem 1.25rem;
+  display:flex;flex-direction:column;gap:.85rem;
+}
+.msg{max-width:92%;padding:.85rem 1rem;border-radius:16px;font-size:1.05rem;line-height:1.45}
+.msg.bot{
+  align-self:flex-start;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+}
+.msg.user{
+  align-self:flex-end;
+  background:rgba(201,162,39,.2);
+  border:1px solid rgba(201,162,39,.35);
+}
+.msg .who{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#C9A227;margin-bottom:.35rem}
+.composer{
+  flex-shrink:0;
+  display:flex;gap:.5rem;align-items:flex-end;
+  padding:.75rem 1rem calc(.75rem + env(safe-area-inset-bottom));
+  border-top:1px solid rgba(255,255,255,.08);
+  background:#0a0a0c;
+}
+.composer textarea{
+  flex:1;resize:none;
+  min-height:44px;max-height:120px;
+  padding:.75rem 1rem;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#12141a;color:#fff;
+  font-size:1.05rem;font-family:inherit;
+  line-height:1.35;
+}
+.composer button{
+  width:48px;height:48px;border-radius:50%;border:none;
+  background:#C9A227;color:#0a0a0a;
+  font-size:1.2rem;font-weight:700;cursor:pointer;flex-shrink:0;
+}
+.chips{
+  display:flex;gap:.5rem;overflow-x:auto;padding:0 1rem .65rem;
+  flex-shrink:0;
+}
+.chips button{
+  flex-shrink:0;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.75);
+  font-size:.85rem;
+  padding:.45rem .85rem;border-radius:999px;
+  white-space:nowrap;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="back" href="../index.html" aria-label="Back">←</a>
+    <div class="title">Adaptive Intelligence</div>
+    <div class="dot" title="Online"></div>
+  </header>
+
+  <div class="log" id="log" aria-live="polite"></div>
+
+  <div class="chips">
+    <button type="button" data-q="What is DualisCapax?">What is DualisCapax?</button>
+    <button type="button" data-q="How does access work?">How does access work?</button>
+    <button type="button" data-q="What is open vs depth?">Open vs depth</button>
+  </div>
+
+  <form class="composer" id="form">
+    <textarea id="input" rows="1" placeholder="Message…" enterkeyhint="send"></textarea>
+    <button type="submit" aria-label="Send">↑</button>
+  </form>
+</div>
+<script>
+(function () {
+  var log = document.getElementById('log');
+  var input = document.getElementById('input');
+  var form = document.getElementById('form');
+
+  var replies = {
+    default: "This is the DualisCapax hybrid dialogue surface on your phone — full screen, like an operating chat. Open research stays free. Deeper adaptive capacity is metered when rails are live. Ask about access, research, or the plane.",
+    what: "DualisCapax is a financial and emerging-AI company building a networked plane: open research, metered adaptive intelligence, and equal rules for every onboarder.",
+    access: "Hybrid access: learn in the open without a gate. Identity and settlement before adaptive depth. Same published standard — no founder-only lane.",
+    open: "Open = research and published surface, free to explore. Depth = adaptive sessions with real cost (Fusion Meter / capacity) when the gate is live."
+  };
+
+  function add(who, text) {
+    var d = document.createElement('div');
+    d.className = 'msg ' + who;
+    d.innerHTML = '<div class="who">' + (who === 'user' ? 'You' : 'DualisCapax') + '</div>' + text;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function answer(q) {
+    var s = (q || '').toLowerCase();
+    if (s.indexOf('what is dualis') >= 0 || s.indexOf('dualiscapax') >= 0) return replies.what;
+    if (s.indexOf('access') >= 0 || s.indexOf('hybrid') >= 0) return replies.access;
+    if (s.indexOf('open') >= 0 || s.indexOf('depth') >= 0) return replies.open;
+    return replies.default;
+  }
+
+  function send(text) {
+    text = (text || '').trim();
+    if (!text) return;
+    add('user', text);
+    input.value = '';
+    setTimeout(function () { add('bot', answer(text)); }, 350);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    send(input.value);
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send(input.value);
+    }
+  });
+  document.querySelectorAll('.chips button').forEach(function (b) {
+    b.onclick = function () { send(b.getAttribute('data-q')); };
+  });
+
+  add('bot', 'Full-screen Adaptive Intelligence. Ask anything about the plane, access, or research. This is the mobile operating chat.');
+})();
+</script>
+</body>
+</html>
