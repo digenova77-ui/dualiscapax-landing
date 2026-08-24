@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Narrative — DualisCapax</title>
+<meta name="theme-color" content="#020203">
+<meta name="description" content="DualisCapax eight-beat narrative tour — hybrid access storyboard.">
+<link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
+<style>
+:root{--bg:#020203;--fg:rgba(243,242,239,.92);--muted:rgba(243,242,239,.55);--gold:#C9A227;--line:rgba(255,255,255,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg);min-height:100vh}
+a{color:var(--gold);text-decoration:none}
+nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--line)}
+nav .brand{letter-spacing:.12em;font-size:.78rem;font-weight:600}
+nav ul{display:flex;gap:1rem;list-style:none;font-size:.78rem}
+nav a{color:var(--muted)} nav a:hover{color:var(--fg)}
+main{max-width:920px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+h1{font-size:1.5rem;font-weight:600;margin-bottom:.35rem}
+.sub{color:var(--muted);font-size:.9rem;margin-bottom:1.25rem}
+.tour-stage{position:relative;width:100%;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#050508}
+.tour-stage video,.tour-stage canvas{display:block;width:100%;aspect-ratio:16/9;background:#050508}
+.meta{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:baseline;margin-top:1rem}
+.tour-step{font-size:.72rem;color:var(--gold);letter-spacing:.08em}
+.tour-title{font-size:1.15rem;font-weight:600}
+.tour-line{color:var(--muted);font-size:.92rem;flex:1 1 100%}
+.controls{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+button{background:transparent;border:1px solid var(--line);color:var(--fg);padding:.55rem 1rem;border-radius:4px;font-size:.8rem;cursor:pointer}
+button:hover{border-color:var(--gold);color:var(--gold)}
+.beats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem;margin-top:1.5rem}
+.beats button{text-align:left;font-size:.72rem;padding:.5rem .65rem}
+footer{border-top:1px solid var(--line);padding:1rem;text-align:center;font-size:.7rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav>
+  <a class="brand" href="index.html">DUALISCAPAX</a>
+  <ul>
+    <li><a href="research/">Research</a></li>
+    <li><a href="ai/">Adaptive Intelligence</a></li>
+    <li><a href="narrative.html">Narrative</a></li>
+    <li><a href="model.html">Model</a></li>
+  </ul>
+</nav>
+<main>
+  <h1>Narrative tour</h1>
+  <p class="sub">Eight-beat hybrid access storyboard. Video when available; residual canvas fallback.</p>
+  <div id="tour-root">
+    <div class="tour-stage"><video playsinline muted loop preload="metadata"></video></div>
+    <div class="meta">
+      <span class="tour-step"></span>
+      <span class="tour-title"></span>
+      <p class="tour-line"></p>
+    </div>
+    <div class="controls">
+      <button type="button" data-tour="prev">Back</button>
+      <button type="button" data-tour="next">Next</button>
+      <button type="button" data-tour="play">Replay beat</button>
+    </div>
+    <div class="beats" id="beat-list"></div>
+  </div>
+</main>
+<footer>Hybrid access · Research open · Adaptive depth gated when Access is live</footer>
+<script src="js/video-engine.js"></script>
+<script>
+(function(){
+  var eng = new DualisVideoEngine({ root: '#tour-root', mediaBase: 'assets/tour/', autoplay: true }).start();
+  document.querySelector('[data-tour=next]').onclick = function(){ eng.next(); };
+  document.querySelector('[data-tour=prev]').onclick = function(){ eng.prev(); };
+  document.querySelector('[data-tour=play]').onclick = function(){ eng.go(eng.i); };
+  var list = document.getElementById('beat-list');
+  (window.DUALIS_STORYBOARD_STEPS||[]).forEach(function(s, idx){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = (idx+1) + '. ' + s.title;
+    b.onclick = function(){ eng.go(idx); };
+    list.appendChild(b);
+  });
+})();
+</script>
+</body>
+</html>
