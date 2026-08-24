@@ -54,15 +54,11 @@
       opacity: 0;
       animation: fieldIn 1.4s ease-out 0.15s forwards;
     }
-    @keyframes fieldIn {
-      to { opacity: 1; }
-    }
+    @keyframes fieldIn { to { opacity: 1; } }
     .quark {
       position: absolute; width: 2px; height: 2px; border-radius: 50%;
       background: var(--quark);
-      box-shadow:
-        0 0 4px 1px var(--quark-glow),
-        0 0 10px 2px var(--quark-glow-soft);
+      box-shadow: 0 0 4px 1px var(--quark-glow), 0 0 10px 2px var(--quark-glow-soft);
       opacity: 0.55; animation: quarkPulse 3.8s ease-in-out infinite;
     }
     .quark:nth-child(1)  { left: 8%;  top: 12%; animation-delay: 0s; opacity: 0.4; }
@@ -98,7 +94,6 @@
       display: flex; flex-direction: column;
     }
 
-    /* shared arrive: final layout never changes — only opacity/blur/offset into place */
     .arrive {
       opacity: 0;
       filter: blur(10px);
@@ -106,18 +101,13 @@
       animation: arriveIn 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
     @keyframes arriveIn {
-      to {
-        opacity: 1;
-        filter: blur(0);
-        transform: translateY(0) scale(1);
-      }
+      to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
     }
 
     header { flex: 0 0 auto; }
     header nav {
       display: flex; justify-content: space-between; align-items: center;
       width: 100%; gap: 0.35rem;
-      animation-delay: 3.55s;
     }
     header nav a {
       font-size: 0.88rem; font-weight: 600;
@@ -138,18 +128,15 @@
     }
 
     .logo-particles {
-      width: min(92vw, 24rem);
-      height: clamp(5rem, 20vw, 7.25rem);
+      width: min(94vw, 26rem);
+      height: clamp(5.25rem, 22vw, 7.75rem);
       margin: 0 0 0.75rem;
       flex-shrink: 0;
       display: block;
-      /* canvas draws itself; soft frame arrive so it doesn't pop */
       opacity: 0;
       animation: logoFrameIn 0.6s ease-out 0.05s forwards;
     }
-    @keyframes logoFrameIn {
-      to { opacity: 1; }
-    }
+    @keyframes logoFrameIn { to { opacity: 1; } }
 
     .geo-wrap {
       width: min(52vw, 180px);
@@ -193,7 +180,7 @@
     .line:nth-child(4) { animation-delay: 3.7s; }
 
     @media (max-height: 640px) {
-      .logo-particles { height: clamp(4rem, 16vw, 5.5rem); margin-bottom: 0.5rem; }
+      .logo-particles { height: clamp(4.25rem, 17vw, 5.75rem); margin-bottom: 0.5rem; }
       .geo-wrap { width: min(40vw, 140px); height: min(40vw, 140px); margin-bottom: 0.7rem; }
       h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); margin-bottom: 0.45rem; }
       .line { font-size: 0.95rem; }
@@ -226,7 +213,7 @@
       </nav>
     </header>
     <main>
-      <canvas class="logo-particles" id="logo-particles" width="720" height="180" aria-label="DualisCapax" role="img"></canvas>
+      <canvas class="logo-particles" id="logo-particles" width="780" height="200" aria-label="Dualis Capax" role="img"></canvas>
       <div class="geo-wrap arrive">
         <canvas id="geo-earth" width="360" height="360" aria-hidden="true"></canvas>
       </div>
@@ -244,7 +231,6 @@
   (function logoParticles() {
     const canvas = document.getElementById('logo-particles');
     const ctx = canvas.getContext('2d');
-    const TEXT = 'DualisCapax';
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     let particles = [];
@@ -252,9 +238,57 @@
     let start = null;
     const ASSEMBLE_MS = 3800;
 
+    /* Draw exact framing of brand/logo-dna-x.svg: Dualis | DNA | Capax */
+    function drawBrandMark(o, w, h) {
+      o.clearRect(0, 0, w, h);
+      const scale = Math.min(w / 900, h / 200);
+      const ox = (w - 900 * scale) / 2;
+      const oy = (h - 200 * scale) / 2;
+      o.save();
+      o.translate(ox, oy);
+      o.scale(scale, scale);
+
+      o.fillStyle = '#f5f5f5';
+      o.font = '800 96px Inter, Arial, Helvetica, sans-serif';
+      o.textBaseline = 'alphabetic';
+      o.letterSpacing = '-2.5px';
+      try { o.letterSpacing = '-2.5px'; } catch (e) {}
+      o.fillText('Dualis', 20, 128);
+      o.fillText('Capax', 390, 128);
+
+      /* Cyan DNA between the words — same paths as logo-dna-x.svg */
+      o.strokeStyle = '#00d4e8';
+      o.lineWidth = 5.5;
+      o.lineCap = 'round';
+      o.lineJoin = 'round';
+      o.translate(318, 18);
+
+      o.beginPath();
+      o.moveTo(12, 160);
+      o.bezierCurveTo(12, 120, 48, 110, 48, 80);
+      o.bezierCurveTo(48, 50, 12, 40, 12, 0);
+      o.stroke();
+
+      o.beginPath();
+      o.moveTo(48, 160);
+      o.bezierCurveTo(48, 120, 12, 110, 12, 80);
+      o.bezierCurveTo(12, 50, 48, 40, 48, 0);
+      o.stroke();
+
+      o.lineWidth = 4.5;
+      [[18, 140, 42, 128], [18, 112, 42, 100], [18, 84, 42, 72], [18, 56, 42, 44], [18, 28, 42, 16]].forEach(function (L) {
+        o.beginPath();
+        o.moveTo(L[0], L[1]);
+        o.lineTo(L[2], L[3]);
+        o.stroke();
+      });
+
+      o.restore();
+    }
+
     function sampleTargets() {
       const w = canvas.clientWidth || 360;
-      const h = canvas.clientHeight || 80;
+      const h = canvas.clientHeight || 90;
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -264,50 +298,24 @@
       off.height = Math.floor(h * dpr);
       const o = off.getContext('2d');
       o.setTransform(dpr, 0, 0, dpr, 0, 0);
-      o.clearRect(0, 0, w, h);
-      o.fillStyle = '#fff';
-      o.textAlign = 'center';
-      o.textBaseline = 'middle';
-      const fontSize = Math.min(w * 0.14, h * 0.62);
-      o.font = '800 ' + fontSize + 'px Inter, system-ui, sans-serif';
-      o.fillText(TEXT, w / 2, h / 2);
-
-      const tw = o.measureText(TEXT).width;
-      const hx = w / 2 + tw * 0.5 + fontSize * 0.28;
-      const hy = h / 2;
-      const hh = fontSize * 0.85;
-      o.strokeStyle = '#fff';
-      o.lineWidth = Math.max(1.5, fontSize * 0.045);
-      o.lineCap = 'round';
-      for (let s = -1; s <= 1; s += 2) {
-        o.beginPath();
-        for (let t = 0; t <= 1; t += 0.02) {
-          const y = hy - hh / 2 + t * hh;
-          const x = hx + s * Math.sin(t * Math.PI * 2.2) * fontSize * 0.12;
-          if (t === 0) o.moveTo(x, y); else o.lineTo(x, y);
-        }
-        o.stroke();
-      }
-      for (let i = 0; i < 5; i++) {
-        const t = (i + 0.5) / 5;
-        const y = hy - hh / 2 + t * hh;
-        const x1 = hx - Math.sin(t * Math.PI * 2.2) * fontSize * 0.12;
-        const x2 = hx + Math.sin(t * Math.PI * 2.2) * fontSize * 0.12;
-        o.beginPath();
-        o.moveTo(x1, y);
-        o.lineTo(x2, y);
-        o.stroke();
-      }
+      drawBrandMark(o, w, h);
 
       const data = o.getImageData(0, 0, off.width, off.height).data;
       const targets = [];
-      const step = Math.max(1, Math.floor(1.5 * dpr));
+      const step = Math.max(1, Math.floor(1.35 * dpr));
       for (let y = 0; y < off.height; y += step) {
         for (let x = 0; x < off.width; x += step) {
-          const a = data[(y * off.width + x) * 4 + 3];
-          if (a > 40) {
-            targets.push({ x: x / dpr, y: y / dpr });
-          }
+          const i = (y * off.width + x) * 4;
+          const a = data[i + 3];
+          if (a < 40) continue;
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          /* cyan DNA vs white letters */
+          const isDna = b > 180 && g > 160 && r < 120;
+          targets.push({
+            x: x / dpr,
+            y: y / dpr,
+            dna: isDna
+          });
         }
       }
       targets.sort(function (a, b) {
@@ -331,29 +339,30 @@
           tx: t.x, ty: t.y,
           x: w / 2 + Math.cos(angle) * dist,
           y: h / 2 + Math.sin(angle) * dist,
-          r: 0.85 + Math.random() * 1.35,
+          r: t.dna ? (1.05 + Math.random() * 1.15) : (0.95 + Math.random() * 1.15),
           phase: Math.random() * Math.PI * 2,
-          bright: 0.5 + Math.random() * 0.5,
-          rank: rank
+          bright: 0.75 + Math.random() * 0.25,
+          rank: rank,
+          dna: t.dna
         };
       });
 
       const cx = w / 2, cy = h / 2;
       orbiters = [];
-      for (let i = 0; i < 48; i++) {
-        const a0 = (i / 48) * Math.PI * 2 + Math.random() * 0.4;
-        const radius = (0.28 + Math.random() * 0.42) * Math.min(w, h * 2.2);
+      for (let i = 0; i < 36; i++) {
+        const a0 = (i / 36) * Math.PI * 2 + Math.random() * 0.35;
+        const radius = (0.32 + Math.random() * 0.4) * Math.min(w, h * 2.1);
         orbiters.push({
           a: a0,
-          speed: 0.00035 + Math.random() * 0.00055,
-          rx: radius * (0.85 + Math.random() * 0.35),
-          ry: radius * (0.35 + Math.random() * 0.25),
-          cx: cx + (Math.random() - 0.5) * w * 0.08,
-          cy: cy + (Math.random() - 0.5) * h * 0.12,
-          r: 1.1 + Math.random() * 1.8,
+          speed: 0.0003 + Math.random() * 0.0005,
+          rx: radius * (0.9 + Math.random() * 0.3),
+          ry: radius * (0.32 + Math.random() * 0.22),
+          cx: cx + (Math.random() - 0.5) * w * 0.06,
+          cy: cy + (Math.random() - 0.5) * h * 0.1,
+          r: 0.9 + Math.random() * 1.3,
           phase: Math.random() * Math.PI * 2,
           flash: Math.random() * Math.PI * 2,
-          flashSpeed: 0.002 + Math.random() * 0.004
+          flashSpeed: 0.002 + Math.random() * 0.0035
         });
       }
       start = performance.now();
@@ -377,22 +386,30 @@
       const shine = smoothstep(0.72, 1, t);
       const glisten = smoothstep(0.88, 1, t);
 
+      /* tighter, more defined — low bloom */
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         const local = smoothstep(p.rank - 0.08, p.rank + 0.02, front);
         if (local <= 0.001) continue;
-        const pull = 0.04 + local * 0.18;
+
+        const pull = 0.05 + local * 0.2;
         p.x += (p.tx - p.x) * pull;
         p.y += (p.ty - p.y) * pull;
-        const pulse = 0.7 + 0.3 * Math.sin(now * 0.004 + p.phase);
-        const shineBoost = 1 + shine * 0.55 * pulse;
-        const alpha = local * p.bright * pulse * (0.4 + 0.6 * density) * shineBoost;
-        const radius = p.r * (0.55 + 0.55 * local) * (0.75 + 0.4 * pulse) * (1 + shine * 0.15);
+
+        const pulse = 0.82 + 0.18 * Math.sin(now * 0.0035 + p.phase);
+        const alpha = Math.min(1, local * p.bright * pulse * (0.55 + 0.45 * density) * (1 + shine * 0.2));
+        const radius = p.r * (0.7 + 0.35 * local) * (0.9 + 0.15 * pulse);
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(200, 230, 255, ' + Math.min(1, alpha) + ')';
-        ctx.shadowColor = 'rgba(140, 200, 255, ' + (0.9 * Math.min(1, alpha)) + ')';
-        ctx.shadowBlur = 6 + 10 * pulse * local * (1 + shine);
+        if (p.dna) {
+          ctx.fillStyle = 'rgba(0, 212, 232, ' + alpha + ')';
+          ctx.shadowColor = 'rgba(0, 212, 232, ' + (0.55 * alpha) + ')';
+        } else {
+          ctx.fillStyle = 'rgba(245, 245, 245, ' + alpha + ')';
+          ctx.shadowColor = 'rgba(200, 220, 255, ' + (0.35 * alpha) + ')';
+        }
+        ctx.shadowBlur = 2.5 + 3 * shine;
         ctx.fill();
       }
 
@@ -402,15 +419,15 @@
           o.a += o.speed * 16;
           const x = o.cx + Math.cos(o.a) * o.rx;
           const y = o.cy + Math.sin(o.a) * o.ry;
-          const flash = Math.pow(0.5 + 0.5 * Math.sin(now * o.flashSpeed + o.flash), 8);
-          const pulse = 0.5 + 0.5 * Math.sin(now * 0.0035 + o.phase);
-          const alpha = glisten * (0.25 + 0.75 * flash) * (0.55 + 0.45 * pulse);
-          const radius = o.r * (0.6 + 1.1 * flash);
+          const flash = Math.pow(0.5 + 0.5 * Math.sin(now * o.flashSpeed + o.flash), 10);
+          const pulse = 0.5 + 0.5 * Math.sin(now * 0.003 + o.phase);
+          const alpha = glisten * (0.2 + 0.8 * flash) * (0.5 + 0.5 * pulse) * 0.85;
+          const radius = o.r * (0.55 + 1.0 * flash);
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(230, 245, 255, ' + alpha + ')';
-          ctx.shadowColor = 'rgba(180, 220, 255, ' + (0.95 * alpha) + ')';
-          ctx.shadowBlur = 4 + 16 * flash;
+          ctx.fillStyle = 'rgba(220, 240, 255, ' + alpha + ')';
+          ctx.shadowColor = 'rgba(160, 210, 255, ' + (0.7 * alpha) + ')';
+          ctx.shadowBlur = 3 + 10 * flash;
           ctx.fill();
         }
       }
