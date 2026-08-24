@@ -102,29 +102,37 @@
       justify-content: center;
       text-align: center;
       min-height: 0;
-      gap: 0.25rem;
+      gap: 0;
     }
 
     .brand-above {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 0.5rem;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 1.1rem;
+      padding: 0 0.5rem;
     }
-    .brand-above .word {
-      font-size: clamp(2.4rem, 10vw, 4rem);
-      font-weight: 900;
-      letter-spacing: -0.045em;
-      line-height: 0.95;
-      color: #f5f5f5;
+    .brand-above img {
+      width: min(88vw, 22rem);
+      height: auto;
+      display: block;
+      /* no photo plate — SVG is already transparent */
     }
 
-    #geo-earth {
+    .globe-wrap {
       width: min(48vw, 168px);
       height: min(48vw, 168px);
-      margin-bottom: 1.25rem;
+      margin: 0 auto 1.35rem;
+      border-radius: 50%;
+      overflow: hidden;
+      background: transparent;
       flex-shrink: 0;
+    }
+    #geo-earth {
+      width: 100%;
+      height: 100%;
       display: block;
+      background: transparent;
     }
 
     h1 {
@@ -161,9 +169,11 @@
     </header>
     <main>
       <div class="brand-above">
-        <span class="word">DualisCapax</span>
+        <img src="brand/logo-dna-x.svg" alt="DualisCapax" width="680" height="120" />
       </div>
-      <canvas id="geo-earth" width="336" height="336" aria-hidden="true"></canvas>
+      <div class="globe-wrap">
+        <canvas id="geo-earth" width="336" height="336" aria-hidden="true"></canvas>
+      </div>
       <h1>Truth<br>Prevails.</h1>
       <p class="line">Residual Law Finance.</p>
       <p class="line">Cutting Edge Technology.</p>
@@ -196,8 +206,9 @@
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 20);
-  camera.position.z = 3.15;
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 20);
+  // Pull back slightly so full sphere fits — no edge clip to square
+  camera.position.z = 3.55;
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.55));
   const key = new THREE.DirectionalLight(0xffffff, 1.35);
