@@ -15,77 +15,164 @@
       --bg: #050505;
       --fg: #f5f5f5;
       --muted: rgba(245,245,245,0.55);
-      --faint: rgba(245,245,245,0.28);
       --line: rgba(255,255,255,0.09);
       --white: #ffffff;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+    html, body {
+      height: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
     body {
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg); color: var(--fg); line-height: 1.5; min-height: 100dvh;
-      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100dvh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
-    .site { max-width: 42rem; margin: 0 auto; padding: 0 1.5rem; min-height: 100dvh; display: flex; flex-direction: column; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 1.35rem 0; border-bottom: 1px solid var(--line); gap: 1rem; }
-    .mark {
-      display: inline-flex;
+
+    .shell {
+      height: 100dvh;
+      height: 100svh;
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    header {
+      flex: 0 0 auto;
+      display: flex;
       align-items: center;
-      gap: 0.55rem;
+      justify-content: space-between;
+      padding: 1.1rem 0;
+      gap: 1rem;
+      z-index: 2;
+    }
+    .mark {
       font-size: 0.9rem;
       font-weight: 700;
       letter-spacing: -0.03em;
     }
-    .mark img {
-      width: 1.55rem;
-      height: 1.55rem;
-      display: block;
-      flex-shrink: 0;
-    }
     nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-    nav a { font-size: 0.8rem; font-weight: 500; color: var(--muted); transition: color 0.15s ease; }
-    nav a:hover, nav a.on { color: var(--fg); }
-    .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 4.5rem 0 3.5rem; }
-    .hero-mark {
-      width: 4.25rem;
-      height: 4.25rem;
-      margin-bottom: 1.35rem;
-      display: block;
+    nav a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
     }
-    .page-hero { padding: 3rem 0 1.5rem; }
-    .eyebrow { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.1rem; }
-    h1 { font-size: clamp(2.75rem, 12vw, 4.1rem); font-weight: 800; line-height: 0.92; letter-spacing: -0.045em; text-transform: uppercase; margin-bottom: 1.6rem; }
-    .page-hero h1 { font-size: clamp(2.1rem, 9vw, 3.2rem); margin-bottom: 1.1rem; }
-    .statement { font-size: 1.125rem; line-height: 1.55; color: var(--muted); max-width: 28rem; margin-bottom: 2.75rem; }
-    .page-hero .statement { margin-bottom: 0; }
-    .cta-row { display: flex; flex-direction: column; gap: 0.75rem; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; height: 3.15rem; padding: 0 1.6rem; font-size: 0.9rem; font-weight: 600; border-radius: 999px; border: 1px solid transparent; transition: background 0.15s ease, border-color 0.15s ease; }
-    .btn-solid { background: var(--white); color: #050505; }
-    .btn-solid:hover { background: #eaeaea; }
-    .btn-line { background: transparent; color: var(--fg); border-color: rgba(255,255,255,0.18); }
-    .btn-line:hover { border-color: rgba(255,255,255,0.4); }
-    section { padding: 3.25rem 0; border-top: 1px solid var(--line); }
-    .section-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 1.25rem; }
-    section p, .body p { font-size: 1.05rem; line-height: 1.6; color: var(--muted); margin-bottom: 1rem; }
-    section p:last-child, .body p:last-child { margin-bottom: 0; }
-    .strong { color: var(--fg); font-weight: 500; }
-    .list { display: flex; flex-direction: column; }
-    .list a, .list .row { display: block; padding: 1.25rem 0; border-top: 1px solid var(--line); }
-    .list a:last-child, .list .row:last-child { border-bottom: 1px solid var(--line); }
-    .list .t { font-size: 1.05rem; font-weight: 500; color: var(--fg); }
-    .list .d { font-size: 0.92rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.45; }
-    footer { padding: 2.25rem 0 2.75rem; border-top: 1px solid var(--line); font-size: 0.75rem; color: var(--faint); text-align: center; }
-    @media (min-width: 480px) { .cta-row { flex-direction: row; } }
+
+    .stage {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      padding-bottom: 5.5rem;
+      position: relative;
+    }
+
+    /* Y-axis geodesic — horizontal spin */
+    .geo-wrap {
+      width: min(72vw, 280px);
+      height: min(72vw, 280px);
+      perspective: 900px;
+      margin-bottom: 1.75rem;
+    }
+    .geo {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: spinY 18s linear infinite, expand 4.5s ease-in-out infinite;
+    }
+    .ring {
+      position: absolute;
+      inset: 8%;
+      border: 1.25px solid rgba(245,245,245,0.55);
+      border-radius: 50%;
+      transform-style: preserve-3d;
+    }
+    .ring:nth-child(1) { transform: rotateY(0deg) rotateX(0deg); }
+    .ring:nth-child(2) { transform: rotateY(30deg) rotateX(60deg); opacity: 0.7; }
+    .ring:nth-child(3) { transform: rotateY(60deg) rotateX(120deg); opacity: 0.55; }
+    .ring:nth-child(4) { transform: rotateY(90deg) rotateX(20deg); opacity: 0.65; }
+    .ring:nth-child(5) { transform: rotateY(120deg) rotateX(80deg); opacity: 0.5; }
+    .ring:nth-child(6) { transform: rotateY(150deg) rotateX(140deg); opacity: 0.45; }
+    .ring:nth-child(7) {
+      inset: 28%;
+      border-color: rgba(245,245,245,0.35);
+      transform: rotateY(45deg) rotateX(45deg);
+    }
+
+    @keyframes spinY {
+      from { transform: rotateY(0deg); }
+      to   { transform: rotateY(360deg); }
+    }
+    @keyframes expand {
+      0%, 100% { transform: rotateY(0deg) scale(1); }
+      50%      { transform: rotateY(180deg) scale(1.06); }
+    }
+    /* expand keyframes conflict with spin — isolate expand on wrapper scale */
+    .geo-wrap {
+      animation: pulse 4.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .geo {
+      animation: spinY 18s linear infinite;
+    }
+
+    .eyebrow {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.85rem;
+      text-align: center;
+    }
+    h1 {
+      font-size: clamp(2.4rem, 11vw, 3.6rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .cta-pin {
+      position: absolute;
+      left: 1.5rem;
+      right: 1.5rem;
+      bottom: calc(7px + env(safe-area-inset-bottom, 0px));
+      z-index: 3;
+    }
+    .btn-solid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 3.15rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 999px;
+      background: var(--white);
+      color: #050505;
+      border: none;
+    }
   </style>
 </head>
 <body>
-  <div class="site">
+  <div class="shell">
     <header>
-      <a href="index.html" class="mark">
-        <img src="emblem-ring.svg" alt="" width="28" height="28" />
-        DualisCapax
-      </a>
+      <a href="index.html" class="mark">DualisCapax</a>
       <nav>
         <a href="research/">Research</a>
         <a href="corporate.html">Financial</a>
@@ -93,35 +180,25 @@
       </nav>
     </header>
 
-    <main class="hero">
-      <img class="hero-mark" src="emblem-ring.svg" alt="" width="68" height="68" />
+    <main class="stage">
+      <div class="geo-wrap" aria-hidden="true">
+        <div class="geo">
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="ring"></div>
+        </div>
+      </div>
       <div class="eyebrow">No Tribes Preferred</div>
       <h1>Truth<br>Prevails.</h1>
-      <p class="statement">
-        Independent analysis. Open research remains free.
-        Simulations and deeper systems are not for sale.
-      </p>
-      <div class="cta-row">
-        <a href="playground.html" class="btn btn-solid">Enter L2 Playground</a>
-        <a href="research/" class="btn btn-line">View Research</a>
-      </div>
     </main>
 
-    <section id="research">
-      <div class="section-label">Research</div>
-      <p>Published materials stay open. No paywall on the public surface.</p>
-      <p>Depth layers, adaptive systems, and simulations are closed to purchase.</p>
-    </section>
-
-    <section id="access">
-      <div class="section-label">Access</div>
-      <p class="strong">L2 Playground only.</p>
-      <p>There is no fiat path.</p>
-      <p>There is no direct purchase path for the simulations.</p>
-      <p>You enter the playground, or you do not enter.</p>
-    </section>
-
-    <footer>DualisCapax · No tribes preferred · Truth prevails</footer>
+    <div class="cta-pin">
+      <a href="playground.html" class="btn-solid">Enter L2 Playground</a>
+    </div>
   </div>
 </body>
 </html>
