@@ -4,23 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DualisCapax — Financial · Emerging AI · Networked Access</title>
-<meta name="description" content="DualisCapax: financial and emerging AI networking plane. Living narrative stage, open research, equal-access standard.">
+<meta name="description" content="DualisCapax: financial and emerging AI networking plane.">
 <meta name="theme-color" content="#020203">
-<link rel="canonical" href="https://dualiscapax.ai/">
-<meta property="og:title" content="DualisCapax">
-<meta property="og:description" content="Financial + emerging AI. Networked access. Living stage.">
-<meta property="og:type" content="website">
-<link rel="icon" type="image/svg+xml" href="emblem-ring.svg">
+<link rel="icon" type="image/svg+xml" href="brand/emblem-helix.svg">
 <style>
 :root{--font:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace;--gold:#C9A227}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;background:#020203;color:rgba(243,242,239,.92);font-family:var(--font);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:56rem;margin:0 auto;padding:1.25rem 1.25rem 3rem}
-.top{display:flex;align-items:center;gap:.65rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1.25rem;flex-wrap:wrap}
-.top img{width:20px;height:20px}
-.pill{margin-left:auto;font-size:.55rem;letter-spacing:.12em;color:rgba(201,162,39,.95);border:1px solid rgba(201,162,39,.45);padding:.2rem .5rem;border-radius:3px}
-h1{font-size:clamp(1.6rem,.9rem + 2.5vw,2.4rem);font-weight:600;letter-spacing:-.03em;line-height:1.15;margin-bottom:.65rem;color:#fff}
+.brand-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.brand-row img.wordmark{height:36px;width:auto;max-width:min(100%,280px);display:block}
+.brand-row img.emblem{height:40px;width:40px;display:block;border-radius:50%}
+.pill{font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(201,162,39,.95);border:1px solid rgba(201,162,39,.45);padding:.2rem .5rem;border-radius:3px}
+h1{font-size:clamp(1.5rem,.9rem + 2.2vw,2.2rem);font-weight:600;letter-spacing:-.03em;line-height:1.15;margin-bottom:.65rem;color:#fff}
 .lead{font-size:.95rem;line-height:1.55;color:rgba(255,255,255,.55);max-width:40ch;margin-bottom:1.25rem}
 .stage-wrap{border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;background:#050508;margin-bottom:1rem}
 .tour-stage{position:relative;width:100%}
@@ -31,25 +28,23 @@ h1{font-size:clamp(1.6rem,.9rem + 2.5vw,2.4rem);font-weight:600;letter-spacing:-
 .tour-line{font-size:.9rem;line-height:1.45;color:rgba(255,255,255,.55)}
 .controls{display:flex;flex-wrap:wrap;gap:.5rem;padding:0 1rem 1rem}
 .controls button{background:transparent;border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.85);padding:.55rem 1rem;border-radius:6px;font-size:.78rem;cursor:pointer}
-.controls button:hover{border-color:var(--gold);color:var(--gold)}
 .beats{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.5rem,1fr));gap:.4rem;padding:0 1rem 1rem}
 .beats button{text-align:left;font-size:.68rem;padding:.45rem .55rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.7);border-radius:6px;cursor:pointer}
-.beats button:hover{border-color:rgba(201,162,39,.5);color:#fff}
-.note{font-size:.75rem;color:rgba(255,255,255,.35);margin:0 0 1.5rem;line-height:1.4}
-nav.links{display:flex;flex-wrap:wrap;gap:.65rem 1.1rem;font-size:.72rem;letter-spacing:.06em}
+.note{font-size:.75rem;color:rgba(255,255,255,.35);margin:0 0 1.5rem}
+nav.links{display:flex;flex-wrap:wrap;gap:.65rem 1.1rem;font-size:.72rem}
 nav.links a{color:rgba(255,255,255,.45)}
 nav.links a:hover{color:#fff}
 </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="top">
-      <img src="emblem-ring.svg" width="20" height="20" alt="">
-      <span>DualisCapax</span>
+    <div class="brand-row">
+      <img class="wordmark" src="brand/wordmark.svg" alt="DualisCapax">
+      <img class="emblem" src="brand/emblem-helix.svg" alt="">
       <span class="pill">Living stage</span>
     </div>
     <h1>Same standard. Open research. Adaptive depth.</h1>
-    <p class="lead">Financial and emerging-AI networking plane. This stage runs the narrative now — motion first, not a dead brochure.</p>
+    <p class="lead">Financial and emerging-AI networking plane. Your brand. Motion stage below.</p>
 
     <div id="tour-root" class="stage-wrap">
       <div class="tour-stage"><video playsinline muted loop preload="metadata"></video></div>
@@ -65,16 +60,15 @@ nav.links a:hover{color:#fff}
       </div>
       <div class="beats" id="beat-list"></div>
     </div>
-    <p class="note">If a full video file is present it plays here. If not, the residual motion stage runs so the page is never empty.</p>
+    <p class="note">Brand mark = DualisCapax wordmark + DNA helix (your lockup). Not an unrelated icon.</p>
 
-    <nav class="links" aria-label="Site">
+    <nav class="links">
       <a href="tour.html">Tour</a>
       <a href="narrative.html">Narrative</a>
       <a href="corporate.html">Corporate</a>
       <a href="ai/">AI</a>
       <a href="research/">Research</a>
       <a href="model.html">Model</a>
-      <a href="engine.html">Engine</a>
     </nav>
   </div>
   <script src="js/video-engine.js"></script>
