@@ -149,24 +149,8 @@
     object-position:center;
     display:block;
   }
-  .motto{
-    width:min(96vw, 44rem);
-    margin:0;
-    text-align:center;
-    padding-inline:0.15rem;
-  }
-  .motto p{
-    font-size:clamp(1.25rem, 5.5vw, 2rem);
-    font-weight:700;
-    color:var(--fg-soft);
-    line-height:1.2;
-    margin:0;
-    letter-spacing:0.32em;
-    text-indent:0.32em;
-    white-space:nowrap;
-  }
   .geo-wrap{
-    width:min(48vw,160px);height:min(48vw,160px);
+    width:min(72vw,260px);height:min(72vw,260px);
     margin:0;flex-shrink:0;
   }
   #geo-earth{width:100%;height:100%;display:block}
@@ -177,8 +161,13 @@
   }
   .lines{margin:0}
   .line{
-    font-size:clamp(.95rem,3.2vw,1.12rem);font-weight:600;
-    color:var(--fg-soft);margin:0 0 0.12rem;
+    font-size:clamp(1.05rem, 4.4vw, 1.45rem);
+    font-weight:900;
+    color:var(--fg);
+    margin:0 0 0.18rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    line-height:1.15;
   }
   .line:last-child{margin-bottom:0}
   .peg{
@@ -261,18 +250,15 @@
         <div class="logo-stage">
           <img src="brand/logo-dna-x.svg" alt="DualisCapax" width="630" height="160"/>
         </div>
-        <div class="motto">
-          <p>No Tribes Preferred.</p>
-        </div>
         <div class="geo-wrap">
           <canvas id="geo-earth" width="360" height="360"></canvas>
         </div>
         <h1>Truth<br>Prevails</h1>
         <div class="lines">
-          <p class="line">Residual Law Finance</p>
-          <p class="line">Cutting Edge Technology</p>
-          <p class="line">Adaptive AI</p>
-          <p class="line">Research</p>
+          <p class="line">RESIDUAL LAW FINANCE</p>
+          <p class="line">CUTTING EDGE TECHNOLOGY</p>
+          <p class="line">ADAPTIVE AI</p>
+          <p class="line">RESEARCH</p>
         </div>
         <a class="peg" href="onboard.html" aria-label="Residual Cost Peg onboarding">
           <div class="peg-ring" aria-hidden="true"></div>
