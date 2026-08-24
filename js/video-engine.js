@@ -1,180 +1,226 @@
 /**
- * DualisCapax Video Engine v1.1
- * Always show residual canvas motion first. Swap to mp4 only if it actually loads.
+ * DualisCapax Cinematic Engine — storyboard as auto-playing film
+ * Residual canvas sequences per beat; auto-advance; not a dead click-through.
  */
 (function (global) {
   var STEPS = [
-    { id: 'open', title: 'Open', line: 'Research free. Full clinical surface. No Fusion Meter required to learn.' },
-    { id: 'prove', title: 'Prove', line: 'Boundary first: settlement and identity before Adaptive depth.' },
-    { id: 'depth', title: 'Depth', line: 'Adaptive AI and sandbox sim. Fusion Meter pays real session cost.' },
-    { id: 'seal', title: 'Seal', line: 'IP and production math stay on the black ledger.' },
-    { id: 'fm', title: 'Fusion Meter', line: 'Closed prepaid pay-down. Not an open-market coin.' },
-    { id: 'dual', title: 'Dual capacity', line: 'Enterprise funds the plane. Individuals keep Open access.' },
-    { id: 'clock', title: 'Singularity clock', line: 'Plane residual progress — not your wallet.' },
-    { id: 'unity', title: 'Unity', line: 'Truth and Unity Prevail. Same mathematics. Computational analysis.' }
+    { id: 'open', title: 'Open', line: 'Research free. Full surface. Learn without a gate.', color: '#3B82F6', dur: 5.5 },
+    { id: 'prove', title: 'Prove', line: 'Boundary first. Settlement and identity before depth.', color: '#C9A227', dur: 5.5 },
+    { id: 'depth', title: 'Depth', line: 'Adaptive intelligence. Real session cost. Real work.', color: '#22C55E', dur: 5.5 },
+    { id: 'seal', title: 'Seal', line: 'Production math stays sealed. Truth in the residual.', color: '#EF4444', dur: 5.5 },
+    { id: 'fm', title: 'Fusion Meter', line: 'Closed prepaid capacity. Not an open-market toy.', color: '#EAB308', dur: 5.5 },
+    { id: 'dual', title: 'Dual capacity', line: 'Enterprise funds the plane. Individuals keep Open.', color: '#60A5FA', dur: 5.5 },
+    { id: 'clock', title: 'Singularity clock', line: 'Plane residual advances. Not your wallet spectacle.', color: '#A78BFA', dur: 5.5 },
+    { id: 'unity', title: 'Unity', line: 'Same standard. Same mathematics. Truth and Unity.', color: '#C9A227', dur: 6.5 }
   ];
 
-  function DualisVideoEngine(opts) {
+  function Engine(opts) {
     this.root = typeof opts.root === 'string' ? document.querySelector(opts.root) : opts.root;
-    this.base = opts.mediaBase || 'assets/tour/';
-    this.autoplay = opts.autoplay !== false;
-    this.onStep = opts.onStep || function () {};
     this.i = 0;
-    this.video = null;
-    this.canvas = null;
     this.raf = 0;
+    this.timer = null;
+    this.t0 = 0;
+    this.running = true;
     this._build();
   }
 
-  DualisVideoEngine.prototype._build = function () {
+  Engine.prototype._build = function () {
     if (!this.root) return;
     var stage = this.root.querySelector('.tour-stage') || this.root;
-    this.video = stage.querySelector('video') || document.createElement('video');
-    this.video.setAttribute('playsinline', '');
-    this.video.muted = true;
-    this.video.loop = true;
-    this.video.preload = 'none';
-    this.video.style.display = 'none';
-    if (!this.video.parentNode) stage.insertBefore(this.video, stage.firstChild);
-
-    this.canvas = stage.querySelector('canvas.dc-video-engine') || document.createElement('canvas');
-    this.canvas.className = 'dc-video-engine';
-    this.canvas.style.cssText = 'display:block;width:100%;aspect-ratio:16/9;background:#050508';
-    if (!this.canvas.parentNode) {
-      if (this.video.nextSibling) stage.insertBefore(this.canvas, this.video.nextSibling);
-      else stage.appendChild(this.canvas);
-    }
+    this.canvas = stage.querySelector('canvas.dc-film') || document.createElement('canvas');
+    this.canvas.className = 'dc-film';
+    this.canvas.style.cssText = 'display:block;width:100%;height:100%;background:#020203';
+    stage.innerHTML = '';
+    stage.appendChild(this.canvas);
     this.titleEl = this.root.querySelector('.tour-title');
     this.lineEl = this.root.querySelector('.tour-line');
     this.stepEl = this.root.querySelector('.tour-step');
+    this.progressEl = this.root.querySelector('.tour-progress-bar');
   };
 
-  DualisVideoEngine.prototype.steps = function () { return STEPS; };
+  Engine.prototype.steps = function () { return STEPS; };
 
-  DualisVideoEngine.prototype.go = function (idx) {
+  Engine.prototype.go = function (idx, auto) {
+    var self = this;
+    clearTimeout(this.timer);
     this.i = ((idx % STEPS.length) + STEPS.length) % STEPS.length;
     var s = STEPS[this.i];
     if (this.titleEl) this.titleEl.textContent = s.title;
     if (this.lineEl) this.lineEl.textContent = s.line;
-    if (this.stepEl) this.stepEl.textContent = this.i + 1 + ' / ' + STEPS.length;
-    // Motion first — never blank while probing for mp4
-    this.video.style.display = 'none';
-    this.canvas.style.display = 'block';
-    this._drawResidual(s);
-    this._tryMp4(s);
-    this.onStep(s, this.i);
+    if (this.stepEl) this.stepEl.textContent = (this.i + 1) + ' / ' + STEPS.length;
+    this.t0 = performance.now();
+    this._paintLoop(s);
+    if (auto !== false && this.running) {
+      this.timer = setTimeout(function () { self.go(self.i + 1, true); }, s.dur * 1000);
+    }
   };
 
-  DualisVideoEngine.prototype.next = function () { this.go(this.i + 1); };
-  DualisVideoEngine.prototype.prev = function () { this.go(this.i - 1); };
+  Engine.prototype.next = function () { this.go(this.i + 1, true); };
+  Engine.prototype.prev = function () { this.go(this.i - 1, true); };
+  Engine.prototype.pause = function () {
+    this.running = !this.running;
+    clearTimeout(this.timer);
+    if (this.running) this.go(this.i, true);
+  };
 
-  DualisVideoEngine.prototype._tryMp4 = function (step) {
+  Engine.prototype._size = function () {
+    var c = this.canvas;
+    var parent = c.parentElement;
+    var w = parent.clientWidth || window.innerWidth || 640;
+    var h = parent.clientHeight || Math.round(w * 9 / 16) || 360;
+    if (h < 180) h = Math.round(w * 9 / 16);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    c.width = Math.floor(w * dpr);
+    c.height = Math.floor(h * dpr);
+    c.style.width = w + 'px';
+    c.style.height = h + 'px';
+    return { w: c.width, h: c.height, dpr: dpr, cssW: w, cssH: h };
+  };
+
+  Engine.prototype._paintLoop = function (step) {
     var self = this;
-    var url = this.base + step.id + '.mp4';
-    var probe = document.createElement('video');
-    probe.muted = true;
-    probe.preload = 'auto';
-    probe.playsInline = true;
-    var done = false;
-    function fail() {
-      if (done) return;
-      done = true;
-      probe.removeAttribute('src');
-      try { probe.load(); } catch (e) {}
-    }
-    function ok() {
-      if (done) return;
-      done = true;
-      cancelAnimationFrame(self.raf);
-      self.video.src = url;
-      self.video.style.display = 'block';
-      self.canvas.style.display = 'none';
-      self.video.load();
-      if (self.autoplay) {
-        var p = self.video.play();
-        if (p && p.catch) p.catch(function () {
-          self.video.style.display = 'none';
-          self.canvas.style.display = 'block';
-          self._drawResidual(step);
-        });
-      }
-    }
-    probe.onloadeddata = ok;
-    probe.onerror = fail;
-    probe.src = url;
-    probe.load();
-    setTimeout(fail, 800);
-  };
-
-  DualisVideoEngine.prototype._drawResidual = function (step) {
-    var canvas = this.canvas;
     cancelAnimationFrame(this.raf);
-    var w = canvas.clientWidth || canvas.parentElement.clientWidth || 640;
-    var h = Math.round((w * 9) / 16) || 360;
-    var dpr = Math.min(devicePixelRatio || 1, 2);
-    canvas.width = Math.max(1, Math.floor(w * dpr));
-    canvas.height = Math.max(1, Math.floor(h * dpr));
-    canvas.style.width = '100%';
-    canvas.style.aspectRatio = '16/9';
-    var ctx = canvas.getContext('2d');
-    var t0 = performance.now();
-    var self = this;
     function frame(now) {
-      var t = (now - t0) / 1000;
-      var cw = canvas.width, ch = canvas.height;
-      ctx.fillStyle = '#050508';
-      ctx.fillRect(0, 0, cw, ch);
-      var cx = cw * 0.5, cy = ch * 0.42, R = Math.min(cw, ch) * 0.22;
-      ctx.strokeStyle = 'rgba(201,162,39,0.95)';
-      ctx.lineWidth = Math.max(2, cw * 0.004);
-      ctx.beginPath();
-      ctx.arc(cx, cy, R, t * 0.4, t * 0.4 + Math.PI * 1.65);
-      ctx.stroke();
-      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-      ctx.lineWidth = Math.max(1, cw * 0.002);
-      ctx.beginPath();
-      ctx.arc(cx, cy, R * 1.25, -t * 0.25, -t * 0.25 + Math.PI * 1.2);
-      ctx.stroke();
-      for (var n = 0; n < 120; n++) {
-        var a = t * 0.4 + n * 0.55;
-        var r = R * (0.25 + (n % 10) * 0.07);
-        ctx.fillStyle = 'rgba(212,180,60,' + (0.15 + (n % 6) * 0.1) + ')';
-        ctx.beginPath();
-        ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a * 1.08) * r * 0.55, Math.max(1.5, cw * 0.002), 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.fillStyle = 'rgba(201,162,39,0.9)';
-      ctx.font = '600 ' + Math.round(cw * 0.02) + 'px system-ui,sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('DUALISCAPAX', cx, ch * 0.12);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '600 ' + Math.round(cw * 0.05) + 'px system-ui,sans-serif';
-      ctx.fillText(step.title, cx, cy + R + ch * 0.12);
-      ctx.fillStyle = 'rgba(255,255,255,0.6)';
-      ctx.font = '400 ' + Math.round(cw * 0.022) + 'px system-ui,sans-serif';
-      var line = step.line;
-      if (line.length > 48) {
-        var cut = line.lastIndexOf(' ', 48);
-        if (cut < 20) cut = 48;
-        ctx.fillText(line.slice(0, cut), cx, cy + R + ch * 0.18);
-        ctx.fillText(line.slice(cut).trim(), cx, cy + R + ch * 0.23);
-      } else {
-        ctx.fillText(line, cx, cy + R + ch * 0.18);
-      }
+      var dim = self._size();
+      var ctx = self.canvas.getContext('2d');
+      var t = (now - self.t0) / 1000;
+      var prog = Math.min(1, t / step.dur);
+      if (self.progressEl) self.progressEl.style.width = (prog * 100) + '%';
+      self._scene(ctx, dim, step, t, prog);
       self.raf = requestAnimationFrame(frame);
     }
     this.raf = requestAnimationFrame(frame);
   };
 
-  DualisVideoEngine.prototype.start = function () {
+  Engine.prototype._scene = function (ctx, dim, step, t, prog) {
+    var w = dim.w, h = dim.h;
+    // void
+    ctx.fillStyle = '#020203';
+    ctx.fillRect(0, 0, w, h);
+
+    // nebula wash
+    var g = ctx.createRadialGradient(w * 0.5, h * 0.4, 0, w * 0.5, h * 0.4, w * 0.55);
+    g.addColorStop(0, hexAlpha(step.color, 0.18));
+    g.addColorStop(0.45, 'rgba(30,40,80,0.12)');
+    g.addColorStop(1, 'rgba(2,2,3,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+
+    // star field
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    for (var i = 0; i < 80; i++) {
+      var sx = ((i * 97 + t * 8) % w);
+      var sy = ((i * 53 + 20) % h);
+      var sr = (i % 3 === 0) ? 1.8 : 1;
+      ctx.globalAlpha = 0.15 + (i % 5) * 0.08;
+      ctx.beginPath();
+      ctx.arc(sx, sy, sr * dim.dpr, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // dual helix waves
+    drawHelix(ctx, w, h, t, step.color);
+
+    // orbital ring
+    var cx = w * 0.5, cy = h * 0.42;
+    var R = Math.min(w, h) * 0.2;
+    ctx.strokeStyle = hexAlpha(step.color, 0.9);
+    ctx.lineWidth = Math.max(2, w * 0.0035);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, t * 0.5, t * 0.5 + Math.PI * 1.7);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * 1.28, -t * 0.3, -t * 0.3 + Math.PI * 1.3);
+    ctx.stroke();
+
+    // five residual nodes
+    var nodes = ['#EF4444', '#3B82F6', '#22C55E', '#EAB308', '#888'];
+    for (var n = 0; n < 5; n++) {
+      var ang = t * 0.35 + n * (Math.PI * 2 / 5);
+      var nx = cx + Math.cos(ang) * R * 0.72;
+      var ny = cy + Math.sin(ang) * R * 0.72;
+      ctx.fillStyle = nodes[n];
+      ctx.beginPath();
+      ctx.arc(nx, ny, Math.max(3, w * 0.006), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // wordmark
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.font = '600 ' + Math.round(w * 0.028) + 'px system-ui,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('DualisCapax', cx, h * 0.1);
+
+    // beat title
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '600 ' + Math.round(w * 0.055) + 'px system-ui,sans-serif';
+    ctx.fillText(step.title, cx, cy + R + h * 0.12);
+
+    // line
+    ctx.fillStyle = 'rgba(255,255,255,0.62)';
+    ctx.font = '400 ' + Math.round(w * 0.022) + 'px system-ui,sans-serif';
+    wrapText(ctx, step.line, cx, cy + R + h * 0.18, w * 0.8, Math.round(w * 0.028));
+
+    // progress tick
+    ctx.fillStyle = hexAlpha(step.color, 0.85);
+    ctx.fillRect(w * 0.15, h * 0.94, w * 0.7 * prog, Math.max(2, h * 0.006));
+    ctx.fillStyle = 'rgba(255,255,255,0.12)';
+    ctx.fillRect(w * 0.15, h * 0.94, w * 0.7, Math.max(2, h * 0.006));
+  };
+
+  function drawHelix(ctx, w, h, t, color) {
+    ctx.save();
+    ctx.translate(0, h * 0.5);
+    for (var strand = 0; strand < 2; strand++) {
+      ctx.beginPath();
+      for (var x = 0; x <= w; x += 4) {
+        var phase = x * 0.012 + t * 1.2 + strand * Math.PI;
+        var y = Math.sin(phase) * h * 0.12 + (strand ? 6 : -6);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = strand === 0 ? hexAlpha(color, 0.55) : 'rgba(96,165,250,0.5)';
+      ctx.lineWidth = Math.max(2, w * 0.0025);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function wrapText(ctx, text, x, y, maxW, lineH) {
+    var words = text.split(' ');
+    var line = '';
+    var yy = y;
+    for (var n = 0; n < words.length; n++) {
+      var test = line + words[n] + ' ';
+      if (ctx.measureText(test).width > maxW && n > 0) {
+        ctx.fillText(line.trim(), x, yy);
+        line = words[n] + ' ';
+        yy += lineH;
+      } else line = test;
+    }
+    ctx.fillText(line.trim(), x, yy);
+  }
+
+  function hexAlpha(hex, a) {
+    var h = hex.replace('#', '');
+    var r = parseInt(h.slice(0, 2), 16);
+    var g = parseInt(h.slice(2, 4), 16);
+    var b = parseInt(h.slice(4, 6), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  }
+
+  Engine.prototype.start = function () {
     var self = this;
-    // layout pass then start so canvas has width on mobile
-    requestAnimationFrame(function () {
-      self.go(0);
-    });
+    this.running = true;
+    requestAnimationFrame(function () { self.go(0, true); });
     return this;
   };
 
-  global.DualisVideoEngine = DualisVideoEngine;
+  global.DualisVideoEngine = Engine;
   global.DUALIS_STORYBOARD_STEPS = STEPS;
 })(typeof window !== 'undefined' ? window : globalThis);
