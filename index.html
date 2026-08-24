@@ -96,7 +96,6 @@
 }
 
 @layer site {
-  /* OUTPUT LAYER — remains after intro */
   .site{
     position:fixed;inset:0;
     z-index:var(--z-site);
@@ -161,14 +160,13 @@
 <body>
 <div class="intro" id="intro">
   <video id="nasa-bb" playsinline muted src="https://svs.gsfc.nasa.gov/vis/a010000/a012600/a012656/12656_Big_Bang_1080.webm"></video>
-  <audio id="bb-audio" preload="auto" playsinline src="https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia16/pia16881/PIA16881.wav"></audio>
   <div class="seed" id="seed" aria-hidden="true"></div>
   <div class="question" id="question">
     <p>Every decision leaves a residual.</p>
     <p>What will yours cost?</p>
-    <p class="tap-hint" id="tap-hint">Tap anywhere for sound</p>
+    <p class="tap-hint" id="tap-hint">Tap anywhere for residual</p>
   </div>
-  <span class="credit" id="credit">NASA / GSFC · ESA/NASA/JPL-Caltech</span>
+  <span class="credit" id="credit">NASA / GSFC</span>
   <button type="button" class="skip" id="skip-intro">Skip</button>
 </div>
 <div class="smoke" id="smoke" aria-hidden="true"></div>
@@ -200,16 +198,14 @@
 (function(){
   const intro=document.getElementById('intro');
   const video=document.getElementById('nasa-bb');
-  const audio=document.getElementById('bb-audio');
   const smoke=document.getElementById('smoke');
   const skip=document.getElementById('skip-intro');
   const question=document.getElementById('question');
   const seed=document.getElementById('seed');
   const credit=document.getElementById('credit');
   const tapHint=document.getElementById('tap-hint');
-  const site=document.getElementById('site');
-  let done=false, phase='question', unlocked=false;
-  let audioCtx=null, osc=null, gain=null, hapticRaf=null, intensity=0;
+  let done=false, phase='question', unlocked=false, residualLive=false;
+  let audioCtx=null, osc=null, gain=null, hapticRaf=null;
 
   function unlockAndPlay(){
     if(unlocked) return;
@@ -218,12 +214,17 @@
     startResidual();
   }
 
+  /* Proven residual model from test-audio.html */
   function startResidual(){
+    if(residualLive) return;
+    residualLive=true;
     try{
       const AC=window.AudioContext||window.webkitAudioContext;
       if(!AC) return;
       audioCtx=new AC();
-      if(audioCtx.state==='suspended') audioCtx.resume();
+      if(audioCtx.state==='suspended'){
+        audioCtx.resume().catch(function(){});
+      }
 
       osc=audioCtx.createOscillator();
       gain=audioCtx.createGain();
@@ -239,58 +240,75 @@
       osc.start();
 
       const now=audioCtx.currentTime;
-      gain.gain.exponentialRampToValueAtTime(0.18, now+1.6);
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.22, now+1.2);
 
-      try{
-        audio.muted=false;
-        audio.volume=0;
-        audio.play().then(function(){
-          const t0=performance.now();
-          (function fade(){
-            const dt=(performance.now()-t0)/1000;
-            audio.volume=Math.min(0.55, dt/2);
-            if(audio.volume<0.55) requestAnimationFrame(fade);
-          })();
-        }).catch(function(){});
-      }catch(e){}
-
+      const hasVibrate=typeof navigator.vibrate==='function';
       (function loop(){
-        if(!audioCtx) return;
-        intensity = 0.35 + 0.45 * Math.abs(Math.sin(performance.now()*0.0022));
-        seed.style.transform='scale('+(1+intensity*0.9)+')';
-        if(navigator.vibrate){
+        if(!residualLive) return;
+        const intensity=0.35+0.5*Math.abs(Math.sin(performance.now()*0.0025));
+        if(seed && phase!=='video'){
+          seed.style.transform='scale('+(1+intensity*0.9)+')';
+        }
+        if(hasVibrate){
           try{
-            if(intensity>0.6) navigator.vibrate([28,12,22]);
-            else if(intensity>0.35) navigator.vibrate(16);
-            else navigator.vibrate(8);
+            if(intensity>0.65) navigator.vibrate([30,12,24]);
+            else if(intensity>0.4) navigator.vibrate(18);
+            else navigator.vibrate(9);
           }catch(e){}
         }
         hapticRaf=requestAnimationFrame(loop);
       })();
-    }catch(e){ console.warn('residual fail', e); }
+    }catch(e){
+      residualLive=false;
+      console.warn('residual fail', e);
+    }
   }
 
-  function stopAll(){
-    try{ audio.pause(); audio.currentTime=0; }catch(e){}
+  /* Clean stop — ramp down before killing oscillator (kills the pop) */
+  function stopResidual(then){
+    residualLive=false;
     if(hapticRaf){ cancelAnimationFrame(hapticRaf); hapticRaf=null; }
-    try{ if(osc) osc.stop(); }catch(e){}
-    if(audioCtx){ try{ audioCtx.close(); }catch(e){} audioCtx=null; }
+    try{ if(navigator.vibrate) navigator.vibrate(0); }catch(e){}
     seed.style.transform='';
+
+    if(audioCtx && gain){
+      try{
+        const now=audioCtx.currentTime;
+        gain.gain.cancelScheduledValues(now);
+        const cur=Math.max(gain.gain.value, 0.0001);
+        gain.gain.setValueAtTime(cur, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now+0.28);
+        setTimeout(function(){
+          try{ if(osc) osc.stop(); }catch(e){}
+          try{ if(audioCtx) audioCtx.close(); }catch(e){}
+          osc=null; gain=null; audioCtx=null;
+          if(typeof then==='function') then();
+        }, 320);
+        return;
+      }catch(e){}
+    }
+    try{ if(osc) osc.stop(); }catch(e){}
+    try{ if(audioCtx) audioCtx.close(); }catch(e){}
+    osc=null; gain=null; audioCtx=null;
+    if(typeof then==='function') then();
   }
 
   function startSite(){
     if(done) return;
     done=true;
-    stopAll();
-    smoke.classList.add('is-on');
-    intro.classList.add('is-out');
-    document.body.classList.add('is-live');
-    setTimeout(function(){
-      smoke.classList.add('is-clear');
+    stopResidual(function(){
+      smoke.classList.add('is-on');
+      intro.classList.add('is-out');
+      document.body.classList.add('is-live');
       setTimeout(function(){
-        try{ intro.remove(); smoke.remove(); }catch(e){}
-      }, 1600);
-    }, 700);
+        smoke.classList.add('is-clear');
+        setTimeout(function(){
+          try{ intro.remove(); smoke.remove(); }catch(e){}
+        }, 1600);
+      }, 700);
+    });
   }
 
   function startVideo(){
@@ -324,7 +342,6 @@
   skip.addEventListener('click', function(){
     unlockAndPlay();
     try{ video.pause(); }catch(e){}
-    stopAll();
     startSite();
   });
 
