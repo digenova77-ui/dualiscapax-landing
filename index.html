@@ -92,70 +92,79 @@ h1{font-size:clamp(2.4rem,10vw,4.2rem);font-weight:900;line-height:.9;letter-spa
   const question=document.getElementById('question');
   const seed=document.getElementById('seed');
   const credit=document.getElementById('credit');
-  let done=false, phase='question', audioStarted=false;
+  let done=false, phase='question', audioStarted=false, unlocked=false;
   let audioCtx=null, analyser=null, freqData=null, hapticRaf=null;
 
+  function unlockAndPlay(){
+    if(unlocked) return;
+    unlocked=true;
+    startAudio();
+  }
+
   function startAudio(){
-    if(audioStarted)return;
+    if(audioStarted) return;
     audioStarted=true;
     try{
+      audio.muted=false;
       audio.volume=0;
       const p=audio.play();
-      if(p&&p.then){
+      if(p && p.then){
         p.then(function(){
           const t0=performance.now();
           (function fade(){
             const dt=(performance.now()-t0)/1000;
-            audio.volume=Math.min(.85,dt/1.6);
-            if(audio.volume<.85)requestAnimationFrame(fade);
+            audio.volume=Math.min(0.9, dt/1.4);
+            if(audio.volume<0.9) requestAnimationFrame(fade);
           })();
           startHaptics();
-        }).catch(function(){});
-      } else startHaptics();
-    }catch(e){}
+        }).catch(function(err){ console.warn('audio play blocked', err); });
+      } else {
+        startHaptics();
+      }
+    }catch(e){ console.warn(e); }
   }
 
   function startHaptics(){
     try{
       const AC=window.AudioContext||window.webkitAudioContext;
-      if(!AC)return;
-      audioCtx=new AC();
+      if(!AC) return;
+      if(!audioCtx) audioCtx=new AC();
+      if(audioCtx.state==='suspended') audioCtx.resume();
       const src=audioCtx.createMediaElementSource(audio);
       analyser=audioCtx.createAnalyser();
       analyser.fftSize=256;
       freqData=new Uint8Array(analyser.frequencyBinCount);
       src.connect(analyser);
       analyser.connect(audioCtx.destination);
-      if(audioCtx.state==='suspended')audioCtx.resume();
       (function loop(){
-        if(!analyser)return;
+        if(!analyser) return;
         analyser.getByteFrequencyData(freqData);
         let sum=0;
-        for(let i=0;i<freqData.length;i++)sum+=freqData[i];
-        const intensity=Math.min(1,sum/freqData.length/90);
-        seed.style.transform='scale('+(1+intensity*.9)+')';
+        for(let i=0;i<freqData.length;i++) sum+=freqData[i];
+        const intensity=Math.min(1, sum/freqData.length/80);
+        seed.style.transform='scale('+(1+intensity*1.1)+')';
         if(navigator.vibrate){
           try{
-            if(intensity>.55)navigator.vibrate([30,16,24]);
-            else if(intensity>.28)navigator.vibrate(20);
-            else if(intensity>.12)navigator.vibrate(9);
+            if(intensity>0.5) navigator.vibrate([32,14,26]);
+            else if(intensity>0.25) navigator.vibrate(22);
+            else if(intensity>0.1) navigator.vibrate(10);
           }catch(e){}
         }
         hapticRaf=requestAnimationFrame(loop);
       })();
-    }catch(e){}
+    }catch(e){ console.warn('haptic', e); }
   }
 
   function stopAudio(){
-    try{audio.pause();audio.currentTime=0}catch(e){}
-    if(hapticRaf){cancelAnimationFrame(hapticRaf);hapticRaf=null}
-    if(audioCtx){try{audioCtx.close()}catch(e){}audioCtx=null}
-    analyser=null;freqData=null;
+    try{ audio.pause(); audio.currentTime=0; }catch(e){}
+    if(hapticRaf){ cancelAnimationFrame(hapticRaf); hapticRaf=null; }
+    if(audioCtx){ try{ audioCtx.close(); }catch(e){} audioCtx=null; }
+    analyser=null; freqData=null;
     seed.style.transform='';
   }
 
   function startSite(){
-    if(done)return;
+    if(done) return;
     done=true;
     stopAudio();
     smoke.classList.add('is-on');
@@ -163,38 +172,50 @@ h1{font-size:clamp(2.4rem,10vw,4.2rem);font-weight:900;line-height:.9;letter-spa
     setTimeout(function(){
       document.body.classList.add('is-live');
       smoke.classList.add('is-clear');
-      setTimeout(function(){intro.remove();smoke.remove()},1600);
-    },700);
+      setTimeout(function(){ try{ intro.remove(); smoke.remove(); }catch(e){} }, 1600);
+    }, 700);
   }
 
   function startVideo(){
-    if(phase==='video'||done)return;
+    if(phase==='video'||done) return;
     phase='video';
     credit.classList.add('is-on');
     video.classList.add('is-on');
     seed.classList.add('is-gone');
     startAudio();
     const p=video.play();
-    if(p&&p.catch)p.catch(function(){});
+    if(p && p.catch) p.catch(function(){});
   }
 
   function collapseToOrb(){
-    if(phase!=='question')return;
+    if(phase!=='question') return;
     phase='orb';
     question.classList.remove('is-in');
     question.classList.add('is-out');
     seed.classList.add('is-on');
-    setTimeout(function(){seed.classList.add('is-bloom')},380);
-    setTimeout(startVideo,1200);
+    setTimeout(function(){ seed.classList.add('is-bloom'); }, 380);
+    setTimeout(startVideo, 1200);
   }
 
-  setTimeout(function(){question.classList.add('is-in')},400);
-  setTimeout(collapseToOrb,4200);
-  skip.addEventListener('click',function(){try{video.pause()}catch(e){}stopAudio();startSite()});
-  video.addEventListener('ended',startSite);
-  video.addEventListener('error',function(){if(phase==='video')startSite()});
-  setTimeout(function(){if(!done&&phase==='video'&&video.readyState<2)startSite()},14000);
-  setTimeout(function(){if(!done)startSite()},28000);
+  // ANY user gesture unlocks sound + haptic
+  ['pointerdown','touchstart','click'].forEach(function(ev){
+    document.addEventListener(ev, unlockAndPlay, { once:true, passive:true });
+  });
+
+  setTimeout(function(){ question.classList.add('is-in'); }, 400);
+  setTimeout(collapseToOrb, 4200);
+
+  skip.addEventListener('click', function(){
+    unlockAndPlay();
+    try{ video.pause(); }catch(e){}
+    stopAudio();
+    startSite();
+  });
+
+  video.addEventListener('ended', startSite);
+  video.addEventListener('error', function(){ if(phase==='video') startSite(); });
+  setTimeout(function(){ if(!done && phase==='video' && video.readyState<2) startSite(); }, 14000);
+  setTimeout(function(){ if(!done) startSite(); }, 28000);
 })();
 </script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
