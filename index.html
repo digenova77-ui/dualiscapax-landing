@@ -156,7 +156,7 @@
       <nav aria-label="Primary">
         <a href="research/">Research</a>
         <a href="corporate.html">Financial</a>
-        <a href="ai/">AI</a>
+        <a href="ai/">Technology</a>
       </nav>
     </header>
     <main>
@@ -207,7 +207,6 @@
   fill.position.set(-2, -0.5, 1.5);
   scene.add(fill);
 
-  // C-60 / fullerene-style: dense geodesic (icosa subdivision) — opaque carbon + bright edges
   const geo = new THREE.IcosahedronGeometry(1, 2);
 
   const body = new THREE.Mesh(
@@ -222,32 +221,19 @@
     })
   );
 
-  const edges = new THREE.EdgesGeometry(geo, 1);
   const wire = new THREE.LineSegments(
-    edges,
-    new THREE.LineBasicMaterial({
-      color: 0xc8ced4,
-      transparent: true,
-      opacity: 0.9
-    })
+    new THREE.EdgesGeometry(geo, 1),
+    new THREE.LineBasicMaterial({ color: 0xc8ced4, transparent: true, opacity: 0.9 })
   );
   wire.scale.setScalar(1.002);
 
-  // Outer shell — second geodesic layer (fused density)
-  const geoOuter = new THREE.IcosahedronGeometry(1.06, 1);
   const wireOuter = new THREE.LineSegments(
-    new THREE.EdgesGeometry(geoOuter, 1),
-    new THREE.LineBasicMaterial({
-      color: 0x6a7078,
-      transparent: true,
-      opacity: 0.45
-    })
+    new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(1.06, 1), 1),
+    new THREE.LineBasicMaterial({ color: 0x6a7078, transparent: true, opacity: 0.45 })
   );
 
-  // Vertex nodes (molecular feel)
-  const pointsGeo = geo.clone();
   const points = new THREE.Points(
-    pointsGeo,
+    geo.clone(),
     new THREE.PointsMaterial({
       color: 0xe8ecf0,
       size: 0.035,
@@ -265,7 +251,6 @@
   scene.add(group);
 
   const Y_SPEED = (Math.PI * 2) / 22;
-
   let last = performance.now();
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
