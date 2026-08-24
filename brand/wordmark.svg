@@ -1,13 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 120" role="img" aria-label="DualisCapax">
-  <rect width="640" height="120" fill="#000"/>
-  <text x="24" y="78" font-family="system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="56" font-weight="600" fill="#ffffff" letter-spacing="-0.5">DualisCapax</text>
-  <!-- DNA helix mark (matches user wordmark lockup) -->
-  <g transform="translate(520,12)" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round">
-    <path d="M18 8 C42 28, 42 68, 18 96"/>
-    <path d="M42 8 C18 28, 18 68, 42 96"/>
-    <line x1="24" y1="22" x2="36" y2="28"/>
-    <line x1="22" y1="40" x2="38" y2="46"/>
-    <line x1="22" y1="58" x2="38" y2="64"/>
-    <line x1="24" y1="76" x2="36" y2="82"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 140" role="img" aria-label="DualisCapax">
+  <!-- Full wordmark + complete DNA strand (not cropped) -->
+  <text x="8" y="88" font-family="system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif" font-size="64" font-weight="600" fill="#ffffff" letter-spacing="-0.6">DualisCapax</text>
+  <g transform="translate(548,12)" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- complete double helix -->
+    <path d="M22 4 C52 22, 52 50, 22 68 C-8 86, -8 114, 22 132"/>
+    <path d="M50 4 C20 22, 20 50, 50 68 C80 86, 80 114, 50 132"/>
+    <!-- rungs full length -->
+    <line x1="28" y1="18" x2="44" y2="26"/>
+    <line x1="24" y1="36" x2="48" y2="44"/>
+    <line x1="22" y1="54" x2="50" y2="62"/>
+    <line x1="24" y1="72" x2="48" y2="80"/>
+    <line x1="28" y1="90" x2="44" y2="98"/>
+    <line x1="32" y1="108" x2="40" y2="116"/>
   </g>
 </svg>
