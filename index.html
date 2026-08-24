@@ -7,18 +7,20 @@
 <title>DualisCapax</title>
 <meta name="theme-color" content="#020203">
 <link rel="icon" href="brand/emblem-helix.svg">
-<link rel="stylesheet" href="skin/default.css?v=split1">
+<link rel="stylesheet" href="skin/default.css?v=ux2">
 </head>
 <body>
 <canvas id="webgl"></canvas>
-<img class="em" src="brand/emblem-helix.svg" alt="">
+<img class="em mobile-only" src="brand/emblem-helix.svg" alt="">
 
-<div class="ui" id="app">
-  <nav class="desktop-nav" id="desk-nav" aria-label="Desktop">
-    <div class="mark">DualisCapax</div>
-  </nav>
-  <div class="story-col" id="story"></div>
-  <div class="stage-col" aria-hidden="true"></div>
+<!-- MOBILE: gist, video, onboard -->
+<div class="ui mobile-only" id="mobile"></div>
+
+<!-- DESKTOP: full information -->
+<div class="ui desktop-only desk" id="desktop">
+  <nav class="desk-nav" id="desk-nav"><div class="mark">DualisCapax</div></nav>
+  <div class="desk-read" id="desk-read"></div>
+  <div></div>
 </div>
 
 <script type="importmap">
@@ -28,46 +30,43 @@
 import { startPlaneEngine } from './js/plane-engine.js';
 
 async function boot() {
-  const data = await (await fetch('content/story.json?v=2')).json();
-  const story = document.getElementById('story');
-  const desk = document.getElementById('desk-nav');
-
-  data.links.forEach(function (l) {
-    const a = document.createElement('a');
-    a.href = l.href;
-    a.textContent = l.label;
-    desk.appendChild(a);
-  });
-
-  let html = '';
-  html += '<section class="screen"><div class="glass">';
-  html += '<div class="brand">' + data.brand + '</div>';
-  html += '<p class="tag">' + data.tag + '</p>';
-  html += '<p class="intro">' + data.intro + '</p>';
-  html += '<p class="hint">' + data.hint + ' ↓</p>';
-  html += '</div></section>';
-
-  data.beats.forEach(function (b) {
-    html += '<section class="screen"><div class="glass">';
-    html += '<div class="num">' + b.n + '</div>';
-    html += '<h2 class="title">' + b.title + '</h2>';
-    html += '<p class="body">' + b.body + '</p>';
-    html += '</div></section>';
-  });
-
-  html += '<nav class="links"><h3>Continue</h3>';
-  data.links.forEach(function (l) {
-    html += '<a href="' + l.href + '">' + l.label + '</a>';
-  });
-  html += '</nav>';
-
-  story.innerHTML = html;
+  const isDesk = matchMedia('(min-width: 1024px)').matches;
   startPlaneEngine(document.getElementById('webgl'));
+
+  if (isDesk) {
+    const data = await (await fetch('content/story.json?v=3')).json();
+    const nav = document.getElementById('desk-nav');
+    data.links.forEach(function (l) {
+      const a = document.createElement('a');
+      a.href = l.href; a.textContent = l.label;
+      nav.appendChild(a);
+    });
+    let h = '';
+    h += '<div class="brand">' + data.brand + '</div>';
+    h += '<p class="tag">' + data.tag + '</p>';
+    h += '<p class="intro">' + data.intro + '</p>';
+    data.beats.forEach(function (b) {
+      h += '<article class="block"><div class="n">' + b.n + '</div>';
+      h += '<h2>' + b.title + '</h2><p>' + b.body + '</p></article>';
+    });
+    document.getElementById('desk-read').innerHTML = h;
+  } else {
+    const m = await (await fetch('content/mobile.json?v=1')).json();
+    let h = '<div class="m-shell">';
+    h += '<div class="m-brand">' + m.brand + '</div>';
+    h += '<p class="m-gist">' + m.gist + '</p>';
+    h += '<div class="m-beats">';
+    m.beats.forEach(function (b) {
+      h += '<div class="m-beat"><strong>' + b.title + '</strong><span>' + b.line + '</span></div>';
+    });
+    h += '</div><div class="m-actions">';
+    h += '<a class="m-btn primary" href="' + m.cta_video.href + '">' + m.cta_video.label + '</a>';
+    h += '<a class="m-btn secondary" href="' + m.cta_onboard.href + '">' + m.cta_onboard.label + '</a>';
+    h += '</div></div>';
+    document.getElementById('mobile').innerHTML = h;
+  }
 }
-boot().catch(function (e) {
-  document.getElementById('story').textContent = 'Could not load story.';
-  console.error(e);
-});
+boot().catch(function (e) { console.error(e); });
 </script>
 </body>
 </html>
