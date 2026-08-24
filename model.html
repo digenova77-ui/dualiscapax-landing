@@ -29,7 +29,7 @@
     position:absolute;top:.65rem;left:.75rem;z-index:2;
     height:22px;width:auto;opacity:.92;pointer-events:none;
   }
-  .tour-stage video{
+  .tour-stage video, .tour-stage canvas.dc-video-engine{
     display:block;width:100%;aspect-ratio:16/9;background:#0a0a0a;object-fit:cover;
   }
   .tour-meta{padding:.85rem 1rem 1rem;border-top:1px solid var(--border)}
@@ -73,16 +73,16 @@
       <li><a href="research/">Research</a></li>
       <li><a href="ai/">AI</a></li>
       <li><a href="model.html">Model</a></li>
+      <li><a href="engine.html">Engine</a></li>
       <li><a href="manifesto.html">Manifesto</a></li>
-      <li><a href="participate.html">Participate</a></li>
     </ul>
   </nav>
   <main>
     <h1>Model</h1>
-    <p class="lead">Free information. <strong style="color:var(--fg)">Next</strong> plays each complexity step (fade-in). Narrator toggle below. Tone follows your path when this tour is embedded under Research.</p>
+    <p class="lead">Storyboard video engine. <strong style="color:var(--fg)">Next</strong> advances each beat. Plays mp4 when present; otherwise residual field. Narrator optional.</p>
 
     <div id="tour-root">
-      <div class="tour-stage">
+      <div class="tour-stage is-in">
         <img class="tour-logo logo-on-dark" src="logo-dark.svg" alt="DualisCapax">
         <video playsinline muted loop preload="metadata" aria-label="Section commercial"></video>
         <div class="tour-meta">
@@ -107,27 +107,47 @@
       <div class="op"><strong>Seal</strong><p>IP and production math stay on the black ledger.</p></div>
     </div>
 
-    <h2>Path tone</h2>
-    <p><strong>Healthcare / ALS:</strong> measured pace — what-if, why therapies stall, why a residual Adaptive framing can make sense (no cure hype). <strong>Engineering:</strong> tight technical precision. <strong>Logo, theme, and narrator family</strong> stay consistent across the tree.</p>
-
-    <h2>Go deeper</h2>
-    <details>
-      <summary>Dual capacity</summary>
-      <div class="deep"><p>Enterprise funds residual compute. Individuals keep Open research access.</p></div>
-    </details>
-    <details>
-      <summary>Fusion Meter (FM)</summary>
-      <div class="deep"><p>Closed prepaid pay-down for Adaptive depth. Not an open-market coin.</p></div>
-    </details>
-    <details>
-      <summary>White / black ledger</summary>
-      <div class="deep"><p>White: boundary in/out and KYC. Black: FM internals and encrypted IP.</p></div>
-    </details>
-
-    <p class="note">Informational only. Not an offer to sell securities. Ontario and Canadian law apply. <a class="inline" href="manifesto.html">Manifesto</a> · <a class="inline" href="participate.html">Participate</a></p>
+    <p class="note">Informational only. Ontario and Canadian law apply. <a class="inline" href="engine.html">XR residual engine</a> · <a class="inline" href="manifesto.html">Manifesto</a></p>
   </main>
-  <footer>DualisCapax · Model tour · logo · narrator · path pace</footer>
+  <footer>DualisCapax · Video Engine v1 · storyboard</footer>
   <script src="js/tour-voice.js"></script>
-  <script src="js/model-tour.js"></script>
+  <script src="js/video-engine.js"></script>
+  <script src="js/model-tour-boot.js"></script>
+  <script>
+    (function () {
+      var root = document.getElementById('tour-root');
+      if (!root || !window.DCTourVoice) return;
+      var voiceBtns = root.querySelectorAll('[data-voice]');
+      function sync() {
+        var g = window.DCTourVoice.getGender();
+        voiceBtns.forEach(function (b) {
+          b.classList.toggle('active', b.getAttribute('data-voice') === g);
+        });
+      }
+      voiceBtns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          window.DCTourVoice.setGender(b.getAttribute('data-voice'));
+          sync();
+          if (window.DCVideoEngine) {
+            var s = window.DCVideoEngine.steps()[window.DCVideoEngine.i];
+            if (s) window.DCTourVoice.speak(s.line, { gender: window.DCTourVoice.getGender() });
+          }
+        });
+      });
+      sync();
+      var prevOnStep = null;
+      document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+          if (!window.DCVideoEngine) return;
+          var eng = window.DCVideoEngine;
+          var orig = eng.onStep;
+          eng.onStep = function (s, i) {
+            if (orig) orig(s, i);
+            if (window.DCTourVoice) window.DCTourVoice.speak(s.line, { gender: window.DCTourVoice.getGender() });
+          };
+        }, 50);
+      });
+    })();
+  </script>
 </body>
 </html>
