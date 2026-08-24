@@ -5,92 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>DualisCapax</title>
   <meta name="description" content="Residual Law Finance. Cutting Edge Technology. Adaptive AI. Research." />
-  <meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)" />
-  <meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#050505" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
       color-scheme: dark;
       --bg: #050505;
-      --bg-elevated: #0c0c0c;
       --fg: #f5f5f5;
       --fg-muted: rgba(245, 245, 245, 0.75);
       --fg-soft: rgba(245, 245, 245, 0.72);
       --quark: #7eb6ff;
-      --quark-glow: rgba(126, 182, 255, 0.85);
-      --quark-glow-soft: rgba(90, 150, 255, 0.35);
+      --quark-glow: rgba(126, 182, 255, 0.9);
+      --quark-glow-soft: rgba(90, 150, 255, 0.4);
       --nav: var(--fg-muted);
-      --theme-color: #050505;
-    }
-    @media (prefers-color-scheme: light) {
-      :root {
-        color-scheme: light;
-        --bg: #f4f5f7;
-        --bg-elevated: #ffffff;
-        --fg: #0a0a0a;
-        --fg-muted: rgba(10, 10, 10, 0.72);
-        --fg-soft: rgba(10, 10, 10, 0.68);
-        --quark: #2a6fd4;
-        --quark-glow: rgba(42, 111, 212, 0.55);
-        --quark-glow-soft: rgba(42, 111, 212, 0.25);
-        --nav: var(--fg-muted);
-        --theme-color: #f4f5f7;
-      }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; -webkit-text-size-adjust: 100%; }
     body {
       font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: var(--bg);
+      background: #000;
       color: var(--fg);
       -webkit-font-smoothing: antialiased;
       overflow: hidden;
     }
     a { color: inherit; text-decoration: none; }
 
+    /* —— NASA intro layer —— */
+    .intro {
+      position: fixed; inset: 0; z-index: 40;
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 1.1s ease;
+    }
+    .intro.is-out { opacity: 0; pointer-events: none; }
+    .intro video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      background: #000;
+    }
+    .intro .credit {
+      position: absolute; left: 0.75rem; bottom: max(0.6rem, env(safe-area-inset-bottom));
+      font-size: 0.65rem; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.45);
+      pointer-events: none;
+    }
+    .intro .skip {
+      position: absolute; right: 0.75rem; bottom: max(0.6rem, env(safe-area-inset-bottom));
+      font-size: 0.78rem; font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 0.4rem 0.85rem;
+      cursor: pointer;
+    }
+
+    /* smoke veil between NASA and site */
+    .smoke {
+      position: fixed; inset: 0; z-index: 35;
+      pointer-events: none;
+      opacity: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 45%, rgba(180,200,220,0.18), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 30% 60%, rgba(255,255,255,0.08), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 70% 40%, rgba(120,160,220,0.1), transparent 55%),
+        #000;
+      transition: opacity 0.9s ease;
+    }
+    .smoke.is-on { opacity: 1; }
+    .smoke.is-clear { opacity: 0; transition: opacity 1.4s ease; }
+
+    /* site stays hidden until intro hands off */
+    .site {
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    body.is-live .site { opacity: 1; }
+
     .quark-field {
       position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
       opacity: 0;
-      animation: fieldIn 1.4s ease-out 0.15s forwards;
+    }
+    body.is-live .quark-field {
+      animation: fieldIn 1.6s ease-out 0.15s forwards;
     }
     @keyframes fieldIn { to { opacity: 1; } }
+
     .quark {
       position: absolute; width: 2px; height: 2px; border-radius: 50%;
       background: var(--quark);
-      box-shadow: 0 0 4px 1px var(--quark-glow), 0 0 10px 2px var(--quark-glow-soft);
-      opacity: 0.55; animation: quarkPulse 3.8s ease-in-out infinite;
+      box-shadow: 0 0 5px 1px var(--quark-glow), 0 0 12px 3px var(--quark-glow-soft);
+      animation: quarkSpark 2.8s ease-in-out infinite;
     }
-    .quark:nth-child(1)  { left: 8%;  top: 12%; animation-delay: 0s; opacity: 0.4; }
-    .quark:nth-child(2)  { left: 22%; top: 28%; width: 1.5px; height: 1.5px; animation-delay: 0.5s; }
-    .quark:nth-child(3)  { left: 41%; top: 9%;  animation-delay: 1.1s; opacity: 0.65; }
-    .quark:nth-child(4)  { left: 63%; top: 18%; width: 1.5px; height: 1.5px; animation-delay: 0.3s; opacity: 0.35; }
-    .quark:nth-child(5)  { left: 78%; top: 11%; animation-delay: 1.6s; }
-    .quark:nth-child(6)  { left: 91%; top: 24%; width: 1.5px; height: 1.5px; animation-delay: 2.2s; opacity: 0.45; }
-    .quark:nth-child(7)  { left: 14%; top: 48%; width: 1px; height: 1px; animation-delay: 0.9s; opacity: 0.3; }
-    .quark:nth-child(8)  { left: 33%; top: 56%; animation-delay: 1.4s; opacity: 0.55; }
-    .quark:nth-child(9)  { left: 52%; top: 42%; width: 1.5px; height: 1.5px; animation-delay: 2.0s; }
-    .quark:nth-child(10) { left: 71%; top: 51%; animation-delay: 0.7s; opacity: 0.4; }
-    .quark:nth-child(11) { left: 88%; top: 58%; width: 1px; height: 1px; animation-delay: 2.5s; opacity: 0.35; }
-    .quark:nth-child(12) { left: 6%;  top: 72%; animation-delay: 1.8s; opacity: 0.5; }
-    .quark:nth-child(13) { left: 27%; top: 81%; width: 1.5px; height: 1.5px; animation-delay: 0.4s; }
-    .quark:nth-child(14) { left: 48%; top: 68%; width: 1px; height: 1px; animation-delay: 2.8s; opacity: 0.3; }
-    .quark:nth-child(15) { left: 66%; top: 84%; animation-delay: 1.2s; opacity: 0.6; }
-    .quark:nth-child(16) { left: 84%; top: 76%; width: 1.5px; height: 1.5px; animation-delay: 2.1s; opacity: 0.4; }
-    .quark:nth-child(17) { left: 18%; top: 38%; width: 1px; height: 1px; animation-delay: 3.0s; opacity: 0.25; }
-    .quark:nth-child(18) { left: 57%; top: 22%; animation-delay: 1.5s; opacity: 0.45; }
-    .quark:nth-child(19) { left: 39%; top: 91%; width: 1.5px; height: 1.5px; animation-delay: 0.8s; }
-    .quark:nth-child(20) { left: 95%; top: 88%; width: 1px; height: 1px; animation-delay: 2.4s; opacity: 0.35; }
-    @keyframes quarkPulse {
-      0%, 100% { opacity: 0.2; transform: scale(0.85); }
-      50% { opacity: 0.9; transform: scale(1.2); }
+    .quark:nth-child(1)  { left: 8%;  top: 12%; animation-delay: 0s; }
+    .quark:nth-child(2)  { left: 22%; top: 28%; width: 1.5px; height: 1.5px; animation-delay: 0.4s; }
+    .quark:nth-child(3)  { left: 41%; top: 9%;  animation-delay: 0.9s; }
+    .quark:nth-child(4)  { left: 63%; top: 18%; width: 1.5px; height: 1.5px; animation-delay: 0.2s; }
+    .quark:nth-child(5)  { left: 78%; top: 11%; animation-delay: 1.3s; }
+    .quark:nth-child(6)  { left: 91%; top: 24%; width: 1.5px; height: 1.5px; animation-delay: 1.8s; }
+    .quark:nth-child(7)  { left: 14%; top: 48%; width: 1px; height: 1px; animation-delay: 0.7s; }
+    .quark:nth-child(8)  { left: 33%; top: 56%; animation-delay: 1.1s; }
+    .quark:nth-child(9)  { left: 52%; top: 42%; width: 1.5px; height: 1.5px; animation-delay: 1.6s; }
+    .quark:nth-child(10) { left: 71%; top: 51%; animation-delay: 0.5s; }
+    .quark:nth-child(11) { left: 88%; top: 58%; width: 1px; height: 1px; animation-delay: 2.0s; }
+    .quark:nth-child(12) { left: 6%;  top: 72%; animation-delay: 1.4s; }
+    .quark:nth-child(13) { left: 27%; top: 81%; width: 1.5px; height: 1.5px; animation-delay: 0.3s; }
+    .quark:nth-child(14) { left: 48%; top: 68%; width: 1px; height: 1px; animation-delay: 2.2s; }
+    .quark:nth-child(15) { left: 66%; top: 84%; animation-delay: 1.0s; }
+    .quark:nth-child(16) { left: 84%; top: 76%; width: 1.5px; height: 1.5px; animation-delay: 1.7s; }
+    .quark:nth-child(17) { left: 18%; top: 38%; width: 1px; height: 1px; animation-delay: 2.4s; }
+    .quark:nth-child(18) { left: 57%; top: 22%; animation-delay: 1.2s; }
+    .quark:nth-child(19) { left: 39%; top: 91%; width: 1.5px; height: 1.5px; animation-delay: 0.6s; }
+    .quark:nth-child(20) { left: 95%; top: 88%; width: 1px; height: 1px; animation-delay: 1.9s; }
+    .quark:nth-child(21) { left: 45%; top: 5%; width: 1.5px; height: 1.5px; animation-delay: 0.8s; }
+    .quark:nth-child(22) { left: 12%; top: 90%; animation-delay: 2.1s; }
+    .quark:nth-child(23) { left: 75%; top: 35%; width: 1px; height: 1px; animation-delay: 1.5s; }
+    .quark:nth-child(24) { left: 28%; top: 15%; animation-delay: 0.1s; }
+    @keyframes quarkSpark {
+      0%, 100% { opacity: 0.15; transform: scale(0.7); }
+      40% { opacity: 1; transform: scale(1.35); }
+      55% { opacity: 0.35; transform: scale(0.9); }
+      70% { opacity: 0.9; transform: scale(1.2); }
     }
 
     .shell {
       position: relative; z-index: 1;
       height: 100dvh; height: 100svh;
-      max-width: 44rem; margin: 0 auto;
-      padding: max(0.75rem, env(safe-area-inset-top)) 1.25rem max(0.85rem, env(safe-area-inset-bottom));
+      max-width: 48rem; margin: 0 auto;
+      padding: max(0.75rem, env(safe-area-inset-top)) 1rem max(0.85rem, env(safe-area-inset-bottom));
       display: flex; flex-direction: column;
     }
 
@@ -98,6 +141,8 @@
       opacity: 0;
       filter: blur(10px);
       transform: translateY(14px) scale(0.96);
+    }
+    body.is-live .arrive {
       animation: arriveIn 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
     @keyframes arriveIn {
@@ -114,27 +159,41 @@
       color: var(--nav); letter-spacing: 0.01em;
       white-space: nowrap;
       opacity: 0;
+    }
+    body.is-live header nav a {
       animation: arriveIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
-    header nav a:nth-child(1) { animation-delay: 3.55s; }
-    header nav a:nth-child(2) { animation-delay: 3.7s; }
-    header nav a:nth-child(3) { animation-delay: 3.85s; }
+    body.is-live header nav a:nth-child(1) { animation-delay: 3.4s; }
+    body.is-live header nav a:nth-child(2) { animation-delay: 3.55s; }
+    body.is-live header nav a:nth-child(3) { animation-delay: 3.7s; }
 
     main {
       flex: 1 1 auto;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       text-align: center; min-height: 0;
-      padding: 0.35rem 0;
+      padding: 0.2rem 0;
+    }
+
+    /* logo + geo stacked, centered as one unit */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
     }
 
     .logo-stage {
       position: relative;
-      width: min(94vw, 26rem);
-      height: clamp(5.25rem, 22vw, 7.75rem);
-      margin: 0 0 0.75rem;
+      /* ~1.7× previous logo footprint */
+      width: min(96vw, 44rem);
+      height: clamp(8.5rem, 34vw, 13.2rem);
+      margin: 0 0 0.15rem;
       flex-shrink: 0;
       opacity: 0;
-      animation: logoFrameIn 0.6s ease-out 0.05s forwards;
+    }
+    body.is-live .logo-stage {
+      animation: logoFrameIn 0.5s ease-out 0.05s forwards;
     }
     @keyframes logoFrameIn { to { opacity: 1; } }
 
@@ -157,13 +216,12 @@
     .logo-stage canvas { z-index: 1; }
 
     .geo-wrap {
-      width: min(52vw, 180px);
-      height: min(52vw, 180px);
-      margin: 0 0 1.15rem;
+      width: min(48vw, 168px);
+      height: min(48vw, 168px);
+      margin: 0.1rem 0 0.9rem;
       flex-shrink: 0;
       overflow: visible;
       background: transparent;
-      opacity: 1;
     }
     #geo-earth {
       width: 100%; height: 100%;
@@ -172,12 +230,12 @@
     }
 
     h1 {
-      font-size: clamp(2.6rem, 11vw, 4.5rem); font-weight: 900;
+      font-size: clamp(2.4rem, 10vw, 4.2rem); font-weight: 900;
       line-height: 0.9; letter-spacing: -0.05em; text-transform: uppercase;
-      margin: 0 0 0.65rem;
+      margin: 0 0 0.55rem;
       color: var(--fg);
-      animation-delay: 3.05s;
     }
+    body.is-live h1.arrive { animation-delay: 2.85s; }
 
     .lines {
       display: flex; flex-direction: column; align-items: center;
@@ -185,69 +243,128 @@
       margin: 0 auto;
     }
     .line {
-      font-size: clamp(0.98rem, 3.4vw, 1.15rem); font-weight: 600;
-      color: var(--fg-soft); line-height: 1.35; margin: 0 0 0.12rem;
+      font-size: clamp(0.95rem, 3.2vw, 1.12rem); font-weight: 600;
+      color: var(--fg-soft); line-height: 1.35; margin: 0 0 0.1rem;
       opacity: 0;
       filter: blur(8px);
       transform: translateY(10px);
+    }
+    body.is-live .line {
       animation: arriveIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
-    .line:nth-child(1) { animation-delay: 3.25s; }
-    .line:nth-child(2) { animation-delay: 3.4s; }
-    .line:nth-child(3) { animation-delay: 3.55s; }
-    .line:nth-child(4) { animation-delay: 3.7s; }
+    body.is-live .line:nth-child(1) { animation-delay: 3.05s; }
+    body.is-live .line:nth-child(2) { animation-delay: 3.2s; }
+    body.is-live .line:nth-child(3) { animation-delay: 3.35s; }
+    body.is-live .line:nth-child(4) { animation-delay: 3.5s; }
 
-    @media (max-height: 640px) {
-      .logo-stage { height: clamp(4.25rem, 17vw, 5.75rem); margin-bottom: 0.5rem; }
-      .geo-wrap { width: min(40vw, 140px); height: min(40vw, 140px); margin-bottom: 0.7rem; }
-      h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); margin-bottom: 0.45rem; }
-      .line { font-size: 0.95rem; }
+    @media (max-height: 700px) {
+      .logo-stage { height: clamp(6.5rem, 26vw, 10rem); }
+      .geo-wrap { width: min(38vw, 130px); height: min(38vw, 130px); margin-bottom: 0.55rem; }
+      h1 { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 0.4rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .arrive, header nav a, .line, .quark-field, .logo-stage {
-        animation: none !important;
-        opacity: 1 !important;
-        filter: none !important;
-        transform: none !important;
+      .intro, .smoke { display: none !important; }
+      .site, .quark-field, .logo-stage, .arrive, header nav a, .line {
+        opacity: 1 !important; animation: none !important; filter: none !important; transform: none !important;
       }
       .logo-stage img.logo-exact { opacity: 1 !important; }
     }
   </style>
 </head>
 <body>
-  <div class="quark-field" aria-hidden="true">
-    <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
-    <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
-    <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
-    <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
-    <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
+  <!-- NASA GSFC Big Bang animation (public visualization) -->
+  <div class="intro" id="intro">
+    <video id="nasa-bb" playsinline muted
+      src="https://svs.gsfc.nasa.gov/vis/a010000/a012600/a012656/12656_Big_Bang_1080.webm"
+      poster=""></video>
+    <span class="credit">NASA / GSFC</span>
+    <button type="button" class="skip" id="skip-intro">Skip</button>
   </div>
-  <div class="shell">
-    <header>
-      <nav aria-label="Primary">
-        <a href="corporate.html">Financial</a>
-        <a href="ai/">Tech</a>
-        <a href="research/">Research + AI</a>
-      </nav>
-    </header>
-    <main>
-      <div class="logo-stage">
-        <canvas id="logo-particles" width="900" height="200" aria-hidden="true"></canvas>
-        <img class="logo-exact" id="logo-exact" src="brand/logo-dna-x.svg" alt="DualisCapax" width="900" height="200" />
-      </div>
-      <div class="geo-wrap">
-        <canvas id="geo-earth" width="360" height="360" aria-hidden="true"></canvas>
-      </div>
-      <h1 class="arrive">Truth<br>Prevails</h1>
-      <div class="lines">
-        <p class="line">Residual Law Finance.</p>
-        <p class="line">Cutting Edge Technology.</p>
-        <p class="line">Adaptive AI.</p>
-        <p class="line">Research.</p>
-      </div>
-    </main>
+  <div class="smoke" id="smoke" aria-hidden="true"></div>
+
+  <div class="site">
+    <div class="quark-field" aria-hidden="true">
+      <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
+      <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
+      <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
+      <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
+      <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
+      <span class="quark"></span><span class="quark"></span><span class="quark"></span><span class="quark"></span>
+    </div>
+    <div class="shell">
+      <header>
+        <nav aria-label="Primary">
+          <a href="corporate.html">Financial</a>
+          <a href="ai/">Tech</a>
+          <a href="research/">Research + AI</a>
+        </nav>
+      </header>
+      <main>
+        <div class="hero">
+          <div class="logo-stage">
+            <canvas id="logo-particles" width="900" height="200" aria-hidden="true"></canvas>
+            <img class="logo-exact" id="logo-exact" src="brand/logo-dna-x.svg" alt="DualisCapax" width="900" height="200" />
+          </div>
+          <div class="geo-wrap">
+            <canvas id="geo-earth" width="360" height="360" aria-hidden="true"></canvas>
+          </div>
+        </div>
+        <h1 class="arrive">Truth<br>Prevails</h1>
+        <div class="lines">
+          <p class="line">Residual Law Finance.</p>
+          <p class="line">Cutting Edge Technology.</p>
+          <p class="line">Adaptive AI.</p>
+          <p class="line">Research.</p>
+        </div>
+      </main>
+    </div>
   </div>
+
+  <script>
+  (function introGate() {
+    const intro = document.getElementById('intro');
+    const video = document.getElementById('nasa-bb');
+    const smoke = document.getElementById('smoke');
+    const skip = document.getElementById('skip-intro');
+    let done = false;
+
+    function startSite() {
+      if (done) return;
+      done = true;
+      smoke.classList.add('is-on');
+      intro.classList.add('is-out');
+      setTimeout(function () {
+        document.body.classList.add('is-live');
+        window.dispatchEvent(new Event('site-live'));
+        smoke.classList.add('is-clear');
+        setTimeout(function () {
+          intro.remove();
+          smoke.remove();
+        }, 1600);
+      }, 700);
+    }
+
+    skip.addEventListener('click', function () {
+      try { video.pause(); } catch (e) {}
+      startSite();
+    });
+
+    video.addEventListener('ended', startSite);
+    video.addEventListener('error', startSite);
+
+    /* safety: if video stalls, still open the site */
+    setTimeout(function () {
+      if (!done && video.readyState < 2) startSite();
+    }, 8000);
+    setTimeout(function () {
+      if (!done) startSite();
+    }, 22000);
+
+    var p = video.play();
+    if (p && p.catch) p.catch(function () { /* autoplay blocked — user can skip */ });
+  })();
+  </script>
 
   <script>
   (function logoParticles() {
@@ -257,19 +374,14 @@
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const LOGO_SRC = 'brand/logo-dna-x.svg';
 
-    let particles = [];
-    let orbiters = [];
-    let start = null;
-    let logoImg = null;
-    let settled = false;
+    let particles = [], orbiters = [], start = null, logoImg = null, settled = false, running = false;
     const ASSEMBLE_MS = 3600;
 
     function loadLogo() {
       return new Promise(function (resolve) {
         const img = new Image();
-        img.decoding = 'sync';
         img.onload = function () { logoImg = img; resolve(img); };
-        img.onerror = function () { logoImg = null; resolve(null); };
+        img.onerror = function () { resolve(null); };
         img.src = LOGO_SRC;
       });
     }
@@ -287,14 +399,12 @@
       const o = off.getContext('2d');
       o.setTransform(dpr, 0, 0, dpr, 0, 0);
       o.clearRect(0, 0, w, h);
-
       if (logoImg) {
         const ar = 900 / 200;
         let dw = w, dh = w / ar;
         if (dh > h) { dh = h; dw = h * ar; }
         o.drawImage(logoImg, (w - dw) / 2, (h - dh) / 2, dw, dh);
       }
-
       const data = o.getImageData(0, 0, off.width, off.height).data;
       const targets = [];
       const step = Math.max(1, Math.floor(1.25 * dpr));
@@ -314,9 +424,7 @@
       settled = false;
       exact.classList.remove('is-on');
       const sample = sampleFromExact();
-      const targets = sample.targets;
-      const w = sample.w, h = sample.h, n = targets.length;
-
+      const targets = sample.targets, w = sample.w, h = sample.h, n = targets.length;
       particles = targets.map(function (t, i) {
         const rank = n <= 1 ? 0 : i / (n - 1);
         const angle = Math.random() * Math.PI * 2;
@@ -328,11 +436,9 @@
           r: t.dna ? 1.05 + Math.random() * 1.1 : 0.9 + Math.random() * 1.1,
           phase: Math.random() * Math.PI * 2,
           bright: 0.8 + Math.random() * 0.2,
-          rank: rank,
-          dna: t.dna
+          rank: rank, dna: t.dna
         };
       });
-
       const cx = w / 2, cy = h / 2;
       orbiters = [];
       for (let i = 0; i < 36; i++) {
@@ -360,20 +466,16 @@
     }
 
     function frame(now) {
+      if (!running) return;
       if (start == null) start = now;
       const w = canvas.clientWidth, h = canvas.clientHeight;
       ctx.clearRect(0, 0, w, h);
-
       const t = Math.min(1, (now - start) / ASSEMBLE_MS);
       const density = easeOutCubic(t);
       const front = density * 1.15;
       const shine = smoothstep(0.7, 1, t);
       const glisten = smoothstep(0.85, 1, t);
-
-      if (!settled && t >= 0.92) {
-        settled = true;
-        exact.classList.add('is-on');
-      }
+      if (!settled && t >= 0.92) { settled = true; exact.classList.add('is-on'); }
       const coreFade = settled ? 0.22 : 1;
 
       for (let i = 0; i < particles.length; i++) {
@@ -385,9 +487,8 @@
         p.y += (p.ty - p.y) * pull;
         const pulse = 0.85 + 0.15 * Math.sin(now * 0.0035 + p.phase);
         const alpha = Math.min(1, local * p.bright * pulse * (0.55 + 0.45 * density) * coreFade);
-        const radius = p.r * (0.7 + 0.3 * local);
         ctx.beginPath();
-        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.r * (0.7 + 0.3 * local), 0, Math.PI * 2);
         if (p.dna) {
           ctx.fillStyle = 'rgba(0, 212, 232, ' + alpha + ')';
           ctx.shadowColor = 'rgba(0, 212, 232, ' + (0.4 * alpha) + ')';
@@ -398,37 +499,39 @@
         ctx.shadowBlur = 2 + 2 * shine;
         ctx.fill();
       }
-
       if (glisten > 0.01) {
         for (let i = 0; i < orbiters.length; i++) {
           const o = orbiters[i];
           o.a += o.speed * 16;
-          const x = o.cx + Math.cos(o.a) * o.rx;
-          const y = o.cy + Math.sin(o.a) * o.ry;
           const flash = Math.pow(0.5 + 0.5 * Math.sin(now * o.flashSpeed + o.flash), 10);
           const pulse = 0.5 + 0.5 * Math.sin(now * 0.003 + o.phase);
           const alpha = glisten * (0.2 + 0.8 * flash) * (0.5 + 0.5 * pulse) * 0.9;
           ctx.beginPath();
-          ctx.arc(x, y, o.r * (0.55 + flash), 0, Math.PI * 2);
+          ctx.arc(o.cx + Math.cos(o.a) * o.rx, o.cy + Math.sin(o.a) * o.ry, o.r * (0.55 + flash), 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(220, 240, 255, ' + alpha + ')';
           ctx.shadowColor = 'rgba(160, 210, 255, ' + (0.7 * alpha) + ')';
           ctx.shadowBlur = 3 + 10 * flash;
           ctx.fill();
         }
       }
-
       ctx.shadowBlur = 0;
       requestAnimationFrame(frame);
     }
 
-    loadLogo().then(function () {
+    function begin() {
+      if (running) return;
+      running = true;
       rebuild();
       requestAnimationFrame(frame);
-    });
+    }
 
+    loadLogo().then(function () {
+      if (document.body.classList.contains('is-live')) begin();
+    });
+    window.addEventListener('site-live', begin);
     window.addEventListener('resize', function () {
       clearTimeout(window.__logoResize);
-      window.__logoResize = setTimeout(rebuild, 120);
+      window.__logoResize = setTimeout(function () { if (running) rebuild(); }, 120);
     });
   })();
   </script>
@@ -452,89 +555,43 @@
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 20);
   camera.position.z = 3.55;
-
   scene.add(new THREE.AmbientLight(0xffffff, 0.65));
   const key = new THREE.DirectionalLight(0xffffff, 1.2);
-  key.position.set(2.4, 1.6, 3.0);
-  scene.add(key);
+  key.position.set(2.4, 1.6, 3.0); scene.add(key);
   const fill = new THREE.DirectionalLight(0x8899aa, 0.5);
-  fill.position.set(-2, -0.5, 1.5);
-  scene.add(fill);
+  fill.position.set(-2, -0.5, 1.5); scene.add(fill);
 
-  /* target geodesic positions from icosahedron vertices */
   const geo = new THREE.IcosahedronGeometry(0.92, 2);
-  const posAttr = geo.attributes.position;
-  const targetCount = posAttr.count;
-  const targets = new Float32Array(targetCount * 3);
-  for (let i = 0; i < targetCount; i++) {
-    targets[i * 3] = posAttr.getX(i);
-    targets[i * 3 + 1] = posAttr.getY(i);
-    targets[i * 3 + 2] = posAttr.getZ(i);
-  }
-
-  /* burst particles start at center, fly out to digitize the shell */
-  const burstGeo = new THREE.BufferGeometry();
-  const burstPos = new Float32Array(targetCount * 3); /* all at 0 */
-  burstGeo.setAttribute('position', new THREE.BufferAttribute(burstPos, 3));
-  const burstMat = new THREE.PointsMaterial({
-    color: 0xffffff,
-    size: 0.055,
-    sizeAttenuation: true,
-    transparent: true,
-    opacity: 0,
-    depthWrite: false
-  });
-  const burst = new THREE.Points(burstGeo, burstMat);
-
   const bodyMat = new THREE.MeshStandardMaterial({
     color: 0x6a7a88, flatShading: true, metalness: 0.35, roughness: 0.35,
-    transparent: true, opacity: 0, depthWrite: false,
+    transparent: true, opacity: 0.55, depthWrite: false,
     emissive: 0xffffff, emissiveIntensity: 0
   });
   const body = new THREE.Mesh(geo, bodyMat);
-
   const wireMat = new THREE.LineBasicMaterial({ color: 0xd0d8e0, transparent: true, opacity: 0 });
   const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 1), wireMat);
   wire.scale.setScalar(1.002);
-
   const wireOuterMat = new THREE.LineBasicMaterial({ color: 0x8a98a8, transparent: true, opacity: 0 });
   const wireOuter = new THREE.LineSegments(
-    new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(0.97, 1), 1),
-    wireOuterMat
+    new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(0.97, 1), 1), wireOuterMat
   );
-
   const pointsMat = new THREE.PointsMaterial({
-    color: 0xe8ecf0, size: 0.032, sizeAttenuation: true,
-    transparent: true, opacity: 0
+    color: 0xe8ecf0, size: 0.032, sizeAttenuation: true, transparent: true, opacity: 0
   });
   const points = new THREE.Points(geo.clone(), pointsMat);
 
-  const coreMat = new THREE.MeshBasicMaterial({
-    color: 0xffffff, transparent: true, opacity: 0, depthWrite: false
-  });
-  const core = new THREE.Mesh(new THREE.SphereGeometry(0.14, 24, 24), coreMat);
-  const haloMat = new THREE.MeshBasicMaterial({
-    color: 0xffffff, transparent: true, opacity: 0, depthWrite: false
-  });
-  const halo = new THREE.Mesh(new THREE.SphereGeometry(0.28, 24, 24), haloMat);
+  const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1, depthWrite: false });
+  const core = new THREE.Mesh(new THREE.SphereGeometry(0.12, 24, 24), coreMat);
+  const haloMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55, depthWrite: false });
+  const halo = new THREE.Mesh(new THREE.SphereGeometry(0.22, 24, 24), haloMat);
 
   const group = new THREE.Group();
-  group.add(core);
-  group.add(halo);
-  group.add(burst);
-  group.add(body);
-  group.add(wire);
-  group.add(wireOuter);
-  group.add(points);
+  group.add(core); group.add(halo); group.add(body); group.add(wire); group.add(wireOuter); group.add(points);
   scene.add(group);
 
-  /* timeline */
-  const BIRTH_DELAY = 2.3;
-  const FLASH_MS = 380;
-  const BURST_MS = 900;   /* particles fly out / digitize */
-  const ZOOM_MS = 750;    /* rapid zoom concurrent with burst */
-  const pageStart = performance.now();
-  let last = pageStart;
+  const FLASH_MS = 420, ZOOM_MS = 1100;
+  let birthStart = null;
+  let last = performance.now();
   const Y_SPEED = (Math.PI * 2) / 22;
 
   function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
@@ -544,77 +601,47 @@
   }
 
   function frame(now) {
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    let scale = 0.001, coreOpacity = 0, haloOpacity = 0, meshOpacity = 0, wireOpacity = 0, emissive = 0;
 
-    const age = (now - pageStart) / 1000;
-    const since = age - BIRTH_DELAY;
-
-    let scale = 0.001;
-    let coreOp = 0, haloOp = 0, burstOp = 0;
-    let meshOp = 0, wireOp = 0, emissive = 0;
-    let assemble = 0;
-
-    if (since >= 0) {
-      const ms = since * 1000;
-      const flashT = Math.min(1, ms / FLASH_MS);
-      const burstT = Math.min(1, Math.max(0, (ms - FLASH_MS * 0.35) / BURST_MS));
-      const zoomT = Math.min(1, Math.max(0, (ms - FLASH_MS * 0.2) / ZOOM_MS));
-
-      const flashPulse = Math.max(0, Math.sin(flashT * Math.PI * 3.5)) * (1 - flashT * 0.4);
-      const flashBoost = flashPulse * (1 - burstT * 0.85);
-
-      assemble = easeOutCubic(burstT);
-
-      /* rapid zoom from seed → full */
-      const seed = 0.05 + flashBoost * 0.06;
-      scale = seed + (1 - seed) * easeOutCubic(zoomT);
-
-      coreOp = (0.98 + 0.02 * flashBoost) * (1 - smoothstep(0.25, 0.85, burstT));
-      haloOp = (0.55 + 0.4 * flashBoost) * (1 - smoothstep(0.1, 0.7, burstT));
-      burstOp = smoothstep(0.05, 0.25, burstT) * (1 - smoothstep(0.55, 1, burstT)) * 0.95
-               + smoothstep(0.2, 0.6, burstT) * 0.35;
-      meshOp = 0.55 * smoothstep(0.35, 0.9, burstT);
-      wireOp = 0.72 * smoothstep(0.4, 0.95, burstT);
-      emissive = (3.2 + 5 * flashBoost) * (1 - smoothstep(0.3, 0.95, burstT))
-               + 0.35 * smoothstep(0.7, 1, burstT);
+    if (birthStart != null) {
+      const since = now - birthStart;
+      const flashT = Math.min(1, since / FLASH_MS);
+      const zoomT = Math.min(1, Math.max(0, (since - FLASH_MS) / ZOOM_MS));
+      const flashPulse = Math.sin(flashT * Math.PI * 3.2) * (1 - flashT * 0.35);
+      const flashBoost = Math.max(0, flashPulse) * (1 - zoomT);
+      const seedScale = 0.045 + flashBoost * 0.04;
+      scale = seedScale + (1 - seedScale) * easeOutCubic(zoomT);
+      coreOpacity = (0.95 + 0.05 * flashBoost) * (1 - smoothstep(0.35, 0.95, zoomT));
+      haloOpacity = (0.5 + 0.45 * flashBoost) * (1 - smoothstep(0.2, 0.85, zoomT));
+      meshOpacity = 0.55 * smoothstep(0.15, 0.75, zoomT);
+      wireOpacity = 0.7 * smoothstep(0.25, 0.9, zoomT);
+      emissive = (2.8 + 4.5 * flashBoost) * (1 - smoothstep(0.4, 1, zoomT)) + 0.35 * smoothstep(0.6, 1, zoomT);
     }
-
-    /* particulate digitize: vertices expand from center → shell */
-    const arr = burstGeo.attributes.position.array;
-    for (let i = 0; i < targetCount; i++) {
-      const j = i * 3;
-      /* slight stagger by index so it reads as a wave, not a rigid scale */
-      const lag = (i % 17) / 17;
-      const local = smoothstep(lag * 0.35, lag * 0.35 + 0.65, assemble);
-      arr[j]     = targets[j] * local;
-      arr[j + 1] = targets[j + 1] * local;
-      arr[j + 2] = targets[j + 2] * local;
-    }
-    burstGeo.attributes.position.needsUpdate = true;
 
     group.scale.setScalar(scale);
     group.rotation.y += Y_SPEED * dt;
     group.rotation.x = 0.25;
-
-    coreMat.opacity = coreOp;
-    haloMat.opacity = haloOp;
-    burstMat.opacity = burstOp;
-    burstMat.size = 0.04 + 0.04 * (1 - assemble);
-    bodyMat.opacity = meshOp;
+    coreMat.opacity = coreOpacity;
+    haloMat.opacity = haloOpacity;
+    bodyMat.opacity = meshOpacity;
     bodyMat.emissiveIntensity = emissive;
-    wireMat.opacity = wireOp;
-    wireOuterMat.opacity = wireOp * 0.55;
-    pointsMat.opacity = wireOp * 0.85;
-
-    core.visible = coreOp > 0.01;
-    halo.visible = haloOp > 0.01;
-    burst.visible = burstOp > 0.01;
-
+    wireMat.opacity = wireOpacity;
+    wireOuterMat.opacity = wireOpacity * 0.55;
+    pointsMat.opacity = wireOpacity * 0.9;
+    core.visible = coreOpacity > 0.01;
+    halo.visible = haloOpacity > 0.01;
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+
+  function onLive() {
+    /* geo birth slightly after logo starts assembling */
+    setTimeout(function () { birthStart = performance.now(); }, 2200);
+  }
+  if (document.body.classList.contains('is-live')) onLive();
+  window.addEventListener('site-live', onLive);
 
   function onResize() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
