@@ -129,13 +129,22 @@
     display:flex;flex-direction:column;
     align-items:center;justify-content:center;width:100%;
   }
+  /* Mark sized by the art — full width, height from aspect (no empty pad box) */
   .logo-stage{
-    width:min(98vw, 88rem);
-    height:clamp(14rem, 56vw, 22rem);
-    margin:0 0 0.15rem;flex-shrink:0;
+    width:min(96vw, 44rem);
+    height:auto;
+    aspect-ratio:630 / 160;
+    margin:0 0 0.35rem;
+    flex-shrink:0;
   }
-  .logo-stage img{width:100%;height:100%;object-fit:contain;display:block}
-  .motto{margin:0.15rem 0 0.55rem}
+  .logo-stage img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    display:block;
+  }
+  .motto{margin:0.1rem 0 0.55rem}
   .motto p{
     font-size:clamp(0.95rem, 3.2vw, 1.15rem);
     font-weight:600;color:var(--fg-soft);line-height:1.35;margin:0;
@@ -195,7 +204,7 @@
     <main>
       <div class="stack">
         <div class="logo-stage">
-          <img src="brand/logo-dna-x.svg" alt="DualisCapax" width="900" height="200"/>
+          <img src="brand/logo-dna-x.svg" alt="DualisCapax" width="630" height="160"/>
         </div>
         <div class="motto">
           <p>All haters welcome.</p>
@@ -283,7 +292,6 @@
     }
   }
 
-  /* Hard bang at the visual moment — sound + haptic together */
   function fireBang(){
     const ctx=ensureCtx();
     buzz([50, 18, 70, 14, 40, 12, 25]);
@@ -292,7 +300,6 @@
     try{
       const now=ctx.currentTime;
 
-      // Keep residual present and push it up for the hit
       if(gain){
         gain.gain.cancelScheduledValues(now);
         const cur=Math.max(gain.gain.value, 0.0001);
@@ -301,7 +308,6 @@
         gain.gain.exponentialRampToValueAtTime(0.18, now+0.9);
       }
 
-      // Short sub impact
       const boom=ctx.createOscillator();
       const boomGain=ctx.createGain();
       boom.type='sine';
@@ -315,7 +321,6 @@
       boom.start(now);
       boom.stop(now+0.75);
 
-      // Noise crack for the edge of the bang
       const frames=Math.floor(ctx.sampleRate*0.18);
       const buffer=ctx.createBuffer(1, frames, ctx.sampleRate);
       const data=buffer.getChannelData(0);
@@ -397,7 +402,6 @@
     seed.classList.add('is-gone');
     try{ video.playbackRate = PLAYBACK_RATE; }catch(e){}
 
-    // Ensure residual is alive, then hit the bang
     startResidual();
     ensureCtx();
     fireBang();
@@ -416,7 +420,6 @@
     setTimeout(startVideo, 1200);
   }
 
-  // Unlock audio on first real input (browser policy) — no UI prompt
   function unlock(){
     ensureCtx();
     startResidual();
