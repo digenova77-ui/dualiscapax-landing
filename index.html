@@ -286,12 +286,6 @@
   const PLAYBACK_RATE = 2;
   const CROSSFADE_AT = 0.74;
 
-  function buzz(pattern){
-    try{
-      if(typeof navigator.vibrate==='function') navigator.vibrate(pattern);
-    }catch(e){}
-  }
-
   function ensureCtx(){
     try{
       const AC=window.AudioContext||window.webkitAudioContext;
@@ -343,7 +337,6 @@
 
   function fireBang(){
     const ctx=ensureCtx();
-    buzz([50, 18, 70, 14, 40, 12, 25]);
 
     if(!ctx) return;
     try{
@@ -430,7 +423,6 @@
       smoke.classList.add('is-on');
       intro.classList.add('is-out');
       document.body.classList.add('is-live');
-      setTimeout(function(){ buzz([12, 40, 10]); }, 500);
 
       setTimeout(function(){
         smoke.classList.add('is-clear');
