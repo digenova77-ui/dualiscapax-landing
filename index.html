@@ -13,121 +13,84 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      width: 100%;
-      min-height: 100%;
       background: #030308;
       color: #f5f5f5;
       font-family: Inter, system-ui, sans-serif;
-      overflow-x: hidden;
-    }
-    .page {
-      min-height: 100dvh;
-      display: grid;
-      grid-template-rows: auto minmax(55dvh, 75dvh) auto;
     }
 
-    /* One pure row: logo + nav */
+    /* Strict document flow: header → dome → words */
     .top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.65rem;
-      min-height: 3.25rem;
-      padding:
-        calc(0.85rem + env(safe-area-inset-top))
-        0.9rem
-        0.65rem;
-      position: relative;
-      z-index: 3;
+      padding: calc(0.85rem + env(safe-area-inset-top)) 0.9rem 0.75rem;
     }
     .brand {
-      flex: 0 1 auto;
-      min-width: 0;
       font-size: clamp(1.05rem, 3.8vw, 1.55rem);
       font-weight: 800;
       letter-spacing: -0.03em;
-      color: rgba(255,255,255,0.96);
+      color: #fff;
       text-decoration: none;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1;
     }
     .menu {
-      flex: 0 0 auto;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-      align-items: center;
-      justify-content: flex-end;
       gap: 0.35rem;
     }
     .menu a {
-      color: rgba(255,255,255,0.86);
+      color: rgba(255,255,255,0.88);
       text-decoration: none;
       font-size: clamp(0.72rem, 2.5vw, 0.9rem);
       font-weight: 600;
-      line-height: 1;
       padding: 0.48rem 0.62rem;
       border: 1px solid rgba(255,255,255,0.16);
       border-radius: 999px;
-      background: rgba(0,0,0,0.28);
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.3);
       white-space: nowrap;
     }
-    @media (min-width: 480px) {
-      .menu { gap: 0.45rem; }
-      .menu a { padding: 0.5rem 0.78rem; }
-    }
-    @media (min-width: 720px) {
-      .top { padding-left: 1.25rem; padding-right: 1.25rem; }
-      .menu { gap: 0.55rem; }
-      .menu a {
-        font-size: 0.92rem;
-        padding: 0.55rem 0.9rem;
-      }
-    }
 
-    .stage-wrap {
-      position: relative;
-      min-height: 55dvh;
+    /* Dome only lives in this box — 75% viewport height max */
+    .dome {
+      width: 100%;
+      height: 75vh;
       height: 75dvh;
       max-height: 75dvh;
+      background: #030308;
+      overflow: hidden;
+      position: relative;
     }
-    #stage {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+    .dome canvas {
+      width: 100% !important;
+      height: 100% !important;
       display: block;
     }
 
-    .under {
-      padding: 1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom));
+    /* Words are in normal flow BELOW the dome box */
+    .words {
+      width: 100%;
+      padding: 1.5rem 1.25rem calc(1.75rem + env(safe-area-inset-bottom));
       text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      background: linear-gradient(180deg, rgba(8,8,14,0.96), #030308);
+      background: #030308;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
-    .copy {
-      display: grid;
-      gap: 0.55rem;
-      justify-items: center;
-      margin: 0 auto 1.1rem;
-      max-width: min(90vw, 24rem);
-    }
-    .subtitle {
+    .words .subtitle {
       font-size: clamp(1rem, 3.8vw, 1.15rem);
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.72);
+      margin-bottom: 0.45rem;
     }
-    .title {
+    .words .title {
       font-size: clamp(2rem, 7.5vw, 3.1rem);
       line-height: 1.05;
       font-weight: 800;
       letter-spacing: -0.03em;
       text-transform: uppercase;
+      margin-bottom: 1.1rem;
     }
     .audio-bar {
       display: flex;
@@ -139,52 +102,47 @@
       font: inherit;
       font-size: 0.85rem;
       font-weight: 700;
-      color: #0a0a0c;
-      background: #fff;
-      border: 0;
       border-radius: 999px;
       padding: 0.7rem 1rem;
+      border: 0;
       cursor: pointer;
     }
-    .audio-bar button.ghost {
+    #btn-narrate { background: #fff; color: #0a0a0c; }
+    #btn-stop {
+      background: transparent;
       color: rgba(255,255,255,0.85);
-      background: rgba(0,0,0,0.3);
       border: 1px solid rgba(255,255,255,0.18);
     }
     .status {
-      margin-top: 0.65rem;
+      margin-top: 0.7rem;
       font-size: 0.75rem;
       color: rgba(255,255,255,0.42);
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header class="top">
-      <a class="brand" href="index.html">DualisCapax</a>
-      <nav class="menu" aria-label="Primary">
-        <a href="corporate.html">Financial</a>
-        <a href="research/">Research</a>
-        <a href="ai/chat.html">AI</a>
-      </nav>
-    </header>
+  <header class="top">
+    <a class="brand" href="index.html">DualisCapax</a>
+    <nav class="menu" aria-label="Primary">
+      <a href="corporate.html">Financial</a>
+      <a href="research/">Research</a>
+      <a href="ai/chat.html">AI</a>
+    </nav>
+  </header>
 
-    <section class="stage-wrap" aria-label="Residual dome">
-      <canvas id="stage"></canvas>
-    </section>
+  <section class="dome" aria-label="Residual dome">
+    <canvas id="stage"></canvas>
+  </section>
 
-    <section class="under">
-      <div class="copy">
-        <p class="subtitle">No Tribes Preferred.</p>
-        <h1 class="title">Truth Prevails.</h1>
-      </div>
-      <div class="audio-bar">
-        <button type="button" id="btn-narrate">Play narration</button>
-        <button type="button" class="ghost" id="btn-stop">Stop</button>
-      </div>
-      <p class="status" id="status">Dome above · words below</p>
-    </section>
-  </div>
+  <section class="words">
+    <p class="subtitle">No Tribes Preferred.</p>
+    <h1 class="title">Truth Prevails.</h1>
+    <div class="audio-bar">
+      <button type="button" id="btn-narrate">Play narration</button>
+      <button type="button" id="btn-stop">Stop</button>
+    </div>
+    <p class="status" id="status">Dome above · words below</p>
+  </section>
 
   <script type="importmap">
   {
@@ -194,12 +152,25 @@
   }
   </script>
   <script type="module">
-    import { startMaxEngine } from './js/max-engine.js';
+    import { startMaxEngine } from './js/max-engine.js?v=75';
 
     const status = document.getElementById('status');
-    const engine = startMaxEngine(document.getElementById('stage'), {
+    const canvas = document.getElementById('stage');
+    const engine = startMaxEngine(canvas, {
       narratorUrl: './assets/audio/narrator.mp3'
     });
+
+    // Force resize to the dome box, not the full window
+    function fit() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * Math.min(devicePixelRatio, 2));
+      canvas.height = Math.floor(rect.height * Math.min(devicePixelRatio, 2));
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      window.dispatchEvent(new Event('resize'));
+    }
+    fit();
+    window.addEventListener('resize', fit);
 
     document.getElementById('btn-narrate').addEventListener('click', async () => {
       const result = await engine.playNarration();
