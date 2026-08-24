@@ -7,16 +7,14 @@
 <title>DualisCapax</title>
 <meta name="theme-color" content="#020203">
 <link rel="icon" href="brand/emblem-helix.svg">
-<link rel="stylesheet" href="skin/default.css?v=ux2">
+<link rel="stylesheet" href="skin/default.css?v=ux3">
 </head>
 <body>
 <canvas id="webgl"></canvas>
 <img class="em mobile-only" src="brand/emblem-helix.svg" alt="">
 
-<!-- MOBILE: gist, video, onboard -->
 <div class="ui mobile-only" id="mobile"></div>
 
-<!-- DESKTOP: full information -->
 <div class="ui desktop-only desk" id="desktop">
   <nav class="desk-nav" id="desk-nav"><div class="mark">DualisCapax</div></nav>
   <div class="desk-read" id="desk-read"></div>
@@ -41,6 +39,9 @@ async function boot() {
       a.href = l.href; a.textContent = l.label;
       nav.appendChild(a);
     });
+    const chat = document.createElement('a');
+    chat.href = 'ai/chat.html'; chat.textContent = 'AI chat';
+    nav.appendChild(chat);
     let h = '';
     h += '<div class="brand">' + data.brand + '</div>';
     h += '<p class="tag">' + data.tag + '</p>';
@@ -51,7 +52,7 @@ async function boot() {
     });
     document.getElementById('desk-read').innerHTML = h;
   } else {
-    const m = await (await fetch('content/mobile.json?v=1')).json();
+    const m = await (await fetch('content/mobile.json?v=2')).json();
     let h = '<div class="m-shell">';
     h += '<div class="m-brand">' + m.brand + '</div>';
     h += '<p class="m-gist">' + m.gist + '</p>';
@@ -60,7 +61,8 @@ async function boot() {
       h += '<div class="m-beat"><strong>' + b.title + '</strong><span>' + b.line + '</span></div>';
     });
     h += '</div><div class="m-actions">';
-    h += '<a class="m-btn primary" href="' + m.cta_video.href + '">' + m.cta_video.label + '</a>';
+    h += '<a class="m-btn primary" href="' + m.cta_chat.href + '">' + m.cta_chat.label + '</a>';
+    h += '<a class="m-btn secondary" href="' + m.cta_video.href + '">' + m.cta_video.label + '</a>';
     h += '<a class="m-btn secondary" href="' + m.cta_onboard.href + '">' + m.cta_onboard.label + '</a>';
     h += '</div></div>';
     document.getElementById('mobile').innerHTML = h;
