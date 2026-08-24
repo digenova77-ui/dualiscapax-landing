@@ -2,5 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- truncated for tool - will use alternative -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>DualisCapax</title>
+  <meta name="theme-color" content="#050505" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root { color-scheme: dark; --fg: #f5f5f5; --fg-soft: rgba(245,245,245,0.72); --quark: #7eb6ff; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { font-family: Inter, system-ui, sans-serif; background: #000; color: var(--fg); overflow: hidden; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    .shell { height: 100dvh; max-width: 48rem; margin: 0 auto; padding: max(0.75rem, env(safe-area-inset-top)) 1rem max(0.85rem, env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
+    header nav { display: flex; justify-content: space-between; width: 100%; }
+    header nav a { font-size: 0.88rem; font-weight: 600; color: rgba(245,245,245,0.75); }
+    main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .logo-stage { width: min(96vw, 44rem); height: clamp(7rem, 28vw, 11rem); margin-bottom: 0.2rem; }
+    .logo-stage img { width: 100%; height: 100%; object-fit: contain; }
+    .geo-wrap { width: min(48vw, 160px); height: min(48vw, 160px); margin-bottom: 0.8rem; }
+    #geo-earth { width: 100%; height: 100%; display: block; }
+    h1 { font-size: clamp(2.4rem, 10vw, 4.2rem); font-weight: 900; line-height: 0.9; letter-spacing: -0.05em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .line { font-size: clamp(0.95rem, 3.2vw, 1.12rem); font-weight: 600; color: var(--fg-soft); margin: 0 0 0.1rem; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <nav aria-label="Primary">
+        <a href="corporate.html">Financial</a>
+        <a href="ai/">Tech</a>
+        <a href="research/">Research + AI</a>
+      </nav>
+    </header>
+    <main>
+      <div class="logo-stage">
+        <img src="brand/logo-dna-x.svg" alt="DualisCapax" width="900" height="200" />
+      </div>
+      <div class="geo-wrap">
+        <canvas id="geo-earth" width="360" height="360"></canvas>
+      </div>
+      <h1>Truth<br>Prevails</h1>
+      <p class="line">Residual Law Finance.</p>
+      <p class="line">Cutting Edge Technology.</p>
+      <p class="line">Adaptive AI.</p>
+      <p class="line">Research.</p>
+    </main>
+  </div>
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
+  <script type="module">
+  import * as THREE from 'three';
+  const canvas = document.getElementById('geo-earth');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  renderer.setClearColor(0x000000, 0);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 20);
+  camera.position.z = 3.55;
+  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+  const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(2.4, 1.6, 3); scene.add(key);
+  const geo = new THREE.IcosahedronGeometry(0.92, 2);
+  const body = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x6a7a88, flatShading: true, metalness: 0.35, roughness: 0.35, transparent: true, opacity: 0.55, depthWrite: false }));
+  const wire = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 1), new THREE.LineBasicMaterial({ color: 0xd0d8e0, transparent: true, opacity: 0.7 }));
+  const group = new THREE.Group(); group.add(body); group.add(wire); scene.add(group);
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    group.rotation.y += (Math.PI * 2 / 22) * dt;
+    group.rotation.x = 0.25;
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  function onResize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (w < 1 || h < 1) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', onResize); onResize();
+  </script>
+</body>
 </html>
