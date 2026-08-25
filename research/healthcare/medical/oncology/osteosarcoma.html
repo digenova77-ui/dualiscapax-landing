@@ -26,6 +26,8 @@
     .phase-links { display: flex; flex-wrap: wrap; gap: 0.45rem; }
     .phase-links a { font-size: 0.72rem; letter-spacing: 0.04em; text-decoration: none; color: var(--accent); border: 1px solid var(--border); border-radius: 3px; padding: 0.3rem 0.55rem; }
     .phase-links a:hover { border-color: var(--accent); }
+    .v2bar { max-width: 1200px; margin: 0 auto; padding: 0.65rem 1.5rem; border-bottom: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
+    .v2bar strong { color: var(--fg); }
     .layout { display: grid; grid-template-columns: 1fr minmax(300px, 380px); max-width: 1200px; margin: 0 auto; min-height: 60vh; }
     @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
     .main { padding: 1.5rem 1.5rem 3rem; border-right: 1px solid var(--border); }
@@ -59,7 +61,6 @@
     footer { border-top: 1px solid var(--border); padding: 1rem 1.25rem; text-align: center; font-size: 0.68rem; color: var(--muted); }
     .cite-list { font-size: 0.82rem; color: var(--muted); margin: 0.5rem 0 1rem; }
     .cite-list li { margin-bottom: 0.45rem; }
-    .cite-list a { color: var(--accent); }
   </style>
 </head>
 <body class="dc-scale-root">
@@ -83,7 +84,7 @@
       <span>Journal <strong>ED-RES-ONCO-OSTEO-001</strong></span>
       <span>MeSH-style class <strong>Bone neoplasm · osteogenic sarcoma</strong></span>
       <span>Lead agents <strong>MTX · DOX · CDDP (MAP)</strong></span>
-      <span>Prototype clone <strong>ALS height</strong></span>
+      <span>Sim <strong>osteo.dual.v2</strong></span>
     </div>
     <div class="phase-links">
       <a href="https://clinicaltrials.gov/search?cond=Osteosarcoma" target="_blank" rel="noopener">CT.gov · Osteosarcoma</a>
@@ -94,65 +95,47 @@
       <a href="https://pubchem.ncbi.nlm.nih.gov/compound/2767" target="_blank" rel="noopener">PubChem · Cisplatin</a>
     </div>
   </div>
+  <div class="v2bar"><strong>Simulation v2</strong> · engine 2P5L residual dual-path · pack <code>osteo.dual.v2</code> · full re-run · model M only</div>
   <div class="layout">
     <div class="main">
       <h2>Where research stands</h2>
-      <p class="prose">Osteosarcoma is the most common primary bone sarcoma in adolescents and young adults. Since the 1970s–80s the backbone has remained <strong>neoadjuvant / adjuvant MAP</strong> (high-dose methotrexate, doxorubicin, cisplatin) plus surgical resection of primary disease and resectable metastases. Localized disease 5-year overall survival is commonly cited in the <strong>~65–70%</strong> range in modern series; metastatic disease at diagnosis remains far worse (often <strong>~20–30%</strong> EFS in resectable metastatic cohorts; lower when unresectable).</p>
-      <p class="prose">Intensification after poor histologic response (e.g. MAPIE in EURAMOS-1) did not improve outcomes enough to displace MAP as the default North American / European standard for localized disease. Adult-oriented trials continue to test whether high-dose methotrexate can be moderated (e.g. doxorubicin/cisplatin vs MAP in older adults).</p>
-      <h2>How DualisCapax helps</h2>
-      <p class="prose">Public residual is dense: survival bands, regimen comparisons, necrosis grading, and trial IDs stay visible. DualisCapax projected rows use the same comparison schema as the ALS prototype — model-labeled, not presented as regulatory findings. Deeper sim packs attach when depth is live.</p>
-      <h2>Clinical snapshot</h2>
-      <div class="facts">
-        <div class="fact"><label>Standard backbone</label>MAP ± surgery (neoadjuvant / adjuvant)</div>
-        <div class="fact"><label>Localized 5-year OS (typical band)</label>~65–70% (series-dependent)</div>
-        <div class="fact"><label>Metastatic at diagnosis</label>Markedly lower; resectability critical</div>
-        <div class="fact"><label>Lead structures (pane)</label>Methotrexate CID 126941</div>
-      </div>
+      <p class="prose">Osteosarcoma is the most common primary bone sarcoma in adolescents and young adults. Since the 1970s–80s the backbone has remained <strong>neoadjuvant / adjuvant MAP</strong> (high-dose methotrexate, doxorubicin, cisplatin) plus surgical resection. Localized 5-year OS is commonly <strong>~65–70%</strong>; metastatic disease remains far worse (~20–30% EFS when resectable).</p>
       <h2>Comparison table</h2>
+      <p class="prose"><strong>v2 re-run scores</strong> (model M residual compression): MAP 58 · Surgery alone 8 · MAPIE 40.</p>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Approach</th><th>Phase / status</th><th>Real-world residual (public)</th><th>DualisCapax projected</th><th>Same principle</th></tr>
+            <tr><th>Approach</th><th>Phase / status</th><th>Real-world residual (public)</th><th>DualisCapax projected (v2)</th><th>Same principle</th></tr>
           </thead>
           <tbody>
-            <tr><td>MAP (MTX + DOX + CDDP)</td><td>Standard of care</td><td>Localized OS ~65–70% band; backbone since multi-agent era; AE profile known</td><td>—</td><td class="no">No</td></tr>
-            <tr><td>Surgery alone (historical)</td><td>Historical</td><td>EFS ~11% without adjuvant chemo (classic residual)</td><td>—</td><td class="no">No</td></tr>
-            <tr><td>MAPIE (poor responders)</td><td>Tested (EURAMOS-1 class)</td><td>Intensification after poor necrosis did not establish a new default over MAP</td><td>—</td><td class="no">No</td></tr>
-            <tr><td>DOX + CDDP (no HD-MTX)</td><td>Active comparative interest (adults)</td><td>Ongoing non-inferiority / toxicity questions vs MAP in older cohorts</td><td>—</td><td class="no">No</td></tr>
-            <tr><td>Metastatic multimodal</td><td>Standard + investigational</td><td>Complete ablation of primary + lung mets after chemo can yield long-term survivors; EFS often ~20–30% when resectable</td><td>—</td><td class="no">No</td></tr>
-            <tr class="dc"><td><strong>DualisCapax</strong></td><td>Prototype schema</td><td>—</td><td>Simulation / AI layer (pack depth pending)</td><td>—</td></tr>
+            <tr><td>MAP (MTX + DOX + CDDP)</td><td>Standard of care</td><td>Localized OS ~65–70% band; multi-agent backbone</td><td>v2 M: strong vs surgery alone · score 58</td><td class="no">No</td></tr>
+            <tr><td>Surgery alone (historical)</td><td>Historical</td><td>EFS ~11% without adjuvant chemo</td><td>v2 M: failed modern floor · score 8</td><td class="no">No</td></tr>
+            <tr><td>MAPIE (poor responders)</td><td>Tested (EURAMOS-1 class)</td><td>Did not displace MAP as default</td><td>v2 M: incremental · score 40 · intensity ≠ compression</td><td class="no">No</td></tr>
+            <tr><td>DOX + CDDP (no HD-MTX)</td><td>Active comparative interest</td><td>Adult toxicity / non-inferiority questions vs MAP</td><td>v2 M: open · adult residual tradeoff</td><td class="no">No</td></tr>
+            <tr><td>Metastatic multimodal</td><td>Standard + investigational</td><td>Resectable mets EFS often ~20–30%</td><td>v2 M: resectability dominates residual</td><td class="no">No</td></tr>
+            <tr class="dc"><td><strong>DualisCapax</strong></td><td>Open residual · v2</td><td>—</td><td>v2 M: constraint-bottom · stage/resectability declared · pack osteo.dual.v2</td><td>—</td></tr>
           </tbody>
         </table>
       </div>
-      <h2>Public residual support</h2>
-      <ul class="cite-list">
-        <li>NCI PDQ — Osteosarcoma and UPS of Bone Treatment: survival improvement 1975–2020; MAP backbone; metastatic EFS bands.</li>
-        <li>MAP meta-analyses (2022–2024 class): MAP remains preferable on balance of outcomes and AE vs many alternatives; HD-MTX debates continue in adults.</li>
-        <li>EURAMOS-era lesson: adding IE for poor responders did not rewrite the standard for localized disease.</li>
-        <li>American Cancer Society / Mayo Clinic public survival framing: stage and resectability dominate interpretation — statistics describe groups, not individuals.</li>
-      </ul>
       <h2>Go deeper</h2>
-      <a class="deep" href="https://www.cancer.gov/types/bone/hp/osteosarcoma-treatment-pdq" target="_blank" rel="noopener">→ NCI PDQ osteosarcoma (external)</a>
-      <a class="deep" href="../../library/oncology/">→ Oncology library stack</a>
-      <a class="deep" href="../../../../ai/">→ AI portal (realm)</a>
+      <a class="deep" href="../../../../research/sim/packs/osteo-dual-v2.json">→ Simulation pack v2 (JSON)</a>
+      <a class="deep" href="https://www.cancer.gov/types/bone/hp/osteosarcoma-treatment-pdq" target="_blank" rel="noopener">→ NCI PDQ</a>
+      <a class="deep" href="../../../../ai/">→ AI portal</a>
     </div>
     <aside class="pane">
       <h2>Molecule · 3D</h2>
-      <div id="viewer" title="Drag to rotate · scroll to zoom"></div>
+      <div id="viewer"></div>
       <div class="viewer-tools">
         <button type="button" id="btn-stick">Sticks</button>
         <button type="button" id="btn-sphere">Spheres</button>
-        <button type="button" id="btn-line">Lines</button>
-        <button type="button" id="btn-reset">Reset view</button>
         <button type="button" id="btn-mtx">MTX</button>
         <button type="button" id="btn-dox">DOX</button>
         <button type="button" id="btn-cddp">CDDP</button>
       </div>
-      <p class="pane-note">PubChem geometries for MAP components. Switch agent with MTX / DOX / CDDP.</p>
-      <div class="pane-meta" id="pane-meta"><strong>Methotrexate</strong><br>High-dose antifolate · MAP component<br>Catalog CID 126941</div>
+      <div class="pane-meta" id="pane-meta"><strong>Methotrexate</strong><br>CID 126941 · MAP component</div>
     </aside>
   </div>
-  <footer>DualisCapax Research Journal · Oncology · Osteosarcoma · Prototype density (ALS machine) · Not medical advice</footer>
+  <footer>DualisCapax Research Journal · Oncology · Osteosarcoma · Simulation v2 · Not medical advice</footer>
   <script>
     (function () {
       var el = document.getElementById('viewer');
@@ -161,29 +144,18 @@
       var STYLE = { stick: { colorscheme: 'Jmol', radius: 0.15 } };
       var meta = document.getElementById('pane-meta');
       var agents = {
-        mtx: { cid: 126941, html: '<strong>Methotrexate</strong><br>High-dose antifolate · MAP component<br>Catalog CID 126941' },
-        dox: { cid: 31703, html: '<strong>Doxorubicin</strong><br>Anthracycline · MAP component<br>Catalog CID 31703' },
-        cddp: { cid: 2767, html: '<strong>Cisplatin</strong><br>Platinum · MAP component<br>Catalog CID 2767' }
+        mtx: { cid: 126941, html: '<strong>Methotrexate</strong><br>CID 126941 · MAP component' },
+        dox: { cid: 31703, html: '<strong>Doxorubicin</strong><br>CID 31703 · MAP component' },
+        cddp: { cid: 2767, html: '<strong>Cisplatin</strong><br>CID 2767 · MAP component' }
       };
       function load(cid, html) {
         viewer.clear();
         if (meta) meta.innerHTML = html;
-        $3Dmol.download('cid:' + cid, viewer, {}, function () {
-          viewer.setStyle({}, STYLE);
-          viewer.zoomTo();
-          viewer.render();
-        });
-      }
-      function applyStyle(style) {
-        STYLE = style;
-        viewer.setStyle({}, style);
-        viewer.render();
+        $3Dmol.download('cid:' + cid, viewer, {}, function () { viewer.setStyle({}, STYLE); viewer.zoomTo(); viewer.render(); });
       }
       load(agents.mtx.cid, agents.mtx.html);
-      document.getElementById('btn-stick').onclick = function () { applyStyle({ stick: { colorscheme: 'Jmol', radius: 0.15 } }); };
-      document.getElementById('btn-sphere').onclick = function () { applyStyle({ sphere: { colorscheme: 'Jmol', scale: 0.3 } }); };
-      document.getElementById('btn-line').onclick = function () { applyStyle({ line: { colorscheme: 'Jmol' } }); };
-      document.getElementById('btn-reset').onclick = function () { viewer.zoomTo(); viewer.render(); };
+      document.getElementById('btn-stick').onclick = function () { viewer.setStyle({}, { stick: { colorscheme: 'Jmol', radius: 0.15 } }); viewer.render(); };
+      document.getElementById('btn-sphere').onclick = function () { viewer.setStyle({}, { sphere: { colorscheme: 'Jmol', scale: 0.3 } }); viewer.render(); };
       document.getElementById('btn-mtx').onclick = function () { load(agents.mtx.cid, agents.mtx.html); };
       document.getElementById('btn-dox').onclick = function () { load(agents.dox.cid, agents.dox.html); };
       document.getElementById('btn-cddp').onclick = function () { load(agents.cddp.cid, agents.cddp.html); };
