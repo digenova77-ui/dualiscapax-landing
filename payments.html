@@ -46,10 +46,40 @@ li::before{content:"";position:absolute;left:0;top:0.55em;width:0.4rem;height:0.
 .pay h2{margin:0 0 0.55rem;font-size:1.15rem}
 .pay p{font-size:0.95rem;margin-bottom:0.55rem}
 .pay p:last-child{margin-bottom:0}
-.cta-row{display:flex;flex-wrap:wrap;gap:0.65rem;margin-top:1.4rem}
-.cta{display:inline-block;padding:0.85rem 1.25rem;border:1px solid rgba(245,245,245,0.35);border-radius:999px;font-weight:700;font-size:0.95rem}
-.cta.primary{background:#f5f5f5;color:#050505;border-color:#f5f5f5;opacity:0.55;pointer-events:none}
+.cta-row{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0.65rem;
+  margin-top:1.4rem;
+  width:100%;
+}
+.cta{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:2.9rem;
+  padding:0.75rem 0.85rem;
+  border:1px solid rgba(245,245,245,0.35);
+  border-radius:999px;
+  font-weight:700;
+  font-size:0.9rem;
+  line-height:1.2;
+  text-align:center;
+  box-sizing:border-box;
+}
+.cta.primary{
+  background:#f5f5f5;
+  color:#050505;
+  border-color:#f5f5f5;
+  opacity:0.55;
+  pointer-events:none;
+}
 .cta.primary.is-open{opacity:1;pointer-events:auto}
+@media (min-width:560px){
+  .cta-row{grid-template-columns:repeat(3, minmax(0, 1fr))}
+  .cta{font-size:0.82rem;padding:0.75rem 0.5rem}
+}
 .note{margin-top:1.75rem;padding-top:1rem;border-top:1px solid rgba(245,245,245,0.14);font-size:0.86rem;color:rgba(245,245,245,0.55)}
 </style>
 </head>
@@ -116,7 +146,6 @@ li::before{content:"";position:absolute;left:0;top:0.55em;width:0.4rem;height:0.
 </div>
 <script>
 (function(){
-  // When open, set window.DC_PAY_LINK = 'https://buy.stripe.com/...'; and flip the button.
   var link = (typeof window.DC_PAY_LINK === 'string' && window.DC_PAY_LINK) || '';
   var btn = document.getElementById('pay-cta');
   if (!btn) return;
