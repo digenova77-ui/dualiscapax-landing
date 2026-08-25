@@ -9,13 +9,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>:root {
+  <style>
+:root {
   --bg: #050505;
   --fg: #f5f5f5;
   --muted: rgba(245,245,245,0.55);
   --faint: rgba(245,245,245,0.28);
   --line: rgba(255,255,255,0.09);
   --white: #ffffff;
+  --sprite: #7eb6ff;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -26,8 +28,41 @@ body {
 }
 a { color: inherit; text-decoration: none; }
 .site { max-width: 42rem; margin: 0 auto; padding: 0 1.5rem; min-height: 100dvh; display: flex; flex-direction: column; }
-header { display: flex; align-items: center; justify-content: space-between; padding: 1.35rem 0; border-bottom: 1px solid var(--line); gap: 1rem; }
-.mark { font-size: 0.9rem; font-weight: 700; letter-spacing: -0.03em; }
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.35rem 0; border-bottom: 1px solid var(--line); gap: 1rem;
+}
+/* Logo: text + CSS sprite glyph — slightly larger than before */
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+/* Pure CSS sprite sheet: 3 states on one element via background-position */
+.mark-sprite {
+  width: 1.45rem;
+  height: 1.45rem;
+  flex-shrink: 0;
+  display: block;
+  border-radius: 3px;
+  background-image:
+    linear-gradient(135deg, transparent 42%, var(--sprite) 42%, var(--sprite) 58%, transparent 58%),
+    linear-gradient(45deg, transparent 42%, rgba(245,245,245,0.85) 42%, rgba(245,245,245,0.85) 58%, transparent 58%),
+    radial-gradient(circle at 50% 50%, var(--sprite) 0 18%, transparent 19%);
+  background-size: 100% 100%, 100% 100%, 100% 100%;
+  background-position: 0 0, 0 0, 0 0;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 10px 1px rgba(126, 182, 255, 0.25);
+  animation: sprite-glint 3.6s ease-in-out infinite;
+}
+@keyframes sprite-glint {
+  0%, 100% { filter: brightness(1); box-shadow: 0 0 10px 1px rgba(126, 182, 255, 0.2); }
+  50% { filter: brightness(1.25); box-shadow: 0 0 14px 2px rgba(126, 182, 255, 0.4); }
+}
 nav { display: flex; gap: 1.25rem; flex-wrap: wrap; }
 nav a { font-size: 0.8rem; font-weight: 500; color: var(--muted); transition: color 0.15s ease; }
 nav a:hover, nav a.on { color: var(--fg); }
@@ -55,19 +90,22 @@ section p:last-child, .body p:last-child { margin-bottom: 0; }
 .list .t { font-size: 1.05rem; font-weight: 500; color: var(--fg); }
 .list .d { font-size: 0.92rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.45; }
 footer { padding: 2.25rem 0 2.75rem; border-top: 1px solid var(--line); font-size: 0.75rem; color: var(--faint); text-align: center; }
-@media (min-width: 480px) { .cta-row { flex-direction: row; } }</style>
+@media (min-width: 480px) { .cta-row { flex-direction: row; } }
+  </style>
 </head>
 <body>
   <div class="site">
     <header>
-      <a href="../../index.html" class="mark">DualisCapax</a>
+      <a href="../../index.html" class="mark">
+        <span class="mark-sprite" aria-hidden="true"></span>
+        DualisCapax
+      </a>
       <nav>
         <a href="../../research/" class="on">Research</a>
-        <a href="../../corporate.html" class="">Financial</a>
-        <a href="../../ai/" class="">AI</a>
+        <a href="../../corporate.html">Financial</a>
+        <a href="../../ai/">AI</a>
       </nav>
     </header>
-    
     <main class="page-hero">
       <div class="eyebrow">Research</div>
       <h1>Healthcare</h1>
