@@ -1,26 +1,32 @@
 {
   "jacket": "access.dual.v2",
   "list_currency": "CAD",
-  "mode": "test",
-  "note": "Paste buy.stripe.com URLs only. Never put sk_ keys here.",
+  "mode": "closed",
+  "open": false,
+  "closed_as_of": "2026-08-24",
+  "closed_reason": "Pricing structure not final. Paid access stays closed until IP protection is in place.",
+  "note": "Do not wire live Payment Links while open=false. Public residual prose remains readable.",
   "skus": {
     "leaf": {
       "name": "Single leaf pack",
-      "cad": 49,
+      "cad": null,
       "stripe_payment_link": null,
-      "crypto_equal_cad": true
+      "crypto_equal_cad": true,
+      "status": "closed"
     },
     "branch": {
       "name": "Branch access (12 mo)",
-      "cad": 149,
+      "cad": null,
       "stripe_payment_link": null,
-      "crypto_equal_cad": true
+      "crypto_equal_cad": true,
+      "status": "closed"
     },
     "library": {
       "name": "Full residual library (12 mo)",
-      "cad": 499,
+      "cad": null,
       "stripe_payment_link": null,
-      "crypto_equal_cad": true
+      "crypto_equal_cad": true,
+      "status": "closed"
     }
   }
 }
