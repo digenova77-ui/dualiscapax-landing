@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ALS — DualisCapax Research Journal</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.1.0/3Dmol-min.js"></script>
+  <link rel="stylesheet" href="../../../../assets/text-scale.css"/>
   <style>
     :root {
       --bg: #000; --fg: #fff; --muted: #8a8a8a; --border: #222;
@@ -20,7 +21,7 @@
     body {
       background: var(--bg); color: var(--fg);
       font-family: system-ui, -apple-system, sans-serif;
-      min-height: 100vh; line-height: 1.55;
+      min-height: 100vh; line-height: 1.6; font-size: 16px;
     }
     .crumbs {
       border-bottom: 1px solid var(--border);
@@ -37,10 +38,10 @@
       max-width: 1200px; margin: 0 auto;
     }
     .disease-bar h1 {
-      font-size: 1.45rem; letter-spacing: 0.03em; margin-bottom: 0.35rem;
+      font-size: 1.65rem; letter-spacing: 0.03em; margin-bottom: 0.35rem;
     }
     .class-line {
-      font-size: 0.8rem; color: var(--muted); margin-bottom: 0.85rem;
+      font-size: 0.95rem; color: var(--muted); margin-bottom: 0.85rem;
     }
     .catalog {
       display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem;
@@ -80,7 +81,7 @@
     }
     h2:first-child { margin-top: 0; }
     .prose {
-      font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem;
+      font-size: 1.05rem; color: var(--muted); margin-bottom: 0.75rem;
     }
     .prose strong { color: var(--fg); font-weight: 600; }
     .facts {
@@ -89,14 +90,14 @@
     @media (max-width: 600px) { .facts { grid-template-columns: 1fr; } }
     .fact {
       border: 1px solid var(--border); border-radius: 6px;
-      padding: 0.65rem 0.8rem; font-size: 0.8rem;
+      padding: 0.7rem 0.85rem; font-size: 0.92rem;
     }
     .fact label {
       display: block; font-size: 0.65rem; color: var(--muted);
       letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem;
     }
     .table-wrap { overflow-x: auto; margin: 0.5rem 0 1rem; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
     th, td {
       border: 1px solid var(--border); padding: 0.5rem 0.65rem; text-align: left;
     }
@@ -146,7 +147,7 @@
     }
   </style>
 </head>
-<body>
+<body class="dc-scale-root">
   <nav class="crumbs">
     <a href="../../../../index.html">DUALISCAPAX</a>
     <span style="color:var(--border)">/</span>
@@ -336,5 +337,6 @@
       };
     })();
   </script>
+  <script src="../../../../assets/text-scale.js" defer></script>
 </body>
 </html>
