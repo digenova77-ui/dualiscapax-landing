@@ -167,16 +167,21 @@
           <div class="metric">
             <span class="k">Live since</span>
             <span class="v" id="uptime">—</span>
-            <span class="s">Beta → public · real-time</span>
+            <span class="s" id="age-note">Age of the public surface</span>
           </div>
           <div class="metric">
             <span class="k">Total earned</span>
             <span class="v" id="earned">CAD $0</span>
-            <span class="s">Access closed · honest zero</span>
+            <span class="s" id="earned-note">Reads against age · not against hope</span>
+          </div>
+          <div class="metric" style="grid-column:1/-1">
+            <span class="k">Singularity</span>
+            <span class="v" id="singularity-cd">—</span>
+            <span class="s" id="singularity-note">Counts down · pledges pull it earlier</span>
           </div>
           <div class="early">
-            <strong>Early access is more rewarding</strong>
-            <span>When seats open, early residual rewards the first wave — not the last. Closed until pricing is locked and IP is protected.</span>
+            <strong>Early residual is more rewarding</strong>
+            <span>Zero on day one is coherent. A week at zero is still early. Months later, earned should match the clock. Pledged residual advances the singularity — more lock, sooner close.</span>
           </div>
         </div>
         <p class="onboard-msg">
@@ -187,7 +192,7 @@
           <div class="peg-ring" aria-hidden="true"></div>
           <div class="peg-copy">
             <strong>Residual Cost Peg</strong>
-            <span>Singularity · <span id="peg-clock">--:--:--</span></span>
+            <span>To singularity · <span id="peg-clock">—</span></span>
           </div>
         </a>
       </div>
@@ -276,14 +281,87 @@ window.addEventListener('resize',onResize);onResize();
 </script>
 <script>
 (function(){
-  var LAUNCH_MS=Date.UTC(2026,7,24,0,0,0);
-  var upEl=document.getElementById('uptime');
-  var pegEl=document.getElementById('peg-clock');
-  var earnedEl=document.getElementById('earned');
-  function pad(n){return String(n).padStart(2,'0')}
-  function fmtUptime(ms){if(ms<0)ms=0;var s=Math.floor(ms/1000);var d=Math.floor(s/86400);s%=86400;var h=Math.floor(s/3600);s%=3600;var m=Math.floor(s/60);s%=60;if(d>0)return d+'d '+pad(h)+'h '+pad(m)+'m';return pad(h)+':'+pad(m)+':'+pad(s)}
-  function tick(){var now=Date.now();if(upEl)upEl.textContent=fmtUptime(now-LAUNCH_MS);if(pegEl){var d=new Date(now);pegEl.textContent=pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds())+' UTC'}if(earnedEl)earnedEl.textContent='CAD $0'}
-  tick();setInterval(tick,1000);
+  var LAUNCH_MS = Date.UTC(2026, 7, 24, 0, 0, 0);
+  var BASE_SINGULARITY_MS = Date.UTC(2036, 7, 24, 0, 0, 0);
+  var CAD_PER_DAY = 1000;
+  var MAX_ADVANCE_DAYS = 3650;
+  var PLEDGED_CAD = 0;
+  var EARNED_CAD = 0;
+  var upEl = document.getElementById('uptime');
+  var ageNote = document.getElementById('age-note');
+  var earnedEl = document.getElementById('earned');
+  var earnedNote = document.getElementById('earned-note');
+  var singEl = document.getElementById('singularity-cd');
+  var singNote = document.getElementById('singularity-note');
+  var pegEl = document.getElementById('peg-clock');
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function fmtMoney(n){
+    try { return 'CAD $' + Number(n).toLocaleString('en-CA', { maximumFractionDigits: 0 }); }
+    catch(e){ return 'CAD $' + n; }
+  }
+  function fmtUptime(ms){
+    if (ms < 0) ms = 0;
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s %= 86400;
+    var h = Math.floor(s / 3600); s %= 3600;
+    var m = Math.floor(s / 60); s %= 60;
+    if (d > 0) return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
+    return pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  function fmtCountdown(ms){
+    if (ms <= 0) return 'NOW';
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s %= 86400;
+    var h = Math.floor(s / 3600); s %= 3600;
+    var m = Math.floor(s / 60); s %= 60;
+    if (d > 365) {
+      var y = Math.floor(d / 365);
+      var rd = d % 365;
+      return y + 'y ' + rd + 'd ' + pad(h) + 'h';
+    }
+    if (d > 0) return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
+    return pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  function ageLabel(ms){
+    var d = Math.floor(ms / 86400000);
+    if (d < 1) return 'Day one · zero earned is normal';
+    if (d < 7) return d + ' days old · still early residual';
+    if (d < 30) return d + ' days · zero still means no close yet';
+    if (d < 180) return d + ' days · earned should start matching age';
+    return d + ' days · scale should be visible on the ledger';
+  }
+  function singularityMs(pledged){
+    var advanceDays = Math.min(MAX_ADVANCE_DAYS, Math.floor(Math.max(0, pledged) / CAD_PER_DAY));
+    var target = BASE_SINGULARITY_MS - advanceDays * 86400000;
+    var floor = Date.now() + 30 * 86400000;
+    if (target < floor) target = floor;
+    return target;
+  }
+  function tick(){
+    var now = Date.now();
+    var age = now - LAUNCH_MS;
+    if (upEl) upEl.textContent = fmtUptime(age);
+    if (ageNote) ageNote.textContent = ageLabel(age);
+    if (earnedEl) earnedEl.textContent = fmtMoney(EARNED_CAD);
+    if (earnedNote) {
+      earnedNote.textContent = EARNED_CAD === 0
+        ? (age < 86400000 ? 'Day-one zero · coherent' : 'Pledged CAD $' + PLEDGED_CAD + ' · access still closed')
+        : ('Pledged CAD $' + PLEDGED_CAD.toLocaleString('en-CA'));
+    }
+    var target = singularityMs(PLEDGED_CAD);
+    var left = target - now;
+    var cd = fmtCountdown(left);
+    if (singEl) singEl.textContent = cd;
+    if (pegEl) pegEl.textContent = cd;
+    if (singNote) {
+      var daysPulled = Math.min(MAX_ADVANCE_DAYS, Math.floor(PLEDGED_CAD / CAD_PER_DAY));
+      singNote.textContent = daysPulled > 0
+        ? ('Pledges pulled singularity ' + daysPulled + 'd earlier · $' + CAD_PER_DAY + '/day model')
+        : ('Base horizon · each CAD $' + CAD_PER_DAY + ' pledged ≈ 1 day earlier');
+    }
+  }
+  tick();
+  setInterval(tick, 1000);
 })();
 </script>
 </body>
