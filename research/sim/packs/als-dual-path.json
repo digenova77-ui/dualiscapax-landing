@@ -2,8 +2,10 @@
   "id": "als.dual.v0",
   "disease": "Amyotrophic lateral sclerosis",
   "icd_hint": "G12.21",
-  "law_version": "2026-08-22",
-  "status": "seed_scaffold",
+  "law_version": "2026-08-24",
+  "status": "PROTOTYPE",
+  "prototype": true,
+  "prototype_note": "ALS is the medical disease-leaf prototype. All other leaves clone density, not disease facts.",
   "disclaimer": "Open residual surface. Not medical advice. Not a cure claim. P2 is under model M only.",
   "paths": {
     "P1_literature_forward": {
@@ -15,7 +17,7 @@
           "class": "glutamate pathway",
           "level": "regulatory",
           "status": "FDA approved (first disease-modifying class for ALS broadly)",
-          "note": "Modest survival extension in historical summaries",
+          "note": "Modest survival extension in historical summaries (~2–3 months in pivotal framing)",
           "cite_keys": ["augiesquest-2025-approved", "alsnewstoday-2026-treatment"]
         },
         {
@@ -43,16 +45,16 @@
           "level": "regulatory + genetic subset",
           "status": "FDA accelerated approval for SOD1-ALS; EMA path public 2024-class reporting",
           "note": "Subset only (~SOD1). Presymptomatic ATLAS and sporadic exploration are separate debates",
-          "cite_keys": ["als-association-genetics-2026", "alsnewstoday-2026-treatment"]
+          "cite_keys": ["als-association-genetics-2026", "alsnewstoday-2026-treatment", "valor-integrated-2026"]
         },
         {
           "t": "2025-2026",
           "actor": "Pipeline (public)",
           "class": "mixed (ASO/siRNA/small molecule)",
           "level": "phase",
-          "status": "Examples: FUS ASO jacifusen Phase 3-class; pridopidine PREVAiLS Phase 3 cleared; SPG302 EAP; multiple SOD1/C9orf72 genetic programs",
-          "note": "Not exhaustive — expand row-by-row",
-          "cite_keys": ["als-association-genetics-2026", "prevails-pridopidine-2025", "spg302-eap-2025"]
+          "status": "Examples: FUS ASO jacifusen Phase 3-class; pridopidine PREVAiLS Phase 3 cleared; SPG302 EAP; dazucorilant Phase 2 survival signals despite primary miss; multiple SOD1/C9orf72 genetic programs",
+          "note": "Not exhaustive — expand row-by-row. Early tofersen integrated analyses (2026 reporting) support survival/NfL narrative in SOD1-ALS.",
+          "cite_keys": ["als-association-genetics-2026", "prevails-pridopidine-2025", "spg302-eap-2025", "valor-integrated-2026"]
         }
       ]
     },
@@ -115,6 +117,13 @@
       "org": "Public trial reporting via secondary sources above",
       "url": "https://augiesquest.org/riluzole-edaravone-and-tofersen-the-approved-drugs-for-als-progression/",
       "year": 2024
+    },
+    {
+      "key": "valor-integrated-2026",
+      "title": "Phase 3 VALOR Data Further Support Tofersen Impact on ALS Progression and Survival",
+      "org": "NeurologyLive",
+      "url": "https://www.neurologylive.com/view/phase-3-valor-data-further-supports-tofersen-impact-als-disease-progression-survival",
+      "year": 2026
     }
   ],
   "debate_levels_todo": [
