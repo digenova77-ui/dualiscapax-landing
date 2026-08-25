@@ -133,7 +133,7 @@
     flex-direction:column;
     align-items:center;
     justify-content:space-evenly;
-    padding-block:clamp(0.35rem, 1.5vh, 1rem);
+    padding-block:clamp(0.25rem, 1.2vh, 0.85rem);
   }
   .logo-stage{
     width:min(96vw, 44rem);
@@ -150,33 +150,93 @@
     display:block;
   }
   .geo-wrap{
-    width:min(72vw,260px);height:min(72vw,260px);
+    width:min(64vw,220px);height:min(64vw,220px);
     margin:0;flex-shrink:0;
   }
   #geo-earth{width:100%;height:100%;display:block}
   h1{
-    font-size:clamp(2.4rem,10vw,4.2rem);font-weight:900;
+    font-size:clamp(2.2rem,9.5vw,3.8rem);font-weight:900;
     line-height:.9;letter-spacing:-.05em;text-transform:uppercase;
     margin:0;
   }
   .lines{margin:0}
   .line{
-    font-size:clamp(1.05rem, 4.4vw, 1.45rem);
+    font-size:clamp(0.95rem, 4vw, 1.35rem);
     font-weight:900;
     color:var(--fg);
-    margin:0 0 0.18rem;
+    margin:0 0 0.15rem;
     text-transform:uppercase;
     letter-spacing:0.08em;
     line-height:1.15;
   }
   .line:last-child{margin-bottom:0}
+  .metrics{
+    width:min(94vw, 26rem);
+    flex-shrink:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0.45rem;
+    text-align:left;
+  }
+  .metric{
+    border:1px solid rgba(245,245,245,0.16);
+    border-radius:10px;
+    padding:0.55rem 0.7rem;
+    background:rgba(255,255,255,0.03);
+  }
+  .metric .k{
+    display:block;
+    font-size:0.62rem;
+    font-weight:700;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:rgba(245,245,245,0.5);
+    margin-bottom:0.2rem;
+  }
+  .metric .v{
+    display:block;
+    font-size:0.92rem;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:-0.01em;
+  }
+  .metric .s{
+    display:block;
+    font-size:0.68rem;
+    color:rgba(245,245,245,0.55);
+    margin-top:0.15rem;
+    line-height:1.25;
+  }
+  .early{
+    grid-column:1 / -1;
+    border:1px solid rgba(212,160,23,0.45);
+    border-radius:10px;
+    padding:0.55rem 0.75rem;
+    background:rgba(212,160,23,0.06);
+    text-align:center;
+  }
+  .early strong{
+    display:block;
+    font-size:0.78rem;
+    font-weight:800;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:#e8c36a;
+  }
+  .early span{
+    display:block;
+    font-size:0.72rem;
+    color:rgba(245,245,245,0.7);
+    margin-top:0.2rem;
+    line-height:1.3;
+  }
   .peg{
     display:flex;
     align-items:center;
     gap:0.75rem;
     width:min(92vw, 22rem);
     margin:0;
-    padding:0.7rem 0.9rem;
+    padding:0.65rem 0.85rem;
     border:1px solid rgba(245,245,245,0.22);
     border-radius:999px;
     color:inherit;
@@ -185,8 +245,8 @@
   }
   .peg:active{opacity:0.8}
   .peg-ring{
-    width:2.35rem;
-    height:2.35rem;
+    width:2.2rem;
+    height:2.2rem;
     border-radius:50%;
     flex-shrink:0;
     background:conic-gradient(#f5f5f5 0 58%, rgba(245,245,245,0.14) 0);
@@ -196,14 +256,14 @@
   .peg-copy{text-align:left;min-width:0}
   .peg-copy strong{
     display:block;
-    font-size:0.82rem;
+    font-size:0.78rem;
     font-weight:800;
     letter-spacing:0.04em;
     text-transform:uppercase;
   }
   .peg-copy span{
     display:block;
-    font-size:0.78rem;
+    font-size:0.74rem;
     color:rgba(245,245,245,0.62);
     font-variant-numeric:tabular-nums;
   }
@@ -260,11 +320,27 @@
           <p class="line">ADAPTIVE AI</p>
           <p class="line">RESEARCH</p>
         </div>
+        <div class="metrics" aria-label="Site metrics">
+          <div class="metric">
+            <span class="k">Live since</span>
+            <span class="v" id="uptime">—</span>
+            <span class="s">Beta → public · real-time</span>
+          </div>
+          <div class="metric">
+            <span class="k">Total earned</span>
+            <span class="v" id="earned">CAD $0</span>
+            <span class="s">Access closed · honest zero</span>
+          </div>
+          <div class="early">
+            <strong>Early access is more rewarding</strong>
+            <span>When seats open, early residual is priced to reward the first wave — not the last. Access stays closed until pricing is locked and IP is protected.</span>
+          </div>
+        </div>
         <a class="peg" href="onboard.html" aria-label="Residual Cost Peg onboarding">
           <div class="peg-ring" aria-hidden="true"></div>
           <div class="peg-copy">
             <strong>Residual Cost Peg</strong>
-            <span>Open seat · <span id="peg-clock">--:--:--</span></span>
+            <span>Singularity · <span id="peg-clock">--:--:--</span></span>
           </div>
         </a>
       </div>
@@ -539,17 +615,39 @@ window.addEventListener('resize',onResize);onResize();
 </script>
 <script>
 (function(){
-  var el=document.getElementById('peg-clock');
-  if(!el) return;
+  /* Public surface epoch — beta → live clock. Adjust if you have an earlier true launch. */
+  var LAUNCH_MS = Date.UTC(2026, 7, 24, 0, 0, 0); /* 24 Aug 2026 00:00 UTC */
+  var upEl = document.getElementById('uptime');
+  var pegEl = document.getElementById('peg-clock');
+  var earnedEl = document.getElementById('earned');
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function fmtUptime(ms){
+    if (ms < 0) ms = 0;
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s %= 86400;
+    var h = Math.floor(s / 3600); s %= 3600;
+    var m = Math.floor(s / 60); s %= 60;
+    if (d > 0) return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
+    return pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+
   function tick(){
-    var d=new Date();
-    el.textContent=
-      String(d.getUTCHours()).padStart(2,'0')+':'+ 
-      String(d.getUTCMinutes()).padStart(2,'0')+':'+ 
-      String(d.getUTCSeconds()).padStart(2,'0')+' UTC';
+    var now = Date.now();
+    if (upEl) upEl.textContent = fmtUptime(now - LAUNCH_MS);
+    if (pegEl) {
+      var d = new Date(now);
+      pegEl.textContent =
+        pad(d.getUTCHours()) + ':' +
+        pad(d.getUTCMinutes()) + ':' +
+        pad(d.getUTCSeconds()) + ' UTC';
+    }
+    /* Honest while access.dual.v2 is closed — no fake revenue */
+    if (earnedEl) earnedEl.textContent = 'CAD $0';
   }
   tick();
-  setInterval(tick,1000);
+  setInterval(tick, 1000);
 })();
 </script>
 </body>
