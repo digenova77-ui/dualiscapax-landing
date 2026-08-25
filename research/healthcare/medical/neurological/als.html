@@ -6,60 +6,7 @@
   <title>ALS — DualisCapax Research Journal</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.1.0/3Dmol-min.js"></script>
   <link rel="stylesheet" href="../../../../assets/text-scale.css"/>
-  <style>
-    :root { --bg:#000; --fg:#fff; --muted:#8a8a8a; --border:#222; --accent:#1e90ff; --gold:#d4a017; --surface:#0a0a0a; }
-    @media (prefers-color-scheme: light) {
-      :root { --bg:#fafafa; --fg:#0a0a0a; --muted:#555; --border:#e0e0e0; --accent:#1565c0; --gold:#b8860b; --surface:#f0f0f0; }
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.6; font-size: 16px; }
-    .crumbs { border-bottom: 1px solid var(--border); padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; font-size: 0.75rem; }
-    .crumbs a { color: var(--muted); text-decoration: none; }
-    .crumbs a:hover { color: var(--fg); }
-    .crumbs .now { color: var(--fg); font-weight: 600; }
-    .disease-bar { border-bottom: 1px solid var(--border); padding: 1.25rem 1.5rem 1rem; max-width: 1200px; margin: 0 auto; }
-    .disease-bar h1 { font-size: 1.65rem; letter-spacing: 0.03em; margin-bottom: 0.35rem; }
-    .class-line { font-size: 0.95rem; color: var(--muted); margin-bottom: 0.85rem; }
-    .catalog { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-size: 0.75rem; margin-bottom: 0.85rem; }
-    .catalog span { color: var(--muted); }
-    .catalog strong { color: var(--fg); font-weight: 600; }
-    .phase-links { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-    .phase-links a { font-size: 0.72rem; letter-spacing: 0.04em; text-decoration: none; color: var(--accent); border: 1px solid var(--border); border-radius: 3px; padding: 0.3rem 0.55rem; }
-    .phase-links a:hover { border-color: var(--accent); }
-    .v2bar { max-width: 1200px; margin: 0 auto; padding: 0.65rem 1.5rem; border-bottom: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
-    .v2bar strong { color: var(--fg); }
-    .layout { display: grid; grid-template-columns: 1fr minmax(300px, 380px); max-width: 1200px; margin: 0 auto; min-height: 60vh; }
-    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
-    .main { padding: 1.5rem 1.5rem 3rem; border-right: 1px solid var(--border); }
-    @media (max-width: 900px) { .main { border-right: none; } }
-    h2 { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 1.35rem 0 0.7rem; }
-    h2:first-child { margin-top: 0; }
-    .prose { font-size: 1.05rem; color: var(--muted); margin-bottom: 0.75rem; }
-    .prose strong { color: var(--fg); font-weight: 600; }
-    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
-    @media (max-width: 600px) { .facts { grid-template-columns: 1fr; } }
-    .fact { border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 0.85rem; font-size: 0.92rem; }
-    .fact label { display: block; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem; }
-    .table-wrap { overflow-x: auto; margin: 0.5rem 0 1rem; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-    th, td { border: 1px solid var(--border); padding: 0.5rem 0.65rem; text-align: left; vertical-align: top; }
-    th { background: var(--surface); font-weight: 600; }
-    tr.dc td { background: var(--surface); }
-    .no { color: #f87171; }
-    a.deep { display: inline-block; margin: 0.25rem 0.75rem 0 0; font-size: 0.8rem; color: var(--accent); text-decoration: none; }
-    a.deep:hover { text-decoration: underline; }
-    .pane { padding: 1.15rem 1.15rem 2rem; background: var(--surface); position: sticky; top: 0; align-self: start; }
-    .pane h2 { margin-top: 0; }
-    #viewer { width: 100%; height: 320px; border: 1px solid var(--border); border-radius: 8px; background: #050505; cursor: grab; }
-    #viewer:active { cursor: grabbing; }
-    .viewer-tools { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.55rem; }
-    .viewer-tools button { font-size: 0.68rem; letter-spacing: 0.04em; background: transparent; color: var(--fg); border: 1px solid var(--border); border-radius: 3px; padding: 0.3rem 0.5rem; cursor: pointer; }
-    .viewer-tools button:hover { border-color: var(--accent); color: var(--accent); }
-    .pane-note { font-size: 0.7rem; color: var(--muted); margin-top: 0.65rem; }
-    .pane-meta { font-size: 0.78rem; margin-top: 0.75rem; line-height: 1.45; }
-    .pane-meta strong { color: var(--gold); }
-    footer { border-top: 1px solid var(--border); padding: 1rem 1.25rem; text-align: center; font-size: 0.68rem; color: var(--muted); }
-  </style>
+  <link rel="stylesheet" href="../../../../assets/disease-leaf.css"/>
 </head>
 <body class="dc-scale-root">
   <nav class="crumbs">
@@ -80,56 +27,87 @@
     <p class="class-line">Healthcare → Medical → Neurological · Motor neuron disease · Subtype focus: general / SOD1-related</p>
     <div class="catalog">
       <span>Journal <strong>ED-RES-NEURO-ALS-001</strong></span>
-      <span>MeSH-style class <strong>Neuromuscular · MND</strong></span>
-      <span>Lead ligand CID <strong>5070</strong> (riluzole)</span>
-      <span>Public surface <strong>complete</strong></span>
+      <span>Class <strong>Neuromuscular · MND</strong></span>
+      <span>Lead ligand <strong>Riluzole · CID 5070</strong></span>
       <span>Sim <strong>als.dual.v2</strong></span>
+      <span>Status <strong>PROTOTYPE</strong></span>
     </div>
     <div class="phase-links">
-      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:1" target="_blank" rel="noopener">Phase 1 history</a>
-      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:2" target="_blank" rel="noopener">Phase 2 history</a>
-      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:3" target="_blank" rel="noopener">Phase 3 history</a>
-      <a href="https://pubmed.ncbi.nlm.nih.gov/?term=amyotrophic+lateral+sclerosis" target="_blank" rel="noopener">PubMed corpus</a>
+      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:1" target="_blank" rel="noopener">Phase 1</a>
+      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:2" target="_blank" rel="noopener">Phase 2</a>
+      <a href="https://clinicaltrials.gov/search?cond=Amyotrophic%20Lateral%20Sclerosis&aggFilters=phase:3" target="_blank" rel="noopener">Phase 3</a>
+      <a href="https://pubmed.ncbi.nlm.nih.gov/?term=amyotrophic+lateral+sclerosis" target="_blank" rel="noopener">PubMed</a>
       <a href="https://pubchem.ncbi.nlm.nih.gov/compound/5070" target="_blank" rel="noopener">PubChem 5070</a>
     </div>
   </div>
-  <div class="v2bar"><strong>Simulation v2</strong> · engine 2P5L residual dual-path · pack <code>als.dual.v2</code> · full re-run · model M only · not a drug label</div>
+  <div class="v2bar"><strong>Simulation v2</strong> · 2P5L residual dual-path · pack <code>als.dual.v2</code> · model M only · not a drug label</div>
+  <div class="disclaimer">Open residual surface. Not medical advice. Not a cure claim. DualisCapax projected cells are under model M — pack-internal residual-compression indices, not regulatory findings.</div>
   <div class="layout">
     <div class="main">
       <h2>Where research stands</h2>
-      <p class="prose">ALS remains a progressive motor neuron disease with limited disease-modifying options. <strong>Riluzole</strong> and <strong>edaravone</strong> are established standards with modest effects on survival or decline in selected groups. <strong>Tofersen</strong> addresses SOD1-ALS with clear genetic targeting. Broader Phase 2/3 pipelines continue; results are mixed and trial design is hard.</p>
-      <p class="prose">This page keeps the <strong>full clinical comparison surface</strong> visible. DualisCapax projected cells are from the <strong>v2 full re-run</strong> under model M — residual-compression scores, not regulatory findings.</p>
-      <h2>How DualisCapax helps</h2>
-      <p class="prose">Standardized side-by-side of real-world Phase status and efficacy against DualisCapax projected lines — without burying the public medical record. Gated layers are for explicit further work, not for hiding basic disease facts.</p>
-      <h2>Clinical snapshot</h2>
-      <div class="facts">
-        <div class="fact"><label>Lead treatments</label>Riluzole · Edaravone · Tofersen (SOD1)</div>
-        <div class="fact"><label>Lead structure (right)</label>Riluzole · PubChem CID 5070</div>
-        <div class="fact"><label>Phase landscape</label>Approved agents + active Phase 2/3 field</div>
-        <div class="fact"><label>DualisCapax layer</label>v2 residual dual-path · pack als.dual.v2</div>
-      </div>
-      <h2>Comparison table</h2>
-      <p class="prose"><strong>v2 re-run scores</strong> (model M residual compression, pack-internal): Riluzole 38 · Edaravone 34 · Relyvrio/AMX0035 12 · Tofersen SOD1 62.</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Approach</th><th>Phase</th><th>Real-world efficacy</th><th>DualisCapax projected (v2)</th><th>Same principle</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Riluzole</td><td>Approved</td><td>~2–3 mo classic · real-world HR ~0.70 class</td><td>v2 M: partial · score 38 · modest survival residual only</td><td class="no">No</td></tr>
-            <tr><td>Edaravone</td><td>Approved</td><td>Slowing of decline in selected cohorts</td><td>v2 M: partial · cohort-gated · score 34</td><td class="no">No</td></tr>
-            <tr><td>AMX0035 / Relyvrio</td><td>Withdrawn path</td><td>Phase 3 miss after accelerated path</td><td>v2 M: failed confirmatory · score 12 · graft-risk exemplar</td><td class="no">No</td></tr>
-            <tr><td>Tofersen (SOD1)</td><td>Approved (SOD1-ALS)</td><td>Biomarker engagement · OLE early-start residual · subset only</td><td>v2 M: strong in SOD1 · score 62 · no transfer without evidence</td><td class="no">No</td></tr>
-            <tr><td>Broader pipeline</td><td>2 / 3</td><td>Mixed / pending</td><td>v2 M: case-by-case · genetic paths rank higher when target matches</td><td class="no">No</td></tr>
-            <tr class="dc"><td><strong>DualisCapax</strong></td><td>Open residual · v2</td><td>—</td><td>v2 M: constraint-bottom dual path · phenotype/target declared · pack als.dual.v2</td><td>—</td></tr>
-          </tbody>
-        </table>
+      <p class="prose">ALS is progressive motor neuron disease with limited disease-modifying options. <strong>Riluzole</strong> is the long-standing broad standard: classic pivotal framing often cites about 2–3 months median survival extension; multi-center real-world residual (PRECISION-ALS class) reports treated vs untreated HR near 0.70 and larger median differences in some cohorts. <strong>Edaravone</strong> slows ALSFRS-R decline in selected cohorts and formulations. <strong>Tofersen</strong> is SOD1-ALS only — biomarker engagement is clear; functional primary at 28 weeks was not significant; open-label early-start residual favors benefit inside that genotype. <strong>AMX0035 / Relyvrio</strong> followed an accelerated path then Phase 3 miss — graft-risk exemplar. Broader Phase 2/3 pipelines remain mixed.</p>
+      <p class="prose">This leaf is the <strong>neurological prototype</strong>. Public residual is maximized. DualisCapax projected lines use the same dual-path machine as every later disease page. Gated depth does not hide basic facts.</p>
+      <h2>Comparison — full surface</h2>
+      <p class="prose"><strong>v2 M scores</strong> (pack-internal residual compression only): Riluzole 38 · Edaravone 34 · Relyvrio 12 · Tofersen SOD1 62. Scores are not clinical superiority labels.</p>
+      <div class="cmp">
+        <div class="cmp-table-wrap">
+          <table class="cmp-table">
+            <thead>
+              <tr><th>Approach</th><th>Phase / status</th><th>Real-world residual (public)</th><th>DualisCapax projected (v2)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Riluzole</td><td>Approved · broad ALS</td><td>~2–3 mo classic pivotal framing · real-world HR ~0.70 class (PRECISION-ALS)</td><td>v2 M: partial · score 38 · modest survival residual only · floor agent</td></tr>
+              <tr><td>Edaravone</td><td>Approved · selected / formulation-dependent</td><td>ALSFRS-R slope residual in selected cohorts</td><td>v2 M: partial · cohort-gated · score 34</td></tr>
+              <tr><td>AMX0035 / Relyvrio</td><td>Withdrawn path after Phase 3 miss</td><td>Accelerated path then confirmatory failure</td><td>v2 M: failed confirmatory · score 12 · graft-risk exemplar</td></tr>
+              <tr><td>Tofersen (SOD1)</td><td>Approved · SOD1-ALS only (~1–2% ALS)</td><td>Biomarker engagement · OLE early-start residual · subset only</td><td>v2 M: strong in SOD1 · score 62 · no transfer to sporadic without new evidence</td></tr>
+              <tr><td>Broader pipeline</td><td>Phase 2 / 3</td><td>Mixed / pending · genetic targeting remains clearest public residual path</td><td>v2 M: case-by-case · target must match population</td></tr>
+              <tr class="dc"><td><strong>DualisCapax</strong></td><td>Open residual · v2</td><td>—</td><td>v2 M: constraint-bottom dual path · phenotype and target declared · pack als.dual.v2 · not a drug label</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cmp-cards" aria-label="Full comparison on mobile — no fields omitted">
+          <article class="card">
+            <div class="card-row"><span class="k">Approach</span><span class="v">Riluzole</span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Approved · broad ALS</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">~2–3 mo classic pivotal framing · real-world HR ~0.70 class (PRECISION-ALS)</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">partial · score 38 · modest survival residual only · floor agent</span></div>
+          </article>
+          <article class="card">
+            <div class="card-row"><span class="k">Approach</span><span class="v">Edaravone</span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Approved · selected / formulation-dependent</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">ALSFRS-R slope residual in selected cohorts</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">partial · cohort-gated · score 34</span></div>
+          </article>
+          <article class="card">
+            <div class="card-row"><span class="k">Approach</span><span class="v">AMX0035 / Relyvrio</span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Withdrawn path after Phase 3 miss</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">Accelerated path then confirmatory failure</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">failed confirmatory · score 12 · graft-risk exemplar</span></div>
+          </article>
+          <article class="card">
+            <div class="card-row"><span class="k">Approach</span><span class="v">Tofersen (SOD1)</span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Approved · SOD1-ALS only (~1–2% ALS)</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">Biomarker engagement · OLE early-start residual · subset only</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">strong in SOD1 · score 62 · no transfer to sporadic without new evidence</span></div>
+          </article>
+          <article class="card">
+            <div class="card-row"><span class="k">Approach</span><span class="v">Broader pipeline</span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Phase 2 / 3</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">Mixed / pending · genetic targeting remains clearest public residual path</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">case-by-case · target must match population</span></div>
+          </article>
+          <article class="card dc">
+            <div class="card-row"><span class="k">Approach</span><span class="v"><strong>DualisCapax</strong></span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Open residual · v2</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">—</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">constraint-bottom dual path · phenotype and target declared · pack als.dual.v2 · not a drug label</span></div>
+          </article>
+        </div>
       </div>
       <h2>Go deeper</h2>
       <a class="deep" href="../../../../research/sim/packs/als-dual-v2.json">→ Simulation pack v2 (JSON)</a>
       <a class="deep" href="als-simulation-report.html">→ Full simulation report</a>
-      <a class="deep" href="/sim/neurological/als">→ Full simulation (gated)</a>
-      <a class="deep" href="../../../../ai/">→ AI portal (realm)</a>
+      <a class="deep" href="../../../../ai/">→ AI portal</a>
     </div>
     <aside class="pane">
       <h2>Molecule · 3D</h2>
@@ -138,13 +116,16 @@
         <button type="button" id="btn-stick">Sticks</button>
         <button type="button" id="btn-sphere">Spheres</button>
         <button type="button" id="btn-line">Lines</button>
-        <button type="button" id="btn-reset">Reset view</button>
+        <button type="button" id="btn-reset">Reset</button>
       </div>
-      <p class="pane-note">Drag to rotate · scroll to zoom. Public PubChem geometry for the lead ligand.</p>
-      <div class="pane-meta"><strong>Riluzole</strong><br>2-amino-6-(trifluoromethoxy)benzothiazole<br>Catalog CID 5070 · glutamate-pathway standard of care in ALS</div>
+      <div class="pane-meta">
+        <strong>Riluzole</strong><br>
+        2-amino-6-(trifluoromethoxy)benzothiazole<br>
+        PubChem CID 5070 · glutamate-pathway standard of care in ALS
+      </div>
     </aside>
   </div>
-  <footer>DualisCapax Research Journal · Neurological · ALS · Simulation v2 · Not medical advice</footer>
+  <footer>DualisCapax Research Journal · Neurological · ALS · PROTOTYPE · Simulation v2 · Not medical advice</footer>
   <script>
     (function () {
       var el = document.getElementById('viewer');
