@@ -1,0 +1,154 @@
+/* DualisCapax disease leaf — full residual surface
+   RULE: mobile must not delete, truncate, omit, or compress content.
+   Tables become labeled stack-cards under 720px. Every field stays visible. */
+
+:root {
+  --bg: #000; --fg: #fff; --muted: #8a8a8a; --border: #222;
+  --accent: #1e90ff; --gold: #d4a017; --surface: #0a0a0a;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #fafafa; --fg: #0a0a0a; --muted: #555; --border: #e0e0e0;
+    --accent: #1565c0; --gold: #b8860b; --surface: #f0f0f0;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh; line-height: 1.55; font-size: 16px;
+}
+.crumbs {
+  border-bottom: 1px solid var(--border);
+  padding: 0.7rem 1rem;
+  display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center;
+  font-size: 0.72rem;
+}
+.crumbs a { color: var(--muted); text-decoration: none; }
+.crumbs a:hover { color: var(--fg); }
+.crumbs .now { color: var(--fg); font-weight: 600; }
+.disease-bar {
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 1rem 0.9rem;
+  max-width: 1100px; margin: 0 auto;
+}
+.disease-bar h1 {
+  font-size: clamp(1.35rem, 1.15rem + 1.2vw, 1.7rem);
+  letter-spacing: 0.02em; margin-bottom: 0.35rem;
+  overflow-wrap: anywhere; word-break: break-word;
+}
+.class-line { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.7rem; overflow-wrap: anywhere; }
+.catalog {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.95rem;
+  font-size: 0.72rem; margin-bottom: 0.7rem;
+}
+.catalog span { color: var(--muted); }
+.catalog strong { color: var(--fg); font-weight: 600; }
+.phase-links { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.phase-links a {
+  font-size: 0.7rem; text-decoration: none; color: var(--accent);
+  border: 1px solid var(--border); border-radius: 3px; padding: 0.32rem 0.5rem;
+}
+.v2bar {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.74rem; color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.v2bar strong { color: var(--fg); }
+.disclaimer {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0.45rem 1rem;
+  font-size: 0.72rem; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 340px);
+  max-width: 1100px; margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+}
+.main { padding: 1.15rem 1rem 2.5rem; border-right: 1px solid var(--border); }
+@media (max-width: 900px) { .main { border-right: none; } }
+h2 {
+  font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); margin: 1.25rem 0 0.55rem;
+}
+h2:first-child { margin-top: 0; }
+.prose {
+  font-size: 1.02rem; color: var(--muted); margin-bottom: 0.7rem;
+  overflow-wrap: anywhere;
+}
+.prose strong { color: var(--fg); font-weight: 600; }
+.cmp { margin: 0.4rem 0 1rem; }
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.cmp-table th, .cmp-table td {
+  border: 1px solid var(--border); padding: 0.5rem 0.55rem;
+  text-align: left; vertical-align: top;
+  overflow-wrap: anywhere; word-break: break-word;
+}
+.cmp-table th { background: var(--surface); font-weight: 600; font-size: 0.72rem; }
+.cmp-table tr.dc td { background: var(--surface); }
+.cmp-cards { display: none; }
+@media (max-width: 720px) {
+  .cmp-table-wrap { display: none; }
+  .cmp-cards { display: block; }
+}
+.card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 0.9rem;
+  margin-bottom: 0.75rem;
+  background: var(--surface);
+}
+.card.dc { border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+.card-row {
+  display: grid;
+  grid-template-columns: 7.2rem 1fr;
+  gap: 0.35rem 0.6rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.card-row:last-child { border-bottom: none; padding-bottom: 0; }
+.card-row .k {
+  font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); padding-top: 0.15rem;
+}
+.card-row .v { color: var(--fg); overflow-wrap: anywhere; word-break: break-word; }
+a.deep {
+  display: inline-block; margin: 0.25rem 0.75rem 0.25rem 0;
+  font-size: 0.8rem; color: var(--accent); text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.pane {
+  padding: 1rem; background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+@media (min-width: 901px) {
+  .pane { border-top: none; position: sticky; top: 0; align-self: start; }
+}
+.pane h2 { margin-top: 0; }
+#viewer {
+  width: 100%; height: min(52vw, 300px); min-height: 220px;
+  border: 1px solid var(--border); border-radius: 8px; background: #050505;
+}
+.viewer-tools { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+.viewer-tools button {
+  font-size: 0.66rem; background: transparent; color: var(--fg);
+  border: 1px solid var(--border); border-radius: 3px;
+  padding: 0.3rem 0.45rem; cursor: pointer;
+}
+.pane-meta { font-size: 0.78rem; margin-top: 0.65rem; line-height: 1.45; overflow-wrap: anywhere; }
+.pane-meta strong { color: var(--gold); }
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1rem; text-align: center;
+  font-size: 0.68rem; color: var(--muted);
+  overflow-wrap: anywhere;
+}
