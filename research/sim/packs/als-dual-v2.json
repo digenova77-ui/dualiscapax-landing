@@ -1,0 +1,99 @@
+{
+  "id": "als.dual.v2",
+  "disease": "Amyotrophic lateral sclerosis",
+  "icd_hint": "G12.21",
+  "law_version": "2026-08-24",
+  "status": "PROTOTYPE_V2",
+  "prototype": true,
+  "engine": {
+    "name": "2P5L residual dual-path",
+    "version": "v2",
+    "mode": "full_rerun",
+    "parent_pack": "als.dual.v0",
+    "run_at_utc": "2026-08-25T00:30:00Z",
+    "note": "Upgraded software pass. P1 anchors public residual. P2 is model M only — not regulatory finding, not cure claim."
+  },
+  "disclaimer": "Open residual surface. Not medical advice. Not a cure claim. DualisCapax projected cells are under model M.",
+  "baseline_M": {
+    "natural_history_ALSFRS_R": {
+      "mean_points_per_month": 0.89,
+      "band_95pct": [0.04, 1.96],
+      "source": "PRECISION-ALS Extant class public residual"
+    },
+    "survival_context": {
+      "riluzole_realworld_HR": 0.70,
+      "riluzole_median_extension_mo_class": "≈6–7 mo median difference in multi-center residual (treated vs not); classic pivotal framing often ~2–3 mo",
+      "sources": ["PRECISION-ALS 2025 class", "historical riluzole pivotal framing"]
+    }
+  },
+  "v2_results": {
+    "comparison": [
+      {
+        "approach": "Riluzole",
+        "phase": "Approved",
+        "real_world_efficacy": "Broad ALS · survival residual; HR ~0.70 class real-world",
+        "dualis_M": {
+          "residual_compress": "partial",
+          "scope": "glutamate-class · population broad",
+          "graft_risk": "low",
+          "score_0_100": 38,
+          "readout": "Modest survival residual only — floor agent, not disease inversion"
+        },
+        "same_principle": false
+      },
+      {
+        "approach": "Edaravone",
+        "phase": "Approved",
+        "real_world_efficacy": "Selected cohorts · ALSFRS-R slope residual",
+        "dualis_M": {
+          "residual_compress": "partial · cohort-gated",
+          "scope": "oxidative-stress class · selected",
+          "graft_risk": "moderate (selection)",
+          "score_0_100": 34,
+          "readout": "Slope residual in selected frames; not universal compressor"
+        },
+        "same_principle": false
+      },
+      {
+        "approach": "AMX0035 / Relyvrio",
+        "phase": "Withdrawn path",
+        "real_world_efficacy": "Phase 3 miss after accelerated path",
+        "dualis_M": {
+          "residual_compress": "failed confirmatory",
+          "scope": "combination · broad attempt",
+          "graft_risk": "high (exemplar)",
+          "score_0_100": 12,
+          "readout": "Graft-risk template — P1 optimism without P2 confirmatory lock"
+        },
+        "same_principle": false
+      },
+      {
+        "approach": "Tofersen (SOD1)",
+        "phase": "Approved (subset)",
+        "real_world_efficacy": "SOD1-ALS · biomarker engagement; OLE early-start residual",
+        "dualis_M": {
+          "residual_compress": "strong in declared population",
+          "scope": "SOD1 ASO · subset only",
+          "graft_risk": "low inside SOD1; transfer to sporadic fails floor",
+          "score_0_100": 62,
+          "readout": "Best public residual compression where genotype matches target — does not transfer without new evidence"
+        },
+        "same_principle": false
+      },
+      {
+        "approach": "DualisCapax (model M)",
+        "phase": "Open residual · sim layer",
+        "real_world_efficacy": "—",
+        "dualis_M": {
+          "residual_compress": "constraint-bottom dual path",
+          "scope": "phenotype-declared · target-declared · no universal claim",
+          "graft_risk": "controlled by floor tests",
+          "score_0_100": null,
+          "readout": "v2 engine ranks by residual compression under declared constraints — not a drug label. Depth packs gated."
+        },
+        "same_principle": null
+      }
+    ],
+    "ranking_note": "Scores are relative residual-compression indices under model M for comparison inside this pack only. Not clinical superiority claims."
+  }
+}
