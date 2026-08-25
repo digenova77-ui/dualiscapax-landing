@@ -3,30 +3,62 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Residual law reward — DualisCapax</title>
+<title>Unity Framework · Residual reward — DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;line-height:1.55;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.15rem,env(safe-area-inset-right)) max(2.5rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
+.wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.15rem,env(safe-area-inset-right)) max(2.75rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
 .top{display:flex;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;padding:0.4rem 0 1.4rem}
 .top a{font-size:0.88rem;font-weight:600;color:rgba(245,245,245,0.72)}
 .kicker{font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,245,245,0.55);margin-bottom:0.55rem}
-h1{font-size:clamp(1.75rem,6.5vw,2.4rem);font-weight:900;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.75rem}
-.lede{font-size:1.08rem;color:rgba(245,245,245,0.78);margin-bottom:1.5rem}
-h2{font-size:1.05rem;font-weight:800;margin:1.5rem 0 0.5rem}
+h1{font-size:clamp(1.7rem,6.5vw,2.35rem);font-weight:900;letter-spacing:-0.03em;line-height:1.08;margin-bottom:0.75rem}
+.lede{font-size:1.08rem;color:rgba(245,245,245,0.78);margin-bottom:1.35rem}
+h2{font-size:1.08rem;font-weight:800;margin:1.75rem 0 0.55rem;letter-spacing:-0.01em}
+h3{font-size:0.95rem;font-weight:700;margin:1.15rem 0 0.4rem;color:rgba(245,245,245,0.92)}
 p{font-size:1.02rem;color:rgba(245,245,245,0.82);margin-bottom:0.85rem}
-.ex{border:1px solid rgba(126,182,255,0.35);border-radius:12px;padding:1rem 1.1rem;margin:1.25rem 0;background:rgba(126,182,255,0.06)}
-.ex .t{font-size:0.7rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#7eb6ff;margin-bottom:0.55rem}
+.unity{
+  border:1px solid rgba(126,182,255,0.4);
+  border-radius:14px;
+  padding:1.15rem 1.15rem 1.05rem;
+  margin:1.35rem 0 1.5rem;
+  background:linear-gradient(180deg,rgba(126,182,255,0.09),rgba(126,182,255,0.02));
+}
+.unity .t{font-size:0.68rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#7eb6ff;margin-bottom:0.45rem}
+.unity h2{margin:0 0 0.55rem;font-size:1.25rem}
+.unity p{margin-bottom:0.65rem;font-size:0.98rem}
+.unity p:last-child{margin-bottom:0}
+.ex{
+  border:1px solid rgba(245,245,245,0.16);
+  border-radius:12px;
+  padding:1rem 1.1rem;
+  margin:1.15rem 0;
+  background:rgba(255,255,255,0.03);
+}
+.ex .t{font-size:0.68rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,245,245,0.5);margin-bottom:0.5rem}
 .ex p{margin-bottom:0.55rem;font-size:0.95rem}
 .ex p:last-child{margin-bottom:0}
 ul{list-style:none;margin:0 0 1rem}
-li{position:relative;padding-left:1.1rem;margin-bottom:0.5rem;font-size:1.02rem;color:rgba(245,245,245,0.82)}
+li{position:relative;padding-left:1.1rem;margin-bottom:0.55rem;font-size:1.02rem;color:rgba(245,245,245,0.82)}
 li::before{content:"";position:absolute;left:0;top:0.55em;width:0.4rem;height:0.4rem;border-radius:50%;background:#7eb6ff}
+.steps{counter-reset:step;margin:0.75rem 0 1.25rem}
+.steps li{padding-left:2rem;margin-bottom:0.85rem}
+.steps li::before{
+  content:counter(step);
+  counter-increment:step;
+  position:absolute;left:0;top:0;
+  width:1.35rem;height:1.35rem;border-radius:50%;
+  background:rgba(126,182,255,0.15);color:#9ec5ff;
+  font-size:0.72rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  line-height:1;
+}
 .note{margin-top:1.75rem;padding-top:1rem;border-top:1px solid rgba(245,245,245,0.14);font-size:0.86rem;color:rgba(245,245,245,0.55)}
-.cta{display:inline-block;margin-top:1.25rem;padding:0.85rem 1.25rem;border:1px solid rgba(245,245,245,0.35);border-radius:999px;font-weight:700;font-size:0.95rem}
+.cta-row{display:flex;flex-wrap:wrap;gap:0.65rem;margin-top:1.4rem}
+.cta{display:inline-block;padding:0.85rem 1.25rem;border:1px solid rgba(245,245,245,0.35);border-radius:999px;font-weight:700;font-size:0.95rem}
+.cta.primary{background:#f5f5f5;color:#050505;border-color:#f5f5f5}
 </style>
 </head>
 <body>
@@ -35,33 +67,68 @@ li::before{content:"";position:absolute;left:0;top:0.55em;width:0.4rem;height:0.
     <a href="onboard.html">← Residual Cost Peg</a>
     <a href="founding.html">Founding members</a>
   </div>
-  <p class="kicker">Onboarding example</p>
-  <h1>Residual law reward system</h1>
-  <p class="lede">How early residual is rewarded without turning the peg into a points game or a tribe list. Same law for a solo seat and a corporate lock.</p>
 
-  <h2>The reward is residual order</h2>
-  <p>You do not buy a badge. You lock capacity. The system records when residual was pegged, how much capacity was funded, and whether the seat stayed closed against burn. Reward tracks that ledger — not clout theater.</p>
+  <p class="kicker">Onboarding · reward grammar</p>
+  <h1>Residual law reward inside the Unity Framework</h1>
+  <p class="lede">An onboard commitment is not a tip and not a tribe badge. It is a decision to drive down <strong style="color:#f5f5f5;font-weight:600">bleeding cost</strong> — residual that burns without a close — and to be rewarded for that decision under one law.</p>
 
-  <div class="ex">
-    <div class="t">Example · early onboard</div>
-    <p><strong>Day 1–90 (when seats open):</strong> a seat locked above the founding threshold is eligible for the milestone plaque and early residual pricing — more rewarding than the same seat after the window moves.</p>
-    <p><strong>What they get:</strong> recognized founding residual on the public board (if they authorize the name), access continuity for the seat term, and the same measured peg as later entrants — not a softer product.</p>
-    <p><strong>What they do not get:</strong> equity by default, preferential tribes, or a promise that singularity timing is a security.</p>
+  <div class="unity">
+    <div class="t">Introduction</div>
+    <h2>The Unity Framework</h2>
+    <p>Unity is the rule that free agents share the same peg. Capacity is measured. Residual is priced. Close is required. No preferred tribe, no private exception, no cost that is allowed to bleed forever because the story sounded good.</p>
+    <p>In finance language: residual law. In systems language: every decision leaves a load; Unity demands that load be bound to capacity and closed when matched. DualisCapax is the residual-law firm that carries that framework into seats, research, adaptive AI, and engineering surfaces.</p>
+    <p>Unity of free will means you still choose. The framework does not choose for you. It only refuses the lie that choice can ignore residual forever.</p>
   </div>
 
-  <h2>How reward scales</h2>
-  <ul>
-    <li><strong>Earlier lock</strong> · higher claim on founding recognition</li>
-    <li><strong>Larger residual</strong> · stronger plaque / capacity continuity when rules open</li>
-    <li><strong>Pledged residual</strong> · pulls singularity horizon earlier under the public model</li>
-    <li><strong>No tribes preferred</strong> · company, lab, school, or individual under the same peg</li>
+  <h2>What “bleeding cost” means here</h2>
+  <p>Bleeding cost is residual without a close: spend that continues, capacity that is not measured against it, and books that cannot say what remains. Most organizations live inside that bleed — vendor stacks, open research with no ledger, AI runs with no residual line.</p>
+  <p>An onboard commitment is a public refusal of that pattern. You lock capacity. You accept that residual will be measured. You agree that unused burn is not free simply because it was enthusiastic.</p>
+
+  <h2>How the commitment is rewarded</h2>
+  <p>Reward inside Unity is not points and not equity-by-default. It is residual order — recognition and continuity that track the ledger of who closed bleed early, at what scale, and under the same peg as everyone else.</p>
+
+  <ul class="steps">
+    <li><strong>Lock residual capacity</strong> — prepaid seat against measured capacity, not a subscription that pretends cost is optional.</li>
+    <li><strong>Accept the peg</strong> — residual burn is recorded against that capacity until spent or released under seat terms.</li>
+    <li><strong>Drive bleed down</strong> — the seat exists to make bleeding cost visible and stoppable, not to hide it in marketing tiers.</li>
+    <li><strong>Earn residual order</strong> — earlier and clearer locks receive founding recognition, early residual pricing when seats open, and continuity of access for the term — same product quality as later entrants, better place in the order of close.</li>
   </ul>
 
-  <h2>Still closed</h2>
-  <p>Payment is not live. This page is the example of the reward grammar so onboarding is not a blank CTA. When access opens, numbers (threshold, seat term, CAD list) publish with the pricing structure and IP protection in place.</p>
+  <div class="ex">
+    <div class="t">Worked example · when seats open</div>
+    <p><strong>Actor A</strong> locks a founding-threshold residual in the first window. Bleed on their side of the book is now pegged. Under Unity they are eligible for the milestone plaque (if they authorize the name), early residual pricing, and a seat that does not get a softer product later — only an earlier close in residual order.</p>
+    <p><strong>Actor B</strong> waits until the window moves. Same peg, same research and adaptive surfaces, same law — later residual order, no founding plaque claim, standard open pricing.</p>
+    <p><strong>Neither</strong> receives equity by default, a tribe preference, or a guaranteed financial return. The reward is the structure of residual law applied fairly: early commitment against bleed is remembered in the ledger.</p>
+  </div>
 
-  <a class="cta" href="onboard.html">Back to Residual Cost Peg</a>
-  <p class="note">Not securities. Not tax advice. Reward is recognition and residual order under residual law — not a return guarantee.</p>
+  <h2>What Unity rewards — and what it does not</h2>
+  <h3>Rewarded</h3>
+  <ul>
+    <li>Commitment that makes bleeding cost measurable and closeable</li>
+    <li>Early residual lock above the founding threshold (plaque + early order)</li>
+    <li>Scale of capacity funded — larger residual, stronger continuity when rules publish</li>
+    <li>Pledged residual that advances the public singularity model (horizon pulled earlier)</li>
+  </ul>
+  <h3>Not rewarded</h3>
+  <ul>
+    <li>Noise without a close</li>
+    <li>Preferred tribes, private exceptions, or “special” residual</li>
+    <li>Claims of securities, dividends, or guaranteed return from a seat</li>
+    <li>Access sold before pricing and IP protection are locked</li>
+  </ul>
+
+  <h2>Same law for corp and grassroots</h2>
+  <p>A major corporation that pre-funds constrained research capacity under residual cost pegging and a small team that locks a modest seat are under the same Unity rule. The books differ in size; the peg does not. That is the framework: free will to enter, one residual law once inside.</p>
+
+  <h2>Status</h2>
+  <p>Seats are not open for payment. This page is the reward grammar and the first public introduction of the Unity Framework on the DualisCapax surface — so onboarding is not a blank button. Thresholds, CAD list, and seat terms publish when access opens with IP protection in place.</p>
+
+  <div class="cta-row">
+    <a class="cta primary" href="onboard.html">Residual Cost Peg</a>
+    <a class="cta" href="founding.html">Founding members</a>
+  </div>
+
+  <p class="note">Unity Framework · residual law · DualisCapax. Informational only — not an offer of securities, not tax, legal, or investment advice. Reward is residual order and recognition under the peg, not a return guarantee. No tribes preferred. Truth prevails.</p>
 </div>
 </body>
 </html>
