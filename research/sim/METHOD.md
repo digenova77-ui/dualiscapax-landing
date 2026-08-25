@@ -30,3 +30,18 @@ Major public programs only — not gossip. Expand row-by-row.
 
 ## Storage test
 See `storage/RESIDUAL-VAULT.md`. Concise packs, content-addressed, governed by residual credit rules — not an open exchange coin.
+
+---
+
+## Engine v2 (full re-run)
+
+As of **2026-08-24**, packs may carry a **v2** full re-run:
+
+| Field | Meaning |
+|-------|---------|
+| `engine.version` | `v2` |
+| `engine.mode` | `full_rerun` |
+| `v2_results.comparison[]` | Dual column with public residual + **model M** residual-compress scores |
+| Scores | Relative residual-compression indices **inside the pack only** — not clinical superiority |
+
+Live packs: `als.dual.v2`, `osteo.dual.v2`. Parent v0 retained for audit.
