@@ -1,0 +1,73 @@
+{
+  "id": "osteo.dual.v2",
+  "disease": "Osteosarcoma",
+  "law_version": "2026-08-24",
+  "status": "LIVE_V2",
+  "engine": {
+    "name": "2P5L residual dual-path",
+    "version": "v2",
+    "mode": "full_rerun",
+    "parent_pack": "none_v0_scaffold",
+    "run_at_utc": "2026-08-25T00:30:00Z",
+    "note": "First full v2 pass for osteosarcoma leaf. Clones ALS machine density."
+  },
+  "disclaimer": "Open residual surface. Not medical advice. DualisCapax cells under model M only.",
+  "baseline_M": {
+    "localized_5y_os_band": "≈65–70%",
+    "metastatic_efs_band_resectable": "≈20–30%",
+    "historical_surgery_alone_efs": "≈11%",
+    "backbone": "MAP (HD-MTX + doxorubicin + cisplatin) ± surgery"
+  },
+  "v2_results": {
+    "comparison": [
+      {
+        "approach": "MAP",
+        "phase": "Standard of care",
+        "real_world_efficacy": "Localized OS ~65–70% band; multi-agent era backbone",
+        "dualis_M": {
+          "residual_compress": "strong vs surgery alone",
+          "scope": "cytotoxic multimodal · resectable intent",
+          "graft_risk": "toxicity + adult HD-MTX debates",
+          "score_0_100": 58,
+          "readout": "Best established public residual compressor for localized disease"
+        }
+      },
+      {
+        "approach": "Surgery alone",
+        "phase": "Historical",
+        "real_world_efficacy": "EFS ~11% without adjuvant chemo",
+        "dualis_M": {
+          "residual_compress": "failed modern floor",
+          "scope": "local only",
+          "graft_risk": "systemic residual ignored",
+          "score_0_100": 8,
+          "readout": "Baseline failure mode — systemic residual not paid"
+        }
+      },
+      {
+        "approach": "MAPIE (poor responders)",
+        "phase": "Tested",
+        "real_world_efficacy": "Did not displace MAP as default after EURAMOS-class tests",
+        "dualis_M": {
+          "residual_compress": "incremental attempt · not new default",
+          "scope": "intensification after necrosis grade",
+          "graft_risk": "toxicity without outcome lock",
+          "score_0_100": 40,
+          "readout": "Intensity ≠ residual compression without confirmatory gain"
+        }
+      },
+      {
+        "approach": "DualisCapax (model M)",
+        "phase": "Open residual · sim layer",
+        "real_world_efficacy": "—",
+        "dualis_M": {
+          "residual_compress": "constraint-bottom dual path",
+          "scope": "stage-declared · resectability-declared",
+          "graft_risk": "controlled by floor tests",
+          "score_0_100": null,
+          "readout": "v2 ranks by residual compression under declared stage/resectability — pack depth pending for gated sim"
+        }
+      }
+    ]
+  }
+}
