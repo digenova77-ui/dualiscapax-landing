@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Access — DualisCapax Research</title>
+  <title>Access — DualisCapax Research (Closed)</title>
   <link rel="stylesheet" href="../assets/text-scale.css"/>
   <style>
     :root { --bg:#000; --fg:#fff; --muted:#8a8a8a; --border:#222; --accent:#1e90ff; --gold:#d4a017; --surface:#0a0a0a; }
@@ -19,42 +19,39 @@
     h1 { font-size: clamp(1.4rem, 1.2rem + 1vw, 1.75rem); margin-bottom: 0.4rem; }
     .lead { color: var(--muted); margin-bottom: 1rem; font-size: 1rem; }
     .lead strong { color: var(--fg); }
-    .rule {
-      border: 1px solid var(--border); background: var(--surface);
-      padding: 0.75rem 0.9rem; font-size: 0.82rem; color: var(--muted);
-      margin-bottom: 1.25rem; border-radius: 6px;
+    .closed-banner {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 1rem 1.1rem;
+      margin-bottom: 1.25rem;
+      border-radius: 6px;
     }
-    .rule strong { color: var(--fg); }
+    .closed-banner .tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.25rem 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .closed-banner p { font-size: 0.95rem; color: var(--muted); margin: 0 0 0.5rem; }
+    .closed-banner p:last-child { margin-bottom: 0; }
+    .closed-banner strong { color: var(--fg); }
     h2 { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 1.5rem 0 0.65rem; }
     .tier {
       border: 1px solid var(--border); border-radius: 8px;
       padding: 1rem; margin-bottom: 0.85rem; background: var(--surface);
+      opacity: 0.72;
     }
-    .tier.featured { border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
     .tier-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; align-items: baseline; margin-bottom: 0.45rem; }
     .tier-name { font-weight: 700; font-size: 1.05rem; }
-    .tier-price { font-size: 1.15rem; font-weight: 700; color: var(--gold); }
-    .tier-eq { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.55rem; overflow-wrap: anywhere; }
-    .tier-eq strong { color: var(--fg); font-weight: 500; }
-    .tier ul { margin: 0.4rem 0 0.75rem 1.1rem; font-size: 0.9rem; color: var(--muted); }
+    .tier-price { font-size: 0.9rem; font-weight: 600; color: var(--muted); }
+    .tier ul { margin: 0.4rem 0 0 1.1rem; font-size: 0.9rem; color: var(--muted); }
     .tier li { margin-bottom: 0.25rem; }
     .tier li strong { color: var(--fg); }
-    .pay-row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
-    .pay-row a {
-      font-size: 0.78rem; font-weight: 600; text-decoration: none;
-      border: 1px solid var(--border); border-radius: 4px;
-      padding: 0.45rem 0.7rem; color: var(--fg); background: transparent;
-      display: inline-block;
-    }
-    .pay-row a.card { border-color: var(--accent); color: var(--accent); }
-    .pay-row a.card:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
-    .pay-row a.crypto { border-color: var(--gold); color: var(--gold); }
-    .status {
-      font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem;
-      padding: 0.5rem 0.75rem; border: 1px dashed var(--border); border-radius: 4px;
-    }
-    .status.live { border-style: solid; border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); color: var(--fg); }
-    .status code { font-size: 0.7rem; }
     .note { font-size: 0.78rem; color: var(--muted); margin-top: 1.25rem; overflow-wrap: anywhere; }
     .note strong { color: var(--fg); }
     footer { border-top: 1px solid var(--border); padding: 1rem; text-align: center; font-size: 0.68rem; color: var(--muted); }
@@ -70,115 +67,57 @@
   </nav>
   <div class="shell">
     <h1>Document access</h1>
-    <p class="lead">Public residual text stays readable. <strong>Dated packs, simulation reports, and full dual-path depth</strong> are access-priced. Pay in <strong>CAD (card via Stripe Payment Link)</strong> or <strong>equal crypto</strong>. Same SKU either rail. Jacket <code>access.dual.v2</code>.</p>
-    <div class="rule">
-      <strong>Equal crypto rule.</strong> Card price is the CAD list. Crypto settles at the <strong>market rate at payment time</strong> for the same CAD value (BTC, ETH, or USDC). Estimates move with the market. Not medical advice. Not securities. No secret API keys on this site.
+    <p class="lead">Jacket <code>access.dual.v2</code>. Public residual prose on research leaves stays readable. <strong>Paid packs and dated depth are not for sale.</strong></p>
+
+    <div class="closed-banner">
+      <div class="tag">Closed · 24 Aug 2026</div>
+      <p><strong>Access is closed.</strong> No card checkout. No crypto invoices for packs. Pricing is not final.</p>
+      <p>Paid residual access will not open until the pricing structure is locked and <strong>IP protection is in place</strong>. That is intentional — not a missing button.</p>
+      <p>Stripe Payment Links and equal-crypto rails stay unwired while <code>open: false</code>.</p>
     </div>
-    <p id="link-status" class="status">Stripe Payment Links: loading config…</p>
-    <h2>Tiers</h2>
+
+    <h2>Reserved tiers (not on sale)</h2>
+    <p class="lead" style="margin-bottom:0.85rem">Structure only — amounts and checkout return when access is dated open.</p>
+
     <div class="tier" data-sku="leaf">
       <div class="tier-head">
         <span class="tier-name">Single leaf pack</span>
-        <span class="tier-price">CAD $49</span>
+        <span class="tier-price">Closed</span>
       </div>
-      <div class="tier-eq">≈ <strong>USD $35</strong> · ≈ <strong>0.00045 BTC</strong> · ≈ <strong>35 USDC</strong> <span style="opacity:0.75">(equal CAD at settlement)</span></div>
       <ul>
-        <li>One disease leaf at prototype density (e.g. <strong>ALS</strong>, osteosarcoma, GBM, Parkinson’s, Alzheimer’s)</li>
-        <li>Comparison table · public residual · Dualis v2 scores · molecule viewer</li>
-        <li>Matching simulation pack JSON where published</li>
+        <li>One disease leaf at prototype density</li>
+        <li>Pack JSON · simulation report where published</li>
       </ul>
-      <div class="pay-row">
-        <a class="card js-stripe" data-sku="leaf" href="#pay-card">Pay card · CAD $49</a>
-        <a class="crypto" href="#pay-crypto">Pay crypto · equal CAD $49</a>
-      </div>
     </div>
+
     <div class="tier" data-sku="branch">
       <div class="tier-head">
         <span class="tier-name">Branch access</span>
-        <span class="tier-price">CAD $149</span>
+        <span class="tier-price">Closed</span>
       </div>
-      <div class="tier-eq">≈ <strong>USD $108</strong> · ≈ <strong>0.0014 BTC</strong> · ≈ <strong>108 USDC</strong></div>
       <ul>
-        <li><strong>Neurological</strong> (ALS + Parkinson’s + Alzheimer’s) <em>or</em> <strong>Oncology</strong> (osteosarcoma + glioblastoma + future leaves in branch)</li>
-        <li>All packs in that branch for <strong>12 months</strong></li>
+        <li>Neurological <em>or</em> Oncology branch · 12 months when open</li>
       </ul>
-      <div class="pay-row">
-        <a class="card js-stripe" data-sku="branch" href="#pay-card">Pay card · CAD $149</a>
-        <a class="crypto" href="#pay-crypto">Pay crypto · equal CAD $149</a>
-      </div>
     </div>
-    <div class="tier featured" data-sku="library">
+
+    <div class="tier" data-sku="library">
       <div class="tier-head">
         <span class="tier-name">Full residual library</span>
-        <span class="tier-price">CAD $499</span>
+        <span class="tier-price">Closed</span>
       </div>
-      <div class="tier-eq">≈ <strong>USD $361</strong> · ≈ <strong>0.0046 BTC</strong> · ≈ <strong>361 USDC</strong></div>
       <ul>
-        <li>All medical leaves + life systems (animal · plant · fungi)</li>
-        <li>All published v2 packs + simulation reports</li>
-        <li><strong>12 months</strong> updates as leaves are added to the same standard</li>
+        <li>All medical leaves + life systems · 12 months when open</li>
       </ul>
-      <div class="pay-row">
-        <a class="card js-stripe" data-sku="library" href="#pay-card">Pay card · CAD $499</a>
-        <a class="crypto" href="#pay-crypto">Pay crypto · equal CAD $499</a>
-      </div>
     </div>
-    <h2 id="pay-card">Card (Stripe Payment Link)</h2>
-    <p class="lead">Stripe-hosted checkout · CAD list · no card data on dualiscapax.ai. When Payment Links are set in <code>payment-links.json</code>, the blue buttons open Checkout directly.</p>
-    <h2 id="pay-crypto">Crypto (equal CAD)</h2>
-    <p class="lead">Send <strong>equal CAD value at payment time</strong> in BTC, ETH, or USDC. Include your email so access can be dated. Until wallet addresses are published, request an invoice.</p>
-    <div class="pay-row">
-      <a class="crypto" href="mailto:digenova77@gmail.com?subject=DualisCapax%20access%20crypto%20equal%20CAD">Request crypto invoice · email</a>
-    </div>
+
     <p class="note">
-      <strong>What stays free:</strong> public residual prose on disease leaves.<br>
-      <strong>What is priced:</strong> dated pack JSON, full simulation reports, branch/library continuity, gated depth.<br>
-      <strong>Security:</strong> only <code>https://buy.stripe.com/…</code> links on this site — never secret API keys.<br>
-      <strong>Tax / books:</strong> record rail, gross, fee, net, SKU, date.<br>
-      Reference rates for estimates only (~24 Aug 2026). Settlement uses live rate.
+      <strong>What stays free:</strong> public residual prose on disease leaves under the research surface.<br>
+      <strong>What is closed:</strong> sale of dated packs, branch/library continuity, gated depth.<br>
+      <strong>Why:</strong> pricing not final · IP protection required before go-live sales.<br>
+      Not medical advice. Not securities.
     </p>
   </div>
-  <footer>DualisCapax · access.dual.v2 · CAD list · Stripe Payment Links · equal crypto · Not medical advice · Not securities</footer>
-  <script>
-    (function () {
-      var statusEl = document.getElementById('link-status');
-      fetch('payment-links.json', { cache: 'no-store' })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (cfg) {
-          if (!cfg || !cfg.skus) {
-            statusEl.textContent = 'Stripe Payment Links: config missing. Create products in Stripe Dashboard, then set URLs in payment-links.json.';
-            return;
-          }
-          var ready = 0, total = 0;
-          Object.keys(cfg.skus).forEach(function (sku) {
-            total++;
-            var link = cfg.skus[sku].stripe_payment_link;
-            var btn = document.querySelector('a.js-stripe[data-sku="' + sku + '"]');
-            if (!btn) return;
-            if (link && /^https:\/\/buy\.stripe\.com\//.test(link)) {
-              btn.href = link;
-              btn.target = '_blank';
-              btn.rel = 'noopener noreferrer';
-              ready++;
-            } else {
-              btn.href = '#pay-card';
-              btn.title = 'Payment Link not set yet for ' + sku;
-            }
-          });
-          if (ready === total && total > 0) {
-            statusEl.className = 'status live';
-            statusEl.textContent = 'Stripe Payment Links: live (' + cfg.mode + ') · ' + ready + '/' + total + ' SKUs · access.dual.v2';
-          } else if (ready > 0) {
-            statusEl.textContent = 'Stripe Payment Links: partial · ' + ready + '/' + total + ' SKUs wired. Add remaining buy.stripe.com URLs to payment-links.json.';
-          } else {
-            statusEl.innerHTML = 'Stripe Payment Links: <strong>not wired yet</strong>. In Stripe Dashboard (test mode) create 3 one-time products (CAD 49 / 149 / 499) → Payment link → paste each <code>buy.stripe.com</code> URL into <code>payment-links.json</code>.';
-          }
-        })
-        .catch(function () {
-          statusEl.textContent = 'Stripe Payment Links: could not load payment-links.json.';
-        });
-    })();
-  </script>
+  <footer>DualisCapax · access.dual.v2 · CLOSED 24 Aug 2026 · Not for sale · Not medical advice · Not securities</footer>
   <script src="../assets/text-scale.js" defer></script>
 </body>
 </html>
