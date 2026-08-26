@@ -1,8 +1,7 @@
 /**
- * DualisCapax intro sequence
- * Void → granular text assembly → hold → seed/bang → crossfade into frozen lander
- * Lander (.site) is never modified — only timing into it is refined.
- * No Matrix rain. Sentences assemble from particles, never fade-in as whole strings.
+ * DualisCapax intro — shortened Unity arc
+ * Void → granular assemble → brief hold → seed/bang → earlier crossfade into frozen lander
+ * Lander (.site) structure unchanged. No Matrix rain.
  */
 (function () {
   var intro = document.getElementById('intro');
@@ -29,16 +28,16 @@
   var osc = null;
   var gain = null;
 
-  /* Timing (seconds) — tuned for one continuous arc into the lander */
+  /* Tightened for one continuous Unity arc into the lander */
   var T = {
-    assemble1: 1.8,   // first line coalesces
-    assemble2: 1.4,   // second line coalesces
-    hold: 2.2,        // read the assembled residual question
-    fadeOut: 1.2,     // question out + seed bloom
-    bangDelay: 0.15,  // seed → video
-    crossfadeAt: 0.55,// fraction of video duration → start lander
-    introOut: 2.0,    // intro opacity to 0
-    hardFail: 26000   // absolute ms safety
+    assemble1: 1.15,
+    assemble2: 0.95,
+    hold: 1.35,
+    fadeOut: 0.75,
+    bangDelay: 0.1,
+    crossfadeAt: 0.32,
+    introOut: 1.35,
+    hardFail: 16000
   };
 
   function ensureCtx() {
@@ -77,7 +76,7 @@
       var now = ctx.currentTime;
       gain.gain.cancelScheduledValues(now);
       gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.2, now + 0.9);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.55);
     } catch (e) {
       residualLive = false;
     }
@@ -92,8 +91,8 @@
         gain.gain.cancelScheduledValues(now);
         var cur = Math.max(gain.gain.value, 0.0001);
         gain.gain.setValueAtTime(cur, now);
-        gain.gain.exponentialRampToValueAtTime(0.3, now + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.16, now + 0.85);
+        gain.gain.exponentialRampToValueAtTime(0.28, now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.14, now + 0.7);
       }
       var boom = ctx.createOscillator();
       var boomGain = ctx.createGain();
@@ -104,9 +103,9 @@
       boomGain.connect(ctx.destination);
       boom.start();
       boomGain.gain.setValueAtTime(0.0001, now);
-      boomGain.gain.exponentialRampToValueAtTime(0.28, now + 0.03);
-      boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
-      boom.stop(now + 1.2);
+      boomGain.gain.exponentialRampToValueAtTime(0.26, now + 0.03);
+      boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+      boom.stop(now + 1.0);
     } catch (e) {}
   }
 
@@ -117,7 +116,7 @@
         gain.gain.cancelScheduledValues(now);
         var cur = Math.max(gain.gain.value, 0.0001);
         gain.gain.setValueAtTime(cur, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
       }
     } catch (e) {}
     setTimeout(function () {
@@ -126,7 +125,7 @@
       } catch (e) {}
       residualLive = false;
       if (typeof then === 'function') then();
-    }, 650);
+    }, 480);
   }
 
   function beginCrossfade() {
@@ -134,22 +133,17 @@
     done = true;
     crossfading = true;
     phase = 'crossfade';
-
-    /* Bring lander up under the intro, then lift intro away */
     document.body.classList.add('is-live');
     if (smoke) smoke.classList.add('is-clear');
-
     stopResidual(function () {});
-
     setTimeout(function () {
       intro.classList.add('is-out');
       video.classList.add('is-fade');
-    }, 80);
-
+    }, 60);
     setTimeout(function () {
       try { intro.remove(); } catch (e) {}
       try { if (smoke) smoke.remove(); } catch (e) {}
-    }, 80 + T.introOut * 1000 + 200);
+    }, 60 + T.introOut * 1000 + 150);
   }
 
   function startVideo() {
@@ -164,12 +158,12 @@
       seed.classList.add('is-bloom');
       setTimeout(function () {
         if (seed) seed.classList.add('is-gone');
-      }, 700);
+      }, 520);
     }
     fireBang();
     video.classList.add('is-on');
     try {
-      video.playbackRate = 1.15;
+      video.playbackRate = 1.35;
     } catch (e) {}
     var p = video.play();
     if (p && p.catch) p.catch(function () {});
@@ -183,27 +177,21 @@
     setTimeout(startVideo, T.fadeOut * 1000);
   }
 
-  /**
-   * Granular assembly: particles spawn from void and coalesce into the two lines.
-   * No full-sentence fade-in. Build from nothing.
-   */
   function runAssembly() {
     phase = 'assemble';
     var lines = [];
     var ps = question.querySelectorAll('p');
     for (var i = 0; i < ps.length; i++) lines.push(ps[i]);
 
-    /* Hide native text until particles lock */
     question.style.opacity = '0';
     for (var j = 0; j < lines.length; j++) {
       lines[j].style.opacity = '0';
     }
 
     if (!canvas || !canvas.getContext) {
-      /* Fallback: short delay then reveal assembled text */
       setTimeout(function () {
         revealAssembled();
-      }, 400);
+      }, 280);
       return;
     }
 
@@ -212,7 +200,7 @@
     var W = 0, H = 0;
     var particles = [];
     var started = performance.now();
-    var stage = 0; /* 0 = line1, 1 = line2, 2 = done */
+    var stage = 0;
 
     function resize() {
       W = window.innerWidth;
@@ -243,8 +231,7 @@
         var ch = chars[i];
         var cw = ctx.measureText(ch).width;
         if (ch !== ' ') {
-          /* Several particles per glyph for granular feel */
-          var n = 3 + Math.floor(Math.random() * 3);
+          var n = 2 + Math.floor(Math.random() * 2);
           for (var k = 0; k < n; k++) {
             particles.push({
               ch: ch,
@@ -252,12 +239,10 @@
               ty: y0 + (Math.random() - 0.5) * fontSize * 0.15,
               x: W * (0.15 + Math.random() * 0.7),
               y: H * (0.1 + Math.random() * 0.8),
-              vx: (Math.random() - 0.5) * 2,
-              vy: (Math.random() - 0.5) * 2,
               size: fontSize * (0.55 + Math.random() * 0.35),
               alpha: 0,
-              t0: performance.now() + Math.random() * 120,
-              dur: duration * 1000 * (0.75 + Math.random() * 0.35),
+              t0: performance.now() + Math.random() * 80,
+              dur: duration * 1000 * (0.7 + Math.random() * 0.3),
               locked: false
             });
           }
@@ -277,7 +262,7 @@
         canvas.classList.add('is-fade');
         setTimeout(function () {
           if (canvas) canvas.classList.remove('is-on');
-        }, 600);
+        }, 450);
       }
       setTimeout(fadeQuestionThenBang, T.hold * 1000);
     }
@@ -294,12 +279,11 @@
         var age = now - p.t0;
         if (age < 0) continue;
         var u = Math.min(1, age / p.dur);
-        /* ease-out cubic toward target */
         var e = 1 - Math.pow(1 - u, 3);
-        p.x = p.x + (p.tx - p.x) * (0.08 + e * 0.12);
-        p.y = p.y + (p.ty - p.y) * (0.08 + e * 0.12);
-        p.alpha = Math.min(1, e * 1.2);
-        if (u >= 0.98) p.locked = true;
+        p.x = p.x + (p.tx - p.x) * (0.1 + e * 0.14);
+        p.y = p.y + (p.ty - p.y) * (0.1 + e * 0.14);
+        p.alpha = Math.min(1, e * 1.25);
+        if (u >= 0.97) p.locked = true;
         if (!p.locked) allLocked = false;
 
         ctx.globalAlpha = p.alpha * 0.92;
@@ -309,8 +293,8 @@
       }
       ctx.globalAlpha = 1;
 
-      if (stage === 0 && now - started > T.assemble1 * 1000 * 0.15 && particles.length === 0) {
-        spawnForLine(lines[0] ? lines[0].textContent.trim() : 'Every decision leaves a residual.', 0, T.assemble1);
+      if (stage === 0 && now - started > T.assemble1 * 1000 * 0.12 && particles.length === 0) {
+        spawnForLine(lines[0] ? lines[0].textContent.trim() : 'Between you and the future.', 0, T.assemble1);
       }
       if (stage === 0 && allLocked && particles.length > 0 && now - started > T.assemble1 * 1000) {
         stage = 1;
@@ -336,11 +320,10 @@
     resize();
     window.addEventListener('resize', resize);
     startResidual();
-    /* brief void, then particles */
     setTimeout(function () {
-      spawnForLine(lines[0] ? lines[0].textContent.trim() : 'Every decision leaves a residual.', 0, T.assemble1);
+      spawnForLine(lines[0] ? lines[0].textContent.trim() : 'Between you and the future.', 0, T.assemble1);
       requestAnimationFrame(frame);
-    }, 280);
+    }, 180);
   }
 
   function unlock() {
@@ -370,14 +353,12 @@
     });
   }
 
-  /* Safety nets */
   setTimeout(function () {
     if (!done && phase === 'video' && video.readyState < 2) beginCrossfade();
-  }, 12000);
+  }, 9000);
   setTimeout(function () {
     if (!done) beginCrossfade();
   }, T.hardFail);
 
-  /* Go */
   runAssembly();
 })();
