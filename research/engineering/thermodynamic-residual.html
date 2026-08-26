@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thermodynamic residual — DualisCapax Engineering</title>
+<meta name="description" content="Engineering residual: irreversible capacity cost, rate-distortion tradeoffs, closed measure. Not a hardware yield claim.">
+<link rel="stylesheet" href="../../assets/medical-docs.css">
+</head>
+<body class="md-body">
+<nav class="md-crumbs">
+  <a href="../../index.html">DUALISCAPAX</a><span>/</span>
+  <a href="../">Research</a><span>/</span>
+  <a href="./">Engineering</a><span>/</span>
+  <span class="now">Thermodynamic residual</span>
+</nav>
+<div class="md-shell">
+  <div class="md-badge">Residual journal · engineering · open</div>
+  <p class="md-kicker">ED-RES-ENG-THERMO-001 · Research → Engineering</p>
+  <h1 class="md-title">Thermodynamic residual</h1>
+  <p class="md-subtitle">For you: a clear residual reading of irreversible information cost, fidelity-versus-capacity tradeoffs, and why DualisCapax prices residual capacity at the edge — not a claim that our servers run at the Landauer limit.</p>
+  <div class="md-meta">
+    <span>Status <strong>open residual</strong></span>
+    <span>Grade <strong>Literature-forward</strong></span>
+    <span>Law <strong>2026-08-26</strong></span>
+  </div>
+  <div class="md-callout constraint">
+    <strong>Informational only.</strong>
+    Not investment advice. Not a securities offering. Not a guarantee of physical energy efficiency on any vendor cloud. Dual-column: measured local residual versus horizon under model residual.
+  </div>
+
+  <h2 class="md-h2">Residual unit</h2>
+  <p class="md-prose">What is metered here is the <strong>cost of irreversible work</strong>: capacity spent when information is erased, when fidelity is forced higher, and when process rework is repeated. Local engineering floors (your link budget, your PA backoff, your token budget) are real for the ship — they are not automatically the ultimate floor of physics.</p>
+
+  <h2 class="md-h2">P1 — Literature-forward residual</h2>
+  <div class="md-prose">
+    <p><strong>Landauer bound.</strong> Erasing one bit of information has a minimum average heat cost of order <em>k</em><sub>B</sub><em>T</em> ln 2 at temperature <em>T</em>. Real digital machines operate far above that floor because of noise margins, speed, and interconnect — but the bound still forbids treating irreversible residual as free.</p>
+    <p><strong>Rate–distortion.</strong> For a source under a distortion budget <em>D</em>, the minimum average rate <em>R</em>(<em>D</em>) is the least mutual information needed to keep average error ≤ <em>D</em>. For a Gaussian source under mean squared error, <em>R</em>(<em>D</em>) = ½ log<sub>2</sub>(σ²/<em>D</em>) when <em>D</em> ≤ σ². Higher fidelity requires more capacity.</p>
+    <p><strong>Waterfilling.</strong> Parallel resources (channels or transform coefficients) should receive power or rate only where the waterline still clears noise or residual variance. Dead channels and drowned coefficients should not consume the budget.</p>
+    <p><strong>Closed measure.</strong> Stochastic thermodynamics (fluctuation theorems, Crooks, bidirectional free-energy estimators such as BAR/MBAR) encodes the same honesty: path costs are real; rare optimistic paths do not cancel the ledger; equilibrium claims need a closed comparison of ensembles.</p>
+    <p><strong>Edge systems.</strong> OFDM, PAPR, SC-FDMA, mmWave beams, and RIS designs are all edge residual problems: you engineer the gap (peaks, path loss, blockage) instead of pretending the channel is free.</p>
+  </div>
+
+  <h2 class="md-h2">Comparison surface</h2>
+  <div class="md-table-wrap">
+    <table class="md-table">
+      <thead><tr><th>Approach</th><th>Public residual (P1)</th><th>Honesty note</th></tr></thead>
+      <tbody>
+        <tr><td>Ignore irreversible cost</td><td>Looks cheap until rework compounds</td><td>Fails residual law</td></tr>
+        <tr><td>Price residual capacity</td><td>Aligns spend with fidelity and burn</td><td>Dualis seat / Fuel posture</td></tr>
+        <tr><td>Claim Landauer-limit product</td><td>Not supported by typical silicon ops</td><td><strong>Not</strong> our open claim</td></tr>
+        <tr><td>Open-loop “integrated” score</td><td>Easy to inflate</td><td>Must invert to a real ledger</td></tr>
+        <tr><td>Engineer the gap at the edge</td><td>Where Dualis operates by default</td><td>Edge technology company</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="md-h2">What this does for you</h2>
+  <ul class="md-prose">
+    <li>You can read why residual capacity is taxed without buying a seat.</li>
+    <li>You can see the difference between a physics floor and a local engineering floor.</li>
+    <li>You are not sold a yield product dressed as thermodynamics.</li>
+    <li>If you later lock capacity, burn is residual capacity under one law — same mirror for corp and grassroots.</li>
+  </ul>
+
+  <p class="md-prose" style="margin-top:1.25rem">
+    <a href="./">Engineering hub</a> ·
+    <a href="../../residual-law.html">Residual Law</a> ·
+    <a href="../math/reverse_waterfilling.py">Reverse waterfilling (code)</a>
+  </p>
+  <p class="md-footer-note">DualisCapax residual journal · ED-RES-ENG-THERMO-001 · Informational only — not securities, not energy-yield guarantee, not medical advice. No tribes preferred. Truth prevails.</p>
+</div>
+</body>
+</html>
