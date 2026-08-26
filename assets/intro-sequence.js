@@ -1,3 +1,9 @@
+/**
+ * DualisCapax intro sequence
+ * Void → granular text assembly → hold → seed/bang → crossfade into frozen lander
+ * Lander (.site) is never modified — only timing into it is refined.
+ * No Matrix rain. Sentences assemble from particles, never fade-in as whole strings.
+ */
 (function () {
   var intro = document.getElementById('intro');
   var video = document.getElementById('nasa-bb');
@@ -5,6 +11,7 @@
   var skip = document.getElementById('skip-intro');
   var question = document.getElementById('question');
   var seed = document.getElementById('seed');
+  var canvas = document.getElementById('matrix');
   if (!intro || !video || !question) return;
 
   if (document.documentElement.classList.contains('land-direct')) {
@@ -15,14 +22,24 @@
   }
 
   var done = false;
-  var phase = 'matrix';
+  var phase = 'void';
   var residualLive = false;
   var crossfading = false;
   var audioCtx = null;
   var osc = null;
   var gain = null;
-  var PLAYBACK_RATE = 2;
-  var CROSSFADE_AT = 0.58; // earlier site start
+
+  /* Timing (seconds) — tuned for one continuous arc into the lander */
+  var T = {
+    assemble1: 1.8,   // first line coalesces
+    assemble2: 1.4,   // second line coalesces
+    hold: 2.2,        // read the assembled residual question
+    fadeOut: 1.2,     // question out + seed bloom
+    bangDelay: 0.15,  // seed → video
+    crossfadeAt: 0.55,// fraction of video duration → start lander
+    introOut: 2.0,    // intro opacity to 0
+    hardFail: 26000   // absolute ms safety
+  };
 
   function ensureCtx() {
     try {
@@ -60,7 +77,7 @@
       var now = ctx.currentTime;
       gain.gain.cancelScheduledValues(now);
       gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.22, now + 1.0);
+      gain.gain.exponentialRampToValueAtTime(0.2, now + 0.9);
     } catch (e) {
       residualLive = false;
     }
@@ -75,188 +92,269 @@
         gain.gain.cancelScheduledValues(now);
         var cur = Math.max(gain.gain.value, 0.0001);
         gain.gain.setValueAtTime(cur, now);
-        gain.gain.exponentialRampToValueAtTime(0.32, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.18, now + 0.9);
+        gain.gain.exponentialRampToValueAtTime(0.3, now + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.16, now + 0.85);
       }
       var boom = ctx.createOscillator();
       var boomGain = ctx.createGain();
       boom.type = 'sine';
-      boom.frequency.setValueAtTime(55, now);
-      boom.frequency.exponentialRampToValueAtTime(28, now + 0.55);
-      boomGain.gain.setValueAtTime(0.0001, now);
-      boomGain.gain.exponentialRampToValueAtTime(0.55, now + 0.03);
-      boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+      boom.frequency.value = 28;
+      boomGain.gain.value = 0.0001;
       boom.connect(boomGain);
       boomGain.connect(ctx.destination);
-      boom.start(now);
-      boom.stop(now + 0.75);
-      var frames = Math.floor(ctx.sampleRate * 0.18);
-      var buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
-      var data = buffer.getChannelData(0);
-      for (var i = 0; i < frames; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / frames, 2.2);
-      var noise = ctx.createBufferSource();
-      noise.buffer = buffer;
-      var noiseFilter = ctx.createBiquadFilter();
-      noiseFilter.type = 'bandpass';
-      noiseFilter.frequency.value = 420;
-      noiseFilter.Q.value = 0.7;
-      var noiseGain = ctx.createGain();
-      noiseGain.gain.setValueAtTime(0.28, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
-      noise.connect(noiseFilter);
-      noiseFilter.connect(noiseGain);
-      noiseGain.connect(ctx.destination);
-      noise.start(now);
-    } catch (e) {}
-  }
-
-  // Quick sharp noise / click when bang video ends / crossfade begins
-  function fireExitSnap() {
-    var ctx = ensureCtx();
-    if (!ctx) return;
-    try {
-      var now = ctx.currentTime;
-      // Short high sine click
-      var click = ctx.createOscillator();
-      var clickGain = ctx.createGain();
-      click.type = 'sine';
-      click.frequency.setValueAtTime(880, now);
-      click.frequency.exponentialRampToValueAtTime(220, now + 0.08);
-      clickGain.gain.setValueAtTime(0.0001, now);
-      clickGain.gain.exponentialRampToValueAtTime(0.35, now + 0.008);
-      clickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
-      click.connect(clickGain);
-      clickGain.connect(ctx.destination);
-      click.start(now);
-      click.stop(now + 0.1);
-
-      // Brief high-passed noise transient
-      var frames = Math.floor(ctx.sampleRate * 0.07);
-      var buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
-      var data = buffer.getChannelData(0);
-      for (var i = 0; i < frames; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / frames, 1.6);
-      var noise = ctx.createBufferSource();
-      noise.buffer = buffer;
-      var noiseFilter = ctx.createBiquadFilter();
-      noiseFilter.type = 'highpass';
-      noiseFilter.frequency.value = 1800;
-      noiseFilter.Q.value = 0.6;
-      var noiseGain = ctx.createGain();
-      noiseGain.gain.setValueAtTime(0.22, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
-      noise.connect(noiseFilter);
-      noiseFilter.connect(noiseGain);
-      noiseGain.connect(ctx.destination);
-      noise.start(now);
+      boom.start();
+      boomGain.gain.setValueAtTime(0.0001, now);
+      boomGain.gain.exponentialRampToValueAtTime(0.28, now + 0.03);
+      boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+      boom.stop(now + 1.2);
     } catch (e) {}
   }
 
   function stopResidual(then) {
-    residualLive = false;
-    if (seed) seed.style.transform = '';
-    if (audioCtx && gain) {
-      try {
+    try {
+      if (gain && audioCtx) {
         var now = audioCtx.currentTime;
         gain.gain.cancelScheduledValues(now);
         var cur = Math.max(gain.gain.value, 0.0001);
         gain.gain.setValueAtTime(cur, now);
-        // Longer fade so hum coincides with landing end (no hard cut)
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
-        setTimeout(function () {
-          try { if (osc) osc.stop(); } catch (e) {}
-          try { if (audioCtx) audioCtx.close(); } catch (e) {}
-          osc = null;
-          gain = null;
-          audioCtx = null;
-          if (typeof then === 'function') then();
-        }, 2500);
-        return;
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+      }
+    } catch (e) {}
+    setTimeout(function () {
+      try {
+        if (osc) osc.stop();
       } catch (e) {}
-    }
-    try { if (osc) osc.stop(); } catch (e) {}
-    try { if (audioCtx) audioCtx.close(); } catch (e) {}
-    osc = null;
-    gain = null;
-    audioCtx = null;
-    if (typeof then === 'function') then();
+      residualLive = false;
+      if (typeof then === 'function') then();
+    }, 650);
   }
 
   function beginCrossfade() {
     if (done || crossfading) return;
-    crossfading = true;
     done = true;
-    fireExitSnap(); // sharp noise as bang ends / landing begins
-    stopResidual(function () {
-      // residual already fading; proceed with visual
-    });
-    // Start visual immediately so site comes in while hum is still dying
-    video.classList.add('is-fade');
-    if (smoke) smoke.classList.add('is-on');
-    intro.classList.add('is-out');
+    crossfading = true;
+    phase = 'crossfade';
+
+    /* Bring lander up under the intro, then lift intro away */
     document.body.classList.add('is-live');
+    if (smoke) smoke.classList.add('is-clear');
+
+    stopResidual(function () {});
+
     setTimeout(function () {
-      if (smoke) smoke.classList.add('is-clear');
-    }, 1600);
+      intro.classList.add('is-out');
+      video.classList.add('is-fade');
+    }, 80);
+
     setTimeout(function () {
-      try { video.pause(); } catch (e) {}
-      try {
-        intro.remove();
-        if (smoke) smoke.remove();
-      } catch (e) {}
-    }, 3400);
+      try { intro.remove(); } catch (e) {}
+      try { if (smoke) smoke.remove(); } catch (e) {}
+    }, 80 + T.introOut * 1000 + 200);
   }
 
   function startVideo() {
     if (phase === 'video' || done) return;
     phase = 'video';
-    try {
-      if (seed) seed.classList.add('is-gone');
-    } catch (e) {}
+    if (canvas) {
+      canvas.classList.remove('is-on');
+      canvas.classList.add('is-fade');
+    }
+    if (seed) {
+      seed.classList.add('is-on');
+      seed.classList.add('is-bloom');
+      setTimeout(function () {
+        if (seed) seed.classList.add('is-gone');
+      }, 700);
+    }
+    fireBang();
     video.classList.add('is-on');
     try {
-      video.currentTime = 0;
+      video.playbackRate = 1.15;
     } catch (e) {}
-    try {
-      video.playbackRate = PLAYBACK_RATE;
-    } catch (e) {}
-    ensureCtx();
-    // Bang at the true beginning of the Big Bang clip
-    fireBang();
-    startResidual();
     var p = video.play();
     if (p && p.catch) p.catch(function () {});
   }
 
   function fadeQuestionThenBang() {
-    if (phase !== 'question' && phase !== 'matrix') return;
+    if (phase !== 'assembled') return;
     phase = 'fadeq';
     question.classList.remove('is-in');
     question.classList.add('is-out');
-    var mx = document.getElementById('matrix');
-    if (mx) mx.classList.add('is-fade');
-    setTimeout(startVideo, 1400);
+    setTimeout(startVideo, T.fadeOut * 1000);
   }
 
-  function solidifyQuestion() {
-    if (done) return;
-    phase = 'question';
-    question.classList.add('is-in');
-    setTimeout(fadeQuestionThenBang, 3000);
+  /**
+   * Granular assembly: particles spawn from void and coalesce into the two lines.
+   * No full-sentence fade-in. Build from nothing.
+   */
+  function runAssembly() {
+    phase = 'assemble';
+    var lines = [];
+    var ps = question.querySelectorAll('p');
+    for (var i = 0; i < ps.length; i++) lines.push(ps[i]);
+
+    /* Hide native text until particles lock */
+    question.style.opacity = '0';
+    for (var j = 0; j < lines.length; j++) {
+      lines[j].style.opacity = '0';
+    }
+
+    if (!canvas || !canvas.getContext) {
+      /* Fallback: short delay then reveal assembled text */
+      setTimeout(function () {
+        revealAssembled();
+      }, 400);
+      return;
+    }
+
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0;
+    var particles = [];
+    var started = performance.now();
+    var stage = 0; /* 0 = line1, 1 = line2, 2 = done */
+
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = Math.floor(W * dpr);
+      canvas.height = Math.floor(H * dpr);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function measureLine(text, fontSize) {
+      ctx.font = '700 ' + fontSize + 'px Inter, system-ui, sans-serif';
+      return ctx.measureText(text).width;
+    }
+
+    function spawnForLine(text, lineIndex, duration) {
+      var fontSize = Math.max(18, Math.min(28, Math.floor(W / 18)));
+      var maxW = Math.min(W * 0.88, 22 * 16);
+      while (measureLine(text, fontSize) > maxW && fontSize > 14) fontSize -= 1;
+      ctx.font = '700 ' + fontSize + 'px Inter, system-ui, sans-serif';
+      var tw = ctx.measureText(text).width;
+      var x0 = (W - tw) / 2;
+      var y0 = H * 0.5 + (lineIndex === 0 ? -fontSize * 0.85 : fontSize * 1.05);
+      var chars = text.split('');
+      var cx = x0;
+      for (var i = 0; i < chars.length; i++) {
+        var ch = chars[i];
+        var cw = ctx.measureText(ch).width;
+        if (ch !== ' ') {
+          /* Several particles per glyph for granular feel */
+          var n = 3 + Math.floor(Math.random() * 3);
+          for (var k = 0; k < n; k++) {
+            particles.push({
+              ch: ch,
+              tx: cx + cw * 0.15 + Math.random() * cw * 0.5,
+              ty: y0 + (Math.random() - 0.5) * fontSize * 0.15,
+              x: W * (0.15 + Math.random() * 0.7),
+              y: H * (0.1 + Math.random() * 0.8),
+              vx: (Math.random() - 0.5) * 2,
+              vy: (Math.random() - 0.5) * 2,
+              size: fontSize * (0.55 + Math.random() * 0.35),
+              alpha: 0,
+              t0: performance.now() + Math.random() * 120,
+              dur: duration * 1000 * (0.75 + Math.random() * 0.35),
+              locked: false
+            });
+          }
+        }
+        cx += cw;
+      }
+    }
+
+    function revealAssembled() {
+      phase = 'assembled';
+      question.style.opacity = '';
+      question.classList.add('is-in');
+      for (var i = 0; i < lines.length; i++) {
+        lines[i].style.opacity = '';
+      }
+      if (canvas) {
+        canvas.classList.add('is-fade');
+        setTimeout(function () {
+          if (canvas) canvas.classList.remove('is-on');
+        }, 600);
+      }
+      setTimeout(fadeQuestionThenBang, T.hold * 1000);
+    }
+
+    function frame(now) {
+      if (done || phase === 'video' || phase === 'fadeq' || phase === 'crossfade') return;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.22)';
+      ctx.fillRect(0, 0, W, H);
+
+      var allLocked = particles.length > 0;
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        var age = now - p.t0;
+        if (age < 0) continue;
+        var u = Math.min(1, age / p.dur);
+        /* ease-out cubic toward target */
+        var e = 1 - Math.pow(1 - u, 3);
+        p.x = p.x + (p.tx - p.x) * (0.08 + e * 0.12);
+        p.y = p.y + (p.ty - p.y) * (0.08 + e * 0.12);
+        p.alpha = Math.min(1, e * 1.2);
+        if (u >= 0.98) p.locked = true;
+        if (!p.locked) allLocked = false;
+
+        ctx.globalAlpha = p.alpha * 0.92;
+        ctx.fillStyle = 'rgba(232,241,255,0.95)';
+        ctx.font = '700 ' + Math.round(p.size) + 'px Inter, system-ui, sans-serif';
+        ctx.fillText(p.ch, p.x, p.y);
+      }
+      ctx.globalAlpha = 1;
+
+      if (stage === 0 && now - started > T.assemble1 * 1000 * 0.15 && particles.length === 0) {
+        spawnForLine(lines[0] ? lines[0].textContent.trim() : 'Every decision leaves a residual.', 0, T.assemble1);
+      }
+      if (stage === 0 && allLocked && particles.length > 0 && now - started > T.assemble1 * 1000) {
+        stage = 1;
+        allLocked = false;
+        if (lines[1]) {
+          spawnForLine(lines[1].textContent.trim(), 1, T.assemble2);
+        } else {
+          stage = 2;
+        }
+      }
+      if (stage === 1 && allLocked && now - started > (T.assemble1 + T.assemble2) * 1000) {
+        stage = 2;
+      }
+      if (stage === 2) {
+        revealAssembled();
+        return;
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    canvas.classList.add('is-on');
+    resize();
+    window.addEventListener('resize', resize);
+    startResidual();
+    /* brief void, then particles */
+    setTimeout(function () {
+      spawnForLine(lines[0] ? lines[0].textContent.trim() : 'Every decision leaves a residual.', 0, T.assemble1);
+      requestAnimationFrame(frame);
+    }, 280);
   }
 
   function unlock() {
     ensureCtx();
   }
-
   ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(function (ev) {
-    document.addEventListener(ev, unlock, { once: true, passive: true });
+    window.addEventListener(ev, unlock, { passive: true, once: true });
   });
 
   video.addEventListener('timeupdate', function () {
     if (phase !== 'video' || done) return;
     var d = video.duration;
     if (!d || !isFinite(d)) return;
-    if (video.currentTime / d >= CROSSFADE_AT) beginCrossfade();
+    if (video.currentTime / d >= T.crossfadeAt) beginCrossfade();
   });
   video.addEventListener('ended', function () {
     if (!done) beginCrossfade();
@@ -267,105 +365,19 @@
 
   if (skip) {
     skip.addEventListener('click', function () {
-      unlock();
-      try {
-        video.pause();
-      } catch (e) {}
+      if (done) return;
       beginCrossfade();
     });
   }
 
-  (function runMatrix() {
-    var canvas = document.getElementById('matrix');
-    if (!canvas) {
-      setTimeout(solidifyQuestion, 400);
-      return;
-    }
-    var ctx = canvas.getContext('2d');
-    if (!ctx) {
-      setTimeout(solidifyQuestion, 400);
-      return;
-    }
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var W = 0,
-      H = 0,
-      cols = [],
-      fontSize = 14;
-    var glyphs = '01デュアリス残余01001 Residual 01CAPAX01';
-    var started = performance.now();
-    var solidified = false;
-    canvas.classList.add('is-on');
-
-    function resize() {
-      W = window.innerWidth;
-      H = window.innerHeight;
-      canvas.width = Math.floor(W * dpr);
-      canvas.height = Math.floor(H * dpr);
-      canvas.style.width = W + 'px';
-      canvas.style.height = H + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      fontSize = Math.max(12, Math.floor(W / 42));
-      var n = Math.ceil(W / fontSize);
-      cols = [];
-      for (var i = 0; i < n; i++) {
-        cols.push({ y: Math.random() * H, speed: 2 + Math.random() * 5 });
-      }
-    }
-
-    function frame(now) {
-      if (done || phase === 'video' || phase === 'fadeq') return;
-      var t = (now - started) / 1000;
-      ctx.fillStyle = 'rgba(0,0,0,0.12)';
-      ctx.fillRect(0, 0, W, H);
-      ctx.font =
-        '600 ' +
-        fontSize +
-        'px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
-      var dens = Math.min(1, t / 2.1);
-      for (var i = 0; i < cols.length; i++) {
-        var c = cols[i];
-        var x = i * fontSize;
-        var ch = glyphs.charAt((i * 7 + Math.floor(c.y / fontSize)) % glyphs.length);
-        var alpha =
-          (0.15 + dens * 0.75) * (0.55 + 0.45 * Math.sin((c.y + i) * 0.02));
-        ctx.fillStyle = 'rgba(158,197,255,' + alpha + ')';
-        ctx.fillText(ch, x, c.y);
-        c.y += c.speed * (0.7 + dens);
-        if (c.y > H + fontSize) c.y = -Math.random() * H * 0.3;
-      }
-      if (dens > 0.55) {
-        var g = ctx.createRadialGradient(
-          W / 2,
-          H / 2,
-          0,
-          W / 2,
-          H / 2,
-          Math.min(W, H) * 0.45
-        );
-        g.addColorStop(0, 'rgba(0,0,0,' + 0.35 * dens + ')');
-        g.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, W, H);
-      }
-      if (!solidified && t >= 2.2) {
-        solidified = true;
-        solidifyQuestion();
-      }
-      if (phase === 'question' || phase === 'matrix' || !solidified) {
-        requestAnimationFrame(frame);
-      }
-    }
-
-    phase = 'matrix';
-    resize();
-    window.addEventListener('resize', resize);
-    requestAnimationFrame(frame);
-  })();
-
+  /* Safety nets */
   setTimeout(function () {
     if (!done && phase === 'video' && video.readyState < 2) beginCrossfade();
-  }, 14000);
+  }, 12000);
   setTimeout(function () {
     if (!done) beginCrossfade();
-  }, 28000);
+  }, T.hardFail);
+
+  /* Go */
+  runAssembly();
 })();
