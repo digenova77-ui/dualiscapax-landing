@@ -1,0 +1,112 @@
+name: oidc-auth
+
+# DualisCapax — GitHub OIDC authentication
+# Residual law: short-lived tokens preferred; no long-lived keys in agent chat or repo files.
+# Cross-ref: docs/residual-law/SECRETS-ISOLATION.md
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/oidc-auth.yml"
+      - "server/**"
+      - "docs/residual-law/SECRETS-ISOLATION.md"
+
+permissions:
+  contents: read
+  id-token: write   # required for GitHub OIDC JWT
+
+concurrency:
+  group: oidc-auth-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # A · Prove GitHub OIDC token can be minted (no cloud secrets required)
+  # ---------------------------------------------------------------------------
+  oidc_mint:
+    name: OIDC · Mint GitHub ID token
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request OIDC JWT from GitHub
+        id: oidc
+        run: |
+          set -euo pipefail
+          echo "Requesting OIDC token (audience=dualiscapax)"
+          TOKEN="$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=dualiscapax" | jq -r .value)"
+          if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+            echo "::error::Failed to mint OIDC ID token — check permissions.id-token: write"
+            exit 1
+          fi
+          # Decode payload (no verify) for residual audit — never echo full token
+          PAYLOAD="$(echo "$TOKEN" | cut -d. -f2 | tr '_-' '/+' | awk '{print $0}==' | base64 -d 2>/dev/null || true)"
+          echo "OIDC_OK=1"
+          echo "Claims (redacted audit):"
+          echo "$PAYLOAD" | jq -r '{iss, aud, sub, repository, ref, workflow, event_name}' 2>/dev/null || echo "$PAYLOAD" | head -c 400
+          echo "Token length=${#TOKEN} (not printed)"
+
+  # ---------------------------------------------------------------------------
+  # B · Google Cloud via Workload Identity Federation (OIDC — no SA JSON key)
+  # Runs only when operator has configured repo variables / secrets below.
+  # ---------------------------------------------------------------------------
+  google_oidc:
+    name: OIDC · Google Cloud WIF
+    needs: oidc_mint
+    runs-on: ubuntu-latest
+    # Set repository variable GCP_WIF_ENABLED=true after operator configures WIF
+    if: ${{ vars.GCP_WIF_ENABLED == 'true' }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        name: Authenticate to Google Cloud (OIDC)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          # No credentials_json — keyless
+
+      - name: Verify gcloud identity
+        run: |
+          set -euo pipefail
+          gcloud auth list
+          echo "GOOGLE_OIDC_OK=1"
+          # Optional: gcloud projects describe "${{ vars.GCP_PROJECT_ID }}"
+
+  # ---------------------------------------------------------------------------
+  # C · Cloudflare Worker deploy
+  # Official path still uses API token in Actions secrets (not agent chat).
+  # Native CF OIDC/trusted-publishing is not generally available for wrangler yet;
+  # token stays in GitHub silo only — never in A/B/C prompts.
+  # ---------------------------------------------------------------------------
+  cloudflare_worker:
+    name: Cloudflare · Deploy worker (token silo)
+    needs: oidc_mint
+    runs-on: ubuntu-latest
+    if: ${{ vars.CF_DEPLOY_ENABLED == 'true' }}
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy with wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: server
+          command: deploy
+
+      - name: Note residual
+        run: |
+          echo "CF deploy used GitHub Actions secret silo only."
+          echo "XAI_API_KEY and other runtime secrets remain wrangler secret put — never in git."
