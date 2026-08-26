@@ -22,7 +22,7 @@
   var osc = null;
   var gain = null;
   var PLAYBACK_RATE = 2;
-  var CROSSFADE_AT = 0.74;
+  var CROSSFADE_AT = 0.58; // earlier site start
 
   function ensureCtx() {
     try {
@@ -110,6 +110,47 @@
     } catch (e) {}
   }
 
+  // Quick sharp noise / click when bang video ends / crossfade begins
+  function fireExitSnap() {
+    var ctx = ensureCtx();
+    if (!ctx) return;
+    try {
+      var now = ctx.currentTime;
+      // Short high sine click
+      var click = ctx.createOscillator();
+      var clickGain = ctx.createGain();
+      click.type = 'sine';
+      click.frequency.setValueAtTime(880, now);
+      click.frequency.exponentialRampToValueAtTime(220, now + 0.08);
+      clickGain.gain.setValueAtTime(0.0001, now);
+      clickGain.gain.exponentialRampToValueAtTime(0.35, now + 0.008);
+      clickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+      click.connect(clickGain);
+      clickGain.connect(ctx.destination);
+      click.start(now);
+      click.stop(now + 0.1);
+
+      // Brief high-passed noise transient
+      var frames = Math.floor(ctx.sampleRate * 0.07);
+      var buffer = ctx.createBuffer(1, frames, ctx.sampleRate);
+      var data = buffer.getChannelData(0);
+      for (var i = 0; i < frames; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / frames, 1.6);
+      var noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      var noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'highpass';
+      noiseFilter.frequency.value = 1800;
+      noiseFilter.Q.value = 0.6;
+      var noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.22, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(now);
+    } catch (e) {}
+  }
+
   function stopResidual(then) {
     residualLive = false;
     if (seed) seed.style.transform = '';
@@ -119,7 +160,8 @@
         gain.gain.cancelScheduledValues(now);
         var cur = Math.max(gain.gain.value, 0.0001);
         gain.gain.setValueAtTime(cur, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+        // Longer fade so hum coincides with landing end (no hard cut)
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
         setTimeout(function () {
           try { if (osc) osc.stop(); } catch (e) {}
           try { if (audioCtx) audioCtx.close(); } catch (e) {}
@@ -127,7 +169,7 @@
           gain = null;
           audioCtx = null;
           if (typeof then === 'function') then();
-        }, 420);
+        }, 2500);
         return;
       } catch (e) {}
     }
@@ -143,22 +185,25 @@
     if (done || crossfading) return;
     crossfading = true;
     done = true;
+    fireExitSnap(); // sharp noise as bang ends / landing begins
     stopResidual(function () {
-      video.classList.add('is-fade');
-      if (smoke) smoke.classList.add('is-on');
-      intro.classList.add('is-out');
-      document.body.classList.add('is-live');
-      setTimeout(function () {
-        if (smoke) smoke.classList.add('is-clear');
-      }, 1200);
-      setTimeout(function () {
-        try { video.pause(); } catch (e) {}
-        try {
-          intro.remove();
-          if (smoke) smoke.remove();
-        } catch (e) {}
-      }, 2600);
+      // residual already fading; proceed with visual
     });
+    // Start visual immediately so site comes in while hum is still dying
+    video.classList.add('is-fade');
+    if (smoke) smoke.classList.add('is-on');
+    intro.classList.add('is-out');
+    document.body.classList.add('is-live');
+    setTimeout(function () {
+      if (smoke) smoke.classList.add('is-clear');
+    }, 1600);
+    setTimeout(function () {
+      try { video.pause(); } catch (e) {}
+      try {
+        intro.remove();
+        if (smoke) smoke.remove();
+      } catch (e) {}
+    }, 3400);
   }
 
   function startVideo() {
