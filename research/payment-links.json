@@ -1,11 +1,21 @@
 {
   "jacket": "access.dual.v2",
   "list_currency": "CAD",
-  "mode": "crypto_pending_address",
   "open": false,
-  "closed_as_of": "2026-08-26",
-  "closed_reason": "Catalog priced. Crypto rail waits Dualis-only receive address. Fiat waits CIBC numbers.",
-  "note": "Not securities. Prepaid access + depth only. CAD list = crypto equal at send-time FX.",
+  "locked_as_of": "2026-08-27T04:05:00-04:00",
+  "gateway_law": "Do not open until access layers invert AND every system cost inverts. Rails may wait. Prices may not be invented at checkout.",
+  "access_layers": {
+    "L0_LOOK": { "who": "anyone", "invoke": "read public rooms", "cad": 0, "status": "open" },
+    "L1_MEASURE": { "who": "anyone", "invoke": "read peg language, run public numbers backwards", "cad": 0, "status": "open" },
+    "L2_LEAF": { "who": "prepaid seat", "invoke": "one room, 12 mo", "cad": 49, "status": "priced_closed" },
+    "L3_BRANCH": { "who": "prepaid seat", "invoke": "one field, 12 mo", "cad": 149, "status": "priced_closed" },
+    "L4_LIBRARY": { "who": "prepaid seat", "invoke": "full residual library, 12 mo", "cad": 499, "status": "priced_closed" },
+    "L5_DEPTH_S": { "who": "prepaid fuel", "invoke": "40 Fuel depth run", "cad": 20, "status": "priced_closed" },
+    "L5_DEPTH_M": { "who": "prepaid fuel", "invoke": "120 Fuel depth run", "cad": 50, "status": "priced_closed" },
+    "L5_DEPTH_L": { "who": "prepaid fuel", "invoke": "320 Fuel depth run", "cad": 120, "status": "priced_closed" },
+    "CROWN": { "who": "owner wet-ink only", "invoke": "CRA, bank open, government handoff", "cad": null, "status": "never_agent" },
+    "WAIT_GRANT": { "who": "owner yes/no", "invoke": "OAuth / token for a named realm", "cad": 0, "status": "slot" }
+  },
   "skus": {
     "look": { "name": "Look", "cad": 0, "status": "open" },
     "basic": { "name": "Basic measure", "cad": 0, "status": "open" },
@@ -16,9 +26,14 @@
     "depth_m": { "name": "Depth 120 Fuel", "cad": 50, "crypto_equal_cad": true, "status": "priced_closed" },
     "depth_l": { "name": "Depth 320 Fuel", "cad": 120, "crypto_equal_cad": true, "status": "priced_closed" }
   },
-  "receive": {
-    "usdc": null,
-    "btc": null,
-    "chain_usdc": null
-  }
+  "system_costs": {
+    "pages_host": { "cad_month": 0, "status": "defined", "note": "GitHub Pages" },
+    "stripe_fee_when_open": { "rate": "processor schedule at open", "status": "named_formula", "note": "Visitor residual on fiat rail; Dualis does not hide it." },
+    "crypto_network_fee": { "payer": "sender", "status": "named", "note": "Not Dualis inventory." },
+    "cibc_account": { "status": "WAIT_RAIL", "note": "Basic + Growth intended; not open." },
+    "stripe_link": { "status": "WAIT_RAIL" },
+    "treasury_address": { "status": "WAIT_RAIL" }
+  },
+  "receive": { "usdc": null, "btc": null, "chain_usdc": null },
+  "ready_except": ["CIBC numbers", "Stripe Payment Link", "treasury address"]
 }
