@@ -1,0 +1,10 @@
+{
+  "jacket": "processor.build.v1",
+  "as_of": "2026-08-27T04:21:00-04:00",
+  "decision": "Split. Dualis owns invoice/watch/Fuel and a 3-5 venue median quote. Dualis rents cards and long-tail swaps until volume inverts those fees.",
+  "own": ["xpub invoice", "confirm watch", "Fuel credit from CAD FMV", "median quote 3-5 liquid venues", "reject if spread > 1% or no depth"],
+  "rent": ["Banxa or MoonPay cards", "NOWPayments-class long-tail", "KYT API"],
+  "markets": { "need": "3-5 liquid", "not": "10-20 thin books", "long_tail": "no 3-source quote = no Fuel" },
+  "msb": "Crown. Merchant receive of named coins is not automatically an exchange desk. Quoting and swapping every ERC-20 for the public is closer to dealing in virtual currency.",
+  "open": false
+}
