@@ -1,36 +1,33 @@
-# FRICTION — blast mimics, keep the real floor
-2026-08-27 01:06 EDT
+# FRICTION — keep the signal, cut the bleed
+2026-08-27 01:07 EDT
 Law.
 
-## Real breaker (do not blast)
-Landauer / Shannon floor of the argument.
-UNLEARNABLE (Saturday path, atom with no handle).
-WEAK overlay (split, don't rank).
-CLAIM: they execute, we do not announce their kWh.
-Crown / wet-ink / dual-TOS. Frame grain.
-These are load-bearing walls. Destroying them is burn dressed as speed.
+## Friction is wanted
+Friction is how the plate *shows* residual. No friction, no map of the wound.
+Do not polish a city until it looks smooth and the bleed is invisible.
+Name the grind: two books, missing clock, dark plant, WEAK word, WAIT_GRANT, vendor queue, human re-entry on a sealed cell.
+That list *is* the diagnostic.
 
-## Mimic breaker (destroy)
-Friction that *looks* like a stop but is only residue:
-- two books nobody reconciled
-- clock unpublished so everyone assumes 24/7
-- dark-hour plant left on because no one named DARK
-- "can't" that is actually WAIT_GRANT or a missing recipe
-- department word hiding two species
-- human re-entry where the cell is already sealed
-- vendor queue that a granted API already covers
-Blast = IDENTIFY, split, stamp, recipe, grant slot, dark the lever. Residual → 0 on that handle.
+## Bleed is not wanted
+Bleed = $$R$$ that keeps costing after we can name the handle.
+Once friction has pointed at the organ, engineer the mimic-stop off that organ.
+Leaving named friction in place "for vibe" is just more residual.
 
-## Playground after the blast
-$$C_{dual}$$ rises because $$R$$ fell, not because we invented $$S$$.
-Potential is unused SLOT_OPEN, unpublished CLOCK now posted, mash removed so a real Δ can exist.
-Generate = testers can execute a tighter plan than they had. Not Dualis printing money from silence.
+## Still do not blast the real floor
+Landauer / Shannon as argument floor.
+UNLEARNABLE.
+WEAK → split, not rank.
+CLAIM / execution.
+Crown, dual-TOS, grain.
+Those resists are structure ($$B$$), not bleed.
 
-## Test
-If removing the stop would let a false PREDICT out, it was a real breaker. Keep it.
-If removing the stop only lets a sealed plan run, it was friction. Cut it.
+## Walk
+1. Hunt friction. Stamp it (HOLE, WEAK, CLOCK missing, two books).
+2. Classify: real wall or mimic.
+3. Cut only the mimic. Leave the wall.
+4. Re-measure. If grind remains and it is still mimic, cut again.
+5. If grind remains and it is the floor, stop. That is honesty, not failure.
 
 ## Agent rule
-Name which of the two you are looking at.
-Never smash the floor to look open.
-Never leave mimic friction standing and call it safety.
+Do not hide friction to look unified.
+Do not worship friction after it has already named the hole.
