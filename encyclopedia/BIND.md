@@ -1,11 +1,11 @@
 # Dualis encyclopedia bind — one file
 
-Load this first for fact-check. Written 2026-08-27 05:03 EDT.
-Oliver-by-name was not on Drive root. This binds all-of-our root + GitHub meaning.
+**Oliver\* = all of our.** Not a person. Not a Drive folder to hunt.
+Load this first for fact-check. Written 2026-08-27 05:06 EDT.
 
 Drive pointer: https://drive.google.com/drive/folders/1ehRr0Iz7kjVJrTEVFlS0F6xyU4BMRf-s
 Agent law: /00_AGENT_CURRENT_LOGIC_2026-08-27_0459_EDT.md
-Full local twin in session artifacts: DUALIS-ENCYCLOPEDIA-BIND.md
+Full twin: DUALIS-ENCYCLOPEDIA-BIND.md (session artifacts)
 
 ## How to use
 1. Law + entity here win over 2P5L folders.
@@ -13,6 +13,7 @@ Full local twin in session artifacts: DUALIS-ENCYCLOPEDIA-BIND.md
 3. Disease fact-check = catalog ID in research/healthcare/library/ENCYCLOPEDIA-CATALOG.md
 4. Newer SEALED cell wins. Silence is HOLE not zero.
 5. Link this file. Do not paste it into every new note.
+6. If a prompt says Oliver or Oliver\*, read this bind — do not search a human named Oliver.
 
 ## Law (once)
 DCLM. YS/NO is grant law. Crown wet-ink only. GDI out. 2P5L is ARCHIVE. DBP-1.1 + Landauer smash stop. Dualis-book exile only. Ack is a second bind. Fuel is server ledger. Geo atom = CSD. Secrets sealed. Simulation is not treatment.
@@ -21,7 +22,7 @@ DCLM. YS/NO is grant law. Crown wet-ink only. GDI out. 2P5L is ARCHIVE. DBP-1.1 
 1001718450 ONTARIO INCORPORATED / DualisCapax / dualiscapax.ai
 CIBC Basic+Growth WAIT numbers. Gateway Worker sketched; client Fuel leftover. No Solidity in repo.
 
-## Drive root
+## Drive root (Oliver\* at root)
 DISREGARD folder and 'no longer necessary' = park.
 All 2P5L cohort folders = ARCHIVE.
 TrustWalletBackup = do not index contents.
