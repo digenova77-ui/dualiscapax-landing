@@ -1,20 +1,17 @@
 # 00_AGENT_CURRENT_LOGIC
 LOAD AT START. Beats older notes.
-Written: Wednesday 26 August 2026 20:44 EDT
+Written: Wednesday 26 August 2026 21:02 EDT
 
 ## Session open
 So did you want to carry on with **CIBC morning watch** or address something else?
 
 ## CIBC
-E = WAIT. Owner confirmed no inbound on either box after Pratik 17:40.
-Package 17:45 + follow-up ~19:45 SENT. ID draft NOT sent. No third email tonight.
-Morning Thu: search 77. If empty by noon, one status ping then stop.
-Do not ask if they filed an STR. Dualis is not an MSB.
+E = WAIT. Empty both boxes after 17:40. No third email.
+Thu 09:00 America/Toronto automation: Dualis CIBC morning watch (task 29fbe084-a655-4aa3-aa2a-abb0cf185038).
+Basic account locked: $6 + $1 self-serve. Everyday cheaper only at 15+ txns or $20k parked.
 
 ## Entity
-1001718450 ONTARIO INCORPORATED. PERSON-001 David J Di Genova DOB 1977-10-31.
-GDI / PC Financial = personal. Out of scope.
+1001718450 ONTARIO INCORPORATED. PERSON-001 DOB 1977-10-31. GDI OUT.
 
-## Master v2
-Judge identity-before-grant. TDI 0-3. Every ASSIGN names undo.
-A LIVE · B LIVE · C WAIT_GRANT · E WAIT · X WAIT_GRANT invoke HOUSE=@David_Di_Genova · GDI OUT
+## Branches
+A LIVE · B LIVE · C WAIT_GRANT · E WAIT · X WAIT_GRANT · GDI OUT
