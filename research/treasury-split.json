@@ -1,13 +1,12 @@
 {
   "jacket": "treasury.split.v1",
-  "as_of": "2026-08-27T04:17:00-04:00",
+  "as_of": "2026-08-27T04:18:00-04:00",
   "hold_target": { "btc": 0.5, "eth": 0.5 },
   "hold_target_scope": "book_not_each_ticket",
-  "transit": "USDC",
-  "park_when": "BTC or ETH hop fails invert",
+  "transit_and_park": "USDC on a cheap rail Dualis already controls",
+  "rule": "Do not buy BTC or ETH on a ticket if that hop fails invert. Both legs have fees.",
   "invert_fail": "(network_fee + spread) / notional > 0.02 OR notional_cad < 200",
-  "park_where": "Dualis USDC address or processor balance Dualis controls — not a third-party escrow costume",
-  "release": "When parked USDC book >= CAD 200 and fee/notional <= 0.02, buy toward 50/50",
+  "release": "When park >= CAD 200 AND the next BTC hop inverts AND the next ETH hop inverts, buy toward 50/50. If only one hop inverts, buy that leg only.",
   "receive": { "btc": null, "eth": null, "usdc": null },
   "open": false
 }
