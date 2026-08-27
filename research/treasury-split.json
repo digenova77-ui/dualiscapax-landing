@@ -1,13 +1,13 @@
 {
   "jacket": "treasury.split.v1",
-  "as_of": "2026-08-27T04:16:00-04:00",
-  "hold": { "btc": 0.5, "eth": 0.5 },
-  "transit_only": ["USDC"],
-  "receive": {
-    "btc": null,
-    "eth": null,
-    "note": "Owner states wallets exist. Addresses not published. Never keys."
-  },
-  "conversion": "Processor-quoted inbound → 50/50 BTC and ETH. Fuel from CAD FMV of what landed.",
+  "as_of": "2026-08-27T04:17:00-04:00",
+  "hold_target": { "btc": 0.5, "eth": 0.5 },
+  "hold_target_scope": "book_not_each_ticket",
+  "transit": "USDC",
+  "park_when": "BTC or ETH hop fails invert",
+  "invert_fail": "(network_fee + spread) / notional > 0.02 OR notional_cad < 200",
+  "park_where": "Dualis USDC address or processor balance Dualis controls — not a third-party escrow costume",
+  "release": "When parked USDC book >= CAD 200 and fee/notional <= 0.02, buy toward 50/50",
+  "receive": { "btc": null, "eth": null, "usdc": null },
   "open": false
 }
