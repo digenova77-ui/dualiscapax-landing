@@ -1,11 +1,11 @@
-# Inter-data
-2026-08-26 22:03 EDT
+# Masters of the gaps
+2026-08-26 22:04 EDT
 
-Dualis does not become a cartoon master of the universe on the website.
-Dualis becomes the layer that holds **inter-data**: the bond between two records that no single registrar, exchange, or vendor will keep for you.
+Internal name of the Dualis join layer:
+**masters of the gaps between data sets**
 
-StatCan count cell ↔ federal corporation number ↔ provincial name ↔ SEDAR filing ↔ instance feed the onboarder grants.
-That join is the asset. The named firm is the row. DCLM is the measure. The tweak is the grain.
+A gap is two records that belong to the same thing and no vendor will hold both.
+StatCan cell ↔ corporation number ↔ provincial name ↔ filing ↔ granted instance feed.
 
-Public line stays: we measure this thing in its own units.
-Internal line: own the joins.
+Own the join. Measure with DCLM. Grain is the named tweak.
+Public site still does not use this phrase.
