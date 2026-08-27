@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Uh-oh — DualisCapax</title>
+  <title>Target not acquired — DualisCapax</title>
   <meta name="robots" content="noindex,nofollow" />
   <meta name="theme-color" content="#050505" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -20,14 +20,14 @@
       </nav>
     </header>
     <p class="eyebrow">404</p>
-    <h1>Uh-oh.</h1>
-    <p>We didn’t find that target.</p>
-    <p>The path moved, or it was never a page. Look is still free. This miss is leftover — not a freeze.</p>
+    <h1>Target not acquired.</h1>
+    <p>Uh-oh. We didn’t find that one.</p>
+    <p>This rail is still building out. More rooms are coming. A miss here is leftover — not a freeze, and not a promise that the path will exist tomorrow.</p>
     <div class="hud">
-      <p>You asked for <span class="strong" id="miss">this path</span>. It is not on the rail.</p>
+      <p>Asked for <span class="strong" id="miss">this path</span>. Not on the live rail yet.</p>
     </div>
     <section>
-      <div class="label">Live targets</div>
+      <div class="label">What is live</div>
       <a class="door" href="/?land=1">Landing</a>
       <a class="door" href="/for-people">For you</a>
       <a class="door" href="/access">Access</a>
@@ -35,14 +35,13 @@
       <a class="door" href="/efuse">eFuse</a>
       <a class="door" href="/research/">Rooms</a>
     </section>
-    <footer>DualisCapax · Miss named · Next grain is a door</footer>
+    <footer>DualisCapax · Still building · More to come</footer>
   </div>
   <script>
     (function () {
       var el = document.getElementById("miss");
       if (!el) return;
-      var p = (location.pathname || "/") + (location.search || "");
-      el.textContent = p;
+      el.textContent = (location.pathname || "/") + (location.search || "");
     })();
   </script>
 </body>
