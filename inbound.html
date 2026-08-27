@@ -17,23 +17,28 @@
         <a href="processor.html">Processor</a>
       </nav>
     </header>
-    <p class="eyebrow">BTC fee · ETH fee · both count</p>
-    <h1>Micro tickets stay in USDC.</h1>
-    <p>BTC costs to move. ETH costs to move. A $20 Fuel buy is not a reason to pay a network to put $10 on each side. Park USDC. When the pile is large enough that the fee is small relative to the buy, then split 50/50.</p>
+    <p class="eyebrow">Park bound · BTC/ETH still waiting</p>
+    <h1>USDC park is bound.</h1>
+    <p>Micro tickets land here. When the pile inverts, we buy toward half BTC, half ETH. Fuel is not live. Do not send a test unless you mean it to stay.</p>
     <section>
-      <div class="label">Invert</div>
+      <div class="label">USDC receive</div>
+      <p class="hud" style="word-break:break-all">0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4</p>
+      <p>EVM address. Chain assumed Ethereum mainnet USDC until you say otherwise (Base, Polygon, …). Same HD structure. Never a key on this page.</p>
+    </section>
+    <section>
+      <div class="label">Still waiting</div>
       <ul>
-        <li>Fail when fee + spread &gt; 2% of the ticket, or the ticket is under CAD $200.</li>
-        <li>Applies to BTC and to ETH. Neither is free on a small hop.</li>
-        <li>If only one side inverts, buy that side. Leave the rest parked.</li>
-        <li>Fuel already credited. Visitor is not charged the later network hop.</li>
+        <li>BTC receive string</li>
+        <li>ETH receive string</li>
+        <li>One word: ETH or Base (or other) for this USDC</li>
       </ul>
     </section>
     <div class="hud">
-      <p>Park: USDC<br/>Target book: 50/50 BTC ETH<br/>Addresses: waiting to publish<br/>open: false</p>
+      <p>Park: bound<br/>Split target: 50/50<br/>Fuel checkout: closed</p>
     </div>
     <a class="door" href="fuel.html">Fuel</a>
-    <footer>Two fees · One park</footer>
+    <a class="door" href="own-processor.html">Own vs desk</a>
+    <footer>Public string only</footer>
   </div>
 </body>
 </html>
