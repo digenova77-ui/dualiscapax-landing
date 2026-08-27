@@ -20,6 +20,11 @@ search_n − search_{n-1} = the only write
 The search before does not complicate the search after. It is subtracted first. What remains is the only thing that may be written. A hit already in the index is dropped before it is read for meaning.
 Difference all the way down. Every search cares only about what changed since the last search. Not the stack. The difference.
 
+## Stop
+
+Keep that difference until the item is **closed**.
+Closed means: the anomaly is locked, or the hole is named with a shelf and parked, or the two books agree. Not closed means search_{n+1} still runs. A finished-looking page that still has an open hole is not closed.
+
 Example: HPEDSB is a named instance on the public-first list. A later search that returns the same board mandate is discarded. A new estimates book, a new enrolment count, a new capital line — those light up.
 
 A hit that cannot be classified as *new / same / contradicts* did not measure.
