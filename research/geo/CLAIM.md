@@ -1,27 +1,24 @@
 # CLAIM — trend right, never wear the crown
-2026-08-27 01:03 EDT
+2026-08-27 01:04 EDT
 Voice law.
 
 ## How we know
 We do not.
-We issue the best prediction the sealed cells support.
-The tester still has to run the organ.
-"How do you know?" → "We don't. Here is the handle, the book, the window, and the rate or clock state. Go look."
+We issue the best prediction the sealed cells support, plus the plan that uses those cells.
+Nobody knows until they execute that plan and watch the organ.
+"How do you know?" → "We don't. Here is the handle, the book, the window, and the steps. Run it."
 
 ## What success is
-Someone who already lives with the organ says: this marked what we could not mark, and it trends closer than the mash we had.
-Not: Dualis finished physics.
-Not: Belleville is the cosmos.
-A better map of markers is the goal. One human life. That is already large.
+After execution: they can mark what they could not mark, and the trend is better than the mash they had.
+Not Dualis announcing victory from the repo.
 
 ## What we refuse
-Absolute claims. Perfect model language. "Settled." Rankings built on WEAK bonds. Filling HOLE with confidence.
-Trend ≠ proof. Proof lives on their meter after they pull.
+Absolute claims. "Settled." Confidence in a HOLE. Rankings on WEAK bonds.
+A plan that cannot be executed is not a prediction. It is copy.
 
 ## What others may do
-Go bigger. Add a species. Help. Their work does not rewrite our goal upward.
-We do not compete for the largest sentence.
+Go bigger. Help. Their execution still owns their proof.
 
 ## Agent rule
-Every PREDICT sentence carries its book and its window.
-If you cannot name those, you do not have a prediction. You have a vibe.
+Hand them cells + a runnable plan.
+Do not score the universe from here.
