@@ -22,26 +22,40 @@
     <p class="eyebrow">404</p>
     <h1>Target not acquired.</h1>
     <p>Uh-oh. We didn’t find that one.</p>
-    <p>This rail is still building out. More rooms are coming. A miss here is leftover — not a freeze, and not a promise that the path will exist tomorrow.</p>
+    <p>The tree can run as deep as the miss. We do not pre-build a hundred thousand rooms. A miss names the next grain. We close backward from here.</p>
+    <p>Still building out. More to come.</p>
     <div class="hud">
-      <p>Asked for <span class="strong" id="miss">this path</span>. Not on the live rail yet.</p>
+      <p>Asked for <span class="strong" id="miss">this path</span>.</p>
+      <p id="depth" style="margin-top:.6rem"></p>
     </div>
     <section>
-      <div class="label">What is live</div>
+      <div class="label">Walk back</div>
+      <div id="crumbs"></div>
       <a class="door" href="/?land=1">Landing</a>
       <a class="door" href="/for-people">For you</a>
       <a class="door" href="/access">Access</a>
-      <a class="door" href="/unity">Unity</a>
-      <a class="door" href="/efuse">eFuse</a>
       <a class="door" href="/research/">Rooms</a>
     </section>
-    <footer>DualisCapax · Still building · More to come</footer>
+    <footer>DualisCapax · Miss names the grain · Close backward</footer>
   </div>
   <script>
     (function () {
-      var el = document.getElementById("miss");
-      if (!el) return;
-      el.textContent = (location.pathname || "/") + (location.search || "");
+      var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
+      var miss = document.getElementById("miss");
+      if (miss) miss.textContent = path + (location.search || "");
+      var parts = path.split("/").filter(Boolean);
+      var depth = document.getElementById("depth");
+      if (depth) depth.textContent = parts.length ? (parts.length + " deep. Not minted until the grain closes.") : "Root miss.";
+      var box = document.getElementById("crumbs");
+      if (!box) return;
+      var acc = "";
+      var html = "<p><a class=\"door\" href=\"/?land=1\">/</a></p>";
+      for (var i = 0; i < parts.length; i++) {
+        acc += "/" + parts[i];
+        var last = i === parts.length - 1;
+        html += "<p>" + (last ? "<span class=\"strong\">" + acc + " — not acquired</span>" : "<a class=\"door\" href=\"" + acc + "\">" + acc + "</a>") + "</p>";
+      }
+      box.innerHTML = html;
     })();
   </script>
 </body>
