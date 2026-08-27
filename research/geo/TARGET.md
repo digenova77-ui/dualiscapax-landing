@@ -1,33 +1,25 @@
-# TARGET — Earth quantify, then Mars, then forecast
-2026-08-27 01:00 EDT
-Ultimate goal stays cosmic: identify and relate to the atom.
-Work order is not the atom.
+# TARGET — ladder to the handle we do not have yet
+2026-08-27 01:03 EDT
+Ultimate: identify and relate (atom / cosmos). Work order is the ladder. Do not skip rungs.
 
-## Phase E — quantify Earth (current)
-Stamp and pull civic + tenant handles that already exist.
-Span 1 = columns on four exam Bodies.
-Span 2 = recipes.
-Span 3 = Ontario rows when headers hold.
-Span 4 = country frames.
-Span 5 = Earth civic/tenant as pages appear.
-No Mars tokens in PLAYGROUND while Phase E has unnamed Earth columns.
+## Rungs (Earth quantify → Mars → forecast)
+0. Four-city exam (Toronto, Belleville, Kingston, Quinte West) — columns + stamps.
+1. Belleville-complete as the small organism we can actually finish (CSD + tenant holes named).
+2. Ontario rows (444) when headers inherit.
+3. Canada frames (province + federal organs; N/A where a column is Ontario-only).
+4. North America frames (US / MX statute tokens; overlay STRONG only on shared species).
+5. Each other continent as its own Body set — copy MESH, do not mash GDP into TCHC.
+6. Earth civic + tenant handles as they publish.
+7. Mars extrapolate (new Body set, no imported burn).
+8. Forecast beyond only with engineering that maps the next grain.
 
-## Phase M — extrapolate Mars
-Only after Phase E headers are stable enough to inherit.
-New Body set. Overlay vs Earth: STRONG where the organ can grow post-terraform; ABSENT for Earth-only scars; design constraint = do not import named burns.
-Hypothesis overlay. No fake Cache.
+## Claim at the top
+If every rung still inverts to an ID on rung 0, there is no later organism that requires a new brain — only new rows and the few species we have not met.
+"Nothing we cannot figure out" means: no unnamed *kind* of hurdle. It does not mean tonight's Cache is full.
 
-## Phase F — forecast beyond
-Only after Phase M has a structure (not a mood).
-Forecast = engineering question: what map, what lever, what residual floor on the next world or the next grain.
-Not a press narrative about destiny.
-If the engineering to map it does not exist, F is HORIZON text, not columns.
-
-## Invertibility
-F → M → E → four-city IDs.
-If a forecast cannot walk back to an Earth organ, it is story.
+## Current hand
+Rung 0–1. Belleville + the other three exam cities. Next missing column or silent cell.
+Do not open Texas to avoid a Belleville HOLE.
 
 ## Agent rule
-Hands on Phase E.
-Mouth may name M and F.
-Do not scrape M to skip an Earth hole.
+Name the rung. Stay on it. Inherit headers upward. Overlay downward.
