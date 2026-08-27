@@ -8,43 +8,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: #050505;
-      color: #f5f5f5;
-      -webkit-font-smoothing: antialiased;
-    }
+    body { font-family: Inter, system-ui, sans-serif; background: #050505; color: #f5f5f5; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
     .shell { max-width: 44rem; margin: 0 auto; padding: 0 1.25rem 3.5rem; }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.25rem 0 0;
-      gap: 1rem;
-    }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0 0; gap: 1rem; }
     .mark { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.04em; }
-    nav { display: flex; gap: 1.35rem; flex-wrap: wrap; }
+    nav { display: flex; gap: 1.1rem; flex-wrap: wrap; }
     nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.7); }
-    h1 {
-      font-size: clamp(3rem, 12vw, 4.75rem);
-      font-weight: 900;
-      line-height: 0.88;
-      letter-spacing: -0.05em;
-      text-transform: uppercase;
-      margin: 2.25rem 0 1.5rem;
-    }
-    h2 {
-      font-size: 1.05rem;
-      font-weight: 800;
-      margin: 1.75rem 0 0.55rem;
-    }
-    article p {
-      font-size: clamp(1.2rem, 4vw, 1.45rem);
-      line-height: 1.4;
-      font-weight: 500;
-      margin: 0 0 1.15rem;
-    }
+    nav a.on { color: #f5f5f5; }
+    h1 { font-size: clamp(3rem, 12vw, 4.75rem); font-weight: 900; line-height: 0.88; letter-spacing: -0.05em; text-transform: uppercase; margin: 2.25rem 0 1.5rem; }
+    h2 { font-size: 1.05rem; font-weight: 800; margin: 1.75rem 0 0.55rem; }
+    article p { font-size: clamp(1.15rem, 4vw, 1.4rem); line-height: 1.4; font-weight: 500; margin: 0 0 1.15rem; }
   </style>
 </head>
 <body>
@@ -52,24 +26,29 @@
     <header>
       <a href="index.html?land=1" class="mark">DualisCapax</a>
       <nav>
+        <a href="for-people.html">For you</a>
         <a href="research/">Look</a>
         <a href="onboard.html">Measure</a>
         <a href="payments.html">Bind</a>
-        <a href="faq.html">FAQ</a>
+        <a href="faq.html" class="on">FAQ</a>
       </nav>
     </header>
     <h1>FAQ</h1>
     <article>
       <h2>What is this for me?</h2>
-      <p>You already pay for waste — extra compute, extra protocol steps, extra heat. Dualis measures that residual on your constraint and gives you a number you can check.</p>
-      <h2>What does Basic cost?</h2>
-      <p>Nothing to look. A sandbox seat is free. You pay only if you bind: prepaid depth, or ten percent of savings we can actually validate. If we cannot name the savings in your units, the price stays zero.</p>
-      <h2>Can I buy a seat tonight?</h2>
-      <p>No. Seats are closed until settlement lands. Payments pages write an order ID only. That is not a charge.</p>
+      <p>You already pay leftover — extra steps, extra heat, extra waiting. We name that leftover in your units. If we cannot, you owe nothing.</p>
+      <h2>Do you want my money?</h2>
+      <p>Not as a pitch. We want the money you already burn on waste named, so the rest stays yours. Look is free. Bind is optional and closed until settlement is real.</p>
+      <h2>Do you want my time?</h2>
+      <p>Not as a hold. We want the hours leftover used to eat handed back as a path you can walk without a three-to-five-day queue.</p>
+      <h2>Do you want my goal?</h2>
+      <p>No. We want to give you the next step, then the next, until the goal is still yours.</p>
+      <h2>Do you want my credit?</h2>
+      <p>No. We want tools in your hands so the credit lands on you.</p>
+      <h2>Will you shove this?</h2>
+      <p>No. Walk away whenever you want. We are unused until you use us. That is how we get proven.</p>
       <h2>Is this an investment?</h2>
-      <p>No. Not shares. Not a return. Research on this site stays readable. Counsel handles anything that is not a measured seat.</p>
-      <h2>Why should I stay?</h2>
-      <p>Because the number is yours. If it cannot be run backwards, it is not Dualis — and you owe nothing.</p>
+      <p>No. Not shares. Not a return. Research stays readable. Counsel handles anything that is not a measured seat.</p>
     </article>
   </div>
 </body>
