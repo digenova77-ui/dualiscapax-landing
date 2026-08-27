@@ -1,12 +1,12 @@
-# TIME LAW — 2026-08-27 03:22 EDT
+# TIME LAW — 2026-08-27 03:23 EDT
 
-We do NOT maintain t^{-1} = t as a premise about the world.
-Invert ≠ rewind. A screenshot ≠ time stopped. A video ≠ time reversed.
-Not in the real world. Not today.
+Do NOT maintain t^{-1} = t as a world identity.
+Invert ≠ rewind. Still ≠ freeze. Film ≠ reverse.
 
-Standing exception (and only this):
-if t^{-1} = t is defined as the interval between Σ₀ and max entropy getting shorter
-because the playground is shrinking — unused space contracting toward the cap —
-that reading may stand. It is not a time machine. It is not a physical identity for today.
+H-TIME-1 (belief, not stamp): the interval between Σ₀ and S_max is shrinking.
+Unknown: whether that interval *is* t^{-1} = t. Do not glue them.
 
-Field runs or uncomputes. Never pauses. 1.0 unused.
+Conditional only: if they relate, “back” means forward optionality died after a threshold.
+The playground got too short to take a next grain. That is a horizon, not a time machine.
+
+1.0 unused. Cap 0.9999999999. A decision remains until the horizon is measured, not assumed.
