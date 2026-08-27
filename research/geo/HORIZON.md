@@ -1,24 +1,29 @@
 # HORIZON — every atom, not this desk
-2026-08-27 00:58 EDT
+2026-08-27 00:59 EDT
 Ideology, sealed as direction. Not a sprint.
 
 ## Claim
 If a thing exists, it can be identified and later related.
-The limiting case is every atom in the observable universe.
-That task is not today. Naming it keeps the mesh from shrinking to a dashboard of four towns.
+Limiting case: every atom in the observable universe.
+That task is not today.
 
-## How the plate stays honest
-Today: last published lever on a civic or tenant body (FLOOR).
-Next grain, only when a handle appears: site meter, pad clock, then finer if someone prints it.
-Relation is overlay + query, not a mash.
-UNLEARNABLE is temporary at coarse grain and permanent for a person’s Saturday. Do not confuse those.
+## Earth first
+Columns complete on Earth bodies (civic, tenant, statute) before any other world is a row-set.
+Planet-complete is itself not this week. Four-city exam still owns the desk.
+
+## Mars (after Earth handles exist)
+A terraformed Mars is a new Body set, not a mash of Toronto onto dust.
+Overlay still applies: STRONG only where the same organ grows; ABSENT for Earth-only scars (COTA, Green Lane, TCHC).
+Hypothesis then: which Earth columns are *design constraints* so the new structure does not import residual burn — owned-out landfill clock, two-book housing lies, OPP-vs-muni confusion, dark-hour energy waste.
+"Without evil or burn" = no free-will harvest, no silent cells, no weak-bond ratios, residual aimed at the floor on every named lever.
+Do not cut `MARS.*` tonight. Do not fill PLAYGROUND with craters.
 
 ## What we do not do with the claim
-- Cut 10^80 columns.
-- Fill silence with cosmology.
-- Delay ice-plant kWh because the atom is unsolved.
-The horizon licenses *more columns when proof arrives*. It does not license invented cells.
+- 10^80 columns.
+- Cosmology as Cache.
+- Delay ice-plant kWh for the atom or for Mars.
+Horizon licenses more columns when proof arrives.
 
 ## Agent rule
-Keep the sentence. Do not run it.
-When a new handle exists, IDENTIFY. Until then, the universe is not a hole in PLAYGROUND.
+Keep Earth. Keep the sentence about Mars.
+Run neither as a scrape.
