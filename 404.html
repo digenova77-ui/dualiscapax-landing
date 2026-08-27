@@ -2,29 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Not this door — DualisCapax</title>
-  <meta name="robots" content="noindex" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Uh-oh — DualisCapax</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#050505" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/theme.css" />
 </head>
 <body>
   <div class="site">
     <header>
       <a href="/?land=1" class="mark">DualisCapax</a>
+      <nav>
+        <a href="/for-people">For you</a>
+        <a href="/access">Access</a>
+        <a href="/research/">Rooms</a>
+      </nav>
     </header>
-    <p class="eyebrow">Missing grain</p>
-    <h1>This door is not here.</h1>
-    <p>The rail moved, or the path was never a page. Look is still free.</p>
+    <p class="eyebrow">404</p>
+    <h1>Uh-oh.</h1>
+    <p>We didn’t find that target.</p>
+    <p>The path moved, or it was never a page. Look is still free. This miss is leftover — not a freeze.</p>
+    <div class="hud">
+      <p>You asked for <span class="strong" id="miss">this path</span>. It is not on the rail.</p>
+    </div>
     <section>
-      <div class="label">Live doors</div>
-      <p><a class="door" href="/for-people">For you</a></p>
-      <p><a class="door" href="/access">Access</a></p>
-      <p><a class="door" href="/unity">Unity</a></p>
-      <p><a class="door" href="/efuse">eFuse</a></p>
-      <p><a class="door" href="/research/">Rooms</a></p>
-      <p><a class="door" href="/?land=1">Landing</a></p>
+      <div class="label">Live targets</div>
+      <a class="door" href="/?land=1">Landing</a>
+      <a class="door" href="/for-people">For you</a>
+      <a class="door" href="/access">Access</a>
+      <a class="door" href="/unity">Unity</a>
+      <a class="door" href="/efuse">eFuse</a>
+      <a class="door" href="/research/">Rooms</a>
     </section>
-    <footer>DualisCapax · 404 is leftover · Not a freeze</footer>
+    <footer>DualisCapax · Miss named · Next grain is a door</footer>
   </div>
+  <script>
+    (function () {
+      var el = document.getElementById("miss");
+      if (!el) return;
+      var p = (location.pathname || "/") + (location.search || "");
+      el.textContent = p;
+    })();
+  </script>
 </body>
 </html>
