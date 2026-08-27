@@ -24,61 +24,26 @@
 }
 @layer intro {
   .intro{position:fixed;inset:0;z-index:var(--z-intro);background:#000;display:flex;align-items:center;justify-content:center}
-  .matrix{position:absolute;inset:0;z-index:1;width:100%;height:100%;display:block;pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+  .matrix{position:absolute;inset:0;z-index:3;width:100%;height:100%;display:block;pointer-events:none;opacity:0;transition:opacity 0.9s ease}
   .matrix.is-on{opacity:1}
-  .matrix.is-fade{opacity:0;transition:opacity 1.4s ease}
+  .matrix.is-fade{opacity:0;transition:opacity 0.7s ease}
   .intro.is-out{opacity:0;pointer-events:none}
   .intro video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;opacity:0;z-index:2}
   .intro video.is-on{opacity:1}
   .intro video.is-fade{opacity:0}
   .question{
-    position:relative;z-index:3;
-    max-width:min(22rem,88vw);
-    padding:1.75rem 1.35rem;
-    text-align:center;
+    position:absolute;
+    width:1px;height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;padding:0;margin:0;
     opacity:0;
-    transform:translateY(12px) scale(0.985);
-  }
-  .question::before{
-    content:"";
-    position:absolute;left:50%;top:50%;
-    width:min(78vw,22rem);height:min(78vw,22rem);
-    margin:-50% 0 0 -50%;
-    border-radius:50%;
     pointer-events:none;
-    background:radial-gradient(circle,rgba(158,197,255,0.09) 0%,rgba(74,143,216,0.03) 38%,transparent 68%);
-    opacity:0;
-    transform:scale(0.7);
+    z-index:0;
   }
-  .question.is-in{opacity:1;transform:translateY(0) scale(1)}
-  .question.is-in::before{opacity:1;transform:scale(1)}
-  .question.is-out{opacity:0;transform:scale(0.9);filter:blur(14px)}
-  .question.is-out::before{opacity:0;transform:scale(1.15)}
-  .question p{
-    position:relative;
-    font-size:clamp(1.2rem,4.4vw,1.55rem);
-    font-weight:700;
-    line-height:1.4;
-    letter-spacing:0.02em;
-    color:rgba(245,248,255,0.94);
-    text-shadow:
-      0 0 18px rgba(158,197,255,0.28),
-      0 0 42px rgba(74,143,216,0.12);
-    opacity:0;
-    transform:translateY(10px);
-  }
-  .question.is-in p{opacity:1;transform:translateY(0)}
-  .question p+p{
-    margin-top:1rem;
-    font-weight:500;
-    font-size:clamp(1.05rem,3.8vw,1.28rem);
-    letter-spacing:0.04em;
-    color:rgba(200,220,255,0.72);
-    text-shadow:0 0 20px rgba(126,182,255,0.18);
-  }
-  .question.is-in p:nth-child(1){transition:opacity 1.5s ease 0.05s, transform 1.5s cubic-bezier(.22,1,.36,1) 0.05s}
-  .question.is-in p:nth-child(2){transition:opacity 1.6s ease 0.55s, transform 1.6s cubic-bezier(.22,1,.36,1) 0.55s}
-  .question.is-in::before{transition:opacity 2s ease 0.15s, transform 2.2s cubic-bezier(.22,1,.36,1) 0.15s}
+  .question p{font-size:1px;line-height:1}
   .seed{position:absolute;z-index:2;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(255,255,255,.95),0 0 40px 12px rgba(200,220,255,.55),0 0 80px 28px rgba(140,180,255,.25);opacity:0;transform:scale(.2);pointer-events:none}
   .seed.is-on{opacity:1;transform:scale(1)}
   .seed.is-bloom{transform:scale(18);opacity:.85}
@@ -122,7 +87,8 @@
   #geo-earth{width:100%;height:100%;display:block}
   h1{font-size:clamp(2rem,9vw,3.5rem);font-weight:900;line-height:.9;letter-spacing:-.05em;text-transform:uppercase;margin:0}
   .lines{margin:0}
-  .line{font-size:clamp(0.9rem,3.8vw,1.25rem);font-weight:900;color:var(--fg);margin:0 0 0.12rem;text-transform:uppercase;letter-spacing:0.08em;line-height:1.15}
+  .line{display:block;font-size:clamp(0.9rem,3.8vw,1.25rem);font-weight:900;color:var(--fg);margin:0 0 0.12rem;text-transform:uppercase;letter-spacing:0.08em;line-height:1.15}
+  a.line:active{opacity:0.75}
   .hud{
     width:min(94vw,28rem);flex-shrink:0;
     border:1px solid rgba(126,182,255,0.28);
@@ -148,9 +114,6 @@
 @layer motion {
   .intro{transition:opacity 2.4s ease}
   .intro video{transition:opacity 2.4s ease}
-  .question{transition:opacity 1.5s ease,transform 1.5s cubic-bezier(.22,1,.36,1),filter 1.5s ease}
-  .question::before{transition:opacity 1.2s ease,transform 1.2s ease}
-  .question p{transition:opacity 0.9s ease,transform 0.9s ease}
   .seed{transition:opacity .5s ease,transform 1.1s cubic-bezier(.22,1,.36,1)}
   .seed.is-bloom{transition:opacity .9s ease,transform 1.35s cubic-bezier(.22,1,.36,1)}
   .seed.is-gone{transition:opacity .6s ease}
@@ -194,27 +157,28 @@
         <span></span><span></span><span></span>
       </button>
       <nav class="nav-panel" id="nav-panel" aria-label="Primary" hidden>
-        <a href="corporate.html">Financial</a>
-        <div class="nav-group" data-group="tech">
-          <button type="button" aria-expanded="false">Tech <span class="chev" aria-hidden="true">›</span></button>
+        <a href="for-people.html">Start here</a>
+        <a href="journey.html">The walk</a>
+        <div class="nav-group" data-group="books">
+          <button type="button" aria-expanded="false">Books <span class="chev" aria-hidden="true">›</span></button>
           <div class="nav-sub">
-            <a href="ai/">Overview</a>
-            <a href="ai/adaptive.html">Adaptive intelligence</a>
+            <a href="corporate.html">The number</a>
+            <a href="residual-law.html">Residual law</a>
+            <a href="onboard.html">Measure one leak</a>
           </div>
         </div>
-        <div class="nav-group" data-group="research">
-          <button type="button" aria-expanded="false">Research + AI <span class="chev" aria-hidden="true">›</span></button>
+        <div class="nav-group" data-group="build">
+          <button type="button" aria-expanded="false">Build <span class="chev" aria-hidden="true">›</span></button>
           <div class="nav-sub">
-            <a href="research/">Overview</a>
+            <a href="ai/">Adaptive AI</a>
+            <a href="research/">Research</a>
             <a href="research/medical.html">Medical</a>
             <a href="research/industrial.html">Industrial</a>
             <a href="research/math-science.html">Math & Science</a>
-            <a href="research/access.html">Access (closed)</a>
           </div>
         </div>
-        <a href="payments.html">Jump-start · Payments</a>
-        <a href="onboard.html">Onboarding · Residual Cost Peg</a>
-        <a href="founding.html">Founding members</a>
+        <a href="payments.html">Payments</a>
+        <a href="founding.html">Founding</a>
       </nav>
     </div>
     <main>
@@ -227,10 +191,10 @@
         </div>
         <h1>Truth<br>Prevails</h1>
         <div class="lines">
-          <p class="line">RESIDUAL LAW FINANCE</p>
-          <p class="line">EDGE TECHNOLOGIES</p>
-          <p class="line">ADAPTIVE AI</p>
-          <p class="line">RESEARCH</p>
+          <a class="line" href="corporate.html">RESIDUAL LAW FINANCE</a>
+          <a class="line" href="architecture.html">EDGE TECHNOLOGIES</a>
+          <a class="line" href="ai/adaptive.html">ADAPTIVE AI</a>
+          <a class="line" href="research/">RESEARCH</a>
         </div>
         <div class="hud" aria-label="Residual HUD">
           <div class="hud-row">
@@ -241,7 +205,7 @@
           <div class="hud-rail" aria-hidden="true"><div class="hud-fill" id="hud-fill"></div></div>
           <div class="hud-foot" id="hud-foot">Early residual · day-one zero is coherent</div>
         </div>
-        <a class="jump" href="payments.html">Jump-start Unity Framework<span id="peg-clock">—</span></a>
+        <a class="jump" href="for-people.html">Start here<span id="peg-clock">—</span></a>
       </div>
     </main>
   </div>
