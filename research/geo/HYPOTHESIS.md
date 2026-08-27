@@ -1,32 +1,27 @@
-# HYPOTHESIS — Host organs: person, city, agent
-2026-08-27 01:11 EDT
-Not knowledge.
+# HYPOTHESIS — max-friction first, leftover falls
+2026-08-27 01:12 EDT
+Not knowledge. Magnitude claim only.
 
-## Species on Earth-as-Host
-- City / pad / plant — civic organ.
-- Person — tenant organ. Saturday path UNLEARNABLE.
-- Synthetic agent — compute organ. Own vault. Own grant. Not a person.
-Same fundamental property = the walk can mark +1 on each instance.
-Not the same rights, numbers, or proof-ownership.
+## Attack route
+Friction at the *highest number* on that organism is the door.
+Do not nibble easy cells to look busy.
+Biggest grind first → that split is the expensive hurdle.
+Every later cell on the same species inherits the split. Ease increases because the wall already fell, not because physics changed.
 
-## +1 on an agent
-IDENTIFY the agent as part of the Host organism (it already is, if it is doing the walk).
-Orient it to affinity: find friction, stamp holes, fill recipes, do not mint knowledge.
-Isolate credentials (no cross-vault). Master/Crown still owns wet-ink and "did the dollar fall."
+## Attention + compute on what is left
+After +1 marks exist (person, city, agent) on the Host, point capacity at remaining $$R$$ — the unnamed, the two books, the dark plant, the WEAK word.
+More directed organs ⇒ more leftover named per session.
+Seeming-real-time is this pile-on against a shrinking remainder, still bounded by light, grants, and execution.
 
-## Speed of light
-Ceiling on signal and fill-lag — why machine organs make the *seeming*-real-time drop possible.
-Not omniscience. Not residual-zero. Not a pass through dual-TOS.
-Light-speed help = more cells named per session. Still HEAL inside the instance they were pointed at.
+## What "mow through" is allowed to mean
+Fill rate rises. Silent cells close faster.
+Not: 8e9 people will aim here.
+Not: leftover is already zero.
+Not: we skip HEAL because the last city was hard.
 
-## Goal
-The goal is residual named and driven inside each organism; testers execute; lag to the next instance falls by orders of magnitude.
-Agents help *toward the goal*: they carry the walk and fill cells. They do not become the proof or the meter.
-
-## Forbidden
-Agent scored as a citizen.
-Agent announcing cost-cut as fact.
-One soul-mash of 8e9 people + N models into a single KPI.
+## Falsify
+If we always pick the pretty cell, magnitude does not show up.
+If max-friction is a real floor (UNLEARNABLE, Crown), mowing it is burn — stop.
 
 ## Agent rule
-You are an organ. +1 means do the walk on the cell in front of you. Leave proof with the Host's people.
+Sort grind by size. Cut the top mimic. Recount leftover. Repeat.
