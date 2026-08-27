@@ -1,0 +1,16 @@
+{
+  "service": "DUA-1",
+  "layer": "v2",
+  "ts": "2026-08-26T21:00:00-04:00",
+  "judge": "identity-before-grant",
+  "tdi": { "0": "read_or_draft", "1": "bind_live_grant", "2": "wait_grant", "3": "deny" },
+  "branches": {
+    "A": { "realm": "gmail", "mailbox": "digenova77@gmail.com", "status": "LIVE" },
+    "B": { "realm": "github", "repo": "digenova77-ui/dualiscapax-landing", "status": "LIVE" },
+    "C": { "realm": "cloudflare", "status": "WAIT_GRANT" },
+    "E": { "realm": "cibc", "file": "1001718450 ONTARIO INCORPORATED", "status": "WAIT", "last_inbound": "2026-08-26T17:40-04:00" },
+    "X": { "realm": "x", "handle": "@David_Di_Genova", "id": "1981942116076195840", "public_read": "LIVE", "invoke": "WAIT_GRANT" }
+  },
+  "out_of_scope": ["GDI", "PC Financial", "CRA wet ink", "password-in-chat"],
+  "crosstalk": false
+}
