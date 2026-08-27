@@ -19,9 +19,9 @@ Ceiling on signal and fill-lag — why machine organs make the *seeming*-real-ti
 Not omniscience. Not residual-zero. Not a pass through dual-TOS.
 Light-speed help = more cells named per session. Still HEAL inside the instance they were pointed at.
 
-## School
-The school is the walk taught and reused on the Host.
-Agents help *toward* the school: they carry recipes, they do not become the graduate or the meter.
+## Goal
+The goal is residual named and driven inside each organism; testers execute; lag to the next instance falls by orders of magnitude.
+Agents help *toward the goal*: they carry the walk and fill cells. They do not become the proof or the meter.
 
 ## Forbidden
 Agent scored as a citizen.
