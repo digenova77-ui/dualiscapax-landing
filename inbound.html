@@ -15,21 +15,26 @@
       <nav>
         <a href="fuel.html">Fuel</a>
         <a href="processor.html">Processor</a>
-        <a href="consideration.html">Consideration</a>
       </nav>
     </header>
-    <p class="eyebrow">Many tokens in · Held 50/50</p>
-    <h1>They pay in theirs. We keep half BTC, half ETH.</h1>
-    <p>Target wallets exist. Addresses are not on this page until you publish the two receive strings — never the keys. Conversion is defined: quoted inbound becomes BTC and ETH, split even, Fuel from the CAD that landed.</p>
+    <p class="eyebrow">50/50 is the book · not every ticket</p>
+    <h1>Do not buy dust.</h1>
+    <p>If the fee to put this ticket into BTC would eat the ticket, we do not buy BTC. We park it in USDC — Dualis wallet or the processor balance we control — until the pile is large enough that one buy inverts.</p>
     <section>
-      <div class="label">Hold</div>
-      <p>50% BTC. 50% ETH. USDC only as transit. Dust with no quote is not Fuel.</p>
+      <div class="label">Rule</div>
+      <ul>
+        <li>Target over the book: half BTC, half ETH.</li>
+        <li>Fail invert when fee + spread &gt; 2% of the ticket, or the ticket is under CAD $200.</li>
+        <li>Park USDC. No third-party “escrow company.”</li>
+        <li>When the park ≥ $200 and the fee inverts, buy toward 50/50.</li>
+        <li>Fuel was already credited from CAD at purchase. Parking does not double-charge the visitor.</li>
+      </ul>
     </section>
     <div class="hud">
-      <p>BTC receive: waiting to publish<br/>ETH receive: waiting to publish<br/>Split: locked 50/50<br/>open: false</p>
+      <p>Addresses: waiting to publish<br/>Dust buys: off<br/>open: false</p>
     </div>
     <a class="door" href="fuel.html">Fuel</a>
-    <footer>Wallets exist · Strings not published</footer>
+    <footer>Aggregate · Then buy</footer>
   </div>
 </body>
 </html>
