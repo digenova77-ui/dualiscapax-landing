@@ -238,20 +238,36 @@
         var ch = chars[i];
         var cw = ctx.measureText(ch).width;
         if (ch !== ' ') {
-          var n = 5 + Math.floor(Math.random() * 3);
-          for (var k = 0; k < n; k++) {
-            var angle = Math.random() * Math.PI * 2;
-            var dist = Math.min(W, H) * (0.28 + Math.random() * 0.42);
+          var angle = Math.random() * Math.PI * 2;
+          var dist = Math.min(W, H) * (0.28 + Math.random() * 0.42);
+          particles.push({
+            kind: 'glyph',
+            ch: ch,
+            tx: cx,
+            ty: y0,
+            x: W * 0.5 + Math.cos(angle) * dist,
+            y: H * 0.5 + Math.sin(angle) * dist,
+            size: fontSize,
+            alpha: 0,
+            t0: performance.now() + Math.random() * 70,
+            dur: duration * 1000 * (0.82 + Math.random() * 0.18),
+            locked: false
+          });
+          var qn = 2;
+          for (var k = 0; k < qn; k++) {
+            var qa = Math.random() * Math.PI * 2;
+            var qd = Math.min(W, H) * (0.22 + Math.random() * 0.48);
             particles.push({
-              ch: ch,
-              tx: cx + cw * 0.08 + Math.random() * cw * 0.2,
-              ty: y0 + (Math.random() - 0.5) * fontSize * 0.06,
-              x: W * 0.5 + Math.cos(angle) * dist,
-              y: H * 0.5 + Math.sin(angle) * dist,
-              size: fontSize * (0.92 + Math.random() * 0.12),
+              kind: 'quark',
+              ch: '',
+              tx: cx + cw * 0.35,
+              ty: y0 - fontSize * 0.28,
+              x: W * 0.5 + Math.cos(qa) * qd,
+              y: H * 0.5 + Math.sin(qa) * qd,
+              size: 2.2 + Math.random() * 1.6,
               alpha: 0,
               t0: performance.now() + Math.random() * 90,
-              dur: duration * 1000 * (0.78 + Math.random() * 0.22),
+              dur: duration * 1000 * (0.7 + Math.random() * 0.25),
               locked: false
             });
           }
@@ -272,8 +288,13 @@
     function frame(now) {
       if (done || phase === 'video' || phase === 'crossfade') return;
 
-      ctx.fillStyle = phase === 'assembled' ? 'rgba(0,0,0,0.55)' : 'rgba(0,0,0,0.28)';
-      ctx.fillRect(0, 0, W, H);
+      if (phase === 'assembled') {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, W, H);
+      } else {
+        ctx.fillStyle = 'rgba(0,0,0,0.34)';
+        ctx.fillRect(0, 0, W, H);
+      }
 
       var allLocked = particles.length > 0;
       var cx = W * 0.5;
@@ -305,10 +326,21 @@
         }
 
         if (p.alpha <= 0.02) continue;
+
+        if (p.kind === 'quark') {
+          if (phase === 'assembled') continue;
+          ctx.globalAlpha = p.alpha * 0.7;
+          ctx.fillStyle = 'rgba(196,216,255,0.9)';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          continue;
+        }
+
         ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = '#f4f7ff';
-        ctx.shadowColor = 'rgba(158,197,255,0.55)';
-        ctx.shadowBlur = phase === 'assembled' ? 10 : 6;
+        ctx.fillStyle = '#f5f7fb';
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
         ctx.font = '800 ' + Math.round(p.size) + 'px Inter, system-ui, sans-serif';
         ctx.fillText(p.ch, p.x, p.y);
       }
