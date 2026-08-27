@@ -6,101 +6,124 @@
   <title>Glioblastoma — DualisCapax Research Journal</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.1.0/3Dmol-min.js"></script>
   <link rel="stylesheet" href="../../../../assets/text-scale.css"/>
-  <style>
-    :root { --bg:#000; --fg:#fff; --muted:#8a8a8a; --border:#222; --accent:#1e90ff; --gold:#d4a017; --surface:#0a0a0a; }
-    @media (prefers-color-scheme: light) { :root { --bg:#fafafa; --fg:#0a0a0a; --muted:#555; --border:#e0e0e0; --accent:#1565c0; --gold:#b8860b; --surface:#f0f0f0; } }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; min-height: 100vh; line-height: 1.6; font-size: 16px; }
-    .crumbs { border-bottom: 1px solid var(--border); padding: 0.7rem 1.2rem; display: flex; flex-wrap: wrap; gap: 0.4rem; font-size: 0.74rem; align-items: center; }
-    .crumbs a { color: var(--muted); text-decoration: none; }
-    .crumbs .now { color: var(--fg); font-weight: 600; }
-    .disease-bar { border-bottom: 1px solid var(--border); padding: 1.2rem 1.4rem 0.9rem; max-width: 1200px; margin: 0 auto; }
-    .disease-bar h1 { font-size: 1.5rem; margin-bottom: 0.3rem; }
-    .class-line { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.7rem; }
-    .catalog { display: flex; flex-wrap: wrap; gap: 0.45rem 1rem; font-size: 0.72rem; margin-bottom: 0.7rem; }
-    .catalog span { color: var(--muted); } .catalog strong { color: var(--fg); }
-    .phase-links a { font-size: 0.68rem; text-decoration: none; color: var(--accent); border: 1px solid var(--border); border-radius: 3px; padding: 0.25rem 0.45rem; margin-right: 0.3rem; }
-    .v2bar { max-width: 1200px; margin: 0 auto; padding: 0.5rem 1.4rem; border-bottom: 1px solid var(--border); font-size: 0.74rem; color: var(--muted); }
-    .v2bar strong { color: var(--fg); }
-    .layout { display: grid; grid-template-columns: 1fr minmax(280px, 360px); max-width: 1200px; margin: 0 auto; }
-    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
-    .main { padding: 1.25rem 1.35rem 2.2rem; border-right: 1px solid var(--border); }
-    @media (max-width: 900px) { .main { border-right: none; } }
-    h2 { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 1.1rem 0 0.55rem; }
-    .prose { font-size: 0.98rem; color: var(--muted); margin-bottom: 0.6rem; }
-    .prose strong { color: var(--fg); }
-    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-    th, td { border: 1px solid var(--border); padding: 0.42rem 0.5rem; text-align: left; vertical-align: top; }
-    th { background: var(--surface); } tr.dc td { background: var(--surface); } .no { color: #f87171; }
-    a.deep { font-size: 0.76rem; color: var(--accent); text-decoration: none; margin-right: 0.65rem; }
-    .pane { padding: 1rem; background: var(--surface); position: sticky; top: 0; }
-    #viewer { width: 100%; height: 270px; border: 1px solid var(--border); border-radius: 8px; background: #050505; }
-    .viewer-tools button { font-size: 0.64rem; background: transparent; color: var(--fg); border: 1px solid var(--border); border-radius: 3px; padding: 0.25rem 0.4rem; cursor: pointer; }
-    .pane-meta { font-size: 0.74rem; margin-top: 0.55rem; } .pane-meta strong { color: var(--gold); }
-    footer { border-top: 1px solid var(--border); padding: 0.85rem; text-align: center; font-size: 0.65rem; color: var(--muted); }
-  </style>
+  <link rel="stylesheet" href="../../../../assets/disease-leaf.css"/>
 </head>
 <body class="dc-scale-root">
   <nav class="crumbs">
-    <a href="../../../../index.html">DUALISCAPAX</a><span style="color:var(--border)">/</span>
-    <a href="../../../index.html">Research</a><span style="color:var(--border)">/</span>
-    <a href="../../">Healthcare</a><span style="color:var(--border)">/</span>
-    <a href="../">Medical</a><span style="color:var(--border)">/</span>
-    <a href="./">Oncology</a><span style="color:var(--border)">/</span>
+    <a href="../../../../index.html">DUALISCAPAX</a>
+    <span style="color:var(--border)">/</span>
+    <a href="../../../index.html">Research</a>
+    <span style="color:var(--border)">/</span>
+    <a href="../../">Healthcare</a>
+    <span style="color:var(--border)">/</span>
+    <a href="../">Medical</a>
+    <span style="color:var(--border)">/</span>
+    <a href="./">Oncology</a>
+    <span style="color:var(--border)">/</span>
     <span class="now">Glioblastoma</span>
   </nav>
   <div class="disease-bar">
     <h1>Glioblastoma</h1>
-    <p class="class-line">Healthcare → Medical → Oncology · Primary CNS malignancy · Stupp residual</p>
+    <p class="class-line">Healthcare → Medical → Oncology · Primary CNS malignancy · Stupp residual · MGMT-stratified</p>
     <div class="catalog">
-      <span>Journal <strong>ED-RES-ONCO-GBM-001</strong></span>
-      <span>Backbone <strong>surgery + RT + TMZ</strong></span>
+      <span>Journal <strong>ED-RES-ONC-GBM-001</strong></span>
+      <span>Class <strong>CNS · WHO grade 4</strong></span>
+      <span>Lead ligand <strong>Temozolomide · CID 5394</strong></span>
       <span>Sim <strong>gbm.dual.v2</strong></span>
+      <span>Status <strong>LIVE · ALS-density lift</strong></span>
     </div>
     <div class="phase-links">
-      <a href="https://clinicaltrials.gov/search?cond=Glioblastoma" target="_blank" rel="noopener">CT.gov</a>
+      <a href="https://clinicaltrials.gov/search?cond=Glioblastoma&aggFilters=phase:1" target="_blank" rel="noopener">Phase 1</a>
+      <a href="https://clinicaltrials.gov/search?cond=Glioblastoma&aggFilters=phase:2" target="_blank" rel="noopener">Phase 2</a>
+      <a href="https://clinicaltrials.gov/search?cond=Glioblastoma&aggFilters=phase:3" target="_blank" rel="noopener">Phase 3</a>
       <a href="https://pubmed.ncbi.nlm.nih.gov/?term=glioblastoma+temozolomide+Stupp" target="_blank" rel="noopener">PubMed</a>
-      <a href="https://pubchem.ncbi.nlm.nih.gov/compound/5394" target="_blank" rel="noopener">PubChem · Temozolomide</a>
+      <a href="https://pubchem.ncbi.nlm.nih.gov/compound/5394" target="_blank" rel="noopener">PubChem 5394</a>
     </div>
   </div>
-  <div class="v2bar"><strong>Simulation v2</strong> · ALS prototype density · pack <code>gbm.dual.v2</code> · model M only · not medical advice</div>
+  <div class="v2bar"><strong>Simulation v2</strong> · ALS prototype density · pack <code>gbm.dual.v2</code> · model M only · not a drug label</div>
+  <div class="disclaimer">Open residual surface. Not medical advice. Not a cure claim. DualisCapax projected cells are under model M — pack-internal residual-compression indices, not regulatory findings.</div>
   <div class="layout">
     <div class="main">
       <h2>Where research stands</h2>
-      <p class="prose">Standard of care remains maximal safe resection followed by radiotherapy with concurrent and adjuvant temozolomide (Stupp). Median OS in trial-selected newly diagnosed cohorts is often cited ~15–18 months; TTFields added to maintenance TMZ improved OS in the EF-14 class analysis. Recurrence residual remains severe. Not a cure surface.</p>
-      <h2>Comparison table</h2>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Approach</th><th>Phase / status</th><th>Real-world residual (public)</th><th>DualisCapax projected (v2)</th><th>Same principle</th></tr></thead>
-        <tbody>
-          <tr><td>Stupp (RT + TMZ)</td><td>Standard of care</td><td>Original Stupp median OS 14.6 vs 12.1 mo RT alone; modern selected bands ~15–18 mo</td><td>v2 M: backbone residual · high vs RT alone</td><td class="no">No</td></tr>
-          <tr><td>TTFields + TMZ</td><td>Approved adjunct path</td><td>EF-14 class: OS ~20.9 vs ~16.0 mo maintenance comparison</td><td>v2 M: additive residual · device + chemo</td><td class="no">No</td></tr>
-          <tr><td>Surgery / RT alone</td><td>Historical / selected</td><td>Inferior to combined modality in fit patients</td><td>v2 M: incomplete residual payment</td><td class="no">No</td></tr>
-          <tr class="dc"><td><strong>DualisCapax</strong></td><td>Open residual · v2</td><td>—</td><td>v2 M: MGMT / resectability declared · no cure claim</td><td>—</td></tr>
-        </tbody>
-      </table></div>
+      <p class="prose">Glioblastoma remains the highest-friction primary brain tumor in public residual. Standard of care is maximal safe resection, then radiotherapy with concurrent and adjuvant <strong>temozolomide</strong> (Stupp). Original Stupp median OS was 14.6 months with RT+TMZ versus 12.1 with RT alone. Modern trial-selected newly diagnosed bands are often cited ~15–18 months. <strong>MGMT</strong> promoter methylation stratifies TMZ residual; unmethylated disease keeps a thinner public benefit. <strong>TTFields</strong> added to maintenance TMZ improved OS in the EF-14 class (~20.9 vs ~16.0 months in that comparison). <strong>Bevacizumab</strong> moves PFS more than OS in many newly diagnosed settings and is a graft-risk row when sold as survival. Recurrence residual is near-universal. This leaf is lifted to the <strong>ALS machine</strong>: full public column, Dualis column model M only.</p>
+      <h2>Comparison — full surface</h2>
+      <p class="prose"><strong>v2 M scores</strong> (pack-internal residual compression only): Stupp backbone 40 · TTFields+TMZ 48 · Bevacizumab newly diagnosed OS 18 · Recurrence salvage 22. Scores are not clinical superiority labels.</p>
+      <div class="cmp">
+        <div class="cmp-table-wrap">
+          <table class="cmp-table">
+            <thead>
+              <tr><th>Approach</th><th>Phase / status</th><th>Real-world residual (public)</th><th>DualisCapax projected (v2)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Stupp (RT + TMZ)</td><td>Standard of care</td><td>Stupp median OS 14.6 vs 12.1 mo RT alone · modern selected ~15–18 mo · MGMT-stratified</td><td>v2 M: backbone · score 40 · floor agent</td></tr>
+              <tr><td>TTFields + TMZ</td><td>Approved adjunct path</td><td>EF-14 class OS ~20.9 vs ~16.0 mo maintenance comparison</td><td>v2 M: additive device+chemo · score 48</td></tr>
+              <tr><td>Bevacizumab</td><td>Approved / selected</td><td>PFS movement common · OS gain inconsistent in newly diagnosed Phase 3</td><td>v2 M: graft-risk if sold as survival · score 18</td></tr>
+              <tr><td>Surgery / RT alone</td><td>Historical / selected</td><td>Inferior to combined modality in fit patients</td><td>v2 M: incomplete residual payment · score 12</td></tr>
+              <tr><td>Recurrence salvage</td><td>Mixed Phase 2 / 3</td><td>Near-universal recurrence · public OS residual thin</td><td>v2 M: case-by-case · score 22</td></tr>
+              <tr class="dc"><td><strong>DualisCapax</strong></td><td>Open residual · v2</td><td>—</td><td>v2 M: MGMT and resectability declared · pack gbm.dual.v2 · not a drug label</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cmp-cards" aria-label="Full comparison on mobile — no fields omitted">
+          <article class="card">
+            <div class="card-row"><span class="k">Approach</span><span class="v">Stupp (RT + TMZ)</span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Standard of care</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">14.6 vs 12.1 mo · modern ~15–18 mo · MGMT-stratified</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">backbone · score 40 · floor agent</span></div>
+          </article>
+          <article class="card">
+            <div class="card-row"><span class="k">Approach</span><span class="v">TTFields + TMZ</span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Approved adjunct</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">EF-14 class ~20.9 vs ~16.0 mo</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">additive · score 48</span></div>
+          </article>
+          <article class="card">
+            <div class="card-row"><span class="k">Approach</span><span class="v">Bevacizumab</span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Approved / selected</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">PFS often · OS inconsistent newly diagnosed</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">graft-risk as survival · score 18</span></div>
+          </article>
+          <article class="card dc">
+            <div class="card-row"><span class="k">Approach</span><span class="v"><strong>DualisCapax</strong></span></div>
+            <div class="card-row"><span class="k">Phase</span><span class="v">Open residual · v2</span></div>
+            <div class="card-row"><span class="k">Public residual</span><span class="v">—</span></div>
+            <div class="card-row"><span class="k">Dualis v2</span><span class="v">MGMT and resectability declared · not a drug label</span></div>
+          </article>
+        </div>
+      </div>
       <h2>Go deeper</h2>
-      <a class="deep" href="./">→ Oncology</a>
+      <a class="deep" href="./">→ Oncology index</a>
+      <a class="deep" href="../../../../ai/">→ AI portal</a>
     </div>
     <aside class="pane">
       <h2>Molecule · 3D</h2>
-      <div id="viewer"></div>
+      <div id="viewer" title="Drag to rotate · scroll to zoom"></div>
       <div class="viewer-tools">
         <button type="button" id="btn-stick">Sticks</button>
         <button type="button" id="btn-sphere">Spheres</button>
+        <button type="button" id="btn-line">Lines</button>
+        <button type="button" id="btn-reset">Reset</button>
       </div>
-      <div class="pane-meta"><strong>Temozolomide</strong><br>Alkylating agent · Stupp backbone<br>CID 5394</div>
+      <div class="pane-meta">
+        <strong>Temozolomide</strong><br>
+        Alkylating agent · Stupp backbone<br>
+        PubChem CID 5394
+      </div>
     </aside>
   </div>
-  <footer>DualisCapax Research Journal · Prototype density · Simulation v2 · Not medical advice</footer>
+  <footer>DualisCapax Research Journal · Oncology · GBM · LIVE · ALS-density lift · Simulation v2 · Not medical advice</footer>
   <script>
-    (function(){
-      var el=document.getElementById('viewer');
-      if(!el||typeof $3Dmol==='undefined')return;
-      var v=$3Dmol.createViewer(el,{backgroundColor:'0x050505'});
-      var S={stick:{colorscheme:'Jmol',radius:0.15}};
-      $3Dmol.download('cid:5394',v,{},function(){v.setStyle({},S);v.zoomTo();v.render()});
-      document.getElementById('btn-stick').onclick=function(){v.setStyle({},{stick:{colorscheme:'Jmol',radius:0.15}});v.render()};
-      document.getElementById('btn-sphere').onclick=function(){v.setStyle({},{sphere:{colorscheme:'Jmol',scale:0.3}});v.render()};
+    (function () {
+      var el = document.getElementById('viewer');
+      if (!el || typeof $3Dmol === 'undefined') return;
+      var viewer = $3Dmol.createViewer(el, { backgroundColor: '0x050505' });
+      var STYLE = { stick: { colorscheme: 'Jmol', radius: 0.15 } };
+      function applyStyle(style) { STYLE = style; viewer.setStyle({}, style); viewer.render(); }
+      $3Dmol.download('cid:5394', viewer, {}, function () { applyStyle(STYLE); viewer.zoomTo(); viewer.render(); });
+      document.getElementById('btn-stick').onclick = function () { applyStyle({ stick: { colorscheme: 'Jmol', radius: 0.15 } }); };
+      document.getElementById('btn-sphere').onclick = function () { applyStyle({ sphere: { colorscheme: 'Jmol', scale: 0.3 } }); };
+      document.getElementById('btn-line').onclick = function () { applyStyle({ line: { colorscheme: 'Jmol' } }); };
+      document.getElementById('btn-reset').onclick = function () { viewer.zoomTo(); viewer.render(); };
     })();
   </script>
   <script src="../../../../assets/text-scale.js" defer></script>
