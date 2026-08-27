@@ -1,6 +1,6 @@
 # Belleville entities — who + where
-2026-08-26 23:21 EDT
-No deals. No timing. No why. Name and pin only. KS/IL/other-Belleville discarded. Full private-licence census is still G3.
+2026-08-26 23:23 EDT
+No deals. No timing. No why. Name and pin only. Other-Belleville discarded. Full private-licence census is still G3.
 
 ## Municipal
 | who | where |
@@ -17,52 +17,54 @@ No deals. No timing. No why. Name and pin only. KS/IL/other-Belleville discarded
 | Fire Station 4 | 516 Harmony Rd |
 | Fire Station 5 | 26 Hoskin Rd |
 | QSWC | 265 Cannifton Rd |
-| Glanmore National Historic Site | (city property — street pin hole this pass) |
+| Glanmore National Historic Site | 257 Bridge St E |
 | Downtown District BIA | 267 Front St |
+| Belleville Public Library | pin hole (ON only; WI/IL hits discarded) |
 
 ## Courts / Crown / justice sites
 | who | where |
 |-----|-------|
 | Ontario Court of Justice / Superior | 15 Bridge St W |
 | Legal Aid Ontario office | pin hole |
+| Hastings County POA / courts clerks | 235 Pinnacle St |
 
 ## County / province / federal sitting in the city
 | who | where |
 |-----|-------|
-| Hastings County (CMSM / housing / human services) | county offices — pin hole |
-| Hastings Local Housing Corporation | county-wide stock; city sites unnamed this pass |
-| HPEPH | health-unit sites — pin hole |
+| Hastings County Administration | 235 Pinnacle St |
+| Hastings County (alt listed site) | 228 Church St |
+| HPEPH / SEPH Belleville office | 179 North Park St |
 | HQPS (paramedic) | service-wide; city posts unnamed |
-| VIA Rail Belleville | 250 Station St (confirm civic) |
+| VIA Rail Belleville | Station St (civic number still confirm) |
 
-## Health
+## Health / shelter
 | who | where |
 |-----|-------|
 | QHC Belleville General | 265 Dundas St E |
 | The Bridge Integrated Care Hub (permanent) | 1 Alhambra Sq |
 | The Bridge (temp named) | 125 S Church St |
 | HART Hub supportive housing | 228 Dundas St E |
-| Grace Inn Shelter | pin hole |
-| Shiloh House | pin hole |
-| Three Oaks Foundation | service area HPE; city site pin hole |
-| Hastings Manor | named institutional employer; street pin hole |
-| Belcrest Nursing Home | named; pin hole |
+| Grace Inn Shelter | 315 Church St |
+| Shiloh House | address unpublished |
+| Three Oaks Foundation | city site pin hole |
+| Hastings Manor | pin hole |
+| Belcrest Nursing Home | pin hole |
 
 ## Public schools (HPEDSB — Belleville / Thurlow pins)
 | who | where |
 |-----|-------|
 | Centennial Secondary | 160 Palmer Rd |
-| Eastside Secondary | pin hole |
+| Eastside Secondary | 275 Farley Ave |
 | Bayside Secondary | 1247 Old Hwy 2 |
 | Bayside Public | 132 Aikins Rd |
-| Easthill Elementary | pin hole |
-| Harry J. Clarke | pin hole |
-| Park Dale | pin hole |
-| Prince Charles (Belleville) | pin hole |
+| Easthill Elementary | 135 MacDonald Ave |
+| Harry J. Clarke | 77 Rollins Dr |
+| Park Dale | 73 Poplar St |
+| Prince Charles (Belleville) | 75 Ritchie Ave |
 | Prince of Wales | 37 Prince of Wales Dr |
 | Sir John A. Macdonald | 22 Harder Dr |
 | Susanna Moodie | 376 Avonlough Rd |
-| Foxboro Public | Foxboro |
+| Foxboro Public | 658 Ashley St, Foxboro |
 | Harmony Public | Corbyville |
 | Queen Elizabeth / Queen Victoria | closed Jun 2024 |
 | Quinte Secondary | closed |
@@ -111,17 +113,17 @@ No deals. No timing. No why. Name and pin only. KS/IL/other-Belleville discarded
 | Cascades / Norampac | NEIP |
 | Vantage Foods | NEIP |
 | FedEx terminal | NEIP |
-| Rolf C. Hagen DC | NEIP (~375k sq ft) |
-| former Sears warehouse | vacant ~1.5M sq ft |
+| Rolf C. Hagen DC | NEIP |
+| former Sears warehouse | vacant site |
 
 ## Media sitting in market
 | who | where |
 |-----|-------|
 | Quinte News / CJBQ / Mix 97 / Rock 107 | studio pin hole |
-| Belleville Intelligencer | former building at Market Square named; current pin hole |
+| Belleville Intelligencer | former building at Market Square; current pin hole |
 | The Quinteist | pin hole |
 
-## Parks (sites, not programs)
-Zwick’s Centennial (Bay Bridge). East / West Zwick’s. Kiwanis Bayshore / 21 Keegan Pkwy. Riverside / 373 Moira St E. West Riverside. Kinsmen / 151 Dundas St E. Lions / 70 Station St. Mary Ann Sills / 140 Palmer Rd. Thurlow Park / 516 Harmony Rd. Meyers Pier.
+## Parks (sites)
+Zwick’s Centennial (Bay Bridge). East / West Zwick’s. Kiwanis Bayshore / 21 Keegan Pkwy. Riverside / 373 Moira St E. West Riverside. Kinsmen / 151 Dundas St E. Lions / 70 Station St. Mary Ann Sills / 140 Palmer Rd. Thurlow Park / 516 Harmony Rd. Meyers Pier. Glanmore grounds 257 Bridge St E.
 
-Next pass: fill remaining street pins. Then G3 names. Still not arrangements.
+Still holes: library ON pin, Three Oaks, Fatima, Manor, Belcrest, Kellogg civic, Bay View civic, radio studio, most NEIP civic numbers. Then G3. Still not arrangements.
