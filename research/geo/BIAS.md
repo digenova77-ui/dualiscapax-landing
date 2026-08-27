@@ -1,27 +1,31 @@
-# BIAS — narrative is not an organ
-2026-08-27 00:50 EDT
+# BIAS — organism-proven only
+2026-08-27 00:51 EDT
 Law.
 
-## Reject
-Editor belief. Outlet slant. "This will play out because the story says so."
-A headline is a claim with a publisher. It has no stamp on a Body.
-Do not ingest tone, inevitability, or party weather as Cache.
+## Standing plate
+An ID exists when the organism grew it (statute, plant, levy line, census cell, tenant meter).
+Search, definition, and overlay start there.
+Whim, editorial weather, and "we think this matters" do not cut an ID.
 
-## Accept
-A number that hits an ID on a living organism (CSD, tenant site, board, utility).
-If the article cites a page we can pull, pull the page. Discard the frame around it.
-If the article cites nothing that maps to an Organ, the article is weather.
+## Declared target (exception)
+If the owner names a score — "count headlines pro/con on topic T" — that is a one-run Cache.
+It is not a civic organ. It does not redefine `H.STARTS` or `W.LOSS`.
+Run it, stamp it, leave the plate alone.
+Same rule as a named election target.
 
-## Strap across organisms
-Same ID, same species, each Body keeps its own Cache.
-Toronto `H.STARTS` does not become Belleville `H.STARTS` because a columnist wrote "the housing crisis."
-The crisis-word is not an ID. Starts, wait, core-need, TCHC units are IDs. Strap those. Leave the noun in the paper.
+## Forbidden
+- Letting a narrative pick which organs we hunt.
+- Softening a stamp because the story is sympathetic.
+- Inventing a family because the discourse is loud.
+- Using outlet slant as overlay class.
 
-## Test
-Could this sentence survive if we deleted the outlet and the adjectives?
-If only the ID+X+GEO+YEAR remain, keep that tuple.
-If what remains is a prediction with no organ, drop it.
+## Allowed
+- Pulling a page the organism published.
+- Splitting a species because two animals were hiding under one word.
+- HOLE when the organism has the organ and we have not read the page.
+- N/A when the organ does not grow there, even if every columnist writes as if it does.
 
 ## Agent rule
-Do not quote the narrative to justify a path.
-Quote the organ, the live X if pulled, the entity that can move it.
+Proof of existence = handle on that Body.
+Proof of sentiment = only after a named target.
+Do not mix them.
