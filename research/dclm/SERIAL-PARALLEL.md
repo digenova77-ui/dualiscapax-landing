@@ -1,53 +1,43 @@
-# Serial / parallel worth
-2026-08-26 22:08 EDT
+# Serial / parallel worth · who
+2026-08-26 22:09 EDT
 
-Every Dualis fact is either a **serial step** (order matters) or a **parallel key** (same object, different face). Worth is the rank of the key, not how loud the sentence is.
+Every fact has worth **and a who**. No who → orphan → do not spend it.
 
-## Parallel keys (same leaf)
+## Who fields (parallel keys on the same atom)
 
-domain · entity · genotype/species · agent · trial/NCT · endpoint · constraint · cite · pack · model M
+| field | meaning |
+|-------|---------|
+| owner | domain that may change the row (ALS pack owner ≠ Amazon tweak owner) |
+| audience | who the open face is written for |
+| actuator | who may invoke (Master / named agent / Crown wet-ink) |
+| not-for | who must not treat it as instruction |
 
-If two faces share an entity and disagree, smash them. Do not average.
+## Default audience
 
-## Serial order (medical leaf)
+| surface | audience | not-for |
+|---------|----------|---------|
+| public medical leaf | a reader measuring residual on that disease | patient as a prescription; regulator as a label |
+| public firm leaf | an operator measuring that firm | investor as advice |
+| onboarder playground | that tenant only | every other tenant |
+| Crown / CRA packet | owner + counsel | any agent as sender |
+| Drive index row | Dualis internal fill | public as a sealed report |
 
-1. Catalog ID exists
-2. Public P1 spine (label / trial / paper)
-3. HTML leaf at ALS block list (`PROTOTYPE.md`)
-4. Five-panel report (SEAL)
-5. Pack JSON with dual-path rows
-6. Invertibility check on every Dualis number
+## Default actuator
 
-Skip a step → the later step is not worth the earlier one.
-A Drive row at (1) is not worth an ALS report at (4).
+| worth | who may spend it |
+|-------|------------------|
+| 5 P1 primary | cite on the open face |
+| 4 sealed pack | Dualis M column, labeled M |
+| 3 HTML leaf | publish |
+| 2 catalog ID | reserve a slot |
+| 1 Drive name | Agent A fill queue |
+| 0 rumor | nobody |
 
-## Worth rank (high → low)
+Crown wet-ink stays Crown. No agent sends CRA.
+Tenant vault stays that tenant. Agent A does not carry Amazon into Walmart.
 
-| rank | what | spends as |
-|------|------|-----------|
-| 5 | P1 primary (label, NCT result, registrar, 10-K) | LIVE fact |
-| 4 | sealed five-panel + pack JSON, M labeled | Dualis measure |
-| 3 | public HTML leaf, dual column, cites | readable residual |
-| 2 | catalog ID + skeleton | reserved slot |
-| 1 | Drive / seal-registry name only | index |
-| 0 | social / rumor / empty industry blob | not a fact |
+## Medical who tonight
 
-Rank 1 does not buy rank 4.
-500 Drive IDs at rank 1 are a monstrous **list**. They are not 500 rank-4 seals.
-
-## Tonight's medical book, ranked
-
-| object | serial step | worth |
-|--------|-------------|-------|
-| ALS | 6 | 4–5 on public column; 4 on pack |
-| OST / GBM / OV / PAAD | 3 | 3 |
-| PD / AD / MS pages | 3 | 3 |
-| other ONC + ID catalog IDs | 1–2 | 2 |
-| fungi / plant / animal stubs | 1 | 1 |
-| Drive 500 + kingdom comps | 1 | 1 |
-
-Parallel fill is allowed **across** leaves at the same step (mint IDs together). Serial fill is required **inside** a leaf (do not attach a fake pack before P1).
-
-## Business / Canada book (same law)
-
-name_only = 1 · filing ingest = 3 · named tweak + invertibility = 4 · heartbeat LEGAL_DEAD = 5 from registrar only.
+ALS rank 4–5 · owner = neurological prototype · audience = open reader · actuator = publish + M column · not-for = clinic.
+OST/GBM/OV/PAAD rank 3 · same audience · actuator = publish only · no fake pack spend.
+Drive 500 rank 1 · owner = encyclopedia fill · audience = Dualis · actuator = Agent medical queue · not-for = the website as if sealed.
