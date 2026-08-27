@@ -9,9 +9,10 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{min-height:100vh;line-height:1.55}
 nav{border-bottom:1px solid var(--border);padding:.9rem 1.25rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
-.brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.88rem}
+.brand{font-weight:700;letter-spacing:.04em;text-decoration:none;color:var(--fg);font-size:.88rem}
 .links{display:flex;gap:1rem;list-style:none;font-size:.76rem}
 .links a{color:var(--muted);text-decoration:none}
+.links a.on{color:var(--fg)}
 main{max-width:36rem;margin:0 auto;padding:2.25rem 1.25rem 3rem}
 h1{font-size:1.25rem;margin-bottom:.5rem}
 .lead{color:var(--muted);margin-bottom:1.25rem;font-size:.92rem}
@@ -28,45 +29,48 @@ footer{border-top:1px solid var(--border);padding:1rem;text-align:center;font-si
 </head>
 <body>
 <nav>
-  <a class="brand" href="index.html">DUALISCAPAX</a>
+  <a class="brand" href="index.html?land=1">DualisCapax</a>
   <ul class="links">
-    <li><a href="gateway.html">Gateway</a></li>
-    <li><a href="participate.html">Participate</a></li>
+    <li><a href="for-people.html">For you</a></li>
+    <li><a href="research/">Look</a></li>
+    <li><a href="onboard.html">Measure</a></li>
+    <li><a href="payments.html">Bind</a></li>
+    <li><a class="on" href="participate.html">Participate</a></li>
   </ul>
 </nav>
 <main>
   <h1>Participate</h1>
-  <p class="lead">Same lattice as the gateway. External money in · residual allocation · Fusion Meter for Depth only.</p>
+  <p class="lead">We do not want your money as a pitch. If you bind, you name leftover you already pay — so more people can look for free. Buttons stay closed until settlement is real. Walk away whenever you want.</p>
 
-  <h2>Lanes</h2>
+  <h2>If you choose to bind</h2>
   <div class="lane">
-    <div class="tag">Plane residual</div>
+    <div class="tag">Keep the lights on</div>
     <h3>Cost reduction</h3>
-    <p>Offsets hosting and baseline residual burn. Highest priority for plane solvency.</p>
+    <p>Offsets hosting so the open surface stays open.</p>
     <a class="pay" id="pay-cost" href="#" aria-disabled="true">Pay · Cost</a>
   </div>
   <div class="lane">
-    <div class="tag">Enterprise</div>
+    <div class="tag">Shared compute</div>
     <h3>Capacity</h3>
-    <p>Prepaid commercial terms. Funds shared residual compute.</p>
+    <p>Prepaid terms. Funds work other people can still read without buying a seat.</p>
     <a class="pay" id="pay-capacity" href="#" aria-disabled="true">Pay · Capacity</a>
   </div>
   <div class="lane">
-    <div class="tag">Depth</div>
-    <h3>Fusion Meter</h3>
-    <p>Internal prepaid Adaptive credit. Burns with real residual cost. Not a coin market.</p>
-    <a class="pay" id="pay-fuel" href="#" aria-disabled="true">Pay · FM</a>
+    <div class="tag">Your session</div>
+    <h3>Depth</h3>
+    <p>Prepaid credit that burns with real cost when you take a heavier session. Not a coin.</p>
+    <a class="pay" id="pay-fuel" href="#" aria-disabled="true">Pay · Depth</a>
   </div>
   <div class="lane">
     <div class="tag">After cost</div>
-    <h3>UBI floor</h3>
-    <p>Tagged support after residual cost policy.</p>
-    <a class="pay" id="pay-ubi" href="#" aria-disabled="true">Pay · UBI</a>
+    <h3>Floor</h3>
+    <p>Tagged support after the leftover bill is paid — not before.</p>
+    <a class="pay" id="pay-ubi" href="#" aria-disabled="true">Pay · Floor</a>
   </div>
 
-  <p class="note">Buttons enable when Payment Link URLs are set in <code>js/payments-config.js</code>. Not securities. Ontario &amp; Canada. Counsel before go-live.</p>
+  <p class="note">Buttons enable when payment destinations are live. Not securities. Ontario &amp; Canada. Counsel before go-live. No shove.</p>
 </main>
-<footer>DualisCapax · Participate</footer>
+<footer>DualisCapax · For you · No shove</footer>
 <script src="js/payments-config.js"></script>
 <script>
 (function(){
