@@ -1,14 +1,12 @@
 # COSMOS-HOPS
-Locked: 2026-08-27 03:39 America/Toronto
+Locked: 2026-08-27 03:40 America/Toronto
 
-The target may span the cosmos.
-Break it into realistic hops.
-Do not only work the start step.
+The far-side target is a GOAL.
+It is not a proof. It is not invert. It is not shipped.
 
-Each hop yields engineering that must invert on that hop.
-What survives smash becomes fuel for the next hop.
-Mars leftover helps Pluto only if it still inverts under Pluto's constraints.
-Costume of Mars does not ship to Andromeda.
+Break the goal into realistic hops.
+Each hop is proven only when that hop inverts under its own constraints.
+Leftover that survives smash MAY fuel the next hop. That transfer is also unproven until the next hop lights.
 
-Understand-everything is unused 1.0.
-We walk hops. We do not stamp the far side.
+Do not write "then Andromeda" as if the chain is a theorem.
+Understand-everything remains unused 1.0 — a cap we walk toward, not a fact we hold.
