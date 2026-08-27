@@ -15,7 +15,10 @@ Everything already locked is disregarded for rank. That is how a needle is found
 
 incoming search − locked index = anomaly
 
+surge_n − surge_{n-1} = the only write
+
 The search before does not complicate the search after. It is subtracted first. What remains is the only thing that may be written. A hit already in the index is dropped before it is read for meaning.
+Difference all the way down. Every surge cares only about what changed since the last surge. Not the stack. The difference.
 
 Example: HPEDSB is a named instance on the public-first list. A later search that returns the same board mandate is discarded. A new estimates book, a new enrolment count, a new capital line — those light up.
 
