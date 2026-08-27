@@ -1,0 +1,27 @@
+{
+  "jacket": "consideration.plan.v1",
+  "status": "planned_not_live",
+  "as_of": "2026-08-27T04:15:00-04:00",
+  "law": "If it is real, titled, and a lawyer can stand on it, Dualis may consider it. Serialize on our book. Do not issue a public token. Tax FMV in CAD. Fuel rails first.",
+  "classes": {
+    "C0_FIAT_FUEL": { "status": "defined_waiting_rail", "sink": "processor USDC + Fuel credit" },
+    "C1_CRYPTO_FUEL": { "status": "defined_waiting_address", "sink": "treasury + Fuel credit" },
+    "C2_BULLION_CONTRACT": {
+      "status": "planned",
+      "when": "after Fuel rails live",
+      "need": ["dealer contract", "assay or vault receipt", "FMV CAD that day", "hold-or-sell decision"],
+      "not": ["Dualis gold coin", "unallocated promise"]
+    },
+    "C3_TITLED_PROPERTY": {
+      "status": "planned_later",
+      "when": "after C2 path exists",
+      "need": ["appraisal", "land titles", "lawyer", "Crown wet-ink"],
+      "not": ["checkout button", "public token against the house"]
+    },
+    "C4_SERIAL_INVENTORY": {
+      "status": "planned",
+      "meaning": "Dualis inventory ID for any accepted interest. Internal book. Not a ticker."
+    }
+  },
+  "open": false
+}
