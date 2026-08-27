@@ -1,22 +1,28 @@
-# HYPOTHESIS — +1 organism, lag collapse
+# HYPOTHESIS — Earth as host, persons as organs
 2026-08-27 01:10 EDT
 Not knowledge.
 
-## Correction
-Not literal real-time (packet, meter, wet-ink still have duration).
-Prediction: after one organism is walked, time-to-plan for the next *like* organism drops by orders of magnitude — year/quarter → days/hours → session-scale *feeling*.
-"Seems like real time" is the experiential claim. The clock is still a clock.
+## Grain
+Earth = one Host body.
+~8e9 people are a *person* species on that host — not 8e9 copies of Belleville, not 8e9 municipal scorecards.
+A city is another species on the same host.
+Same fundamental property ≠ same numbers.
 
-## Mechanism
-Headers + recipes + overlay class already exist.
-New Body is row-fill + local SRC, not a new language.
-Friction still gets named inside that organism (SUCCESS). Inheritance does not skip HEAL.
+## Shared property (the walk)
+Existence can be marked (+1).
+Friction can be named inside *that* instance.
+Residual can be driven on a lever *they* can pull.
+Free-will / Saturday path stays UNLEARNABLE — we do not score a life like a rink plant.
 
-## Still false if
-Each city needs a new brain.
-We mash one KPI worldwide and call the lag gone.
-We announce their cost fell from the repo.
+## What "spread across one organism" predicts
+Once the walk exists on the Host, applying it to the next person-instance is row-fill + local handle, not a new physics.
+Lag drops by orders of magnitude (still not instant).
+8e9 is cardinality of the person organ, not a reason to mash one KPI onto everyone.
+
+## Still forbidden
+One world score.
+Exporting a city utility onto a human and calling it healing.
+Announcing 8e9 cost-cuts from this repo.
 
 ## Agent rule
-Say "orders of magnitude," not "instant."
-Leave physics duration on the floor.
+Host first as FRAME. Person ≠ pad. Inherit the walk. Leave the path.
