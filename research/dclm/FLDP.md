@@ -1,10 +1,10 @@
-# Five-Layer Dual-Primary Model (FLDP)
-2026-08-26 21:57 EDT
+# DCLM — base, no tweak
+2026-08-26 21:58 EDT
 
-Public name of `dclm.base`:
-**Five-Layer Dual-Primary Model** — two poles, five layers, empty tweak slots.
+**DCLM** is the base model with no tweak attached.
+Two poles. Five layers. Empty slots.
 
-It does not score a board, a retailer, or a hockey team until a dataset is attached.
-Attach data → mint a tweak. Drop the tweak → FLDP again.
+A dataset mints a tweak (`tweak.…`).
+Drop the tweak. DCLM is what remains.
 
-Alias in code: `dclm.base` · `FLDP`
+"Five-layer dual-primary" is a description of DCLM, not a second brand.
