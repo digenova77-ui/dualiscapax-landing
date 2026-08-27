@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Osteosarcoma Simulation Report — DualisCapax Research Journal</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.1.0/3Dmol-min.js"></script>
+  <style>
+    :root { --bg:#000; --fg:#f2f2f2; --muted:#8a8a8a; --border:#222; --surface:#0a0a0a; --surface2:#111; --mono:Menlo,Consolas,monospace; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif;line-height:1.55;min-height:100vh}
+    a{color:#c8c8c8}
+    .crumbs{border-bottom:1px solid var(--border);padding:.7rem 1.2rem;font-size:.72rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+    .crumbs a{color:var(--muted);text-decoration:none}
+    .crumbs .now{color:var(--fg);font-weight:600}
+    .head{max-width:1280px;margin:0 auto;padding:1.25rem 1.4rem 1rem;border-bottom:1px solid var(--border)}
+    .disclaimer{font-size:.72rem;color:var(--muted);border:1px solid var(--border);background:var(--surface);padding:.65rem .85rem;border-radius:4px}
+    .tabs{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.35rem;padding:.85rem 1.4rem 0;border-bottom:1px solid var(--border)}
+    .tabs button{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--muted);border:1px solid var(--border);padding:.45rem .7rem;cursor:pointer}
+    .tabs button[aria-selected="true"]{color:var(--fg);background:var(--surface2)}
+    .panel{display:none;max-width:1280px;margin:0 auto;padding:1.25rem 1.4rem 3rem}
+    .panel.active{display:block}
+    h2{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1.4rem 0 .7rem}
+    p,li{font-size:.88rem;color:var(--muted)} p strong,li strong{color:var(--fg)}
+    .split{display:grid;grid-template-columns:1.15fr .85fr;gap:1rem}
+    @media(max-width:960px){.split{grid-template-columns:1fr}}
+    .card{border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:.9rem}
+    #simCanvas{width:100%;height:360px;background:#050505;border:1px solid var(--border)}
+    .mol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+    @media(max-width:900px){.mol-grid{grid-template-columns:1fr}}
+    .mol-card .viewer{width:100%;height:260px;background:#050505}
+    table{width:100%;border-collapse:collapse;font-size:.78rem}
+    th,td{border:1px solid var(--border);padding:.45rem .55rem;text-align:left}
+    .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.55rem}
+    .idx{border:1px solid var(--border);background:var(--surface);padding:.65rem .75rem;font-size:.75rem;font-family:var(--mono)}
+    .idx .k{color:var(--muted);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase}
+    .cite{border-left:2px solid #444;padding:.55rem .75rem;margin:.45rem 0;background:var(--surface)}
+    footer{border-top:1px solid var(--border);padding:1rem;text-align:center;font-size:.68rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <nav class="crumbs"><a href="../../../../index.html">DUALISCAPAX</a><span>/</span><a href="osteosarcoma.html">Osteosarcoma</a><span>/</span><span class="now">Simulation Report</span></nav>
+  <header class="head">
+    <h1>Osteosarcoma — Full Simulation Report</h1>
+    <p class="disclaimer"><strong>Not medical advice. Not a cure claim.</strong> Journal ED-RES-ONC-OST-SIM-001 · pack osteo.dual.v2 · worth rank 4 · audience: open reader · not-for: clinic as prescription. Dualis columns are model M.</p>
+  </header>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-tab="imaging">01 Simulation imaging</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="pharm">02 Pharmacology · 3D</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="report">03 Full report</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="index">04 Serial index</button>
+    <button type="button" role="tab" aria-selected="false" data-tab="cites">05 Citations</button>
+  </div>
+  <section id="panel-imaging" class="panel active">
+    <div class="split">
+      <div>
+        <h2>Simulation data</h2>
+        <p>Educational bars only. Not a patient curve. Surgery-alone EFS ~11% vs localized MAP-era OS ~65–70% vs EURAMOS-1 MAPIE (no EFS gain).</p>
+        <canvas id="simCanvas" width="900" height="360"></canvas>
+      </div>
+      <div class="card">
+        <table>
+          <tr><th>Key</th><th>Value</th></tr>
+          <tr><td>backbone</td><td>MAP ± surgery</td></tr>
+          <tr><td>localized.os_5y.band</td><td>≈65–70%</td></tr>
+          <tr><td>mets.efs.resectable</td><td>≈20–30%</td></tr>
+          <tr><td>surgery_alone.efs</td><td>≈11%</td></tr>
+          <tr><td>euramos1.mapie.efs.hr</td><td>0.98 (0.78–1.23)</td></tr>
+          <tr><td>model.M</td><td>MAP 58 · surgery 8 · MAPIE 40</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+  <section id="panel-pharm" class="panel">
+    <h2>MAP components — PubChem 3D</h2>
+    <div class="mol-grid">
+      <div class="mol-card"><div class="viewer" id="mol-mtx"></div><p>Methotrexate CID 126941</p></div>
+      <div class="mol-card"><div class="viewer" id="mol-dox"></div><p>Doxorubicin CID 31703</p></div>
+      <div class="mol-card"><div class="viewer" id="mol-cddp"></div><p>Cisplatin CID 2767</p></div>
+    </div>
+  </section>
+  <section id="panel-report" class="panel">
+    <h2>Full report</h2>
+    <p>Public SoC is MAP plus resection. Historical surgery without adjuvant chemo left systemic residual unpaid (EFS ~11% on the Dualis leaf). EURAMOS-1 MAPIE did not improve EFS (HR 0.98) and added toxicity — intensity is not compression. Localized OS band does not transfer to unresectable metastatic disease. M scores are pack-internal, not labels.</p>
+  </section>
+  <section id="panel-index" class="panel">
+    <h2>Serial · parallel index</h2>
+    <div class="index-grid" id="serial-index"></div>
+  </section>
+  <section id="panel-cites" class="panel">
+    <h2>Citations</h2>
+    <div class="cite">Marina NM, et al. MAPIE vs MAP (EURAMOS-1). Lancet Oncol. 2016. PMID 27569442. EFS HR 0.98 (0.78–1.23).</div>
+    <div class="cite">NCI PDQ osteosarcoma treatment. PubChem CID 126941 / 31703 / 2767. Pack osteo.dual.v2.</div>
+  </section>
+  <footer>DualisCapax · Osteosarcoma Simulation Report · Not medical advice</footer>
+  <script>
+  (function(){
+    var tabs=document.querySelectorAll('.tabs button');
+    tabs.forEach(function(btn){btn.addEventListener('click',function(){
+      tabs.forEach(function(b){b.setAttribute('aria-selected','false')});
+      btn.setAttribute('aria-selected','true');
+      document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+      var p=document.getElementById('panel-'+btn.getAttribute('data-tab'));
+      if(p)p.classList.add('active');
+      if(btn.getAttribute('data-tab')==='pharm')ensureMols();
+      if(btn.getAttribute('data-tab')==='imaging')drawSim();
+    })});
+    var rows=[['pack.id','osteo.dual.v2'],['journal.id','ED-RES-ONC-OST-SIM-001'],['trial.euramos1.efs.hr','0.98'],['who.owner','oncology.ost'],['who.audience','open_reader'],['who.not_for','clinic_as_prescription'],['worth.rank','4']];
+    var box=document.getElementById('serial-index');
+    rows.forEach(function(r){var d=document.createElement('div');d.className='idx';d.innerHTML='<div class="k">'+r[0]+'</div>'+r[1];box.appendChild(d)});
+    function drawSim(){var c=document.getElementById('simCanvas');if(!c)return;var ctx=c.getContext('2d');var w=c.clientWidth||900,h=360;c.width=w;c.height=h;ctx.fillStyle='#050505';ctx.fillRect(0,0,w,h);function bar(x,pct,label,color){var bh=(h-80)*(pct/100);ctx.fillStyle=color;ctx.fillRect(x,h-48-bh,70,bh);ctx.fillStyle='#ccc';ctx.font='11px monospace';ctx.fillText(label,x,h-16);}bar(80,11,'surgery','#fff');bar(200,68,'MAP loc.','#888');bar(320,30,'mets EFS','#555');}
+    drawSim();
+    var viewers={},loaded=false;
+    function loadMol(id,cid,key){var el=document.getElementById(id);if(!el||typeof $3Dmol==='undefined')return;var v=$3Dmol.createViewer(el,{backgroundColor:'0x050505'});viewers[key]=v;$3Dmol.download('cid:'+cid,v,{},function(){v.setStyle({},{stick:{colorscheme:'Jmol',radius:0.14}});v.zoomTo();v.render();})}
+    function ensureMols(){if(loaded)return;loaded=true;loadMol('mol-mtx',126941,'mtx');loadMol('mol-dox',31703,'dox');loadMol('mol-cddp',2767,'cddp');}
+  })();
+  </script>
+</body>
+</html>
