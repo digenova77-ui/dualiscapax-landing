@@ -1,6 +1,9 @@
 # Cost of a wasted Belleville P&G seat
-2026-08-26 23:33 EDT
-Rolling hire is a public fact. “Nobody stays” is not measured here. Quantify the seat. Do not invent a washout %.
+2026-08-26 23:34 EDT
+
+**LOCKED COST — REVISIT.** Rolling hire at a ~1,000-person 24/7 plant is a mass residual. Stay-rate is unpublished, so the dollar is a band, not an invoice. Do not drop this file. Reopen when a 90-day stay % or class size exists. Do not solve hiring tonight.
+
+Rolling hire is a public fact. “Nobody stays” is not measured here.
 
 ## Locked inputs (Belleville postings)
 - Term associate: $18.28 + $3.20 nights = **$21.48/hr** on nights. 84 hrs / 2 weeks = 42 hrs/week → ~**$47k/yr** nights if the year is worked.
@@ -27,7 +30,7 @@ They do not publish stay-rate. So only a sensitivity:
 | 50 | $400k | $1.5M |
 | 100 | $800k | $3.0M |
 
-A 1,000-person site with manufacturing-typical 30–40% annual turnover would be hundreds of seats, not 10. That industry rate is **not** Belleville’s rate. It is why the band matters.
+A 1,000-person site with manufacturing-typical 30–40% annual turnover would be hundreds of seats, not 10. That industry rate is **not** Belleville’s rate. It is why this is a mass cost and why it gets revisited.
 
 ## Align-before-HR (offer, not deployed)
 Cost they can cut without Dualis touching their interview:
@@ -35,4 +38,4 @@ Cost they can cut without Dualis touching their interview:
 - Fail G2 / lift / “I will work weekends for 12 months” before week-one PPE.
 Every no that happens on a form is one row off the table above.
 
-Hole: their actual 90-day stay %. Until that number exists, Dualis sells the band and the filter, not a guaranteed $.
+Hole: their actual 90-day stay %. Until that number exists, Dualis names the cost and parks it.
