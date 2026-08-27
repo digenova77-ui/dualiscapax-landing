@@ -1,36 +1,30 @@
 # PREDICT — from cells, not from a story about the cells
-2026-08-27 00:52 EDT
-Law.
+2026-08-27 00:53 EDT
+Law. Applies to every organ, not only crime.
 
-## Split the example before the model
-Bike theft is not one number.
-`S.CRIME.BIKE.REPORT` — occurrence / verified report on the police book
-`S.CRIME.BIKE.CALL` — dispatched or recorded call (may exceed reports)
-`S.CRIME.BIKE.RECOVER` — if the service prints it
-Grain must be declared: CSD is the body; *prediction grain* is neighbourhood / DA / beat + **day-part or hour** if the ledger has it.
-TPS vs BPS vs Kingston Police vs OPP are `S.POLICE.*` species. Do not merge books to make a denser heat map.
+## Clock is grain
+Many organs have a published schedule. That schedule is a cell.
+`K.ICE_N` = sheets exist. `K.ICE.CLOCK` = hours / last-skate / flood window, when the city or pad printed it.
+Ask at 00:53 EDT: "likelihood a player is on a municipal sheet *right now*" → condition on CLOCK, not on "hockey town."
+If CLOCK is sealed as closed / flood / plant-off, the live prediction is **low** and the residual path is the overnight task the pad is already doing (ice plant setback, staff off, no referee dollars). That is now, not a 2014 utilization study.
+If CLOCK is HOLE, say HOLE at hour grain. Do not invent 1 a.m. practice because the CSD has an OHL club.
+
+## Same split, any family
+Two books stay two books. Bike *call* ≠ bike *report*. Ice *exists* ≠ ice *occupied this hour*. WTP *rated* ≠ WTP *pumping now*. Transit *route* ≠ *bus at this stop this minute*.
+P(event | body, organ, window T) only if the ledger has T.
+Otherwise predict at the coarsest sealed window or refuse.
 
 ## Predictive
-Condition only on cells that exist:
-P(report | area A, window T) ≈ count(REPORT, A, T) / exposure(A, T)
-Exposure is also an organ: bikes registered (rare), population, or just "per day in A" with the denominator named.
-If CALL and REPORT both exist, they are two predictions, not one blended "theft."
-Output: "this area, this window, this book, this rate from the last sealed pull."
-Not: "this is a bad neighbourhood."
+Condition on cells that exist. Name the book. Name the window. Name the exposure.
+Output: this organism, this organ, this hour, this rate or this clock state.
 
-## Assumptive (forbidden unless named as a target)
-Density implies theft. Poverty implies theft. Headline implies a wave. Saturday path of a person. Outlet slant as a prior.
-Those have no HAS stamp on the crime organ.
-
-## When we do not predict
-- No report/call ledger at the asked grain → HOLE, not a guess.
-- Grain finer than the book (hour asked, annual PDF only) → predict at the book's grain or refuse.
-- Cross-city rank without same species and same definition of "bike theft."
+## Assumptive
+"Arenas are always busy in Canada." "Bad neighbourhood." "Hockey city therefore ice is used at 1 a.m."
+Story with the cell removed.
 
 ## Identify-on-proof
-The hour a service publishes bike-theft by beat or by day-part, cut `S.CRIME.BIKE.*` + grain on that Body. Do not wait for a provincial mash.
+Hours posted → cut CLOCK on that Body the same pass.
+Overnight plant / setback published → that is a residual lever (`E` on the pad), not colour.
 
 ## Agent rule
-Prediction is a query over sealed cells.
-Assumption is a sentence with the cells removed.
-Keep the first. Drop the second.
+Right now is a window. Use the clock if we have it. Do not use the myth of the organ.
