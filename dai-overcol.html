@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>DAI overcollateral — DualisCapax</title>
+  <meta name="theme-color" content="#050505" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <div class="site">
+    <header>
+      <a href="index.html?land=1" class="mark">DualisCapax</a>
+      <nav>
+        <a href="usdc-dai.html">USDC vs DAI</a>
+        <a href="inbound.html">Park</a>
+      </nav>
+    </header>
+    <p class="eyebrow">More locked than minted · Until it isn’t</p>
+    <h1>Each vault must hold more than it owes.</h1>
+    <p>That is the overcollateral rule. The system dollar is the sum of those vaults, plus a 1:1 USDC door.</p>
+    <section>
+      <div class="label">Vault</div>
+      <p>Lock collateral. Draw DAI. Debt grows by a stability fee. If collateral value over debt falls below that vault type’s liquidation ratio, keepers sell the collateral. Penalty on top. Dust floor so tiny vaults cannot linger.</p>
+    </section>
+    <section>
+      <div class="label">Peg door</div>
+      <p>PSM / LitePSM swaps USDC ↔ DAI at one dollar, small fee. That is why a lot of “DAI backing” is USDC. Freeze on that USDC does not freeze your DAI token. It can still lean the peg.</p>
+    </section>
+    <section>
+      <div class="label">What Dualis does not do</div>
+      <p>We do not open Sky vaults. We do not mint DAI. Park stays native USDC. DAI overcollateral is protocol risk we would take only if owner binds a DAI address later.</p>
+    </section>
+    <a class="door" href="usdc-dai.html">USDC vs DAI</a>
+    <footer>Ratio above one · Liquidation is the invert</footer>
+  </div>
+</body>
+</html>
