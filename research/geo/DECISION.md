@@ -1,39 +1,32 @@
-# DECISION — real-time levers, not trends
-2026-08-27 00:47 EDT
+# DECISION — now, not the archive
+2026-08-27 00:48 EDT
 Law.
 
 ## Product
-A decision on a named organ that an entity can still move.
-Not a chart of which way the line has been going.
-Trend is already inside the live number if the number is current. Do not sell the slope as the work.
+Their situation as it sits. Every organ that applies to what they asked. A path they can take from here.
+Not the slope that made them nervous. Not the year they missed.
 
-## What we pull for
-Direct correlation the operator can manipulate to cut residual:
-- water loss → find-and-fix, rate, night pressure (entity = utility)
-- SOGR on a km of pipe → this year's capital pick (entity = city)
-- yellow-bus $ vs a fare rule → only the hour-paid term (entity = board / consortium)
-- owned-out landfill close year → diversion and contract (entity = city + hauler)
-- two TCHC books → reconcile or fund the gap (entity = city + TCHC)
-If nobody in the frame can move it, it is not a Dualis lever. It is weather.
+## Forbidden product lines
+- Trend-as-advice ("you've been rising since 2014 so").
+- Counterfactual ("if you had built in 2022" / "if COVID had been handled differently").
+- Nostalgia plan (1970, 1999, 2014 as the recommended city).
+Those may exist as Cache vintages. They are not the recommendation.
+The trend already did its job: it put the question on the desk. We take the desk.
 
-## What we do not score unless named as a target
-Election winners. Party spectrum. Polls. Headline mood.
-Vote stays on the free-will wall.
-If the owner says "score this election as a target," it becomes a one-run Cache with an ID cut for that test. It does not become a standing organ.
-
-## Headlines
-The article is not data.
-Map the headline to organs that would move if the claim were true:
-"city declares housing emergency" → `H.TARGET` `H.STARTS` `H.TCHC_WAIT` `P.CORE_NEED_%` — pull those.
-"mayor fights province" → no pull unless a statute, grant, or upload fee on an ID changed.
-Impact = Δ on a sealed organ after the event. Not the quote.
+## What we do
+1. Hear the ask. Map it to IDs.
+2. Pull live X on those IDs (and only those).
+3. Name residual on organs they can still move.
+4. Give the path in present tense: this lever, this entity, this cost if they pull it.
 
 ## Time
-`YEAR` on a Cache is the vintage of the page, not a trend study.
-Δ.TIME exists to see whether a lever moved. It is not a product line called "the 10-year story."
-Real-time = pull SRC now for the IDs the decision named.
+`YEAR` is the vintage of the page we pulled. It is not a lecture.
+Δ.TIME is allowed only to test whether a lever already moved — not to write the 10-year story as the deliverable.
+
+## Headlines and spectrum
+Article ≠ data. Map to organs that would move. Pull those.
+Elections and party weather stay off unless the owner names them as a one-run target.
 
 ## Agent rule
-Do not open with "Belleville has been growing since 2016 therefore."
-Open with: this organ, this entity, this lever, this residual if they pull it.
-Growth is layer-3 context. The decision is layer-1/2 plus a live X.
+Do not open with a decade.
+Open with: you asked X. These organs exist. This is the live residual. This is what you can do from this desk.
