@@ -1,5 +1,8 @@
 # Sector look-for vs P&G unknown bucket
-2026-08-26 23:36 EDT
+2026-08-26 23:37 EDT
+
+**Law:** Never assume the burn-rate number. Assume only that a like firm *has like characteristics*. The job is to find the actual number. Until it is found, the cell stays in the unknown bucket.
+
 Infer **structure**. Do not infer **dollars**.
 
 ## Allowed
