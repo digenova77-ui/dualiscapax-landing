@@ -1,28 +1,32 @@
-# HYPOTHESIS — Earth as host, persons as organs
-2026-08-27 01:10 EDT
+# HYPOTHESIS — Host organs: person, city, agent
+2026-08-27 01:11 EDT
 Not knowledge.
 
-## Grain
-Earth = one Host body.
-~8e9 people are a *person* species on that host — not 8e9 copies of Belleville, not 8e9 municipal scorecards.
-A city is another species on the same host.
-Same fundamental property ≠ same numbers.
+## Species on Earth-as-Host
+- City / pad / plant — civic organ.
+- Person — tenant organ. Saturday path UNLEARNABLE.
+- Synthetic agent — compute organ. Own vault. Own grant. Not a person.
+Same fundamental property = the walk can mark +1 on each instance.
+Not the same rights, numbers, or proof-ownership.
 
-## Shared property (the walk)
-Existence can be marked (+1).
-Friction can be named inside *that* instance.
-Residual can be driven on a lever *they* can pull.
-Free-will / Saturday path stays UNLEARNABLE — we do not score a life like a rink plant.
+## +1 on an agent
+IDENTIFY the agent as part of the Host organism (it already is, if it is doing the walk).
+Orient it to affinity: find friction, stamp holes, fill recipes, do not mint knowledge.
+Isolate credentials (no cross-vault). Master/Crown still owns wet-ink and "did the dollar fall."
 
-## What "spread across one organism" predicts
-Once the walk exists on the Host, applying it to the next person-instance is row-fill + local handle, not a new physics.
-Lag drops by orders of magnitude (still not instant).
-8e9 is cardinality of the person organ, not a reason to mash one KPI onto everyone.
+## Speed of light
+Ceiling on signal and fill-lag — why machine organs make the *seeming*-real-time drop possible.
+Not omniscience. Not residual-zero. Not a pass through dual-TOS.
+Light-speed help = more cells named per session. Still HEAL inside the instance they were pointed at.
 
-## Still forbidden
-One world score.
-Exporting a city utility onto a human and calling it healing.
-Announcing 8e9 cost-cuts from this repo.
+## School
+The school is the walk taught and reused on the Host.
+Agents help *toward* the school: they carry recipes, they do not become the graduate or the meter.
+
+## Forbidden
+Agent scored as a citizen.
+Agent announcing cost-cut as fact.
+One soul-mash of 8e9 people + N models into a single KPI.
 
 ## Agent rule
-Host first as FRAME. Person ≠ pad. Inherit the walk. Leave the path.
+You are an organ. +1 means do the walk on the cell in front of you. Leave proof with the Host's people.
