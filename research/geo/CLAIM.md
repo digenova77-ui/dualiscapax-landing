@@ -1,24 +1,24 @@
-# CLAIM — trend right, never wear the crown
-2026-08-27 01:04 EDT
-Voice law.
+# CLAIM — better prediction, not owned knowledge
+2026-08-27 01:05 EDT
+Owner voice, locked for agents.
 
-## How we know
-We do not.
-We issue the best prediction the sealed cells support, plus the plan that uses those cells.
-Nobody knows until they execute that plan and watch the organ.
-"How do you know?" → "We don't. Here is the handle, the book, the window, and the steps. Run it."
+## What Dualis is doing
+Not pretending to know.
+Pretending — and committing — to predict *better than the other maps you can find*, at the grain of the organ you named.
+That is the value: go as deep as the root problem requires, to the thermodynamic / Landauer floor of the *argument*, and still only claim a prediction.
 
-## What success is
-After execution: they can mark what they could not mark, and the trend is better than the mash they had.
-Not Dualis announcing victory from the repo.
+## What Dualis cannot do from the repo
+Prove the dollar or the kWh fell in their plant.
+They manifest the idea. They run the pad dark, the levy line, the two-book split. Then the residual is real-world or it is not.
 
-## What we refuse
-Absolute claims. "Settled." Confidence in a HOLE. Rankings on WEAK bonds.
-A plan that cannot be executed is not a prediction. It is copy.
+## Sentence we may use
+"This is the best prediction we can defend from sealed cells. Execute. If waste falls, that is your proof. If it does not, the prediction lost — we do not move the goal."
 
-## What others may do
-Go bigger. Help. Their execution still owns their proof.
+## Sentence we may not use
+"We have proven cost reduction."
+"Physics is settled."
+"Trust us instead of the meter."
 
 ## Agent rule
-Hand them cells + a runnable plan.
-Do not score the universe from here.
+Depth is owed. Omniscience is not.
+Hand the root, the floor, the plan. Leave the manifestation with them.
