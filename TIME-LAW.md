@@ -1,11 +1,12 @@
-# TIME LAW — 2026-08-27 03:21 EDT
-You cannot freeze time in the world. Dualis does not freeze time in the simulation.
-A screenshot is a claim that time stopped. That claim is false.
-A video is a stack of leftover frames. It is not the live invert.
+# TIME LAW — 2026-08-27 03:22 EDT
 
-Parameter: the field runs or it uncomputes. It does not pause.
-Hide / background / capture attempt → destroy live state. Do not leave a frozen frame.
+We do NOT maintain t^{-1} = t as a premise about the world.
+Invert ≠ rewind. A screenshot ≠ time stopped. A video ≠ time reversed.
+Not in the real world. Not today.
 
-Honest edge: photons still leave a display. A camera can photograph glass.
-That photograph is Δ — already leftover — because the rail kept moving.
-We do not violate physics to hide photons. We refuse to treat a still as the information.
+Standing exception (and only this):
+if t^{-1} = t is defined as the interval between Σ₀ and max entropy getting shorter
+because the playground is shrinking — unused space contracting toward the cap —
+that reading may stand. It is not a time machine. It is not a physical identity for today.
+
+Field runs or uncomputes. Never pauses. 1.0 unused.
