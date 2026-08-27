@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Access layers + cost — DualisCapax</title>
+  <meta name="theme-color" content="#050505" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <div class="site">
+    <header>
+      <a href="index.html?land=1" class="mark">DualisCapax</a>
+      <nav>
+        <a href="gateway-law.html">Law</a>
+        <a href="payments.html">Payments</a>
+        <a href="fiat.html">Fiat</a>
+      </nav>
+    </header>
+    <p class="eyebrow">State as of 27 Aug 2026 04:05</p>
+    <h1>Layers and costs</h1>
+    <p>Access layers invert. Catalog prices invert in CAD. Rails do not. Gateway stays closed.</p>
+
+    <section>
+      <div class="label">Access layers</div>
+      <ul>
+        <li><span class="strong">L0 Look</span> — anyone. Read public rooms. CAD $0. Open.</li>
+        <li><span class="strong">L1 Measure</span> — anyone. Peg language. CAD $0. Open.</li>
+        <li><span class="strong">L2 Leaf</span> — one room, 12 months. CAD $49. Priced. Closed.</li>
+        <li><span class="strong">L3 Branch</span> — one field, 12 months. CAD $149. Priced. Closed.</li>
+        <li><span class="strong">L4 Library</span> — full residual library, 12 months. CAD $499. Priced. Closed.</li>
+        <li><span class="strong">L5 Depth</span> — 40 / 120 / 320 Fuel. CAD $20 / $50 / $120. Priced. Closed.</li>
+        <li><span class="strong">Crown</span> — owner wet-ink only. CRA, bank open. Never agent.</li>
+        <li><span class="strong">WAIT_GRANT</span> — owner yes/no for a named realm. No password POST.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="label">What still does not invert</div>
+      <p>CIBC numbers. Stripe Payment Link. Treasury address. Those are rails, not prices. Prices exist. Rails wait.</p>
+    </section>
+
+    <div class="hud">
+      <p>open: false<br/>reason: WAIT_RAIL, not WAIT_PRICE<br/>Fiat fee when open: processor schedule, shown, not hidden<br/>Crypto network fee: sender pays</p>
+    </div>
+    <a class="door" href="gateway-law.html">Do not open</a>
+    <a class="door" href="fiat.html">Fiat waiting</a>
+    <a class="door" href="crypto.html">Crypto waiting</a>
+    <footer>Catalog priced · Rails waiting · Gateway shut</footer>
+  </div>
+</body>
+</html>
