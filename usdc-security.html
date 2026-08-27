@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>USDC security — DualisCapax</title>
+  <meta name="theme-color" content="#050505" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <div class="site">
+    <header>
+      <a href="index.html?land=1" class="mark">DualisCapax</a>
+      <nav>
+        <a href="inbound.html">Park</a>
+        <a href="own-processor.html">Processor</a>
+      </nav>
+    </header>
+    <p class="eyebrow">Native Circle only · Wallet is not the token</p>
+    <h1>USDC is a company contract.</h1>
+    <p>The park address is a wallet. USDC is the token that wallet is allowed to credit. Only Circle’s contract. A ticker that says USDC is not enough.</p>
+    <section>
+      <div class="label">What the contract can do</div>
+      <ul>
+        <li>Proxy. Circle can upgrade logic at the same address.</li>
+        <li>Pause. All transfers can stop.</li>
+        <li>Blacklist / freeze. Circle can lock an address so it cannot send or receive USDC.</li>
+        <li>Mint and burn. Circle (minters) create and destroy supply against dollars.</li>
+      </ul>
+      <p>That is issuer risk. Audits (ChainSecurity and others) review the code. They do not remove Circle’s keys.</p>
+    </section>
+    <section>
+      <div class="label">Official token (not our wallet)</div>
+      <ul>
+        <li>Ethereum: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48</li>
+        <li>Base: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</li>
+      </ul>
+      <p>Bridged lookalikes (USDC.e, USDbC) are not Circle-issued. Dualis does not park those.</p>
+    </section>
+    <section>
+      <div class="label">Our park</div>
+      <p class="hud" style="word-break:break-all">0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4</p>
+      <p>Same string on every EVM chain. Credit only native USDC on the chain you name. Move chains with CCTP burn-and-mint, not a random bridge wrapper.</p>
+    </section>
+    <a class="door" href="inbound.html">Park</a>
+    <footer>Issuer risk named · Fake USDC refused</footer>
+  </div>
+</body>
+</html>
