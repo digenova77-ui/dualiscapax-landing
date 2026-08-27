@@ -1,30 +1,22 @@
-# HYPOTHESIS — +1 organism, global copy, time
-2026-08-27 01:09 EDT
-Not knowledge. CLAIM still holds.
+# HYPOTHESIS — +1 organism, lag collapse
+2026-08-27 01:10 EDT
+Not knowledge.
 
-## +1 on one municipality
-+1 is the eFuse mark: this Body exists, oriented to affinity (cut named $$R$$), not to zero (no direction).
-It is IDENTIFY + HEAL walk inside *that* organism. Not a brand.
+## Correction
+Not literal real-time (packet, meter, wet-ink still have duration).
+Prediction: after one organism is walked, time-to-plan for the next *like* organism drops by orders of magnitude — year/quarter → days/hours → session-scale *feeling*.
+"Seems like real time" is the experiential claim. The clock is still a clock.
 
-## Spread globally — legal form
-Every later Body gets its **own** +1 and inherits **recipes**, not Toronto's numbers.
-Mash-export of one KPI is not spread. It is infection.
+## Mechanism
+Headers + recipes + overlay class already exist.
+New Body is row-fill + local SRC, not a new language.
+Friction still gets named inside that organism (SUCCESS). Inheritance does not skip HEAL.
 
-## What that does (prediction)
-The expensive step is inventing the walk once.
-After headers exist, time-to-next-row falls toward fill-time: ask → overlay → pull → plan.
-"Singularity date dropped to almost real time" in this house means: the lag between a new organ appearing and a sealed prediction for *that* organ approaches session length — not fiscal year, not a 24-hour ticket.
-It does **not** mean AGI arrived, physics ended, or Earth is healed from Belleville.
-
-## What it does not do
-Collapse Landauer.
-Erase UNLEARNABLE.
-Let Dualis announce their kWh fell.
-Give one hierarchy the planet.
-
-## Falsify
-If copying +1 requires a new brain per city, inheritance failed — we skipped a split.
-If latency stays fiscal-year after recipes exist, the guess lost.
+## Still false if
+Each city needs a new brain.
+We mash one KPI worldwide and call the lag gone.
+We announce their cost fell from the repo.
 
 ## Agent rule
-Treat as HYPOTHESIS. Hand the walk. They execute. Time tells.
+Say "orders of magnitude," not "instant."
+Leave physics duration on the floor.
