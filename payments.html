@@ -3,138 +3,93 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Jump-start · Payments — DualisCapax</title>
+<title>Fuel — DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="assets/cta.css"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.15rem,env(safe-area-inset-right)) max(2.75rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
-.top{display:flex;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;padding:0.4rem 0 1.35rem}
-.top a{font-size:0.88rem;font-weight:600;color:rgba(245,245,245,0.72)}
-.kicker{font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,245,245,0.55);margin-bottom:0.55rem}
-h1{font-size:clamp(1.7rem,6.5vw,2.35rem);font-weight:900;letter-spacing:-0.03em;line-height:1.08;margin-bottom:0.7rem}
-.lede{font-size:1.08rem;color:rgba(245,245,245,0.78);margin-bottom:1.25rem}
-.closed{
-  border:1px solid rgba(212,160,23,0.4);
-  border-radius:12px;
-  padding:0.85rem 1rem;
-  margin-bottom:1.5rem;
-  background:rgba(212,160,23,0.06);
-  font-size:0.92rem;
-  color:rgba(245,245,245,0.78);
-}
-.closed strong{color:#e8c36a}
-h2{font-size:1.05rem;font-weight:800;margin:1.6rem 0 0.5rem}
-p{font-size:1.02rem;color:rgba(245,245,245,0.82);margin-bottom:0.85rem}
-ul{list-style:none;margin:0 0 1rem}
-li{position:relative;padding-left:1.1rem;margin-bottom:0.55rem;font-size:1.02rem;color:rgba(245,245,245,0.82)}
-li::before{content:"";position:absolute;left:0;top:0.55em;width:0.4rem;height:0.4rem;border-radius:50%;background:#7eb6ff}
-.table{width:100%;border-collapse:collapse;margin:0.75rem 0 1.25rem;font-size:0.92rem}
-.table th,.table td{text-align:left;padding:0.55rem 0.4rem;border-bottom:1px solid rgba(245,245,245,0.12);vertical-align:top}
-.table th{font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.5);font-weight:700}
-.badge{display:inline-block;font-size:0.7rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#e8c36a;border:1px solid rgba(212,160,23,0.45);border-radius:999px;padding:0.2rem 0.55rem}
-.pay{
-  margin-top:1.5rem;
-  border:1px solid rgba(126,182,255,0.35);
-  border-radius:14px;
-  padding:1.1rem 1.15rem;
-  background:linear-gradient(180deg,rgba(126,182,255,0.08),rgba(126,182,255,0.02));
-}
-.pay .t{font-size:0.68rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#7eb6ff;margin-bottom:0.45rem}
-.pay h2{margin:0 0 0.55rem;font-size:1.15rem}
-.pay p{font-size:0.95rem;margin-bottom:0.55rem}
-.pay p:last-child{margin-bottom:0}
-.note{margin-top:1.75rem;padding-top:1rem;border-top:1px solid rgba(245,245,245,0.14);font-size:0.86rem;color:rgba(245,245,245,0.55)}
+.wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.15rem max(2.5rem,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;padding:.4rem 0 1.2rem}
+.top a{font-size:.88rem;font-weight:600;color:rgba(245,245,245,.7)}
+kicker{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7eb6ff}
+h1{font-size:clamp(1.8rem,7vw,2.5rem);font-weight:900;letter-spacing:-.04em;line-height:.95;margin:.55rem 0 .7rem}
+.lede{color:rgba(245,245,245,.78);margin-bottom:1.1rem}
+.packs{display:grid;gap:.7rem;margin:1rem 0}
+.pack{text-align:left;width:100%;border:1px solid rgba(126,182,255,.28);border-radius:14px;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2));padding:1rem 1.05rem;color:#f5f5f5;cursor:pointer;font:inherit}
+.pack.on{border-color:#9ec5ff;box-shadow:0 0 0 1px rgba(158,197,255,.35),0 0 24px rgba(74,143,216,.18)}
+.pack .cad{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff}
+.pack .amt{font-size:1.55rem;font-weight:900;letter-spacing:-.03em;margin:.15rem 0}
+.pack .sub{font-size:.88rem;color:rgba(245,245,245,.58)}
+.read{border:1px solid rgba(126,182,255,.22);border-radius:12px;padding:.9rem 1rem;min-height:5.2rem;background:rgba(126,182,255,.05);margin:1rem 0}
+.read .t{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.35rem}
+.pulse{display:flex;gap:8px;align-items:center;margin:1rem 0 .4rem}
+.pulse i{width:7px;height:7px;border-radius:50%;background:rgba(158,197,255,.25)}
+.pulse i.on{background:#e8f1ff;box-shadow:0 0 10px rgba(158,197,255,.55)}
+.closed{font-size:.92rem;color:rgba(232,195,106,.95);margin:.4rem 0 1rem}
+nav.doors{display:flex;flex-wrap:wrap;gap:.85rem 1.1rem;margin-top:1.2rem}
+nav.doors a{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ec5ff}
+.park{word-break:break-all;font-size:.78rem;color:rgba(245,245,245,.5);margin-top:.8rem}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <a href="index.html?land=1">← DualisCapax</a>
-    <a href="corporate.html">Financial</a>
+    <a href="index.html?land=1">DualisCapax</a>
+    <a href="inbound.html">Park</a>
   </div>
-
-  <p class="kicker">Jump-start · Unity Framework</p>
-  <h1>What you are paying for</h1>
-  <p class="lede">Jump-start is not a tip and not a subscription. It is a prepaid residual seat under the Unity Framework — capacity locked, residual priced, close required.</p>
-
-  <div class="closed">
-    <strong>Seats closed until pricing and IP protection are locked.</strong>
-    Residual order is remembered when access opens. This page is the handoff surface: what the commitment means, how settlement will work, and where checkout attaches when <span class="badge">open</span> flips on.
+  <p class="kicker">The hop · live board</p>
+  <h1>Pick a pack.<br/>Nothing charges yet.</h1>
+  <p class="lede">You pay ordinary money when the rail opens. Dualis credits Fuel. Checkout is closed until Banxa or a watched USDC land inverts.</p>
+  <div class="packs" id="packs">
+    <button type="button" class="pack on" data-cad="20" data-fuel="40" data-note="Forty constrained passes. If a pass cannot invert, it is not spent.">
+      <div class="cad">CAD $20</div>
+      <div class="amt">40 Fuel</div>
+      <div class="sub">First depth</div>
+    </button>
+    <button type="button" class="pack" data-cad="50" data-fuel="120" data-note="One hundred twenty passes. Same law. Larger pile.">
+      <div class="cad">CAD $50</div>
+      <div class="amt">120 Fuel</div>
+      <div class="sub">Working depth</div>
+    </button>
+    <button type="button" class="pack" data-cad="120" data-fuel="320" data-note="Three hundred twenty passes. Still not a deposit. Still CAD income when paid.">
+      <div class="cad">CAD $120</div>
+      <div class="amt">320 Fuel</div>
+      <div class="sub">Long run</div>
+    </button>
   </div>
-
-  <h2>What this means for you</h2>
-  <ul>
-    <li><strong>You fund capacity</strong> — prepaid residual against measured work (research packs, adaptive runs, residual-law structure), not an open-ended vendor bleed.</li>
-    <li><strong>Residual is pegged</strong> — burn is recorded against the seat until spent or released under the seat term.</li>
-    <li><strong>Same law for corp and grassroots</strong> — company, lab, school, or individual under one peg. No preferred tribe.</li>
-    <li><strong>Early residual order</strong> — when seats open, earlier locks can earn founding recognition and early residual pricing. Not equity by default. Not a return guarantee.</li>
-  </ul>
-
-  <h2>What you are not buying</h2>
-  <ul>
-    <li>Securities, shares, or a promised financial return</li>
-    <li>A softer product for bigger spend — product quality is the same; residual order differs</li>
-    <li>Access while the jacket is closed</li>
-  </ul>
-
-  <h2>Treasury residual (policy, not an offer)</h2>
-  <ul>
-    <li><strong>Operating residual first</strong> — keep the surface and research machine running.</li>
-    <li><strong>Majority surplus deferred</strong> — target band ~60–70% of surplus held toward long horizon (singularity-aligned lock when rails exist); not spendable day-to-day.</li>
-    <li><strong>Founder residual capped</strong> — stipend-style residual only after operating need; not a claim on the deferred majority.</li>
-    <li><strong>Not a return guarantee</strong> — deferred residual is structure, not a yield product.</li>
-  </ul>
-
-  <h2>Settlement when seats open</h2>
-  <table class="table">
-    <thead>
-      <tr><th>ID</th><th>Rail</th><th>Unit</th><th>Status</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>PAY-FIAT</td><td>Stripe Payment Link (CAD list)</td><td>CAD</td><td>Closed · link not wired</td></tr>
-      <tr><td>PAY-CRYPTO</td><td>Equal residual in crypto</td><td>CAD-matched</td><td>Closed · no exchange product</td></tr>
-      <tr><td>SKU-LEAF</td><td>Single leaf pack</td><td>CAD TBD</td><td>Closed</td></tr>
-      <tr><td>SKU-BRANCH</td><td>Branch access (12 mo)</td><td>CAD TBD</td><td>Closed</td></tr>
-      <tr><td>SKU-LIBRARY</td><td>Full residual library (12 mo)</td><td>CAD TBD</td><td>Closed</td></tr>
-    </tbody>
-  </table>
-  <p>When open, the primary button below becomes the live Stripe Payment Link for the selected seat. Crypto equal is offered as a parallel rail — not a built-in exchange.</p>
-
-  <div class="pay">
-    <div class="t">Processor handoff</div>
-    <h2>Stripe · residual seat</h2>
-    <p>Checkout will leave DualisCapax for Stripe’s hosted Payment Link, then return to a confirmation surface. No secret keys on this site. No card form stored here.</p>
-    <p><strong>Current as of 24 Aug 2026:</strong> <code>open: false</code> in access.dual.v2. Button stays inert until links publish.</p>
+  <div class="read" id="read">
+    <div class="t">This pack</div>
+    <p>CAD $20 → 40 Fuel. Forty constrained passes. If a pass cannot invert, it is not spent.</p>
   </div>
-
-  <div class="cta-row">
-    <a class="cta primary is-closed" id="pay-cta" href="#" aria-disabled="true">Checkout closed</a>
-  </div>
-  <div class="cta-row cta-3">
-    <a class="cta" href="onboard.html">Residual Cost Peg</a>
-    <a class="cta" href="residual-reward.html">Unity reward</a>
-    <a class="cta" href="research/healthcare/medical/neurological/als.html">ALS prototype</a>
-  </div>
-
-  <p class="note">Current as of 24 Aug 2026. DualisCapax · Unity Framework · residual law. Informational only — not an offer of securities, not tax, legal, or investment advice. No tribes preferred. Truth prevails.</p>
+  <div class="pulse" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+  <p class="closed">Checkout closed · packs are real · rail is waiting</p>
+  <nav class="doors">
+    <a href="fuel-law.html">Fuel law</a>
+    <a href="inbound.html">USDC park</a>
+    <a href="processor.html">Who does FX</a>
+    <a href="research/">Look free</a>
+  </nav>
+  <p class="park">Park bound · 0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4 · native USDC only · chain still one word from owner</p>
 </div>
 <script>
 (function(){
-  var link = (typeof window.DC_PAY_LINK === 'string' && window.DC_PAY_LINK) || '';
-  var btn = document.getElementById('pay-cta');
-  if (!btn) return;
-  if (link) {
-    btn.href = link;
-    btn.textContent = 'Continue to Stripe';
-    btn.classList.remove('is-closed');
-    btn.classList.add('is-open');
-    btn.setAttribute('aria-disabled', 'false');
-    btn.rel = 'noopener noreferrer';
-  }
+  var packs=document.querySelectorAll('.pack');
+  var read=document.getElementById('read');
+  var dots=document.querySelectorAll('.pulse i');
+  packs.forEach(function(p){
+    p.addEventListener('click',function(){
+      packs.forEach(function(x){x.classList.remove('on')});
+      p.classList.add('on');
+      read.innerHTML='<div class="t">This pack</div><p>CAD $'+p.dataset.cad+' → '+p.dataset.fuel+' Fuel. '+p.dataset.note+'</p>';
+    });
+  });
+  var n=0;
+  setInterval(function(){
+    dots.forEach(function(d,i){d.classList.toggle('on', i===n)});
+    n=(n+1)%dots.length;
+  }, 420);
 })();
 </script>
 </body>
