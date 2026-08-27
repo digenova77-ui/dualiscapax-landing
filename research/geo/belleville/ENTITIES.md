@@ -1,12 +1,12 @@
 # Belleville entities — who + where
-2026-08-26 23:24 EDT
-No deals. No timing. No why. Name and pin only. Other-Belleville discarded.
+2026-08-26 23:25 EDT
+No deals. No timing. No why. Name and pin only.
 
 ## Municipal
 | who | where |
 |-----|-------|
 | City of Belleville / City Hall | 169 Front St |
-| City operations / some services | 31 Wallbridge Cres; 93 Dundas St E |
+| City operations | 31 Wallbridge Cres; 93 Dundas St E |
 | Belleville Transit HQ | 400 Coleman St |
 | Transit hub | Pinnacle / downtown terminal |
 | BPS HQ | 459 Sidney St |
@@ -17,24 +17,26 @@ No deals. No timing. No why. Name and pin only. Other-Belleville discarded.
 | Fire Station 4 | 516 Harmony Rd |
 | Fire Station 5 | 26 Hoskin Rd |
 | QSWC | 265 Cannifton Rd |
-| Glanmore National Historic Site | 257 Bridge St E |
+| Glanmore | 257 Bridge St E |
 | Downtown District BIA | 267 Front St |
-| Belleville Public Library + John M. Parrott Art Gallery | 254 Pinnacle St |
+| Belleville Public Library + Parrott Gallery | 254 Pinnacle St |
 
-## Courts / Crown / justice
+## Courts / legal
 | who | where |
 |-----|-------|
 | Ontario Court of Justice / Superior | 15 Bridge St W |
-| Legal Aid Ontario office | pin hole |
-| Hastings County POA / admin | 235 Pinnacle St |
+| Legal Aid Ontario duty counsel | 15 Bridge St W, Rm 1306 |
+| Legal Aid Ontario (listed civic) | 214 Pinnacle St |
+| Community Advocacy & Legal Centre | 158 George St |
+| Hastings County admin / POA | 235 Pinnacle St |
 
-## County / province / federal in the city
+## County / health unit / federal in city
 | who | where |
 |-----|-------|
 | Hastings County Administration | 235 Pinnacle St |
-| Hastings County (alt listed) | 228 Church St |
-| HPEPH / SEPH Belleville office | 179 North Park St |
-| HQPS (paramedic) | city posts unnamed |
+| Hastings County (alt) | 228 Church St |
+| HPEPH / SEPH Belleville | 179 North Park St |
+| HQPS posts | unnamed |
 | VIA Rail Belleville | Station St |
 
 ## Health / shelter / LTC
@@ -47,10 +49,9 @@ No deals. No timing. No why. Name and pin only. Other-Belleville discarded.
 | Grace Inn Shelter | 315 Church St |
 | Shiloh House | unpublished |
 | Three Oaks Foundation | 58 Highland Ave |
-| Hastings Manor Home for the Aged | 476 Dundas St W |
-| Belmont Long-term Care | 250 Bridge St W |
+| Hastings Manor | 476 Dundas St W |
+| Belmont LTC | 250 Bridge St W |
 | Westgate Lodge | 37 Wilkie St |
-| Belcrest Nursing Home | name not matched this pass |
 
 ## Public schools (HPEDSB)
 | who | where |
@@ -67,9 +68,7 @@ No deals. No timing. No why. Name and pin only. Other-Belleville discarded.
 | Sir John A. Macdonald | 22 Harder Dr |
 | Susanna Moodie | 376 Avonlough Rd |
 | Foxboro Public | 658 Ashley St, Foxboro |
-| Harmony Public | Corbyville |
-| Queen Elizabeth / Queen Victoria | closed Jun 2024 |
-| Quinte Secondary | closed |
+| Harmony Public | 626 Harmony Rd, Corbyville |
 
 ## Catholic schools (ALCDSB)
 | who | where |
@@ -85,28 +84,32 @@ No deals. No timing. No why. Name and pin only. Other-Belleville discarded.
 ## Other education
 | who | where |
 |-----|-------|
-| Loyalist College (Belleville campus) | Wallbridge-Loyalist Rd |
+| Loyalist College Belleville | 376 Wallbridge-Loyalist Rd |
 | Albert College | 160 Dundas St W |
 | Sir James Whitney / Sagonaska | 350 Dundas St W |
 | Applewood Academy | 72 Orchard Dr |
 
-## Sport / rec
+## Sport
 | who | where |
 |-----|-------|
-| Belleville Senators (AHL) | 265 Cannifton Rd |
+| Belleville Senators | 265 Cannifton Rd |
 
-## Retail
+## Retail / utilities on site
 | who | where |
 |-----|-------|
-| Quinte Mall (Primaris REIT) | 390 N Front St |
+| Quinte Mall | 390 N Front St |
 | Bay View Mall | 470 Dundas St E |
 | Shorelines Casino | Bell Blvd |
+| Elexicon Energy (listed) | 385 College St E |
 
-## Named industrial / logistics
+## Named industrial / food
 | who | where |
 |-----|-------|
 | Procter & Gamble | 355 University Ave |
-| Kellogg Canada | NEIP — civic hole |
+| Kellogg Canada / WK Kellogg | 501 College St E |
+| Sprague Foods | 385 College St E |
+| W.T. Hawkins | 105 Pinnacle St S |
+| Santa Maria Foods | 350 Bell Blvd |
 | Amazon Canada | College St E / NEIP |
 | Magna / Autosystems | NEIP |
 | Hanon Systems | NEIP |
@@ -122,10 +125,10 @@ No deals. No timing. No why. Name and pin only. Other-Belleville discarded.
 | who | where |
 |-----|-------|
 | Quinte News / CJBQ / Mix 97 / Rock 107 | 10 South Front St |
-| Belleville Intelligencer | current civic hole |
+| Belleville Intelligencer (directory civics conflict) | 45 Bridge St E **or** 199 N Front St — not locked |
 | The Quinteist | pin hole |
 
 ## Parks
-Zwick’s. East / West Zwick’s. Kiwanis Bayshore / 21 Keegan Pkwy. Riverside / 373 Moira St E. Kinsmen / 151 Dundas St E. Lions / 70 Station St. Mary Ann Sills / 140 Palmer Rd. Thurlow Park / 516 Harmony Rd. Meyers Pier. Glanmore 257 Bridge St E.
+Zwick’s. Kiwanis Bayshore / 21 Keegan Pkwy. Riverside / 373 Moira St E. Kinsmen / 151 Dundas St E. Lions / 70 Station St. Mary Ann Sills / 140 Palmer Rd. Thurlow Park / 516 Harmony Rd. Meyers Pier. Glanmore 257 Bridge St E.
 
-Still holes: Legal Aid, HQPS posts, VIA civic, Shiloh, Belcrest match, Harmony civic, Loyalist civic, Kellogg civic, most NEIP civics, Intelligencer, Quinteist. Then G3. Still not arrangements.
+Still holes: HQPS posts, VIA civic number, Shiloh, Amazon civic, remaining NEIP civics, Intelligencer lock, Quinteist, Shorelines civic. Then G3. Still not arrangements.
