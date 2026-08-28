@@ -1,5 +1,5 @@
 /* DCLM Look — cache this folder only. Not Bind. */
-var CACHE = "dclm-look-v2";
+var CACHE = "dclm-look-v3";
 var ASSETS = [
   "./app.html",
   "./dclm-look.js",
@@ -9,11 +9,10 @@ var ASSETS = [
 ];
 
 self.addEventListener("install", function (e) {
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE).then(function (cache) {
       return cache.addAll(ASSETS);
-    }).then(function () {
-      return self.skipWaiting();
     })
   );
 });
