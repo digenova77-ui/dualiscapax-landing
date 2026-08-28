@@ -1,5 +1,5 @@
 /* DCLM Look — cache this folder only. Not Bind. */
-var CACHE = "dclm-look-v1";
+var CACHE = "dclm-look-v2";
 var ASSETS = [
   "./app.html",
   "./dclm-look.js",
@@ -32,15 +32,17 @@ self.addEventListener("activate", function (e) {
   );
 });
 
+self.addEventListener("message", function (e) {
+  if (e.data === "SKIP_WAITING") self.skipWaiting();
+});
+
 self.addEventListener("fetch", function (e) {
   if (e.request.method !== "GET") return;
   var url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
   e.respondWith(
     caches.match(e.request).then(function (hit) {
-      return hit || fetch(e.request).then(function (res) {
-        return res;
-      });
+      return hit || fetch(e.request);
     })
   );
 });
