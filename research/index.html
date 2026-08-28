@@ -21,9 +21,9 @@
       font-family: Inter, system-ui, sans-serif;
       background: var(--bg);
       color: var(--fg);
-      line-height: 1.5;
+      line-height: 1.55;
       min-height: 100dvh;
-      font-size: 1.05rem;
+      font-size: 1.12rem;
       -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
@@ -33,7 +33,7 @@
       padding: 0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left));
     }
     .eyebrow {
-      font-size: 0.82rem;
+      font-size: 0.86rem;
       font-weight: 600;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -41,7 +41,7 @@
       margin-bottom: 1.1rem;
     }
     h1 {
-      font-size: clamp(2.1rem, 9vw, 3.2rem);
+      font-size: clamp(2.2rem, 9vw, 3.2rem);
       font-weight: 800;
       line-height: 0.92;
       letter-spacing: -0.045em;
@@ -49,10 +49,10 @@
       margin-bottom: 1.1rem;
     }
     .statement {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       line-height: 1.55;
       color: var(--muted);
-      max-width: 32rem;
+      max-width: 34rem;
       margin-bottom: 0.5rem;
     }
     section {
@@ -60,7 +60,7 @@
       border-top: 1px solid var(--line);
     }
     .section-label {
-      font-size: 0.82rem;
+      font-size: 0.86rem;
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -68,7 +68,7 @@
       margin-bottom: 1rem;
     }
     p {
-      font-size: 1.1rem;
+      font-size: 1.18rem;
       line-height: 1.6;
       color: var(--muted);
       margin-bottom: 1rem;
@@ -81,7 +81,7 @@
     }
     .room {
       display: block;
-      padding: 1rem 1.1rem;
+      padding: 1.05rem 1.15rem;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: rgba(255,255,255,0.02);
@@ -89,18 +89,18 @@
     .room:active { opacity: 0.85; }
     .room .t {
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1.12rem;
       margin-bottom: 0.25rem;
     }
     .room .d {
-      font-size: 0.98rem;
+      font-size: 1.05rem;
       color: var(--muted);
       line-height: 1.45;
     }
     footer {
       padding: 2.25rem 0 2.75rem;
       border-top: 1px solid var(--line);
-      font-size: 0.88rem;
+      font-size: 0.95rem;
       color: var(--faint);
       text-align: center;
     }
@@ -131,26 +131,56 @@
     <section>
       <div class="section-label">Rooms</div>
       <div class="rooms">
-        <a class="room" href="medical.html">
+        <a class="room" href="healthcare/">
           <div class="t">Health</div>
-          <div class="d">Medical and clinical residual framing. Not a cure claim.</div>
+          <div class="d">Journal library and medical stacks. Not a cure claim. Not treatment.</div>
+        </a>
+        <a class="room" href="medical.html">
+          <div class="t">Medical path</div>
+          <div class="d">Tribute first, then journals. Simulation is not treatment.</div>
         </a>
         <a class="room" href="industrial.html">
           <div class="t">Industrial</div>
-          <div class="d">Operations, logistics, and plant-scale friction.</div>
-        </a>
-        <a class="room" href="math-science.html">
-          <div class="t">Math & science</div>
-          <div class="d">Formal structure and measurement language.</div>
+          <div class="d">Operations, logistics, materials, and plant-scale friction.</div>
         </a>
         <a class="room" href="engineering/">
-          <div class="t">Systems</div>
-          <div class="d">Engineering and capacity under residual law.</div>
+          <div class="t">Engineering</div>
+          <div class="d">Systems and capacity under residual law. Open notes first.</div>
         </a>
-        <a class="room" href="../ai/adaptive.html">
+        <a class="room" href="energy/">
+          <div class="t">Energy</div>
+          <div class="d">Capacity, burn, and what a close costs in real units.</div>
+        </a>
+        <a class="room" href="math-science.html">
+          <div class="t">Math &amp; science</div>
+          <div class="d">Formal structure and measurement language. A claim that cannot invert is a hole.</div>
+        </a>
+        <a class="room" href="fields/">
+          <div class="t">Fields</div>
+          <div class="d">Open field notes — same reading surface as the rest of Look.</div>
+        </a>
+        <a class="room" href="philosophy/">
+          <div class="t">Philosophy</div>
+          <div class="d">Orientation without costume. Rooms do not flatten past the door.</div>
+        </a>
+        <a class="room" href="life/">
+          <div class="t">Life</div>
+          <div class="d">Animal, plant, fungi — residual readings, not a product line.</div>
+        </a>
+        <a class="room" href="../ai/">
           <div class="t">Adaptive AI</div>
-          <div class="d">Intelligence layer — same plain format as the rest of the site.</div>
+          <div class="d">Intelligence path: systems, access, and the same invert rule as every other room.</div>
         </a>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">Adaptive AI on this surface</div>
+      <p>Open is free reading. Prove is identity only at the boundary if the work needs it. Depth is a session you choose. Seal keeps production method off this page.</p>
+      <p>Intelligence here means the next grain against leftover — not a mascot and not a storefront. If a run cannot invert in your units, it is not spent.</p>
+      <div class="cta-row cta-2">
+        <a class="cta primary" href="../ai/">Adaptive AI</a>
+        <a class="cta" href="../ai/adaptive.html">Systems</a>
       </div>
     </section>
 
