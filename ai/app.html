@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#050508" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="DualisCapax" />
-  <title>Ask DualisCapax</title>
+  <title>Ask Iris</title>
   <link rel="manifest" href="manifest-dclm.json" />
   <link rel="icon" href="icon.svg" />
   <link rel="apple-touch-icon" href="icon.svg" />
@@ -17,7 +17,9 @@
     body { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; padding: calc(0.75rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(1rem, env(safe-area-inset-left)); }
     header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; }
     header a { color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; font-size: 0.92rem; }
+    .who-head { display: grid; gap: 0.1rem; }
     header strong { font-size: 1rem; letter-spacing: -0.03em; }
+    header span { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,244,245,0.5); }
     .log { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 0.85rem; padding: 0.25rem 0 1rem; }
     .bubble { max-width: 92%; padding: 0.95rem 1.05rem; border-radius: 18px; font-size: 1.08rem; line-height: 1.5; }
     .bubble.them { align-self: flex-start; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
@@ -33,13 +35,16 @@
     .home summary { cursor: pointer; font-weight: 650; color: rgba(244,244,245,0.82); list-style: none; }
     .home summary::-webkit-details-marker { display: none; }
     .home ol { margin: 0.45rem 0 0.7rem 1.15rem; }
-    #swdbg { display: none; font-size: 0.72rem; line-height: 1.4; color: rgba(244,244,245,0.55); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 0.45rem 0.6rem; font-variant-numeric: tabular-nums; white-space: pre-wrap; }
-    body.debug #swdbg { display: block; }
+    #swdbg { display: none; }
+    body.debug #swdbg { display: block; font-size: 0.72rem; color: rgba(244,244,245,0.55); }
   </style>
 </head>
 <body>
   <header>
-    <strong>DualisCapax</strong>
+    <div class="who-head">
+      <strong>Iris</strong>
+      <span>DCLM-AI · DualisCapax</span>
+    </div>
     <a href="index.html">Back</a>
   </header>
   <div class="log" id="log"></div>
@@ -77,23 +82,9 @@
   (function () {
     var debug = /(?:\?|&)debug=1(?:&|$)/.test(location.search);
     if (debug) document.body.classList.add("debug");
-    var dbg = document.getElementById("swdbg");
-    function kb(n) { return Math.round((n || 0) / 102.4) / 10 + "kb"; }
-    function paint(line) { if (dbg) dbg.textContent = line; }
     function wake(worker) { if (worker) worker.postMessage("SKIP_WAITING"); }
-    function snap(reg) {
-      if (!debug) return;
-      var bits = [
-        "ctrl " + (navigator.serviceWorker.controller ? "yes" : "no"),
-        "active " + (reg && reg.active ? reg.active.state : "—")
-      ].join(" \u00b7 ");
-      paint(bits);
-    }
     if (navigator.serviceWorker) {
-      navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (reg) {
-        wake(reg.waiting);
-        snap(reg);
-      }).catch(function () {});
+      navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (reg) { wake(reg.waiting); }).catch(function () {});
     }
     var log = document.getElementById("log");
     function esc(s) {
@@ -117,20 +108,20 @@
     function plain(rec, asked) {
       var s = (asked || "").toLowerCase();
       if (s.indexOf("what can i do") >= 0 || s.indexOf("what is this") >= 0) {
-        return "This is a free look. Tell us a leftover in your life or work — money, hours, waste. We name it. We do not sell you anything here.";
+        return "I'm Iris. This is a free look. Tell me a leftover — money, hours, waste. I name it. I do not sell from this page.";
       }
       if (rec.grant === "VETO") {
-        return "We can't take that kind of request.<span class=\"hint\">Ask about a leftover you can measure — not a cure, a token, or making someone sign.</span>";
+        return "I can't take that kind of request.<span class=\"hint\">Ask about a leftover you can measure — not a cure, a token, or making someone sign.</span>";
       }
       if (rec.grant === "SEED") {
-        return "We hear a leftover, but a piece is still missing.<span class=\"hint\">Add a number in your units (dollars or hours) and how you would try to walk it back — a short pilot is enough.</span>";
+        return "I hear a leftover, but a piece is still missing.<span class=\"hint\">Add a number in your units and how you would walk it back — a short pilot is enough.</span>";
       }
       var m = rec.measure || {};
       var bit = (m.residual_value && m.residual_value !== "SEED")
         ? (m.residual_value + " " + (m.residual_unit || ""))
         : "a leftover we can work with";
-      return "Here's what we heard: " + bit.trim() + "." + doorLine(m) +
-        "<span class=\"hint\">That's a look, not a bill. Nothing is purchased on this page.</span>";
+      return "Here's what I heard: " + bit.trim() + "." + doorLine(m) +
+        "<span class=\"hint\">That's a look, not a bill.</span>";
     }
     async function send(text) {
       text = (text || "").trim();
@@ -147,7 +138,7 @@
     document.querySelectorAll(".chips button").forEach(function (b) {
       b.addEventListener("click", function () { send(b.getAttribute("data-q")); });
     });
-    add("them", "Tell us a leftover. We'll name it. This page is free — we're not taking money here.");
+    add("them", "I'm Iris. Tell me a leftover. This page is free.");
   })();
   </script>
 </body>
