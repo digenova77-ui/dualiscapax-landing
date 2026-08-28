@@ -5,94 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#050508" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>DCLM-AI · Look</title>
+  <title>Ask DualisCapax</title>
   <link rel="manifest" href="manifest-dclm.json" />
   <link rel="icon" href="icon.svg" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root { --bg:#050508; --fg:#f4f4f5; --muted:rgba(244,244,245,.58); --line:rgba(255,255,255,.12); --ok:#86efac; --bad:#f87171; }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    html,body { height:100%; background:var(--bg); color:var(--fg); font-family:Inter,system-ui,sans-serif; }
-    body { min-height:100dvh; display:grid; grid-template-rows:auto 1fr auto; padding:calc(.7rem + env(safe-area-inset-top)) max(.85rem, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(.85rem, env(safe-area-inset-left)); }
-    header { display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding-bottom:.7rem; }
-    .mark { font-weight:800; letter-spacing:-.03em; font-size:1.05rem; }
-    .here { font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
-    .voices { display:flex; gap:.35rem; }
-    .voices button, .back { border:1px solid var(--line); background:transparent; color:var(--muted); font:inherit; font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:.35rem .55rem; border-radius:999px; text-decoration:none; }
-    .voices button.on { color:var(--fg); border-color:rgba(126,182,255,.55); }
-    .log { min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:.7rem; padding:.2rem 0 .8rem; }
-    .msg { max-width:92%; padding:.85rem .95rem; border-radius:16px; font-size:1.02rem; line-height:1.5; }
-    .msg.you { align-self:flex-end; background:rgba(255,255,255,.12); }
-    .msg.iris { align-self:flex-start; background:rgba(255,255,255,.05); border:1px solid var(--line); }
-    .who { font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:.3rem; }
-    .grant { display:inline-block; margin-top:.45rem; font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:.2rem .5rem; border-radius:999px; }
-    .MEASURE,.SEED { color:var(--ok); border:1px solid rgba(134,239,172,.35); }
-    .VETO { color:var(--bad); border:1px solid rgba(248,113,113,.4); }
-    .sheet { margin-top:.55rem; font-size:.82rem; color:var(--muted); }
-    .dock { border-top:1px solid var(--line); padding-top:.7rem; display:grid; gap:.5rem; }
-    .status { font-size:.72rem; color:var(--muted); }
-    .chips { display:flex; gap:.4rem; overflow-x:auto; }
-    .chips button { flex-shrink:0; border:1px solid var(--line); background:rgba(255,255,255,.04); color:var(--fg); font:inherit; font-size:.8rem; font-weight:600; padding:.45rem .7rem; border-radius:999px; }
-    form { display:grid; grid-template-columns:1fr auto; gap:.5rem; align-items:end; }
-    textarea { width:100%; min-height:48px; resize:none; padding:.75rem .9rem; border-radius:14px; border:1px solid var(--line); background:rgba(10,10,14,.95); color:#fff; font:inherit; font-size:1.02rem; }
-    form button[type=submit] { width:48px; height:48px; border:0; border-radius:14px; background:#fff; color:#0a0a0c; font-weight:800; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; }
+    body {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding:
+        calc(0.75rem + env(safe-area-inset-top))
+        max(1rem, env(safe-area-inset-right))
+        env(safe-area-inset-bottom)
+        max(1rem, env(safe-area-inset-left));
+    }
+    header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; }
+    header a {
+      color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; font-size: 0.92rem;
+    }
+    header strong { font-size: 1rem; letter-spacing: -0.03em; }
+    .log {
+      min-height: 0; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 0.85rem;
+      padding: 0.25rem 0 1rem;
+    }
+    .bubble {
+      max-width: 92%; padding: 0.95rem 1.05rem; border-radius: 18px;
+      font-size: 1.08rem; line-height: 1.5;
+    }
+    .bubble.them {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .bubble.you {
+      align-self: flex-end;
+      background: rgba(255,255,255,0.14);
+    }
+    .hint { margin-top: 0.55rem; font-size: 0.92rem; color: rgba(244,244,245,0.55); }
+    .dock { padding-top: 0.7rem; border-top: 1px solid rgba(255,255,255,0.1); display: grid; gap: 0.55rem; }
+    .chips { display: flex; gap: 0.45rem; overflow-x: auto; }
+    .chips button {
+      flex-shrink: 0; border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.04); color: #f4f4f5;
+      font: inherit; font-size: 0.88rem; font-weight: 600;
+      padding: 0.5rem 0.8rem; border-radius: 999px;
+    }
+    form { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; }
+    textarea {
+      width: 100%; min-height: 52px; resize: none;
+      padding: 0.85rem 1rem; border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: #0c0c10; color: #fff; font: inherit; font-size: 1.08rem;
+    }
+    form button {
+      width: 52px; height: 52px; border: 0; border-radius: 16px;
+      background: #f4f4f5; color: #050508; font-weight: 800; font-size: 1.15rem;
+    }
   </style>
 </head>
 <body>
   <header>
-    <div>
-      <div class="mark">DCLM-AI</div>
-      <div class="here">Iris · Look · not taking dollars</div>
-    </div>
-    <div style="display:flex;gap:.35rem;align-items:center;">
-      <a class="back" href="index.html">AI</a>
-      <div class="voices" id="voices">
-        <button type="button" data-v="citizen" class="on">You</button>
-        <button type="button" data-v="cfo">CFO</button>
-        <button type="button" data-v="lab">Lab</button>
-      </div>
-    </div>
+    <strong>DualisCapax</strong>
+    <a href="index.html">Back</a>
   </header>
   <div class="log" id="log"></div>
   <div class="dock">
-    <div class="status">Look kernel in this page · no Fuel · no Bind</div>
     <div class="chips">
-      <button type="button" data-q="Belleville warehouse overtime leftover is CAD $180000 this year. Walk-back is a 90-day pilot.">Belleville</button>
-      <button type="button" data-q="This will cure the patient.">Cure claim</button>
-      <button type="button" data-q="Riemann Hypothesis as a simulation leaf only. P2. Do not invent a zero.">Riemann</button>
+      <button type="button" data-q="We spent extra overtime this year. How do I name that leftover?">Overtime leftover</button>
+      <button type="button" data-q="What can I do here for free?">What is this?</button>
     </div>
     <form id="form">
-      <textarea id="input" rows="2" placeholder="Name a leftover in your units…"></textarea>
-      <button type="submit" aria-label="Measure">↑</button>
+      <textarea id="input" rows="2" placeholder="What's the leftover?"></textarea>
+      <button type="submit" aria-label="Send">↑</button>
     </form>
   </div>
   <script src="dclm-look.js"></script>
   <script>
   (function () {
     var log = document.getElementById("log");
-    var voice = "citizen";
-    function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+    function esc(s) {
+      return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
     function add(who, html) {
       var d = document.createElement("div");
-      d.className = "msg " + who;
+      d.className = "bubble " + who;
       d.innerHTML = html;
       log.appendChild(d);
       log.scrollTop = log.scrollHeight;
     }
+    function plain(rec, asked) {
+      var s = (asked || "").toLowerCase();
+      if (s.indexOf("what can i do") >= 0 || s.indexOf("what is this") >= 0) {
+        return "This is a free look. Tell us a leftover in your life or work — money, hours, waste. We name it. We do not sell you anything here.";
+      }
+      if (rec.grant === "VETO") {
+        return "We can't take that kind of request.<span class=\"hint\">Ask about a leftover you can measure — not a cure, a token, or making someone sign.</span>";
+      }
+      if (rec.grant === "SEED") {
+        return "We hear a leftover, but a piece is still missing.<span class=\"hint\">Add a number in your units (dollars or hours) and how you would try to walk it back — a short pilot is enough.</span>";
+      }
+      var m = rec.measure || {};
+      var bit = (m.residual_value && m.residual_value !== "SEED")
+        ? (m.residual_value + " " + (m.residual_unit || ""))
+        : "a leftover we can work with";
+      return "Here's what we heard: " + bit.trim() + ".<span class=\"hint\">That's a look, not a bill. Nothing is purchased on this page.</span>";
+    }
     async function send(text) {
       text = (text || "").trim();
       if (!text) return;
-      add("you", '<div class="who">You</div>' + esc(text));
+      add("you", esc(text));
       document.getElementById("input").value = "";
-      var rec = await DCLMLook.run(text, { voice: voice, case_id: "look-app" });
-      var extra = "";
-      if (rec.measure) {
-        var m = rec.measure;
-        extra = '<div class="sheet">' + esc(m.domain) + " · " + esc(m.residual_value) + " " + esc(m.residual_unit) +
-          " · invert " + esc(m.invertibility) + "<br>C " + esc((m.commitment || "").slice(0, 16)) + "…</div>";
-      }
-      add("iris", '<div class="who">Iris</div>' + esc(rec.spoken) + extra +
-        '<div class="grant ' + esc(rec.grant) + '">' + esc(rec.grant) + "</div>");
+      var rec = await DCLMLook.run(text, { voice: "citizen", case_id: "look-app" });
+      add("them", plain(rec, text));
     }
     document.getElementById("form").addEventListener("submit", function (e) {
       e.preventDefault();
@@ -101,14 +129,7 @@
     document.querySelectorAll(".chips button").forEach(function (b) {
       b.addEventListener("click", function () { send(b.getAttribute("data-q")); });
     });
-    document.querySelectorAll("#voices button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        document.querySelectorAll("#voices button").forEach(function (x) { x.classList.remove("on"); });
-        b.classList.add("on");
-        voice = b.getAttribute("data-v");
-      });
-    });
-    add("iris", '<div class="who">Iris</div>Look app. Layer [0] + measure. Not Bind. Not Fuel. Add to Home Screen for the icon.');
+    add("them", "Tell us a leftover. We'll name it. This page is free — we're not taking money here.");
   })();
   </script>
 </body>
