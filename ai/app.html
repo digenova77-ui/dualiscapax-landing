@@ -117,8 +117,20 @@
   <script src="dclm-look.js"></script>
   <script>
   (function () {
+    function wake(worker) {
+      if (worker) worker.postMessage("SKIP_WAITING");
+    }
     if (navigator.serviceWorker) {
-      navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(function () {});
+      navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (reg) {
+        wake(reg.waiting);
+        reg.addEventListener("updatefound", function () {
+          var fresh = reg.installing;
+          if (!fresh) return;
+          fresh.addEventListener("statechange", function () {
+            if (fresh.state === "installed") wake(fresh);
+          });
+        });
+      }).catch(function () {});
     }
     var log = document.getElementById("log");
     function esc(s) {
