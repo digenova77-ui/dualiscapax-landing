@@ -1,5 +1,5 @@
 /* DCLM Look — cache this folder only. Not Bind. */
-var CACHE = "dclm-look-v5";
+var CACHE = "dclm-look-v6";
 var ASSETS = [
   "./app.html",
   "./dclm-look.js",
@@ -7,6 +7,40 @@ var ASSETS = [
   "./icon-maskable.svg",
   "./manifest-dclm.json"
 ];
+
+function cacheMetrics() {
+  return caches.keys().then(function (names) {
+    return Promise.all(names.map(function (name) {
+      return caches.open(name).then(function (cache) {
+        return cache.keys().then(function (reqs) {
+          return Promise.all(reqs.map(function (req) {
+            return cache.match(req).then(function (res) {
+              if (!res) return { url: req.url, bytes: 0 };
+              return res.clone().blob().then(function (b) {
+                return { url: req.url, bytes: b.size || 0 };
+              }).catch(function () {
+                return { url: req.url, bytes: 0 };
+              });
+            });
+          })).then(function (rows) {
+            var bytes = 0;
+            for (var i = 0; i < rows.length; i++) bytes += rows[i].bytes;
+            return { name: name, entries: rows.length, bytes: bytes, urls: rows };
+          });
+        });
+      });
+    }));
+  }).then(function (cachesList) {
+    var bytes = 0, entries = 0;
+    for (var i = 0; i < cachesList.length; i++) {
+      bytes += cachesList[i].bytes;
+      entries += cachesList[i].entries;
+    }
+    return { ok: true, cache: CACHE, stores: cachesList.length, entries: entries, bytes: bytes, caches: cachesList };
+  }).catch(function (err) {
+    return { ok: false, error: String(err && err.message ? err.message : err) };
+  });
+}
 
 self.addEventListener("install", function (e) {
   e.waitUntil(
@@ -44,7 +78,16 @@ self.addEventListener("activate", function (e) {
 });
 
 self.addEventListener("message", function (e) {
-  if (e.data === "SKIP_WAITING") self.skipWaiting();
+  if (e.data === "SKIP_WAITING") {
+    self.skipWaiting();
+    return;
+  }
+  if (e.data === "METRICS") {
+    var port = e.ports && e.ports[0];
+    cacheMetrics().then(function (m) {
+      if (port) port.postMessage(m);
+    });
+  }
 });
 
 self.addEventListener("fetch", function (e) {
