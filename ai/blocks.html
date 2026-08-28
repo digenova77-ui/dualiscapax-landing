@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blocks</title>
+  <script src="../assets/spine-nav.js" defer></script>
+  <style>
+    body { margin: 0; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; padding: 1.1rem 1rem 6rem; }
+    h1 { font-size: 1.7rem; letter-spacing: -0.04em; margin: 0 0 0.35rem; }
+    p { color: rgba(244,244,245,0.55); max-width: 36rem; line-height: 1.45; }
+    .g { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; max-width: 16rem; margin: 0.8rem 0; }
+    .c { aspect-ratio: 1; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.03); }
+    .c.you { background: #e8e4dc; }
+    .c.her { background: #5c2a2a; }
+    .row { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    button { font: 700 0.95rem Inter, system-ui, sans-serif; padding: 0.5rem 0.8rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.05); color: #f4f4f5; }
+    .m { margin-top: 0.8rem; color: rgba(244,244,245,0.5); font-size: 0.92rem; }
+  </style>
+</head>
+<body>
+  <h1>Blocks</h1>
+  <p>You put one. She puts one. No right picture.</p>
+  <div class="g" id="g"></div>
+  <div class="row">
+    <button type="button" id="her">Her turn</button>
+    <button type="button" id="clear">Clear</button>
+  </div>
+  <div class="m" id="m"></div>
+<script>
+(function () {
+  var n = 16, who = [], cells = [];
+  var g = document.getElementById("g");
+  var m = document.getElementById("m");
+  for (var i = 0; i < n; i++) {
+    var d = document.createElement("div");
+    d.className = "c";
+    (function (i) { d.onclick = function () { if (!who[i]) { who[i] = "you"; draw(); log(); } }; })(i);
+    g.appendChild(d); cells.push(d); who[i] = "";
+  }
+  function draw() {
+    cells.forEach(function (d, i) {
+      d.className = "c" + (who[i] ? " " + who[i] : "");
+    });
+  }
+  function empty() {
+    var e = [];
+    for (var i = 0; i < n; i++) if (!who[i]) e.push(i);
+    return e;
+  }
+  function log() {
+    var y = 0, h = 0;
+    who.forEach(function (w) { if (w === "you") y++; if (w === "her") h++; });
+    var pile = [];
+    try { pile = JSON.parse(localStorage.getItem("dc_blocks") || "[]"); } catch (err) {}
+    pile.push({ at: Date.now(), who: who.slice() });
+    localStorage.setItem("dc_blocks", JSON.stringify(pile.slice(-80)));
+    m.textContent = "You " + y + " · her " + h + " · pictures saved " + pile.length;
+  }
+  document.getElementById("her").onclick = function () {
+    var e = empty();
+    if (!e.length) return;
+    who[e[Math.floor(Math.random() * e.length)]] = "her";
+    draw(); log();
+  };
+  document.getElementById("clear").onclick = function () {
+    who = who.map(function () { return ""; });
+    draw(); m.textContent = "Floor clear.";
+  };
+  draw();
+})();
+</script>
+</body>
+</html>
