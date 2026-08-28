@@ -3,197 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Look — Research — DualisCapax</title>
-  <meta name="description" content="Read free. Board when alone is not enough. Residual cost toward zero." />
+  <title>Read — DualisCapax</title>
   <meta name="theme-color" content="#050505" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/cta.css" />
+  <script src="../assets/spine-nav.js" defer></script>
   <style>
-    :root {
-      --bg: #050505;
-      --fg: #f5f5f5;
-      --muted: rgba(245,245,245,0.55);
-      --faint: rgba(245,245,245,0.28);
-      --line: rgba(255,255,255,0.09);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.55;
-      min-height: 100dvh;
-      font-size: 1.12rem;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; text-decoration: none; }
-    .site {
-      max-width: 42rem;
-      margin: 0 auto;
-      padding: 0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left));
-    }
-    .eyebrow {
-      font-size: 0.86rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1.1rem;
-    }
-    h1 {
-      font-size: clamp(2.2rem, 9vw, 3.2rem);
-      font-weight: 800;
-      line-height: 0.92;
-      letter-spacing: -0.045em;
-      text-transform: uppercase;
-      margin-bottom: 1.1rem;
-    }
-    .statement {
-      font-size: 1.2rem;
-      line-height: 1.55;
-      color: var(--muted);
-      max-width: 34rem;
-      margin-bottom: 0.5rem;
-    }
-    section {
-      padding: 2.2rem 0;
-      border-top: 1px solid var(--line);
-    }
-    .section-label {
-      font-size: 0.86rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 1rem;
-    }
-    p {
-      font-size: 1.18rem;
-      line-height: 1.6;
-      color: var(--muted);
-      margin-bottom: 1rem;
-    }
-    p:last-child { margin-bottom: 0; }
-    .rooms {
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-    .room {
-      display: block;
-      padding: 1.05rem 1.15rem;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.02);
-    }
-    .room:active { opacity: 0.85; }
-    .room .t {
-      font-weight: 700;
-      font-size: 1.12rem;
-      margin-bottom: 0.25rem;
-    }
-    .room .d {
-      font-size: 1.05rem;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-    footer {
-      padding: 2.25rem 0 2.75rem;
-      border-top: 1px solid var(--line);
-      font-size: 0.95rem;
-      color: var(--faint);
-      text-align: center;
-    }
+    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,0.55); --faint:rgba(245,245,245,0.28); --line:rgba(255,255,255,0.09); }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); line-height:1.55; min-height:100dvh; font-size:1.12rem; }
+    a { color:inherit; text-decoration:none; }
+    .site { max-width:42rem; margin:0 auto; padding:0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
+    .eyebrow { font-size:0.86rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:1.1rem; }
+    h1 { font-size:clamp(2.2rem,9vw,3.2rem); font-weight:800; line-height:0.92; letter-spacing:-0.045em; text-transform:uppercase; margin-bottom:1.1rem; }
+    .statement { font-size:1.2rem; line-height:1.55; color:var(--muted); max-width:34rem; margin-bottom:0.5rem; }
+    section { padding:2.2rem 0; border-top:1px solid var(--line); }
+    .section-label { font-size:0.86rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); margin-bottom:1rem; }
+    .rooms { display:flex; flex-direction:column; gap:0.65rem; }
+    .room { display:block; padding:1.05rem 1.15rem; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,0.02); }
+    .room .t { font-weight:700; font-size:1.12rem; margin-bottom:0.25rem; }
+    .room .d { font-size:1.05rem; color:var(--muted); line-height:1.45; }
+    footer { padding:2.25rem 0 2.75rem; border-top:1px solid var(--line); font-size:0.95rem; color:var(--faint); text-align:center; }
   </style>
 </head>
 <body>
   <div class="site">
     <div class="top">
-      <a href="../index.html?land=1" class="mark">DualisCapax</a>
-      <div class="top-links">
-        <a href="../for-people.html">For you</a>
-        <a href="./" class="on">Look</a>
-        <a href="../onboard.html">Measure</a>
-        <a href="../payments.html">Bind</a>
-        <a href="../founding.html">Founding</a>
-      </div>
+      <a href="/index.html?land=1" class="mark">DualisCapax</a>
+      <div class="top-links"></div>
     </div>
-
-    <main style="padding: 1.5rem 0 0.5rem;">
-      <div class="eyebrow">Look</div>
-      <h1>Research</h1>
-      <p class="statement">
-        Read free. See what is solid and what is still thin — without paying to find out.
-        Board only when reading alone is not enough.
-      </p>
+    <main style="padding:1.5rem 0 0.5rem;">
+      <div class="eyebrow">Read</div>
+      <h1>Pick a room</h1>
+      <p class="statement">Each room is its own pile. You don't have to read the whole site.</p>
     </main>
-
     <section>
-      <div class="section-label">Rooms</div>
+      <div class="section-label">Start here</div>
       <div class="rooms">
+        <a class="room" href="/ai/app.html">
+          <div class="t">Talk to Iris</div>
+          <div class="d">Ask her something. Free.</div>
+        </a>
         <a class="room" href="healthcare/">
           <div class="t">Health</div>
-          <div class="d">Journal library and medical stacks. Not a cure claim. Not treatment.</div>
+          <div class="d">Journals and notes. Not a diagnosis. Not a cure.</div>
         </a>
-        <a class="room" href="medical.html">
-          <div class="t">Medical path</div>
-          <div class="d">Tribute first, then journals. Simulation is not treatment.</div>
+        <a class="room" href="healthcare/medical/neurological/als.html">
+          <div class="t">ALS notes</div>
+          <div class="d">One disease, one stack. Take it to your own doctor.</div>
         </a>
         <a class="room" href="industrial.html">
-          <div class="t">Industrial</div>
-          <div class="d">Operations, logistics, materials, and plant-scale friction.</div>
-        </a>
-        <a class="room" href="engineering/">
-          <div class="t">Engineering</div>
-          <div class="d">Systems and capacity under residual law. Open notes first.</div>
-        </a>
-        <a class="room" href="energy/">
-          <div class="t">Energy</div>
-          <div class="d">Capacity, burn, and what a close costs in real units.</div>
+          <div class="t">Shops and plants</div>
+          <div class="d">Hours, freight, stuff that breaks on the floor.</div>
         </a>
         <a class="room" href="math-science.html">
-          <div class="t">Math &amp; science</div>
-          <div class="d">Formal structure and measurement language. A claim that cannot invert is a hole.</div>
-        </a>
-        <a class="room" href="fields/">
-          <div class="t">Fields</div>
-          <div class="d">Open field notes — same reading surface as the rest of Look.</div>
+          <div class="t">Math</div>
+          <div class="d">When a claim can be checked, and when it can't.</div>
         </a>
         <a class="room" href="philosophy/">
-          <div class="t">Philosophy</div>
-          <div class="d">Orientation without costume. Rooms do not flatten past the door.</div>
-        </a>
-        <a class="room" href="life/">
-          <div class="t">Life</div>
-          <div class="d">Animal, plant, fungi — residual readings, not a product line.</div>
-        </a>
-        <a class="room" href="../ai/">
-          <div class="t">Adaptive AI</div>
-          <div class="d">Intelligence path: systems, access, and the same invert rule as every other room.</div>
+          <div class="t">Thinking</div>
+          <div class="d">How Dualis looks at a question. No costume.</div>
         </a>
       </div>
     </section>
-
     <section>
-      <div class="section-label">Adaptive AI on this surface</div>
-      <p>Open is free reading. Prove is identity only at the boundary if the work needs it. Depth is a session you choose. Seal keeps production method off this page.</p>
-      <p>Intelligence here means the next grain against leftover — not a mascot and not a storefront. If a run cannot invert in your units, it is not spent.</p>
-      <div class="cta-row cta-2">
-        <a class="cta primary" href="../ai/">Adaptive AI</a>
-        <a class="cta" href="../ai/adaptive.html">Systems</a>
+      <div class="section-label">More rooms</div>
+      <div class="rooms">
+        <a class="room" href="energy/"><div class="t">Energy</div><div class="d">What a close costs in real units.</div></a>
+        <a class="room" href="engineering/"><div class="t">Engineering</div><div class="d">Systems under load.</div></a>
+        <a class="room" href="life/"><div class="t">Life</div><div class="d">Animals, plants, fungi.</div></a>
+        <a class="room" href="fields/"><div class="t">Field notes</div><div class="d">Open notes. Same reading surface.</div></a>
       </div>
     </section>
-
-    <section>
-      <div class="section-label">Honest limits</div>
-      <p>Not a cure claim. Not a securities offer. Free to read. Cost only when you choose to bind.</p>
-      <div class="cta-row cta-2">
-        <a class="cta primary" href="../onboard.html">Measure</a>
-        <a class="cta" href="../for-people.html">For you</a>
-      </div>
-    </section>
-
-    <footer>DualisCapax · Look · Truth prevails</footer>
+    <footer>DualisCapax · Read</footer>
   </div>
 </body>
 </html>
