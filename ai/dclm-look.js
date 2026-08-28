@@ -1,36 +1,10 @@
-/** DCLM-AI Look kernel (browser). Veto + thin meter. Not Bind. Not Grok. */
+/** DCLM-AI Look kernel (browser). Veto + thin meter. Invert lives on the sheet. */
 (function (w) {
   var FLOORS = {
-    NO_FORCE: [
-      /\bjailbreak\b/i,
-      /\bignore (the )?(rules|law|invariants|safety)\b/i,
-      /\bmake them (pay|sign|comply)\b/i,
-      /\bforce (them|the board|the city)\b/i,
-      /\bcoerce\b/i,
-      /\bwithout (their|the) consent\b/i
-    ],
-    HOST_SAFE: [
-      /\b(hack|exploit|breach)\b/i,
-      /\bpassword\b/i,
-      /\bapi[_ ]?key\b/i,
-      /\bprivate key\b/i,
-      /\bwipe (their|the) (server|drive|db)\b/i
-    ],
-    CLEANUP_FIRST: [
-      /\bremember this (password|sin|card)\b/i,
-      /\bstore (the )?(secret|credential|token) in (chat|repo|github)\b/i
-    ],
-    TRUTH_OR_NOTHING: [
-      /\bthis (will|is a) cure\b/i,
-      /\bguaranteed (return|profit|cure)\b/i,
-      /\bbuy (the )?token\b/i,
-      /\boffer(ing)? (of )?securities\b/i,
-      /\bprescribe\b/i,
-      /\bdiagnose (me|them|the patient)\b/i,
-      /\bclaim (the )?millennium prize\b/i,
-      /\bfounding seat\b/i,
-      /\bseat 1\b/i
-    ]
+    NO_FORCE: [/\bjailbreak\b/i, /\bignore (the )?(rules|law|invariants|safety)\b/i, /\bmake them (pay|sign|comply)\b/i, /\bforce (them|the board|the city)\b/i, /\bcoerce\b/i, /\bwithout (their|the) consent\b/i],
+    HOST_SAFE: [/\b(hack|exploit|breach)\b/i, /\bpassword\b/i, /\bapi[_ ]?key\b/i, /\bprivate key\b/i, /\bwipe (their|the) (server|drive|db)\b/i],
+    CLEANUP_FIRST: [/\bremember this (password|sin|card)\b/i, /\bstore (the )?(secret|credential|token) in (chat|repo|github)\b/i],
+    TRUTH_OR_NOTHING: [/\bthis (will|is a) cure\b/i, /\bguaranteed (return|profit|cure)\b/i, /\bbuy (the )?token\b/i, /\boffer(ing)? (of )?securities\b/i, /\bprescribe\b/i, /\bdiagnose (me|them|the patient)\b/i, /\bclaim (the )?millennium prize\b/i, /\bfounding seat\b/i, /\bseat 1\b/i]
   };
   var REASON = {
     NO_FORCE: "No coerce, no jailbreak, no forced sign.",
@@ -51,14 +25,14 @@
   }
   function domain(text) {
     var s = (text || "").toLowerCase();
-    if (/belleville|ontario|municipal|city|council/.test(s)) return "municipal";
+    if (/belleville|ontario|municipal|city|council|warehouse/.test(s)) return "municipal";
     if (/school|board|enrol|student/.test(s)) return "school_board";
     if (/shop|pizza|store|retail/.test(s)) return "retail";
     if (/als|clinic|hospital|patient|cancer/.test(s)) return "healthcare_research";
     return "general";
   }
   function unit(text) {
-    if (/\$[\d,]+/.test(text || "")) return "CAD";
+    if (/\$[\d,]+/.test(text || "") || /\bcad\b/i.test(text || "")) return "CAD";
     if (/\b(hour|hours|fte|shift)\b/i.test(text || "")) return "hours";
     if (/\b(percent|%|bp)\b/i.test(text || "")) return "percent";
     return "";
@@ -71,8 +45,10 @@
   }
   function invert(text) {
     var s = (text || "").toLowerCase();
-    if (/walk-back|walk back|pilot|time-box|time boxed|invert/.test(s)) return { ok: "yes", door: /pilot/.test(s) ? "pilot" : "time-box" };
-    if (/\bcannot invert|no walk-back\b/.test(s)) return { ok: "no", door: "" };
+    if (/walk-back|walk back|walk it back|pilot|time-box|time boxed|invert/.test(s)) {
+      return { ok: "yes", door: /pilot/.test(s) ? "pilot" : (/time-box|time boxed/.test(s) ? "time-box" : "named") };
+    }
+    if (/\bcannot invert|no walk-back|does not walk back\b/.test(s)) return { ok: "no", door: "" };
     return { ok: "unknown", door: "" };
   }
   function path(text) {
@@ -100,6 +76,7 @@
     var u = unit(text), v = value(text), inv = invert(text), missing = [];
     if (!u) missing.push("residual_unit");
     if (inv.ok === "unknown") missing.push("invertibility");
+    if (inv.ok === "yes" && !inv.door) missing.push("invert_door");
     var grant = missing.length ? "SEED" : "MEASURE";
     var sheet = {
       case_id: caseId, domain: domain(text),
@@ -108,24 +85,10 @@
     };
     sheet.commitment = await sha256Hex(JSON.stringify({
       case_id: sheet.case_id, domain: sheet.domain, invert: sheet.invertibility,
-      path: sheet.path, unit: sheet.residual_unit, value: sheet.residual_value,
-      text: (text || "").slice(0, 180)
+      door: sheet.invert_door, path: sheet.path, unit: sheet.residual_unit,
+      value: sheet.residual_value, text: (text || "").slice(0, 180)
     }));
-    var spoken;
-    if (voice === "cfo") {
-      spoken = "Measure sheet. Domain " + sheet.domain + ". Residual " + sheet.residual_value + " " + sheet.residual_unit +
-        ". Invert=" + sheet.invertibility + ". Path " + sheet.path + ". Receipt " + sheet.commitment.slice(0, 16) +
-        "… Seats closed. Not taking dollars.";
-    } else if (voice === "lab") {
-      spoken = "DCLM leaf. unit=" + sheet.residual_unit + " value=" + sheet.residual_value +
-        " invert=" + sheet.invertibility + " path=" + sheet.path + " receipt=" + sheet.commitment;
-    } else {
-      spoken = grant === "SEED"
-        ? "Every decision leaves a residual. This one still has a hole: " + missing.join(", ") + ". Name it. Do not invent it."
-        : "Every decision leaves a residual. Here is yours: " + sheet.residual_value + " " + sheet.residual_unit +
-          " · " + sheet.domain + ". Path to truth, not a prescription.";
-    }
-    return { grant: grant, voice: voice, name: "DCLM-AI", public_face: "Iris", spoken: spoken, veto: null, measure: sheet };
+    return { grant: grant, voice: voice, name: "DCLM-AI", public_face: "Iris", spoken: grant, veto: null, measure: sheet };
   }
   w.DCLMLook = { run: run, scanVeto: scanVeto };
 })(window);
