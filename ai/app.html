@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#050508" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="DualisCapax" />
+  <meta name="apple-mobile-web-app-title" content="Iris" />
   <title>Ask Iris</title>
   <link rel="manifest" href="manifest-dclm.json" />
   <link rel="icon" href="icon.svg" />
@@ -18,13 +18,12 @@
     header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; }
     header a { color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; font-size: 0.92rem; }
     .who-head { display: grid; gap: 0.1rem; }
-    header strong { font-size: 1rem; letter-spacing: -0.03em; }
-    header span { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,244,245,0.5); }
+    header strong { font-size: 1.05rem; letter-spacing: -0.03em; }
+    header span { font-size: 0.72rem; color: rgba(244,244,245,0.5); }
     .log { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 0.85rem; padding: 0.25rem 0 1rem; }
     .bubble { max-width: 92%; padding: 0.95rem 1.05rem; border-radius: 18px; font-size: 1.08rem; line-height: 1.5; }
     .bubble.them { align-self: flex-start; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
     .bubble.you { align-self: flex-end; background: rgba(255,255,255,0.14); }
-    .hint { margin-top: 0.55rem; font-size: 0.92rem; color: rgba(244,244,245,0.55); }
     .dock { padding-top: 0.7rem; border-top: 1px solid rgba(255,255,255,0.1); display: grid; gap: 0.55rem; }
     .chips { display: flex; gap: 0.45rem; overflow-x: auto; }
     .chips button { flex-shrink: 0; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); color: #f4f4f5; font: inherit; font-size: 0.88rem; font-weight: 600; padding: 0.5rem 0.8rem; border-radius: 999px; }
@@ -35,56 +34,38 @@
     .home summary { cursor: pointer; font-weight: 650; color: rgba(244,244,245,0.82); list-style: none; }
     .home summary::-webkit-details-marker { display: none; }
     .home ol { margin: 0.45rem 0 0.7rem 1.15rem; }
-    #swdbg { display: none; }
-    body.debug #swdbg { display: block; font-size: 0.72rem; color: rgba(244,244,245,0.55); }
   </style>
 </head>
 <body>
   <header>
     <div class="who-head">
       <strong>Iris</strong>
-      <span>DualisCapax</span>
+      <span>Ask anything</span>
     </div>
-    <a href="index.html">Back</a>
+    <a href="/">Home</a>
   </header>
   <div class="log" id="log"></div>
   <div class="dock">
-    <pre id="swdbg">sw —</pre>
     <div class="chips">
-      <button type="button" data-q="What are you?">What are you?</button>
-      <button type="button" data-q="What can you actually do?">What can you do?</button>
+      <button type="button" data-q="Hey. Who are you?">Hey</button>
+      <button type="button" data-q="What's actually fun to ask you?">What should I ask?</button>
     </div>
     <form id="form">
-      <textarea id="input" rows="2" placeholder="Ask Iris"></textarea>
+      <textarea id="input" rows="2" placeholder="Go ahead"></textarea>
       <button type="submit" aria-label="Send">↑</button>
     </form>
     <details class="home">
-      <summary>Add this to your phone</summary>
-      <p style="margin-top:0.45rem">Same page, with an icon. Not an App Store app.</p>
-      <p style="margin-top:0.55rem"><strong>iPhone / iPad</strong></p>
-      <ol>
-        <li>Open this in Safari.</li>
-        <li>Tap Share.</li>
-        <li>Tap Add to Home Screen.</li>
-        <li>Tap Add.</li>
-      </ol>
-      <p><strong>Android</strong></p>
-      <ol>
-        <li>Open this in Chrome.</li>
-        <li>Tap the three dots.</li>
-        <li>Tap Add to Home screen or Install app.</li>
-        <li>Tap Add.</li>
-      </ol>
+      <summary>Put me on your phone</summary>
+      <p style="margin-top:0.45rem"><strong>iPhone</strong> — Safari → Share → Add to Home Screen</p>
+      <p><strong>Android</strong> — Chrome → menu → Add to Home screen</p>
     </details>
   </div>
   <script src="dclm-look.js"></script>
   <script>
   (function () {
-    var debug = /(?:\?|&)debug=1(?:&|$)/.test(location.search);
-    if (debug) document.body.classList.add("debug");
-    function wake(worker) { if (worker) worker.postMessage("SKIP_WAITING"); }
+    function wake(w) { if (w) w.postMessage("SKIP_WAITING"); }
     if (navigator.serviceWorker) {
-      navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (reg) { wake(reg.waiting); }).catch(function () {});
+      navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (r) { wake(r.waiting); }).catch(function () {});
     }
     var log = document.getElementById("log");
     function esc(s) {
@@ -97,29 +78,21 @@
       log.appendChild(d);
       log.scrollTop = log.scrollHeight;
     }
-    function about() {
-      return "I'm Iris, DualisCapax's AI. I give a straight answer and I will tell you when I don't know. I won't sell you anything on this page, and I won't pretend to be a doctor or a broker.";
-    }
-    function canDo() {
-      return "Ask a real question — work, research, how this site works, whether a claim is solid. I'll answer in plain language. I stop if you ask me to invent a cure, push a token, or force someone. Deeper runs stay closed until Dualis is actually taking payment.";
-    }
     function plain(rec, asked) {
       var s = (asked || "").toLowerCase();
-      if (/what are you|who are you|what is (this|iris|dualis)/.test(s)) return about();
-      if (/what can (you|i)|what do you do|what is this for/.test(s)) return canDo();
+      if (/hey|who are you|what are you/.test(s)) {
+        return "Iris. I live here. Ask me a real thing — work, a fight you're in, a page on this site, whatever. I'll be straight. I won't sell you anything tonight.";
+      }
+      if (/what should i ask|fun to ask|what can you/.test(s)) {
+        return "Ask the thing you would ask a sharp friend at 2 a.m. Not a pitch. If I don't know, I'll say so.";
+      }
       if (rec.grant === "VETO") {
-        return "I can't help with that. I won't invent medical claims, sell tokens, or help force anyone.";
+        return "Nope. Not that. Try a real question.";
       }
-      if (rec.grant === "MEASURE" && rec.measure) {
-        var m = rec.measure;
-        var n = (m.residual_value && m.residual_value !== "SEED") ? (m.residual_value + " " + (m.residual_unit || "")) : "";
-        var extra = n ? " I can pin that as " + n.trim() + "." : "";
-        return "Got it." + extra + " If you want to go further, say what you'd try next. This page is still free.";
+      if (rec.grant === "MEASURE" && rec.measure && rec.measure.residual_value && rec.measure.residual_value !== "SEED") {
+        return "Okay — I can hold that number: " + rec.measure.residual_value + ". What do you want to do with it?";
       }
-      if (rec.grant === "SEED") {
-        return "I can work with that. Tell me the part that matters — the question, the constraint, or the number if there is one.";
-      }
-      return "Say a bit more and I'll take a proper run at it.";
+      return "I'm with you. Say the next piece.";
     }
     async function send(text) {
       text = (text || "").trim();
@@ -136,7 +109,7 @@
     document.querySelectorAll(".chips button").forEach(function (b) {
       b.addEventListener("click", function () { send(b.getAttribute("data-q")); });
     });
-    add("them", about());
+    add("them", "Hey. I'm Iris. Get on.");
   })();
   </script>
 </body>
