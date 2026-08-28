@@ -1,6 +1,5 @@
-/* DualisCapax CTA + spine nav law
-   Equal width CTAs · identical top nav on every non-lander page
-   Mobile: larger readable floor (no 0.72rem chrome)
+/* DualisCapax CTA + spine nav
+   Equal CTAs · one top nav pattern · mobile readable
 */
 
 /* —— CTAs —— */
@@ -21,7 +20,7 @@
   border:1px solid rgba(245,245,245,0.35);
   border-radius:999px;
   font-weight:700;
-  font-size:0.95rem;
+  font-size:1rem;
   line-height:1.2;
   text-align:center;
   box-sizing:border-box;
@@ -49,53 +48,50 @@
   border-color:rgba(126,182,255,0.45);
   color:#9ec5ff;
 }
-.cta:active{
-  opacity:0.75;
-}
+.cta:active{ opacity:0.75; }
 @media (min-width:560px){
   .cta-row.cta-2{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cta-row.cta-3{grid-template-columns:repeat(3,minmax(0,1fr))}
   .cta-row:not(.cta-2):not(.cta-3){
     grid-template-columns:repeat(auto-fit,minmax(0,1fr));
   }
-  .cta{
-    font-size:0.88rem;
-    padding:0.75rem 0.5rem;
-  }
 }
 
-/* —— Uniform spine top nav (every non-lander page) —— */
+/* —— Spine top nav —— */
 .top{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:0.75rem;
-  flex-wrap:wrap;
-  padding:0.5rem 0 1.35rem;
+  flex-direction:column;
+  align-items:stretch;
+  gap:0.65rem;
+  padding:0.65rem 0 1.25rem;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  margin-bottom:0.25rem;
 }
 .top a.mark,
 .top > a:first-child{
-  font-size:1rem;
-  font-weight:700;
-  letter-spacing:-0.02em;
+  font-size:1.1rem;
+  font-weight:800;
+  letter-spacing:-0.03em;
   color:#f5f5f5;
-  padding:0.35rem 0.15rem;
+  padding:0.25rem 0;
   text-decoration:none;
+  align-self:flex-start;
 }
 .top-links{
   display:flex;
-  gap:0.15rem;
   flex-wrap:wrap;
+  gap:0.35rem;
   align-items:center;
 }
 .top-links a{
-  font-size:0.95rem;
+  font-size:0.98rem;
   font-weight:600;
-  color:rgba(245,245,245,0.72);
-  padding:0.4rem 0.55rem;
-  border-radius:6px;
+  color:rgba(245,245,245,0.7);
+  padding:0.55rem 0.7rem;
+  border-radius:8px;
   text-decoration:none;
-  transition:color .15s ease, background .15s ease;
+  border:1px solid transparent;
+  transition:color .15s ease, background .15s ease, border-color .15s ease;
 }
 .top-links a:hover,
 .top-links a:focus-visible{
@@ -104,21 +100,26 @@
 }
 .top-links a.on{
   color:#f5f5f5;
+  border-color:rgba(245,245,245,0.2);
+  background:rgba(255,255,255,0.04);
 }
 
-/* Mobile floor: never drop below readable */
+@media (min-width:640px){
+  .top{
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+  }
+  .top-links{
+    gap:0.25rem;
+    justify-content:flex-end;
+  }
+}
+
+/* Mobile body floor */
 @media (max-width:560px){
-  .top a.mark,
-  .top > a:first-child{
-    font-size:1.05rem;
-  }
-  .top-links a{
-    font-size:0.95rem;
-    padding:0.45rem 0.5rem;
-  }
-  body{
-    font-size:1.05rem;
-  }
+  body{ font-size:1.05rem; }
   p, li{
     font-size:1.08rem;
     line-height:1.55;
