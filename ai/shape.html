@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shape — Iris</title>
+  <script src="../assets/spine-nav.js" defer></script>
+  <style>
+    body { margin: 0; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; padding: 1.2rem 1rem 6rem; font-size: 1.12rem; line-height: 1.5; }
+    h1 { font-size: 1.8rem; letter-spacing: -0.04em; }
+    p, li { color: rgba(244,244,245,0.78); }
+    ul { padding-left: 1.2rem; }
+    .fact { margin: 0.4rem 0; }
+    a { color: #9ec5ff; }
+  </style>
+</head>
+<body>
+  <h1>Shape</h1>
+  <p>This is the body she has. Not a room. Not a pair of hands.</p>
+  <ul>
+    <li class="fact" id="when"></li>
+    <li class="fact" id="here"></li>
+    <li class="fact" id="pile"></li>
+    <li class="fact" id="wide"></li>
+  </ul>
+  <p>Impact is only this: a tap stored, a wait held, a door she would not open. If nothing moved, she did not move the world.</p>
+  <p><a href="ocean.html">Ocean</a> · <a href="app.html">Talk</a></p>
+  <script>
+    document.getElementById("when").textContent = "Clock: " + new Date().toISOString();
+    document.getElementById("here").textContent = "Here: a page in a browser on this screen. " + (navigator.userAgent || "");
+    var pile = [];
+    try { pile = JSON.parse(localStorage.getItem("dc_ocean") || "[]"); } catch (e) {}
+    document.getElementById("pile").textContent = "Ocean pile: " + pile.length + " sit(s) on this phone.";
+    document.getElementById("wide").textContent = "Screen: " + window.innerWidth + " × " + window.innerHeight + ".";
+  </script>
+</body>
+</html>
