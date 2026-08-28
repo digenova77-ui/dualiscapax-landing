@@ -56,16 +56,8 @@
   .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   .nav-panel{position:absolute;top:calc(100% + 0.35rem);right:0;width:min(18rem,calc(100vw - 2rem));background:#0a0a0a;border:1px solid rgba(245,245,245,0.16);border-radius:12px;padding:0.5rem;box-shadow:0 12px 40px rgba(0,0,0,0.55);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .18s ease,transform .18s ease,visibility 0s linear .18s;max-height:min(70dvh,28rem);overflow-y:auto}
   .nav-panel.is-open{opacity:1;visibility:visible;transform:translateY(0);transition:opacity .18s ease,transform .18s ease,visibility 0s}
-  .nav-panel a{display:block;padding:0.65rem 0.75rem;font-size:0.92rem;font-weight:700;border-radius:8px}
+  .nav-panel a{display:block;padding:0.75rem 0.85rem;font-size:1rem;font-weight:700;border-radius:8px}
   .nav-panel a:hover,.nav-panel a:focus-visible{background:rgba(255,255,255,0.06)}
-  .nav-group{margin-top:0.25rem}
-  .nav-group > button{width:100%;text-align:left;padding:0.65rem 0.75rem;font-size:0.92rem;font-weight:700;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
-  .nav-group > button:hover{background:rgba(255,255,255,0.06)}
-  .nav-group > button .chev{opacity:0.5;font-size:0.75rem;transition:transform .15s ease}
-  .nav-group.is-open > button .chev{transform:rotate(90deg)}
-  .nav-sub{display:none;padding:0 0 0.35rem 0.65rem;border-left:1px solid rgba(245,245,245,0.12);margin:0 0 0.25rem 0.75rem}
-  .nav-group.is-open .nav-sub{display:block}
-  .nav-sub a{font-size:0.82rem;font-weight:600;color:rgba(245,245,245,0.78);padding:0.45rem 0.65rem}
   main{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:stretch;text-align:center}
   .stack{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding-block:clamp(0.6rem,2.5vh,1.4rem);gap:clamp(0.35rem,1.5vh,0.9rem)}
   .logo-stage{width:min(96vw,44rem);height:auto;aspect-ratio:630/160;margin:0;flex-shrink:0}
@@ -74,14 +66,14 @@
   #geo-earth{width:100%;height:100%;display:block}
   h1{font-size:clamp(2rem,9vw,3.5rem);font-weight:900;line-height:.9;letter-spacing:-.05em;text-transform:uppercase;margin:0}
   .lines{margin:0}
-  .line{display:block;font-size:clamp(0.9rem,3.8vw,1.25rem);font-weight:900;color:var(--fg);margin:0 0 0.12rem;text-transform:uppercase;letter-spacing:0.08em;line-height:1.15}
+  .line{display:block;font-size:clamp(1rem,4vw,1.3rem);font-weight:900;color:var(--fg);margin:0 0 0.15rem;text-transform:uppercase;letter-spacing:0.08em;line-height:1.15}
   a.line:active{opacity:0.75}
   .hud{
     width:min(94vw,28rem);flex-shrink:0;
     border:1px solid rgba(126,182,255,0.28);
     border-radius:12px;
     background:linear-gradient(180deg,rgba(126,182,255,0.07),rgba(0,0,0,0.25));
-    padding:0.45rem 0.55rem 0.5rem;
+    padding:0.55rem 0.65rem 0.55rem;
     box-shadow:inset 0 0 0 1px rgba(0,0,0,0.35);
     -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;cursor:default;
   }
@@ -89,14 +81,14 @@
   .hud-row{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:0.35rem;align-items:center}
   .hud-cell{text-align:center;padding:0.15rem 0.2rem;min-width:0}
   .hud-cell + .hud-cell{border-left:1px solid rgba(126,182,255,0.18)}
-  .hud-k{display:block;font-size:0.55rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(126,182,255,0.7);margin-bottom:0.12rem}
-  .hud-v{display:block;font-size:clamp(0.72rem,2.8vw,0.88rem);font-weight:800;font-variant-numeric:tabular-nums;color:#e8f1ff;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-k{display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(126,182,255,0.75);margin-bottom:0.15rem}
+  .hud-v{display:block;font-size:clamp(0.88rem,3.4vw,1.05rem);font-weight:800;font-variant-numeric:tabular-nums;color:#e8f1ff;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .hud-rail{margin-top:0.4rem;height:3px;border-radius:99px;background:rgba(126,182,255,0.12);overflow:hidden}
   .hud-fill{height:100%;width:8%;border-radius:99px;background:linear-gradient(90deg,#4a8fd8,#9ec5ff);box-shadow:0 0 8px rgba(126,182,255,0.55)}
-  .hud-foot{margin-top:0.35rem;font-size:0.62rem;letter-spacing:0.04em;color:rgba(245,245,245,0.5);text-align:center;line-height:1.25}
-  .jump{flex-shrink:0;margin:0;padding:0.15rem 0.5rem;font-size:clamp(0.85rem,3.2vw,1rem);font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#e8f1ff;text-decoration:none;border:0;background:none}
+  .hud-foot{margin-top:0.4rem;font-size:0.78rem;letter-spacing:0.03em;color:rgba(245,245,245,0.55);text-align:center;line-height:1.3}
+  .jump{flex-shrink:0;margin:0;padding:0.2rem 0.5rem;font-size:clamp(0.95rem,3.5vw,1.1rem);font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#e8f1ff;text-decoration:none;border:0;background:none}
   .jump:active{opacity:0.75}
-  .jump span{display:block;margin-top:0.25rem;font-size:0.68rem;font-weight:600;letter-spacing:0.04em;text-transform:none;color:rgba(245,245,245,0.5)}
+  .jump span{display:block;margin-top:0.25rem;font-size:0.8rem;font-weight:600;letter-spacing:0.04em;text-transform:none;color:rgba(245,245,245,0.55)}
 }
 @layer motion {
   .intro{transition:opacity 2.4s ease}
@@ -140,28 +132,13 @@
         <span></span><span></span><span></span>
       </button>
       <nav class="nav-panel" id="nav-panel" aria-label="Primary" hidden>
-        <a href="for-people.html">Start here</a>
-        <a href="journey.html">The walk</a>
-        <div class="nav-group" data-group="books">
-          <button type="button" aria-expanded="false">Books <span class="chev" aria-hidden="true">›</span></button>
-          <div class="nav-sub">
-            <a href="corporate.html">The number</a>
-            <a href="residual-law.html">Residual law</a>
-            <a href="onboard.html">Measure one leak</a>
-          </div>
-        </div>
-        <div class="nav-group" data-group="build">
-          <button type="button" aria-expanded="false">Build <span class="chev" aria-hidden="true">›</span></button>
-          <div class="nav-sub">
-            <a href="ai/">Adaptive AI</a>
-            <a href="research/">Research</a>
-            <a href="research/medical.html">Medical</a>
-            <a href="research/industrial.html">Industrial</a>
-            <a href="research/math-science.html">Math & Science</a>
-          </div>
-        </div>
-        <a href="payments.html">Payments</a>
+        <a href="for-people.html">For you</a>
+        <a href="research/">Look</a>
+        <a href="onboard.html">Measure</a>
+        <a href="payments.html">Bind</a>
         <a href="founding.html">Founding</a>
+        <a href="corporate.html">Residual law finance</a>
+        <a href="ai/adaptive.html">Adaptive AI</a>
       </nav>
     </div>
     <main>
@@ -208,15 +185,6 @@
   burger.addEventListener('click',function(e){e.stopPropagation();setOpen(burger.getAttribute('aria-expanded')!=='true')});
   document.addEventListener('click',function(e){if(!panel.classList.contains('is-open'))return;if(panel.contains(e.target)||burger.contains(e.target))return;setOpen(false)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
-  panel.querySelectorAll('.nav-group > button').forEach(function(btn){
-    btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      var group=btn.parentElement;
-      var open=!group.classList.contains('is-open');
-      panel.querySelectorAll('.nav-group').forEach(function(g){g.classList.remove('is-open');var b=g.querySelector('button');if(b)b.setAttribute('aria-expanded','false')});
-      if(open){group.classList.add('is-open');btn.setAttribute('aria-expanded','true')}
-    });
-  });
 })();
 </script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
