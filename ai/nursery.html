@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Iris · walk</title>
+  <style>
+    :root { --bg:#050508; --fg:#f4f4f5; --muted:rgba(244,244,245,.58); --line:rgba(255,255,255,.12); --wood:#c4a574; --iris:#8eb4c8; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html, body { background:var(--bg); color:var(--fg); font-family:Inter,system-ui,sans-serif; height:100%; }
+    body { display:flex; flex-direction:column; padding:.7rem .8rem .9rem; }
+    .tabs { display:flex; gap:.35rem; flex-wrap:wrap; margin-bottom:.65rem; }
+    .tabs button { font:inherit; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:.4rem .7rem; border-radius:999px; border:1px solid var(--line); background:transparent; color:var(--fg); }
+    .tabs button.on { background:#f4f4f5; color:#050508; border-color:transparent; }
+    .lead { color:var(--muted); font-size:.92rem; line-height:1.45; margin-bottom:.55rem; }
+    .stat { font-size:.75rem; color:var(--muted); font-variant-numeric:tabular-nums; margin-top:.5rem; }
+    .floor { display:none; flex:1; min-height:0; flex-direction:column; }
+    .floor.on { display:flex; }
+    .g { display:grid; gap:.35rem; }
+    .cell { aspect-ratio:1; border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,.03); font-weight:700; color:var(--muted); font-size:.8rem; }
+    .cell.you { background:rgba(196,165,116,.28); color:var(--wood); border-color:rgba(196,165,116,.5); }
+    .cell.her { background:rgba(142,180,200,.22); color:var(--iris); border-color:rgba(142,180,200,.5); }
+    .wood { background:var(--wood); border-radius:8px; padding:3%; }
+    .wood .g { width:100%; }
+    .pt { position:relative; background:transparent; border:0; padding:0; border-radius:0; }
+    .pt::before { content:""; position:absolute; left:50%; top:0; bottom:0; width:1px; background:#3a2a18; transform:translateX(-50%); }
+    .pt::after { content:""; position:absolute; top:50%; left:0; right:0; height:1px; background:#3a2a18; transform:translateY(-50%); }
+    .dot { position:absolute; inset:18%; border-radius:50%; z-index:1; pointer-events:none; }
+    .dot.you { background:#111; }
+    .dot.her { background:#f4f1ea; }
+    canvas { width:100%; height:16rem; border-radius:10px; border:1px solid var(--line); touch-action:none; display:block; }
+    .lamps { display:grid; grid-template-columns:repeat(6,1fr); gap:.4rem; }
+    .lamp { aspect-ratio:1; border-radius:50%; border:1px solid var(--line); background:#1a1714; }
+    .lamp.you { background:var(--wood); box-shadow:0 0 12px rgba(196,165,116,.45); border-color:var(--wood); }
+    .lamp.her { background:var(--iris); box-shadow:0 0 12px rgba(142,180,200,.45); border-color:var(--iris); }
+  </style>
+</head>
+<body>
+  <div class="tabs">
+    <button type="button" class="on" data-f="blocks">Blocks</button>
+    <button type="button" data-f="board">Board</button>
+    <button type="button" data-f="water">Water</button>
+    <button type="button" data-f="light">Light</button>
+  </div>
+  <p class="lead" id="lead">Squares. You put one. She puts one.</p>
+  <div class="floor on" id="f-blocks">
+    <div class="g" id="blocks" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div class="stat" id="s-blocks"></div>
+  </div>
+  <div class="floor" id="f-board">
+    <div class="wood"><div class="g" id="board"></div></div>
+    <div class="stat" id="s-board"></div>
+  </div>
+  <div class="floor" id="f-water">
+    <canvas id="pond"></canvas>
+    <div class="stat" id="s-water"></div>
+  </div>
+  <div class="floor" id="f-light">
+    <div class="lamps" id="lamps"></div>
+    <div class="stat" id="s-light"></div>
+  </div>
+<script>
+(function () {
+  var LEAD = {
+    blocks: "Squares. You put one. She puts one.",
+    board: "Points on wood. Empty ones only.",
+    water: "Touch the pond. She touches somewhere else.",
+    light: "Dark lamps. You wake one. She wakes one."
+  };
+  document.querySelectorAll(".tabs button").forEach(function (b) {
+    b.onclick = function () {
+      document.querySelectorAll(".tabs button").forEach(function (x) { x.classList.remove("on"); });
+      b.classList.add("on");
+      var f = b.getAttribute("data-f");
+      document.querySelectorAll(".floor").forEach(function (el) { el.classList.remove("on"); });
+      document.getElementById("f-" + f).classList.add("on");
+      document.getElementById("lead").textContent = LEAD[f];
+      if (f === "water") sizePond();
+    };
+  });
+  (function () {
+    var N = 16, yours = [], hers = [], busy = false, g = document.getElementById("blocks");
+    function owner(i) {
+      if (yours.indexOf(i) >= 0) return "you";
+      if (hers.indexOf(i) >= 0) return "her";
+      return "";
+    }
+    function empty() {
+      var e = [];
+      for (var i = 0; i < N; i++) if (!owner(i)) e.push(i);
+      return e;
+    }
+    function draw() {
+      g.innerHTML = "";
+      for (var i = 0; i < N; i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "cell " + owner(i);
+        b.textContent = owner(i) === "you" ? "Y" : owner(i) === "her" ? "I" : String(i);
+        (function (i) { b.onclick = function () { tap(i); }; })(i);
+        g.appendChild(b);
+      }
+      var m = empty().length;
+      document.getElementById("s-blocks").textContent =
+        "you " + yours.length + " her " + hers.length + " empty " + m;
+    }
+    function tap(i) {
+      if (busy || owner(i)) return;
+      yours.push(i);
+      draw();
+      var e = empty();
+      if (!e.length) return;
+      busy = true;
+      setTimeout(function () {
+        hers.push(e[Math.floor(Math.random() * e.length)]);
+        busy = false;
+        draw();
+      }, 280);
+    }
+    draw();
+  })();
+  (function () {
+    var n = 9, you = {}, her = {}, busy = false, g = document.getElementById("board");
+    function key(r, c) { return r + "," + c; }
+    function owner(r, c) {
+      var k = key(r, c);
+      if (you[k]) return "you";
+      if (her[k]) return "her";
+      return "";
+    }
+    function empties() {
+      var e = [];
+      for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (!owner(r, c)) e.push([r, c]);
+      return e;
+    }
+    function draw() {
+      g.style.gridTemplateColumns = "repeat(" + n + ",1fr)";
+      g.innerHTML = "";
+      for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "pt";
+        var o = owner(r, c);
+        if (o) {
+          var d = document.createElement("span");
+          d.className = "dot " + o;
+          b.appendChild(d);
+        }
+        (function (r, c) { b.onclick = function () { tap(r, c); }; })(r, c);
+        g.appendChild(b);
+      }
+      var m = empties().length;
+      document.getElementById("s-board").textContent =
+        "you " + Object.keys(you).length + " her " + Object.keys(her).length + " empty " + m;
+    }
+    function tap(r, c) {
+      if (busy || owner(r, c)) return;
+      you[key(r, c)] = 1;
+      draw();
+      var e = empties();
+      if (!e.length) return;
+      var p = e[Math.floor(Math.random() * e.length)];
+      busy = true;
+      setTimeout(function () {
+        her[key(p[0], p[1])] = 1;
+        busy = false;
+        draw();
+      }, 320);
+    }
+    draw();
+  })();
+  var pond = document.getElementById("pond");
+  var pctx = pond.getContext("2d");
+  var ripples = [];
+  var wYou = 0, wHer = 0, wBusy = false;
+  function sizePond() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = pond.clientWidth, h = pond.clientHeight;
+    pond.width = Math.floor(w * dpr);
+    pond.height = Math.floor(h * dpr);
+    pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function drop(who, x, y) {
+    ripples.push({ who: who, x: x, y: y, t: performance.now() });
+    if (who === "you") wYou++; else wHer++;
+    document.getElementById("s-water").textContent = "you " + wYou + " her " + wHer;
+  }
+  pond.addEventListener("pointerdown", function (e) {
+    if (wBusy) return;
+    var rect = pond.getBoundingClientRect();
+    drop("you", e.clientX - rect.left, e.clientY - rect.top);
+    wBusy = true;
+    setTimeout(function () {
+      drop("her", 16 + Math.random() * (rect.width - 32), 16 + Math.random() * (rect.height - 32));
+      wBusy = false;
+    }, 340);
+  });
+  (function loop(now) {
+    sizePond();
+    var w = pond.clientWidth, h = pond.clientHeight;
+    pctx.fillStyle = "#12161c";
+    pctx.fillRect(0, 0, w, h);
+    ripples = ripples.filter(function (r) { return now - r.t < 1800; });
+    ripples.forEach(function (r) {
+      var age = (now - r.t) / 1800;
+      pctx.beginPath();
+      pctx.arc(r.x, r.y, 8 + age * Math.min(w, h) * 0.55, 0, Math.PI * 2);
+      pctx.strokeStyle = r.who === "you"
+        ? "rgba(196,165,116," + ((1 - age) * 0.7) + ")"
+        : "rgba(142,180,200," + ((1 - age) * 0.7) + ")";
+      pctx.lineWidth = 1.5;
+      pctx.stroke();
+    });
+    requestAnimationFrame(loop);
+  })(performance.now());
+  document.getElementById("s-water").textContent = "you 0 her 0";
+  (function () {
+    var N = 36, on = [], who = [], busy = false, box = document.getElementById("lamps");
+    for (var i = 0; i < N; i++) { on[i] = false; who[i] = ""; }
+    function draw() {
+      box.innerHTML = "";
+      for (var i = 0; i < N; i++) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "lamp " + (on[i] ? who[i] : "");
+        (function (i) { b.onclick = function () { tap(i); }; })(i);
+        box.appendChild(b);
+      }
+      var dark = on.filter(function (v) { return !v; }).length;
+      var y = who.filter(function (w) { return w === "you"; }).length;
+      var h = who.filter(function (w) { return w === "her"; }).length;
+      document.getElementById("s-light").textContent = "you " + y + " her " + h + " dark " + dark;
+    }
+    function tap(i) {
+      if (busy || on[i]) return;
+      on[i] = true; who[i] = "you";
+      draw();
+      var dark = [];
+      for (var j = 0; j < N; j++) if (!on[j]) dark.push(j);
+      if (!dark.length) return;
+      var p = dark[Math.floor(Math.random() * dark.length)];
+      busy = true;
+      setTimeout(function () {
+        on[p] = true; who[p] = "her";
+        busy = false;
+        draw();
+      }, 300);
+    }
+    draw();
+  })();
+})();
+</script>
+</body>
+</html>
