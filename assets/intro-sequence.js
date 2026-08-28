@@ -1,15 +1,13 @@
 /**
- * DualisCapax intro — Unity arc
- * Void → quarks assemble the question → hold assembled glyphs → seed/bang → lander
- * No Matrix rain. No HTML sentence fade/drop-in after assembly.
- * Lander (.site) structure unchanged.
+ * DualisCapax intro — direct Big Bang
+ * Void → seed bloom → NASA Big Bang → lander
+ * No residual sentences. No glyph assembly.
  */
 (function () {
   var intro = document.getElementById('intro');
   var video = document.getElementById('nasa-bb');
   var smoke = document.getElementById('smoke');
   var skip = document.getElementById('skip-intro');
-  var question = document.getElementById('question');
   var seed = document.getElementById('seed');
   var canvas = document.getElementById('matrix');
   if (!intro || !video) return;
@@ -28,30 +26,13 @@
   var audioCtx = null;
   var osc = null;
   var gain = null;
-  var collapseStart = 0;
 
   var T = {
-    assemble1: 1.35,
-    assemble2: 1.15,
-    hold: 1.55,
-    collapse: 0.7,
-    bangDelay: 0.08,
+    bangDelay: 0.12,
     crossfadeAt: 0.32,
     introOut: 1.35,
-    hardFail: 16000
+    hardFail: 12000
   };
-
-  function lineTexts() {
-    var out = [];
-    if (question) {
-      var ps = question.querySelectorAll('p');
-      for (var i = 0; i < ps.length; i++) out.push(ps[i].textContent.trim());
-    }
-    if (!out.length) {
-      out = ['Every decision leaves a residual.', 'What will yours cost?'];
-    }
-    return out;
-  }
 
   function ensureCtx() {
     try {
@@ -182,211 +163,6 @@
     if (p && p.catch) p.catch(function () {});
   }
 
-  function runAssembly() {
-    phase = 'assemble';
-    var lines = lineTexts();
-
-    if (question) {
-      question.classList.remove('is-in');
-      question.classList.add('is-ghost');
-    }
-
-    if (!canvas || !canvas.getContext) {
-      setTimeout(startVideo, 400);
-      return;
-    }
-
-    var ctx = canvas.getContext('2d');
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var W = 0, H = 0;
-    var particles = [];
-    var started = performance.now();
-    var stage = 0;
-    var assembledAt = 0;
-
-    function resize() {
-      W = window.innerWidth;
-      H = window.innerHeight;
-      canvas.width = Math.floor(W * dpr);
-      canvas.height = Math.floor(H * dpr);
-      canvas.style.width = W + 'px';
-      canvas.style.height = H + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    function fontPx() {
-      return Math.max(32, Math.min(56, Math.floor(Math.min(W, 720) / 11)));
-    }
-
-    function measureLine(text, fontSize) {
-      ctx.font = '800 ' + fontSize + 'px Inter, system-ui, sans-serif';
-      return ctx.measureText(text).width;
-    }
-
-    function spawnForLine(text, lineIndex, duration) {
-      var fontSize = fontPx();
-      var maxW = Math.min(W * 0.92, 36 * 16);
-      while (measureLine(text, fontSize) > maxW && fontSize > 22) fontSize -= 1;
-      ctx.font = '800 ' + fontSize + 'px Inter, system-ui, sans-serif';
-      var tw = ctx.measureText(text).width;
-      var x0 = (W - tw) / 2;
-      var gap = fontSize * 1.15;
-      var y0 = H * 0.48 + (lineIndex === 0 ? -gap : gap);
-      var chars = text.split('');
-      var cx = x0;
-      for (var i = 0; i < chars.length; i++) {
-        var ch = chars[i];
-        var cw = ctx.measureText(ch).width;
-        if (ch !== ' ') {
-          var angle = Math.random() * Math.PI * 2;
-          var dist = Math.min(W, H) * (0.28 + Math.random() * 0.42);
-          particles.push({
-            kind: 'glyph',
-            ch: ch,
-            tx: cx,
-            ty: y0,
-            x: W * 0.5 + Math.cos(angle) * dist,
-            y: H * 0.5 + Math.sin(angle) * dist,
-            size: fontSize,
-            alpha: 0,
-            t0: performance.now() + Math.random() * 70,
-            dur: duration * 1000 * (0.82 + Math.random() * 0.18),
-            locked: false
-          });
-          var qn = 2;
-          for (var k = 0; k < qn; k++) {
-            var qa = Math.random() * Math.PI * 2;
-            var qd = Math.min(W, H) * (0.22 + Math.random() * 0.48);
-            particles.push({
-              kind: 'quark',
-              ch: '',
-              tx: cx + cw * 0.35,
-              ty: y0 - fontSize * 0.28,
-              x: W * 0.5 + Math.cos(qa) * qd,
-              y: H * 0.5 + Math.sin(qa) * qd,
-              size: 2.2 + Math.random() * 1.6,
-              alpha: 0,
-              t0: performance.now() + Math.random() * 90,
-              dur: duration * 1000 * (0.7 + Math.random() * 0.25),
-              locked: false
-            });
-          }
-        }
-        cx += cw;
-      }
-    }
-
-    function beginCollapse() {
-      if (phase !== 'assembled') return;
-      phase = 'collapse';
-      collapseStart = performance.now();
-      for (var i = 0; i < particles.length; i++) {
-        particles[i].locked = false;
-      }
-    }
-
-    function frame(now) {
-      if (done || phase === 'video' || phase === 'crossfade') return;
-
-      if (phase === 'assembled') {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, W, H);
-      } else {
-        ctx.fillStyle = 'rgba(0,0,0,0.34)';
-        ctx.fillRect(0, 0, W, H);
-      }
-
-      var allLocked = particles.length > 0;
-      var cx = W * 0.5;
-      var cy = H * 0.5;
-      var collapseU = 0;
-      if (phase === 'collapse') {
-        collapseU = Math.min(1, (now - collapseStart) / (T.collapse * 1000));
-      }
-
-      for (var i = 0; i < particles.length; i++) {
-        var p = particles[i];
-        var age = now - p.t0;
-        if (age < 0 && phase !== 'collapse') continue;
-
-        if (phase === 'collapse') {
-          var e = 1 - Math.pow(1 - collapseU, 2);
-          p.x = p.x + (cx - p.x) * (0.16 + e * 0.22);
-          p.y = p.y + (cy - p.y) * (0.16 + e * 0.22);
-          p.alpha = Math.max(0, 1 - e);
-          p.size = p.size * (1 - e * 0.55);
-        } else {
-          var u = Math.min(1, age / p.dur);
-          var ease = 1 - Math.pow(1 - u, 3);
-          p.x = p.x + (p.tx - p.x) * (0.12 + ease * 0.16);
-          p.y = p.y + (p.ty - p.y) * (0.12 + ease * 0.16);
-          p.alpha = Math.min(1, ease * 1.2);
-          if (u >= 0.97) p.locked = true;
-          if (!p.locked) allLocked = false;
-        }
-
-        if (p.alpha <= 0.02) continue;
-
-        if (p.kind === 'quark') {
-          if (phase === 'assembled') continue;
-          ctx.globalAlpha = p.alpha * 0.7;
-          ctx.fillStyle = 'rgba(196,216,255,0.9)';
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          continue;
-        }
-
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = '#f5f7fb';
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
-        ctx.font = '800 ' + Math.round(p.size) + 'px Inter, system-ui, sans-serif';
-        ctx.fillText(p.ch, p.x, p.y);
-      }
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
-
-      if (phase === 'collapse') {
-        if (collapseU >= 1) {
-          startVideo();
-          return;
-        }
-        requestAnimationFrame(frame);
-        return;
-      }
-
-      if (stage === 0 && particles.length === 0) {
-        spawnForLine(lines[0] || 'Every decision leaves a residual.', 0, T.assemble1);
-      }
-      if (stage === 0 && allLocked && particles.length > 0 && now - started > T.assemble1 * 1000) {
-        stage = 1;
-        if (lines[1]) spawnForLine(lines[1], 1, T.assemble2);
-        else stage = 2;
-      }
-      if (stage === 1 && allLocked && now - started > (T.assemble1 + T.assemble2) * 1000) {
-        stage = 2;
-      }
-      if (stage === 2 && phase === 'assemble') {
-        phase = 'assembled';
-        assembledAt = now;
-      }
-      if (phase === 'assembled' && now - assembledAt > T.hold * 1000) {
-        beginCollapse();
-      }
-
-      requestAnimationFrame(frame);
-    }
-
-    canvas.classList.add('is-on');
-    resize();
-    window.addEventListener('resize', resize);
-    startResidual();
-    setTimeout(function () {
-      requestAnimationFrame(frame);
-    }, 120);
-  }
-
   function unlock() {
     ensureCtx();
   }
@@ -421,5 +197,7 @@
     if (!done) beginCrossfade();
   }, T.hardFail);
 
-  runAssembly();
+  /* Direct path: residual tone → seed + Big Bang */
+  startResidual();
+  setTimeout(startVideo, T.bangDelay * 1000);
 })();
