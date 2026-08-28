@@ -29,6 +29,10 @@ h1{font-size:clamp(1.85rem,7vw,2.5rem);font-weight:900;letter-spacing:-.04em;lin
 .pulse i{width:7px;height:7px;border-radius:50%;background:rgba(158,197,255,.25)}
 .pulse i.on{background:#e8f1ff;box-shadow:0 0 10px rgba(158,197,255,.55)}
 .hold{font-size:1.05rem;color:rgba(245,245,245,.62);margin:.35rem 0 1rem}
+.rail{border:1px solid rgba(245,245,245,.14);border-radius:12px;padding:.95rem 1rem;margin:1.1rem 0 0}
+.rail .t{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.4rem}
+.rail p{font-size:1.02rem;color:rgba(245,245,245,.78);margin:0 0 .55rem}
+.rail p:last-child{margin-bottom:0}
 nav.doors{display:flex;flex-wrap:wrap;gap:.85rem 1.1rem;margin-top:1.2rem}
 nav.doors a{font-size:0.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ec5ff}
 foot{display:block;margin-top:2.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:0.88rem;letter-spacing:.04em;color:rgba(245,245,245,.38)}
@@ -73,6 +77,12 @@ foot a{color:rgba(158,197,255,.7);letter-spacing:.06em;text-transform:uppercase;
   </div>
   <div class="pulse" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
   <p class="hold">Purchase is not open yet. The packs are named so you can decide before a button exists.</p>
+  <div class="rail">
+    <div class="t">How dollars move</div>
+    <p>CAD at the gateway. Dualis does not keep a coin. If someone pays in a stablecoin, a registered rail converts it and Dualis is settled in Canadian dollars.</p>
+    <p>That still needs a corporate CAD account. Prepaid Fuel is unearned CAD on the book — a liability to the buyer — not a vault of tokens and not a stash of idle cash for trading.</p>
+    <p>First open rail is CAD in (Interac / card / transfer) to 1001718450. Crypto is optional and only as a convert-to-CAD door. Seats stay closed until that account and the contract exist.</p>
+  </div>
   <nav class="doors">
     <a href="consideration.html">What this is</a>
     <a href="fuel-law.html">The rule</a>
