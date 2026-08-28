@@ -25,69 +25,25 @@
         max(1rem, env(safe-area-inset-left));
     }
     header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; }
-    header a {
-      color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; font-size: 0.92rem;
-    }
+    header a { color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; font-size: 0.92rem; }
     header strong { font-size: 1rem; letter-spacing: -0.03em; }
-    .log {
-      min-height: 0; overflow-y: auto;
-      display: flex; flex-direction: column; gap: 0.85rem;
-      padding: 0.25rem 0 1rem;
-    }
-    .bubble {
-      max-width: 92%; padding: 0.95rem 1.05rem; border-radius: 18px;
-      font-size: 1.08rem; line-height: 1.5;
-    }
-    .bubble.them {
-      align-self: flex-start;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .bubble.you {
-      align-self: flex-end;
-      background: rgba(255,255,255,0.14);
-    }
+    .log { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 0.85rem; padding: 0.25rem 0 1rem; }
+    .bubble { max-width: 92%; padding: 0.95rem 1.05rem; border-radius: 18px; font-size: 1.08rem; line-height: 1.5; }
+    .bubble.them { align-self: flex-start; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
+    .bubble.you { align-self: flex-end; background: rgba(255,255,255,0.14); }
     .hint { margin-top: 0.55rem; font-size: 0.92rem; color: rgba(244,244,245,0.55); }
     .dock { padding-top: 0.7rem; border-top: 1px solid rgba(255,255,255,0.1); display: grid; gap: 0.55rem; }
     .chips { display: flex; gap: 0.45rem; overflow-x: auto; }
-    .chips button {
-      flex-shrink: 0; border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.04); color: #f4f4f5;
-      font: inherit; font-size: 0.88rem; font-weight: 600;
-      padding: 0.5rem 0.8rem; border-radius: 999px;
-    }
+    .chips button { flex-shrink: 0; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); color: #f4f4f5; font: inherit; font-size: 0.88rem; font-weight: 600; padding: 0.5rem 0.8rem; border-radius: 999px; }
     form { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; }
-    textarea {
-      width: 100%; min-height: 52px; resize: none;
-      padding: 0.85rem 1rem; border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: #0c0c10; color: #fff; font: inherit; font-size: 1.08rem;
-    }
-    form button {
-      width: 52px; height: 52px; border: 0; border-radius: 16px;
-      background: #f4f4f5; color: #050508; font-weight: 800; font-size: 1.15rem;
-    }
-    .home {
-      font-size: 0.92rem; line-height: 1.45;
-      color: rgba(244,244,245,0.62);
-    }
-    .home summary {
-      cursor: pointer; font-weight: 650; color: rgba(244,244,245,0.82);
-      list-style: none;
-    }
+    textarea { width: 100%; min-height: 52px; resize: none; padding: 0.85rem 1rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.14); background: #0c0c10; color: #fff; font: inherit; font-size: 1.08rem; }
+    form button { width: 52px; height: 52px; border: 0; border-radius: 16px; background: #f4f4f5; color: #050508; font-weight: 800; font-size: 1.15rem; }
+    .home { font-size: 0.92rem; line-height: 1.45; color: rgba(244,244,245,0.62); }
+    .home summary { cursor: pointer; font-weight: 650; color: rgba(244,244,245,0.82); list-style: none; }
     .home summary::-webkit-details-marker { display: none; }
     .home ol { margin: 0.45rem 0 0.7rem 1.15rem; }
     .home li { margin: 0.2rem 0; }
-    #swdbg {
-      display: none;
-      font-size: 0.72rem;
-      line-height: 1.4;
-      color: rgba(244,244,245,0.55);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      padding: 0.45rem 0.6rem;
-      font-variant-numeric: tabular-nums;
-    }
+    #swdbg { display: none; font-size: 0.72rem; line-height: 1.4; color: rgba(244,244,245,0.55); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 0.45rem 0.6rem; font-variant-numeric: tabular-nums; white-space: pre-wrap; }
     body.debug #swdbg { display: block; }
   </style>
 </head>
@@ -132,9 +88,41 @@
     var debug = /(?:\?|&)debug=1(?:&|$)/.test(location.search);
     if (debug) document.body.classList.add("debug");
     var dbg = document.getElementById("swdbg");
+    function kb(n) { return Math.round((n || 0) / 102.4) / 10 + "kb"; }
     function paint(line) { if (dbg) dbg.textContent = line; }
-    function wake(worker) {
-      if (worker) worker.postMessage("SKIP_WAITING");
+    function wake(worker) { if (worker) worker.postMessage("SKIP_WAITING"); }
+    function cacheLines() {
+      if (!debug || !window.caches) return Promise.resolve("cache —");
+      return caches.keys().then(function (names) {
+        return Promise.all(names.map(function (name) {
+          return caches.open(name).then(function (cache) {
+            return cache.keys().then(function (reqs) {
+              return Promise.all(reqs.map(function (req) {
+                return cache.match(req).then(function (res) {
+                  if (!res) return 0;
+                  return res.clone().blob().then(function (b) { return b.size || 0; }).catch(function () { return 0; });
+                });
+              })).then(function (sizes) {
+                var bytes = 0;
+                for (var i = 0; i < sizes.length; i++) bytes += sizes[i];
+                return name + " " + sizes.length + " files " + kb(bytes);
+              });
+            });
+          });
+        })).then(function (rows) {
+          var quota = Promise.resolve("");
+          if (navigator.storage && navigator.storage.estimate) {
+            quota = navigator.storage.estimate().then(function (est) {
+              return "quota " + kb(est.usage) + " / " + kb(est.quota);
+            }).catch(function () { return ""; });
+          }
+          return quota.then(function (q) {
+            return ["cache " + (names.length || 0) + " stores"].concat(rows).concat(q ? [q] : []).join("\n");
+          });
+        });
+      }).catch(function (err) {
+        return "cache error " + (err && err.message ? err.message : err);
+      });
     }
     function snap(reg) {
       if (!debug) return;
@@ -144,8 +132,8 @@
         "waiting " + (reg && reg.waiting ? reg.waiting.state : "—"),
         "active " + (reg && reg.active ? reg.active.state : "—"),
         "scope " + (reg ? reg.scope : "—")
-      ];
-      paint(bits.join(" \u00b7 "));
+      ].join(" \u00b7 ");
+      cacheLines().then(function (c) { paint(bits + "\n" + c); });
     }
     if (navigator.serviceWorker) {
       navigator.serviceWorker.addEventListener("controllerchange", function () {
@@ -155,6 +143,17 @@
       navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (reg) {
         wake(reg.waiting);
         snap(reg);
+        if (reg.active) {
+          try {
+            var ch = new MessageChannel();
+            ch.port1.onmessage = function (ev) {
+              if (!debug || !ev.data) return;
+              var m = ev.data;
+              if (m.ok) paint((dbg.textContent || "") + "\nsw " + m.cache + " " + m.entries + " entries " + kb(m.bytes));
+            };
+            reg.active.postMessage("METRICS", [ch.port2]);
+          } catch (e) {}
+        }
         reg.addEventListener("updatefound", function () {
           var fresh = reg.installing;
           snap(reg);
