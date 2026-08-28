@@ -16,11 +16,11 @@
     .site { max-width:40rem; margin:0 auto; padding:0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
     main { padding:2rem 0 1.5rem; }
     h1 { font-size:clamp(2rem,8vw,2.8rem); font-weight:800; letter-spacing:-0.04em; line-height:0.95; margin-bottom:1.25rem; }
-    ol { list-style:none; display:grid; gap:0.85rem; margin:0 0 2rem; }
+    ol { list-style:none; display:grid; gap:0.85rem; margin:0 0 2rem; counter-reset:n; }
     ol li { font-size:1.15rem; color:var(--muted); padding-left:1.6rem; position:relative; }
     ol li::before { content:counter(n); counter-increment:n; position:absolute; left:0; color:rgba(245,245,245,0.35); font-weight:700; font-size:0.95rem; top:0.15rem; }
-    ol { counter-reset:n; }
-    footer { padding:2rem 0; border-top:1px solid var(--line); font-size:0.88rem; color:rgba(245,245,245,0.35); text-align:center; }
+    footer { padding:2rem 0; border-top:1px solid var(--line); font-size:0.8rem; color:rgba(245,245,245,0.28); text-align:center; }
+    footer a { color:rgba(245,245,245,0.28); text-decoration:underline; text-underline-offset:3px; }
   </style>
 </head>
 <body>
@@ -43,7 +43,7 @@
         <a class="cta" href="/research/">Read</a>
       </div>
     </main>
-    <footer>DualisCapax</footer>
+    <footer>DualisCapax · <a href="/lab.html">engine notes</a></footer>
   </div>
 </body>
 </html>
