@@ -5,38 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Access — AI — DualisCapax</title>
   <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/cta.css" />
   <style>
+    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,.55); --faint:rgba(245,245,245,.28); --line:rgba(255,255,255,.09); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, sans-serif; background: #050505; color: #f5f5f5; -webkit-font-smoothing: antialiased; }
+    body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.55; min-height: 100dvh; font-size: 1.12rem; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
-    .shell { max-width: 44rem; margin: 0 auto; padding: 0 1.25rem 3.5rem; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0 0; gap: 1rem; }
-    .mark { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.04em; }
-    nav { display: flex; gap: 1.35rem; flex-wrap: wrap; }
-    nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.7); }
-    .back { display: inline-block; margin: 1.5rem 0 0.75rem; font-size: 0.9rem; font-weight: 600; color: rgba(245,245,245,0.55); }
-    h1 { font-size: clamp(2.25rem, 9vw, 3.5rem); font-weight: 900; line-height: 0.9; letter-spacing: -0.05em; text-transform: uppercase; margin: 0 0 1.25rem; }
-    article p { font-size: clamp(1.15rem, 3.8vw, 1.4rem); line-height: 1.4; font-weight: 500; margin: 0 0 1.25rem; }
+    .site { max-width: 42rem; margin: 0 auto; padding: 0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
+    .eyebrow { font-size: 0.86rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.1rem; }
+    h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); font-weight: 800; line-height: 0.92; letter-spacing: -0.045em; text-transform: uppercase; margin-bottom: 1.1rem; }
+    .statement { font-size: 1.2rem; line-height: 1.55; color: var(--muted); max-width: 34rem; }
+    section { padding: 2.2rem 0; border-top: 1px solid var(--line); }
+    .section-label { font-size: 0.86rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 1rem; }
+    p { font-size: 1.18rem; line-height: 1.6; color: var(--muted); margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+    footer { padding: 2.25rem 0 2.75rem; border-top: 1px solid var(--line); font-size: 0.95rem; color: var(--faint); text-align: center; }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <a href="../index.html" class="mark">DualisCapax</a>
-      <nav>
-        <a href="../research/">Research</a>
-        <a href="../corporate.html">Financial</a>
-        <a href="../ai/">AI</a>
-      </nav>
-    </header>
-    <a class="back" href="index.html">← AI</a>
-    <h1>Access</h1>
-    <article>
+  <div class="site">
+    <div class="top">
+      <a href="../index.html?land=1" class="mark">DualisCapax</a>
+      <div class="top-links">
+        <a href="../for-people.html">For you</a>
+        <a href="../research/">Look</a>
+        <a href="../onboard.html">Measure</a>
+        <a href="../payments.html">Bind</a>
+        <a href="../founding.html">Founding</a>
+      </div>
+    </div>
+    <main style="padding: 1.5rem 0 0.5rem;">
+      <div class="eyebrow">Adaptive AI</div>
+      <h1>Access</h1>
+      <p class="statement">Look stays free. Depth is escalate-only. Bind is closed until settlement is real.</p>
+    </main>
+    <section>
+      <div class="section-label">Boundary</div>
       <p>Public research text remains open to read. Access to adaptive systems beyond that open surface is not a self-serve store on these pages and is not presented as a purchase of simulations.</p>
-      <p>When formal access exists, it will be described here in plain language under Ontario and Canadian law. Until then, this page only states the boundary: reading is open; deeper system access is separate and accountable.</p>
-      <p>No preferred tribe and no founder lane are part of the public rule for how access is framed.</p>
-    </article>
+      <p>When formal access exists, it will be described here in plain language under Ontario and Canadian law. Until then: reading is open; deeper system access is separate and accountable.</p>
+    </section>
+    <section>
+      <div class="section-label">Rule</div>
+      <p>No preferred tribe and no founder lane are part of the public rule for how access is framed. Seats closed until pricing and IP protection are locked. Residual order is remembered when access opens.</p>
+      <div class="cta-row cta-2">
+        <a class="cta primary" href="adaptive.html">Systems</a>
+        <a class="cta" href="../research/">Look</a>
+      </div>
+    </section>
+    <footer>DualisCapax · Adaptive AI · Truth prevails</footer>
   </div>
 </body>
 </html>
