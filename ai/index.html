@@ -3,43 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Tech — DualisCapax</title>
+  <title>Adaptive AI — DualisCapax</title>
   <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/cta.css" />
   <style>
+    :root {
+      --bg: #050505;
+      --fg: #f5f5f5;
+      --muted: rgba(245,245,245,0.55);
+      --faint: rgba(245,245,245,0.28);
+      --line: rgba(255,255,255,0.09);
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, sans-serif; background: #050505; color: #f5f5f5; -webkit-font-smoothing: antialiased; min-height: 100dvh; display: flex; flex-direction: column; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      min-height: 100dvh;
+      font-size: 1.05rem;
+      -webkit-font-smoothing: antialiased;
+    }
     a { color: inherit; text-decoration: none; }
-    .shell { max-width: 44rem; margin: 0 auto; padding: 0 1.25rem; flex: 1; width: 100%; display: flex; flex-direction: column; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0 0; gap: 1rem; }
-    .mark { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.04em; }
-    nav { display: flex; gap: 1.5rem; flex-wrap: nowrap; }
-    nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.75); white-space: nowrap; }
-    h1 { font-size: clamp(2.5rem, 10vw, 3.75rem); font-weight: 900; line-height: 0.88; letter-spacing: -0.05em; text-transform: uppercase; margin: 2rem 0 1.25rem; }
-    article p { font-size: clamp(1.2rem, 4vw, 1.5rem); line-height: 1.35; font-weight: 500; margin: 0 0 1.25rem; }
-    .depth { margin-top: auto; padding: 2rem 0 1.75rem; display: flex; flex-wrap: nowrap; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.09); overflow-x: auto; }
-    .depth a { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em; padding: 0.6rem 0.85rem; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; color: rgba(245,245,245,0.85); white-space: nowrap; flex: 0 0 auto; }
+    .site {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left));
+    }
+    .eyebrow {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+    h1 {
+      font-size: clamp(2.1rem, 9vw, 3.2rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
+    .statement {
+      font-size: 1.15rem;
+      line-height: 1.55;
+      color: var(--muted);
+      max-width: 32rem;
+    }
+    section {
+      padding: 2.2rem 0;
+      border-top: 1px solid var(--line);
+    }
+    .section-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .rooms {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .room {
+      display: block;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+    .room .t { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.25rem; }
+    .room .d { font-size: 0.98rem; color: var(--muted); line-height: 1.45; }
+    footer {
+      padding: 2.25rem 0 2.75rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+      color: var(--faint);
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <a href="../index.html" class="mark">DualisCapax</a>
-      <nav aria-label="Primary">
-        <a href="../corporate.html">Financial</a>
-        <a href="../research/">Research + AI</a>
-      </nav>
-    </header>
-    <h1>Tech</h1>
-    <article>
-      <p>Edge Technologies at DualisCapax is the connecting layer across industries — systems, infrastructure, and tools built on cutting-edge math and science in service of a residual-law financial firm.</p>
-      <p>Adaptive intelligence sits with Research + AI, not as a separate storefront here. This page is not a consumer app checkout and does not sell securities, tokens, or investment interest.</p>
-      <p>Ontario and Canadian law apply. Deeper rooms stay in the same plain format as Financial and Research + AI.</p>
-    </article>
-    <div class="depth">
-      <a href="adaptive.html">Systems</a>
-      <a href="access.html">Access</a>
+  <div class="site">
+    <div class="top">
+      <a href="../index.html?land=1" class="mark">DualisCapax</a>
+      <div class="top-links">
+        <a href="../for-people.html">For you</a>
+        <a href="../research/">Look</a>
+        <a href="../onboard.html">Measure</a>
+        <a href="../payments.html">Bind</a>
+        <a href="../founding.html">Founding</a>
+      </div>
     </div>
+
+    <main style="padding: 1.5rem 0 0.5rem;">
+      <div class="eyebrow">Build</div>
+      <h1>Adaptive AI</h1>
+      <p class="statement">
+        Intelligence layer for residual work — systems and access, not a consumer app storefront.
+        Same plain format as the rest of the site.
+      </p>
+    </main>
+
+    <section>
+      <div class="section-label">Rooms</div>
+      <div class="rooms">
+        <a class="room" href="adaptive.html">
+          <div class="t">Systems</div>
+          <div class="d">Adaptive control and residual measurement at the edge.</div>
+        </a>
+        <a class="room" href="access.html">
+          <div class="t">Access</div>
+          <div class="d">How capacity opens — closed until settlement is real.</div>
+        </a>
+        <a class="room" href="../research/">
+          <div class="t">Research</div>
+          <div class="d">Health, industrial, math, systems — free to read.</div>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">Limits</div>
+      <p>Not securities. Not a token sale. Ontario and Canadian law apply.</p>
+      <div class="cta-row cta-2">
+        <a class="cta primary" href="adaptive.html">Systems</a>
+        <a class="cta" href="../research/">Look</a>
+      </div>
+    </section>
+
+    <footer>DualisCapax · Adaptive AI · Truth prevails</footer>
   </div>
 </body>
 </html>
