@@ -1,20 +1,40 @@
-/** DualisCapax spine — fixed header + fade dropdown. Upgrades existing .top / .top-links. */
+/** DualisCapax spine — fixed header + fade dropdown. Iris is the front door. */
 (function () {
   if (window.__dcSpine) return;
   window.__dcSpine = true;
 
+  var ITEMS = [
+    { href: "/ai/app.html", label: "Iris" },
+    { href: "/for-people.html", label: "For you" },
+    { href: "/research/", label: "Look" },
+    { href: "/onboard.html", label: "Measure" },
+    { href: "/payments.html", label: "Bind" },
+    { href: "/founding.html", label: "Founding" }
+  ];
+
   function ready(fn) {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", fn);
-    } else {
-      fn();
-    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
   }
 
   ready(function () {
     var top = document.querySelector(".top");
     var links = top && top.querySelector(".top-links");
     if (!top || !links || top.classList.contains("is-spine")) return;
+
+    var herePath = location.pathname.replace(/index\.html$/, "");
+    links.innerHTML = "";
+    ITEMS.forEach(function (item) {
+      var a = document.createElement("a");
+      a.href = item.href;
+      a.textContent = item.label;
+      var target = item.href.replace(/index\.html$/, "");
+      if (herePath === target || herePath.indexOf(target) === 0 && target.length > 1) {
+        a.className = "on";
+      }
+      if (item.label === "Iris" && herePath.indexOf("/ai/") === 0) a.className = "on";
+      links.appendChild(a);
+    });
 
     top.classList.add("is-spine");
     document.documentElement.classList.add("has-spine");
