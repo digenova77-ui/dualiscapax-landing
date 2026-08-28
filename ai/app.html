@@ -78,6 +78,17 @@
     .home summary::-webkit-details-marker { display: none; }
     .home ol { margin: 0.45rem 0 0.7rem 1.15rem; }
     .home li { margin: 0.2rem 0; }
+    #swdbg {
+      display: none;
+      font-size: 0.72rem;
+      line-height: 1.4;
+      color: rgba(244,244,245,0.55);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 0.45rem 0.6rem;
+      font-variant-numeric: tabular-nums;
+    }
+    body.debug #swdbg { display: block; }
   </style>
 </head>
 <body>
@@ -87,6 +98,7 @@
   </header>
   <div class="log" id="log"></div>
   <div class="dock">
+    <pre id="swdbg">sw —</pre>
     <div class="chips">
       <button type="button" data-q="We spent extra overtime this year. How do I name that leftover?">Overtime leftover</button>
       <button type="button" data-q="What can I do here for free?">What is this?</button>
@@ -117,20 +129,46 @@
   <script src="dclm-look.js"></script>
   <script>
   (function () {
+    var debug = /(?:\?|&)debug=1(?:&|$)/.test(location.search);
+    if (debug) document.body.classList.add("debug");
+    var dbg = document.getElementById("swdbg");
+    function paint(line) { if (dbg) dbg.textContent = line; }
     function wake(worker) {
       if (worker) worker.postMessage("SKIP_WAITING");
     }
+    function snap(reg) {
+      if (!debug) return;
+      var bits = [
+        "ctrl " + (navigator.serviceWorker.controller ? "yes" : "no"),
+        "installing " + (reg && reg.installing ? reg.installing.state : "—"),
+        "waiting " + (reg && reg.waiting ? reg.waiting.state : "—"),
+        "active " + (reg && reg.active ? reg.active.state : "—"),
+        "scope " + (reg ? reg.scope : "—")
+      ];
+      paint(bits.join(" \u00b7 "));
+    }
     if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener("controllerchange", function () {
+        if (debug) paint("controller changed");
+      });
+      navigator.serviceWorker.ready.then(function (reg) { snap(reg); });
       navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (reg) {
         wake(reg.waiting);
+        snap(reg);
         reg.addEventListener("updatefound", function () {
           var fresh = reg.installing;
+          snap(reg);
           if (!fresh) return;
           fresh.addEventListener("statechange", function () {
+            snap(reg);
             if (fresh.state === "installed") wake(fresh);
           });
         });
-      }).catch(function () {});
+      }).catch(function (err) {
+        paint("register failed: " + (err && err.message ? err.message : err));
+      });
+    } else {
+      paint("no serviceWorker API");
     }
     var log = document.getElementById("log");
     function esc(s) {
