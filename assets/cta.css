@@ -1,17 +1,16 @@
 /* DualisCapax CTA + spine nav
-   Equal CTAs · one top nav pattern · mobile readable · one type floor
+   Equal CTAs · one fixed header · fade dropdown · one type floor
 */
 
-/* —— Type floor (shared) —— */
 :root {
   --dc-body: 1.12rem;
   --dc-p: 1.18rem;
   --dc-nav: 1.05rem;
   --dc-mark: 1.18rem;
   --dc-label: 0.86rem;
+  --spine-h: 3.4rem;
 }
 
-/* —— CTAs —— */
 .cta-row{
   display:grid;
   grid-template-columns:1fr;
@@ -66,15 +65,34 @@
   }
 }
 
-/* —— Spine top nav —— */
+html.has-spine{
+  scroll-padding-top: var(--spine-h);
+}
+html.has-spine body{
+  padding-top: calc(var(--spine-h) + 0.35rem);
+}
+
 .top{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:80;
   display:flex;
-  flex-direction:column;
-  align-items:stretch;
+  flex-direction:row;
+  align-items:center;
   gap:0.65rem;
-  padding:0.75rem 0 1.25rem;
+  padding:
+    max(0.55rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    0.55rem
+    max(1rem, env(safe-area-inset-left));
   border-bottom:1px solid rgba(255,255,255,0.08);
-  margin-bottom:0.25rem;
+  background:rgba(5,5,5,0.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  margin-bottom:0;
+  box-sizing:border-box;
 }
 .top a.mark,
 .top > a:first-child{
@@ -84,23 +102,91 @@
   color:#f5f5f5;
   padding:0.25rem 0;
   text-decoration:none;
-  align-self:flex-start;
+  margin-right:auto;
+  flex-shrink:0;
 }
-.top-links{
+.top-here{
+  font-size:0.82rem;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:rgba(245,245,245,0.62);
+  white-space:nowrap;
+  max-width:40vw;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.top-toggle{
+  width:2.5rem;
+  height:2.5rem;
+  flex-shrink:0;
   display:flex;
-  flex-wrap:wrap;
-  gap:0.3rem;
+  flex-direction:column;
   align-items:center;
+  justify-content:center;
+  gap:5px;
+  border-radius:8px;
+  border:1px solid rgba(245,245,245,0.18);
+  background:rgba(0,0,0,0.35);
+  color:#f5f5f5;
+  cursor:pointer;
+  padding:0;
+}
+.top-toggle span{
+  display:block;
+  width:1.1rem;
+  height:2px;
+  background:#f5f5f5;
+  border-radius:1px;
+  transition:transform .2s ease,opacity .2s ease;
+}
+.top-toggle[aria-expanded="true"] span:nth-child(1){
+  transform:translateY(7px) rotate(45deg);
+}
+.top-toggle[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+.top-toggle[aria-expanded="true"] span:nth-child(3){
+  transform:translateY(-7px) rotate(-45deg);
+}
+
+.top-links{
+  position:absolute;
+  top:calc(100% + 0.4rem);
+  right:max(1rem, env(safe-area-inset-right));
+  width:min(18rem, calc(100vw - 2rem));
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  align-items:stretch;
+  background:#0a0a0a;
+  border:1px solid rgba(245,245,245,0.16);
+  border-radius:12px;
+  padding:0.45rem;
+  box-shadow:0 12px 40px rgba(0,0,0,0.55);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-8px);
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+  max-height:min(70dvh, 28rem);
+  overflow-y:auto;
+}
+.top-links.is-open,
+.top.is-open .top-links{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+  pointer-events:auto;
+  transition:opacity .18s ease, transform .18s ease, visibility 0s;
 }
 .top-links a{
-  font-size:var(--dc-nav);
-  font-weight:600;
-  color:rgba(245,245,245,0.7);
-  padding:0.55rem 0.72rem;
+  display:block;
+  font-size:1rem;
+  font-weight:700;
+  color:rgba(245,245,245,0.78);
+  padding:0.75rem 0.85rem;
   border-radius:8px;
   text-decoration:none;
   border:1px solid transparent;
-  transition:color .15s ease, background .15s ease, border-color .15s ease;
 }
 .top-links a:hover,
 .top-links a:focus-visible{
@@ -113,20 +199,24 @@
   background:rgba(255,255,255,0.04);
 }
 
-@media (min-width:640px){
-  .top{
-    flex-direction:row;
-    justify-content:space-between;
-    align-items:center;
-    gap:1rem;
-  }
-  .top-links{
-    gap:0.2rem;
-    justify-content:flex-end;
-  }
+.top:not(.is-spine) .top-links{
+  position:static;
+  width:auto;
+  max-height:none;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  opacity:1;
+  visibility:visible;
+  transform:none;
+  pointer-events:auto;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  padding:0;
+  gap:0.2rem;
 }
 
-/* Mobile body floor */
 @media (max-width:560px){
   body{ font-size:var(--dc-body); }
   p, li{
