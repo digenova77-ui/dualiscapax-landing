@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Fuel — DualisCapax</title>
+<title>Pay later — DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/cta.css"/>
 <script src="assets/spine-nav.js" defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;-webkit-font-smoothing:antialiased;font-size:1.05rem}
+body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;font-size:1.05rem}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.15rem,env(safe-area-inset-right)) max(2.5rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
 .kicker{font-size:0.82rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7eb6ff}
@@ -18,25 +18,15 @@ h1{font-size:clamp(1.85rem,7vw,2.5rem);font-weight:900;letter-spacing:-.04em;lin
 .lede{font-size:1.1rem;color:rgba(245,245,245,.78);margin-bottom:1.1rem}
 .packs{display:grid;gap:.7rem;margin:1rem 0}
 .pack{text-align:left;width:100%;border:1px solid rgba(126,182,255,.28);border-radius:14px;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2));padding:1rem 1.05rem;color:#f5f5f5;cursor:pointer;font:inherit}
-.pack.on{border-color:#9ec5ff;box-shadow:0 0 0 1px rgba(158,197,255,.35),0 0 24px rgba(74,143,216,.18)}
+.pack.on{border-color:#9ec5ff}
 .pack .cad{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff}
 .pack .amt{font-size:1.55rem;font-weight:900;letter-spacing:-.03em;margin:.15rem 0}
 .pack .sub{font-size:1rem;color:rgba(245,245,245,.58)}
-.read{border:1px solid rgba(126,182,255,.22);border-radius:12px;padding:.9rem 1rem;min-height:5.2rem;background:rgba(126,182,255,.05);margin:1rem 0}
+.read{border:1px solid rgba(126,182,255,.22);border-radius:12px;padding:.9rem 1rem;min-height:4.2rem;background:rgba(126,182,255,.05);margin:1rem 0}
 .read .t{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.35rem}
 .read p{font-size:1.05rem}
-.pulse{display:flex;gap:8px;align-items:center;margin:1rem 0 .4rem}
-.pulse i{width:7px;height:7px;border-radius:50%;background:rgba(158,197,255,.25)}
-.pulse i.on{background:#e8f1ff;box-shadow:0 0 10px rgba(158,197,255,.55)}
 .hold{font-size:1.05rem;color:rgba(245,245,245,.62);margin:.35rem 0 1rem}
-.rail{border:1px solid rgba(245,245,245,.14);border-radius:12px;padding:.95rem 1rem;margin:1.1rem 0 0}
-.rail .t{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.4rem}
-.rail p{font-size:1.02rem;color:rgba(245,245,245,.78);margin:0 0 .55rem}
-.rail p:last-child{margin-bottom:0}
-nav.doors{display:flex;flex-wrap:wrap;gap:.85rem 1.1rem;margin-top:1.2rem}
-nav.doors a{font-size:0.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ec5ff}
-foot{display:block;margin-top:2.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:0.88rem;letter-spacing:.04em;color:rgba(245,245,245,.38)}
-foot a{color:rgba(158,197,255,.7);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+foot{display:block;margin-top:2.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:0.88rem;color:rgba(245,245,245,.38)}
 </style>
 </head>
 <body>
@@ -51,50 +41,41 @@ foot a{color:rgba(158,197,255,.7);letter-spacing:.06em;text-transform:uppercase;
       <a href="founding.html">Founding</a>
     </div>
   </div>
-  <p class="kicker">What you are putting in</p>
-  <h1>You buy time the engine can spend.</h1>
-  <p class="lede">Not a share. Not a store card. Prepaid Fuel — constrained passes against Dualis work. If a pass cannot close, it is not spent. What remains stays yours on the book.</p>
+  <p class="kicker">Pay later</p>
+  <h1>These are prices. You cannot pay yet.</h1>
+  <p class="lede">When Dualis opens, you buy time. What you don't use stays yours. Not a share of the company.</p>
   <div class="packs" id="packs">
-    <button type="button" class="pack on" data-cad="20" data-fuel="40" data-note="Forty passes. Enough to see whether the engine is for you.">
+    <button type="button" class="pack on" data-cad="20" data-fuel="40" data-note="Small. Enough to try it.">
       <div class="cad">CAD $20</div>
       <div class="amt">40 Fuel</div>
-      <div class="sub">See it</div>
+      <div class="sub">Try it</div>
     </button>
-    <button type="button" class="pack" data-cad="50" data-fuel="120" data-note="One hundred twenty passes. Working depth for a real question.">
+    <button type="button" class="pack" data-cad="50" data-fuel="120" data-note="Middle. For a real question.">
       <div class="cad">CAD $50</div>
       <div class="amt">120 Fuel</div>
-      <div class="sub">Work it</div>
+      <div class="sub">Work</div>
     </button>
-    <button type="button" class="pack" data-cad="120" data-fuel="320" data-note="Three hundred twenty passes. Long enough that waste would show.">
+    <button type="button" class="pack" data-cad="120" data-fuel="320" data-note="Large. For staying with it.">
       <div class="cad">CAD $120</div>
       <div class="amt">320 Fuel</div>
-      <div class="sub">Stay with it</div>
+      <div class="sub">Stay</div>
     </button>
   </div>
   <div class="read" id="read">
     <div class="t">This pack</div>
-    <p>CAD $20 → 40 Fuel. Forty passes. Enough to see whether the engine is for you.</p>
+    <p>CAD $20 → 40 Fuel. Small. Enough to try it.</p>
   </div>
-  <div class="pulse" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
-  <p class="hold">Purchase is not open yet. The packs are named so you can decide before a button exists.</p>
-  <div class="rail">
-    <div class="t">How dollars move</div>
-    <p>CAD at the gateway. Dualis does not keep a coin. If someone pays in a stablecoin, a registered rail converts it and Dualis is settled in Canadian dollars.</p>
-    <p>That still needs a corporate CAD account. Prepaid Fuel is unearned CAD on the book — a liability to the buyer — not a vault of tokens and not a stash of idle cash for trading.</p>
-    <p>First open rail is CAD in (Interac / card / transfer) to 1001718450. Crypto is optional and only as a convert-to-CAD door. Seats stay closed until that account and the contract exist.</p>
+  <p class="hold">No button. Dualis is not taking money.</p>
+  <div class="cta-row cta-2">
+    <a class="cta primary" href="ai/app.html">Ask Iris</a>
+    <a class="cta" href="research/">Read</a>
   </div>
-  <nav class="doors">
-    <a href="consideration.html">What this is</a>
-    <a href="fuel-law.html">The rule</a>
-    <a href="research/">Look first</a>
-  </nav>
-  <foot>DualisCapax · prepaid Fuel · not a security <a href="mechanics.html">How this works</a></foot>
+  <foot>DualisCapax · not taking dollars</foot>
 </div>
 <script>
 (function(){
   var packs=document.querySelectorAll('.pack');
   var read=document.getElementById('read');
-  var dots=document.querySelectorAll('.pulse i');
   packs.forEach(function(p){
     p.addEventListener('click',function(){
       packs.forEach(function(x){x.classList.remove('on')});
@@ -102,11 +83,6 @@ foot a{color:rgba(158,197,255,.7);letter-spacing:.06em;text-transform:uppercase;
       read.innerHTML='<div class="t">This pack</div><p>CAD $'+p.dataset.cad+' → '+p.dataset.fuel+' Fuel. '+p.dataset.note+'</p>';
     });
   });
-  var n=0;
-  setInterval(function(){
-    dots.forEach(function(d,i){d.classList.toggle('on', i===n)});
-    n=(n+1)%dots.length;
-  }, 420);
 })();
 </script>
 </body>
