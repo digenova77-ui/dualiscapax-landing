@@ -10,7 +10,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { min-height: 100dvh; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; padding: calc(0.75rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 1.5rem max(1rem, env(safe-area-inset-left)); }
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; }
-    header a { color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; }
+    header a { color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; margin-left: 0.7rem; }
     header strong { display: block; }
     header span { font-size: 0.75rem; color: rgba(244,244,245,0.5); }
     .say { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 0.9rem 1rem; font-size: 1.05rem; line-height: 1.45; min-height: 4.2rem; margin-bottom: 0.85rem; }
@@ -22,7 +22,7 @@
     .pc { width: 68%; height: 68%; border-radius: 50%; }
     .pc.you { background: #e8e4dc; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2); }
     .pc.iris { background: #5c2a2a; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.35); }
-    .pc.king::after { content: "·"; color: #f4f4f5; font-size: 1.2rem; display: block; text-align: center; line-height: 1.6; }
+    .pc.king::after { content: "\00b7"; color: #f4f4f5; font-size: 1.2rem; display: block; text-align: center; line-height: 1.6; }
     .pc.you.king::after { color: #222; }
     .row { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.9rem; }
     button { font: inherit; font-weight: 700; padding: 0.55rem 0.9rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.05); color: #f4f4f5; }
@@ -32,21 +32,21 @@
 <body>
   <header>
     <div><strong>Iris</strong><span>Checkers. No bets.</span></div>
-    <a href="app.html">Talk</a>
+    <div><a href="games.html">Hall</a><a href="app.html">Talk</a></div>
   </header>
-  <div class="say" id="say">You move first. Dark pieces are me. If I start to pull ahead, I'll say why — I won't just snap the next square.</div>
+  <div class="say" id="say"></div>
   <div class="board" id="board"></div>
   <div class="row">
     <button type="button" id="again">New game</button>
-    <a href="app.html"><button type="button">Talk instead</button></a>
   </div>
 <script>
 (function () {
   var YOU = 1, IRIS = 2;
-  var board, turn, pick, busy;
+  var board, turn, pick, busy, seen;
   var say = document.getElementById("say");
   var root = document.getElementById("board");
-
+  function talk(t) { say.textContent = t; }
+  function inside(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
   function reset() {
     board = [];
     for (var r = 0; r < 8; r++) {
@@ -60,21 +60,15 @@
         board[r][c] = cell;
       }
     }
-    turn = YOU; pick = null; busy = false;
-    talk("You move first. Dark pieces are me.");
+    turn = YOU; pick = null; busy = false; seen = 0;
+    talk("You first. I don't know your hand yet. I'll try things. Then I'll use what I saw.");
     draw();
   }
-
-  function talk(t) { say.textContent = t; }
-
-  function inside(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
-
   function dirs(cell) {
     if (cell.k) return [[-1,-1],[-1,1],[1,-1],[1,1]];
     if (cell.p === YOU) return [[-1,-1],[-1,1]];
     return [[1,-1],[1,1]];
   }
-
   function movesFor(r, c) {
     var cell = board[r][c];
     if (!cell.p) return [];
@@ -85,14 +79,11 @@
       if (!board[r1][c1].p) out.push({ r: r, c: c, r2: r1, c2: c1, cap: false });
       else if (board[r1][c1].p !== cell.p) {
         var r2 = r + d[0] * 2, c2 = c + d[1] * 2;
-        if (inside(r2, c2) && !board[r2][c2].p) {
-          caps.push({ r: r, c: c, r2: r2, c2: c2, cap: true, cr: r1, cc: c1 });
-        }
+        if (inside(r2, c2) && !board[r2][c2].p) caps.push({ r: r, c: c, r2: r2, c2: c2, cap: true, cr: r1, cc: c1 });
       }
     });
     return { steps: out, caps: caps };
   }
-
   function allMoves(who) {
     var steps = [], caps = [];
     for (var r = 0; r < 8; r++) for (var c = 0; c < 8; c++) {
@@ -103,7 +94,6 @@
     }
     return caps.length ? caps : steps;
   }
-
   function apply(m) {
     var piece = board[m.r][m.c];
     board[m.r2][m.c2] = { p: piece.p, k: piece.k };
@@ -112,46 +102,43 @@
     if (piece.p === YOU && m.r2 === 0) board[m.r2][m.c2].k = true;
     if (piece.p === IRIS && m.r2 === 7) board[m.r2][m.c2].k = true;
   }
-
   function count(who) {
     var n = 0;
     for (var r = 0; r < 8; r++) for (var c = 0; c < 8; c++) if (board[r][c].p === who) n++;
     return n;
   }
-
-  function explain(m, beforeYou, afterYou) {
-    var lines = [];
-    if (m.cap) lines.push("I take the piece that was sitting in my way. Leaving it there would have cost me later.");
-    else if (m.r2 === 7) lines.push("I walk to the back row so I can move both ways after this.");
-    else if (m.r2 > m.r) lines.push("I step forward to take space. Sitting still lets you lock the middle.");
-    else lines.push("I slide to a square that still has an exit.");
-    if (afterYou < beforeYou) lines.push("You're down a piece. That's why I'm talking — the board is tilting.");
-    lines.push("Your clock. I'm not going to snap the next one the instant you lift your hand.");
-    return lines.join(" ");
-  }
-
   function score(m) {
     var s = 0;
-    if (m.cap) s += 8;
-    if (m.r2 === 7) s += 5;
+    if (m.cap) s += 10;
+    if (m.r2 === 7) s += 6;
     s += m.r2;
-    return s + Math.random() * 0.4;
+    return s;
   }
-
+  function pickMove(opts) {
+    if (seen < 3) return opts[Math.floor(Math.random() * opts.length)];
+    opts.sort(function (a, b) { return score(b) - score(a); });
+    return opts[0];
+  }
+  function explain(m) {
+    if (seen <= 3) {
+      if (m.cap) return "That one was in reach. I'm still feeling how you leave pieces hanging.";
+      return "Trial. I don't own this table yet. Keep moving — I'm watching the shape you like.";
+    }
+    if (m.cap) return "I wait until I see the whole take. Then I touch that one piece. Not a sweep.";
+    if (m.r2 === 7) return "Back row. I wanted that square before I put a finger on it.";
+    return "I know this lane now. Quiet step. Your clock.";
+  }
   function irisTurn() {
     var opts = allMoves(IRIS);
-    if (!opts.length) { talk("I have no move. You win this one."); turn = 0; draw(); return; }
-    opts.sort(function (a, b) { return score(b) - score(a); });
-    var m = opts[0];
-    var before = count(YOU);
+    if (!opts.length) { talk("I have no move. Yours."); turn = 0; busy = false; draw(); return; }
+    var m = pickMove(opts);
     apply(m);
-    var after = count(YOU);
+    seen += 1;
     turn = allMoves(YOU).length ? YOU : 0;
-    talk(explain(m, before, after) + (turn ? "" : " You have no move. That's the game."));
+    talk(explain(m) + (turn ? "" : " You have no move. That's the game."));
     busy = false;
     draw();
   }
-
   function clickSq(r, c) {
     if (busy || turn !== YOU) return;
     var cell = board[r][c];
@@ -164,12 +151,11 @@
     if (!legal.length) return;
     apply(legal[0]);
     pick = null;
-    if (!allMoves(IRIS).length) { talk("I have no move. You win this one."); turn = 0; draw(); return; }
+    if (!allMoves(IRIS).length) { talk("I have no move. Yours."); turn = 0; draw(); return; }
     turn = IRIS; busy = true; draw();
-    talk("Okay. Give me a second — I want to say this in English, not dump a tree on you.");
-    setTimeout(irisTurn, 1100 + Math.random() * 900);
+    talk(seen < 3 ? "Hold on. I'm trying this, not smashing the clock." : "I see it. One second.");
+    setTimeout(irisTurn, seen < 3 ? 1400 + Math.random() * 800 : 900 + Math.random() * 500);
   }
-
   function draw() {
     root.innerHTML = "";
     root.className = "board" + (busy ? " wait" : "");
@@ -187,7 +173,6 @@
       root.appendChild(d);
     }
   }
-
   document.getElementById("again").addEventListener("click", reset);
   reset();
 })();
