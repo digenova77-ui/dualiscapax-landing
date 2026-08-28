@@ -4,96 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Adaptive AI — DualisCapax</title>
-  <meta name="description" content="Intelligence layer for residual work. Same invert rule as the rest of the site." />
   <meta name="theme-color" content="#050505" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/cta.css" />
+  <script src="../assets/spine-nav.js" defer></script>
   <style>
-    :root {
-      --bg: #050505;
-      --fg: #f5f5f5;
-      --muted: rgba(245,245,245,0.55);
-      --faint: rgba(245,245,245,0.28);
-      --line: rgba(255,255,255,0.09);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.55;
-      min-height: 100dvh;
-      font-size: 1.12rem;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; text-decoration: none; }
-    .site {
-      max-width: 42rem;
-      margin: 0 auto;
-      padding: 0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left));
-    }
-    .eyebrow {
-      font-size: 0.86rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1.1rem;
-    }
-    h1 {
-      font-size: clamp(2.2rem, 9vw, 3.2rem);
-      font-weight: 800;
-      line-height: 0.92;
-      letter-spacing: -0.045em;
-      text-transform: uppercase;
-      margin-bottom: 1.1rem;
-    }
-    .statement {
-      font-size: 1.2rem;
-      line-height: 1.55;
-      color: var(--muted);
-      max-width: 34rem;
-    }
-    section {
-      padding: 2.2rem 0;
-      border-top: 1px solid var(--line);
-    }
-    .section-label {
-      font-size: 0.86rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 1rem;
-    }
-    p {
-      font-size: 1.18rem;
-      line-height: 1.6;
-      color: var(--muted);
-      margin-bottom: 1rem;
-    }
-    p:last-child { margin-bottom: 0; }
-    .rooms {
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-    .room {
-      display: block;
-      padding: 1.05rem 1.15rem;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.02);
-    }
-    .room .t { font-weight: 700; font-size: 1.12rem; margin-bottom: 0.25rem; }
-    .room .d { font-size: 1.05rem; color: var(--muted); line-height: 1.45; }
-    footer {
-      padding: 2.25rem 0 2.75rem;
-      border-top: 1px solid var(--line);
-      font-size: 0.95rem;
-      color: var(--faint);
-      text-align: center;
-    }
+    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,0.55); --faint:rgba(245,245,245,0.28); --line:rgba(255,255,255,0.09); }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); line-height:1.55; min-height:100dvh; font-size:1.12rem; }
+    a { color:inherit; text-decoration:none; }
+    .site { max-width:42rem; margin:0 auto; padding:0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
+    .eyebrow { font-size:0.86rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:1.1rem; }
+    h1 { font-size:clamp(2.2rem,9vw,3.2rem); font-weight:800; line-height:0.92; letter-spacing:-0.045em; text-transform:uppercase; margin-bottom:1.1rem; }
+    .statement { font-size:1.2rem; line-height:1.55; color:var(--muted); max-width:34rem; }
+    section { padding:2.2rem 0; border-top:1px solid var(--line); }
+    .section-label { font-size:0.86rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); margin-bottom:1rem; }
+    p { font-size:1.18rem; line-height:1.6; color:var(--muted); margin-bottom:1rem; }
+    p:last-child { margin-bottom:0; }
+    .rooms { display:flex; flex-direction:column; gap:0.65rem; }
+    .room { display:block; padding:1.05rem 1.15rem; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,0.02); }
+    .room .t { font-weight:700; font-size:1.12rem; margin-bottom:0.25rem; }
+    .room .d { font-size:1.05rem; color:var(--muted); line-height:1.45; }
+    footer { padding:2.25rem 0 2.75rem; border-top:1px solid var(--line); font-size:0.95rem; color:var(--faint); text-align:center; }
   </style>
 </head>
 <body>
@@ -108,62 +40,30 @@
         <a href="../founding.html">Founding</a>
       </div>
     </div>
-
-    <main style="padding: 1.5rem 0 0.5rem;">
+    <main style="padding:1.5rem 0 0.5rem;">
       <div class="eyebrow">Adaptive AI</div>
       <h1>Intelligence path</h1>
-      <p class="statement">
-        The system is only as good as the next grain it can invert.
-        Adaptive here means the path tightens against leftover — not a mascot and not a pitch for a model.
-      </p>
+      <p class="statement">Iris is the public face of DCLM-AI. She names leftovers. She does not sell from this page.</p>
     </main>
-
     <section>
-      <div class="section-label">What you are buying when seats open</div>
-      <p>A prediction model shaped to your constraints, built ahead of time. Two doors into the same model: the intelligence path, or simulation documentation you take to your own professionals.</p>
-      <p>Not a generic dashboard. Not a diagnosis. Not a coin. Simulation is not treatment. If the number cannot run backwards, you do not pay for it.</p>
-    </section>
-
-    <section>
-      <div class="section-label">Open · Prove · Depth · Seal</div>
+      <div class="section-label">Ask</div>
       <div class="rooms">
-        <div class="room">
-          <div class="t">Open</div>
-          <div class="d">Research and learning stay free. Full clinical surface is journals you can check.</div>
-        </div>
-        <div class="room">
-          <div class="t">Prove</div>
-          <div class="d">Money and identity sit at the boundary before adaptive depth. Look does not require a seat.</div>
-        </div>
-        <a class="room" href="adaptive.html">
-          <div class="t">Depth</div>
-          <div class="d">Adaptive systems and sandbox sim. Paid with Fuel when settlement is real. Unused Fuel stays on the book.</div>
-        </a>
-        <a class="room" href="access.html">
-          <div class="t">Seal / Access</div>
-          <div class="d">Production method stays off this page. Deeper access is closed until destinations live.</div>
+        <a class="room" href="app.html">
+          <div class="t">Iris</div>
+          <div class="d">Free look. Name a leftover. Walk it back if you can. Not taking dollars.</div>
         </a>
       </div>
     </section>
-
     <section>
       <div class="section-label">Rooms</div>
       <div class="rooms">
         <a class="room" href="adaptive.html">
           <div class="t">Systems</div>
-          <div class="d">Adaptive control under real constraints: capacity, residual cost, friction that cannot be wished away.</div>
+          <div class="d">Adaptive control under real constraints.</div>
         </a>
         <a class="room" href="access.html">
           <div class="t">Access</div>
-          <div class="d">How capacity opens — closed until settlement is real. Reading stays open.</div>
-        </a>
-        <a class="room" href="../model.html">
-          <div class="t">Model</div>
-          <div class="d">The ahead-of-time model is the ceiling. Live versus that model is the leftover.</div>
-        </a>
-        <a class="room" href="../architecture.html">
-          <div class="t">Architecture</div>
-          <div class="d">Surface → invert → edge hardware. Same walk as the rest of the firm.</div>
+          <div class="d">Closed until settlement is real. Reading stays open.</div>
         </a>
         <a class="room" href="../research/">
           <div class="t">Research</div>
@@ -171,17 +71,15 @@
         </a>
       </div>
     </section>
-
     <section>
       <div class="section-label">Limits</div>
-      <p>Not securities. Not a token sale. Ontario and Canadian law apply. Walk away whenever you want.</p>
+      <p>Not securities. Not a token sale. Not a diagnosis. Ontario and Canadian law apply.</p>
       <div class="cta-row cta-2">
-        <a class="cta primary" href="adaptive.html">Systems</a>
+        <a class="cta primary" href="app.html">Ask Iris</a>
         <a class="cta" href="../research/">Look</a>
       </div>
     </section>
-
-    <footer>DualisCapax · Adaptive AI · Truth prevails</footer>
+    <footer>DualisCapax · Iris · DCLM-AI · Truth prevails</footer>
   </div>
 </body>
 </html>
