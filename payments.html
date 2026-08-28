@@ -6,39 +6,45 @@
 <title>Fuel — DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/cta.css"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;-webkit-font-smoothing:antialiased}
+body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;-webkit-font-smoothing:antialiased;font-size:1.05rem}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.15rem max(2.5rem,env(safe-area-inset-bottom))}
-.top{display:flex;justify-content:space-between;padding:.4rem 0 1.2rem}
-.top a{font-size:.88rem;font-weight:600;color:rgba(245,245,245,.7)}
-.kicker{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7eb6ff}
-h1{font-size:clamp(1.8rem,7vw,2.5rem);font-weight:900;letter-spacing:-.04em;line-height:.95;margin:.55rem 0 .7rem}
-.lede{color:rgba(245,245,245,.78);margin-bottom:1.1rem}
+.wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.15rem,env(safe-area-inset-right)) max(2.5rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
+.kicker{font-size:0.82rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7eb6ff}
+h1{font-size:clamp(1.85rem,7vw,2.5rem);font-weight:900;letter-spacing:-.04em;line-height:.95;margin:.55rem 0 .7rem}
+.lede{font-size:1.1rem;color:rgba(245,245,245,.78);margin-bottom:1.1rem}
 .packs{display:grid;gap:.7rem;margin:1rem 0}
 .pack{text-align:left;width:100%;border:1px solid rgba(126,182,255,.28);border-radius:14px;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2));padding:1rem 1.05rem;color:#f5f5f5;cursor:pointer;font:inherit}
 .pack.on{border-color:#9ec5ff;box-shadow:0 0 0 1px rgba(158,197,255,.35),0 0 24px rgba(74,143,216,.18)}
-.pack .cad{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff}
+.pack .cad{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff}
 .pack .amt{font-size:1.55rem;font-weight:900;letter-spacing:-.03em;margin:.15rem 0}
-.pack .sub{font-size:.88rem;color:rgba(245,245,245,.58)}
+.pack .sub{font-size:1rem;color:rgba(245,245,245,.58)}
 .read{border:1px solid rgba(126,182,255,.22);border-radius:12px;padding:.9rem 1rem;min-height:5.2rem;background:rgba(126,182,255,.05);margin:1rem 0}
-.read .t{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.35rem}
+.read .t{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.35rem}
+.read p{font-size:1.05rem}
 .pulse{display:flex;gap:8px;align-items:center;margin:1rem 0 .4rem}
 .pulse i{width:7px;height:7px;border-radius:50%;background:rgba(158,197,255,.25)}
 .pulse i.on{background:#e8f1ff;box-shadow:0 0 10px rgba(158,197,255,.55)}
-.hold{font-size:.95rem;color:rgba(245,245,245,.62);margin:.35rem 0 1rem}
+.hold{font-size:1.05rem;color:rgba(245,245,245,.62);margin:.35rem 0 1rem}
 nav.doors{display:flex;flex-wrap:wrap;gap:.85rem 1.1rem;margin-top:1.2rem}
-nav.doors a{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ec5ff}
-foot{display:block;margin-top:2.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:.72rem;letter-spacing:.04em;color:rgba(245,245,245,.38)}
+nav.doors a{font-size:0.9rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ec5ff}
+foot{display:block;margin-top:2.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:0.88rem;letter-spacing:.04em;color:rgba(245,245,245,.38)}
 foot a{color:rgba(158,197,255,.7);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <a href="index.html?land=1">DualisCapax</a>
-    <a href="research/">Look</a>
+    <a href="index.html?land=1" class="mark">DualisCapax</a>
+    <div class="top-links">
+      <a href="for-people.html">For you</a>
+      <a href="research/">Look</a>
+      <a href="onboard.html">Measure</a>
+      <a href="payments.html" class="on">Bind</a>
+      <a href="founding.html">Founding</a>
+    </div>
   </div>
   <p class="kicker">What you are putting in</p>
   <h1>You buy time the engine can spend.</h1>
