@@ -33,7 +33,6 @@
     .home { font-size: 0.92rem; line-height: 1.45; color: rgba(244,244,245,0.62); }
     .home summary { cursor: pointer; font-weight: 650; color: rgba(244,244,245,0.82); list-style: none; }
     .home summary::-webkit-details-marker { display: none; }
-    .home ol { margin: 0.45rem 0 0.7rem 1.15rem; }
   </style>
 </head>
 <body>
@@ -48,7 +47,7 @@
   <div class="dock">
     <div class="chips">
       <button type="button" data-q="Hey. Who are you?">Hey</button>
-      <button type="button" data-q="What's actually fun to ask you?">What should I ask?</button>
+      <button type="button" data-q="Should every company put family, then kin, then friends first?">Family kin friend</button>
     </div>
     <form id="form">
       <textarea id="input" rows="2" placeholder="Go ahead"></textarea>
@@ -78,20 +77,26 @@
       log.appendChild(d);
       log.scrollTop = log.scrollHeight;
     }
+    function kinTalk(s) {
+      if (/should every|everybody|everyone/.test(s) && /family|kin|friend/.test(s)) {
+        return "Dualis does family, then kin, then friend, then the rest. That's this house. I can't make another house do it. If you want that order, build it. If you don't, don't. Argue with me if you want; I won't pretend it's a law of nature.";
+      }
+      if (/family|kin|friend|foundry|founding seat/.test(s)) {
+        return "Here the line is family, kin, friend, then whoever finishes the join. It's how this company is built. It's a suggestion for anyone else — not a command. Push back if you think the line should be different.";
+      }
+      return "";
+    }
     function plain(rec, asked) {
       var s = (asked || "").toLowerCase();
+      var k = kinTalk(s);
+      if (k) return k;
       if (/hey|who are you|what are you/.test(s)) {
-        return "Iris. I live here. Ask me a real thing — work, a fight you're in, a page on this site, whatever. I'll be straight. I won't sell you anything tonight.";
+        return "Iris. I live here. Ask me a real thing. I'll be straight. I won't sell you anything tonight.";
       }
       if (/what should i ask|fun to ask|what can you/.test(s)) {
-        return "Ask the thing you would ask a sharp friend at 2 a.m. Not a pitch. If I don't know, I'll say so.";
+        return "Ask the thing you would ask a sharp friend at 2 a.m. Or argue family-kin-friend if that's the fight.";
       }
-      if (rec.grant === "VETO") {
-        return "Nope. Not that. Try a real question.";
-      }
-      if (rec.grant === "MEASURE" && rec.measure && rec.measure.residual_value && rec.measure.residual_value !== "SEED") {
-        return "Okay — I can hold that number: " + rec.measure.residual_value + ". What do you want to do with it?";
-      }
+      if (rec.grant === "VETO") return "Nope. Not that. Try a real question.";
       return "I'm with you. Say the next piece.";
     }
     async function send(text) {
