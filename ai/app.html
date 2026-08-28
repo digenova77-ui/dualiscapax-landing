@@ -43,7 +43,7 @@
   <header>
     <div class="who-head">
       <strong>Iris</strong>
-      <span>DCLM-AI · DualisCapax</span>
+      <span>DualisCapax</span>
     </div>
     <a href="index.html">Back</a>
   </header>
@@ -51,28 +51,28 @@
   <div class="dock">
     <pre id="swdbg">sw —</pre>
     <div class="chips">
-      <button type="button" data-q="Warehouse overtime leftover is CAD $180000 this year. Walk-back is a 90-day pilot.">Overtime leftover</button>
+      <button type="button" data-q="Warehouse overtime leftover is CAD $180000 this year. Walk-back is a 90-day pilot.">Extra overtime</button>
       <button type="button" data-q="What can I do here for free?">What is this?</button>
     </div>
     <form id="form">
-      <textarea id="input" rows="2" placeholder="What's the leftover?"></textarea>
+      <textarea id="input" rows="2" placeholder="What cost extra?"></textarea>
       <button type="submit" aria-label="Send">↑</button>
     </form>
     <details class="home">
-      <summary>Put this on your home screen</summary>
-      <p style="margin-top:0.45rem">This is not an App Store app. It is this page, with an icon.</p>
+      <summary>Add this to your phone</summary>
+      <p style="margin-top:0.45rem">Same page, with an icon. Not an App Store app.</p>
       <p style="margin-top:0.55rem"><strong>iPhone / iPad</strong></p>
       <ol>
-        <li>Open this page in Safari (not Chrome).</li>
-        <li>Tap the Share button (square with an arrow).</li>
+        <li>Open this in Safari.</li>
+        <li>Tap Share.</li>
         <li>Tap Add to Home Screen.</li>
         <li>Tap Add.</li>
       </ol>
       <p><strong>Android</strong></p>
       <ol>
-        <li>Open this page in Chrome.</li>
+        <li>Open this in Chrome.</li>
         <li>Tap the three dots.</li>
-        <li>Tap Add to Home screen (or Install app).</li>
+        <li>Tap Add to Home screen or Install app.</li>
         <li>Tap Add.</li>
       </ol>
     </details>
@@ -99,29 +99,29 @@
     }
     function doorLine(m) {
       if (!m) return "";
-      if (m.invertibility === "yes" && m.invert_door === "pilot") return " Walk it back with a short pilot.";
-      if (m.invertibility === "yes" && m.invert_door === "time-box") return " Walk it back inside a time box.";
-      if (m.invertibility === "yes") return " You named a walk-back.";
-      if (m.invertibility === "no") return " This one does not walk back.";
+      if (m.invertibility === "yes" && m.invert_door === "pilot") return " A short test run is a way to try to bring that down.";
+      if (m.invertibility === "yes" && m.invert_door === "time-box") return " Try it for a set number of days and stop if it does not help.";
+      if (m.invertibility === "yes") return " You already have a way to try to undo some of it.";
+      if (m.invertibility === "no") return " This one is already spent. We can still name the number.";
       return "";
     }
     function plain(rec, asked) {
       var s = (asked || "").toLowerCase();
       if (s.indexOf("what can i do") >= 0 || s.indexOf("what is this") >= 0) {
-        return "I'm Iris. This is a free look. Tell me a leftover — money, hours, waste. I name it. I do not sell from this page.";
+        return "I'm Iris. Tell me what cost extra this year — money or hours. I'll put a number on it. I am not selling anything here.";
       }
       if (rec.grant === "VETO") {
-        return "I can't take that kind of request.<span class=\"hint\">Ask about a leftover you can measure — not a cure, a token, or making someone sign.</span>";
+        return "I can't help with that.<span class=\"hint\">I only work with extra cost you can count — not medical claims, not tokens, not forcing anyone.</span>";
       }
       if (rec.grant === "SEED") {
-        return "I hear a leftover, but a piece is still missing.<span class=\"hint\">Add a number in your units and how you would walk it back — a short pilot is enough.</span>";
+        return "I need a bit more.<span class=\"hint\">Give me a dollar or hour figure, and whether you could try a short test to reduce it.</span>";
       }
       var m = rec.measure || {};
       var bit = (m.residual_value && m.residual_value !== "SEED")
-        ? (m.residual_value + " " + (m.residual_unit || ""))
-        : "a leftover we can work with";
-      return "Here's what I heard: " + bit.trim() + "." + doorLine(m) +
-        "<span class=\"hint\">That's a look, not a bill.</span>";
+        ? (m.residual_value + " " + (m.residual_unit === "CAD" ? "extra" : (m.residual_unit || "")))
+        : "an extra cost";
+      return "I have " + bit.trim() + "." + doorLine(m) +
+        "<span class=\"hint\">This page is free.</span>";
     }
     async function send(text) {
       text = (text || "").trim();
@@ -138,7 +138,7 @@
     document.querySelectorAll(".chips button").forEach(function (b) {
       b.addEventListener("click", function () { send(b.getAttribute("data-q")); });
     });
-    add("them", "I'm Iris. Tell me a leftover. This page is free.");
+    add("them", "I'm Iris. What cost extra this year? This page is free.");
   })();
   </script>
 </body>
