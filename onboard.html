@@ -3,133 +3,27 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Residual Cost Peg — DualisCapax</title>
+<title>Join later — DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/cta.css"/>
 <script src="assets/spine-nav.js" defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:Inter,system-ui,sans-serif;
-  background:#000;
-  color:#f5f5f5;
-  -webkit-font-smoothing:antialiased;
-  line-height:1.55;
-  font-size:1.05rem;
-}
+body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;line-height:1.55;font-size:1.05rem}
 a{color:inherit;text-decoration:none}
-.wrap{
-  max-width:40rem;
-  margin:0 auto;
-  padding:
-    max(1rem, env(safe-area-inset-top))
-    max(1.15rem, env(safe-area-inset-right))
-    max(2.5rem, env(safe-area-inset-bottom))
-    max(1.15rem, env(safe-area-inset-left));
-}
-.kicker{
-  font-size:0.82rem;
-  font-weight:700;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:rgba(245,245,245,0.55);
-  margin-bottom:0.55rem;
-}
-h1{
-  font-size:clamp(1.85rem, 7vw, 2.6rem);
-  font-weight:900;
-  letter-spacing:-0.03em;
-  line-height:1.05;
-  margin-bottom:0.65rem;
-}
-.lede{
-  font-size:clamp(1.1rem, 3.6vw, 1.25rem);
-  font-weight:500;
-  color:rgba(245,245,245,0.78);
-  margin-bottom:1.25rem;
-}
-.closed{
-  border:1px solid rgba(212,160,23,0.4);
-  border-radius:10px;
-  padding:0.75rem 0.9rem;
-  margin-bottom:1.5rem;
-  font-size:1rem;
-  color:rgba(245,245,245,0.75);
-  background:rgba(212,160,23,0.06);
-}
+.wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.15rem,env(safe-area-inset-right)) max(2.5rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
+.kicker{font-size:0.82rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,245,245,0.55);margin-bottom:0.55rem}
+h1{font-size:clamp(1.85rem,7vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.65rem}
+.lede{font-size:clamp(1.1rem,3.6vw,1.25rem);font-weight:500;color:rgba(245,245,245,0.78);margin-bottom:1.25rem}
+.closed{border:1px solid rgba(212,160,23,0.4);border-radius:10px;padding:0.75rem 0.9rem;margin-bottom:1.5rem;font-size:1rem;color:rgba(245,245,245,0.75);background:rgba(212,160,23,0.06)}
 .closed strong{color:#e8c36a}
-.gauge{
-  display:flex;
-  align-items:center;
-  gap:1rem;
-  border:1px solid rgba(245,245,245,0.18);
-  border-radius:1rem;
-  padding:1rem 1.1rem;
-  margin-bottom:1.75rem;
-}
-.ring{
-  width:4.5rem;
-  height:4.5rem;
-  border-radius:50%;
-  flex-shrink:0;
-  background:conic-gradient(#7eb6ff 0 62%, rgba(245,245,245,0.12) 0);
-  mask:radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
-  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
-}
-.gauge-copy strong{
-  display:block;
-  font-size:1.05rem;
-  font-weight:800;
-  margin-bottom:0.2rem;
-}
-.gauge-copy span{
-  font-size:0.95rem;
-  color:rgba(245,245,245,0.65);
-}
-.timer{
-  font-variant-numeric:tabular-nums;
-  font-weight:700;
-  letter-spacing:0.04em;
-  color:rgba(245,245,245,0.95);
-}
-h2{
-  font-size:1.15rem;
-  font-weight:800;
-  margin:1.6rem 0 0.55rem;
-  letter-spacing:-0.01em;
-}
-p{
-  font-size:1.1rem;
-  color:rgba(245,245,245,0.82);
-  margin-bottom:0.85rem;
-}
+h2{font-size:1.15rem;font-weight:800;margin:1.6rem 0 0.55rem}
+p{font-size:1.1rem;color:rgba(245,245,245,0.82);margin-bottom:0.85rem}
 ul{list-style:none;margin:0 0 1rem}
-li{
-  position:relative;
-  padding-left:1.1rem;
-  margin-bottom:0.55rem;
-  font-size:1.1rem;
-  color:rgba(245,245,245,0.82);
-}
-li::before{
-  content:"";
-  position:absolute;
-  left:0;
-  top:0.55em;
-  width:0.4rem;
-  height:0.4rem;
-  border-radius:50%;
-  background:#f5f5f5;
-}
-.note{
-  margin-top:1.75rem;
-  padding-top:1rem;
-  border-top:1px solid rgba(245,245,245,0.14);
-  font-size:0.92rem;
-  color:rgba(245,245,245,0.55);
-}
+li{position:relative;padding-left:1.1rem;margin-bottom:0.55rem;font-size:1.1rem;color:rgba(245,245,245,0.82)}
+li::before{content:"";position:absolute;left:0;top:0.55em;width:0.4rem;height:0.4rem;border-radius:50%;background:#f5f5f5}
+.note{margin-top:1.75rem;padding-top:1rem;border-top:1px solid rgba(245,245,245,0.14);font-size:0.92rem;color:rgba(245,245,245,0.55)}
 </style>
 </head>
 <body>
@@ -144,91 +38,28 @@ li::before{
         <a href="founding.html">Founding</a>
       </div>
     </div>
-
-    <p class="kicker">Residual Cost Peg</p>
-    <h1>Lock capacity.<br>Price the residual.</h1>
-    <p class="lede">Onboarding is a prepaid residual seat — not a subscription, not a tip jar. You fund capacity; DualisCapax pegs residual cost against what that capacity can still carry.</p>
-
+    <p class="kicker">Measure</p>
+    <h1>You are not buying in yet.</h1>
+    <p class="lede">When Dualis is ready, you will prepay for time the system can spend. What you do not use stays yours. We are not taking money now.</p>
     <div class="closed">
-      <strong>Seats closed until pricing and IP protection are locked.</strong>
-      Residual order is remembered when access opens. This page is the contract language of the peg — not a checkout.
+      <strong>Closed.</strong> Pricing and legal papers are not finished. This page explains the idea. There is no checkout.
     </div>
-
-    <div class="gauge" aria-label="Singularity countdown">
-      <div class="ring" aria-hidden="true"></div>
-      <div class="gauge-copy">
-        <strong>To singularity</strong>
-        <span><span class="timer" id="clock">—</span><br><span id="clock-note" style="font-size:0.88rem">Pledges pull the horizon earlier</span></span>
-      </div>
+    <h2>The idea, simply</h2>
+    <p>If you do work, some of it is wasted. We try to put a number on that waste so you can see it and try a small test to cut it. If we cannot run the number backwards, you should not pay for it.</p>
+    <ul>
+      <li>You prepay for time, not a share of the company</li>
+      <li>Unused time stays on your account</li>
+      <li>No one is buying in today</li>
+    </ul>
+    <h2>Companies</h2>
+    <p>A company can budget a known amount of Dualis time instead of an open-ended vendor bill. That is accounting, not a stock. Ask your own lawyer and accountant before you spend.</p>
+    <h2>People</h2>
+    <p>Same rules for a person as for a company. Small prepaid packs when we open. No special club.</p>
+    <div class="cta-row cta-2">
+      <a class="cta primary" href="payments.html">See the packs</a>
+      <a class="cta" href="ai/app.html">Ask Iris</a>
     </div>
-
-    <h2>What you are locking into</h2>
-    <p>Capital placed here is allocated against residual capacity: research, adaptive AI runs, and financial structure that does not float free of cost. The peg is simple — residual burn is measured; unused capacity stays on the book until it is spent or released under the terms of the seat.</p>
-    <ul>
-      <li>Prepaid residual seat (capacity, not equity by default)</li>
-      <li>Cost pegged to measured residual, not marketing tiers</li>
-      <li>Clear line between operating burn and locked reserve</li>
-    </ul>
-
-    <h2>Corporate frame</h2>
-    <p>For major corporations, residual cost pegging is a way to pre-fund constrained technical and research capacity with a traceable cost basis. Depending on jurisdiction and structure, prepaid capacity and qualified research spend can sit in familiar tax and accounting lanes — when counsel and auditors agree the facts support it.</p>
-    <ul>
-      <li>Budget residual as a known cost line, not an open-ended vendor bleed</li>
-      <li>Align spend with documented research and adaptive systems work</li>
-      <li>Keep the residual ledger inspectable for internal control</li>
-    </ul>
-    <p>This is not tax advice. Corporate treatment depends on how the seat is contracted, where the entity sits, and what the capacity is actually used for.</p>
-
-    <h2>Grassroots, bottom up</h2>
-    <p>The same peg works small. Individuals and small teams can lock modest residual seats and climb the same cost structure without needing a corporate treasury. Bottom-up seats still buy measured residual — not a softer product.</p>
-    <ul>
-      <li>Small seats still clear against residual cost, not charity tiers</li>
-      <li>No preferred tribe: the peg does not care who funds the seat</li>
-      <li>Early residual above the founding threshold can earn a plaque seat</li>
-    </ul>
-
-    <h2>What happens next</h2>
-    <p>This page is the brief. Settlement rails (fiat and equal crypto) attach on the payments surface when seats open. Until then: residual cost peg is the language — you fund capacity; residual is priced; nothing is free that still burns. Density of what capacity funds is visible on the ALS prototype leaf.</p>
-
-    <div class="cta-row cta-3">
-      <a class="cta primary" href="payments.html">Jump-start · Payments</a>
-      <a class="cta" href="residual-reward.html">Unity reward</a>
-      <a class="cta" href="research/healthcare/medical/neurological/als.html">ALS prototype</a>
-    </div>
-
-    <p class="note">DualisCapax · Residual Law Finance · access.dual.v2 closed 24 Aug 2026. Informational only — not an offer of securities, not tax, legal, or investment advice. Confirm structure with your own counsel before locking capital.</p>
+    <p class="note">Not an offer to sell shares. Not tax advice. DualisCapax is not taking dollars yet.</p>
   </div>
-  <script>
-  (function(){
-    var BASE = Date.UTC(2036, 7, 24, 0, 0, 0);
-    var CAD_PER_DAY = 1000;
-    var PLEDGED = 0;
-    var el = document.getElementById('clock');
-    var note = document.getElementById('clock-note');
-    function pad(n){ return String(n).padStart(2,'0'); }
-    function fmt(ms){
-      if (ms <= 0) return 'NOW';
-      var s = Math.floor(ms / 1000);
-      var d = Math.floor(s / 86400); s %= 86400;
-      var h = Math.floor(s / 3600); s %= 3600;
-      var m = Math.floor(s / 60); s %= 60;
-      if (d > 365) return Math.floor(d/365) + 'y ' + (d%365) + 'd ' + pad(h) + 'h';
-      if (d > 0) return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
-      return pad(h) + ':' + pad(m) + ':' + pad(s);
-    }
-    function tick(){
-      var advance = Math.floor(PLEDGED / CAD_PER_DAY) * 86400000;
-      var target = BASE - advance;
-      var floor = Date.now() + 30 * 86400000;
-      if (target < floor) target = floor;
-      el.textContent = fmt(target - Date.now());
-      if (note) note.textContent = PLEDGED > 0
-        ? ('Pledged CAD $' + PLEDGED + ' · horizon pulled earlier')
-        : ('Base horizon · each CAD $' + CAD_PER_DAY + ' pledged ≈ 1 day earlier');
-    }
-    tick();
-    setInterval(tick, 1000);
-  })();
-  </script>
 </body>
 </html>
