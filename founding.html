@@ -15,7 +15,6 @@
       --faint: rgba(245,245,245,0.32);
       --line: rgba(255,255,255,0.1);
       --blue: #7eb6ff;
-      --gold: #d4a017;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -24,41 +23,43 @@
       color: var(--fg);
       min-height: 100dvh;
       line-height: 1.5;
+      font-size: 1.05rem;
       -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
-    .shell { max-width: 40rem; margin: 0 auto; padding: 0 1.25rem 3rem; }
-    header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.25rem 0; border-bottom: 1px solid var(--line); gap: 1rem;
+    .shell {
+      max-width: 40rem;
+      margin: 0 auto;
+      padding:
+        max(0.75rem, env(safe-area-inset-top))
+        max(1.15rem, env(safe-area-inset-right))
+        max(2.5rem, env(safe-area-inset-bottom))
+        max(1.15rem, env(safe-area-inset-left));
     }
-    .mark { font-weight: 800; letter-spacing: -0.03em; }
-    nav a { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-left: 1rem; }
-    nav a:hover { color: var(--fg); }
     .eyebrow {
-      margin-top: 2rem;
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
+      margin-top: 0.5rem;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--faint);
     }
     h1 {
       margin: 0.5rem 0 1rem;
-      font-size: clamp(1.85rem, 7vw, 2.6rem);
+      font-size: clamp(1.9rem, 7vw, 2.6rem);
       font-weight: 900; letter-spacing: -0.04em; line-height: 1.05;
       text-transform: uppercase;
     }
-    .lead { color: var(--muted); font-size: 1.02rem; margin-bottom: 1.75rem; max-width: 34rem; }
+    .lead { color: var(--muted); font-size: 1.1rem; margin-bottom: 1.75rem; max-width: 34rem; }
     .lead strong { color: var(--fg); font-weight: 600; }
     section { padding: 1.75rem 0; border-top: 1px solid var(--line); }
     .label {
-      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--faint); margin-bottom: 0.85rem;
     }
-    p { color: var(--muted); margin-bottom: 0.85rem; font-size: 0.95rem; }
+    p { color: var(--muted); margin-bottom: 0.85rem; font-size: 1.08rem; }
     p:last-child { margin-bottom: 0; }
     .rule {
       border: 1px solid var(--line); border-radius: 10px;
-      padding: 0.85rem 1rem; margin: 1rem 0; background: rgba(255,255,255,0.02);
-      font-size: 0.88rem; color: var(--muted);
+      padding: 0.9rem 1rem; margin: 1rem 0; background: rgba(255,255,255,0.02);
+      font-size: 1rem; color: var(--muted);
     }
     .rule strong { color: var(--fg); }
     .plaque {
@@ -69,7 +70,7 @@
       background: linear-gradient(180deg, rgba(126,182,255,0.06), transparent);
     }
     .plaque h2 {
-      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em;
+      font-size: 0.82rem; font-weight: 800; letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--blue); margin-bottom: 0.75rem;
     }
     .plaque ul { list-style: none; }
@@ -80,40 +81,41 @@
       align-items: baseline; justify-content: space-between;
     }
     .plaque li:first-of-type { border-top: 0; }
-    .name { font-weight: 700; font-size: 0.95rem; }
-    .meta { font-size: 0.75rem; color: var(--muted); }
+    .name { font-weight: 700; font-size: 1rem; }
+    .meta { font-size: 0.88rem; color: var(--muted); }
     .empty {
-      font-size: 0.88rem; color: var(--muted); font-style: italic;
+      font-size: 1rem; color: var(--muted); font-style: italic;
       padding: 0.35rem 0 0.15rem;
     }
-    .platform {
-      display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.5rem;
-    }
+    .platform { display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.5rem; }
     .platform .row {
       display: block;
-      padding: 0.85rem 0.95rem;
+      padding: 0.9rem 1rem;
       border: 1px solid var(--line);
       border-radius: 10px;
       background: rgba(255,255,255,0.02);
     }
-    .platform .t { font-weight: 700; font-size: 0.95rem; }
-    .platform .d { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; line-height: 1.4; }
-    .note { font-size: 0.78rem; color: var(--faint); margin-top: 1.5rem; }
+    .platform .t { font-weight: 700; font-size: 1.05rem; }
+    .platform .d { font-size: 0.95rem; color: var(--muted); margin-top: 0.25rem; line-height: 1.45; }
+    .note { font-size: 0.92rem; color: var(--faint); margin-top: 1.5rem; }
     footer {
       margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
-      text-align: center; font-size: 0.72rem; color: var(--faint);
+      text-align: center; font-size: 0.88rem; color: var(--faint);
     }
   </style>
 </head>
 <body>
   <div class="shell">
-    <header>
-      <a class="mark" href="index.html?land=1">DualisCapax</a>
-      <nav>
-        <a href="payments.html">Payments</a>
-        <a href="onboard.html">Onboard</a>
-      </nav>
-    </header>
+    <div class="top">
+      <a href="index.html?land=1" class="mark">DualisCapax</a>
+      <div class="top-links">
+        <a href="for-people.html">For you</a>
+        <a href="research/">Look</a>
+        <a href="onboard.html">Measure</a>
+        <a href="payments.html">Bind</a>
+        <a href="founding.html" class="on">Founding</a>
+      </div>
+    </div>
 
     <p class="eyebrow">Marquis · early residual</p>
     <h1>Founding members</h1>
