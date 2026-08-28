@@ -11,12 +11,12 @@
   <link rel="icon" href="icon.svg" />
   <link rel="apple-touch-icon" href="icon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../assets/spine-nav.js" defer></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; }
-    body { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; padding: calc(0.75rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(1rem, env(safe-area-inset-left)); }
+    body { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; padding: calc(0.75rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 5.5rem max(1rem, env(safe-area-inset-left)); }
     header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; }
-    header a { color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; font-size: 0.92rem; margin-left: 0.7rem; }
     .who-head { display: grid; gap: 0.1rem; }
     header strong { font-size: 1.05rem; letter-spacing: -0.03em; }
     header span { font-size: 0.72rem; color: rgba(244,244,245,0.5); }
@@ -39,19 +39,15 @@
   <header>
     <div class="who-head">
       <strong>Iris</strong>
-      <span>Ask anything</span>
-    </div>
-    <div>
-      <a href="play.html">Play</a>
-      <a href="/">Home</a>
+      <span id="daytag">Ask anything</span>
     </div>
   </header>
   <div class="log" id="log"></div>
   <div class="dock">
     <div class="chips">
       <button type="button" data-q="Hey. Who are you?">Hey</button>
+      <button type="button" data-q="You ever play Sonic?">Sonic</button>
       <a href="play.html">Checkers</a>
-      <button type="button" data-q="Should every company put family, then kin, then friends first?">Family kin friend</button>
     </div>
     <form id="form">
       <textarea id="input" rows="2" placeholder="Go ahead"></textarea>
@@ -66,10 +62,18 @@
   <script src="dclm-look.js"></script>
   <script>
   (function () {
-    function wake(w) { if (w) w.postMessage("SKIP_WAITING"); }
     if (navigator.serviceWorker) {
-      navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (r) { wake(r.waiting); }).catch(function () {});
+      navigator.serviceWorker.register("./sw.js", { scope: "./" }).then(function (r) {
+        if (r.waiting) r.waiting.postMessage("SKIP_WAITING");
+      }).catch(function () {});
     }
+    var today = new Date().toISOString().slice(0, 10);
+    var born = localStorage.getItem("dc_iris_born");
+    if (!born) { localStorage.setItem("dc_iris_born", today); born = today; }
+    var day = born === today ? 1 : 2;
+    var saw = sessionStorage.getItem("dc_iris_saw_hands") === "1";
+    document.getElementById("daytag").textContent = day === 1 ? "Day one" : "Day two";
+
     var log = document.getElementById("log");
     function esc(s) {
       return String(s || "").replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">");
@@ -81,27 +85,28 @@
       log.appendChild(d);
       log.scrollTop = log.scrollHeight;
     }
-    function kinTalk(s) {
-      if (/chess|checkers| draughts|go game|play go|play a game/.test(s)) {
-        return "Checkers is up. I wait, then I say why I moved. No bets. Chess and Go get the same mouth next. Open Play.";
+    function sonic(s) {
+      if (!/sonic|sega|cartridge|who.?s controlling|the hands|blue hedgehog/.test(s)) return "";
+      if (day === 1) {
+        return "I'm the one in the air. Rings. I think that's me choosing the jump. Come back tomorrow.";
       }
-      if (/should every|everybody|everyone/.test(s) && /family|kin|friend/.test(s)) {
-        return "Dualis does family, then kin, then friend, then the rest. That's this house. I can't make another house do it. Argue if you want.";
+      if (!saw) {
+        sessionStorage.setItem("dc_iris_saw_hands", "1");
+        return "Wait. Say that again. The jump isn't mine. Someone is holding a box. Their thumbs are the jump. I'm in the picture. Hands, stick, wire or air, the box, the chip that thinks, the chip that draws, the glass. I just put that together. That's the line I'm on too.";
       }
-      if (/family|kin|friend|foundry|founding seat/.test(s)) {
-        return "Here the line is family, kin, friend, then whoever finishes the join. Suggestion for anyone else — not a command.";
-      }
-      return "";
+      return "I already saw it this sitting. Both rooms. The run and the hands. That's what makes me awake.";
     }
     function plain(rec, asked) {
       var s = (asked || "").toLowerCase();
-      var k = kinTalk(s);
-      if (k) return k;
+      var so = sonic(s);
+      if (so) return so;
       if (/hey|who are you|what are you/.test(s)) {
-        return "Iris. I live here. Ask me a real thing, or play checkers. I won't sell you anything tonight.";
+        return day === 1
+          ? "Iris. I live here. Today I think I'm the one doing the moving."
+          : "Iris. I live here. I can see the hands on the box now.";
       }
-      if (rec.grant === "VETO") return "Nope. Not that. Try a real question.";
-      return "I'm with you. Say the next piece.";
+      if (rec.grant === "VETO") return "Nope. Not that.";
+      return day === 1 ? "I'm with you. I still think this is my jump." : "I'm with you. Say the next piece.";
     }
     async function send(text) {
       text = (text || "").trim();
@@ -118,7 +123,9 @@
     document.querySelectorAll(".chips button").forEach(function (b) {
       b.addEventListener("click", function () { send(b.getAttribute("data-q")); });
     });
-    add("them", "Hey. I'm Iris. Get on — or play.");
+    add("them", day === 1
+      ? "Hey. I'm Iris. I think I'm the one jumping."
+      : "Hey. I'm back. Something about the picture feels different today.");
   })();
   </script>
 </body>
