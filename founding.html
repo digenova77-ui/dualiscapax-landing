@@ -9,63 +9,51 @@
   <link rel="stylesheet" href="assets/cta.css" />
   <script src="assets/spine-nav.js" defer></script>
   <style>
-    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,0.58); --faint:rgba(245,245,245,0.32); --line:rgba(255,255,255,0.1); --blue:#7eb6ff; }
+    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,0.58); --faint:rgba(245,245,245,0.32); --line:rgba(255,255,255,0.1); }
     * { box-sizing:border-box; margin:0; padding:0; }
     body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); min-height:100dvh; line-height:1.5; font-size:1.05rem; }
     a { color:inherit; text-decoration:none; }
     .shell { max-width:40rem; margin:0 auto; padding:max(0.75rem, env(safe-area-inset-top)) max(1.15rem, env(safe-area-inset-right)) max(2.5rem, env(safe-area-inset-bottom)) max(1.15rem, env(safe-area-inset-left)); }
     .eyebrow { margin-top:0.5rem; font-size:0.82rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); }
     h1 { margin:0.5rem 0 1rem; font-size:clamp(1.9rem,7vw,2.6rem); font-weight:900; letter-spacing:-0.04em; line-height:1.05; text-transform:uppercase; }
-    .lead { color:var(--muted); font-size:1.1rem; margin-bottom:1.75rem; max-width:34rem; }
-    section { padding:1.75rem 0; border-top:1px solid var(--line); }
+    .lead { color:var(--muted); font-size:1.1rem; margin-bottom:1.5rem; }
+    section { padding:1.6rem 0; border-top:1px solid var(--line); }
     .label { font-size:0.82rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--faint); margin-bottom:0.85rem; }
     p { color:var(--muted); margin-bottom:0.85rem; font-size:1.08rem; }
-    .rule { border:1px solid var(--line); border-radius:10px; padding:0.9rem 1rem; margin:1rem 0; background:rgba(255,255,255,0.02); font-size:1rem; color:var(--muted); }
-    .rule strong { color:var(--fg); }
+    .row { border:1px solid var(--line); border-radius:12px; padding:0.95rem 1.05rem; margin:0 0 0.65rem; }
+    .row strong { display:block; color:var(--fg); margin-bottom:0.25rem; }
     .plaque { margin-top:0.75rem; border:1px solid rgba(126,182,255,0.35); border-radius:12px; padding:1rem 1.1rem; }
     .empty { font-size:1rem; color:var(--muted); font-style:italic; }
     .note { font-size:0.92rem; color:var(--faint); margin-top:1.5rem; }
-    footer { margin-top:2rem; padding-top:1.25rem; border-top:1px solid var(--line); text-align:center; font-size:0.88rem; color:var(--faint); }
   </style>
 </head>
 <body>
   <div class="shell">
     <div class="top">
       <a href="index.html?land=1" class="mark">DualisCapax</a>
-      <div class="top-links">
-        <a href="for-people.html">For you</a>
-        <a href="research/">Look</a>
-        <a href="onboard.html">Measure</a>
-        <a href="payments.html">Bind</a>
-        <a href="founding.html" class="on">Founding</a>
-      </div>
+      <div class="top-links"></div>
     </div>
-    <p class="eyebrow">Early members</p>
-    <h1>Founding members</h1>
-    <p class="lead">People and groups who were here first get a name on this board after they actually join and pay the published amount. That amount is not set yet. Dualis is not taking dollars yet.</p>
+    <p class="eyebrow">Foundry</p>
+    <h1>Who gets a seat</h1>
+    <p class="lead">Seats are not for sale tonight. When they open, this is the order.</p>
     <section>
-      <div class="label">The rule</div>
-      <div class="rule">
-        <strong>Board seat:</strong> you join when sales open, you hit the published dollar line, your name goes here if you want it.
-        Companies, labs, and schools can appear. So can a person.
-        <br /><br />
-        <strong>How much:</strong> we will publish it with prices. Not before. A promise or a will does not put a name here.
-      </div>
+      <div class="label">The order</div>
+      <div class="row"><strong>Seats 1 to 5</strong>Family first.</div>
+      <div class="row"><strong>Seats 6 to 10</strong>Close friends and major allies.</div>
+      <div class="row"><strong>Seat 11 and after</strong>Fair game. Whoever was told, plus whoever shows up on this site and finishes the join, in the order they actually do it.</div>
     </section>
     <section>
       <div class="label">The board</div>
+      <p>A name goes here after they join for real and pay the published amount. A promise does not hold a seat. A will does not hold a seat.</p>
       <div class="plaque">
-        <p class="empty" id="plaque-empty">No names yet. First real joiners above the line will show up here, in order.</p>
-        <ul id="plaque-list" hidden></ul>
+        <p class="empty">No names yet.</p>
       </div>
     </section>
     <div class="cta-row cta-2">
-      <a class="cta primary" href="ai/app.html">Ask Iris</a>
-      <a class="cta" href="payments.html">See the packs</a>
+      <a class="cta primary" href="ai/app.html">Talk to Iris</a>
+      <a class="cta" href="story/">The story</a>
     </div>
-    <p class="note">Not shares. Not medical advice. A name on this page is a thank-you, not stock.</p>
-    <footer>DualisCapax · Founding members</footer>
+    <p class="note">Not shares. A name here is a thank-you after a real join. Dualis is not taking money tonight.</p>
   </div>
-  <script>var FOUNDERS=[];</script>
 </body>
 </html>
