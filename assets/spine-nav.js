@@ -1,15 +1,12 @@
-/** DualisCapax spine — fixed header + fade dropdown. Iris is the front door. */
+/** DualisCapax spine — first five minutes: Iris, Story, Read. */
 (function () {
   if (window.__dcSpine) return;
   window.__dcSpine = true;
 
   var ITEMS = [
     { href: "/ai/app.html", label: "Iris" },
-    { href: "/for-people.html", label: "For you" },
-    { href: "/research/", label: "Look" },
-    { href: "/onboard.html", label: "Measure" },
-    { href: "/payments.html", label: "Bind" },
-    { href: "/founding.html", label: "Founding" }
+    { href: "/story/", label: "Story" },
+    { href: "/research/", label: "Read" }
   ];
 
   function ready(fn) {
@@ -28,11 +25,9 @@
       var a = document.createElement("a");
       a.href = item.href;
       a.textContent = item.label;
-      var target = item.href.replace(/index\.html$/, "");
-      if (herePath === target || herePath.indexOf(target) === 0 && target.length > 1) {
-        a.className = "on";
-      }
       if (item.label === "Iris" && herePath.indexOf("/ai/") === 0) a.className = "on";
+      if (item.label === "Story" && herePath.indexOf("/story") === 0) a.className = "on";
+      if (item.label === "Read" && herePath.indexOf("/research") === 0) a.className = "on";
       links.appendChild(a);
     });
 
