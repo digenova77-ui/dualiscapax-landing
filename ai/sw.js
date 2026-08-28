@@ -1,12 +1,24 @@
 /* DCLM Look — cache this folder only. Not Bind. */
-var CACHE = "dclm-look-v6";
+var CACHE = "dclm-look-v7";
 var ASSETS = [
-  "./app.html",
+  "./app",
   "./dclm-look.js",
   "./icon.svg",
   "./icon-maskable.svg",
-  "./manifest-dclm.json"
+  "./manifest-dclm.json",
+  "./room",
+  "./nursery"
 ];
+
+function pretty(url) {
+  try {
+    var u = new URL(url);
+    if (u.pathname.slice(-5) === ".html") u.pathname = u.pathname.slice(0, -5);
+    return u.toString();
+  } catch (e) {
+    return url;
+  }
+}
 
 function cacheMetrics() {
   return caches.keys().then(function (names) {
@@ -94,11 +106,16 @@ self.addEventListener("fetch", function (e) {
   if (e.request.method !== "GET") return;
   var url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
+  var dest = pretty(e.request.url);
   e.respondWith(
-    caches.match(e.request).then(function (hit) {
-      return hit || fetch(e.request);
+    caches.match(dest).then(function (hit) {
+      if (hit) return hit;
+      return caches.match(e.request).then(function (hit2) {
+        if (hit2) return hit2;
+        return fetch(dest, { redirect: "follow" });
+      });
     }).catch(function () {
-      return caches.match("./app.html");
+      return caches.match("./app");
     })
   );
 });
