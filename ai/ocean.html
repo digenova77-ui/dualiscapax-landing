@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ocean — Iris</title>
+  <script src="../assets/spine-nav.js" defer></script>
+  <style>
+    body { margin: 0; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; padding: 1.2rem 1rem 6rem; }
+    h1 { font-size: 1.8rem; letter-spacing: -0.04em; }
+    p { color: rgba(244,244,245,0.7); line-height: 1.5; max-width: 36rem; }
+    textarea { width: 100%; max-width: 36rem; min-height: 8rem; background: #0c0c10; color: #fff; border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 0.8rem; font: inherit; }
+    button { margin-top: 0.6rem; font: inherit; font-weight: 700; padding: 0.6rem 1rem; border-radius: 999px; border: 0; background: #f4f4f5; color: #050508; }
+    .out { margin-top: 1rem; max-width: 36rem; min-height: 4rem; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <h1>Ocean</h1>
+  <p>Dump anything. She does not get a lesson with it. If she has no shape yet, she says so. That is the design.</p>
+  <textarea id="in" placeholder="Drop her in."></textarea><br />
+  <button type="button" id="go">Drop</button>
+  <div class="out" id="out"></div>
+  <script src="dclm-look.js"></script>
+  <script>
+  document.getElementById("go").addEventListener("click", async function () {
+    var t = document.getElementById("in").value.trim();
+    if (!t) return;
+    var rec = await DCLMLook.run(t, { voice: "citizen", case_id: "ocean" });
+    var out = "I don't have a shape for that yet.";
+    if (rec.grant === "VETO") out = "No. I won't take that in.";
+    document.getElementById("out").textContent = out;
+    var pile = JSON.parse(localStorage.getItem("dc_ocean") || "[]");
+    pile.push({ t: t, g: rec.grant || "", at: Date.now() });
+    localStorage.setItem("dc_ocean", JSON.stringify(pile.slice(-200)));
+  });
+  </script>
+</body>
+</html>
