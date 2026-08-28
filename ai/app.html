@@ -117,6 +117,9 @@
   <script src="dclm-look.js"></script>
   <script>
   (function () {
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(function () {});
+    }
     var log = document.getElementById("log");
     function esc(s) {
       return String(s || "").replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">");
