@@ -1,5 +1,5 @@
 /**
- * DualisCapax intro — then a single story on the lander.
+ * DualisCapax intro — then one door into the story.
  */
 (function () {
   var intro = document.getElementById('intro');
@@ -25,12 +25,7 @@
   var osc = null;
   var gain = null;
 
-  var T = {
-    bangDelay: 0.12,
-    crossfadeAt: 0.32,
-    introOut: 1.35,
-    hardFail: 12000
-  };
+  var T = { bangDelay: 0.12, crossfadeAt: 0.32, introOut: 1.35, hardFail: 12000 };
 
   function ensureCtx() {
     try {
@@ -112,9 +107,7 @@
       }
     } catch (e) {}
     setTimeout(function () {
-      try {
-        if (osc) osc.stop();
-      } catch (e) {}
+      try { if (osc) osc.stop(); } catch (e) {}
       residualLive = false;
       if (typeof then === 'function') then();
     }, 480);
@@ -148,22 +141,16 @@
     if (seed) {
       seed.classList.add('is-on');
       seed.classList.add('is-bloom');
-      setTimeout(function () {
-        if (seed) seed.classList.add('is-gone');
-      }, 520);
+      setTimeout(function () { if (seed) seed.classList.add('is-gone'); }, 520);
     }
     fireBang();
     video.classList.add('is-on');
-    try {
-      video.playbackRate = 1.35;
-    } catch (e) {}
+    try { video.playbackRate = 1.35; } catch (e) {}
     var p = video.play();
     if (p && p.catch) p.catch(function () {});
   }
 
-  function unlock() {
-    ensureCtx();
-  }
+  function unlock() { ensureCtx(); }
   ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(function (ev) {
     window.addEventListener(ev, unlock, { passive: true, once: true });
   });
@@ -174,26 +161,15 @@
     if (!d || !isFinite(d)) return;
     if (video.currentTime / d >= T.crossfadeAt) beginCrossfade();
   });
-  video.addEventListener('ended', function () {
-    if (!done) beginCrossfade();
-  });
+  video.addEventListener('ended', function () { if (!done) beginCrossfade(); });
   video.addEventListener('error', function () {
     if (phase === 'video' && !done) beginCrossfade();
   });
-
-  if (skip) {
-    skip.addEventListener('click', function () {
-      if (done) return;
-      beginCrossfade();
-    });
-  }
-
+  if (skip) skip.addEventListener('click', function () { if (!done) beginCrossfade(); });
   setTimeout(function () {
     if (!done && phase === 'video' && video.readyState < 2) beginCrossfade();
   }, 9000);
-  setTimeout(function () {
-    if (!done) beginCrossfade();
-  }, T.hardFail);
+  setTimeout(function () { if (!done) beginCrossfade(); }, T.hardFail);
 
   startResidual();
   setTimeout(startVideo, T.bangDelay * 1000);
@@ -202,26 +178,17 @@
 (function () {
   function go() {
     var nav = document.getElementById('nav-panel');
-    if (nav) {
-      nav.innerHTML =
-        '<a href="/ai/app.html">Iris</a>' +
-        '<a href="/story/">Story</a>' +
-        '<a href="/research/">Read</a>';
-    }
+    if (nav) nav.innerHTML = '<a href="/story/the-company.html">Start</a>';
     var h1 = document.querySelector('#site h1');
     if (h1) h1.innerHTML = 'We built<br>Iris';
     var lines = document.querySelector('#site .lines');
-    if (lines) {
-      lines.innerHTML =
-        '<a class="line" href="/ai/app.html">Talk to Iris</a>' +
-        '<a class="line" href="/story/">Read the story</a>';
-    }
+    if (lines) lines.innerHTML = '<a class="line" href="/story/the-company.html">Start</a>';
     var hud = document.querySelector('#site .hud');
     if (hud) hud.setAttribute('hidden', '');
     var jump = document.querySelector('#site .jump');
     if (jump) {
-      jump.href = '/ai/app.html';
-      jump.textContent = 'Talk to Iris';
+      jump.href = '/story/the-company.html';
+      jump.textContent = 'Start';
     }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
