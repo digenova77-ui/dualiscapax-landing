@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#050508" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="DualisCapax" />
   <title>Ask DualisCapax</title>
   <link rel="manifest" href="manifest-dclm.json" />
   <link rel="icon" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -117,7 +119,7 @@
   (function () {
     var log = document.getElementById("log");
     function esc(s) {
-      return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      return String(s || "").replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">");
     }
     function add(who, html) {
       var d = document.createElement("div");
