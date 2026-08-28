@@ -4,72 +4,53 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Healthcare — DualisCapax</title>
-  <meta name="description" content="Healthcare research hub. Journal library and medical stacks." />
   <meta name="theme-color" content="#050505" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../assets/cta.css" />
+  <script src="../../assets/spine-nav.js" defer></script>
   <style>
     :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,.55); --faint:rgba(245,245,245,.28); --line:rgba(255,255,255,.09); }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.55; min-height: 100dvh; font-size: 1.12rem; -webkit-font-smoothing: antialiased; }
-    a { color: inherit; text-decoration: none; }
-    .site { max-width: 42rem; margin: 0 auto; padding: 0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
-    .eyebrow { font-size: 0.86rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.1rem; }
-    h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); font-weight: 800; line-height: 0.92; letter-spacing: -0.045em; text-transform: uppercase; margin-bottom: 1.1rem; }
-    .statement { font-size: 1.2rem; line-height: 1.55; color: var(--muted); max-width: 34rem; }
-    section { padding: 2.2rem 0; border-top: 1px solid var(--line); }
-    .section-label { font-size: 0.86rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 1rem; }
-    p { font-size: 1.18rem; line-height: 1.6; color: var(--muted); margin-bottom: 1rem; }
-    .rooms { display: flex; flex-direction: column; gap: 0.65rem; }
-    .room { display: block; padding: 1.05rem 1.15rem; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,0.02); }
-    .room .t { font-weight: 700; font-size: 1.12rem; margin-bottom: 0.25rem; }
-    .room .d { font-size: 1.05rem; color: var(--muted); line-height: 1.45; }
-    footer { padding: 2.25rem 0 2.75rem; border-top: 1px solid var(--line); font-size: 0.95rem; color: var(--faint); text-align: center; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); line-height:1.55; min-height:100dvh; font-size:1.12rem; }
+    a { color:inherit; text-decoration:none; }
+    .site { max-width:42rem; margin:0 auto; padding:0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
+    .eyebrow { font-size:0.86rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:1.1rem; }
+    h1 { font-size:clamp(2.2rem,9vw,3.2rem); font-weight:800; line-height:0.92; letter-spacing:-0.045em; text-transform:uppercase; margin-bottom:1.1rem; }
+    .statement { font-size:1.2rem; line-height:1.55; color:var(--muted); max-width:34rem; }
+    section { padding:2.2rem 0; border-top:1px solid var(--line); }
+    .section-label { font-size:0.86rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); margin-bottom:1rem; }
+    p { font-size:1.18rem; line-height:1.6; color:var(--muted); margin-bottom:1rem; }
+    .rooms { display:flex; flex-direction:column; gap:0.65rem; }
+    .room { display:block; padding:1.05rem 1.15rem; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,0.02); }
+    .room .t { font-weight:700; font-size:1.12rem; margin-bottom:0.25rem; }
+    .room .d { font-size:1.05rem; color:var(--muted); line-height:1.45; }
   </style>
 </head>
 <body>
   <div class="site">
-    <div class="top">
-      <a href="../../index.html?land=1" class="mark">DualisCapax</a>
-      <div class="top-links">
-        <a href="../../for-people.html">For you</a>
-        <a href="../" class="on">Look</a>
-        <a href="../../onboard.html">Measure</a>
-        <a href="../../payments.html">Bind</a>
-        <a href="../../founding.html">Founding</a>
-      </div>
-    </div>
-    <main style="padding: 1.5rem 0 0.5rem;">
-      <div class="eyebrow">Look</div>
-      <h1>Healthcare</h1>
-      <p class="statement">Journal library and medical residual stacks. Public surface first. Not treatment. Not a clinic.</p>
+    <div class="top"><a href="/index.html?land=1" class="mark">DualisCapax</a><div class="top-links"></div></div>
+    <main style="padding:1.5rem 0 0.5rem;">
+      <div class="eyebrow">Health</div>
+      <h1>Health</h1>
+      <p class="statement">Free floor: you can know this room exists. The journal and the full ALS record sit behind the gate.</p>
     </main>
     <section>
-      <div class="section-label">Paths</div>
+      <div class="section-label">Open later</div>
       <div class="rooms">
-        <a class="room" href="library/">
-          <div class="t">Journal library</div>
-          <div class="d">Specialties. Open reading. No institutional claim.</div>
+        <a class="room" href="locked.html">
+          <div class="t">Journal</div>
+          <div class="d">Closed until Dualis sells access. Not a clinic.</div>
         </a>
-        <a class="room" href="medical/">
-          <div class="t">Medical</div>
-          <div class="d">Neurological hierarchy, dual-column journals, ALS path — existing format.</div>
-        </a>
-        <a class="room" href="../medical.html">
-          <div class="t">Medical path</div>
-          <div class="d">Tribute first. Then journals you can check.</div>
+        <a class="room" href="locked.html">
+          <div class="t">ALS record</div>
+          <div class="d">Closed. A piece is not the whole file.</div>
         </a>
       </div>
     </section>
-    <section>
-      <div class="section-label">Notice</div>
-      <p>Informational and in-silico only. Not treatment. Not a clinic. Simulations are not for sale here.</p>
-      <div class="cta-row cta-2">
-        <a class="cta primary" href="../">All research</a>
-        <a class="cta" href="../../for-people.html">For you</a>
-      </div>
-    </section>
-    <footer>DualisCapax · Look · Truth prevails</footer>
+    <div class="cta-row cta-2">
+      <a class="cta primary" href="/ai/app.html">Talk to Iris</a>
+      <a class="cta" href="/research/">Other rooms</a>
+    </div>
   </div>
 </body>
 </html>
