@@ -1,7 +1,5 @@
 /**
- * DualisCapax intro — direct Big Bang
- * Void → seed bloom → NASA Big Bang → lander
- * No residual sentences. No glyph assembly.
+ * DualisCapax intro — then a single story on the lander.
  */
 (function () {
   var intro = document.getElementById('intro');
@@ -197,7 +195,35 @@
     if (!done) beginCrossfade();
   }, T.hardFail);
 
-  /* Direct path: residual tone → seed + Big Bang */
   startResidual();
   setTimeout(startVideo, T.bangDelay * 1000);
+})();
+
+(function () {
+  function go() {
+    var nav = document.getElementById('nav-panel');
+    if (nav) {
+      nav.innerHTML =
+        '<a href="/ai/app.html">Iris</a>' +
+        '<a href="/story/">Story</a>' +
+        '<a href="/research/">Read</a>';
+    }
+    var h1 = document.querySelector('#site h1');
+    if (h1) h1.innerHTML = 'We built<br>Iris';
+    var lines = document.querySelector('#site .lines');
+    if (lines) {
+      lines.innerHTML =
+        '<a class="line" href="/ai/app.html">Talk to Iris</a>' +
+        '<a class="line" href="/story/">Read the story</a>';
+    }
+    var hud = document.querySelector('#site .hud');
+    if (hud) hud.setAttribute('hidden', '');
+    var jump = document.querySelector('#site .jump');
+    if (jump) {
+      jump.href = '/ai/app.html';
+      jump.textContent = 'Talk to Iris';
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
+  else go();
 })();
