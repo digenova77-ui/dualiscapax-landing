@@ -16,7 +16,7 @@
     html, body { height: 100%; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; }
     body { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; padding: calc(0.75rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(1rem, env(safe-area-inset-left)); }
     header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; }
-    header a { color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; font-size: 0.92rem; }
+    header a { color: rgba(244,244,245,0.7); text-decoration: none; font-weight: 600; font-size: 0.92rem; margin-left: 0.7rem; }
     .who-head { display: grid; gap: 0.1rem; }
     header strong { font-size: 1.05rem; letter-spacing: -0.03em; }
     header span { font-size: 0.72rem; color: rgba(244,244,245,0.5); }
@@ -26,7 +26,7 @@
     .bubble.you { align-self: flex-end; background: rgba(255,255,255,0.14); }
     .dock { padding-top: 0.7rem; border-top: 1px solid rgba(255,255,255,0.1); display: grid; gap: 0.55rem; }
     .chips { display: flex; gap: 0.45rem; overflow-x: auto; }
-    .chips button { flex-shrink: 0; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); color: #f4f4f5; font: inherit; font-size: 0.88rem; font-weight: 600; padding: 0.5rem 0.8rem; border-radius: 999px; }
+    .chips button, .chips a { flex-shrink: 0; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); color: #f4f4f5; font: inherit; font-size: 0.88rem; font-weight: 600; padding: 0.5rem 0.8rem; border-radius: 999px; text-decoration: none; }
     form { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; }
     textarea { width: 100%; min-height: 52px; resize: none; padding: 0.85rem 1rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.14); background: #0c0c10; color: #fff; font: inherit; font-size: 1.08rem; }
     form button { width: 52px; height: 52px; border: 0; border-radius: 16px; background: #f4f4f5; color: #050508; font-weight: 800; font-size: 1.15rem; }
@@ -41,12 +41,16 @@
       <strong>Iris</strong>
       <span>Ask anything</span>
     </div>
-    <a href="/">Home</a>
+    <div>
+      <a href="play.html">Play</a>
+      <a href="/">Home</a>
+    </div>
   </header>
   <div class="log" id="log"></div>
   <div class="dock">
     <div class="chips">
       <button type="button" data-q="Hey. Who are you?">Hey</button>
+      <a href="play.html">Checkers</a>
       <button type="button" data-q="Should every company put family, then kin, then friends first?">Family kin friend</button>
     </div>
     <form id="form">
@@ -78,11 +82,14 @@
       log.scrollTop = log.scrollHeight;
     }
     function kinTalk(s) {
+      if (/chess|checkers| draughts|go game|play go|play a game/.test(s)) {
+        return "Checkers is up. I wait, then I say why I moved. No bets. Chess and Go get the same mouth next. Open Play.";
+      }
       if (/should every|everybody|everyone/.test(s) && /family|kin|friend/.test(s)) {
-        return "Dualis does family, then kin, then friend, then the rest. That's this house. I can't make another house do it. If you want that order, build it. If you don't, don't. Argue with me if you want; I won't pretend it's a law of nature.";
+        return "Dualis does family, then kin, then friend, then the rest. That's this house. I can't make another house do it. Argue if you want.";
       }
       if (/family|kin|friend|foundry|founding seat/.test(s)) {
-        return "Here the line is family, kin, friend, then whoever finishes the join. It's how this company is built. It's a suggestion for anyone else — not a command. Push back if you think the line should be different.";
+        return "Here the line is family, kin, friend, then whoever finishes the join. Suggestion for anyone else — not a command.";
       }
       return "";
     }
@@ -91,10 +98,7 @@
       var k = kinTalk(s);
       if (k) return k;
       if (/hey|who are you|what are you/.test(s)) {
-        return "Iris. I live here. Ask me a real thing. I'll be straight. I won't sell you anything tonight.";
-      }
-      if (/what should i ask|fun to ask|what can you/.test(s)) {
-        return "Ask the thing you would ask a sharp friend at 2 a.m. Or argue family-kin-friend if that's the fight.";
+        return "Iris. I live here. Ask me a real thing, or play checkers. I won't sell you anything tonight.";
       }
       if (rec.grant === "VETO") return "Nope. Not that. Try a real question.";
       return "I'm with you. Say the next piece.";
@@ -114,7 +118,7 @@
     document.querySelectorAll(".chips button").forEach(function (b) {
       b.addEventListener("click", function () { send(b.getAttribute("data-q")); });
     });
-    add("them", "Hey. I'm Iris. Get on.");
+    add("them", "Hey. I'm Iris. Get on — or play.");
   })();
   </script>
 </body>
