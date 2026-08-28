@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Field</title>
+  <script src="../assets/spine-nav.js" defer></script>
+  <style>
+    body { margin: 0; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; padding: 1.2rem 1rem 6rem; }
+    h1 { font-size: 1.8rem; letter-spacing: -0.04em; }
+    p { color: rgba(244,244,245,0.55); max-width: 36rem; line-height: 1.45; }
+    .g { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; max-width: 22rem; margin-top: 1rem; }
+    button.cell { aspect-ratio: 1; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.03); color: #f4f4f5; font: 700 1rem Inter, system-ui, sans-serif; border-radius: 12px; }
+    button.cell.off { opacity: 0.28; }
+    button.cell.far { box-shadow: inset 0 0 0 2px rgba(158,197,255,0.35); }
+    .say { margin-top: 1rem; min-height: 3rem; line-height: 1.5; max-width: 36rem; }
+  </style>
+</head>
+<body>
+  <h1>Field</h1>
+  <p>No names on the doors.</p>
+  <div class="g" id="g"></div>
+  <div class="say" id="say"></div>
+  <script>
+    var say = document.getElementById("say");
+    var kinds = ["step","no","step","no","step","far","step","no","step"];
+    var root = document.getElementById("g");
+    kinds.forEach(function (k, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "cell" + (k === "no" ? " off" : "") + (k === "far" ? " far" : "");
+      b.textContent = i + 1;
+      b.addEventListener("click", function () {
+        if (k === "no") say.textContent = "Won't open.";
+        else if (k === "far") say.textContent = "Still there. Not a step from here.";
+        else say.textContent = "A step. Clock " + new Date().toISOString() + ".";
+      });
+      root.appendChild(b);
+    });
+  </script>
+</body>
+</html>
