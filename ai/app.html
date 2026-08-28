@@ -65,6 +65,17 @@
       width: 52px; height: 52px; border: 0; border-radius: 16px;
       background: #f4f4f5; color: #050508; font-weight: 800; font-size: 1.15rem;
     }
+    .home {
+      font-size: 0.92rem; line-height: 1.45;
+      color: rgba(244,244,245,0.62);
+    }
+    .home summary {
+      cursor: pointer; font-weight: 650; color: rgba(244,244,245,0.82);
+      list-style: none;
+    }
+    .home summary::-webkit-details-marker { display: none; }
+    .home ol { margin: 0.45rem 0 0.7rem 1.15rem; }
+    .home li { margin: 0.2rem 0; }
   </style>
 </head>
 <body>
@@ -82,6 +93,24 @@
       <textarea id="input" rows="2" placeholder="What's the leftover?"></textarea>
       <button type="submit" aria-label="Send">↑</button>
     </form>
+    <details class="home">
+      <summary>Put this on your home screen</summary>
+      <p style="margin-top:0.45rem">This is not an App Store app. It is this page, with an icon.</p>
+      <p style="margin-top:0.55rem"><strong>iPhone / iPad</strong></p>
+      <ol>
+        <li>Open this page in Safari (not Chrome).</li>
+        <li>Tap the Share button (square with an arrow).</li>
+        <li>Tap Add to Home Screen.</li>
+        <li>Tap Add.</li>
+      </ol>
+      <p><strong>Android</strong></p>
+      <ol>
+        <li>Open this page in Chrome.</li>
+        <li>Tap the three dots.</li>
+        <li>Tap Add to Home screen (or Install app).</li>
+        <li>Tap Add.</li>
+      </ol>
+    </details>
   </div>
   <script src="dclm-look.js"></script>
   <script>
