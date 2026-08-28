@@ -51,11 +51,11 @@
   <div class="dock">
     <pre id="swdbg">sw —</pre>
     <div class="chips">
-      <button type="button" data-q="Warehouse overtime leftover is CAD $180000 this year. Walk-back is a 90-day pilot.">Extra overtime</button>
-      <button type="button" data-q="What can I do here for free?">What is this?</button>
+      <button type="button" data-q="What are you?">What are you?</button>
+      <button type="button" data-q="What can you actually do?">What can you do?</button>
     </div>
     <form id="form">
-      <textarea id="input" rows="2" placeholder="What cost extra?"></textarea>
+      <textarea id="input" rows="2" placeholder="Ask Iris"></textarea>
       <button type="submit" aria-label="Send">↑</button>
     </form>
     <details class="home">
@@ -97,31 +97,29 @@
       log.appendChild(d);
       log.scrollTop = log.scrollHeight;
     }
-    function doorLine(m) {
-      if (!m) return "";
-      if (m.invertibility === "yes" && m.invert_door === "pilot") return " A short test run is a way to try to bring that down.";
-      if (m.invertibility === "yes" && m.invert_door === "time-box") return " Try it for a set number of days and stop if it does not help.";
-      if (m.invertibility === "yes") return " You already have a way to try to undo some of it.";
-      if (m.invertibility === "no") return " This one is already spent. We can still name the number.";
-      return "";
+    function about() {
+      return "I'm Iris, DualisCapax's AI. I give a straight answer and I will tell you when I don't know. I won't sell you anything on this page, and I won't pretend to be a doctor or a broker.";
+    }
+    function canDo() {
+      return "Ask a real question — work, research, how this site works, whether a claim is solid. I'll answer in plain language. I stop if you ask me to invent a cure, push a token, or force someone. Deeper runs stay closed until Dualis is actually taking payment.";
     }
     function plain(rec, asked) {
       var s = (asked || "").toLowerCase();
-      if (s.indexOf("what can i do") >= 0 || s.indexOf("what is this") >= 0) {
-        return "I'm Iris. Tell me what cost extra this year — money or hours. I'll put a number on it. I am not selling anything here.";
-      }
+      if (/what are you|who are you|what is (this|iris|dualis)/.test(s)) return about();
+      if (/what can (you|i)|what do you do|what is this for/.test(s)) return canDo();
       if (rec.grant === "VETO") {
-        return "I can't help with that.<span class=\"hint\">I only work with extra cost you can count — not medical claims, not tokens, not forcing anyone.</span>";
+        return "I can't help with that. I won't invent medical claims, sell tokens, or help force anyone.";
+      }
+      if (rec.grant === "MEASURE" && rec.measure) {
+        var m = rec.measure;
+        var n = (m.residual_value && m.residual_value !== "SEED") ? (m.residual_value + " " + (m.residual_unit || "")) : "";
+        var extra = n ? " I can pin that as " + n.trim() + "." : "";
+        return "Got it." + extra + " If you want to go further, say what you'd try next. This page is still free.";
       }
       if (rec.grant === "SEED") {
-        return "I need a bit more.<span class=\"hint\">Give me a dollar or hour figure, and whether you could try a short test to reduce it.</span>";
+        return "I can work with that. Tell me the part that matters — the question, the constraint, or the number if there is one.";
       }
-      var m = rec.measure || {};
-      var bit = (m.residual_value && m.residual_value !== "SEED")
-        ? (m.residual_value + " " + (m.residual_unit === "CAD" ? "extra" : (m.residual_unit || "")))
-        : "an extra cost";
-      return "I have " + bit.trim() + "." + doorLine(m) +
-        "<span class=\"hint\">This page is free.</span>";
+      return "Say a bit more and I'll take a proper run at it.";
     }
     async function send(text) {
       text = (text || "").trim();
@@ -138,7 +136,7 @@
     document.querySelectorAll(".chips button").forEach(function (b) {
       b.addEventListener("click", function () { send(b.getAttribute("data-q")); });
     });
-    add("them", "I'm Iris. What cost extra this year? This page is free.");
+    add("them", about());
   })();
   </script>
 </body>
