@@ -1,13 +1,7 @@
-/** DualisCapax spine — first five minutes: Iris, Story, Read. */
+/** One path on inner pages: back through the story, or home. */
 (function () {
   if (window.__dcSpine) return;
   window.__dcSpine = true;
-
-  var ITEMS = [
-    { href: "/ai/app.html", label: "Iris" },
-    { href: "/story/", label: "Story" },
-    { href: "/research/", label: "Read" }
-  ];
 
   function ready(fn) {
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
@@ -19,31 +13,23 @@
     var links = top && top.querySelector(".top-links");
     if (!top || !links || top.classList.contains("is-spine")) return;
 
-    var herePath = location.pathname.replace(/index\.html$/, "");
     links.innerHTML = "";
-    ITEMS.forEach(function (item) {
-      var a = document.createElement("a");
-      a.href = item.href;
-      a.textContent = item.label;
-      if (item.label === "Iris" && herePath.indexOf("/ai/") === 0) a.className = "on";
-      if (item.label === "Story" && herePath.indexOf("/story") === 0) a.className = "on";
-      if (item.label === "Read" && herePath.indexOf("/research") === 0) a.className = "on";
-      links.appendChild(a);
-    });
+    var a = document.createElement("a");
+    a.href = "/story/the-company.html";
+    a.textContent = "Start";
+    links.appendChild(a);
 
     top.classList.add("is-spine");
     document.documentElement.classList.add("has-spine");
 
-    var on = links.querySelector("a.on");
     var here = document.createElement("div");
     here.className = "top-here";
-    here.textContent = on ? on.textContent.trim() : "Menu";
+    here.textContent = "Story";
 
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "top-toggle";
     btn.setAttribute("aria-expanded", "false");
-    btn.setAttribute("aria-controls", "spine-panel");
     btn.setAttribute("aria-label", "Open menu");
     btn.innerHTML = "<span></span><span></span><span></span>";
 
@@ -55,9 +41,7 @@
       top.classList.toggle("is-open", open);
       links.classList.toggle("is-open", open);
       btn.setAttribute("aria-expanded", open ? "true" : "false");
-      btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
     }
-
     btn.addEventListener("click", function (e) {
       e.stopPropagation();
       setOpen(!links.classList.contains("is-open"));
@@ -68,14 +52,5 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") setOpen(false);
     });
-
-    function pad() {
-      document.documentElement.style.setProperty(
-        "--spine-h",
-        Math.ceil(top.getBoundingClientRect().height) + "px"
-      );
-    }
-    pad();
-    window.addEventListener("resize", pad);
   });
 })();
