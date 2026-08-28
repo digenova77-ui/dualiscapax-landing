@@ -5,93 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Industrial — Research — DualisCapax</title>
   <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/cta.css" />
   <style>
+    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,.55); --faint:rgba(245,245,245,.28); --line:rgba(255,255,255,.09); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: #050505;
-      color: #f5f5f5;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-    }
+    body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.55; min-height: 100dvh; font-size: 1.12rem; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
-    .shell {
-      max-width: 44rem;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-      flex: 1;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.25rem 0 0;
-      gap: 1rem;
-    }
-    .mark { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.04em; }
-    nav { display: flex; gap: 1.35rem; flex-wrap: wrap; }
-    nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.7); }
-    .back { display: inline-block; margin: 1.5rem 0 0.75rem; font-size: 0.9rem; font-weight: 600; color: rgba(245,245,245,0.55); }
-    h1 {
-      font-size: clamp(2.5rem, 10vw, 3.75rem);
-      font-weight: 900;
-      line-height: 0.9;
-      letter-spacing: -0.05em;
-      text-transform: uppercase;
-      margin: 0 0 1.25rem;
-    }
-    article p {
-      font-size: clamp(1.15rem, 3.8vw, 1.4rem);
-      line-height: 1.4;
-      font-weight: 500;
-      margin: 0 0 1.25rem;
-    }
-    .depth {
-      margin-top: auto;
-      padding: 2rem 0 1.75rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      border-top: 1px solid rgba(255,255,255,0.09);
-    }
-    .depth a {
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 0.65rem 1rem;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 999px;
-      color: rgba(245,245,245,0.85);
-    }
+    .site { max-width: 42rem; margin: 0 auto; padding: 0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
+    .eyebrow { font-size: 0.86rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.1rem; }
+    h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); font-weight: 800; line-height: 0.92; letter-spacing: -0.045em; text-transform: uppercase; margin-bottom: 1.1rem; }
+    .statement { font-size: 1.2rem; line-height: 1.55; color: var(--muted); max-width: 34rem; }
+    section { padding: 2.2rem 0; border-top: 1px solid var(--line); }
+    .section-label { font-size: 0.86rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 1rem; }
+    p { font-size: 1.18rem; line-height: 1.6; color: var(--muted); margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+    .rooms { display: flex; flex-direction: column; gap: 0.65rem; }
+    .room { display: block; padding: 1.05rem 1.15rem; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,0.02); }
+    .room .t { font-weight: 700; font-size: 1.12rem; margin-bottom: 0.25rem; }
+    .room .d { font-size: 1.05rem; color: var(--muted); line-height: 1.45; }
+    footer { padding: 2.25rem 0 2.75rem; border-top: 1px solid var(--line); font-size: 0.95rem; color: var(--faint); text-align: center; }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <a href="../index.html" class="mark">DualisCapax</a>
-      <nav>
-        <a href="../research/">Research</a>
-        <a href="../corporate.html">Financial</a>
-        <a href="../ai/">AI</a>
-      </nav>
-    </header>
-    <a class="back" href="index.html">← Research</a>
-    <h1>Industrial</h1>
-    <article>
-      <p>Industrial research at DualisCapax is cutting-edge math and science applied to systems, materials, energy, and engineering under a residual-law financial firm. The work is about what can be built and accounted for when capacity is real and residual cost is not ignored.</p>
-      <p>This surface explains what industrial research entails here: open technical material where published, no storefront for simulations, and no offer of securities or tokens. Adaptive AI may support the work; it does not replace the requirement that Affinity survive friction.</p>
-      <p>Ontario and Canadian law apply. Deeper rooms break industrial research into engineering and energy. Further notes will use the same plain format.</p>
-    </article>
-    <div class="depth">
-      <a href="engineering/">Engineering</a>
-      <a href="energy/">Energy</a>
+  <div class="site">
+    <div class="top">
+      <a href="../index.html?land=1" class="mark">DualisCapax</a>
+      <div class="top-links">
+        <a href="../for-people.html">For you</a>
+        <a href="./" class="on">Look</a>
+        <a href="../onboard.html">Measure</a>
+        <a href="../payments.html">Bind</a>
+        <a href="../founding.html">Founding</a>
+      </div>
     </div>
+    <main style="padding: 1.5rem 0 0.5rem;">
+      <div class="eyebrow">Look</div>
+      <h1>Industrial</h1>
+      <p class="statement">Math and science applied to systems, materials, energy, and engineering when capacity is real and residual cost is not ignored.</p>
+    </main>
+    <section>
+      <div class="section-label">What this room holds</div>
+      <p>Open technical material where published. No storefront for simulations. No offer of securities or tokens. Adaptive AI may support the work; it does not replace the requirement that a number can run backwards in your units.</p>
+    </section>
+    <section>
+      <div class="section-label">Deeper rooms</div>
+      <div class="rooms">
+        <a class="room" href="engineering/">
+          <div class="t">Engineering</div>
+          <div class="d">Systems, materials, computation. Open notes. NASA credit lives here so the lander stays clean.</div>
+        </a>
+        <a class="room" href="energy/">
+          <div class="t">Energy</div>
+          <div class="d">Capacity and burn — residual priced at the edge, not as a physics trophy.</div>
+        </a>
+        <a class="room" href="engineering/thermodynamic-residual.html">
+          <div class="t">Thermodynamic residual</div>
+          <div class="d">Irreversible information cost and fidelity-versus-capacity. Literature-forward, not a Landauer-limit product claim.</div>
+        </a>
+      </div>
+    </section>
+    <section>
+      <div class="cta-row cta-2">
+        <a class="cta primary" href="./">All research</a>
+        <a class="cta" href="../ai/">Adaptive AI</a>
+      </div>
+    </section>
+    <footer>DualisCapax · Look · Truth prevails</footer>
   </div>
 </body>
 </html>
