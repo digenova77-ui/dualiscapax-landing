@@ -3,49 +3,167 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Research + AI — DualisCapax</title>
-  <meta name="description" content="Read free. Board when alone is not enough. Cost toward zero for everyone." />
+  <title>Look — Research — DualisCapax</title>
+  <meta name="description" content="Read free. Board when alone is not enough. Residual cost toward zero." />
   <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/cta.css" />
   <style>
+    :root {
+      --bg: #050505;
+      --fg: #f5f5f5;
+      --muted: rgba(245,245,245,0.55);
+      --faint: rgba(245,245,245,0.28);
+      --line: rgba(255,255,255,0.09);
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, sans-serif; background: #050505; color: #f5f5f5; -webkit-font-smoothing: antialiased; min-height: 100dvh; display: flex; flex-direction: column; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      min-height: 100dvh;
+      font-size: 1.05rem;
+      -webkit-font-smoothing: antialiased;
+    }
     a { color: inherit; text-decoration: none; }
-    .shell { max-width: 44rem; margin: 0 auto; padding: 0 1.25rem; flex: 1; width: 100%; display: flex; flex-direction: column; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0 0; gap: 1rem; }
-    .mark { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.04em; }
-    nav { display: flex; gap: 1.5rem; flex-wrap: nowrap; }
-    nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.75); white-space: nowrap; }
-    h1 { font-size: clamp(2.25rem, 9vw, 3.5rem); font-weight: 900; line-height: 0.92; letter-spacing: -0.05em; text-transform: uppercase; margin: 2rem 0 1.25rem; }
-    article p { font-size: clamp(1.15rem, 3.8vw, 1.45rem); line-height: 1.35; font-weight: 500; margin: 0 0 1.15rem; }
-    .depth { margin-top: auto; padding: 2rem 0 1.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.09); }
-    .depth a { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em; padding: 0.6rem 0.85rem; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; color: rgba(245,245,245,0.85); white-space: nowrap; }
+    .site {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left));
+    }
+    .eyebrow {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+    h1 {
+      font-size: clamp(2.1rem, 9vw, 3.2rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
+    .statement {
+      font-size: 1.15rem;
+      line-height: 1.55;
+      color: var(--muted);
+      max-width: 32rem;
+      margin-bottom: 0.5rem;
+    }
+    section {
+      padding: 2.2rem 0;
+      border-top: 1px solid var(--line);
+    }
+    .section-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    p:last-child { margin-bottom: 0; }
+    .rooms {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .room {
+      display: block;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+    .room:active { opacity: 0.85; }
+    .room .t {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.25rem;
+    }
+    .room .d {
+      font-size: 0.98rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    footer {
+      padding: 2.25rem 0 2.75rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+      color: var(--faint);
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <a href="../index.html" class="mark">DualisCapax</a>
-      <nav aria-label="Primary">
-        <a href="../corporate.html">Financial</a>
-        <a href="../residual-law.html">Our law</a>
-        <a href="../onboard.html">Board</a>
-      </nav>
-    </header>
-    <h1>Research + AI</h1>
-    <article>
-      <p>For you: start free. See what is solid and what is still thin—without paying to find out.</p>
-      <p>DualisCapax is the vision between you and the future. Board when what you need has no honest path by reading alone—shared capacity, measured cost, waste driven down for everyone.</p>
-      <p>Not a cure claim. Not a securities offer.</p>
-    </article>
-    <div class="depth">
-      <a href="medical.html">Health</a>
-      <a href="engineering/">Systems</a>
-      <a href="math-science.html">Math & Science</a>
-      <a href="industrial.html">Industrial</a>
-      <a href="engineering/thermodynamic-residual.html">Capacity</a>
-      <a href="../onboard.html">Board</a>
+  <div class="site">
+    <div class="top">
+      <a href="../index.html?land=1" class="mark">DualisCapax</a>
+      <div class="top-links">
+        <a href="../for-people.html">For you</a>
+        <a href="./" class="on">Look</a>
+        <a href="../onboard.html">Measure</a>
+        <a href="../payments.html">Bind</a>
+        <a href="../founding.html">Founding</a>
+      </div>
     </div>
+
+    <main style="padding: 1.5rem 0 0.5rem;">
+      <div class="eyebrow">Look</div>
+      <h1>Research</h1>
+      <p class="statement">
+        Read free. See what is solid and what is still thin — without paying to find out.
+        Board only when reading alone is not enough.
+      </p>
+    </main>
+
+    <section>
+      <div class="section-label">Rooms</div>
+      <div class="rooms">
+        <a class="room" href="medical.html">
+          <div class="t">Health</div>
+          <div class="d">Medical and clinical residual framing. Not a cure claim.</div>
+        </a>
+        <a class="room" href="industrial.html">
+          <div class="t">Industrial</div>
+          <div class="d">Operations, logistics, and plant-scale friction.</div>
+        </a>
+        <a class="room" href="math-science.html">
+          <div class="t">Math & science</div>
+          <div class="d">Formal structure and measurement language.</div>
+        </a>
+        <a class="room" href="engineering/">
+          <div class="t">Systems</div>
+          <div class="d">Engineering and capacity under residual law.</div>
+        </a>
+        <a class="room" href="../ai/adaptive.html">
+          <div class="t">Adaptive AI</div>
+          <div class="d">Intelligence layer — same plain format as the rest of the site.</div>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">Honest limits</div>
+      <p>Not a cure claim. Not a securities offer. Free to read. Cost only when you choose to bind.</p>
+      <div class="cta-row cta-2">
+        <a class="cta primary" href="../onboard.html">Measure</a>
+        <a class="cta" href="../for-people.html">For you</a>
+      </div>
+    </section>
+
+    <footer>DualisCapax · Look · Truth prevails</footer>
   </div>
 </body>
 </html>
