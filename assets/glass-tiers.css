@@ -63,6 +63,7 @@
 .tier-z-far, .tier-doors { transform: translate3d(0,0,-36px); }
 .tier-z-back { transform: translate3d(0,0,-72px) scale(0.985); }
 .tier-jump { transform: translate3d(0,0,48px); }
+.geo-wrap, #geo-earth { position: relative; z-index: 2; }
 
 .tier-logo { animation-name: slide-back; }
 .tier-geo  { animation-name: slide-forward; }
