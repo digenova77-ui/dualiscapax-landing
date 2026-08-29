@@ -1,85 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Read — DualisCapax</title>
-  <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/cta.css" />
-  <script src="../assets/spine-nav.js" defer></script>
-  <style>
-    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,0.55); --faint:rgba(245,245,245,0.28); --line:rgba(255,255,255,0.09); }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); line-height:1.55; min-height:100dvh; font-size:1.12rem; }
-    a { color:inherit; text-decoration:none; }
-    .site { max-width:42rem; margin:0 auto; padding:0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
-    .eyebrow { font-size:0.86rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:1.1rem; }
-    h1 { font-size:clamp(2.2rem,9vw,3.2rem); font-weight:800; line-height:0.92; letter-spacing:-0.045em; text-transform:uppercase; margin-bottom:1.1rem; }
-    .statement { font-size:1.2rem; line-height:1.55; color:var(--muted); max-width:34rem; margin-bottom:0.5rem; }
-    section { padding:2.2rem 0; border-top:1px solid var(--line); }
-    .section-label { font-size:0.86rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); margin-bottom:1rem; }
-    .rooms { display:flex; flex-direction:column; gap:0.65rem; }
-    .room { display:block; padding:1.05rem 1.15rem; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,0.02); }
-    .room .t { font-weight:700; font-size:1.12rem; margin-bottom:0.25rem; }
-    .room .d { font-size:1.05rem; color:var(--muted); line-height:1.45; }
-    footer { padding:2.25rem 0 2.75rem; border-top:1px solid var(--line); font-size:0.95rem; color:var(--faint); text-align:center; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Research — DualisCapax</title>
+<meta name="description" content="Pick a room. Each pile is its own. You do not have to read the whole site."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../theme.css"/>
+<link rel="stylesheet" href="../assets/standard.css"/>
 </head>
 <body>
-  <div class="site">
-    <div class="top">
-      <a href="/index.html?land=1" class="mark">DualisCapax</a>
-      <div class="top-links"></div>
-    </div>
-    <main style="padding:1.5rem 0 0.5rem;">
-      <div class="eyebrow">Read</div>
-      <h1>Pick a room</h1>
-      <p class="statement">Each room is its own pile. You don't have to read the whole site.</p>
-    </main>
-    <section>
-      <div class="section-label">Start here</div>
-      <div class="rooms">
-        <a class="room" href="/ai/app">
-          <div class="t">Talk to Iris</div>
-          <div class="d">Ask her something. Free.</div>
-        </a>
-        <a class="room" href="/ai/room">
-          <div class="t">Watch her</div>
-          <div class="d">You take a place. She takes another empty one.</div>
-        </a>
-        <a class="room" href="healthcare/">
-          <div class="t">Health</div>
-          <div class="d">Journals and notes. Not a diagnosis. Not a cure.</div>
-        </a>
-        <a class="room" href="healthcare/medical/neurological/als.html">
-          <div class="t">ALS notes</div>
-          <div class="d">One disease, one stack. Take it to your own doctor.</div>
-        </a>
-        <a class="room" href="industrial.html">
-          <div class="t">Shops and plants</div>
-          <div class="d">Hours, freight, stuff that breaks on the floor.</div>
-        </a>
-        <a class="room" href="math-science.html">
-          <div class="t">Math</div>
-          <div class="d">When a claim can be checked, and when it can't.</div>
-        </a>
-        <a class="room" href="philosophy/">
-          <div class="t">Thinking</div>
-          <div class="d">How Dualis looks at a question. No costume.</div>
-        </a>
-      </div>
-    </section>
-    <section>
-      <div class="section-label">More rooms</div>
-      <div class="rooms">
-        <a class="room" href="energy/"><div class="t">Energy</div><div class="d">What a close costs in real units.</div></a>
-        <a class="room" href="engineering/"><div class="t">Engineering</div><div class="d">Systems under load.</div></a>
-        <a class="room" href="life/"><div class="t">Life</div><div class="d">Animals, plants, fungi.</div></a>
-        <a class="room" href="fields/"><div class="t">Field notes</div><div class="d">Open notes. Same reading surface.</div></a>
-      </div>
-    </section>
-    <footer>DualisCapax · Read</footer>
+  <div class="tears" aria-hidden="true">
+    <i class="tear t1" style="left:8%;top:18%"></i>
+    <i class="tear t2" style="left:78%;top:12%"></i>
+    <i class="tear t3" style="left:18%;top:68%"></i>
+    <i class="tear t4" style="left:86%;top:58%"></i>
+    <i class="tear t5" style="left:48%;top:8%"></i>
+    <i class="tear t6" style="left:62%;top:76%"></i>
   </div>
+<div class="site">
+  <header>
+    <a class="mark" href="../index.html?land=1">DualisCapax</a>
+    <nav>
+        <a href="../look.html" class="on">Look</a>
+        <a href="../invert.html">Invert</a>
+        <a href="../residual-law.html">Law</a>
+        <a href="../tools.html">Tools</a>
+        <a href="../ai/app.html">Iris</a>
+    </nav>
+  </header>
+  <p class="eyebrow">Look</p>
+  <h1>Pick a room</h1>
+  <p class="lede">Each room is its own pile. You do not have to read the whole site. Twelve can start with Iris. Specialists can jump to math.</p>
+  <section>
+    <h2>Start here</h2>
+    <div class="grid-doors">
+      <a class="door-row" href="/ai/app.html"><b>Talk to Iris</b><span>Ask her something. Free.</span></a>
+      <a class="door-row" href="/look.html"><b>Look</b><span>Leftover, fingerprints, invert — first read.</span></a>
+      <a class="door-row" href="/information.html"><b>Information</b><span>Marks you can check.</span></a>
+      <a class="door-row" href="philosophy/"><b>Thinking</b><span>How Dualis looks at a question.</span></a>
+      <a class="door-row" href="math-science.html"><b>Math</b><span>When a claim can be checked.</span></a>
+      <a class="door-row" href="engineering/"><b>Engineering</b><span>Systems under load.</span></a>
+    </div>
+  </section>
+  <section>
+    <h2>More rooms</h2>
+    <div class="grid-doors">
+      <a class="door-row" href="energy/"><b>Energy</b><span>What a close costs in real units.</span></a>
+      <a class="door-row" href="industrial.html"><b>Shops and plants</b><span>Hours, freight, stuff that breaks on the floor.</span></a>
+      <a class="door-row" href="life/"><b>Life</b><span>Animals, plants, fungi.</span></a>
+      <a class="door-row" href="fields/"><b>Field notes</b><span>Open notes. Same reading surface.</span></a>
+      <a class="door-row" href="healthcare/"><b>Health notes</b><span>Journals. Not a diagnosis. Not a cure.</span></a>
+    </div>
+    <nav class="sec-break"><a href="/index.html?land=1">Home</a><span class="dim">·</span><a href="/manifesto.html">Manifesto</a><a href="/residual-law.html">Residual Law</a></nav>
+  </section>
+  <footer>DualisCapax · Truth Prevails · No tribes preferred</footer>
+</div>
+<script src="/js/no-select.js"></script>
+<script src="/assets/haptic.js"></script>
 </body>
 </html>

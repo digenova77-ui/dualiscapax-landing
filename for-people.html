@@ -1,66 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>For you — DualisCapax</title>
-  <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/cta.css"/>
-  <link rel="stylesheet" href="assets/glass-tiers.css"/>
-  <script src="assets/spine-nav.js" defer></script>
-  <style>
-    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,.6); --line:rgba(255,255,255,.09); }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); min-height:100dvh; font-size:1.12rem; line-height:1.5; position:relative; overflow-x:hidden; }
-    a { color:inherit; text-decoration:none; }
-    .site { max-width:40rem; margin:0 auto; padding:0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
-    main { padding:2rem 0 1.5rem; perspective:1100px; transform-style:preserve-3d; }
-    h1 { font-size:clamp(2rem,8vw,2.8rem); font-weight:800; letter-spacing:-0.04em; line-height:0.95; margin-bottom:1.25rem; animation:slide-back .8s cubic-bezier(.22,1,.36,1) both; }
-    ol { list-style:none; display:grid; gap:0.85rem; margin:0 0 2rem; counter-reset:n; transform-style:preserve-3d; }
-    ol li { font-size:1.15rem; color:var(--muted); padding:0.85rem 0.9rem 0.85rem 1.8rem; position:relative; border:1px solid rgba(158,197,255,.16); background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.2)); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-radius:2px; animation:slide-up .7s cubic-bezier(.22,1,.36,1) both; }
-    ol li:nth-child(1){animation-name:slide-left;transform:translateZ(28px);animation-delay:.05s}
-    ol li:nth-child(2){animation-name:slide-right;transform:translateZ(8px);animation-delay:.12s}
-    ol li:nth-child(3){animation-name:slide-back;transform:translateZ(20px);animation-delay:.19s}
-    ol li:nth-child(4){animation-name:slide-forward;transform:translateZ(-8px);animation-delay:.26s}
-    ol li:nth-child(5){animation-name:slide-diag-br;transform:translateZ(16px);animation-delay:.33s}
-    ol li::before { content:counter(n); counter-increment:n; position:absolute; left:0.55rem; color:rgba(245,245,245,0.35); font-weight:700; font-size:0.95rem; top:0.95rem; }
-    .more { margin-top:1.2rem; font-weight:700; }
-    .more a { color:#9ec5ff; }
-    footer { padding:2rem 0; border-top:1px solid var(--line); font-size:0.8rem; color:rgba(245,245,245,0.28); text-align:center; }
-    footer a { color:rgba(245,245,245,0.28); text-decoration:underline; text-underline-offset:3px; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>For you — DualisCapax</title>
+<meta name="description" content="What's going on, in five sentences, then the grain."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="theme.css"/>
+<link rel="stylesheet" href="assets/standard.css"/>
 </head>
 <body>
   <div class="tears" aria-hidden="true">
-    <i class="tear t1" style="left:10%;top:16%"></i>
-    <i class="tear t2" style="left:82%;top:22%"></i>
-    <i class="tear t3" style="left:14%;top:72%"></i>
-    <i class="tear t4" style="left:88%;top:64%"></i>
-    <i class="tear t5" style="left:50%;top:8%"></i>
-    <i class="tear t6" style="left:68%;top:80%"></i>
+    <i class="tear t1" style="left:8%;top:18%"></i>
+    <i class="tear t2" style="left:78%;top:12%"></i>
+    <i class="tear t3" style="left:18%;top:68%"></i>
+    <i class="tear t4" style="left:86%;top:58%"></i>
+    <i class="tear t5" style="left:48%;top:8%"></i>
+    <i class="tear t6" style="left:62%;top:76%"></i>
   </div>
-  <div class="site">
-    <div class="top">
-      <a href="/index.html?land=1" class="mark">DualisCapax</a>
-      <div class="top-links"></div>
+<div class="site">
+  <header>
+    <a class="mark" href="index.html?land=1">DualisCapax</a>
+    <nav>
+        <a href="look.html" class="on">Look</a>
+        <a href="invert.html">Invert</a>
+        <a href="residual-law.html">Law</a>
+        <a href="tools.html">Tools</a>
+        <a href="ai/app.html">Iris</a>
+    </nav>
+  </header>
+  <p class="eyebrow">For you</p>
+  <h1>What's going on</h1>
+  <p class="lede">Five sentences first. Depth under them.</p>
+  <section>
+    <h2>First read</h2>
+    <div class="layer"><p>This company built an AI. Her name is Iris.</p></div>
+    <div class="layer"><p>You can talk to her. That is free.</p></div>
+    <div class="layer"><p>You can read the other pages. That is free too.</p></div>
+    <div class="layer"><p>Fuel, Residual Law, and Donate are live doors. Card waits on a Stripe link.</p></div>
+    <div class="layer"><p>If you do not like it, close the tab.</p></div>
+  </section>
+  <section>
+    <h2>Then the grain</h2>
+    <p>DualisCapax sits between you and leftover you already pay: a bill, a protocol, a plant line, a long shift, a wallet that leaks. Look is free. Measure is a figure you can invert. Bind is prepaid time or a hashed residual instrument after the figure holds.</p>
+    <p>No shove. No preferred tribe. Truth prevails when the number can walk home.</p>
+    <div class="grid-doors">
+      <a class="door-row" href="/ai/app.html"><b>Talk to Iris</b><span>Free. First person. Short.</span></a>
+      <a class="door-row" href="/look.html"><b>Look</b><span>The first-read of the house.</span></a>
+      <a class="door-row" href="/research/"><b>Research</b><span>Rooms you can open in any order.</span></a>
+      <a class="door-row" href="/story/"><b>Story</b><span>One page at a time.</span></a>
     </div>
-    <main>
-      <h1>What's going on</h1>
-      <ol>
-        <li>This company built an AI. Her name is Iris.</li>
-        <li>You can talk to her. That's free.</li>
-        <li>You can read the other pages. That's free too.</li>
-        <li>You cannot buy anything today.</li>
-        <li>If you don't like it, close the tab.</li>
-      </ol>
-      <div class="cta-row cta-2">
-        <a class="cta primary" href="/ai/app.html">Talk to Iris</a>
-        <a class="cta" href="/research/">Read</a>
-      </div>
-      <p class="more"><a href="/story/">The story, one page at a time →</a></p>
-    </main>
-    <footer>DualisCapax · <a href="/lab.html">engine notes</a></footer>
-  </div>
+    <nav class="sec-break"><a href="/index.html?land=1">Home</a><span class="dim">·</span><a href="/onboard.html">Onboard</a><a href="/tools.html">Tools</a></nav>
+  </section>
+  <footer>DualisCapax · Truth Prevails · No tribes preferred</footer>
+</div>
+<script src="/js/no-select.js"></script>
+<script src="/assets/haptic.js"></script>
 </body>
 </html>
