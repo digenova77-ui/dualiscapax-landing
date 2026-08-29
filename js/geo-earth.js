@@ -2,7 +2,6 @@ import * as THREE from 'three';
 const canvas=document.getElementById('geo-earth');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
-renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
 renderer.setClearColor(0x000000,0);
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(36,1,0.1,20);
@@ -241,8 +240,7 @@ const cage=c60Geometry(cagePts,cageMin);
 const glow=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
   color:0x6aa8ff,transparent:true,opacity:0.16,blending:THREE.AdditiveBlending,depthWrite:false
 }));
-glow.scale.setScalar(1.008);
-const cageCore=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
+const cageCore=new THREE.LineSegments(cage.clone(),new THREE.LineBasicMaterial({
   color:0x9ec5ff,transparent:true,opacity:0.28,blending:THREE.AdditiveBlending,depthWrite:false
 }));
 group.add(glow);group.add(cageCore);
@@ -438,9 +436,10 @@ function frame(now){
 }
 requestAnimationFrame(frame);
 function onResize(){
-  const w=canvas.clientWidth,h=canvas.clientHeight;
-  if(w<1||h<1)return;
-  renderer.setSize(w,h,false);
-  camera.aspect=w/h;camera.updateProjectionMatrix();
+  const box=canvas.getBoundingClientRect();
+  const s=Math.max(1,Math.round(Math.min(box.width||canvas.clientWidth,box.height||canvas.clientHeight)));
+  renderer.setSize(s,s,false);
+  camera.aspect=1;
+  camera.updateProjectionMatrix();
 }
 window.addEventListener('resize',onResize);onResize();
