@@ -34,14 +34,14 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/donate.html">Donate</a></div>
   <p class="kicker">Fuel gateway</p>
   <h1>Prepaid time is open</h1>
-  <p class="lede">Fuel is time. Unused time stays with you. Not a seat. Not equity. Not a coin. Pay in crypto. Memo the pack.</p>
+  <p class="lede">Fuel is prepaid time. Unused time stays with you. Pay in crypto. Memo the pack.</p>
   <button type="button" class="pack on" data-pack="trial" data-fuel="40"><b>40 Fuel</b><span>Trial</span></button>
   <button type="button" class="pack" data-pack="practice" data-fuel="120"><b>120 Fuel</b><span>Practice</span></button>
   <button type="button" class="pack" data-pack="retain" data-fuel="320"><b>320 Fuel</b><span>Retain</span></button>
   <button type="button" class="go" id="pay">Pay Fuel — copy rail</button>
   <button type="button" class="alt" id="iris">Or pay Iris time in DOGE</button>
   <div class="steps" id="howto" hidden></div>
-  <p class="note">Pick a pack. Tap pay. Memo: Fuel + pack name. HUD Onboard stays closed.</p>
+  <p class="note">Pick a pack. Tap pay. Memo: Fuel + pack name.</p>
   <foot>DualisCapax · Fuel · prepaid time</foot>
 </div>
 <script src="/js/payments-config.js"></script>
@@ -70,14 +70,14 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
     if(!addr){ box.hidden=false; box.innerHTML='<strong>No rail bound.</strong>'; return; }
     copy(addr).then(function(){ btn.classList.add('ok'); btn.textContent='Address copied — send crypto'; }).catch(function(){});
     box.hidden=false;
-    box.innerHTML='<strong>Fuel — '+fuel+' · '+pack+'</strong><ol><li>Paste the address from the tap.</li><li>Send on ETH, Polygon, BNB, SOL, XRP, ZEC, DOT, DGB, BCH, or LINK.</li><li>Memo: Fuel '+pack+' '+fuel+'.</li></ol><p>Default copy is the EVM key. Match the chain to the asset. Not a seat.</p>';
+    box.innerHTML='<strong>Fuel — '+fuel+' · '+pack+'</strong><ol><li>Paste the address from the tap.</li><li>Send on ETH, Polygon, BNB, SOL, XRP, ZEC, DOT, DGB, BCH, or LINK.</li><li>Memo: Fuel '+pack+' '+fuel+'.</li></ol><p>Default copy is the EVM key. Match the chain to the asset. Prepaid time only.</p>';
   });
   document.getElementById('iris').addEventListener('click',function(){
     tap();
     var addr=pay.ai_doge||'';
     if(addr) copy(addr).catch(function(){});
     box.hidden=false;
-    box.innerHTML='<strong>Iris time — DOGE</strong><p>Agent time. Not a Fuel pack. Not a seat.</p>';
+    box.innerHTML='<strong>Iris time — DOGE</strong><p>Agent time. Separate from Fuel packs.</p>';
   });
 })();
 </script>
