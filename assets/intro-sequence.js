@@ -1,14 +1,15 @@
 /**
- * DualisCapax intro — then one door into the story.
+ * DualisCapax intro — seed, then the locked lander.
+ * We do not copy a NASA tape. We do not load that MP4.
+ * We do not rewrite the four lines. Iris sits bottom right.
  */
 (function () {
   var intro = document.getElementById('intro');
-  var video = document.getElementById('nasa-bb');
   var smoke = document.getElementById('smoke');
   var skip = document.getElementById('skip-intro');
   var seed = document.getElementById('seed');
   var canvas = document.getElementById('matrix');
-  if (!intro || !video) return;
+  if (!intro) return;
 
   if (document.documentElement.classList.contains('land-direct')) {
     try { intro.remove(); } catch (e) {}
@@ -18,14 +19,11 @@
   }
 
   var done = false;
-  var phase = 'void';
   var residualLive = false;
-  var crossfading = false;
   var audioCtx = null;
   var osc = null;
   var gain = null;
-
-  var T = { bangDelay: 0.12, crossfadeAt: 0.32, introOut: 1.35, hardFail: 12000 };
+  var T = { bloom: 520, introOut: 1350, hardFail: 4200 };
 
   function ensureCtx() {
     try {
@@ -69,34 +67,7 @@
     }
   }
 
-  function fireBang() {
-    var ctx = ensureCtx();
-    if (!ctx) return;
-    try {
-      var now = ctx.currentTime;
-      if (gain) {
-        gain.gain.cancelScheduledValues(now);
-        var cur = Math.max(gain.gain.value, 0.0001);
-        gain.gain.setValueAtTime(cur, now);
-        gain.gain.exponentialRampToValueAtTime(0.28, now + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.14, now + 0.7);
-      }
-      var boom = ctx.createOscillator();
-      var boomGain = ctx.createGain();
-      boom.type = 'sine';
-      boom.frequency.value = 28;
-      boomGain.gain.value = 0.0001;
-      boom.connect(boomGain);
-      boomGain.connect(ctx.destination);
-      boom.start();
-      boomGain.gain.setValueAtTime(0.0001, now);
-      boomGain.gain.exponentialRampToValueAtTime(0.26, now + 0.03);
-      boomGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
-      boom.stop(now + 1.0);
-    } catch (e) {}
-  }
-
-  function stopResidual(then) {
+  function stopResidual() {
     try {
       if (gain && audioCtx) {
         var now = audioCtx.currentTime;
@@ -109,88 +80,41 @@
     setTimeout(function () {
       try { if (osc) osc.stop(); } catch (e) {}
       residualLive = false;
-      if (typeof then === 'function') then();
     }, 480);
   }
 
   function beginCrossfade() {
-    if (done || crossfading) return;
+    if (done) return;
     done = true;
-    crossfading = true;
-    phase = 'crossfade';
     document.body.classList.add('is-live');
     if (smoke) smoke.classList.add('is-clear');
-    stopResidual(function () {});
-    setTimeout(function () {
-      intro.classList.add('is-out');
-      video.classList.add('is-fade');
-    }, 60);
+    stopResidual();
+    intro.classList.add('is-out');
+    if (canvas) canvas.classList.add('is-fade');
     setTimeout(function () {
       try { intro.remove(); } catch (e) {}
       try { if (smoke) smoke.remove(); } catch (e) {}
-    }, 60 + T.introOut * 1000 + 150);
+    }, T.introOut + 150);
   }
 
-  function startVideo() {
-    if (phase === 'video' || done) return;
-    phase = 'video';
-    if (canvas) {
-      canvas.classList.remove('is-on');
-      canvas.classList.add('is-fade');
-    }
+  function bloom() {
+    if (done) return;
+    if (canvas) canvas.classList.add('is-on');
     if (seed) {
       seed.classList.add('is-on');
       seed.classList.add('is-bloom');
-      setTimeout(function () { if (seed) seed.classList.add('is-gone'); }, 520);
+      setTimeout(function () { if (seed) seed.classList.add('is-gone'); }, T.bloom);
     }
-    fireBang();
-    video.classList.add('is-on');
-    try { video.playbackRate = 1.35; } catch (e) {}
-    var p = video.play();
-    if (p && p.catch) p.catch(function () {});
+    setTimeout(function () { if (!done) beginCrossfade(); }, T.bloom + 400);
   }
 
   function unlock() { ensureCtx(); }
   ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(function (ev) {
     window.addEventListener(ev, unlock, { passive: true, once: true });
   });
-
-  video.addEventListener('timeupdate', function () {
-    if (phase !== 'video' || done) return;
-    var d = video.duration;
-    if (!d || !isFinite(d)) return;
-    if (video.currentTime / d >= T.crossfadeAt) beginCrossfade();
-  });
-  video.addEventListener('ended', function () { if (!done) beginCrossfade(); });
-  video.addEventListener('error', function () {
-    if (phase === 'video' && !done) beginCrossfade();
-  });
   if (skip) skip.addEventListener('click', function () { if (!done) beginCrossfade(); });
-  setTimeout(function () {
-    if (!done && phase === 'video' && video.readyState < 2) beginCrossfade();
-  }, 9000);
   setTimeout(function () { if (!done) beginCrossfade(); }, T.hardFail);
 
   startResidual();
-  setTimeout(startVideo, T.bangDelay * 1000);
-})();
-
-(function () {
-  function go() {
-    var nav = document.getElementById('nav-panel');
-    if (nav) nav.innerHTML = '<a href="/story/the-company.html">Start</a>';
-    var h1 = document.querySelector('#site h1');
-    if (h1) h1.innerHTML = 'We built<br>Iris';
-    var lines = document.querySelector('#site .lines');
-    if (lines) lines.innerHTML = '<a class="line" href="/story/the-company.html">Start</a>';
-    var hud = document.querySelector('#site .hud');
-    if (hud) hud.setAttribute('hidden', '');
-    var jump = document.querySelector('#site .jump');
-    if (jump) {
-      jump.href = '/story/the-company.html';
-      jump.textContent = 'Start';
-    }
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
-  else go();
+  bloom();
 })();
