@@ -7,14 +7,10 @@ const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(30,1,0.1,20);
 camera.position.z=3.95;
 const w=2048,h=1024;
-const field=document.createElement('canvas');
-field.width=w;field.height=h;
-const ftx=field.getContext('2d');
 const mark=document.createElement('canvas');
 mark.width=w;mark.height=h;
 const mtx=mark.getContext('2d');
-const PHI=(1+Math.sqrt(5))/2;
-const CAGE_R=0.933;
+const R=0.93;
 
 function stampWord(ctx,x,y){
   ctx.save();
@@ -27,19 +23,12 @@ function stampWord(ctx,x,y){
   ctx.fillText('DualisCapax',x,y);
   ctx.restore();
 }
-function paintField(){
-  ftx.fillStyle='#050506';
-  ftx.fillRect(0,0,w,h);
-}
 function paintMarks(){
   mtx.clearRect(0,0,w,h);
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
 }
-paintField();
 paintMarks();
-const tex=new THREE.CanvasTexture(field);
-tex.colorSpace=THREE.SRGBColorSpace;
 const markTex=new THREE.CanvasTexture(mark);
 markTex.colorSpace=THREE.SRGBColorSpace;
 markTex.anisotropy=8;
@@ -96,63 +85,20 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
 });
 
 const body=new THREE.Mesh(
-  new THREE.SphereGeometry(0.92,96,72),
-  new THREE.MeshBasicMaterial({color:0x050506,transparent:true,opacity:0.68,depthWrite:true})
+  new THREE.SphereGeometry(R,128,96),
+  new THREE.MeshPhongMaterial({
+    color:0x000000,
+    emissive:new THREE.Color(0x000000),
+    specular:new THREE.Color(0x1a1a1a),
+    shininess:18,
+    transparent:false
+  })
 );
 body.renderOrder=1;
 group.add(body);
 
-function c60Points(radius){
-  const raw=[];
-  function even(x,y,z){ raw.push(x,y,z, z,x,y, y,z,x); }
-  for(const s1 of [-1,1]) for(const s2 of [-1,1]) even(0,s1,s2*3*PHI);
-  for(const s1 of [-1,1]) for(const s2 of [-1,1]) for(const s3 of [-1,1]){
-    even(s1*2,s2*(1+2*PHI),s3*PHI);
-    even(s1,s2*(2+PHI),s3*2*PHI);
-  }
-  const pts=[];
-  for(let i=0;i<raw.length;i+=3){
-    pts.push(new THREE.Vector3(raw[i],raw[i+1],raw[i+2]).setLength(radius));
-  }
-  return pts;
-}
-function edgeLength(pts){
-  let min=Infinity;
-  for(let i=0;i<pts.length;i++){
-    for(let j=i+1;j<pts.length;j++){
-      const d=pts[i].distanceTo(pts[j]);
-      if(d>1e-6&&d<min)min=d;
-    }
-  }
-  return min;
-}
-function c60Geometry(pts,min){
-  const pos=[];
-  const cut=min*1.12;
-  for(let i=0;i<pts.length;i++){
-    for(let j=i+1;j<pts.length;j++){
-      if(pts[i].distanceTo(pts[j])<=cut){
-        pos.push(pts[i].x,pts[i].y,pts[i].z,pts[j].x,pts[j].y,pts[j].z);
-      }
-    }
-  }
-  const g=new THREE.BufferGeometry();
-  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
-  return g;
-}
-const cagePts=c60Points(CAGE_R);
-const cageMin=edgeLength(cagePts);
-const cage=c60Geometry(cagePts,cageMin);
-const glow=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
-  color:0x6aa8ff,transparent:true,opacity:0.16,blending:THREE.AdditiveBlending,depthWrite:false
-}));
-const cageCore=new THREE.LineSegments(cage.clone(),new THREE.LineBasicMaterial({
-  color:0x9ec5ff,transparent:true,opacity:0.28,blending:THREE.AdditiveBlending,depthWrite:false
-}));
-group.add(glow);group.add(cageCore);
-
 const shell=new THREE.Mesh(
-  new THREE.SphereGeometry(0.948,96,72),
+  new THREE.SphereGeometry(R+0.012,128,96),
   new THREE.MeshBasicMaterial({
     map:markTex,transparent:true,opacity:1,depthWrite:false,side:THREE.FrontSide
   })
@@ -202,8 +148,8 @@ function addFeed(pt){
     sGold:makeSprites(texGold)
   });
 }
-addFeed(new THREE.Vector3(CAGE_R,0,0));
-addFeed(new THREE.Vector3(-CAGE_R,0,0));
+addFeed(new THREE.Vector3(R,0,0));
+addFeed(new THREE.Vector3(-R,0,0));
 function ribbonPath(from,now,phase){
   const dest=from.clone().setLength(ER*0.92);
   const dir=dest.clone().sub(from);
@@ -248,11 +194,11 @@ function writeSprites(geo,pts,now,offset){
   geo.attributes.position.needsUpdate=true;
 }
 
-scene.add(new THREE.AmbientLight(0x8aa0bc,0.9));
-const sun=new THREE.DirectionalLight(0xfff4e6,1.85);
-sun.position.set(-2.2,0.55,2.4);scene.add(sun);
-const fill=new THREE.DirectionalLight(0x4a8fd8,0.7);
-fill.position.set(2.4,-0.4,-1.2);scene.add(fill);
+scene.add(new THREE.AmbientLight(0x101014,0.35));
+const sun=new THREE.DirectionalLight(0xffffff,0.55);
+sun.position.set(-2.2,0.8,2.6);scene.add(sun);
+const fill=new THREE.DirectionalLight(0x222228,0.25);
+fill.position.set(2.2,-0.6,-1.4);scene.add(fill);
 const ribbonLight=new THREE.PointLight(0xb7d6ff,1.8,2.0);
 ribbonLight.position.set(0,0,0);
 group.add(ribbonLight);
