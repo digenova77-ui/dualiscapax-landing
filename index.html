@@ -84,7 +84,7 @@
   .hud-foot{margin-top:0.45rem;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.48);text-align:center;line-height:1.35}
   @media (max-width:40rem){.hud-foot{display:none}.hud-rail{margin-top:.28rem}:root{--bar:3.7rem}}
   .jump{margin-top:auto;padding:0.35rem 0.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.78rem,3.2vw,0.92rem);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9ec5ff}
-  .jump span{display:block;margin-top:0.25rem;font-size:0.64rem;font-weight:500;letter-spacing:0.04em;text-transform:none;color:rgba(245,245,245,0.48);white-space:nowrap}
+  .jump span{display:block;margin-top:0.25rem;font-size:0.64rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:rgba(245,245,245,0.48);white-space:nowrap}
   .scroll-stage{width:min(46rem,calc(100% - 1.2rem));margin:0 auto 2rem;perspective:1400px}
   .pane.glass{position:relative;overflow:hidden;padding:1.6rem 1.15rem 1.8rem;min-height:70vh}
   .pane-art{position:absolute;left:50%;top:42%;width:min(72vw,22rem);height:min(72vw,22rem);transform:translate3d(-50%,-50%,-48px);opacity:.5;pointer-events:none;z-index:0;display:flex;align-items:center;justify-content:center}
@@ -157,7 +157,7 @@
   <section class="hero" id="top">
     <div class="stack">
       <div class="tier tier-geo"><div class="geo-wrap"><canvas id="geo-earth" width="512" height="512" aria-label="DualisCapax"></canvas></div></div>
-      <p class="classif">Crypto - Residual Law - AI - Research</p>
+      <p class="classif">Residual Law - Crypto - AI - Research</p>
       <div class="tier tier-copy">
         <h1>Truth<br>Prevails</h1>
         <div class="lines">
@@ -167,7 +167,7 @@
           <a class="line" href="#look">OPEN RESEARCH</a>
         </div>
       </div>
-      <div class="tier tier-jump"><a class="jump" href="#for-you">Continue<span id="peg-clock">time does singularity —</span></a></div>
+      <div class="tier tier-jump"><a class="jump" href="#for-you">Continue<span id="peg-clock">TIME TO SINGULARITY —</span></a></div>
     </div>
   </section>
   <div class="scroll-stage">
@@ -346,7 +346,7 @@
     var left = target - now;
     var cd = fmtCountdown(left);
     if (singEl) singEl.textContent = cd;
-    if (pegEl) pegEl.textContent = 'time does singularity ' + cd;
+    if (pegEl) pegEl.textContent = 'TIME TO SINGULARITY ' + cd;
     if (hudFoot) hudFoot.textContent = ageLabel(age);
     if (hudFill) {
       var d = Math.floor(age / 86400000);
