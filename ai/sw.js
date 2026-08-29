@@ -1,5 +1,5 @@
 /* DCLM Look — cache this folder only. Not Bind. */
-var CACHE = "dclm-look-v7";
+var CACHE = "dclm-look-v8";
 var ASSETS = [
   "./app",
   "./dclm-look.js",
