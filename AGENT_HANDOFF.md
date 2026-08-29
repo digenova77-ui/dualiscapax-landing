@@ -1,7 +1,7 @@
 # DualisCapax · Agent Handoff
 
-**Current as of:** `2026-08-29T01:50:00Z` (UTC)
-**Local context:** 2026-08-28 09:50 PM EDT
+**Current as of:** `2026-08-29T01:56:00Z` (UTC)
+**Local context:** 2026-08-28 09:56 PM EDT
 **Repo:** `digenova77-ui/dualiscapax-landing` · `main`
 **Live:** https://dualiscapax.ai/
 **Rule:** Future agents start here. Do not start behind this timestamp. Update after every ship.
@@ -25,16 +25,15 @@ Did you want to wire Iris (`ai/portal.js`) to the DCLM kernel, wrap one Ontario 
 
 ---
 
-## 2. What shipped 28 Aug 21:50 EDT
+## 2. What shipped 28 Aug 21:56 EDT
 
-Owner plates baked as SVG law.
+Visual law only. Copy not rewritten. Seats not reopened.
 
-- `brand/logo-mark-dark.svg` / `brand/logo-mark-light.svg` redrawn from the 28 Aug plates (word + figure-8 helix + tail)
-- Aliases updated: `logo-dark.svg`, `logo-light.svg`, `logo-helix.svg`, `brand/logo-dna-x.svg`, `brand/wordmark.svg`
-- `brand/LOGO-LAW.md` sealed to those two marks
-- Iris (`ai/app.html`): full-viewport 3-row shell. Camera is overlay only — no fourth grid row. Home text button and attach button removed. Logo is the home link. Long-press send attaches.
-
-Lander copy not rewritten. Seats not reopened.
+- `assets/glass-tiers.css` — 3D glass panes, tear sprites, slide-up / slide-left / slide-right / slide-back
+- Home stacks existing blocks on glass tiers; quark sprites now include tear glyphs; HUD / nav / lines are frosted
+- `for-people.html` uses the same slide glass on the five existing sentences
+- `theme.css` imports the glass law so inner pages that already use it pick up section slides
+- Owner logo plates remain sealed from the prior ship
 
 ---
 
