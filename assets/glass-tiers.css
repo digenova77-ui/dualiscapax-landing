@@ -79,6 +79,10 @@ input, textarea, [contenteditable] {
   perspective: none !important;
   transform: none !important;
   transform-style: flat;
+  justify-content: space-between !important;
+  min-height: 0 !important;
+  padding-block: 0 !important;
+  height: 100%;
 }
 .tier-geo, .geo-wrap, #geo-earth {
   transform: none !important;
@@ -86,6 +90,21 @@ input, textarea, [contenteditable] {
   perspective: none !important;
   position: relative;
   z-index: 2;
+}
+.hero {
+  height: calc(100svh - var(--bar)) !important;
+  min-height: calc(100svh - var(--bar)) !important;
+  max-width: none !important;
+  padding-top: 0.08rem !important;
+  padding-bottom: 0.28rem !important;
+}
+.hero .tier-geo {
+  flex: 1 1 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
 }
 .geo-wrap {
   flex: 1 1 auto !important;
@@ -100,6 +119,18 @@ input, textarea, [contenteditable] {
   height: 100%;
   aspect-ratio: 1 / 1;
   display: block;
+}
+.hero .tier-copy {
+  margin: 0.06rem auto 0 !important;
+  max-width: min(96vw, 30rem);
+  flex: 0 0 auto;
+}
+.hero h1 {
+  font-size: clamp(1.75rem, 7.6vw, 2.9rem) !important;
+}
+.hero .tier-jump {
+  flex: 0 0 auto;
+  margin-top: 0;
 }
 
 .tier-logo { animation-name: slide-back; }
