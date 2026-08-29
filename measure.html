@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Ontario Measure — DualisCapax</title>
+<meta name="description" content="One Ontario Time-of-Use leftover you can invert. Put the kWh and the cents from the bill."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="theme.css"/>
+<link rel="stylesheet" href="assets/standard.css"/>
+<style>
+  .sheet{display:grid;gap:.55rem}
+  .sheet label{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  .sheet input{
+    width:100%;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--fg);
+    font:500 1rem "IBM Plex Sans",system-ui,sans-serif;padding:.7rem .8rem;
+    -webkit-user-select:text;user-select:text;
+  }
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+  @media (max-width:40rem){.pair{grid-template-columns:1fr}}
+  .go{
+    border:1px solid var(--line);background:linear-gradient(180deg,rgba(158,197,255,.16),rgba(0,0,0,.2));
+    color:var(--fg);font:600 .78rem "IBM Plex Sans",system-ui,sans-serif;
+    letter-spacing:.12em;text-transform:uppercase;padding:.85rem 1rem;cursor:pointer;
+  }
+  .go.done{border-color:rgba(126,200,140,.55)}
+  #out,#hash{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem;line-height:1.45;color:var(--blue);word-break:break-all}
+  #verdict{font-size:1.05rem;color:var(--fg);margin:.4rem 0}
+</style>
+</head>
+<body>
+  <div class="tears" aria-hidden="true">
+    <i class="tear t1" style="left:8%;top:18%"></i>
+    <i class="tear t2" style="left:78%;top:12%"></i>
+    <i class="tear t3" style="left:18%;top:68%"></i>
+  </div>
+<div class="site">
+  <header>
+    <a class="mark" href="index.html?land=1">DualisCapax</a>
+    <nav>
+      <a href="look.html">Look</a>
+      <a href="invert.html">Invert</a>
+      <a href="tools.html">Tools</a>
+      <a href="ai/app.html">Iris</a>
+    </nav>
+  </header>
+  <p class="eyebrow">Measure · Ontario</p>
+  <h1>Time-of-use leftover</h1>
+  <p class="lede">One bill. Three buckets. Walk the dollars back to the kilowatt-hours. If they don't meet, the leftover is a hole — not a fee.</p>
+  <section>
+    <h2>First read</h2>
+    <div class="layer">
+      <p class="tag">The case</p>
+      <p class="strong">Ontario electricity. Off-peak, mid-peak, on-peak.</p>
+      <p>Your bill already split the month. Copy the kWh and the cents printed on that bill. Do not copy a rate from memory. The utility page is the source. Dualis does not sell power.</p>
+    </div>
+    <div class="layer">
+      <p class="tag">Worked picture · labeled example</p>
+      <p>Example only, not this month's tariff: 400 kWh off at 8.7¢, 120 mid at 12.2¢, 80 on at 18.2¢. Energy line reconstructs to CAD $59.80 before delivery. If the bill's energy line says $59.80, invert holds. If it says $90 and nobody can show the extra kWh, invert fails.</p>
+    </div>
+  </section>
+  <section>
+    <h2>The sheet · DC-MS-ON-TOU-1</h2>
+    <form class="sheet layer" id="sheet" autocomplete="off">
+      <label for="who">House label · no account number needed</label>
+      <input id="who" maxlength="80" placeholder="House A"/>
+      <label for="period">Period printed on the bill</label>
+      <input id="period" maxlength="80" placeholder="1–31 Aug 2026"/>
+      <div class="pair">
+        <div>
+          <label for="k0">Off-peak kWh</label>
+          <input id="k0" inputmode="decimal" placeholder="400"/>
+        </div>
+        <div>
+          <label for="r0">Off-peak ¢ / kWh</label>
+          <input id="r0" inputmode="decimal" placeholder="from the bill"/>
+        </div>
+      </div>
+      <div class="pair">
+        <div>
+          <label for="k1">Mid-peak kWh</label>
+          <input id="k1" inputmode="decimal" placeholder="120"/>
+        </div>
+        <div>
+          <label for="r1">Mid-peak ¢ / kWh</label>
+          <input id="r1" inputmode="decimal" placeholder="from the bill"/>
+        </div>
+      </div>
+      <div class="pair">
+        <div>
+          <label for="k2">On-peak kWh</label>
+          <input id="k2" inputmode="decimal" placeholder="80"/>
+        </div>
+        <div>
+          <label for="r2">On-peak ¢ / kWh</label>
+          <input id="r2" inputmode="decimal" placeholder="from the bill"/>
+        </div>
+      </div>
+      <label for="billed">Energy line on the bill · CAD</label>
+      <input id="billed" inputmode="decimal" placeholder="59.80"/>
+      <button class="go" type="button" id="run">Invert this sheet</button>
+      <p id="verdict"></p>
+      <p id="out"></p>
+      <p id="hash" hidden></p>
+    </form>
+    <p class="note">Delivery, regulatory, and HST are other leftovers. Name them on a later line. This sheet inverts the energy line only. Rates move. Copy the cents from the bill you hold. <a href="https://www.oeb.ca/">Ontario Energy Board</a> is the public desk. Not a utility. Not legal advice. Not Fuel. Not a seat.</p>
+    <nav class="sec-break"><a href="/invert.html">Invert</a><span class="dim">·</span><a href="/sri.html">SRI-1</a><a href="/tools.html">Tools</a><a href="/ai/app.html">Iris</a></nav>
+  </section>
+  <footer>DualisCapax · DC-MS-ON-TOU-1 · Ontario</footer>
+</div>
+<script src="/js/no-select.js"></script>
+<script src="/assets/haptic.js"></script>
+<script>
+(function(){
+  function num(id){
+    var v=String(document.getElementById(id).value||'').replace(/[^0-9.]/g,'');
+    if(!v) return null;
+    var n=Number(v);
+    return isFinite(n)?n:null;
+  }
+  function money(n){ return (Math.round(n*100)/100).toFixed(2); }
+  function hex(buf){
+    var a=new Uint8Array(buf),s='';
+    for(var i=0;i<a.length;i++) s+=a[i].toString(16).padStart(2,'0');
+    return s;
+  }
+  document.getElementById('run').addEventListener('click', function(){
+    var who=(document.getElementById('who').value||'').trim()||'unlabeled';
+    var period=(document.getElementById('period').value||'').trim()||'unlabeled';
+    var k0=num('k0'),k1=num('k1'),k2=num('k2');
+    var r0=num('r0'),r1=num('r1'),r2=num('r2');
+    var billed=num('billed');
+    var out=document.getElementById('out');
+    var verdict=document.getElementById('verdict');
+    var hashEl=document.getElementById('hash');
+    var btn=document.getElementById('run');
+    if(k0==null||k1==null||k2==null||r0==null||r1==null||r2==null||billed==null){
+      verdict.textContent='Need three kWh, three rates, and the energy line.';
+      out.textContent='';
+      hashEl.hidden=true;
+      return;
+    }
+    var recon=(k0*r0 + k1*r1 + k2*r2)/100;
+    var delta=recon-billed;
+    var hold=Math.abs(delta)<=0.02 || Math.abs(delta)<=Math.max(0.005*Math.abs(billed),0.02);
+    verdict.textContent=hold?'Invert holds.':'Invert fails. The leftover is a hole.'+
+      ' Reconstructed CAD $'+money(recon)+' against billed CAD $'+money(billed)+'.';
+    out.textContent='Off '+k0+' × '+r0+'¢ + mid '+k1+' × '+r1+'¢ + on '+k2+' × '+r2+'¢ = CAD $'+money(recon)+
+      '. Delta '+ (delta>=0?'+':'') + money(delta) +'.';
+    var payload=['DC-MS-ON-TOU-1',who,period,k0,r0,k1,r1,k2,r2,billed,money(recon),hold?'HOLD':'HOLE'].join('|');
+    function show(h){
+      hashEl.hidden=false;
+      hashEl.textContent='Sheet hash '+h;
+      btn.classList.add('done');
+      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(h).catch(function(){});
+    }
+    var enc=new TextEncoder().encode(payload);
+    if(window.crypto&&crypto.subtle) crypto.subtle.digest('SHA-256',enc).then(function(buf){ show(hex(buf)); });
+    else show('fallback');
+  });
+})();
+</script>
+</body>
+</html>
