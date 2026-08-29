@@ -431,7 +431,7 @@ goldLight.position.set(0,0,0);
 group.add(goldLight);
 
 const OMEGA=Math.PI*2/28;
-const WORD_OMEGA=Math.PI*2/22;
+const WORD_OMEGA=Math.PI*2/8;
 const camDir=new THREE.Vector3(0,0,1);
 let last=performance.now();
 function frame(now){
