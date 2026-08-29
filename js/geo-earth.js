@@ -4,8 +4,8 @@ const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
 renderer.setClearColor(0x000000,0);
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(34,1,0.1,20);
-camera.position.z=3.55;
+const camera=new THREE.PerspectiveCamera(30,1,0.1,20);
+camera.position.z=4.2;
 const w=2048,h=1024;
 const field=document.createElement('canvas');
 field.width=w;field.height=h;
@@ -14,6 +14,7 @@ const mark=document.createElement('canvas');
 mark.width=w;mark.height=h;
 const mtx=mark.getContext('2d');
 const PHI=(1+Math.sqrt(5))/2;
+const CAGE_R=0.933;
 
 function stampRing(ctx,img,x,y,size,alpha){
   if(!img)return;
@@ -106,14 +107,12 @@ const earthMat=new THREE.MeshPhongMaterial({
   emissive:new THREE.Color(0x2a6ad4),emissiveIntensity:0.38
 });
 const earth=new THREE.Mesh(new THREE.SphereGeometry(ER,96,72),earthMat);
-earth.position.set(0,0,0);
 earth.renderOrder=0;
 group.add(earth);
 const earthCore=new THREE.Mesh(
   new THREE.SphereGeometry(ER*0.42,32,24),
   new THREE.MeshBasicMaterial({color:0xe8f4ff,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false})
 );
-earthCore.renderOrder=0;
 group.add(earthCore);
 const earthAtmos=new THREE.Mesh(
   new THREE.SphereGeometry(ER*1.10,64,48),
@@ -146,12 +145,10 @@ function c60Points(radius){
     even(s1*2,s2*(1+2*PHI),s3*PHI);
     even(s1,s2*(2+PHI),s3*2*PHI);
   }
-  const pts=[]; let max=0;
+  const pts=[];
   for(let i=0;i<raw.length;i+=3){
-    const v=new THREE.Vector3(raw[i],raw[i+1],raw[i+2]);
-    max=Math.max(max,v.length()); pts.push(v);
+    pts.push(new THREE.Vector3(raw[i],raw[i+1],raw[i+2]).setLength(radius));
   }
-  pts.forEach(v=>v.multiplyScalar(radius/max));
   return pts;
 }
 function edgeLength(pts){
@@ -225,7 +222,7 @@ function c60Geometry(pts,min){
   g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
   return g;
 }
-const cagePts=c60Points(0.933);
+const cagePts=c60Points(CAGE_R);
 const cageMin=edgeLength(cagePts);
 const pents=pentagonFaces(cagePts,cageMin);
 const cage=c60Geometry(cagePts,cageMin);
@@ -236,6 +233,11 @@ const cageCore=new THREE.LineSegments(cage.clone(),new THREE.LineBasicMaterial({
   color:0x9ec5ff,transparent:true,opacity:0.28,blending:THREE.AdditiveBlending,depthWrite:false
 }));
 group.add(glow);group.add(cageCore);
+const limb=new THREE.LineSegments(
+  new THREE.WireframeGeometry(new THREE.SphereGeometry(CAGE_R,48,36)),
+  new THREE.LineBasicMaterial({color:0x6aa8ff,transparent:true,opacity:0.05,blending:THREE.AdditiveBlending,depthWrite:false})
+);
+group.add(limb);
 
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(0.948,96,72),
@@ -266,10 +268,10 @@ function makeWordTex(){
 const wordTex=makeWordTex();
 const wordOrbit=new THREE.Group();
 scene.add(wordOrbit);
-const ORBIT_R=1.22;
+const ORBIT_R=1.58;
 function makeWordPlane(angle){
   const mesh=new THREE.Mesh(
-    new THREE.PlaneGeometry(1.72,0.286),
+    new THREE.PlaneGeometry(1.02,0.17),
     new THREE.MeshBasicMaterial({
       map:wordTex,transparent:true,depthWrite:false,side:THREE.DoubleSide,alphaTest:0.08
     })
@@ -325,8 +327,8 @@ function addFeed(pt){
     sGold:makeSprites(texGold)
   });
 }
-addFeed(new THREE.Vector3(0.92,0,0));
-addFeed(new THREE.Vector3(-0.92,0,0));
+addFeed(new THREE.Vector3(CAGE_R,0,0));
+addFeed(new THREE.Vector3(-CAGE_R,0,0));
 function ribbonPath(from,now,phase){
   const dest=from.clone().setLength(ER*0.55);
   const dir=dest.clone().sub(from);
@@ -442,7 +444,7 @@ function frame(now){
   [wordA,wordB].forEach(function(m){
     m.getWorldDirection(_n);
     const facing=_n.dot(camDir);
-    m.material.opacity=facing<0?0.28:1;
+    m.material.opacity=facing<0?0.22:1;
   });
   let energy=0;
   for(let i=0;i<feeds.length;i++){
