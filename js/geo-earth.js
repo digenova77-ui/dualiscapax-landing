@@ -129,7 +129,7 @@ earth.position.set(0,0,0);
 earth.renderOrder=0;
 group.add(earth);
 const earthAtmos=new THREE.Mesh(
-  new THREE.SphereGeometry(ER*1.05,48,32),
+  new THREE.SphereGeometry(ER*1.06,48,32),
   new THREE.MeshBasicMaterial({color:0x7eb6ff,transparent:true,opacity:0.18,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
 );
 earthAtmos.position.set(0,0,0);
@@ -142,7 +142,7 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
 
 const body=new THREE.Mesh(
   new THREE.SphereGeometry(0.92,96,64),
-  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.40,depthWrite:false})
+  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.52,depthWrite:false})
 );
 body.renderOrder=1;
 group.add(body);
@@ -246,18 +246,6 @@ const cageCore=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
   color:0x9ec5ff,transparent:true,opacity:0.28,blending:THREE.AdditiveBlending,depthWrite:false
 }));
 group.add(glow);group.add(cageCore);
-
-const hivePts=c60Points(ER*1.10);
-const hiveGeo=c60Geometry(hivePts,edgeLength(hivePts));
-const hiveGlow=new THREE.LineSegments(hiveGeo,new THREE.LineBasicMaterial({
-  color:0x6aa8ff,transparent:true,opacity:0.22,blending:THREE.AdditiveBlending,depthWrite:false
-}));
-const hiveCore=new THREE.LineSegments(hiveGeo,new THREE.LineBasicMaterial({
-  color:0xe8f1ff,transparent:true,opacity:0.34,blending:THREE.AdditiveBlending,depthWrite:false
-}));
-hiveGlow.scale.setScalar(1.012);
-hiveGlow.renderOrder=2;hiveCore.renderOrder=2;
-group.add(hiveGlow);group.add(hiveCore);
 
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(0.948,96,64),
@@ -435,12 +423,10 @@ function frame(now){
     f.sGold.mesh.material.opacity=0.38+pulse*0.8;
   }
   energy=feeds.length?energy/feeds.length:0.16;
-  hiveGlow.material.opacity=0.16+energy*0.55;
-  hiveCore.material.opacity=0.24+energy*0.62;
   ribbonLight.intensity=0.45+energy*1.35;
   goldLight.intensity=0.18+energy*0.7;
-  earthMat.emissiveIntensity=0.12+energy*0.34;
-  earthAtmos.material.opacity=0.14+energy*0.18;
+  earthMat.emissiveIntensity=0.14+energy*0.42;
+  earthAtmos.material.opacity=0.16+energy*0.22;
   for(let i=0;i<decals.length;i++){
     const wn=decals[i].n.clone().applyQuaternion(group.quaternion);
     const facing=wn.dot(camDir);
