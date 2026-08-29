@@ -6,8 +6,8 @@
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W = 0, H = 0;
-  var N_NEAR = 78;   // denser distant field
-  var N_OPEN = 120;
+  var N_NEAR = 140;  // sprites everywhere
+  var N_OPEN = 200;
   var N = N_NEAR;
   var pts = [];
   var hole = {cx: 0, cy: 0, r: 0};
@@ -57,11 +57,11 @@
       if (insideHole(x, y, 12)) continue;
       pts.push({
         x: x, y: y,
-        r: 0.22 + Math.random() * 0.55,   // smaller — distant stars
-        vx: (Math.random() - 0.5) * 0.09,
-        vy: (Math.random() - 0.5) * 0.07,
+        r: 0.18 + Math.random() * 0.48,   // tiny distant stars
+        vx: (Math.random() - 0.5) * 0.07,
+        vy: (Math.random() - 0.5) * 0.055,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.008 + Math.random() * 0.014
+        speed: 0.006 + Math.random() * 0.012
       });
     }
   }
@@ -91,7 +91,7 @@
     }
   }
   function drawSprites(){
-    var boost = sphereOn ? 1 : 1.15;   // less size boost when sphere off
+    var boost = sphereOn ? 1 : 1.1;
     for (var i = 0; i < pts.length; i++) {
       var p = pts[i];
       if (!reduce) {
@@ -105,16 +105,15 @@
         }
       }
       if (insideHole(p.x, p.y, 6)) continue;
-      var pulse = 0.70 + 0.30 * (0.5 + 0.5 * Math.sin(p.phase));  // brighter baseline
-      var r = p.r * (0.95 + 0.18 * pulse) * boost;
-      var halo = r * 2.05;  // tighter halo — distant stars, not big soft blobs
+      var pulse = 0.72 + 0.28 * (0.5 + 0.5 * Math.sin(p.phase));
+      var r = p.r * (0.95 + 0.16 * pulse) * boost;
+      var halo = r * 1.95;
       var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, halo);
-      g.addColorStop(0, 'rgba(245,250,255,' + (1.0 * pulse) + ')');      // brighter core
-      g.addColorStop(0.28, 'rgba(180,210,255,' + (0.78 * pulse) + ')');
+      g.addColorStop(0, 'rgba(250,252,255,' + (1.0 * pulse) + ')');
+      g.addColorStop(0.25, 'rgba(190,215,255,' + (0.82 * pulse) + ')');
       g.addColorStop(1, 'rgba(90,150,230,0)');
       ctx.beginPath(); ctx.fillStyle = g; ctx.arc(p.x, p.y, halo, 0, Math.PI * 2); ctx.fill();
-      // sharp bright nucleus
-      ctx.beginPath(); ctx.fillStyle = 'rgba(255,255,255,' + (1.0 * pulse) + ')'; ctx.arc(p.x, p.y, Math.max(0.35, r * 0.38), 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.fillStyle = 'rgba(255,255,255,' + (1.0 * pulse) + ')'; ctx.arc(p.x, p.y, Math.max(0.3, r * 0.36), 0, Math.PI * 2); ctx.fill();
     }
   }
   function punch(){
