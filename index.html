@@ -186,7 +186,7 @@
     <h2>Open the doors</h2>
     <p>Start anywhere. You do not have to read in order. If you are twelve, start with Iris. If you want the hard math, jump to research.</p>
     <a class="row" href="/ai/app"><strong>Talk to Iris</strong>A real conversation. Free. She answers in the first person and keeps it short.</a>
-    <a class="row" href="/research/"><strong>Health notes</strong>Working notes on bodies and strain. Not a doctor. Not a prescription.</a>
+    <a class="row" href="/research/"><strong>Health notes</strong>Working notes on bodies and strain. Open research you can read and check.</a>
     <a class="row" href="#measure"><strong>Operations</strong>How a long shift, a plant, or a warehouse actually holds together.</a>
     <a class="row" href="/research/"><strong>Mathematics</strong>Problems you can check. Claims that have to survive a test.</a>
     <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#for-you">For you</a><a href="#measure">Measure</a><a href="#finance">Finance</a></nav>
@@ -202,13 +202,13 @@
   <section class="band" id="bind">
     <p class="kicker">Bind</p>
     <h2>When the door opens, time is prepaid</h2>
-    <p>Fuel is prepaid time. Unused time stays with you. It is not a coin offering and it is not a share of the firm.</p>
+    <p>Fuel is prepaid time. Unused time stays with you.</p>
     <div class="packs">
       <a class="pack" href="#founding"><div class="cad">CAD $20</div><div class="amt">40 Fuel</div><div class="sub">Trial</div></a>
       <a class="pack" href="#founding"><div class="cad">CAD $50</div><div class="amt">120 Fuel</div><div class="sub">Practice</div></a>
       <a class="pack" href="#founding"><div class="cad">CAD $120</div><div class="amt">320 Fuel</div><div class="sub">Retain</div></a>
     </div>
-    <p>Fuel packs are not for sale on this page yet. Founding Fuel on seats 11 and 100 is a grant bound to the seat — prepaid time, not a purchase.</p>
+    <p>Fuel packs wait on checkout. Founding Fuel on seats 11 and 100 is prepaid time bound to the seat.</p>
     <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#measure">Measure</a><a href="#founding">Founding</a><a href="#finance">Finance</a></nav>
   </section>
   <section class="band" id="founding">
@@ -219,7 +219,7 @@
     <a class="row" href="/donate.html"><strong>Seat 11 — first public mark</strong>1,000 Fuel. Prepaid time. First name on the early board after the house.</a>
     <a class="row" href="/donate.html"><strong>Seat 100 — last early mark</strong>100 Fuel. Prepaid time. After this seat the early window closes.</a>
     <p>Seats 12 to 99 are open and step down in order. The middle is not printed. That is the early-bird.</p>
-    <p>Fuel bound to a seat is prepaid time. It is not equity and it is not a coin. Names go up after a completed join.</p>
+    <p>Fuel bound to a seat is prepaid time. Names go up after a completed join.</p>
     <p><a href="/donate.html">Research gifts are live this weekend.</a></p>
     <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#bind">Bind</a><a href="#finance">Finance</a><a href="/ai/app">Iris</a></nav>
   </section>
@@ -240,8 +240,8 @@
   <section class="band" id="edge">
     <p class="kicker">New machines</p>
     <h2>Software now. Hardware next.</h2>
-    <p>The page you are on is not decoration. The spinning sphere, the live clock, the grain behind the pointer — that is a control room for machines that have not shipped yet.</p>
-    <p>First the surface. Then the proof. Then the hardware. When a screen cannot carry the idea, the device will. Until then this site is the instrument.</p>
+    <p>The page you are on is a control room for machines that have not shipped yet. The spinning sphere, the live clock, the grain behind the pointer — that is the instrument.</p>
+    <p>First the surface. Then the proof. Then the hardware. When a screen cannot carry the idea, the device will.</p>
     <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#finance">Finance</a><a href="#ai">AI</a><a href="#look">Look</a></nav>
   </section>
   <section class="band" id="ai">
@@ -249,7 +249,7 @@
     <h2>Iris is already here</h2>
     <p>Iris is the DualisCapax agent. She learns under real limits: time, cost, and facts that do not care what we wish. Talk to her. She will not drown you in words.</p>
     <p>The point of this AI is a future that is actually better — clearer information, safer crypto, research a kid can open and a specialist can finish.</p>
-    <p>She is not a store, not a doctor, and not a stock tip. She is a working mind on the public side of the house.</p>
+    <p>Iris is a working mind on the public side of the house. Ask her a real question.</p>
     <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#for-you">For you</a><a href="#look">Look</a><a href="/ai/app">Iris</a></nav>
   </section>
     </div>
@@ -317,7 +317,6 @@
     var d = Math.floor(s / 86400); s %= 86400;
     var h = Math.floor(s / 3600); s %= 3600;
     var m = Math.floor(s / 60); s %= 60;
-    // continuous format — never jumps shape at day boundary
     return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
   }
   function fmtCountdown(ms){
