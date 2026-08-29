@@ -102,18 +102,29 @@ earthPaint.width=1024;earthPaint.height=512;
 const earthFallback=new THREE.CanvasTexture(earthPaint);
 earthFallback.colorSpace=THREE.SRGBColorSpace;
 const earthMat=new THREE.MeshPhongMaterial({
-  map:earthFallback,color:0xffffff,shininess:14,specular:new THREE.Color(0x557799),
-  emissive:new THREE.Color(0x163056),emissiveIntensity:0.16
+  map:earthFallback,color:0xffffff,shininess:22,specular:new THREE.Color(0x88bbff),
+  emissive:new THREE.Color(0x2a6ad4),emissiveIntensity:0.38
 });
 const earth=new THREE.Mesh(new THREE.SphereGeometry(ER,96,72),earthMat);
 earth.position.set(0,0,0);
 earth.renderOrder=0;
 group.add(earth);
+const earthCore=new THREE.Mesh(
+  new THREE.SphereGeometry(ER*0.42,32,24),
+  new THREE.MeshBasicMaterial({color:0xe8f4ff,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false})
+);
+earthCore.renderOrder=0;
+group.add(earthCore);
 const earthAtmos=new THREE.Mesh(
-  new THREE.SphereGeometry(ER*1.06,64,48),
-  new THREE.MeshBasicMaterial({color:0x7eb6ff,transparent:true,opacity:0.18,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
+  new THREE.SphereGeometry(ER*1.10,64,48),
+  new THREE.MeshBasicMaterial({color:0x7eb6ff,transparent:true,opacity:0.32,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
 );
 group.add(earthAtmos);
+const earthHalo=new THREE.Mesh(
+  new THREE.SphereGeometry(ER*1.22,48,32),
+  new THREE.MeshBasicMaterial({color:0xe0b84a,transparent:true,opacity:0.12,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
+);
+group.add(earthHalo);
 const loader=new THREE.TextureLoader();
 loader.crossOrigin='anonymous';
 loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble.jpg',function(t){
@@ -122,7 +133,7 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
 
 const body=new THREE.Mesh(
   new THREE.SphereGeometry(0.92,96,72),
-  new THREE.MeshBasicMaterial({color:0x050506,transparent:true,opacity:0.58,depthWrite:false})
+  new THREE.MeshBasicMaterial({color:0x050506,transparent:true,opacity:0.40,depthWrite:false})
 );
 body.renderOrder=1;
 group.add(body);
@@ -317,7 +328,7 @@ function addFeed(pt){
 addFeed(new THREE.Vector3(0.92,0,0));
 addFeed(new THREE.Vector3(-0.92,0,0));
 function ribbonPath(from,now,phase){
-  const dest=from.clone().setLength(ER*1.06);
+  const dest=from.clone().setLength(ER*0.55);
   const dir=dest.clone().sub(from);
   const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
@@ -405,15 +416,15 @@ ring.onload=function(){
 };
 ring.src='brand/emblem-helix.svg';
 
-scene.add(new THREE.AmbientLight(0x7a8aa4,0.72));
-const sun=new THREE.DirectionalLight(0xfff4e6,1.55);
+scene.add(new THREE.AmbientLight(0x8aa0bc,0.85));
+const sun=new THREE.DirectionalLight(0xfff4e6,1.7);
 sun.position.set(-2.2,0.55,2.4);scene.add(sun);
-const fill=new THREE.DirectionalLight(0x4a8fd8,0.38);
+const fill=new THREE.DirectionalLight(0x4a8fd8,0.55);
 fill.position.set(2.4,-0.4,-1.2);scene.add(fill);
-const ribbonLight=new THREE.PointLight(0x9ec5ff,0.7,1.6);
+const ribbonLight=new THREE.PointLight(0xb7d6ff,1.4,1.8);
 ribbonLight.position.set(0,0,0);
 group.add(ribbonLight);
-const goldLight=new THREE.PointLight(0xe0b84a,0.28,1.2);
+const goldLight=new THREE.PointLight(0xe0b84a,0.7,1.5);
 goldLight.position.set(0,0,0);
 group.add(goldLight);
 
@@ -442,18 +453,20 @@ function frame(now){
     writeRibbon(f.gold.g,goldPath,0.008);
     writeSprites(f.sBlue.g,bluePath,now,i*0.13);
     writeSprites(f.sGold.g,goldPath,now,i*0.13+0.5);
-    const pulse=0.12+0.10*Math.abs(Math.sin(now*0.0028+i));
+    const pulse=0.16+0.14*Math.abs(Math.sin(now*0.0028+i));
     energy+=pulse;
     f.blue.mesh.material.opacity=pulse;
-    f.gold.mesh.material.opacity=pulse*0.8;
-    f.sBlue.mesh.material.opacity=0.45+pulse;
-    f.sGold.mesh.material.opacity=0.38+pulse*0.8;
+    f.gold.mesh.material.opacity=pulse*0.85;
+    f.sBlue.mesh.material.opacity=0.55+pulse;
+    f.sGold.mesh.material.opacity=0.48+pulse*0.9;
   }
-  energy=feeds.length?energy/feeds.length:0.16;
-  ribbonLight.intensity=0.45+energy*1.35;
-  goldLight.intensity=0.18+energy*0.7;
-  earthMat.emissiveIntensity=0.14+energy*0.42;
-  earthAtmos.material.opacity=0.16+energy*0.22;
+  energy=feeds.length?energy/feeds.length:0.2;
+  ribbonLight.intensity=1.1+energy*2.2;
+  goldLight.intensity=0.45+energy*1.35;
+  earthMat.emissiveIntensity=0.32+energy*0.85;
+  earthAtmos.material.opacity=0.26+energy*0.42;
+  earthHalo.material.opacity=0.10+energy*0.28;
+  earthCore.material.opacity=0.42+energy*0.45;
   for(let i=0;i<decals.length;i++){
     const wn=decals[i].n.clone().applyQuaternion(group.quaternion);
     const facing=wn.dot(camDir);
