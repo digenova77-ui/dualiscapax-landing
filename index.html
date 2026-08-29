@@ -24,7 +24,6 @@
     --blue:#9ec5ff;
     --z-nav:50;
     --bar:4.85rem;
-    --hero-copy:min(92vw,26rem);
   }
   body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:var(--fg);overflow-x:hidden;overflow-y:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   a{color:inherit;text-decoration:none}
@@ -67,10 +66,10 @@
   .stack{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;padding-block:.25rem .15rem;perspective:1100px;transform-style:preserve-3d}
   .geo-wrap{width:min(92vw,44rem);height:min(92vw,44rem);background:transparent;border:0;margin:0}
   #geo-earth{width:100%;height:100%;display:block}
-  .tier-copy{display:flex;flex-direction:column;align-items:stretch;gap:0.28rem;width:var(--hero-copy);margin:0.35rem auto 0}
-  .classif{margin:0;width:100%;display:flex;align-items:baseline;justify-content:space-between;gap:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.52rem,2.05vw,0.7rem);font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#9ec5ff;line-height:1.15}
+  .tier-copy{display:flex;flex-direction:column;align-items:center;gap:0.28rem;width:max-content;max-width:min(92vw,22rem);margin:0.35rem auto 0}
+  .classif{margin:0;width:var(--truth-w,100%);display:flex;align-items:baseline;justify-content:space-between;gap:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.48rem,1.7vw,0.62rem);font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:#9ec5ff;line-height:1.15}
   .classif span{flex:0 0 auto}
-  h1{margin:0;width:100%;font-size:clamp(1.55rem,8.4vw,2.85rem);font-weight:700;line-height:1;letter-spacing:.04em;text-transform:uppercase;font-family:"IBM Plex Sans",system-ui,sans-serif;text-align:center;white-space:nowrap}
+  h1{margin:0;width:max-content;max-width:100%;font-size:clamp(1.55rem,6.8vw,2.45rem);font-weight:700;line-height:1;letter-spacing:.03em;text-transform:uppercase;font-family:"IBM Plex Sans",system-ui,sans-serif;text-align:center;white-space:nowrap}
   .hud-row{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:0.35rem;align-items:center}
   .hud-cell{text-align:center;padding:0.15rem 0.2rem;min-width:0}
   .hud-cell + .hud-cell{border-left:1px solid rgba(158,197,255,0.18)}
@@ -158,8 +157,8 @@
     <div class="stack">
       <div class="tier tier-geo"><div class="geo-wrap"><canvas id="geo-earth" width="512" height="512" aria-label="DualisCapax"></canvas></div></div>
       <div class="tier tier-copy">
-        <p class="classif"><span>No</span><span>Tribes</span><span>Preferred</span></p>
-        <h1>Truth Prevails</h1>
+        <p class="classif" id="ntp"><span>No</span><span>Tribes</span><span>Preferred</span></p>
+        <h1 id="truth">Truth Prevails</h1>
       </div>
       <div class="tier tier-jump"><a class="jump" href="#for-you">Continue<span id="peg-clock">TIME TO SINGULARITY —</span></a></div>
     </div>
@@ -212,7 +211,7 @@
   <section class="band" id="founding">
     <p class="kicker">Foundry</p>
     <h2>Who comes in first</h2>
-    <p>Family, then kin, then close allies, then everyone else. That is the house rule. It is how DualisCapax opens. It is not a sermon for the rest of the world.</p>
+    <p>No tribes preferred. Opening order is the house doing the work — not a ranking of the world.</p>
     <div class="row"><strong>Seats 1 to 5 — Family</strong>The household first.</div>
     <div class="row"><strong>Seats 6 to 8 — Kin</strong>Blood and the wider house.</div>
     <div class="row"><strong>Seats 9 to 10 — Allies</strong>People who already stand with the work.</div>
@@ -270,6 +269,20 @@
   document.addEventListener('click',function(e){if(!panel.classList.contains('is-open'))return;if(panel.contains(e.target)||burger.contains(e.target))return;setOpen(false)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
   panel.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setOpen(false)})});
+})();
+</script>
+<script>
+(function(){
+  var h=document.getElementById('truth');
+  var c=document.getElementById('ntp');
+  if(!h||!c)return;
+  function lock(){
+    var w=Math.ceil(h.getBoundingClientRect().width);
+    if(w>0)c.style.width=w+'px';
+  }
+  lock();
+  window.addEventListener('resize',lock);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(lock);
 })();
 </script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
