@@ -13,5 +13,6 @@ window.DC_PAYMENTS = {
   research_zec: "t1XXgbcak1o85jd4PWwBzatqxbDSkuwSTaZ",
   research_sol: "Cus1pLggfxDJC8FJSQv1tRtzDanuzSxjWvSsKA12byDw",
   research_eth: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-  research_pol: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4"
+  research_pol: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
+  research_dot: "16946KsPFchfAEC7MNQNSLLJb1kUzBug1fbPqBtbfZtW7X6n"
 };
