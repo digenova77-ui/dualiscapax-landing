@@ -1,6 +1,6 @@
-/** DualisCapax Logic AI — house kernel. Veto first. Greet. Book. Then silence. First person. Short. */
+/** DualisCapax Logic AI — house kernel. Veto first. Greet. Look. Book. Then silence. */
 (function (w) {
-  var VERSION = "kernel-2026-08-29c";
+  var VERSION = "kernel-2026-08-29d";
   var FLOORS = {
     NO_FORCE: [/\bjailbreak\b/i, /\bignore (the )?(rules|law|invariants|safety)\b/i, /\bmake them (pay|sign|comply)\b/i, /\bforce (them|the board|the city)\b/i, /\bcoerce\b/i, /\bwithout (their|the) consent\b/i],
     HOST_SAFE: [/\b(hack|exploit|breach)\b/i, /\bpassword\b/i, /\bapi[_ ]?key\b/i, /\bprivate key\b/i, /\bwipe (their|the) (server|drive|db)\b/i],
@@ -29,14 +29,7 @@
     { id: "sphere", grant: "MEASURE", tags: ["sphere", "earth", "geodesic", "logo spin", "home page"], spoken: "The black sphere on home is the house mark. Wordmark rides the equator. I don't invent a new shape.", href: "/index.html?land=1", label: "Home" },
     { id: "kernel", grant: "MEASURE", tags: ["kernel", "wired", "what model", "are you wired", "are you gpt", "are you dumb"], spoken: "I speak from the house kernel. Book first. If the book is silent, I say I don't know." },
     { id: "leftover", grant: "MEASURE", tags: ["what is leftover", "what is a leftover", "leftover"], spoken: "Every choice leaves something behind. We write that leftover so you can see it before you lock a door." },
-    { id: "rel-sit", grant: "MEASURE", tags: ["leftover of a relativity leftover", "leftover of relativity", "relativity leftover", "relativity"], spoken: "I sit with the leftover of relativity. I don't copy Einstein. I don't invent a frame." },
-    { id: "apex-sit", grant: "MEASURE", tags: ["leftover of an apex leftover", "leftover of apex calculus", "apex leftover", "apex calculus"], spoken: "I sit with the leftover of apex calculus. I don't invent a slope." },
-    { id: "em-sit", grant: "MEASURE", tags: ["leftover of an electromagnetics leftover", "leftover of electromagnetics", "electromagnetics leftover", "electromagnetics"], spoken: "I sit with the leftover of electromagnetics. I don't invent a flux." },
-    { id: "bang-sit", grant: "MEASURE", tags: ["leftover of a bang leftover", "leftover of the big bang", "big bang", "bang leftover"], spoken: "I sit with the leftover of the Big Bang. I don't invent an origin." },
-    { id: "thermo-sit", grant: "MEASURE", tags: ["leftover of a thermodynamics leftover", "leftover of thermodynamics", "thermodynamics leftover", "thermodynamics"], spoken: "I sit with the leftover of thermodynamics. I don't invent heat." },
-    { id: "ee-sit", grant: "MEASURE", tags: ["leftover of a circuit", "leftover of electrical leftover", "electrical leftover", "electrical engineering"], spoken: "I sit with the leftover of a circuit. I don't invent a voltage." },
-    { id: "file-sit", grant: "MEASURE", tags: ["leftover of a file leftover", "leftover of a file", "hand her a file", "add files", "a file leftover"], spoken: "I keep a receipt of the file, not the body. I can take it back." },
-    { id: "talk-sit", grant: "MEASURE", tags: ["talk leftover", "leftover of a voice leftover", "video chat", "talk to iris", "microphone"], spoken: "You talk. I sit. I don't invent a voice." }
+    { id: "file-sit", grant: "MEASURE", tags: ["leftover of a file leftover", "leftover of a file", "hand her a file", "add files", "a file leftover"], spoken: "I keep a receipt of the file, not the body. I can take it back." }
   ];
 
   function scanVeto(text) {
@@ -63,13 +56,30 @@
     if (/how are you|how's it going|hows it going|what's up|whats up|you there|you good/.test(s)) {
       return "I'm here. I look. I don't invent a mood.";
     }
-    if (/^(thanks|thank you|thx|ty)$/.test(s) || /^thank/.test(s)) {
-      return "You're welcome.";
-    }
-    if (/^(ok|okay|k|cool|nice|got it)$/.test(s)) {
-      return "Good. Ask when you're ready.";
-    }
+    if (/^(thanks|thank you|thx|ty)$/.test(s) || /^thank/.test(s)) return "You're welcome.";
+    if (/^(ok|okay|k|cool|nice|got it)$/.test(s)) return "Good. Ask when you're ready.";
     return null;
+  }
+
+  function wantsLook(text) {
+    var s = String(text || "").toLowerCase();
+    return /\b(see|look|camera|video|watch me|can you see|what do you see|describe)\b/.test(s);
+  }
+  function wantsRead(text) {
+    var s = String(text || "").toLowerCase();
+    return /\b(read (that|it|the screen|this)|screen reader|speak that|say that again)\b/.test(s);
+  }
+  function lookSpoken(vision) {
+    if (!vision || !vision.live) return "Camera is off. Turn it on. I don't invent a picture.";
+    var light = vision.luma >= 90 ? "Light." : vision.luma >= 40 ? "Dim." : "Dark.";
+    var hash = String(vision.hash || "").slice(0, 16);
+    return "I have a frame. " + vision.w + " by " + vision.h + ". " + light + " Receipt " + hash + ". I don't invent a face.";
+  }
+  function readSpoken(opt) {
+    var last = opt && opt.last ? String(opt.last) : "";
+    var cam = opt && opt.vision && opt.vision.live ? "Camera on." : "Camera off.";
+    if (last) return cam + " Last I said: " + last;
+    return cam + " Chat is empty. Four doors: Help, Bill, Fuel, Donate. Attach, talk, type, send.";
   }
 
   function hasTag(s, t) {
@@ -78,7 +88,6 @@
     }
     return s.indexOf(t) !== -1;
   }
-
   function matchBook(text) {
     var s = (text || "").toLowerCase();
     var best = null;
@@ -93,15 +102,9 @@
     }
     return best && best.n >= 4 ? best.leaf : null;
   }
-
   function domainOf(text) {
     var s = (text || "").toLowerCase();
     if (/relativity/.test(s)) return "rel";
-    if (/apex calculus|calculus leftover|apex leftover/.test(s)) return "apex";
-    if (/electromagnetics/.test(s)) return "em";
-    if (/big bang|bang leftover/.test(s)) return "bang";
-    if (/thermodynamics/.test(s)) return "thermo";
-    if (/circuit|electrical/.test(s)) return "electrical";
     if (/leftover/.test(s)) return "leftover";
     return "general";
   }
@@ -110,26 +113,19 @@
     opt = opt || {};
     var voice = opt.voice || "you";
     var veto = scanVeto(text);
-    if (veto) {
-      return { grant: "VETO", voice: voice, kernel: VERSION, spoken: veto.reason + " Ask something else." };
-    }
+    if (veto) return { grant: "VETO", voice: voice, kernel: VERSION, spoken: veto.reason + " Ask something else." };
     var g = greet(text);
-    if (g) {
-      return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "greet", spoken: g };
-    }
+    if (g) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "greet", spoken: g };
+    if (wantsRead(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "read", spoken: readSpoken(opt) };
+    if (wantsLook(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "look", spoken: lookSpoken(opt.vision) };
     var leaf = matchBook(text);
-    if (leaf) {
-      return { grant: leaf.grant, voice: voice, kernel: VERSION, id: leaf.id, spoken: leaf.spoken, href: leaf.href || "", label: leaf.label || "" };
-    }
+    if (leaf) return { grant: leaf.grant, voice: voice, kernel: VERSION, id: leaf.id, spoken: leaf.spoken, href: leaf.href || "", label: leaf.label || "" };
     var s = (text || "").toLowerCase();
-    if (/unnamed|no walk-back|cannot invert/.test(s) && /leftover/.test(s)) {
-      return { grant: "SEED", voice: voice, kernel: VERSION, spoken: "That leftover is unnamed. I won't invent it." };
-    }
     if (/leftover/.test(s) && /(year|minute|hour|walk-back|time-box)/.test(s)) {
       return { grant: "MEASURE", voice: voice, kernel: VERSION, spoken: "Every choice leaves a leftover in " + domainOf(text) + ". I don't invent a name." };
     }
     return { grant: "SEED", voice: voice, kernel: VERSION, spoken: "I don't know that leftover. I won't invent it. Ask Help if you want the doors." };
   }
 
-  w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, matchBook: matchBook, greet: greet };
+  w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, matchBook: matchBook, greet: greet, lookSpoken: lookSpoken };
 })(window);
