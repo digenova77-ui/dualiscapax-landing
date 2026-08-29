@@ -4,8 +4,8 @@
   window.__dcOrb = true;
 
   var LINKS = [
-    { href: "/ai/app.html", label: "Iris" },
-    { href: "/ai/games.html", label: "Play" },
+    { href: "/index.html?land=1", label: "Home" },
+    { href: "/ai/app", label: "Iris" },
     { href: "/research/", label: "Read" },
     { href: "/story/", label: "Story" },
     { href: "/founding.html", label: "Foundry" }
@@ -19,7 +19,13 @@
   ready(function () {
     document.documentElement.classList.add("has-spine");
     var old = document.querySelector(".top");
-    if (old) old.setAttribute("hidden", "");
+    if (old) {
+      var mark = old.querySelector(".mark");
+      if (mark) {
+        mark.setAttribute("href", "/index.html?land=1");
+        if (!mark.textContent.trim()) mark.textContent = "DualisCapax";
+      }
+    }
 
     var style = document.createElement("style");
     style.textContent =
@@ -29,7 +35,7 @@
       ".dc-veil.on{opacity:1;pointer-events:auto}" +
       ".dc-veil a{color:#f4f4f5;text-decoration:none;font:800 1.65rem/1.2 Inter,system-ui,sans-serif;letter-spacing:-.03em;padding:.45rem .8rem}" +
       ".dc-veil a.now{opacity:.4}" +
-      ".dc-veil .dc-home{margin-top:1.4rem;font-size:.95rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.45}";
+      ".dc-veil .dc-home{margin-top:1.4rem;font-size:.95rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;opacity:1;color:#9ec5ff}";
     document.head.appendChild(style);
 
     var veil = document.createElement("div");
@@ -47,7 +53,7 @@
     var home = document.createElement("a");
     home.href = "/index.html?land=1";
     home.className = "dc-home";
-    home.textContent = "DualisCapax";
+    home.textContent = "Home";
     veil.appendChild(home);
 
     var btn = document.createElement("button");
