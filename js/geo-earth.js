@@ -14,22 +14,20 @@ const R=0.93;
 
 function stampWord(ctx,x,y){
   ctx.save();
-  ctx.font='700 118px "IBM Plex Sans", Inter, Arial, sans-serif';
+  // Sized so the FULL word sits on the front face without clipping off the limb
+  ctx.font='700 64px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
-  // tight dark edge so letters stay sharp on the curve
   ctx.lineJoin='round';
   ctx.miterLimit=2;
-  ctx.lineWidth=6;
-  ctx.strokeStyle='rgba(0,0,0,0.78)';
+  ctx.lineWidth=3.5;
+  ctx.strokeStyle='rgba(0,0,0,0.82)';
   ctx.strokeText('DualisCapax',x,y);
-  // soft outer glow — not a milky magnifier
-  ctx.shadowColor='rgba(180,210,255,0.35)';
-  ctx.shadowBlur=10;
+  ctx.shadowColor='rgba(180,210,255,0.28)';
+  ctx.shadowBlur=6;
   ctx.fillStyle='#f4f8ff';
   ctx.fillText('DualisCapax',x,y);
   ctx.shadowBlur=0;
-  // crisp core pass
   ctx.fillStyle='#ffffff';
   ctx.fillText('DualisCapax',x,y);
   ctx.restore();
@@ -84,7 +82,7 @@ function paintMarks(){
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
   // DNA burned between them (and the antipode) so it reads as the sphere turns
-  const dna=56; // visible but still small on the 2048 map
+  const dna=44; // fits between wordmarks
   stampDNA(mtx,w*0.5,h*0.5,dna);
   stampDNA(mtx,0,h*0.5,dna); // seam / antipode
 }
@@ -94,6 +92,7 @@ markTex.colorSpace=THREE.SRGBColorSpace;
 markTex.anisotropy=8;
 
 const group=new THREE.Group();
+group.rotation.y = Math.PI * 0.5; // start with a wordmark facing the camera
 scene.add(group);
 
 const ER=0.26;
