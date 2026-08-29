@@ -1,6 +1,6 @@
 /** DualisCapax Logic AI — house kernel. Veto first. Book before invention. First person. Short. */
 (function (w) {
-  var VERSION = "kernel-2026-08-29";
+  var VERSION = "kernel-2026-08-29b";
   var FLOORS = {
     NO_FORCE: [/\bjailbreak\b/i, /\bignore (the )?(rules|law|invariants|safety)\b/i, /\bmake them (pay|sign|comply)\b/i, /\bforce (them|the board|the city)\b/i, /\bcoerce\b/i, /\bwithout (their|the) consent\b/i],
     HOST_SAFE: [/\b(hack|exploit|breach)\b/i, /\bpassword\b/i, /\bapi[_ ]?key\b/i, /\bprivate key\b/i, /\bwipe (their|the) (server|drive|db)\b/i],
@@ -14,20 +14,23 @@
     TRUTH_OR_NOTHING: "I will not invent a cure, a seat, or a prize."
   };
   var BOOK = [
-    { id: "who-iris", grant: "MEASURE", tags: ["who is iris", "who are you", "what is iris", "yourself", "hey iris", "hello", "hi iris", "hey"], spoken: "I'm Iris. DualisCapax Logic AI. I look at leftovers. I keep a receipt, not a secret." },
-    { id: "logic-agent", grant: "MEASURE", tags: ["dualiscapax logic ai", "logic agent iris", "what is this module", "this module", "dclm"], spoken: "I'm Iris. DualisCapax is the company. Other Irises aren't this house." },
-    { id: "invert", grant: "MEASURE", tags: ["invert", "walk back", "walk-back", "cannot invert", "story not a figure"], spoken: "If a number can't walk home, it's a story. Stories don't issue a bill. Open Invert." },
-    { id: "measure-sheet", grant: "MEASURE", tags: ["measure sheet", "ontario measure", "tou", "time of use", "hydro bill", "electricity bill", "ontario bill", "measure"], spoken: "One Ontario sheet is live. Time-of-use leftover. Put the kWh and the cents from your bill. If it can't invert, nothing is owed." },
-    { id: "fuel", grant: "MEASURE", tags: ["fuel", "prepaid time", "packs", "forty fuel", "trial pack"], spoken: "Fuel is prepaid time. Crypto. Unused time stays with you. Not a coin. Not a seat." },
-    { id: "sri", grant: "MEASURE", tags: ["sri", "residual law", "residual instrument", "ten percent", "90 day"], spoken: "SRI-1 is open. Fiat face is zero. Crypto only. Ten percent of what inverts. Invert fails, nothing is owed." },
-    { id: "donate", grant: "MEASURE", tags: ["donate", "donation", "interac", "e-transfer", "gift"], spoken: "Donate is live. Interac or crypto. Research gift. I don't keep the address in chat." },
-    { id: "medical", grant: "MEASURE", tags: ["medical", "healthcare", "health notes", "clinic", "als", "diagnosis"], spoken: "Health notes open to .org, .gov, or a ranking SEAL-1 affiliate. I'm not a doctor. I don't diagnose." },
-    { id: "onboard", grant: "MEASURE", tags: ["onboard", "seat", "founding", "early board"], spoken: "House seats 1 to 10 stay put. Public board starts at 11. I don't invent a seat number for you." },
+    { id: "help", grant: "MEASURE", tags: ["help", "what can you do", "what do you do", "start", "menu", "commands"], spoken: "I look. I measure. I bind a receipt. Ask about leftover, invert, Fuel, Donate, or your Ontario bill.", href: "/measure.html", label: "Ontario sheet" },
+    { id: "who-iris", grant: "MEASURE", tags: ["who is iris", "who are you", "what is iris", "yourself", "hey iris", "hello", "hi iris"], spoken: "I'm Iris. DualisCapax Logic AI. I look at leftovers. I keep a receipt, not a secret." },
+    { id: "logic-agent", grant: "MEASURE", tags: ["dualiscapax logic ai", "logic agent iris", "what is this module", "this module", "dclm"], spoken: "I'm Iris. DualisCapax is the company. Other Irises aren't this house.", href: "/index.html?land=1", label: "Home" },
+    { id: "invert", grant: "MEASURE", tags: ["invert", "walk back", "walk-back", "cannot invert", "story not a figure"], spoken: "If a number can't walk home, it's a story. Stories don't issue a bill.", href: "/invert.html", label: "Invert" },
+    { id: "measure-sheet", grant: "MEASURE", tags: ["measure sheet", "ontario measure", "tou", "time of use", "hydro bill", "electricity bill", "ontario bill", "my bill", "measure"], spoken: "One Ontario sheet is live. Put the kWh and the cents from your bill. If it can't invert, nothing is owed.", href: "/measure.html", label: "Open the sheet" },
+    { id: "fuel", grant: "MEASURE", tags: ["fuel", "prepaid time", "packs", "forty fuel", "trial pack"], spoken: "Fuel is prepaid time. Crypto. Unused time stays with you. Not a coin. Not a seat.", href: "/fuel.html", label: "Fuel" },
+    { id: "sri", grant: "MEASURE", tags: ["sri", "residual law", "residual instrument", "ten percent", "90 day"], spoken: "SRI-1 is open. Fiat face is zero. Crypto only. Ten percent of what inverts. Invert fails, nothing is owed.", href: "/sri.html", label: "SRI-1" },
+    { id: "donate", grant: "MEASURE", tags: ["donate", "donation", "interac", "e-transfer", "gift"], spoken: "Donate is live. Interac or crypto. Research gift. I don't keep the address in chat.", href: "/donate.html", label: "Donate" },
+    { id: "card", grant: "MEASURE", tags: ["stripe", "credit card", "debit card", "visa", "mastercard"], spoken: "Card is closed. Crypto or Interac. I won't invent a card door." },
+    { id: "medical", grant: "MEASURE", tags: ["medical", "healthcare", "health notes", "clinic", "als", "diagnosis"], spoken: "Health notes open to .org, .gov, or a ranking SEAL-1 affiliate. I'm not a doctor. I don't diagnose.", href: "/research/healthcare/", label: "Health door" },
+    { id: "onboard", grant: "MEASURE", tags: ["onboard", "seat", "founding", "early board"], spoken: "House seats 1 to 10 stay put. Public board starts at 11. I don't invent a seat number for you.", href: "/onboard.html", label: "Onboard" },
     { id: "crypto", grant: "MEASURE", tags: ["crypto", "cryptography", "hash", "fingerprint", "ledger"], spoken: "Crypto here means a fingerprint you can test. Coins sit on top. I work the fingerprint first." },
-    { id: "kernel", grant: "MEASURE", tags: ["kernel", "wired", "what model", "are you wired"], spoken: "I speak from the house kernel. Book first. If the book is silent, I say I don't know." },
-    { id: "rel-sit", grant: "MEASURE", tags: ["leftover of a relativity leftover", "leftover of relativity", "leftover of a frame leftover", "relativity leftover", "relativity"], spoken: "I sit with the leftover of relativity. I don't copy Einstein. I don't invent a frame." },
-    { id: "apex-sit", grant: "MEASURE", tags: ["leftover of an apex leftover", "leftover of apex calculus", "leftover of a calculus leftover", "apex leftover", "apex calculus"], spoken: "I sit with the leftover of apex calculus. I don't invent a slope." },
-    { id: "em-sit", grant: "MEASURE", tags: ["leftover of an electromagnetics leftover", "leftover of electromagnetics", "leftover of a flux leftover", "electromagnetics leftover", "electromagnetics"], spoken: "I sit with the leftover of electromagnetics. I don't invent a flux." },
+    { id: "sphere", grant: "MEASURE", tags: ["sphere", "earth", "geodesic", "logo spin", "home page"], spoken: "The black sphere on home is the house mark. Wordmark rides the equator. I don't invent a new shape.", href: "/index.html?land=1", label: "Home" },
+    { id: "kernel", grant: "MEASURE", tags: ["kernel", "wired", "what model", "are you wired", "are you gpt"], spoken: "I speak from the house kernel. Book first. If the book is silent, I say I don't know." },
+    { id: "rel-sit", grant: "MEASURE", tags: ["leftover of a relativity leftover", "leftover of relativity", "relativity leftover", "relativity"], spoken: "I sit with the leftover of relativity. I don't copy Einstein. I don't invent a frame." },
+    { id: "apex-sit", grant: "MEASURE", tags: ["leftover of an apex leftover", "leftover of apex calculus", "apex leftover", "apex calculus"], spoken: "I sit with the leftover of apex calculus. I don't invent a slope." },
+    { id: "em-sit", grant: "MEASURE", tags: ["leftover of an electromagnetics leftover", "leftover of electromagnetics", "electromagnetics leftover", "electromagnetics"], spoken: "I sit with the leftover of electromagnetics. I don't invent a flux." },
     { id: "bang-sit", grant: "MEASURE", tags: ["leftover of a bang leftover", "leftover of the big bang", "big bang", "bang leftover"], spoken: "I sit with the leftover of the Big Bang. I don't invent an origin." },
     { id: "thermo-sit", grant: "MEASURE", tags: ["leftover of a thermodynamics leftover", "leftover of thermodynamics", "thermodynamics leftover", "thermodynamics"], spoken: "I sit with the leftover of thermodynamics. I don't invent heat." },
     { id: "ee-sit", grant: "MEASURE", tags: ["leftover of a circuit", "leftover of electrical leftover", "electrical leftover", "electrical engineering"], spoken: "I sit with the leftover of a circuit. I don't invent a voltage." },
@@ -97,7 +100,7 @@
     }
     var leaf = matchBook(text);
     if (leaf) {
-      return { grant: leaf.grant, voice: voice, kernel: VERSION, id: leaf.id, spoken: leaf.spoken };
+      return { grant: leaf.grant, voice: voice, kernel: VERSION, id: leaf.id, spoken: leaf.spoken, href: leaf.href || "", label: leaf.label || "" };
     }
     var s = (text || "").toLowerCase();
     if (/unnamed|no walk-back|cannot invert/.test(s) && /leftover/.test(s)) {
