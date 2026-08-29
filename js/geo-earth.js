@@ -100,7 +100,7 @@ markTex.anisotropy=8;
 const group=new THREE.Group();
 scene.add(group);
 
-const ER=0.38;
+const ER=0.24;
 const earthPaint=document.createElement('canvas');
 earthPaint.width=1024;earthPaint.height=512;
 {
@@ -129,8 +129,8 @@ earth.position.set(0,0,0);
 earth.renderOrder=0;
 group.add(earth);
 const earthAtmos=new THREE.Mesh(
-  new THREE.SphereGeometry(ER*1.045,48,32),
-  new THREE.MeshBasicMaterial({color:0x7eb6ff,transparent:true,opacity:0.20,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
+  new THREE.SphereGeometry(ER*1.05,48,32),
+  new THREE.MeshBasicMaterial({color:0x7eb6ff,transparent:true,opacity:0.18,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
 );
 earthAtmos.position.set(0,0,0);
 group.add(earthAtmos);
@@ -247,7 +247,7 @@ const cageCore=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
 }));
 group.add(glow);group.add(cageCore);
 
-const hivePts=c60Points(ER*1.085);
+const hivePts=c60Points(ER*1.10);
 const hiveGeo=c60Geometry(hivePts,edgeLength(hivePts));
 const hiveGlow=new THREE.LineSegments(hiveGeo,new THREE.LineBasicMaterial({
   color:0x6aa8ff,transparent:true,opacity:0.22,blending:THREE.AdditiveBlending,depthWrite:false
@@ -258,12 +258,6 @@ const hiveCore=new THREE.LineSegments(hiveGeo,new THREE.LineBasicMaterial({
 hiveGlow.scale.setScalar(1.012);
 hiveGlow.renderOrder=2;hiveCore.renderOrder=2;
 group.add(hiveGlow);group.add(hiveCore);
-const hiveHex=new THREE.LineSegments(
-  new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(ER*1.055,2),18),
-  new THREE.LineBasicMaterial({color:0x9ec5ff,transparent:true,opacity:0.16,blending:THREE.AdditiveBlending,depthWrite:false})
-);
-hiveHex.renderOrder=2;
-group.add(hiveHex);
 
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(0.948,96,64),
@@ -316,7 +310,7 @@ function addFeed(pt){
 addFeed(new THREE.Vector3(0.92,0,0));
 addFeed(new THREE.Vector3(-0.92,0,0));
 function ribbonPath(from,now,phase){
-  const dest=from.clone().setLength(ER*1.04);
+  const dest=from.clone().setLength(ER*1.06);
   const dir=dest.clone().sub(from);
   const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
@@ -443,7 +437,6 @@ function frame(now){
   energy=feeds.length?energy/feeds.length:0.16;
   hiveGlow.material.opacity=0.16+energy*0.55;
   hiveCore.material.opacity=0.24+energy*0.62;
-  hiveHex.material.opacity=0.10+energy*0.28;
   ribbonLight.intensity=0.45+energy*1.35;
   goldLight.intensity=0.18+energy*0.7;
   earthMat.emissiveIntensity=0.12+energy*0.34;
