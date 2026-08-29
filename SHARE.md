@@ -1,9 +1,9 @@
 # DualisCapax — public site links
 
 **Official name:** DualisCapax  
-**Official domain (when connected):** https://dualiscapax.ai
+**Official domain:** https://dualiscapax.ai
 
-**Working site today:**
+**Origin (verify here first):**
 https://digenova77-ui.github.io/dualiscapax-landing/
 
 (The word “landing” is only a folder name on GitHub. The product is DualisCapax.)
