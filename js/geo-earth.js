@@ -14,13 +14,12 @@ const R=0.93;
 
 function stampWord(ctx,x,y){
   ctx.save();
-  // Sized so the FULL word sits on the front face without clipping off the limb
-  ctx.font='700 64px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.font='700 56px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   ctx.lineJoin='round';
   ctx.miterLimit=2;
-  ctx.lineWidth=3.5;
+  ctx.lineWidth=3;
   ctx.strokeStyle='rgba(0,0,0,0.82)';
   ctx.strokeText('DualisCapax',x,y);
   ctx.shadowColor='rgba(180,210,255,0.28)';
@@ -33,14 +32,12 @@ function stampWord(ctx,x,y){
   ctx.restore();
 }
 
-// Pure canvas DNA — no SVG load (drawImage SVG is unreliable on canvas)
 function stampDNA(ctx,cx,cy,size){
   ctx.save();
   ctx.translate(cx,cy);
   const s=size/256;
   ctx.scale(s,s);
   ctx.translate(-128,-128);
-  // gold→blue ring
   const rg=ctx.createLinearGradient(40,40,216,216);
   rg.addColorStop(0,'#C9A227');
   rg.addColorStop(1,'#3B82F6');
@@ -50,7 +47,6 @@ function stampDNA(ctx,cx,cy,size){
   ctx.lineWidth=7;
   ctx.globalAlpha=0.95;
   ctx.stroke();
-  // helix strands
   const sg=ctx.createLinearGradient(0,48,0,208);
   sg.addColorStop(0,'#F5D76E');
   sg.addColorStop(0.5,'#60A5FA');
@@ -60,13 +56,11 @@ function stampDNA(ctx,cx,cy,size){
   ctx.lineCap='round';
   ctx.beginPath(); ctx.moveTo(88,48); ctx.bezierCurveTo(148,88,148,168,88,208); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(168,48); ctx.bezierCurveTo(108,88,108,168,168,208); ctx.stroke();
-  // rungs
   ctx.strokeStyle='#1e3a5f';
   ctx.lineWidth=5;
   [[100,78,156,92],[96,112,160,124],[96,146,160,158],[100,180,156,192]].forEach(function(L){
     ctx.beginPath(); ctx.moveTo(L[0],L[1]); ctx.lineTo(L[2],L[3]); ctx.stroke();
   });
-  // bases
   const bases=[[100,78,'#EF4444'],[156,92,'#3B82F6'],[112,128,'#22C55E'],[152,152,'#EAB308'],[120,188,'#0a0a0a']];
   bases.forEach(function(b){
     ctx.beginPath(); ctx.arc(b[0],b[1],8,0,Math.PI*2);
@@ -78,13 +72,11 @@ function stampDNA(ctx,cx,cy,size){
 
 function paintMarks(){
   mtx.clearRect(0,0,w,h);
-  // two wordmarks on opposite faces of the equator
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
-  // DNA burned between them (and the antipode) so it reads as the sphere turns
-  const dna=44; // fits between wordmarks
+  const dna=44;
   stampDNA(mtx,w*0.5,h*0.5,dna);
-  stampDNA(mtx,0,h*0.5,dna); // seam / antipode
+  stampDNA(mtx,0,h*0.5,dna);
 }
 paintMarks();
 const markTex=new THREE.CanvasTexture(mark);
@@ -92,7 +84,7 @@ markTex.colorSpace=THREE.SRGBColorSpace;
 markTex.anisotropy=8;
 
 const group=new THREE.Group();
-group.rotation.y = Math.PI * 0.5; // start with a wordmark facing the camera
+group.rotation.y = Math.PI * 0.5;
 scene.add(group);
 
 const ER=0.26;
@@ -143,8 +135,7 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
   t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;earthMat.map=t;earthMat.needsUpdate=true;
 });
 
-// Geodesic outer shell (icosahedron)
-const GEO_DETAIL=3; // 320 faces — readable geodesic, not muddy
+const GEO_DETAIL=3;
 const bodyGeo=new THREE.IcosahedronGeometry(R, GEO_DETAIL);
 const body=new THREE.Mesh(
   bodyGeo,
@@ -159,32 +150,31 @@ const body=new THREE.Mesh(
 body.renderOrder=1;
 group.add(body);
 
-// Geodesic edge lattice
 const edgeGeo=new THREE.EdgesGeometry(bodyGeo, 1);
 const edges=new THREE.LineSegments(
   edgeGeo,
   new THREE.LineBasicMaterial({
     color:0x7eb6ff,
     transparent:true,
-    opacity:0.42,
+    opacity:0.5,
     depthWrite:false
   })
 );
 edges.renderOrder=3;
-edges.scale.setScalar(1.002);
+edges.scale.setScalar(1.003);
 group.add(edges);
 
 const limb=new THREE.Mesh(
-  new THREE.IcosahedronGeometry(R+0.012, GEO_DETAIL),
+  new THREE.IcosahedronGeometry(R+0.01, GEO_DETAIL),
   new THREE.MeshBasicMaterial({
-    color:0x7eb6ff,transparent:true,opacity:0.18,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending
+    color:0x7eb6ff,transparent:true,opacity:0.16,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending
   })
 );
 limb.renderOrder=1;
 group.add(limb);
 
 const shell=new THREE.Mesh(
-  new THREE.IcosahedronGeometry(R+0.014, GEO_DETAIL),
+  new THREE.SphereGeometry(R+0.016, 96, 72),
   new THREE.MeshBasicMaterial({
     map:markTex,transparent:true,opacity:1,depthWrite:false,side:THREE.FrontSide
   })
