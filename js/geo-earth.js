@@ -101,7 +101,7 @@ const body=new THREE.Mesh(
   new THREE.MeshBasicMaterial({
     map:tex,
     transparent:true,
-    opacity:0.58,
+    opacity:0.55,
     depthWrite:true
   })
 );
@@ -110,28 +110,46 @@ const group=new THREE.Group();
 group.add(body);
 scene.add(group);
 
+const fracVert=`varying vec2 vUv;varying vec3 vPos;void main(){vUv=uv;vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
+const fracFrag=`varying vec2 vUv;varying vec3 vPos;uniform float uTime;
+void main(){
+  vec2 z=vec2(vPos.x,vPos.y)*10.0;
+  vec2 c=vec2(-0.745+0.035*sin(uTime*0.13),0.186+0.028*cos(uTime*0.10));
+  float n=0.0;
+  for(int i=0;i<28;i++){
+    if(dot(z,z)>4.0)break;
+    z=vec2(z.x*z.x-z.y*z.y,2.0*z.x*z.y)+c;
+    n+=1.0;
+  }
+  float t=n/28.0;
+  vec3 gold=vec3(0.88,0.72,0.29);
+  vec3 blue=vec3(0.40,0.66,1.0);
+  vec3 col=mix(gold,blue,clamp(t*1.2,0.0,1.0));
+  col=mix(col,vec3(1.0),pow(t,7.0));
+  float glow=0.18+0.55*t;
+  gl_FragColor=vec4(col,glow);
+}`;
+const fracMat=new THREE.ShaderMaterial({
+  vertexShader:fracVert,
+  fragmentShader:fracFrag,
+  uniforms:{uTime:{value:0}},
+  transparent:true,
+  blending:THREE.AdditiveBlending,
+  depthWrite:false
+});
 const inner=new THREE.Group();
 inner.renderOrder=0;
 const halo=new THREE.Mesh(
-  new THREE.SphereGeometry(0.30,32,24),
+  new THREE.SphereGeometry(0.32,48,32),
   new THREE.MeshBasicMaterial({
     color:0xffffff,
     transparent:true,
-    opacity:0.16,
+    opacity:0.14,
     blending:THREE.AdditiveBlending,
     depthWrite:false
   })
 );
-const coreGlow=new THREE.Mesh(
-  new THREE.SphereGeometry(0.13,32,24),
-  new THREE.MeshBasicMaterial({
-    color:0xffffff,
-    transparent:true,
-    opacity:0.55,
-    blending:THREE.AdditiveBlending,
-    depthWrite:false
-  })
-);
+const coreGlow=new THREE.Mesh(new THREE.SphereGeometry(0.155,64,48),fracMat);
 inner.add(halo);
 inner.add(coreGlow);
 group.add(inner);
@@ -171,7 +189,7 @@ addFeed(new THREE.Vector3(0.92,0,0));
 addFeed(new THREE.Vector3(-0.92,0,0));
 
 function ribbonPath(from,now,phase){
-  const dest=from.clone().setLength(0.12);
+  const dest=from.clone().setLength(0.14);
   const dir=dest.clone().sub(from);
   const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
@@ -203,7 +221,6 @@ function writeRibbon(geo,pts,width){
     arr[i*6+3]=b.x;arr[i*6+4]=b.y;arr[i*6+5]=b.z;
   }
   geo.attributes.position.needsUpdate=true;
-  geo.computeVertexNormals();
 }
 
 function c60Points(radius){
@@ -379,6 +396,7 @@ function frame(now){
   last=now;
   group.rotation.y+=OMEGA*dt;
   inner.rotation.y-=2*OMEGA*dt;
+  fracMat.uniforms.uTime.value=now*0.001;
   for(let i=0;i<feedPts.length;i++){
     writeRibbon(blues[i].g,ribbonPath(feedPts[i],now,0.0),0.012);
     writeRibbon(golds[i].g,ribbonPath(feedPts[i],now,Math.PI),0.010);
@@ -392,9 +410,7 @@ function frame(now){
     const base=decals[i].behind?0.58:0.92;
     decals[i].mesh.material.opacity=facing<0?base*0.42:base;
   }
-  const beat=0.48+0.14*Math.abs(Math.sin(now*0.004));
-  coreGlow.material.opacity=beat;
-  halo.material.opacity=0.12+0.06*Math.abs(Math.sin(now*0.004+0.4));
+  halo.material.opacity=0.11+0.06*Math.abs(Math.sin(now*0.004));
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
