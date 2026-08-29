@@ -4,7 +4,7 @@ window.DC_PAYMENTS = {
   eft_enabled: true,
   sri_enabled: true,
   fuel_enabled: true,
-  onboard_enabled: false,
+  onboard_enabled: true,
   research: "",
   cost_reduction: "",
   capacity: "",
