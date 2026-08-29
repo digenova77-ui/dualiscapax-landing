@@ -36,9 +36,13 @@ h2{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weig
 p,li{font-size:1.04rem;color:var(--muted)}
 p+p,ul+p,p+ul,ol+p{margin-top:.85rem}
 .strong{color:var(--fg);font-weight:500}
-section{padding:2.15rem 0;border-top:1px solid var(--line-dim);animation:slide-up .7s cubic-bezier(.22,1,.36,1) both}
-section:nth-of-type(odd){animation-name:slide-left}
-section:nth-of-type(even){animation-name:slide-right}
+section{padding:2.15rem 0;border-top:1px solid var(--line-dim);animation:slide-up .7s cubic-bezier(.22,1,.36,1) both;transform-style:preserve-3d}
+section:nth-of-type(4n+1){animation-name:slide-left}
+section:nth-of-type(4n+2){animation-name:slide-right}
+section:nth-of-type(4n+3){animation-name:slide-back}
+section:nth-of-type(4n+4){animation-name:slide-diag-br}
+header{transform:translateZ(18px)}
+.hud{transform:translateZ(28px)}
 .label{font-size:.66rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:1rem}
 ol,ul{padding-left:1.15rem}
 li+li{margin-top:.42rem}

@@ -1,7 +1,7 @@
 # DualisCapax · Agent Handoff
 
-**Current as of:** `2026-08-29T01:56:00Z` (UTC)
-**Local context:** 2026-08-28 09:56 PM EDT
+**Current as of:** `2026-08-29T02:05:00Z` (UTC)
+**Local context:** 2026-08-28 10:05 PM EDT
 **Repo:** `digenova77-ui/dualiscapax-landing` · `main`
 **Live:** https://dualiscapax.ai/
 **Rule:** Future agents start here. Do not start behind this timestamp. Update after every ship.
@@ -25,15 +25,15 @@ Did you want to wire Iris (`ai/portal.js`) to the DCLM kernel, wrap one Ontario 
 
 ---
 
-## 2. What shipped 28 Aug 21:56 EDT
+## 2. What shipped 28 Aug 22:05 EDT
 
-Visual law only. Copy not rewritten. Seats not reopened.
+Visual law only. Copy not rewritten. Seats not reopened. No new sections.
 
-- `assets/glass-tiers.css` — 3D glass panes, tear sprites, slide-up / slide-left / slide-right / slide-back
-- Home stacks existing blocks on glass tiers; quark sprites now include tear glyphs; HUD / nav / lines are frosted
-- `for-people.html` uses the same slide glass on the five existing sentences
-- `theme.css` imports the glass law so inner pages that already use it pick up section slides
-- Owner logo plates remain sealed from the prior ship
+- `assets/glass-tiers.css` deepened: Z-front/near/mid/far/back, glass refraction highlight, sprite tears that drift / slide-left / slide-right / fall, slide-up/down/left/right/back/forward/diag
+- Home stack is a 3D stage. Logo / globe / copy / doors / HUD / jump sit on different translateZ levels and enter from different directions. Eight glass tears. Pointer tilt writes `--mx/--my` (reduced-motion off).
+- `for-people.html` five existing sentences sit on staggered Z panes and slide differently. Same copy.
+- `ai/app.html` glass header, glass bubbles (left/right), glass dock. Tears are `position:fixed` so the 3-row viewport does not jump. No new buttons.
+- `theme.css` inner pages inherit mixed slide directions on existing sections.
 
 ---
 
