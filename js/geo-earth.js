@@ -121,15 +121,16 @@ earthPaint.width=1024;earthPaint.height=512;
 const earthFallback=new THREE.CanvasTexture(earthPaint);
 earthFallback.colorSpace=THREE.SRGBColorSpace;
 const earthMat=new THREE.MeshPhongMaterial({
-  map:earthFallback,color:0xffffff,shininess:10,specular:new THREE.Color(0x335577)
+  map:earthFallback,color:0xffffff,shininess:14,specular:new THREE.Color(0x557799),
+  emissive:new THREE.Color(0x163056),emissiveIntensity:0.16
 });
 const earth=new THREE.Mesh(new THREE.SphereGeometry(ER,64,48),earthMat);
 earth.position.set(0,0,0);
 earth.renderOrder=0;
 group.add(earth);
 const earthAtmos=new THREE.Mesh(
-  new THREE.SphereGeometry(ER*1.04,48,32),
-  new THREE.MeshBasicMaterial({color:0x6aa8ff,transparent:true,opacity:0.16,side:THREE.BackSide,depthWrite:false})
+  new THREE.SphereGeometry(ER*1.045,48,32),
+  new THREE.MeshBasicMaterial({color:0x7eb6ff,transparent:true,opacity:0.20,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
 );
 earthAtmos.position.set(0,0,0);
 group.add(earthAtmos);
@@ -245,6 +246,25 @@ const cageCore=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
   color:0x9ec5ff,transparent:true,opacity:0.28,blending:THREE.AdditiveBlending,depthWrite:false
 }));
 group.add(glow);group.add(cageCore);
+
+const hivePts=c60Points(ER*1.085);
+const hiveGeo=c60Geometry(hivePts,edgeLength(hivePts));
+const hiveGlow=new THREE.LineSegments(hiveGeo,new THREE.LineBasicMaterial({
+  color:0x6aa8ff,transparent:true,opacity:0.22,blending:THREE.AdditiveBlending,depthWrite:false
+}));
+const hiveCore=new THREE.LineSegments(hiveGeo,new THREE.LineBasicMaterial({
+  color:0xe8f1ff,transparent:true,opacity:0.34,blending:THREE.AdditiveBlending,depthWrite:false
+}));
+hiveGlow.scale.setScalar(1.012);
+hiveGlow.renderOrder=2;hiveCore.renderOrder=2;
+group.add(hiveGlow);group.add(hiveCore);
+const hiveHex=new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(ER*1.055,2),18),
+  new THREE.LineBasicMaterial({color:0x9ec5ff,transparent:true,opacity:0.16,blending:THREE.AdditiveBlending,depthWrite:false})
+);
+hiveHex.renderOrder=2;
+group.add(hiveHex);
+
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(0.948,96,64),
   new THREE.MeshBasicMaterial({map:markTex,transparent:true,depthWrite:false,alphaTest:0.08})
@@ -296,7 +316,7 @@ function addFeed(pt){
 addFeed(new THREE.Vector3(0.92,0,0));
 addFeed(new THREE.Vector3(-0.92,0,0));
 function ribbonPath(from,now,phase){
-  const dest=from.clone().setLength(ER);
+  const dest=from.clone().setLength(ER*1.04);
   const dir=dest.clone().sub(from);
   const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
@@ -384,11 +404,17 @@ ring.onload=function(){
 };
 ring.src='brand/emblem-helix.svg';
 
-scene.add(new THREE.AmbientLight(0x6b7a92,0.58));
-const sun=new THREE.DirectionalLight(0xfff4e6,1.28);
+scene.add(new THREE.AmbientLight(0x7a8aa4,0.72));
+const sun=new THREE.DirectionalLight(0xfff4e6,1.55);
 sun.position.set(-2.2,0.55,2.4);scene.add(sun);
-const fill=new THREE.DirectionalLight(0x4a8fd8,0.22);
+const fill=new THREE.DirectionalLight(0x4a8fd8,0.38);
 fill.position.set(2.4,-0.4,-1.2);scene.add(fill);
+const ribbonLight=new THREE.PointLight(0x9ec5ff,0.7,1.6);
+ribbonLight.position.set(0,0,0);
+group.add(ribbonLight);
+const goldLight=new THREE.PointLight(0xe0b84a,0.28,1.2);
+goldLight.position.set(0,0,0);
+group.add(goldLight);
 
 const OMEGA=Math.PI*2/28;
 const camDir=new THREE.Vector3(0,0,1);
@@ -398,6 +424,7 @@ function frame(now){
   last=now;
   group.rotation.y+=OMEGA*dt;
   earth.rotation.y+=OMEGA*dt*0.35;
+  let energy=0;
   for(let i=0;i<feeds.length;i++){
     const f=feeds[i];
     const bluePath=ribbonPath(f.from,now,0);
@@ -407,11 +434,20 @@ function frame(now){
     writeSprites(f.sBlue.g,bluePath,now,i*0.13);
     writeSprites(f.sGold.g,goldPath,now,i*0.13+0.5);
     const pulse=0.12+0.10*Math.abs(Math.sin(now*0.0028+i));
+    energy+=pulse;
     f.blue.mesh.material.opacity=pulse;
     f.gold.mesh.material.opacity=pulse*0.8;
     f.sBlue.mesh.material.opacity=0.45+pulse;
     f.sGold.mesh.material.opacity=0.38+pulse*0.8;
   }
+  energy=feeds.length?energy/feeds.length:0.16;
+  hiveGlow.material.opacity=0.16+energy*0.55;
+  hiveCore.material.opacity=0.24+energy*0.62;
+  hiveHex.material.opacity=0.10+energy*0.28;
+  ribbonLight.intensity=0.45+energy*1.35;
+  goldLight.intensity=0.18+energy*0.7;
+  earthMat.emissiveIntensity=0.12+energy*0.34;
+  earthAtmos.material.opacity=0.14+energy*0.18;
   for(let i=0;i<decals.length;i++){
     const wn=decals[i].n.clone().applyQuaternion(group.quaternion);
     const facing=wn.dot(camDir);
