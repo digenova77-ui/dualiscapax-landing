@@ -12,24 +12,24 @@
 html{-webkit-text-size-adjust:100%}
 body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;-webkit-user-select:none;user-select:none}
 a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .wrap{max-width:34rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.1rem,env(safe-area-inset-right)) max(2.4rem,env(safe-area-inset-bottom)) max(1.1rem,env(safe-area-inset-left))}
 .top{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.4rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
 .top a{color:#9ec5ff}
 .kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9ec5ff}
 h1{font-size:clamp(1.7rem,7vw,2.4rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin:.45rem 0 .7rem}
 .lede{font-size:1.05rem;line-height:1.55;color:rgba(245,245,245,.72);margin-bottom:1.1rem}
-.live{border:1px solid rgba(126,182,255,.4);padding:.75rem .9rem;margin:0 0 1.1rem;font-size:.95rem;color:rgba(245,245,245,.78);background:rgba(126,182,255,.07)}
-.live strong{color:#9ec5ff}
-.packs{display:grid;gap:.55rem;margin:0 0 1.1rem}
-.pack{border:1px solid rgba(126,182,255,.28);padding:.85rem .95rem;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2));color:#f5f5f5;text-align:left;width:100%;font:inherit}
-.pack .cad{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;font-family:"IBM Plex Mono",ui-monospace,monospace}
-.pack .amt{font-size:1.2rem;font-weight:700;margin:.1rem 0}
-.pack .sub{font-size:.95rem;color:rgba(245,245,245,.5)}
-.rail{border:1px solid rgba(158,197,255,.22);padding:.9rem 1rem;margin:0 0 1rem;font-size:.98rem;line-height:1.5;color:rgba(245,245,245,.78)}
-.rail + .rail{margin-top:-.35rem}
-.rail strong{display:block;color:#f5f5f5;margin-bottom:.25rem}
-.rail a{-webkit-user-select:text;user-select:text;color:#9ec5ff}
-.wait{opacity:.72}
+.go{display:block;width:100%;min-height:3.1rem;margin:0 0 .7rem;border:1px solid rgba(158,197,255,.55);background:rgba(158,197,255,.14);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.82rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.go:active{background:rgba(158,197,255,.28)}
+.go.ok{border-color:rgba(126,200,140,.55);background:rgba(126,200,140,.16)}
+.alt{display:block;width:100%;min-height:2.6rem;margin:0 0 1.1rem;border:1px solid rgba(158,197,255,.22);background:rgba(255,255,255,.03);color:#9ec5ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.steps{border:1px solid rgba(158,197,255,.22);padding:.9rem 1rem;margin:0 0 1rem;font-size:.98rem;line-height:1.5;color:rgba(245,245,245,.78)}
+.steps strong{display:block;color:#f5f5f5;margin-bottom:.35rem}
+.steps ol{margin:.2rem 0 0 1.1rem}
+.steps li{margin:0 0 .35rem}
+.wait{opacity:.72;border:1px solid rgba(158,197,255,.22);padding:.9rem 1rem;margin:0 0 1rem;font-size:.98rem;line-height:1.5;color:rgba(245,245,245,.78)}
+.wait strong{display:block;color:#f5f5f5;margin-bottom:.25rem}
+.wait a{color:#9ec5ff}
 .note{font-size:.88rem;color:rgba(245,245,245,.48);line-height:1.45}
 foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(158,197,255,.16);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.38)}
 </style>
@@ -42,46 +42,56 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   </div>
   <p class="kicker">Research contribution</p>
   <h1>Fund the work</h1>
-  <p class="lede">A contribution to DualisCapax research. Not Fuel, not a seat, and not equity.</p>
-  <div class="live"><strong>Same research account.</strong> Interac e-Transfer and EFT both land there. Account numbers stay off this page.</div>
-  <div class="packs">
-    <a class="pack" href="mailto:donate@dualiscapax.ai?subject=DualisCapax%20research%20CAD%2020&body=Interac%20e-Transfer%20CAD%20%2420%20%E2%80%94%20research%20gift.%20Not%20Fuel.%20Not%20a%20seat.">
-      <div class="cad">CAD $20</div>
-      <div class="amt">Operating support</div>
-      <div class="sub">Interac to donate@dualiscapax.ai</div>
-    </a>
-    <a class="pack" href="mailto:donate@dualiscapax.ai?subject=DualisCapax%20research%20CAD%2050&body=Interac%20e-Transfer%20CAD%20%2450%20%E2%80%94%20research%20gift.%20Not%20Fuel.%20Not%20a%20seat.">
-      <div class="cad">CAD $50</div>
-      <div class="amt">Compute cycle</div>
-      <div class="sub">Interac to donate@dualiscapax.ai</div>
-    </a>
-    <a class="pack" href="mailto:donate@dualiscapax.ai?subject=DualisCapax%20research%20CAD%20120&body=Interac%20e-Transfer%20CAD%20%24120%20%E2%80%94%20research%20gift.%20Not%20Fuel.%20Not%20a%20seat.">
-      <div class="cad">CAD $120</div>
-      <div class="amt">Laboratory month</div>
-      <div class="sub">Interac to donate@dualiscapax.ai</div>
-    </a>
-  </div>
-  <div class="rail" id="send">
-    <strong>Interac e-Transfer — accepted</strong>
-    <p>Send to <a href="mailto:donate@dualiscapax.ai?subject=DualisCapax%20research%20gift">donate@dualiscapax.ai</a></p>
-    <p>Memo: DualisCapax research contribution. Any amount.</p>
-  </div>
-  <div class="rail" id="eft">
-    <strong>Send EFT — accepted</strong>
-    <p>Same account as Interac. Write <a href="mailto:donate@dualiscapax.ai?subject=DualisCapax%20EFT%20request">donate@dualiscapax.ai</a> for routing. Digits are not published here.</p>
-  </div>
-  <div class="rail wait" id="stripe-box">
+  <p class="lede">A gift to DualisCapax research. Not Fuel, not a seat, and not equity.</p>
+  <button type="button" class="go" id="interac">Send Interac e-Transfer</button>
+  <button type="button" class="alt" id="eft">Send EFT</button>
+  <div class="steps" id="howto" hidden></div>
+  <div class="wait" id="stripe-box">
     <strong>Card — optional</strong>
-    <p id="stripe-wait">Not required. Use Interac or EFT above.</p>
+    <p id="stripe-wait">Not required. Use Interac or EFT.</p>
     <p id="stripe-live" hidden>Card rail is live. <a id="stripe-link" href="#">Pay by card</a></p>
   </div>
-  <p class="note">Ontario. Not a security. Voluntary. No obligation. Gifts stay off the onboard / Fuel rail.</p>
+  <p class="note">Ontario. Not a security. Voluntary. Same research account for Interac and EFT. Account numbers stay off this page. Gifts stay off onboard.</p>
   <foot>DualisCapax · Truth Prevails</foot>
 </div>
 <script src="/js/payments-config.js"></script>
 <script src="/assets/haptic.js"></script>
 <script>
 (function(){
+  var ADDR='donate@dualiscapax.ai';
+  var box=document.getElementById('howto');
+  var interac=document.getElementById('interac');
+  var eft=document.getElementById('eft');
+  function tap(){
+    try{if(navigator.vibrate)navigator.vibrate(12);}catch(e){}
+  }
+  function copy(){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(ADDR);
+    }
+    return Promise.reject();
+  }
+  function show(html){
+    box.hidden=false;
+    box.innerHTML=html;
+  }
+  interac.addEventListener('click',function(){
+    tap();
+    copy().then(function(){
+      interac.classList.add('ok');
+      interac.textContent='Address copied — open your bank';
+    }).catch(function(){
+      interac.textContent='Open your bank — Autodeposit is on';
+    });
+    show('<strong>Send Interac e-Transfer</strong><ol><li>Open your bank or credit-union app.</li><li>Choose Interac e-Transfer → Send.</li><li>Paste the Autodeposit address that was just copied.</li><li>Any amount. Memo: DualisCapax research.</li></ol><p>There is no public Interac checkout. The send happens in your bank. Autodeposit is on the research account — no security question.</p>');
+  });
+  eft.addEventListener('click',function(){
+    tap();
+    copy().then(function(){
+      eft.textContent='Request copied — send EFT';
+    }).catch(function(){});
+    show('<strong>Send EFT</strong><ol><li>Open your bank → Interac e-Transfer or bill pay / EFT.</li><li>Same research account as the Interac button.</li><li>If your bank asks for transit numbers, email the copied address and we return routing privately.</li></ol><p>Digits stay off this page.</p>');
+  });
   var c=window.DC_PAYMENTS||{};
   var url=c.research||'';
   if(url&&String(url).indexOf('http')===0){
@@ -91,6 +101,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
     live.hidden=false;
     link.href=url;
     document.getElementById('stripe-box').classList.remove('wait');
+    document.getElementById('stripe-box').style.opacity='1';
   }
 })();
 </script>
