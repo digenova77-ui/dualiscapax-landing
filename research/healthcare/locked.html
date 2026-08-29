@@ -1,29 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Closed notes — DualisCapax</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../assets/cta.css" />
-  <script src="../../assets/spine-nav.js" defer></script>
-  <style>
-    body { font-family: Inter, system-ui, sans-serif; background: #050505; color: #f5f5f5; margin: 0; font-size: 1.15rem; line-height: 1.55; }
-    .site { max-width: 38rem; margin: 0 auto; padding: 0 1.15rem 3rem; }
-    h1 { font-size: clamp(1.9rem, 7vw, 2.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; margin: 1.4rem 0 1rem; }
-    p { color: rgba(245,245,245,0.78); margin: 0 0 0.9rem; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Medical door — DualisCapax</title>
+<meta name="description" content="Medical depth opens to every .org, every .gov, and ranking affiliates at top SEAL tier. Not treatment."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/theme.css"/>
+<link rel="stylesheet" href="/assets/standard.css"/>
+<style>
+  .med-form{display:grid;gap:.7rem;margin-top:.9rem}
+  .med-form label{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  .med-form input{
+    width:100%;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--fg);
+    font:500 1rem "IBM Plex Sans",system-ui,sans-serif;padding:.75rem .8rem;
+    -webkit-user-select:text;user-select:text;
+  }
+  .med-form button{
+    border:1px solid var(--line);background:linear-gradient(180deg,rgba(158,197,255,.16),rgba(0,0,0,.2));
+    color:var(--fg);font:600 .78rem "IBM Plex Sans",system-ui,sans-serif;
+    letter-spacing:.12em;text-transform:uppercase;padding:.85rem 1rem;cursor:pointer;
+  }
+  #med-note{color:#ffb4b4;font-size:.95rem}
+  #med-grant{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin:.4rem 0 1rem}
+</style>
 </head>
 <body>
-  <div class="site">
-    <div class="top"><a href="/index.html?land=1" class="mark">DualisCapax</a><div class="top-links"></div></div>
-    <h1>These notes are closed.</h1>
-    <p>The full health file is not on the free floor. When Dualis sells access, you buy the next layer. One layer is not the whole file.</p>
-    <p>No button tonight. Talk to Iris, or pick another room.</p>
-    <div class="cta-row cta-2">
-      <a class="cta primary" href="/ai/app.html">Talk to Iris</a>
-      <a class="cta" href="/research/">Other rooms</a>
-    </div>
+  <div class="tears" aria-hidden="true">
+    <i class="tear t1" style="left:8%;top:18%"></i>
+    <i class="tear t2" style="left:78%;top:12%"></i>
+    <i class="tear t3" style="left:18%;top:68%"></i>
   </div>
+<div class="site">
+  <header>
+    <a class="mark" href="/index.html?land=1">DualisCapax</a>
+    <nav>
+      <a href="/look.html">Look</a>
+      <a href="/research/">Rooms</a>
+      <a href="/ai/app.html">Iris</a>
+    </nav>
+  </header>
+  <p class="eyebrow">Medical door</p>
+  <h1>Open to the houses that hold the public</h1>
+  <p class="lede">Health notes are not a clinic. Dualis opens the file to every qualifying house — including .org. Simulation is not treatment.</p>
+  <section>
+    <h2>Who the door lets through</h2>
+    <div class="layer">
+      <p class="tag">Precise gate</p>
+      <p class="strong">Must be .org, .gov, or a ranking affiliate at top SEAL tier.</p>
+      <p>A charity on .org. A government desk on .gov. A ranked partner already marked SEAL-1. Everyone in those three lines gets the same door. No tribe preferred inside the line.</p>
+    </div>
+    <p id="med-grant" hidden></p>
+    <form class="med-form layer" id="med-form" autocomplete="on">
+      <p class="tag">Ask the door</p>
+      <label for="med-email">Work email</label>
+      <input id="med-email" name="email" type="email" inputmode="email" required placeholder="name@house.org"/>
+      <label for="med-org">House name</label>
+      <input id="med-org" name="org" type="text" required placeholder="Organization"/>
+      <label for="med-seal">Ranking SEAL mark · if you are not .org or .gov</label>
+      <input id="med-seal" name="seal" type="text" placeholder="SEAL-1 · only for ranking affiliates"/>
+      <p id="med-note" hidden></p>
+      <button type="submit">Open the door</button>
+    </form>
+    <div id="med-rooms" hidden>
+      <div class="grid-doors">
+        <a class="door-row" href="/research/healthcare/"><b>Health floor</b><span>Rooms after the door.</span></a>
+        <a class="door-row" href="/research/healthcare/library/"><b>Library</b><span>Catalog. Not a diagnosis.</span></a>
+        <a class="door-row" href="/research/medical.html"><b>Medical look</b><span>Tribute first. Journals next.</span></a>
+      </div>
+    </div>
+    <p class="note">Not medical advice. Not a cure. Not shares. Ontario and Canadian law apply. A .com clinic without a ranking SEAL mark stays outside.</p>
+    <nav class="sec-break"><a href="/research/">Rooms</a><span class="dim">·</span><a href="/ai/app.html">Iris</a><a href="/look.html">Look</a></nav>
+  </section>
+  <footer>DualisCapax · Truth Prevails · No tribes preferred</footer>
+</div>
+<script src="/js/no-select.js"></script>
+<script src="/assets/haptic.js"></script>
+<script src="/js/medical-gate.js"></script>
 </body>
 </html>

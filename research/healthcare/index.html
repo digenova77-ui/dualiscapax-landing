@@ -1,56 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Healthcare — DualisCapax</title>
-  <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../assets/cta.css" />
-  <script src="../../assets/spine-nav.js" defer></script>
-  <style>
-    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,.55); --faint:rgba(245,245,245,.28); --line:rgba(255,255,255,.09); }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); line-height:1.55; min-height:100dvh; font-size:1.12rem; }
-    a { color:inherit; text-decoration:none; }
-    .site { max-width:42rem; margin:0 auto; padding:0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
-    .eyebrow { font-size:0.86rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:1.1rem; }
-    h1 { font-size:clamp(2.2rem,9vw,3.2rem); font-weight:800; line-height:0.92; letter-spacing:-0.045em; text-transform:uppercase; margin-bottom:1.1rem; }
-    .statement { font-size:1.2rem; line-height:1.55; color:var(--muted); max-width:34rem; }
-    section { padding:2.2rem 0; border-top:1px solid var(--line); }
-    .section-label { font-size:0.86rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); margin-bottom:1rem; }
-    p { font-size:1.18rem; line-height:1.6; color:var(--muted); margin-bottom:1rem; }
-    .rooms { display:flex; flex-direction:column; gap:0.65rem; }
-    .room { display:block; padding:1.05rem 1.15rem; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,0.02); }
-    .room .t { font-weight:700; font-size:1.12rem; margin-bottom:0.25rem; }
-    .room .d { font-size:1.05rem; color:var(--muted); line-height:1.45; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Healthcare — DualisCapax</title>
+<meta name="description" content="Health notes. Door open to every .org, every .gov, and ranking affiliates at top SEAL tier. Not a clinic."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/theme.css"/>
+<link rel="stylesheet" href="/assets/standard.css"/>
+<style>
+  .med-form{display:grid;gap:.7rem;margin-top:.9rem}
+  .med-form label{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  .med-form input{
+    width:100%;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--fg);
+    font:500 1rem "IBM Plex Sans",system-ui,sans-serif;padding:.75rem .8rem;
+    -webkit-user-select:text;user-select:text;
+  }
+  .med-form button{
+    border:1px solid var(--line);background:linear-gradient(180deg,rgba(158,197,255,.16),rgba(0,0,0,.2));
+    color:var(--fg);font:600 .78rem "IBM Plex Sans",system-ui,sans-serif;
+    letter-spacing:.12em;text-transform:uppercase;padding:.85rem 1rem;cursor:pointer;
+  }
+  #med-note{color:#ffb4b4;font-size:.95rem}
+  #med-grant{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin:.4rem 0 1rem}
+  html:not(.is-med-open) #med-rooms{display:none}
+</style>
 </head>
 <body>
-  <div class="site">
-    <div class="top"><a href="/index.html?land=1" class="mark">DualisCapax</a><div class="top-links"></div></div>
-    <main style="padding:1.5rem 0 0.5rem;">
-      <div class="eyebrow">Health</div>
-      <h1>Health</h1>
-      <p class="statement">Free floor: you can know this room exists. The journal and the full ALS record sit behind the gate.</p>
-    </main>
-    <section>
-      <div class="section-label">Open later</div>
-      <div class="rooms">
-        <a class="room" href="locked.html">
-          <div class="t">Journal</div>
-          <div class="d">Closed until Dualis sells access. Not a clinic.</div>
-        </a>
-        <a class="room" href="locked.html">
-          <div class="t">ALS record</div>
-          <div class="d">Closed. A piece is not the whole file.</div>
-        </a>
-      </div>
-    </section>
-    <div class="cta-row cta-2">
-      <a class="cta primary" href="/ai/app.html">Talk to Iris</a>
-      <a class="cta" href="/research/">Other rooms</a>
-    </div>
+  <div class="tears" aria-hidden="true">
+    <i class="tear t1" style="left:8%;top:18%"></i>
+    <i class="tear t2" style="left:78%;top:12%"></i>
+    <i class="tear t3" style="left:18%;top:68%"></i>
   </div>
+<div class="site">
+  <header>
+    <a class="mark" href="/index.html?land=1">DualisCapax</a>
+    <nav>
+      <a href="/look.html">Look</a>
+      <a href="/research/">Rooms</a>
+      <a href="/ai/app.html">Iris</a>
+    </nav>
+  </header>
+  <p class="eyebrow">Health</p>
+  <h1>Health notes</h1>
+  <p class="lede">You can see this room from the street. The file itself opens to every .org, every .gov, and ranking affiliates already at the top SEAL tier.</p>
+  <section>
+    <h2>The door</h2>
+    <div class="layer">
+      <p class="tag">Precise · open</p>
+      <p class="strong">.org · .gov · ranking affiliate at SEAL tier 1.</p>
+      <p>Including .org. That was the point. A public-interest house gets the same look as a government desk. A ranked partner at the top seal walks the same line. A private .com with no mark does not.</p>
+    </div>
+    <p id="med-grant" hidden></p>
+    <form class="med-form layer" id="med-form" autocomplete="on">
+      <p class="tag">Work address</p>
+      <label for="med-email">Email</label>
+      <input id="med-email" name="email" type="email" inputmode="email" required placeholder="name@house.org"/>
+      <label for="med-org">House</label>
+      <input id="med-org" name="org" type="text" required placeholder="Organization"/>
+      <label for="med-seal">Ranking SEAL mark · if needed</label>
+      <input id="med-seal" name="seal" type="text" placeholder="SEAL-1"/>
+      <p id="med-note" hidden></p>
+      <button type="submit">Open the file</button>
+    </form>
+  </section>
+  <section id="med-rooms" hidden>
+    <h2>Inside</h2>
+    <div class="grid-doors">
+      <a class="door-row" href="library/"><b>Library</b><span>Catalog of notes. Not a diagnosis.</span></a>
+      <a class="door-row" href="/research/medical.html"><b>Medical look</b><span>Tribute first. Then journals.</span></a>
+      <a class="door-row" href="/research/seal-index.html"><b>SEAL registry</b><span>Same five-panel standard.</span></a>
+      <a class="door-row" href="/research/medical/the-path.html"><b>The path</b><span>How a file is drawn.</span></a>
+    </div>
+    <p class="note">Simulation is not treatment. Dualis does not sell a cure on this floor.</p>
+  </section>
+  <nav class="sec-break"><a href="/research/">Rooms</a><span class="dim">·</span><a href="/research/healthcare/locked.html">Door</a><a href="/ai/app.html">Iris</a></nav>
+  <footer>DualisCapax · Truth Prevails · No tribes preferred</footer>
+</div>
+<script src="/js/no-select.js"></script>
+<script src="/assets/haptic.js"></script>
+<script src="/js/medical-gate.js"></script>
 </body>
 </html>
