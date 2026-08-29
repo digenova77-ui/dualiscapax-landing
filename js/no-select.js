@@ -8,21 +8,34 @@
   function block(e){
     if(isField(e.target)) return;
     e.preventDefault();
+    return false;
   }
-  document.addEventListener('selectstart', block, {passive:false});
-  document.addEventListener('copy', block, {passive:false});
-  document.addEventListener('cut', block, {passive:false});
-  document.addEventListener('contextmenu', block, {passive:false});
-  document.addEventListener('dragstart', block, {passive:false});
+  document.addEventListener('selectstart', block, {passive:false, capture:true});
+  document.addEventListener('copy', block, {passive:false, capture:true});
+  document.addEventListener('cut', block, {passive:false, capture:true});
+  document.addEventListener('contextmenu', block, {passive:false, capture:true});
+  document.addEventListener('dragstart', block, {passive:false, capture:true});
+  document.addEventListener('mousedown', function(e){
+    if(isField(e.target)) return;
+    // prevent accidental text selection on long press / drag
+    if(e.detail > 1) e.preventDefault();
+  }, {passive:false, capture:true});
   document.addEventListener('keydown', function(e){
     if(isField(e.target)) return;
     var k=(e.key||'').toLowerCase();
-    if((e.ctrlKey||e.metaKey) && (k==='c'||k==='x'||k==='a'||k==='u'||k==='s')) e.preventDefault();
-  }, {passive:false});
+    if((e.ctrlKey||e.metaKey) && (k==='c'||k==='x'||k==='a'||k==='u'||k==='s'||k==='p')) e.preventDefault();
+  }, {passive:false, capture:true});
   try{
+    var css = '*,*::before,*::after{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;-webkit-tap-highlight-color:transparent}';
+    var s = document.createElement('style');
+    s.textContent = css;
+    (document.head||document.documentElement).appendChild(s);
     document.documentElement.style.webkitUserSelect='none';
     document.documentElement.style.userSelect='none';
-    document.body && (document.body.style.webkitUserSelect='none');
-    document.body && (document.body.style.userSelect='none');
+    if(document.body){
+      document.body.style.webkitUserSelect='none';
+      document.body.style.userSelect='none';
+      document.body.style.webkitTouchCallout='none';
+    }
   }catch(err){}
 })();
