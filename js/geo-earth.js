@@ -88,14 +88,23 @@ const body=new THREE.Mesh(
   new THREE.SphereGeometry(R,128,96),
   new THREE.MeshPhongMaterial({
     color:0x000000,
-    emissive:new THREE.Color(0x000000),
-    specular:new THREE.Color(0x1a1a1a),
-    shininess:18,
+    emissive:new THREE.Color(0x05070c),
+    specular:new THREE.Color(0x2a3a55),
+    shininess:26,
     transparent:false
   })
 );
 body.renderOrder=1;
 group.add(body);
+
+const limb=new THREE.Mesh(
+  new THREE.SphereGeometry(R+0.01,128,96),
+  new THREE.MeshBasicMaterial({
+    color:0x7eb6ff,transparent:true,opacity:0.22,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending
+  })
+);
+limb.renderOrder=1;
+group.add(limb);
 
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(R+0.012,128,96),
@@ -194,11 +203,13 @@ function writeSprites(geo,pts,now,offset){
   geo.attributes.position.needsUpdate=true;
 }
 
-scene.add(new THREE.AmbientLight(0x101014,0.35));
-const sun=new THREE.DirectionalLight(0xffffff,0.55);
+scene.add(new THREE.AmbientLight(0x1a2436,0.55));
+const sun=new THREE.DirectionalLight(0xffffff,0.7);
 sun.position.set(-2.2,0.8,2.6);scene.add(sun);
-const fill=new THREE.DirectionalLight(0x222228,0.25);
+const fill=new THREE.DirectionalLight(0x4a6a9a,0.35);
 fill.position.set(2.2,-0.6,-1.4);scene.add(fill);
+const rimLight=new THREE.DirectionalLight(0x9ec5ff,0.85);
+rimLight.position.set(0.2,0.4,-2.4);scene.add(rimLight);
 const ribbonLight=new THREE.PointLight(0xb7d6ff,1.8,2.0);
 ribbonLight.position.set(0,0,0);
 group.add(ribbonLight);
@@ -236,6 +247,7 @@ function frame(now){
   earthAtmos.material.opacity=0.34+energy*0.38;
   earthHalo.material.opacity=0.14+energy*0.28;
   earthCore.material.opacity=0.55+energy*0.4;
+  limb.material.opacity=0.16+energy*0.12;
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
