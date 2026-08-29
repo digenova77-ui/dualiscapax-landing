@@ -15,7 +15,20 @@ mark.width=w;mark.height=h;
 const mtx=mark.getContext('2d');
 const PHI=(1+Math.sqrt(5))/2;
 const CAGE_R=0.933;
-function onEquator(n){return Math.abs(n.y)<0.22;}
+function dirToUV(v){
+  const n=v.clone().normalize();
+  let u=Math.atan2(n.z,-n.x)/(Math.PI*2);
+  if(u<0)u+=1;
+  return {u,v:Math.acos(Math.max(-1,Math.min(1,n.y)))/Math.PI};
+}
+function uToWord(u){
+  return Math.min(Math.abs(u-0.25),Math.abs(u-0.75),Math.abs(u+0.75),Math.abs(u-1.25));
+}
+function hideDna(n){
+  if(Math.abs(n.y)<0.22)return true;
+  const uv=dirToUV(n);
+  return uToWord(uv.u)<0.15 && Math.abs(uv.v-0.5)<0.12;
+}
 
 function stampWord(ctx,x,y){
   ctx.save();
@@ -35,12 +48,6 @@ function stampRing(ctx,img,x,y,size,alpha){
   ctx.drawImage(img,x-size/2,y-size/2,size,size);
   ctx.restore();
 }
-function dirToUV(v){
-  const n=v.clone().normalize();
-  let u=Math.atan2(n.z,-n.x)/(Math.PI*2);
-  if(u<0)u+=1;
-  return {u,v:Math.acos(Math.max(-1,Math.min(1,n.y)))/Math.PI};
-}
 function paintField(){
   ftx.fillStyle='#050506';
   ftx.fillRect(0,0,w,h);
@@ -50,7 +57,7 @@ function paintMarks(img,faces){
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
   (faces||[]).forEach(function(p){
-    if(onEquator(p.n))return;
+    if(hideDna(p.n))return;
     const uv=dirToUV(p.n);
     stampRing(mtx,img,uv.u*w,uv.v*h,p.sides===5?52:44,0.78);
   });
@@ -66,7 +73,7 @@ markTex.anisotropy=8;
 const group=new THREE.Group();
 scene.add(group);
 
-const ER=0.24;
+const ER=0.26;
 const earthPaint=document.createElement('canvas');
 earthPaint.width=1024;earthPaint.height=512;
 {
@@ -87,25 +94,25 @@ earthPaint.width=1024;earthPaint.height=512;
 const earthFallback=new THREE.CanvasTexture(earthPaint);
 earthFallback.colorSpace=THREE.SRGBColorSpace;
 const earthMat=new THREE.MeshPhongMaterial({
-  map:earthFallback,color:0xffffff,shininess:22,specular:new THREE.Color(0x88bbff),
-  emissive:new THREE.Color(0x2a6ad4),emissiveIntensity:0.38
+  map:earthFallback,color:0xffffff,shininess:28,specular:new THREE.Color(0xaad4ff),
+  emissive:new THREE.Color(0x3a7ae0),emissiveIntensity:0.62
 });
 const earth=new THREE.Mesh(new THREE.SphereGeometry(ER,96,72),earthMat);
 earth.renderOrder=0;
 group.add(earth);
 const earthCore=new THREE.Mesh(
-  new THREE.SphereGeometry(ER*0.42,32,24),
-  new THREE.MeshBasicMaterial({color:0xe8f4ff,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false})
+  new THREE.SphereGeometry(ER*0.48,32,24),
+  new THREE.MeshBasicMaterial({color:0xe8f4ff,transparent:true,opacity:0.7,blending:THREE.AdditiveBlending,depthWrite:false})
 );
 group.add(earthCore);
 const earthAtmos=new THREE.Mesh(
-  new THREE.SphereGeometry(ER*1.10,64,48),
-  new THREE.MeshBasicMaterial({color:0x7eb6ff,transparent:true,opacity:0.32,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
+  new THREE.SphereGeometry(ER*1.14,64,48),
+  new THREE.MeshBasicMaterial({color:0x8ec4ff,transparent:true,opacity:0.42,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
 );
 group.add(earthAtmos);
 const earthHalo=new THREE.Mesh(
-  new THREE.SphereGeometry(ER*1.22,48,32),
-  new THREE.MeshBasicMaterial({color:0xe0b84a,transparent:true,opacity:0.12,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
+  new THREE.SphereGeometry(ER*1.28,48,32),
+  new THREE.MeshBasicMaterial({color:0xe8c45a,transparent:true,opacity:0.18,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
 );
 group.add(earthHalo);
 const loader=new THREE.TextureLoader();
@@ -116,7 +123,7 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
 
 const body=new THREE.Mesh(
   new THREE.SphereGeometry(0.92,96,72),
-  new THREE.MeshBasicMaterial({color:0x050506,transparent:true,opacity:0.82,depthWrite:true})
+  new THREE.MeshBasicMaterial({color:0x050506,transparent:true,opacity:0.68,depthWrite:true})
 );
 body.renderOrder=1;
 group.add(body);
@@ -239,13 +246,13 @@ function makeDotTex(hex){
 }
 const texBlue=makeDotTex('rgba(122,176,255,1)');
 const texGold=makeDotTex('rgba(232,184,74,1)');
-const SN=16;
+const SN=18;
 function makeSprites(map){
   const g=new THREE.BufferGeometry();
   g.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(SN*3),3));
   const pts=new THREE.Points(g,new THREE.PointsMaterial({
-    map:map,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,
-    depthWrite:false,size:0.038,sizeAttenuation:true
+    map:map,transparent:true,opacity:0.85,blending:THREE.AdditiveBlending,
+    depthWrite:false,size:0.042,sizeAttenuation:true
   }));
   pts.renderOrder=5;group.add(pts);return {g:g,mesh:pts};
 }
@@ -265,8 +272,8 @@ const feeds=[];
 function addFeed(pt){
   feeds.push({
     from:pt.clone(),
-    blue:makeRibbon(0x6aa8ff,0.20),
-    gold:makeRibbon(0xe0b84a,0.16),
+    blue:makeRibbon(0x6aa8ff,0.28),
+    gold:makeRibbon(0xe0b84a,0.22),
     sBlue:makeSprites(texBlue),
     sGold:makeSprites(texGold)
   });
@@ -274,7 +281,7 @@ function addFeed(pt){
 addFeed(new THREE.Vector3(CAGE_R,0,0));
 addFeed(new THREE.Vector3(-CAGE_R,0,0));
 function ribbonPath(from,now,phase){
-  const dest=from.clone().setLength(ER*0.55);
+  const dest=from.clone().setLength(ER*0.92);
   const dir=dest.clone().sub(from);
   const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
@@ -284,7 +291,7 @@ function ribbonPath(from,now,phase){
     const t=i/(SN-1);
     const p=from.clone().lerp(dest,t*t);
     const twist=t*5.8+now*0.002+phase;
-    const rad=0.016*Math.sin(t*Math.PI)*(1-t);
+    const rad=0.018*Math.sin(t*Math.PI)*(1-t);
     p.addScaledVector(n1,Math.cos(twist)*rad);
     p.addScaledVector(n2,Math.sin(twist)*rad);
     out.push(p);
@@ -334,7 +341,7 @@ function mountRingDecals(img){
   const ringTex=new THREE.CanvasTexture(punch);
   ringTex.colorSpace=THREE.SRGBColorSpace;
   faces.forEach(function(p){
-    if(onEquator(p.n))return;
+    if(hideDna(p.n))return;
     const fit=p.sides===5?0.70:0.58;
     const r=Math.max(0.038,p.rin*fit);
     const disc=new THREE.Mesh(
@@ -349,6 +356,7 @@ function mountRingDecals(img){
     disc.renderOrder=3;
     group.add(disc);
     decals.push({mesh:disc,n:p.n.clone()});
+    if(p.sides===5) addFeed(disc.position);
   });
 }
 
@@ -359,15 +367,15 @@ ring.onload=function(){
 };
 ring.src='brand/emblem-helix.svg';
 
-scene.add(new THREE.AmbientLight(0x8aa0bc,0.85));
-const sun=new THREE.DirectionalLight(0xfff4e6,1.7);
+scene.add(new THREE.AmbientLight(0x8aa0bc,0.9));
+const sun=new THREE.DirectionalLight(0xfff4e6,1.85);
 sun.position.set(-2.2,0.55,2.4);scene.add(sun);
-const fill=new THREE.DirectionalLight(0x4a8fd8,0.55);
+const fill=new THREE.DirectionalLight(0x4a8fd8,0.7);
 fill.position.set(2.4,-0.4,-1.2);scene.add(fill);
-const ribbonLight=new THREE.PointLight(0xb7d6ff,1.4,1.8);
+const ribbonLight=new THREE.PointLight(0xb7d6ff,1.8,2.0);
 ribbonLight.position.set(0,0,0);
 group.add(ribbonLight);
-const goldLight=new THREE.PointLight(0xe0b84a,0.7,1.5);
+const goldLight=new THREE.PointLight(0xe0b84a,0.9,1.7);
 goldLight.position.set(0,0,0);
 group.add(goldLight);
 
@@ -383,24 +391,24 @@ function frame(now){
     const f=feeds[i];
     const bluePath=ribbonPath(f.from,now,0);
     const goldPath=ribbonPath(f.from,now,Math.PI);
-    writeRibbon(f.blue.g,bluePath,0.010);
-    writeRibbon(f.gold.g,goldPath,0.008);
+    writeRibbon(f.blue.g,bluePath,0.012);
+    writeRibbon(f.gold.g,goldPath,0.009);
     writeSprites(f.sBlue.g,bluePath,now,i*0.13);
     writeSprites(f.sGold.g,goldPath,now,i*0.13+0.5);
-    const pulse=0.16+0.14*Math.abs(Math.sin(now*0.0028+i));
+    const pulse=0.22+0.16*Math.abs(Math.sin(now*0.0028+i));
     energy+=pulse;
     f.blue.mesh.material.opacity=pulse;
     f.gold.mesh.material.opacity=pulse*0.85;
-    f.sBlue.mesh.material.opacity=0.55+pulse;
-    f.sGold.mesh.material.opacity=0.48+pulse*0.9;
+    f.sBlue.mesh.material.opacity=0.6+pulse;
+    f.sGold.mesh.material.opacity=0.52+pulse*0.9;
   }
-  energy=feeds.length?energy/feeds.length:0.2;
-  ribbonLight.intensity=1.1+energy*2.2;
-  goldLight.intensity=0.45+energy*1.35;
-  earthMat.emissiveIntensity=0.32+energy*0.85;
-  earthAtmos.material.opacity=0.26+energy*0.42;
-  earthHalo.material.opacity=0.10+energy*0.28;
-  earthCore.material.opacity=0.42+energy*0.45;
+  energy=feeds.length?energy/feeds.length:0.25;
+  ribbonLight.intensity=1.4+energy*2.4;
+  goldLight.intensity=0.55+energy*1.5;
+  earthMat.emissiveIntensity=0.55+energy*0.95;
+  earthAtmos.material.opacity=0.34+energy*0.38;
+  earthHalo.material.opacity=0.14+energy*0.28;
+  earthCore.material.opacity=0.55+energy*0.4;
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
