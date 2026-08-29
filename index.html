@@ -79,9 +79,10 @@
   .stack{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:clamp(0.28rem,1.2vh,0.75rem);padding-block:.4rem;perspective:1100px;transform-style:preserve-3d}
   .geo-wrap{width:min(78vw,22rem);height:min(78vw,22rem);background:transparent;border:0}
   #geo-earth{width:100%;height:100%;display:block}
-  .classif{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.58rem,2.1vw,0.76rem);font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#9ec5ff;max-width:min(96vw,34rem);line-height:1.2;white-space:nowrap}
-  h1{font-size:clamp(1.85rem,8vw,3.1rem);font-weight:600;line-height:.9;letter-spacing:.04em;text-transform:uppercase;font-family:"IBM Plex Sans",system-ui,sans-serif}
-  .lines{padding:0.15rem 0.4rem 0;border-top:1px solid rgba(158,197,255,0.16);width:min(92vw,22rem);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 70%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .tier-copy{display:flex;flex-direction:column;align-items:center;gap:0.85rem;width:100%}
+  .classif{margin:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.58rem,2.1vw,0.76rem);font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#9ec5ff;max-width:min(96vw,34rem);line-height:1.2;white-space:nowrap}
+  h1{margin:0;font-size:clamp(1.85rem,8vw,3.1rem);font-weight:600;line-height:.9;letter-spacing:.04em;text-transform:uppercase;font-family:"IBM Plex Sans",system-ui,sans-serif}
+  .lines{margin:0;padding:0 0.4rem;border-top:1px solid rgba(158,197,255,0.16);width:min(92vw,22rem);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 70%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
   .line{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.72rem,3.1vw,0.92rem);font-weight:500;margin:0;padding:0.28rem 0;text-transform:uppercase;letter-spacing:0.16em;border-bottom:1px solid rgba(158,197,255,0.12)}
   .hud-row{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:0.35rem;align-items:center}
   .hud-cell{text-align:center;padding:0.15rem 0.2rem;min-width:0}
@@ -186,13 +187,16 @@
   <section class="hero" id="top">
     <div class="stack">
       <div class="tier tier-geo"><div class="geo-wrap"><canvas id="geo-earth" width="512" height="512" aria-label="DualisCapax"></canvas></div></div>
-      <div class="tier tier-copy"><p class="classif">Financial Law - Edge Tech. - AI - Research</p><h1>Truth<br>Prevails</h1></div>
-      <div class="tier tier-doors"><div class="lines">
-        <a class="line" href="#finance">RESIDUAL LAW FINANCE</a>
-        <a class="line" href="#edge">EDGE TECHNOLOGIES</a>
-        <a class="line" href="#ai">ADAPTIVE AI</a>
-        <a class="line" href="#look">RESEARCH</a>
-      </div></div>
+      <div class="tier tier-copy">
+        <p class="classif">Financial Law - Edge Tech. - AI - Research</p>
+        <h1>Truth<br>Prevails</h1>
+        <div class="lines">
+          <a class="line" href="#finance">RESIDUAL LAW FINANCE</a>
+          <a class="line" href="#edge">EDGE TECHNOLOGIES</a>
+          <a class="line" href="#ai">ADAPTIVE AI</a>
+          <a class="line" href="#look">RESEARCH</a>
+        </div>
+      </div>
       <div class="tier tier-jump"><a class="jump" href="#for-you">Start here<span id="peg-clock">—</span></a></div>
     </div>
   </section>
