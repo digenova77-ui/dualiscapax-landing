@@ -42,10 +42,15 @@
   pointer-events: none;
 }
 
-.stage-3d, .stack {
+.stage-3d, .stack, .scroll-stage {
   perspective: 1200px;
   perspective-origin: calc(50% + var(--mx) * 18px) calc(42% + var(--my) * 12px);
   transform-style: preserve-3d;
+}
+.scroll-stage {
+  perspective: 1400px;
+  perspective-origin: calc(50% + var(--mx) * 22px) 12%;
+  padding: 0.4rem 0 2rem;
 }
 .tier {
   transform-style: preserve-3d;
@@ -65,6 +70,31 @@
 .tier-doors{ animation-name: slide-diag-tl; }
 .tier-hud  { animation-name: slide-diag-br; }
 .tier-jump { animation-name: slide-down; }
+
+.band.glass {
+  --tx: 0px;
+  --ty: 0px;
+  --tz: 0px;
+  --rx: 0deg;
+  --ry: 0deg;
+  width: min(40rem, calc(100% - 1.6rem));
+  margin: 1.15rem auto;
+  padding: 1.35rem 1.05rem 1.1rem;
+  transform-style: preserve-3d;
+  transform:
+    translate3d(var(--tx), var(--ty), var(--tz))
+    rotateX(var(--rx))
+    rotateY(var(--ry));
+  will-change: transform, opacity;
+  border-radius: 2px;
+}
+.band.glass.is-on {
+  box-shadow:
+    0 26px 54px rgba(0,0,0,0.48),
+    0 0 0 1px rgba(255,255,255,0.05),
+    inset 0 1px 0 var(--glass-shine),
+    0 0 42px var(--glass-glow);
+}
 
 .tears {
   position: absolute;
@@ -182,8 +212,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tear, .tier, .glass, .slide-up, .slide-down, .slide-left, .slide-right, .slide-back, .slide-forward,
-  .tier-logo, .tier-geo, .tier-copy, .tier-doors, .tier-hud, .tier-jump, .bubble.them, .bubble.you {
+  .tier-logo, .tier-geo, .tier-copy, .tier-doors, .tier-hud, .tier-jump, .bubble.them, .bubble.you,
+  .band.glass {
     animation: none !important;
     transition: none !important;
+    transform: none !important;
   }
 }
