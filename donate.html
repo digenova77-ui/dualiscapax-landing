@@ -28,7 +28,10 @@ h1{font-size:clamp(1.7rem,7vw,2.4rem);font-weight:600;letter-spacing:.02em;text-
 .rail{border:1px solid rgba(158,197,255,.22);padding:.9rem 1rem;margin:0 0 1rem;font-size:.98rem;line-height:1.5;color:rgba(245,245,245,.78)}
 .rail + .rail{margin-top:-.35rem}
 .rail strong{display:block;color:#f5f5f5;margin-bottom:.25rem}
-.rail a{color:#9ec5ff;-webkit-user-select:text;user-select:text}
+.rail a,.copy{-webkit-user-select:text;user-select:text}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem .7rem;margin:.55rem 0 .2rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.92rem}
+.grid span{display:block;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.12rem}
+.grid b{font-weight:600;color:#f5f5f5;-webkit-user-select:text;user-select:text}
 .wait{opacity:.72}
 .note{font-size:.88rem;color:rgba(245,245,245,.48);line-height:1.45}
 foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(158,197,255,.16);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.38)}
@@ -43,7 +46,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   <p class="kicker">Research contribution</p>
   <h1>Fund the work</h1>
   <p class="lede">A contribution to DualisCapax research. Not Fuel, not a seat, and not equity.</p>
-  <div class="live"><strong>Send Interac to donate@dualiscapax.ai.</strong> That is the research account. Card is optional and separate. It does not replace e-Transfer.</div>
+  <div class="live"><strong>Research account is bound.</strong> Interac to donate@dualiscapax.ai, or direct deposit to the PC Bank coordinates below. Off the onboard rail.</div>
   <div class="packs">
     <a class="pack" href="mailto:donate@dualiscapax.ai?subject=DualisCapax%20research%20CAD%2020&body=Interac%20e-Transfer%20CAD%20%2420%20%E2%80%94%20research%20gift.%20Not%20Fuel.%20Not%20a%20seat.">
       <div class="cad">CAD $20</div>
@@ -66,9 +69,20 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
     <p>Send to <a href="mailto:donate@dualiscapax.ai?subject=DualisCapax%20research%20gift">donate@dualiscapax.ai</a></p>
     <p>Memo: DualisCapax research contribution. Any amount.</p>
   </div>
+  <div class="rail" id="bank">
+    <strong>Direct deposit — bound</strong>
+    <p>President’s Choice Bank (PC Financial)</p>
+    <div class="grid">
+      <div><span>Transit / branch</span><b>02002</b></div>
+      <div><span>Institution</span><b>320</b></div>
+      <div><span>Account</span><b>2541486</b></div>
+      <div><span>EFT routing</span><b>032002002</b></div>
+    </div>
+    <p>Canadian EFT / bill-pay / direct deposit. Research gifts only.</p>
+  </div>
   <div class="rail wait" id="stripe-box">
     <strong>Card — optional</strong>
-    <p id="stripe-wait">Not required. Use Interac above. If a card link is added later, it will show here as a second option only.</p>
+    <p id="stripe-wait">Not required. Use Interac or the bound bank above. If a card link is added later, it will show here as a third option only.</p>
     <p id="stripe-live" hidden>Card rail is live. <a id="stripe-link" href="#">Pay by card</a></p>
   </div>
   <p class="note">Ontario. Not a security. Voluntary. No obligation. Gifts stay off the onboard / Fuel rail.</p>
