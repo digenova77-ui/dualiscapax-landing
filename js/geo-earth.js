@@ -74,7 +74,7 @@ function paintMarks(){
   mtx.clearRect(0,0,w,h);
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
-  const dna=44;
+  const dna=220; // 5x
   stampDNA(mtx,w*0.5,h*0.5,dna);
   stampDNA(mtx,0,h*0.5,dna);
 }
