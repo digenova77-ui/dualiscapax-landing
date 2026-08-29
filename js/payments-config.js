@@ -2,10 +2,10 @@
  * DualisCapax — payment rails
  *
  * Live:
- *   interac / eft — research gifts (Autodeposit)
- *   ai_doge       — Iris time proceeds only
+ *   interac / eft  — research gifts (CAD)
+ *   research_xrp   — research gifts (XRP)
+ *   ai_doge        — Iris time only (DOGE)
  *
- * Gated: Stripe URLs, other coins, Fuel checkout
  * Never put secret keys in this file.
  */
 window.DC_PAYMENTS = {
@@ -17,5 +17,6 @@ window.DC_PAYMENTS = {
   fuel: "",
   ubi: "",
   crypto_enabled: true,
-  ai_doge: "D92zKrKoBeUouG5Jqo96Q5DWZ4G7iU8JFK"
+  ai_doge: "D92zKrKoBeUouG5Jqo96Q5DWZ4G7iU8JFK",
+  research_xrp: "rNbfUBt3vgUDu9kEL5TxbgLHxtKbyyKyRz"
 };
