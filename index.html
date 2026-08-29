@@ -374,28 +374,29 @@ camera.position.z=3.35;
 scene.add(new THREE.AmbientLight(0x141418,0.22));
 const key=new THREE.DirectionalLight(0x8a93a0,0.55);key.position.set(2.6,1.8,2.2);scene.add(key);
 const rim=new THREE.DirectionalLight(0x2a3340,0.4);rim.position.set(-2.4,-0.6,-1.8);scene.add(rim);
-const geo=new THREE.SphereGeometry(0.92,64,48);
-const body=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x050506,metalness:0.96,roughness:0.22}));
-const ring=new THREE.Mesh(new THREE.TorusGeometry(0.98,0.01,12,96),new THREE.MeshBasicMaterial({color:0x1c222c,transparent:true,opacity:0.42}));
-ring.rotation.x=Math.PI/2;
-function wordPlate(){
+function wrapMark(){
+  const w=2048,h=1024;
   const c=document.createElement('canvas');
-  c.width=1024;c.height=256;
+  c.width=w;c.height=h;
   const ctx=c.getContext('2d');
-  ctx.clearRect(0,0,1024,256);
+  ctx.fillStyle='#050506';
+  ctx.fillRect(0,0,w,h);
   ctx.fillStyle='#f4f4f5';
-  ctx.font='700 78px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.font='700 70px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
-  ctx.fillText('DualisCapax',512,128);
+  ctx.fillText('DualisCapax',w*0.25,h*0.5);
+  ctx.fillText('DualisCapax',w*0.75,h*0.5);
   const tex=new THREE.CanvasTexture(c);
   tex.colorSpace=THREE.SRGBColorSpace;
-  const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,side:THREE.DoubleSide});
-  return new THREE.Mesh(new THREE.PlaneGeometry(1.18,0.30),mat);
+  tex.anisotropy=8;
+  return tex;
 }
-const front=wordPlate();front.position.set(0,0,0.925);
-const back=wordPlate();back.position.set(0,0,-0.925);back.rotation.y=Math.PI;
-const group=new THREE.Group();group.add(body);group.add(ring);group.add(front);group.add(back);scene.add(group);
+const geo=new THREE.SphereGeometry(0.92,96,64);
+const body=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({map:wrapMark(),metalness:0.94,roughness:0.24}));
+const ring=new THREE.Mesh(new THREE.TorusGeometry(0.98,0.01,12,96),new THREE.MeshBasicMaterial({color:0x1c222c,transparent:true,opacity:0.42}));
+ring.rotation.x=Math.PI/2;
+const group=new THREE.Group();group.add(body);group.add(ring);scene.add(group);
 group.rotation.z=23.4*Math.PI/180;
 let last=performance.now();
 function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;group.rotation.y+=(Math.PI*2/28)*dt;renderer.render(scene,camera);requestAnimationFrame(frame)}
