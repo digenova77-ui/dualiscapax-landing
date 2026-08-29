@@ -59,11 +59,6 @@ input, textarea, [contenteditable] {
   display: none;
 }
 
-.stage-3d, .stack, .scroll-stage {
-  perspective: 1200px;
-  perspective-origin: calc(50% + var(--mx) * 18px) calc(42% + var(--my) * 12px);
-  transform-style: preserve-3d;
-}
 .scroll-stage {
   perspective: 1400px;
   perspective-origin: calc(50% + var(--mx) * 22px) 12%;
@@ -75,15 +70,25 @@ input, textarea, [contenteditable] {
   backface-visibility: hidden;
 }
 .tier-z-front, .tier-logo { transform: translate3d(0,0,56px); }
-.tier-z-near, .tier-geo, .tier-hud { transform: translate3d(0,0,28px); }
-.tier-z-mid, .tier-copy { transform: translate3d(0,0,8px); }
+.tier-z-near, .tier-hud { transform: translate3d(0,0,28px); }
+.tier-z-mid, .tier-copy { transform: none; }
 .tier-z-far, .tier-doors { transform: translate3d(0,0,-36px); }
 .tier-z-back { transform: translate3d(0,0,-72px) scale(0.985); }
-.tier-jump { transform: translate3d(0,0,48px); }
-.geo-wrap, #geo-earth { position: relative; z-index: 2; }
+.tier-jump { transform: none; }
+.tier-geo, .geo-wrap, #geo-earth {
+  transform: none !important;
+  animation: none !important;
+  perspective: none !important;
+  position: relative;
+  z-index: 2;
+}
+.hero .stack {
+  perspective: none !important;
+  transform: none !important;
+  transform-style: flat;
+}
 
 .tier-logo { animation-name: slide-back; }
-.tier-geo  { animation-name: slide-forward; }
 .tier-copy { animation-name: slide-up; }
 .tier-doors{ animation-name: slide-diag-tl; }
 .tier-hud  { animation-name: slide-diag-br; }
