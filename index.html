@@ -99,7 +99,9 @@
   .band li::before{content:"";position:absolute;left:0;top:.62em;width:.38rem;height:.38rem;border-radius:50%;background:#9ec5ff}
   .closed{border:1px solid rgba(212,160,23,0.4);padding:0.75rem 0.9rem;margin:0 0 1rem;font-size:.95rem;color:rgba(245,245,245,0.78);background:rgba(212,160,23,0.06)}
   .closed strong{color:#e8c36a}
-  .row{border:1px solid var(--line);padding:.85rem .95rem;margin:0 0 .55rem;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.18))}
+  .row{border:1px solid var(--line);padding:.85rem .95rem;margin:0 0 .55rem;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.18));display:block}
+  a.row{color:inherit}
+  a.row:hover,.row:hover{border-color:rgba(158,197,255,.45)}
   .row strong{display:block;color:var(--fg);margin-bottom:.2rem}
   .packs{display:grid;gap:.55rem;margin:.4rem 0 1rem}
   .pack{border:1px solid rgba(126,182,255,.28);padding:.85rem .95rem;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2))}
@@ -182,7 +184,7 @@
     <p class="kicker">Look</p>
     <h2>Open the doors</h2>
     <p>Start anywhere. You do not have to read in order. If you are twelve, start with Iris. If you want the hard math, jump to research.</p>
-    <div class="row"><strong>Talk to Iris</strong>A real conversation. Free. She answers in the first person and keeps it short.</div>
+    <a class="row" href="/ai/app"><strong>Talk to Iris</strong>A real conversation. Free. She answers in the first person and keeps it short.</a>
     <div class="row"><strong>Health notes</strong>Working notes on bodies and strain. Not a doctor. Not a prescription.</div>
     <div class="row"><strong>Operations</strong>How a long shift, a plant, or a warehouse actually holds together.</div>
     <div class="row"><strong>Mathematics</strong>Problems you can check. Claims that have to survive a test.</div>
