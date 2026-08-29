@@ -12,16 +12,18 @@
   <style>
     :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,.6); --line:rgba(255,255,255,.09); }
     * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); min-height:100dvh; font-size:1.12rem; line-height:1.5; }
+    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); min-height:100dvh; font-size:1.12rem; line-height:1.5; position:relative; overflow-x:hidden; }
     a { color:inherit; text-decoration:none; }
     .site { max-width:40rem; margin:0 auto; padding:0 max(1.15rem, env(safe-area-inset-right)) 0 max(1.15rem, env(safe-area-inset-left)); }
-    main { padding:2rem 0 1.5rem; }
+    main { padding:2rem 0 1.5rem; perspective:1100px; transform-style:preserve-3d; }
     h1 { font-size:clamp(2rem,8vw,2.8rem); font-weight:800; letter-spacing:-0.04em; line-height:0.95; margin-bottom:1.25rem; animation:slide-back .8s cubic-bezier(.22,1,.36,1) both; }
-    ol { list-style:none; display:grid; gap:0.85rem; margin:0 0 2rem; counter-reset:n; }
+    ol { list-style:none; display:grid; gap:0.85rem; margin:0 0 2rem; counter-reset:n; transform-style:preserve-3d; }
     ol li { font-size:1.15rem; color:var(--muted); padding:0.85rem 0.9rem 0.85rem 1.8rem; position:relative; border:1px solid rgba(158,197,255,.16); background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.2)); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-radius:2px; animation:slide-up .7s cubic-bezier(.22,1,.36,1) both; }
-    ol li:nth-child(odd){animation-name:slide-left}
-    ol li:nth-child(even){animation-name:slide-right}
-    ol li:nth-child(1){animation-delay:.05s}ol li:nth-child(2){animation-delay:.12s}ol li:nth-child(3){animation-delay:.19s}ol li:nth-child(4){animation-delay:.26s}ol li:nth-child(5){animation-delay:.33s}
+    ol li:nth-child(1){animation-name:slide-left;transform:translateZ(28px);animation-delay:.05s}
+    ol li:nth-child(2){animation-name:slide-right;transform:translateZ(8px);animation-delay:.12s}
+    ol li:nth-child(3){animation-name:slide-back;transform:translateZ(20px);animation-delay:.19s}
+    ol li:nth-child(4){animation-name:slide-forward;transform:translateZ(-8px);animation-delay:.26s}
+    ol li:nth-child(5){animation-name:slide-diag-br;transform:translateZ(16px);animation-delay:.33s}
     ol li::before { content:counter(n); counter-increment:n; position:absolute; left:0.55rem; color:rgba(245,245,245,0.35); font-weight:700; font-size:0.95rem; top:0.95rem; }
     .more { margin-top:1.2rem; font-weight:700; }
     .more a { color:#9ec5ff; }
@@ -30,6 +32,14 @@
   </style>
 </head>
 <body>
+  <div class="tears" aria-hidden="true">
+    <i class="tear t1" style="left:10%;top:16%"></i>
+    <i class="tear t2" style="left:82%;top:22%"></i>
+    <i class="tear t3" style="left:14%;top:72%"></i>
+    <i class="tear t4" style="left:88%;top:64%"></i>
+    <i class="tear t5" style="left:50%;top:8%"></i>
+    <i class="tear t6" style="left:68%;top:80%"></i>
+  </div>
   <div class="site">
     <div class="top">
       <a href="/index.html?land=1" class="mark">DualisCapax</a>
