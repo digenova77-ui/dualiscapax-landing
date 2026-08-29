@@ -385,16 +385,16 @@ function burnMark(){
   const ctx=c.getContext('2d');
   ctx.fillStyle='#070708';
   ctx.fillRect(0,0,w,h);
-  ctx.font='700 136px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.font='700 102px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   function stamp(x,y){
     ctx.save();
     ctx.shadowColor='#7eb6ff';
-    ctx.shadowBlur=64;
+    ctx.shadowBlur=48;
     ctx.fillStyle='#9ec5ff';
     ctx.fillText('DualisCapax',x,y);
-    ctx.shadowBlur=28;
+    ctx.shadowBlur=20;
     ctx.fillStyle='#f4f7ff';
     ctx.fillText('DualisCapax',x,y);
     ctx.restore();
