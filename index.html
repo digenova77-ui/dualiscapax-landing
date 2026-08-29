@@ -409,7 +409,6 @@ function burnMark(){
 const geo=new THREE.SphereGeometry(0.92,96,64);
 const body=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({map:burnMark()}));
 const group=new THREE.Group();group.add(body);scene.add(group);
-group.rotation.z=23.4*Math.PI/180;
 let last=performance.now();
 function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;group.rotation.y+=(Math.PI*2/28)*dt;renderer.render(scene,camera);requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
