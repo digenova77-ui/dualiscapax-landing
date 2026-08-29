@@ -23,7 +23,7 @@
     --line:rgba(158,197,255,.22);
     --blue:#9ec5ff;
     --z-nav:50;
-    --bar:3.15rem;
+    --bar:4.85rem;
   }
   body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:var(--fg);overflow-x:hidden;overflow-y:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
   a{color:inherit;text-decoration:none}
@@ -35,16 +35,33 @@
   .site{position:relative;z-index:1;min-height:100dvh}
   .topbar{
     position:sticky;top:0;z-index:var(--z-nav);
-    display:flex;justify-content:space-between;align-items:center;gap:.6rem;
+    display:grid;grid-template-columns:1fr auto;align-items:stretch;gap:.45rem;
     min-height:var(--bar);
-    padding:.35rem max(1rem,env(safe-area-inset-right)) .35rem max(1rem,env(safe-area-inset-left));
-    background:rgba(0,0,0,.72);
+    padding:.28rem max(.55rem,env(safe-area-inset-right)) .28rem max(.55rem,env(safe-area-inset-left));
+    background:rgba(0,0,0,.82);
     backdrop-filter:blur(16px) saturate(1.2);
     -webkit-backdrop-filter:blur(16px) saturate(1.2);
     border-bottom:1px solid var(--line);
   }
-  .mark{font-size:.86rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-  .burger{width:2.4rem;height:2.4rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid rgba(158,197,255,0.28);background:rgba(0,0,0,0.28)}
+  .hud{
+    width:100%;
+    min-width:0;
+    border:1px solid rgba(158,197,255,0.32);
+    background:
+      linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 14px 1px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 1px 14px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 14px 1px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 1px 14px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 14px 1px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 1px 14px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 14px 1px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 1px 14px no-repeat,
+      linear-gradient(180deg,rgba(18,26,40,.55),rgba(0,0,0,.42));
+    backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);
+    padding:0.38rem 0.55rem 0.32rem;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  .burger{width:2.4rem;height:2.4rem;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid rgba(158,197,255,0.28);background:rgba(0,0,0,0.28)}
   .burger span{display:block;width:1.1rem;height:1px;background:#e8f1ff}
   .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
   .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
@@ -60,31 +77,12 @@
     scroll-margin-top:var(--bar);
   }
   .stack{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:clamp(0.28rem,1.2vh,0.75rem);padding-block:.4rem;perspective:1100px;transform-style:preserve-3d}
-  .logo-stage{width:min(98vw,54rem);aspect-ratio:760/120;filter:drop-shadow(0 12px 28px rgba(158,197,255,.16))}
-  .logo-stage img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
-  .geo-wrap{width:min(44vw,148px);height:min(44vw,148px);filter:drop-shadow(0 0 18px rgba(158,197,255,0.12));background:radial-gradient(circle at 50% 40%,rgba(158,197,255,.12),transparent 68%);border-radius:50%;border:1px solid rgba(158,197,255,.16)}
+  .geo-wrap{width:min(78vw,22rem);height:min(78vw,22rem);filter:drop-shadow(0 0 28px rgba(158,197,255,0.18));background:radial-gradient(circle at 50% 40%,rgba(158,197,255,.16),transparent 68%);border-radius:50%;border:1px solid rgba(158,197,255,.16)}
   #geo-earth{width:100%;height:100%;display:block}
   .classif{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.58rem,2.1vw,0.76rem);font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#9ec5ff;max-width:min(96vw,34rem);line-height:1.2;white-space:nowrap}
   h1{font-size:clamp(1.85rem,8vw,3.1rem);font-weight:600;line-height:.9;letter-spacing:.04em;text-transform:uppercase;font-family:"IBM Plex Sans",system-ui,sans-serif}
   .lines{padding:0.15rem 0.4rem 0;border-top:1px solid rgba(158,197,255,0.16);width:min(92vw,22rem);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 70%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
   .line{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.72rem,3.1vw,0.92rem);font-weight:500;margin:0;padding:0.28rem 0;text-transform:uppercase;letter-spacing:0.16em;border-bottom:1px solid rgba(158,197,255,0.12)}
-  .hud{
-    width:min(94vw,28rem);
-    border:1px solid rgba(158,197,255,0.32);
-    background:
-      linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 14px 1px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 1px 14px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 14px 1px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 1px 14px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 14px 1px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 1px 14px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 14px 1px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 1px 14px no-repeat,
-      linear-gradient(180deg,rgba(18,26,40,.55),rgba(0,0,0,.42));
-    backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);
-    padding:0.7rem 0.75rem 0.6rem;
-    font-family:"IBM Plex Mono",ui-monospace,monospace;
-  }
   .hud-row{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:0.35rem;align-items:center}
   .hud-cell{text-align:center;padding:0.15rem 0.2rem;min-width:0}
   .hud-cell + .hud-cell{border-left:1px solid rgba(158,197,255,0.18)}
@@ -93,6 +91,11 @@
   .hud-rail{margin-top:0.45rem;height:2px;background:rgba(158,197,255,0.12);overflow:hidden}
   .hud-fill{height:100%;width:8%;background:#9ec5ff}
   .hud-foot{margin-top:0.45rem;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.48);text-align:center;line-height:1.35}
+  @media (max-width:40rem){
+    .hud-foot{display:none}
+    .hud-rail{margin-top:.28rem}
+    :root{--bar:3.7rem}
+  }
   .jump{padding:0.35rem 0.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.78rem,3.2vw,0.92rem);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9ec5ff}
   .jump span{display:block;margin-top:0.25rem;font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:none;color:rgba(245,245,245,0.48)}
   .scroll-stage{width:min(46rem,calc(100% - 1.2rem));margin:0 auto 2rem;perspective:1400px}
@@ -151,8 +154,16 @@
     <i class="tear t5" style="left:48%;top:8%"></i>
     <i class="tear t6" style="left:62%;top:76%"></i>
   </div>
-  <div class="topbar">
-    <a class="mark" href="#top">DualisCapax</a>
+  <div class="topbar" id="hud-dock">
+    <div class="hud" aria-label="Onboard singularity HUD">
+      <div class="hud-row">
+        <div class="hud-cell"><span class="hud-k">Live</span><span class="hud-v" id="uptime">—</span></div>
+        <div class="hud-cell"><span class="hud-k">Earned</span><span class="hud-v" id="earned">$0</span></div>
+        <div class="hud-cell"><span class="hud-k">Singularity</span><span class="hud-v" id="singularity-cd">—</span></div>
+      </div>
+      <div class="hud-rail" aria-hidden="true"><div class="hud-fill" id="hud-fill"></div></div>
+      <div class="hud-foot" id="hud-foot">Early residual · day-one zero is coherent</div>
+    </div>
     <button type="button" class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel">
       <span></span><span></span><span></span>
     </button>
@@ -170,23 +181,13 @@
 
   <section class="hero" id="top">
     <div class="stack">
-      <div class="tier tier-logo"><div class="logo-stage"><img src="brand/word-dark.svg" alt="DualisCapax" width="760" height="120"/></div></div>
-      <div class="tier tier-geo"><div class="geo-wrap"><canvas id="geo-earth" width="360" height="360"></canvas></div></div>
+      <div class="tier tier-geo"><div class="geo-wrap"><canvas id="geo-earth" width="512" height="512" aria-label="DualisCapax"></canvas></div></div>
       <div class="tier tier-copy"><p class="classif">Financial Law - Edge Tech. - AI - Research</p><h1>Truth<br>Prevails</h1></div>
       <div class="tier tier-doors"><div class="lines">
         <a class="line" href="#finance">RESIDUAL LAW FINANCE</a>
         <a class="line" href="#edge">EDGE TECHNOLOGIES</a>
         <a class="line" href="#ai">ADAPTIVE AI</a>
         <a class="line" href="#look">RESEARCH</a>
-      </div></div>
-      <div class="tier tier-hud"><div class="hud" aria-label="Residual HUD">
-        <div class="hud-row">
-          <div class="hud-cell"><span class="hud-k">Live</span><span class="hud-v" id="uptime">—</span></div>
-          <div class="hud-cell"><span class="hud-k">Earned</span><span class="hud-v" id="earned">$0</span></div>
-          <div class="hud-cell"><span class="hud-k">Singularity</span><span class="hud-v" id="singularity-cd">—</span></div>
-        </div>
-        <div class="hud-rail" aria-hidden="true"><div class="hud-fill" id="hud-fill"></div></div>
-        <div class="hud-foot" id="hud-foot">Early residual · day-one zero is coherent</div>
       </div></div>
       <div class="tier tier-jump"><a class="jump" href="#for-you">Start here<span id="peg-clock">—</span></a></div>
     </div>
@@ -369,13 +370,31 @@ renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
 renderer.setClearColor(0x000000,0);
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(36,1,0.1,20);
-camera.position.z=3.55;
+camera.position.z=3.35;
 scene.add(new THREE.AmbientLight(0xffffff,0.65));
 const key=new THREE.DirectionalLight(0xffffff,1.2);key.position.set(2.4,1.6,3);scene.add(key);
 const geo=new THREE.IcosahedronGeometry(0.92,3);
-const body=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x8a9aaa,flatShading:true,metalness:0.72,roughness:0.22,transparent:true,opacity:0.58,depthWrite:false}));
+const body=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0x8a9aaa,flatShading:true,metalness:0.72,roughness:0.22,transparent:true,opacity:0.42,depthWrite:false}));
 const wire=new THREE.LineSegments(new THREE.EdgesGeometry(geo,12),new THREE.LineBasicMaterial({color:0xd7e4f0,transparent:true,opacity:0.78}));
-const group=new THREE.Group();group.add(body);group.add(wire);scene.add(group);
+function wordPlate(){
+  const c=document.createElement('canvas');
+  c.width=1024;c.height=256;
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,1024,256);
+  ctx.fillStyle='#ffffff';
+  ctx.font='800 118px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText('DualisCapax',512,128);
+  const tex=new THREE.CanvasTexture(c);
+  tex.colorSpace=THREE.SRGBColorSpace;
+  const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,side:THREE.DoubleSide});
+  const plate=new THREE.Mesh(new THREE.PlaneGeometry(2.15,0.54),mat);
+  return plate;
+}
+const front=wordPlate();front.position.set(0,0,1.02);
+const back=wordPlate();back.position.set(0,0,-1.02);back.rotation.y=Math.PI;
+const group=new THREE.Group();group.add(body);group.add(wire);group.add(front);group.add(back);scene.add(group);
 let last=performance.now();
 function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;group.rotation.y+=(Math.PI*2/48)*dt;group.rotation.x=0.22;renderer.render(scene,camera);requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
