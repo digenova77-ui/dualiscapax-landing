@@ -3,63 +3,42 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Join later — DualisCapax</title>
+<title>Onboard — DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="assets/cta.css"/>
-<script src="assets/spine-nav.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;line-height:1.55;font-size:1.05rem}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.15rem,env(safe-area-inset-right)) max(2.5rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
-.kicker{font-size:0.82rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,245,245,0.55);margin-bottom:0.55rem}
-h1{font-size:clamp(1.85rem,7vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.05;margin-bottom:0.65rem}
-.lede{font-size:clamp(1.1rem,3.6vw,1.25rem);font-weight:500;color:rgba(245,245,245,0.78);margin-bottom:1.25rem}
-.closed{border:1px solid rgba(212,160,23,0.4);border-radius:10px;padding:0.75rem 0.9rem;margin-bottom:1.5rem;font-size:1rem;color:rgba(245,245,245,0.75);background:rgba(212,160,23,0.06)}
-.closed strong{color:#e8c36a}
-h2{font-size:1.15rem;font-weight:800;margin:1.6rem 0 0.55rem}
-p{font-size:1.1rem;color:rgba(245,245,245,0.82);margin-bottom:0.85rem}
-ul{list-style:none;margin:0 0 1rem}
-li{position:relative;padding-left:1.1rem;margin-bottom:0.55rem;font-size:1.1rem;color:rgba(245,245,245,0.82)}
-li::before{content:"";position:absolute;left:0;top:0.55em;width:0.4rem;height:0.4rem;border-radius:50%;background:#f5f5f5}
-.note{margin-top:1.75rem;padding-top:1rem;border-top:1px solid rgba(245,245,245,0.14);font-size:0.92rem;color:rgba(245,245,245,0.55)}
+.wrap{max-width:34rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.1rem max(2.4rem,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;margin-bottom:1.3rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+.top a{color:#9ec5ff}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9ec5ff}
+h1{font-size:clamp(1.7rem,7vw,2.3rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin:.4rem 0 .7rem}
+.lede{font-size:1.05rem;line-height:1.55;color:rgba(245,245,245,.72);margin-bottom:1rem}
+.door{display:block;border:1px solid rgba(158,197,255,.35);padding:.95rem 1rem;margin:0 0 .55rem;background:rgba(158,197,255,.08)}
+.door b{display:block;font-size:1.05rem;margin-bottom:.2rem}
+.door span{font-size:.95rem;color:rgba(245,245,245,.58)}
+.dim{opacity:.55;border-style:dashed}
+.note{font-size:.88rem;color:rgba(245,245,245,.48);line-height:1.45;margin-top:1rem}
+foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(158,197,255,.16);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.38)}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <a href="index.html?land=1" class="mark">DualisCapax</a>
-      <div class="top-links">
-        <a href="for-people.html">For you</a>
-        <a href="research/">Look</a>
-        <a href="onboard.html" class="on">Measure</a>
-        <a href="payments.html">Bind</a>
-        <a href="founding.html">Founding</a>
-      </div>
-    </div>
-    <p class="kicker">Measure</p>
-    <h1>You are not buying in yet.</h1>
-    <p class="lede">When Dualis is ready, you will prepay for time the system can spend. What you do not use stays yours. We are not taking money now.</p>
-    <div class="closed">
-      <strong>Closed.</strong> Pricing and legal papers are not finished. This page explains the idea. There is no checkout.
-    </div>
-    <h2>The idea, simply</h2>
-    <p>If you do work, some of it is wasted. We try to put a number on that waste so you can see it and try a small test to cut it. If we cannot run the number backwards, you should not pay for it.</p>
-    <ul>
-      <li>You prepay for time, not a share of the company</li>
-      <li>Unused time stays on your account</li>
-      <li>No one is buying in today</li>
-    </ul>
-    <h2>Companies</h2>
-    <p>A company can budget a known amount of Dualis time instead of an open-ended vendor bill. That is accounting, not a stock. Ask your own lawyer and accountant before you spend.</p>
-    <h2>People</h2>
-    <p>Same rules for a person as for a company. Small prepaid packs when we open. No special club.</p>
-    <div class="cta-row cta-2">
-      <a class="cta primary" href="payments.html">See the packs</a>
-      <a class="cta" href="ai/app.html">Ask Iris</a>
-    </div>
-    <p class="note">Not an offer to sell shares. Not tax advice. DualisCapax is not taking dollars yet.</p>
-  </div>
+<div class="wrap">
+  <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/ai/app">Iris</a></div>
+  <p class="kicker">HUD</p>
+  <h1>Onboard</h1>
+  <p class="lede">The HUD is open. Pick a live door. Card waits on a Stripe link.</p>
+  <a class="door" href="/fuel.html"><b>Fuel</b><span>Prepaid time. Crypto. Unused time stays with you.</span></a>
+  <a class="door" href="/sri.html"><b>Residual Law</b><span>DC-SRI-1. 90-day 10% then 10% annual.</span></a>
+  <a class="door" href="/donate.html"><b>Donate</b><span>Research gift. Interac or crypto.</span></a>
+  <div class="door dim"><b>Card</b><span>Needs a Stripe Payment Link.</span></div>
+  <div class="door dim"><b>Seat 11–100</b><span>Name after a completed join.</span></div>
+  <p class="note">Seats 1 to 10 stay the house. No tribes preferred.</p>
+  <foot>DualisCapax · HUD open</foot>
+</div>
+<script src="/js/no-select.js"></script>
+<script src="/assets/haptic.js"></script>
 </body>
 </html>
