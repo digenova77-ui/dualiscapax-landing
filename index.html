@@ -95,8 +95,9 @@
   .hud-foot{margin-top:0.45rem;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.48);text-align:center;line-height:1.35}
   .jump{padding:0.35rem 0.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.78rem,3.2vw,0.92rem);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9ec5ff}
   .jump span{display:block;margin-top:0.25rem;font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:none;color:rgba(245,245,245,0.48)}
-  .band{width:100%;max-width:40rem;margin:0 auto;padding:2.1rem max(1rem,env(safe-area-inset-right)) 1.4rem max(1rem,env(safe-area-inset-left));scroll-margin-top:calc(var(--bar) + .4rem)}
-  .band + .band{border-top:1px solid rgba(158,197,255,.16)}
+  .scroll-stage{width:100%;max-width:48rem;margin:0 auto}
+  .band{scroll-margin-top:calc(var(--bar) + .6rem)}
+  .band.glass{position:relative;z-index:1}
   .kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:.55rem}
   .band h2{font-size:clamp(1.45rem,6.4vw,2.1rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin-bottom:.7rem}
   .band p,.band li{font-size:1.05rem;line-height:1.55;color:var(--muted);margin-bottom:.75rem}
@@ -187,7 +188,8 @@
     </div>
   </section>
 
-  <section class="band" id="for-you">
+  <div class="scroll-stage">
+  <section class="band glass" id="for-you" data-axis="left">
     <p class="kicker">For you</p>
     <h2>What's going on</h2>
     <ul>
@@ -207,7 +209,7 @@
     </nav>
   </section>
 
-  <section class="band" id="look">
+  <section class="band glass" id="look" data-axis="right">
     <p class="kicker">Look</p>
     <h2>Pick a room</h2>
     <p>Each room is its own pile. You don't have to read the whole site.</p>
@@ -224,7 +226,7 @@
     </nav>
   </section>
 
-  <section class="band" id="measure">
+  <section class="band glass" id="measure" data-axis="back">
     <p class="kicker">Measure</p>
     <h2>You are not buying in yet.</h2>
     <p>When Dualis is ready, you will prepay for time the system can spend. What you do not use stays yours. We are not taking money now.</p>
@@ -239,7 +241,7 @@
     </nav>
   </section>
 
-  <section class="band" id="bind">
+  <section class="band glass" id="bind" data-axis="forward">
     <p class="kicker">Bind</p>
     <h2>These are prices. You cannot pay yet.</h2>
     <p>When Dualis opens, you buy time. What you don't use stays yours. Not a share of the company.</p>
@@ -258,7 +260,7 @@
     </nav>
   </section>
 
-  <section class="band" id="founding">
+  <section class="band glass" id="founding" data-axis="left">
     <p class="kicker">Foundry</p>
     <h2>Who gets a seat</h2>
     <p>This house is family, then kin, then friend, then the world. That's Dualis. Nobody else has to copy it. Want to argue? Ask Iris.</p>
@@ -276,7 +278,7 @@
     </nav>
   </section>
 
-  <section class="band" id="finance">
+  <section class="band glass" id="finance" data-axis="right">
     <p class="kicker">Residual law finance</p>
     <h2>You already pay for waste</h2>
     <p>Dualis sits between you and that cost. Look at it. Measure it. Bind only if the number holds. Same walk for a person, a lab, or a company.</p>
@@ -296,7 +298,7 @@
     </nav>
   </section>
 
-  <section class="band" id="edge">
+  <section class="band glass" id="edge" data-axis="back">
     <p class="kicker">Edge technologies</p>
     <h2>Software first drives hardware</h2>
     <p>What you see is simple on purpose. Under it the field is already running — geodesic, residual HUD, pointer grain. That is not decoration. It is the control plane for the bench we have not shipped yet.</p>
@@ -310,7 +312,7 @@
     </nav>
   </section>
 
-  <section class="band" id="ai">
+  <section class="band glass" id="ai" data-axis="forward">
     <p class="kicker">Adaptive AI</p>
     <h2>Adaptive systems</h2>
     <p>AI that adjusts under real constraints: capacity, residual cost, and friction that cannot be wished away.</p>
@@ -324,6 +326,7 @@
       <a href="/ai/app">Iris</a>
     </nav>
   </section>
+  </div>
 
   <div class="foot">DualisCapax · Truth Prevails · not taking dollars</div>
   <a class="iris-mark" href="/ai/app">Iris</a>
@@ -447,5 +450,6 @@ window.addEventListener('resize',onResize);onResize();
 })();
 </script>
 <script src="js/home-quarks.js"></script>
+<script src="js/scroll-tiers.js"></script>
 </body>
 </html>
