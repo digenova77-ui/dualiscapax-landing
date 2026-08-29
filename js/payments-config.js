@@ -1,15 +1,12 @@
 /**
  * DualisCapax — payment rails
  *
- * Live this weekend:
- *   interac — Autodeposit research account (button copies address, donor pays in their bank)
- *   eft     — same account, routing on request
+ * Live:
+ *   interac / eft — research gifts (Autodeposit)
+ *   ai_doge       — Iris time proceeds only
  *
- * Gated until a real URL exists:
- *   Stripe Payment Links — paste https URLs below
- *   crypto               — counsel first
- *
- * Never put sk_test_ / sk_live_ in this file.
+ * Gated: Stripe URLs, other coins, Fuel checkout
+ * Never put secret keys in this file.
  */
 window.DC_PAYMENTS = {
   interac_enabled: true,
@@ -19,5 +16,6 @@ window.DC_PAYMENTS = {
   capacity: "",
   fuel: "",
   ubi: "",
-  crypto_enabled: false
+  crypto_enabled: true,
+  ai_doge: "D92zKrKoBeUouG5Jqo96Q5DWZ4G7iU8JFK"
 };
