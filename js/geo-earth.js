@@ -18,13 +18,10 @@ const CAGE_R=0.933;
 
 function stampWord(ctx,x,y){
   ctx.save();
-  ctx.font='700 128px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.font='700 82px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
-  ctx.shadowColor='#ffffff';
-  ctx.shadowBlur=56;
-  ctx.fillStyle='#ffffff';
-  ctx.fillText('DualisCapax',x,y);
+  ctx.shadowColor='rgba(255,255,255,0.85)';
   ctx.shadowBlur=18;
   ctx.fillStyle='#ffffff';
   ctx.fillText('DualisCapax',x,y);
@@ -39,7 +36,7 @@ function stampRing(ctx,img,x,y,size,alpha){
 }
 function stampEquator(ctx,img){
   if(!img)return;
-  const size=72;
+  const size=64;
   const y=h*0.5-size/2;
   ctx.drawImage(img,w*0.5-size/2,y,size,size);
   ctx.drawImage(img,-size/2,y,size,size);
@@ -59,16 +56,9 @@ function keepPent(n){
   const off=Math.abs(uv.v-0.5);
   return uToWord(uv.u)<0.10 && off>0.10 && off<0.30;
 }
-function paintField(img,pents){
+function paintField(){
   ftx.fillStyle='#050506';
   ftx.fillRect(0,0,w,h);
-  stampWord(ftx,w*0.25,h*0.5);
-  stampWord(ftx,w*0.75,h*0.5);
-  stampEquator(ftx,img);
-  (pents||[]).forEach(function(p){
-    if(!keepPent(p.n))return;
-    stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,54,0.62);
-  });
 }
 function paintMarks(img,pents){
   mtx.clearRect(0,0,w,h);
@@ -77,14 +67,13 @@ function paintMarks(img,pents){
   stampEquator(mtx,img);
   (pents||[]).forEach(function(p){
     if(!keepPent(p.n))return;
-    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,54,0.62);
+    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,48,0.7);
   });
 }
-paintField(null,[]);
+paintField();
 paintMarks(null,[]);
 const tex=new THREE.CanvasTexture(field);
 tex.colorSpace=THREE.SRGBColorSpace;
-tex.anisotropy=8;
 const markTex=new THREE.CanvasTexture(mark);
 markTex.colorSpace=THREE.SRGBColorSpace;
 markTex.anisotropy=8;
@@ -142,7 +131,7 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
 
 const body=new THREE.Mesh(
   new THREE.SphereGeometry(0.92,96,72),
-  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.46,depthWrite:false})
+  new THREE.MeshBasicMaterial({color:0x050506,transparent:true,opacity:0.82,depthWrite:true})
 );
 body.renderOrder=1;
 group.add(body);
@@ -246,8 +235,11 @@ group.add(glow);group.add(cageCore);
 
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(0.948,96,72),
-  new THREE.MeshBasicMaterial({map:markTex,transparent:true,depthWrite:false,alphaTest:0.04,opacity:1})
+  new THREE.MeshBasicMaterial({
+    map:markTex,transparent:true,opacity:1,depthWrite:false,side:THREE.FrontSide
+  })
 );
+shell.renderOrder=2;
 group.add(shell);
 
 function makeDotTex(hex){
@@ -360,8 +352,8 @@ function mountRingDecals(img){
     const disc=new THREE.Mesh(
       new THREE.CircleGeometry(r,48),
       new THREE.MeshBasicMaterial({
-        map:ringTex,transparent:true,opacity:0.62,
-        depthWrite:false,alphaTest:0.06,side:THREE.DoubleSide
+        map:ringTex,transparent:true,opacity:0.7,
+        depthWrite:false,side:THREE.FrontSide
       })
     );
     disc.position.copy(p.n).multiplyScalar(0.946);
@@ -375,7 +367,6 @@ function mountRingDecals(img){
 
 const ring=new Image();
 ring.onload=function(){
-  paintField(ring,pents);tex.needsUpdate=true;
   paintMarks(ring,pents);markTex.needsUpdate=true;
   mountRingDecals(ring);
 };
@@ -394,7 +385,6 @@ goldLight.position.set(0,0,0);
 group.add(goldLight);
 
 const OMEGA=Math.PI*2/28;
-const camDir=new THREE.Vector3(0,0,1);
 let last=performance.now();
 function frame(now){
   const dt=Math.min(0.05,(now-last)/1000);
@@ -424,11 +414,6 @@ function frame(now){
   earthAtmos.material.opacity=0.26+energy*0.42;
   earthHalo.material.opacity=0.10+energy*0.28;
   earthCore.material.opacity=0.42+energy*0.45;
-  for(let i=0;i<decals.length;i++){
-    const wn=decals[i].n.clone().applyQuaternion(group.quaternion);
-    const facing=wn.dot(camDir);
-    decals[i].mesh.material.opacity=facing<0?0.26:0.62;
-  }
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
