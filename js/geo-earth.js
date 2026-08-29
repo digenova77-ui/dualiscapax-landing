@@ -64,6 +64,7 @@ function skipPent(n){
   if(Math.abs(n.y)<0.35)return true;
   return false;
 }
+function pentStamp(n){return aboveBelowWord(n)?54:84;}
 function paintField(img,pents){
   ftx.fillStyle='#070708';
   ftx.fillRect(0,0,w,h);
@@ -72,7 +73,7 @@ function paintField(img,pents){
   stampEquator(ftx,img);
   (pents||[]).forEach(function(p){
     if(skipPent(p.n))return;
-    stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,84);
+    stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,pentStamp(p.n));
   });
 }
 function paintMarks(img,pents){
@@ -82,7 +83,7 @@ function paintMarks(img,pents){
   stampEquator(mtx,img);
   (pents||[]).forEach(function(p){
     if(skipPent(p.n))return;
-    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,84);
+    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,pentStamp(p.n));
   });
 }
 paintField(null,[]);
@@ -236,7 +237,8 @@ function mountRingDecals(img){
   ringTex.colorSpace=THREE.SRGBColorSpace;
   pents.forEach(function(p){
     if(skipPent(p.n))return;
-    const r=Math.max(0.07,p.rin*0.84);
+    const fit=aboveBelowWord(p.n)?0.52:0.84;
+    const r=Math.max(0.045,p.rin*fit);
     const disc=new THREE.Mesh(
       new THREE.CircleGeometry(r,48),
       new THREE.MeshBasicMaterial({
