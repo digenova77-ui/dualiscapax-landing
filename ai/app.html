@@ -241,11 +241,11 @@
       input.value = "";
       fitBox();
       if (!window.DCLMLook) {
-        add("them", "I do not know that leftover. I will not invent it.");
+        add("them", "I don't know that. I won't invent it.");
         return;
       }
       var recu = await DCLMLook.run(text, { voice: "you", case_id: "look-app" });
-      var spoken = recu && recu.spoken ? recu.spoken : "I do not know that leftover. I will not invent it.";
+      var spoken = recu && recu.spoken ? recu.spoken : "I don't know that. I won't invent it.";
       add("them", spoken);
       speakOut(spoken);
     }
@@ -321,12 +321,12 @@
       if (!f) return;
       add("you", f.name || "A file leftover.");
       var receipt = await hexOf([f.name, f.size, f.lastModified, f.type].join("|"));
-      var spoken = "Leftover of a file leftover named " + (f.name || "unnamed").slice(0, 80) + ". " + f.size + " bytes. Receipt " + receipt.slice(0, 16) + "…. She keeps a receipt. Not the body.";
+      var spoken = "File " + (f.name || "unnamed").slice(0, 80) + ". " + f.size + " bytes. Receipt " + receipt.slice(0, 16) + ". I keep a receipt, not the body.";
       add("them", spoken);
       speakOut(spoken);
     });
 
-    add("them", "Iris. Ask. If I do not know, I will say so.");
+    add("them", "I'm Iris. Ask. If I don't know, I'll say so.");
   })();
   </script>
 </body>
