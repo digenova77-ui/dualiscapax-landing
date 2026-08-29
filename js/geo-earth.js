@@ -101,7 +101,7 @@ const body=new THREE.Mesh(
   new THREE.MeshBasicMaterial({
     map:tex,
     transparent:true,
-    opacity:0.84,
+    opacity:0.58,
     depthWrite:true
   })
 );
@@ -112,106 +112,98 @@ scene.add(group);
 
 const inner=new THREE.Group();
 inner.renderOrder=0;
-const veil=new THREE.Mesh(
-  new THREE.SphereGeometry(0.68,48,32),
+const halo=new THREE.Mesh(
+  new THREE.SphereGeometry(0.30,32,24),
   new THREE.MeshBasicMaterial({
-    color:0x3d6fb8,
+    color:0xffffff,
     transparent:true,
-    opacity:0.08,
+    opacity:0.16,
     blending:THREE.AdditiveBlending,
     depthWrite:false
   })
 );
-const mid=new THREE.Mesh(
-  new THREE.SphereGeometry(0.46,40,28),
+const coreGlow=new THREE.Mesh(
+  new THREE.SphereGeometry(0.13,32,24),
   new THREE.MeshBasicMaterial({
-    color:0x6aa8ff,
+    color:0xffffff,
     transparent:true,
-    opacity:0.06,
+    opacity:0.55,
     blending:THREE.AdditiveBlending,
     depthWrite:false
   })
 );
-const ember=new THREE.Mesh(
-  new THREE.SphereGeometry(0.24,32,24),
-  new THREE.MeshBasicMaterial({
-    color:0xb8923a,
-    transparent:true,
-    opacity:0.10,
-    blending:THREE.AdditiveBlending,
-    depthWrite:false
-  })
-);
-inner.add(veil);
-inner.add(mid);
-inner.add(ember);
+inner.add(halo);
+inner.add(coreGlow);
 group.add(inner);
 
 const feedPts=[];
-const BOLT_SEGS=9;
-function makeFeedLine(color,opacity){
+const RS=12;
+function makeRibbon(color,opacity){
   const g=new THREE.BufferGeometry();
-  g.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(BOLT_SEGS*3),3));
-  const line=new THREE.Line(g,new THREE.LineBasicMaterial({
+  const verts=RS*2;
+  g.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(verts*3),3));
+  const idx=[];
+  for(let i=0;i<RS-1;i++){
+    const a=i*2,b=a+1,c=a+2,d=a+3;
+    idx.push(a,b,c,b,d,c);
+  }
+  g.setIndex(idx);
+  const mesh=new THREE.Mesh(g,new THREE.MeshBasicMaterial({
     color:color,
     transparent:true,
     opacity:opacity,
     blending:THREE.AdditiveBlending,
-    depthWrite:false
+    depthWrite:false,
+    side:THREE.DoubleSide
   }));
-  line.renderOrder=2;
-  group.add(line);
-  return {g:g,line:line};
+  mesh.renderOrder=2;
+  group.add(mesh);
+  return {g:g,mesh:mesh};
 }
-const spokes=[];
-const bolts=[];
-const bolts2=[];
+const blues=[];
+const golds=[];
 function addFeed(pt){
   feedPts.push(pt.clone());
-  spokes.push(makeFeedLine(0x6aa8ff,0.09));
-  bolts.push(makeFeedLine(0xb8dcff,0.18));
-  bolts2.push(makeFeedLine(0x7eb6ff,0.12));
+  blues.push(makeRibbon(0x6aa8ff,0.28));
+  golds.push(makeRibbon(0xe0b84a,0.22));
 }
 addFeed(new THREE.Vector3(0.92,0,0));
 addFeed(new THREE.Vector3(-0.92,0,0));
 
-function writeLine(geo,pts){
-  const arr=geo.attributes.position.array;
-  for(let i=0;i<BOLT_SEGS;i++){
-    const p=pts[Math.min(i,pts.length-1)];
-    arr[i*3]=p.x;arr[i*3+1]=p.y;arr[i*3+2]=p.z;
-  }
-  geo.attributes.position.needsUpdate=true;
-}
-function spokePts(from){
-  const out=[];
-  for(let i=0;i<BOLT_SEGS;i++){
-    const t=i/(BOLT_SEGS-1);
-    out.push(from.clone().multiplyScalar(1-t*0.78));
-  }
-  return out;
-}
-function boltPts(from,now,phase){
-  const dest=from.clone().multiplyScalar(0.22);
+function ribbonPath(from,now,phase){
+  const dest=from.clone().setLength(0.12);
   const dir=dest.clone().sub(from);
-  const up=Math.abs(dir.y)<0.9?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
+  const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
   const n2=dir.clone().cross(n1).normalize();
   const out=[];
-  const seed=(now*0.013+from.x*12.7+from.y*7.1+phase)%1;
-  for(let i=0;i<BOLT_SEGS;i++){
-    const t=i/(BOLT_SEGS-1);
+  for(let i=0;i<RS;i++){
+    const t=i/(RS-1);
     const p=from.clone().lerp(dest,t);
-    if(i>0&&i<BOLT_SEGS-1){
-      const jag=(1-Math.abs(2*t-1))*0.058;
-      const a=Math.sin((t*11+seed*6.28+now*0.01)*1.7);
-      const b=Math.cos((t*9+seed*4.2+now*0.013)*1.3);
-      p.addScaledVector(n1,a*jag);
-      p.addScaledVector(n2,b*jag*0.7);
-    }
+    const twist=t*5.2+now*0.0018+phase;
+    const rad=0.018*Math.sin(t*Math.PI);
+    p.addScaledVector(n1,Math.cos(twist)*rad);
+    p.addScaledVector(n2,Math.sin(twist)*rad);
     out.push(p);
   }
   return out;
+}
+function writeRibbon(geo,pts,width){
+  const arr=geo.attributes.position.array;
+  for(let i=0;i<pts.length;i++){
+    const p=pts[i];
+    const q=pts[Math.min(i+1,pts.length-1)];
+    const prev=pts[Math.max(i-1,0)];
+    const tan=q.clone().sub(prev).normalize();
+    const side=new THREE.Vector3().crossVectors(tan,p).normalize().multiplyScalar(width*0.5);
+    if(!isFinite(side.x))side.set(0,width*0.5,0);
+    const a=p.clone().add(side);
+    const b=p.clone().sub(side);
+    arr[i*6]=a.x;arr[i*6+1]=a.y;arr[i*6+2]=a.z;
+    arr[i*6+3]=b.x;arr[i*6+4]=b.y;arr[i*6+5]=b.z;
+  }
+  geo.attributes.position.needsUpdate=true;
+  geo.computeVertexNormals();
 }
 
 function c60Points(radius){
@@ -388,12 +380,11 @@ function frame(now){
   group.rotation.y+=OMEGA*dt;
   inner.rotation.y-=2*OMEGA*dt;
   for(let i=0;i<feedPts.length;i++){
-    writeLine(spokes[i].g,spokePts(feedPts[i]));
-    writeLine(bolts[i].g,boltPts(feedPts[i],now,0));
-    writeLine(bolts2[i].g,boltPts(feedPts[i],now,0.37));
-    const flick=0.11+0.12*Math.abs(Math.sin(now*0.011+i*1.7));
-    bolts[i].line.material.opacity=flick;
-    bolts2[i].line.material.opacity=flick*0.7;
+    writeRibbon(blues[i].g,ribbonPath(feedPts[i],now,0.0),0.012);
+    writeRibbon(golds[i].g,ribbonPath(feedPts[i],now,Math.PI),0.010);
+    const pulse=0.18+0.12*Math.abs(Math.sin(now*0.003+i));
+    blues[i].mesh.material.opacity=pulse;
+    golds[i].mesh.material.opacity=pulse*0.8;
   }
   for(let i=0;i<decals.length;i++){
     const wn=decals[i].n.clone().applyQuaternion(group.quaternion);
@@ -401,7 +392,9 @@ function frame(now){
     const base=decals[i].behind?0.58:0.92;
     decals[i].mesh.material.opacity=facing<0?base*0.42:base;
   }
-  ember.material.opacity=0.08+0.04*Math.abs(Math.sin(now*0.006));
+  const beat=0.48+0.14*Math.abs(Math.sin(now*0.004));
+  coreGlow.material.opacity=beat;
+  halo.material.opacity=0.12+0.06*Math.abs(Math.sin(now*0.004+0.4));
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
