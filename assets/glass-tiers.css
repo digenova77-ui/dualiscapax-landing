@@ -88,11 +88,12 @@ input, textarea, [contenteditable] {
   z-index: 2;
 }
 .geo-wrap {
-  flex: 0 0 auto !important;
+  flex: 1 1 auto !important;
   aspect-ratio: 1 / 1;
-  width: min(72vw, calc(100svh - 14rem), 26rem) !important;
+  width: min(96vw, calc(100svh - 11.2rem)) !important;
   height: auto !important;
-  max-height: min(72vw, calc(100svh - 14rem), 26rem);
+  max-height: min(96vw, calc(100svh - 11.2rem));
+  margin: 0 auto;
 }
 #geo-earth {
   width: 100%;
