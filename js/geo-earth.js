@@ -35,6 +35,14 @@ function stampRing(ctx,img,x,y,size){
   ctx.drawImage(img,x-size/2,y-size/2,size,size);
   ctx.restore();
 }
+function stampEquator(ctx,img){
+  if(!img)return;
+  const size=108;
+  const y=h*0.5-size/2;
+  ctx.drawImage(img,w*0.5-size/2,y,size,size);
+  ctx.drawImage(img,-size/2,y,size,size);
+  ctx.drawImage(img,w-size/2,y,size,size);
+}
 function dirToUV(v){
   const n=v.clone().normalize();
   let u=Math.atan2(n.z,-n.x)/(Math.PI*2);
@@ -47,23 +55,25 @@ const pentDirs=[
   new THREE.Vector3(0,1,PHI),
   new THREE.Vector3(0,1,-PHI)
 ];
-function paintField(ring){
+function paintField(img){
   ftx.fillStyle='#070708';
   ftx.fillRect(0,0,w,h);
   stampWord(ftx,w*0.25,h*0.5);
   stampWord(ftx,w*0.75,h*0.5);
+  stampEquator(ftx,img);
   pentDirs.forEach(function(d){
     const uv=dirToUV(d);
-    stampRing(ftx,ring,uv.u*w,uv.v*h,96);
+    stampRing(ftx,img,uv.u*w,uv.v*h,96);
   });
 }
-function paintMarks(ring){
+function paintMarks(img){
   mtx.clearRect(0,0,w,h);
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
+  stampEquator(mtx,img);
   pentDirs.forEach(function(d){
     const uv=dirToUV(d);
-    stampRing(mtx,ring,uv.u*w,uv.v*h,96);
+    stampRing(mtx,img,uv.u*w,uv.v*h,96);
   });
 }
 paintField(null);
