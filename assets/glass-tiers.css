@@ -42,7 +42,7 @@
   pointer-events: none;
 }
 
-.stage-3d {
+.stage-3d, .stack {
   perspective: 1200px;
   perspective-origin: calc(50% + var(--mx) * 18px) calc(42% + var(--my) * 12px);
   transform-style: preserve-3d;
@@ -52,11 +52,19 @@
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
-.tier-z-front { transform: translate3d(0,0,56px); }
-.tier-z-near  { transform: translate3d(0,0,28px); }
-.tier-z-mid   { transform: translate3d(0,0,0); }
-.tier-z-far   { transform: translate3d(0,0,-36px); }
-.tier-z-back  { transform: translate3d(0,0,-72px) scale(0.985); }
+.tier-z-front, .tier-logo { transform: translate3d(0,0,56px); }
+.tier-z-near, .tier-geo, .tier-hud { transform: translate3d(0,0,28px); }
+.tier-z-mid, .tier-copy { transform: translate3d(0,0,8px); }
+.tier-z-far, .tier-doors { transform: translate3d(0,0,-36px); }
+.tier-z-back { transform: translate3d(0,0,-72px) scale(0.985); }
+.tier-jump { transform: translate3d(0,0,48px); }
+
+.tier-logo { animation-name: slide-back; }
+.tier-geo  { animation-name: slide-forward; }
+.tier-copy { animation-name: slide-up; }
+.tier-doors{ animation-name: slide-diag-tl; }
+.tier-hud  { animation-name: slide-diag-br; }
+.tier-jump { animation-name: slide-down; }
 
 .tears {
   position: absolute;
@@ -160,17 +168,21 @@
 .slide-back { animation: slide-back .85s var(--tier-ease) both; }
 .slide-forward { animation: slide-forward .7s var(--tier-ease) both; }
 
-.glass-chip {
+.glass-chip, .hud-cell {
   position: relative;
   background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(0,0,0,0.22));
-  border: 1px solid rgba(158,197,255,0.20);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 10px 24px rgba(0,0,0,0.28);
-  backdrop-filter: blur(12px) saturate(1.2);
-  -webkit-backdrop-filter: blur(12px) saturate(1.2);
 }
 
+.bubble.them, .bubble.you {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.bubble.them { animation: slide-left .45s var(--tier-ease) both; }
+.bubble.you { animation: slide-right .45s var(--tier-ease) both; }
+
 @media (prefers-reduced-motion: reduce) {
-  .tear, .tier, .glass, .slide-up, .slide-down, .slide-left, .slide-right, .slide-back, .slide-forward {
+  .tear, .tier, .glass, .slide-up, .slide-down, .slide-left, .slide-right, .slide-back, .slide-forward,
+  .tier-logo, .tier-geo, .tier-copy, .tier-doors, .tier-hud, .tier-jump, .bubble.them, .bubble.you {
     animation: none !important;
     transition: none !important;
   }
