@@ -30,9 +30,12 @@ function stampWord(ctx,x,y){
   ctx.fillText('DualisCapax',x,y);
   ctx.restore();
 }
-function stampRing(ctx,img,x,y,size){
+function stampRing(ctx,img,x,y,size,alpha){
   if(!img)return;
+  ctx.save();
+  ctx.globalAlpha=alpha==null?1:alpha;
   ctx.drawImage(img,x-size/2,y-size/2,size,size);
+  ctx.restore();
 }
 function stampEquator(ctx,img){
   if(!img)return;
@@ -60,10 +63,10 @@ function skipPent(n){
   if(aboveBelowWord(n))return false;
   const uv=dirToUV(n);
   if(uToWord(uv.u)<0.20 && Math.abs(uv.v-0.5)<0.08)return true;
-  if(Math.abs(n.y)<0.35)return true;
   return false;
 }
-function pentStamp(n){return aboveBelowWord(n)?54:84;}
+function pentStamp(n){return aboveBelowWord(n)?54:72;}
+function pentAlpha(n){return aboveBelowWord(n)?0.62:0.92;}
 function paintField(img,pents){
   ftx.fillStyle='#070708';
   ftx.fillRect(0,0,w,h);
@@ -72,7 +75,7 @@ function paintField(img,pents){
   stampEquator(ftx,img);
   (pents||[]).forEach(function(p){
     if(skipPent(p.n))return;
-    stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,pentStamp(p.n));
+    stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,pentStamp(p.n),pentAlpha(p.n));
   });
 }
 function paintMarks(img,pents){
@@ -82,7 +85,7 @@ function paintMarks(img,pents){
   stampEquator(mtx,img);
   (pents||[]).forEach(function(p){
     if(skipPent(p.n))return;
-    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,pentStamp(p.n));
+    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,pentStamp(p.n),pentAlpha(p.n));
   });
 }
 paintField(null,[]);
@@ -119,6 +122,16 @@ const veil=new THREE.Mesh(
     depthWrite:false
   })
 );
+const mid=new THREE.Mesh(
+  new THREE.SphereGeometry(0.46,40,28),
+  new THREE.MeshBasicMaterial({
+    color:0x6aa8ff,
+    transparent:true,
+    opacity:0.06,
+    blending:THREE.AdditiveBlending,
+    depthWrite:false
+  })
+);
 const ember=new THREE.Mesh(
   new THREE.SphereGeometry(0.24,32,24),
   new THREE.MeshBasicMaterial({
@@ -130,6 +143,7 @@ const ember=new THREE.Mesh(
   })
 );
 inner.add(veil);
+inner.add(mid);
 inner.add(ember);
 group.add(inner);
 
@@ -151,10 +165,12 @@ function makeFeedLine(color,opacity){
 }
 const spokes=[];
 const bolts=[];
+const bolts2=[];
 function addFeed(pt){
   feedPts.push(pt.clone());
-  spokes.push(makeFeedLine(0x6aa8ff,0.07));
-  bolts.push(makeFeedLine(0xb8dcff,0.16));
+  spokes.push(makeFeedLine(0x6aa8ff,0.09));
+  bolts.push(makeFeedLine(0xb8dcff,0.18));
+  bolts2.push(makeFeedLine(0x7eb6ff,0.12));
 }
 addFeed(new THREE.Vector3(0.92,0,0));
 addFeed(new THREE.Vector3(-0.92,0,0));
@@ -175,19 +191,19 @@ function spokePts(from){
   }
   return out;
 }
-function boltPts(from,now){
+function boltPts(from,now,phase){
   const dest=from.clone().multiplyScalar(0.22);
   const dir=dest.clone().sub(from);
   const up=Math.abs(dir.y)<0.9?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
   const n2=dir.clone().cross(n1).normalize();
   const out=[];
-  const seed=(now*0.013+from.x*12.7+from.y*7.1)%1;
+  const seed=(now*0.013+from.x*12.7+from.y*7.1+phase)%1;
   for(let i=0;i<BOLT_SEGS;i++){
     const t=i/(BOLT_SEGS-1);
     const p=from.clone().lerp(dest,t);
     if(i>0&&i<BOLT_SEGS-1){
-      const jag=(1-Math.abs(2*t-1))*0.045;
+      const jag=(1-Math.abs(2*t-1))*0.058;
       const a=Math.sin((t*11+seed*6.28+now*0.01)*1.7);
       const b=Math.cos((t*9+seed*4.2+now*0.013)*1.3);
       p.addScaledVector(n1,a*jag);
@@ -316,6 +332,7 @@ const shell=new THREE.Mesh(
 );
 group.add(shell);
 
+const decals=[];
 function mountRingDecals(img){
   const punch=document.createElement('canvas');
   punch.width=192;punch.height=192;
@@ -333,21 +350,24 @@ function mountRingDecals(img){
   ringTex.colorSpace=THREE.SRGBColorSpace;
   pents.forEach(function(p){
     if(skipPent(p.n))return;
-    const fit=aboveBelowWord(p.n)?0.52:0.84;
+    const behind=aboveBelowWord(p.n);
+    const fit=behind?0.52:0.72;
     const r=Math.max(0.045,p.rin*fit);
     const disc=new THREE.Mesh(
       new THREE.CircleGeometry(r,48),
       new THREE.MeshBasicMaterial({
         map:ringTex,
         transparent:true,
+        opacity:behind?0.58:0.92,
         depthWrite:false,
-        alphaTest:0.1,
+        alphaTest:0.06,
         side:THREE.DoubleSide
       })
     );
     disc.position.copy(p.n).multiplyScalar(0.946);
     disc.lookAt(p.n.clone().multiplyScalar(2));
     group.add(disc);
+    decals.push({mesh:disc,n:p.n.clone(),behind:behind});
     addFeed(disc.position);
   });
 }
@@ -360,6 +380,7 @@ ring.onload=function(){
 };
 ring.src='brand/emblem-helix.svg';
 const OMEGA=Math.PI*2/28;
+const camDir=new THREE.Vector3(0,0,1);
 let last=performance.now();
 function frame(now){
   const dt=Math.min(0.05,(now-last)/1000);
@@ -368,9 +389,17 @@ function frame(now){
   inner.rotation.y-=2*OMEGA*dt;
   for(let i=0;i<feedPts.length;i++){
     writeLine(spokes[i].g,spokePts(feedPts[i]));
-    writeLine(bolts[i].g,boltPts(feedPts[i],now));
-    const flick=0.10+0.10*Math.abs(Math.sin(now*0.011+i*1.7));
+    writeLine(bolts[i].g,boltPts(feedPts[i],now,0));
+    writeLine(bolts2[i].g,boltPts(feedPts[i],now,0.37));
+    const flick=0.11+0.12*Math.abs(Math.sin(now*0.011+i*1.7));
     bolts[i].line.material.opacity=flick;
+    bolts2[i].line.material.opacity=flick*0.7;
+  }
+  for(let i=0;i<decals.length;i++){
+    const wn=decals[i].n.clone().applyQuaternion(group.quaternion);
+    const facing=wn.dot(camDir);
+    const base=decals[i].behind?0.58:0.92;
+    decals[i].mesh.material.opacity=facing<0?base*0.42:base;
   }
   ember.material.opacity=0.08+0.04*Math.abs(Math.sin(now*0.006));
   renderer.render(scene,camera);
