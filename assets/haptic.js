@@ -8,19 +8,23 @@
 
   function pulse() {
     var now = Date.now();
-    if (now - last < 50) return;
+    if (now - last < 40) return;
     last = now;
     try {
       if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-        navigator.vibrate(12);
+        navigator.vibrate(14);
       }
     } catch (e) {}
   }
 
   function hit(t) {
     if (!t || !t.closest) return null;
-    return t.closest('button, a, [role="button"], .burger, .jump, .skip, .line, .hud-donate, .iris-mark, .pack, .geo-wrap, #geo-earth');
+    return t.closest(
+      'button, a, [role="button"], [data-haptic],'
+      + '.burger, .jump, .skip, .line, .hud-donate, .iris-mark, .pack, .row, .sec-break a,'
+      + '.geo-wrap, #geo-earth, .classif, h1, .nav-panel a, .hud-act a'
+    );
   }
 
   function onTap(e) {
