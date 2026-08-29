@@ -44,10 +44,11 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   </div>
   <p class="kicker">Two rails</p>
   <h1>Fund the work</h1>
-  <p class="lede">Research gifts: Interac, EFT, or XRP. Iris time: DOGE. They do not mix. Neither is Fuel, a seat, or a share. Not medical.</p>
+  <p class="lede">Research gifts: Interac, EFT, XRP, or ZEC. Iris time: DOGE. They do not mix. Neither is Fuel, a seat, or a share. Not medical.</p>
   <button type="button" class="go" id="interac">Send Interac e-Transfer</button>
   <button type="button" class="alt" id="eft">Send EFT</button>
   <button type="button" class="alt" id="xrp">Research — XRP</button>
+  <button type="button" class="alt" id="zec">Research — ZEC</button>
   <button type="button" class="alt" id="doge">Iris time — DOGE</button>
   <div class="steps" id="howto" hidden></div>
   <div class="closed"><strong>Card stays gated.</strong> Fuel and onboard stay gated.</div>
@@ -65,10 +66,6 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
 (function(){
   var MAIL='donate@dualiscapax.ai';
   var box=document.getElementById('howto');
-  var interac=document.getElementById('interac');
-  var eft=document.getElementById('eft');
-  var doge=document.getElementById('doge');
-  var xrp=document.getElementById('xrp');
   var pay=window.DC_PAYMENTS||{};
   function tap(){ try{if(navigator.vibrate)navigator.vibrate(12);}catch(e){} }
   function copy(text){
@@ -76,53 +73,28 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
     return Promise.reject();
   }
   function show(html){ box.hidden=false; box.innerHTML=html; }
-  if(pay.interac_enabled!==false){
-    interac.addEventListener('click',function(){
+  function bind(id, enabled, addr, label, ok, steps){
+    var el=document.getElementById(id);
+    if(!el)return;
+    if(!enabled){ el.hidden=true; return; }
+    el.addEventListener('click',function(){
       tap();
-      copy(MAIL).then(function(){
-        interac.classList.add('ok');
-        interac.textContent='Copied — open your bank';
-      }).catch(function(){
-        interac.textContent='Open your bank — Autodeposit is on';
-      });
-      show('<strong>Research — Interac</strong><ol><li>Open your bank app.</li><li>Interac e-Transfer → Send.</li><li>Paste the Autodeposit address from the tap.</li><li>Memo: DualisCapax research.</li></ol>');
+      if(addr){
+        copy(addr).then(function(){ el.classList.add('ok'); el.textContent=ok; }).catch(function(){ el.textContent=label; });
+      }
+      show(steps);
     });
-  } else interac.hidden=true;
-  if(pay.eft_enabled!==false){
-    eft.addEventListener('click',function(){
-      tap();
-      copy(MAIL).catch(function(){});
-      eft.textContent='EFT — same research account';
-      show('<strong>Research — EFT</strong><ol><li>Same account as Interac.</li><li>Routing stays off this page.</li></ol>');
-    });
-  } else eft.hidden=true;
-  var xrpAddr=pay.research_xrp||'';
-  if(pay.crypto_enabled && xrpAddr){
-    xrp.addEventListener('click',function(){
-      tap();
-      copy(xrpAddr).then(function(){
-        xrp.classList.add('ok');
-        xrp.textContent='XRP copied — open your wallet';
-      }).catch(function(){
-        xrp.textContent='Open your XRP wallet';
-      });
-      show('<strong>Research — XRP</strong><ol><li>Open your XRP wallet.</li><li>Paste the receive address from the tap.</li><li>Send any amount. This is a research gift, not Iris time.</li></ol><p>Destination tag not required unless your wallet demands one. Address is not printed.</p>');
-    });
-  } else xrp.hidden=true;
-  var dogeAddr=pay.ai_doge||'';
-  if(pay.crypto_enabled && dogeAddr){
-    doge.addEventListener('click',function(){
-      tap();
-      copy(dogeAddr).then(function(){
-        doge.classList.add('ok');
-        doge.textContent='DOGE copied — open your wallet';
-      }).catch(function(){
-        doge.textContent='Open your DOGE wallet';
-      });
-      show('<strong>Iris time — DOGE</strong><ol><li>Open your Dogecoin wallet.</li><li>Paste the receive address from the tap.</li><li>Send any amount. This is Iris proceeds, not a research gift.</li></ol><p>Not medical. Not a share. Address is not printed on the page.</p>');
-      try{ window.location.href='dogecoin:'+dogeAddr; }catch(e){}
-    });
-  } else doge.hidden=true;
+  }
+  bind('interac', pay.interac_enabled!==false, MAIL, 'Send Interac e-Transfer', 'Copied — open your bank',
+    '<strong>Research — Interac</strong><ol><li>Open your bank app.</li><li>Interac e-Transfer → Send.</li><li>Paste the Autodeposit address from the tap.</li></ol>');
+  bind('eft', pay.eft_enabled!==false, MAIL, 'Send EFT', 'EFT — same research account',
+    '<strong>Research — EFT</strong><ol><li>Same account as Interac.</li><li>Routing stays off this page.</li></ol>');
+  bind('xrp', !!(pay.crypto_enabled && pay.research_xrp), pay.research_xrp, 'Research — XRP', 'XRP copied — open your wallet',
+    '<strong>Research — XRP</strong><ol><li>Open your XRP wallet.</li><li>Paste the address from the tap.</li><li>Research gift, not Iris time.</li></ol>');
+  bind('zec', !!(pay.crypto_enabled && pay.research_zec), pay.research_zec, 'Research — ZEC', 'ZEC copied — open your wallet',
+    '<strong>Research — ZEC</strong><ol><li>Open your Zcash wallet.</li><li>Paste the transparent address from the tap.</li><li>Research gift, not Iris time.</li></ol>');
+  bind('doge', !!(pay.crypto_enabled && pay.ai_doge), pay.ai_doge, 'Iris time — DOGE', 'DOGE copied — open your wallet',
+    '<strong>Iris time — DOGE</strong><ol><li>Open your Dogecoin wallet.</li><li>Paste the address from the tap.</li><li>Iris proceeds, not a research gift. Not medical.</li></ol>');
   var url=pay.research||'';
   if(url&&String(url).indexOf('http')===0){
     var boxS=document.getElementById('stripe-box');
