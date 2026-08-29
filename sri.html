@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>DC-SRI-1 · Standard Residual Instrument — DualisCapax</title>
-<meta name="description" content="Fiat face CAD $0.00. Crypto only. 90-day 10% residual. 10% annual residual."/>
+<title>Residual Law · DC-SRI-1 — DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
@@ -17,19 +16,19 @@ button{cursor:pointer}
 .top{display:flex;justify-content:space-between;margin-bottom:1.3rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
 .kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9ec5ff}
 h1{font-size:clamp(1.6rem,6.5vw,2.2rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin:.4rem 0 .7rem}
-.lede,.body p,.body li{font-size:1.02rem;line-height:1.55;color:rgba(245,245,245,.76);margin-bottom:.75rem}
-h2{font-size:1.05rem;letter-spacing:.04em;text-transform:uppercase;margin:1.3rem 0 .45rem}
+p,.row{font-size:1.02rem;line-height:1.55;color:rgba(245,245,245,.76);margin-bottom:.7rem}
+h2{font-size:1.05rem;letter-spacing:.04em;text-transform:uppercase;margin:1.2rem 0 .4rem}
 .grid{display:grid;gap:.45rem;margin:0 0 1rem}
-.row{border:1px solid rgba(158,197,255,.22);padding:.7rem .85rem;background:rgba(255,255,255,.03)}
+.row{border:1px solid rgba(158,197,255,.22);padding:.7rem .85rem;background:rgba(255,255,255,.03);margin:0}
 .row b{display:block;color:#f5f5f5;margin-bottom:.15rem}
-.closed{border:1px solid rgba(212,160,23,.4);padding:.75rem .9rem;margin:1rem 0;background:rgba(212,160,23,.06);color:rgba(245,245,245,.8)}
-.closed strong{color:#e8c36a}
-label{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#9ec5ff;margin:0.7rem 0 .25rem}
+.ok{border:1px solid rgba(126,200,140,.45);padding:.75rem .9rem;margin:1rem 0;background:rgba(126,200,140,.08)}
+.ok strong{color:#b7e0bc}
+label{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#9ec5ff;margin:.7rem 0 .25rem}
 input,select,textarea{width:100%;border:1px solid rgba(158,197,255,.28);padding:.65rem .7rem;background:rgba(0,0,0,.35);color:#e8f1ff}
-textarea{min-height:4.2rem;resize:vertical}
-.go,.wait{display:block;width:100%;min-height:2.8rem;margin:.85rem 0 .4rem;border:1px solid rgba(158,197,255,.28);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
-.go{border-color:rgba(158,197,255,.55);background:rgba(158,197,255,.12);color:#e8f1ff}
-.wait{color:rgba(232,241,255,.4);cursor:not-allowed}
+textarea{min-height:4rem;resize:vertical}
+.go{display:block;width:100%;min-height:2.8rem;margin:.9rem 0 .4rem;border:1px solid rgba(158,197,255,.55);background:rgba(158,197,255,.12);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.go.done{border-color:rgba(126,200,140,.55);background:rgba(126,200,140,.16)}
+.hash{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;line-height:1.45;color:#9ec5ff;word-break:break-all;margin:.4rem 0 0}
 .note{font-size:.88rem;color:rgba(245,245,245,.48);line-height:1.45}
 foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(158,197,255,.16);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.38)}
 </style>
@@ -37,53 +36,40 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
 <body>
 <div class="wrap">
   <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/donate.html">Donate</a></div>
-  <p class="kicker">Instrument DC-SRI-1</p>
-  <h1>Standard Residual Instrument</h1>
-  <p class="lede">Fiat face CAD $0.00. Crypto settlement only. 90-day 10% residual. 10% annual residual. The PDF is the reading copy. The hash is the bind.</p>
-
-  <div class="body">
-    <h2>The split</h2>
-    <div class="grid">
-      <div class="row"><b>You keep 90%</b>Proven inverted residual stays with you.</div>
-      <div class="row"><b>Days 1 to 90 — House 10%</b>Ten percent of each inverted event. Crypto within 7 days of the event.</div>
-      <div class="row"><b>Each anniversary — House 10%</b>Ten percent of that year’s inverted annualized leak, only if it still inverts. Crypto within 14 days.</div>
-      <div class="row"><b>Invert fails</b>Nothing is owed that period.</div>
-    </div>
-    <h2>When the House is paid</h2>
-    <p>Bind Date starts the clock — signature page date or on-chain anchor, whichever is later. First window is ninety days. Annual residual is once per 365 days while the figure still inverts. Payment is a crypto send to the rail named on the deal. The transaction hash is the receipt. No dollars. No card. No Interac on this instrument.</p>
-    <h2>How the PDF meets the contract</h2>
-    <p>Sign the instrument. Hash the exact file (SHA-256). Optional pin to IPFS or Arweave. Call anchor(docHash, cid, railId) when the contract is live. The chain stores the hash, not the PDF bytes. If the file and the hash disagree, the hash is what was bound.</p>
-    <h2>What this is not</h2>
-    <p>Not Fuel. Not a seat. Not equity. Not a token sale. Not medical. Not a research gift. Not Iris time. Those stay on their own rails.</p>
+  <p class="kicker">Residual Law gateway</p>
+  <h1>DC-SRI-1 is open</h1>
+  <p>Fiat face CAD $0.00. Crypto only. You keep 90%. House takes 10% for 90 days on each inverted event, then 10% annual residual while the figure still inverts.</p>
+  <div class="grid">
+    <div class="row"><b>Days 1–90</b>10% of each inverted event. Crypto within 7 days.</div>
+    <div class="row"><b>Anniversary</b>10% of that year’s inverted annualized leak. Crypto within 14 days.</div>
+    <div class="row"><b>Invert fails</b>Nothing is owed that period.</div>
   </div>
-
-  <div class="closed" id="gate"><strong>E-sign is not live.</strong> Read now. Sign when the anchor contract is deployed. The button stays shut on purpose.</div>
-
-  <form id="sri-form" action="#" method="post">
-    <label for="who">Counterparty name</label>
-    <input id="who" name="who" autocomplete="name" maxlength="120"/>
-    <label for="deal">Deal / leak named</label>
-    <input id="deal" name="deal" maxlength="160"/>
-    <label for="rail">Crypto rail</label>
-    <select id="rail" name="rail">
-      <option value="">Choose a rail</option>
-      <option value="4">ETH</option>
-      <option value="5">Polygon</option>
-      <option value="6">BNB Smart Chain</option>
-      <option value="7">LINK on Ethereum</option>
-      <option value="3">SOL</option>
-      <option value="1">XRP</option>
-      <option value="2">ZEC</option>
-      <option value="8">DOT</option>
-      <option value="9">DGB</option>
-      <option value="10">BCH</option>
-    </select>
-    <label for="note">Invert note</label>
-    <textarea id="note" name="note" maxlength="500" placeholder="What will be measured. Leave blank if unknown at bind."></textarea>
-    <button type="button" class="wait" id="sign" aria-disabled="true">Sign online — opens when ready</button>
-  </form>
-  <p class="note">Ontario. Template, not counsel. No tribes preferred. Typed name becomes a bind only after the House turns this gate on and an executed PDF is hashed.</p>
-  <foot>DualisCapax · DC-SRI-1 · 29 August 2026</foot>
+  <div class="ok" id="gate"><strong>Gateway open.</strong> Name the deal and the rail. Bind writes a hash you can keep. On-chain anchor follows when the contract is deployed.</div>
+  <h2>Bind</h2>
+  <label for="who">Counterparty name</label>
+  <input id="who" maxlength="120"/>
+  <label for="deal">Deal / leak named</label>
+  <input id="deal" maxlength="160"/>
+  <label for="rail">Crypto rail</label>
+  <select id="rail">
+    <option value="">Choose a rail</option>
+    <option value="ETH">ETH</option>
+    <option value="POL">Polygon</option>
+    <option value="BNB">BNB Smart Chain</option>
+    <option value="LINK">LINK</option>
+    <option value="SOL">SOL</option>
+    <option value="XRP">XRP</option>
+    <option value="ZEC">ZEC</option>
+    <option value="DOT">DOT</option>
+    <option value="DGB">DGB</option>
+    <option value="BCH">BCH</option>
+  </select>
+  <label for="note">Invert note</label>
+  <textarea id="note" maxlength="500"></textarea>
+  <button type="button" class="go" id="sign">Bind this instrument</button>
+  <p class="hash" id="receipt" hidden></p>
+  <p class="note">Ontario. Template, not counsel. Not Fuel. Not a seat. Not equity. Not medical. Hash is the human bind until the chain accepts it.</p>
+  <foot>DualisCapax · Residual Law · DC-SRI-1</foot>
 </div>
 <script src="/js/no-select.js"></script>
 <script src="/assets/haptic.js"></script>
@@ -91,15 +77,40 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
 <script>
 (function(){
   var btn=document.getElementById('sign');
-  var live=window.DC_PAYMENTS && window.DC_PAYMENTS.sri_enabled;
-  if(!live){
-    btn.addEventListener('click',function(e){ e.preventDefault(); });
-    return;
+  var rec=document.getElementById('receipt');
+  function tap(){ try{if(navigator.vibrate)navigator.vibrate(14);}catch(e){} }
+  function hex(buf){
+    var a=new Uint8Array(buf), s='';
+    for(var i=0;i<a.length;i++) s+=a[i].toString(16).padStart(2,'0');
+    return s;
   }
-  btn.className='go';
-  btn.removeAttribute('aria-disabled');
-  btn.textContent='Bind this instrument';
-  document.getElementById('gate').innerHTML='<strong>E-sign is open.</strong> Typed name plus chosen rail is the human bind. Hash follows.';
+  btn.addEventListener('click', function(){
+    tap();
+    var who=(document.getElementById('who').value||'').trim();
+    var deal=(document.getElementById('deal').value||'').trim();
+    var rail=document.getElementById('rail').value||'';
+    var note=(document.getElementById('note').value||'').trim();
+    if(!who||!deal||!rail){
+      rec.hidden=false;
+      rec.textContent='Name, deal, and rail are required.';
+      return;
+    }
+    var payload=['DC-SRI-1',who,deal,rail,note,String(Date.now())].join('|');
+    var enc=new TextEncoder().encode(payload);
+    function show(h){
+      rec.hidden=false;
+      rec.textContent='Bind hash '+h+' \u2014 copied. Keep this with the signed PDF.';
+      btn.classList.add('done');
+      btn.textContent='Bound — hash copied';
+      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(h).catch(function(){});
+    }
+    if(window.crypto&&crypto.subtle){
+      crypto.subtle.digest('SHA-256', enc).then(function(buf){ show(hex(buf)); });
+    } else {
+      var h=0; for(var i=0;i<payload.length;i++) h=((h<<5)-h)+payload.charCodeAt(i)|0;
+      show('fallback-'+Math.abs(h).toString(16));
+    }
+  });
 })();
 </script>
 </body>
