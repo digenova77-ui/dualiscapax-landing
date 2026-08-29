@@ -28,26 +28,43 @@ function stampWord(ctx,x,y){
   ctx.fillText('DualisCapax',x,y);
   ctx.restore();
 }
-function paintEmblems(ctx,emblem){
-  if(!emblem)return;
-  const size=108;
-  const y=h*0.5-size/2;
-  ctx.drawImage(emblem,w*0.5-size/2,y,size,size);
-  ctx.drawImage(emblem,-size/2,y,size,size);
-  ctx.drawImage(emblem,w-size/2,y,size,size);
+function stampRing(ctx,img,x,y,size){
+  if(!img)return;
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  ctx.drawImage(img,x-size/2,y-size/2,size,size);
+  ctx.restore();
 }
-function paintField(emblem){
+function dirToUV(v){
+  const n=v.clone().normalize();
+  let u=Math.atan2(n.z,-n.x)/(Math.PI*2);
+  if(u<0)u+=1;
+  const vcoord=Math.acos(Math.max(-1,Math.min(1,n.y)))/Math.PI;
+  return {u,v:vcoord};
+}
+const PHI=(1+Math.sqrt(5))/2;
+const pentDirs=[
+  new THREE.Vector3(0,1,PHI),
+  new THREE.Vector3(0,1,-PHI)
+];
+function paintField(ring){
   ftx.fillStyle='#070708';
   ftx.fillRect(0,0,w,h);
   stampWord(ftx,w*0.25,h*0.5);
   stampWord(ftx,w*0.75,h*0.5);
-  paintEmblems(ftx,emblem);
+  pentDirs.forEach(function(d){
+    const uv=dirToUV(d);
+    stampRing(ftx,ring,uv.u*w,uv.v*h,96);
+  });
 }
-function paintMarks(emblem){
+function paintMarks(ring){
   mtx.clearRect(0,0,w,h);
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
-  paintEmblems(mtx,emblem);
+  pentDirs.forEach(function(d){
+    const uv=dirToUV(d);
+    stampRing(mtx,ring,uv.u*w,uv.v*h,96);
+  });
 }
 paintField(null);
 paintMarks(null);
@@ -66,7 +83,7 @@ group.add(body);
 scene.add(group);
 
 function c60Geometry(radius){
-  const phi=(1+Math.sqrt(5))/2;
+  const phi=PHI;
   const raw=[];
   function even(x,y,z){ raw.push(x,y,z, z,x,y, y,z,x); }
   for(const s1 of [-1,1]) for(const s2 of [-1,1]) even(0,s1,s2*3*phi);
@@ -120,17 +137,51 @@ const shell=new THREE.Mesh(
     map:markTex,
     transparent:true,
     depthWrite:false,
-    alphaTest:0.12
+    alphaTest:0.08
   })
 );
 group.add(shell);
 
-const emblem=new Image();
-emblem.onload=function(){
-  paintField(emblem);tex.needsUpdate=true;
-  paintMarks(emblem);markTex.needsUpdate=true;
+function mountRingDecals(img){
+  const punch=document.createElement('canvas');
+  punch.width=192;punch.height=192;
+  const ptx=punch.getContext('2d');
+  ptx.drawImage(img,0,0,192,192);
+  const data=ptx.getImageData(0,0,192,192);
+  const px=data.data;
+  for(let i=0;i<px.length;i+=4){
+    const lum=0.21*px[i]+0.72*px[i+1]+0.07*px[i+2];
+    if(lum<16){px[i+3]=0;}
+    else if(lum<30){px[i+3]=Math.round(255*(lum-16)/14);}
+  }
+  ptx.putImageData(data,0,0);
+  const ringTex=new THREE.CanvasTexture(punch);
+  ringTex.colorSpace=THREE.SRGBColorSpace;
+  pentDirs.forEach(function(dir){
+    const n=dir.clone().normalize();
+    const disc=new THREE.Mesh(
+      new THREE.CircleGeometry(0.105,48),
+      new THREE.MeshBasicMaterial({
+        map:ringTex,
+        transparent:true,
+        depthWrite:false,
+        alphaTest:0.12,
+        side:THREE.DoubleSide
+      })
+    );
+    disc.position.copy(n).multiplyScalar(0.944);
+    disc.lookAt(n.clone().multiplyScalar(2));
+    group.add(disc);
+  });
+}
+
+const ring=new Image();
+ring.onload=function(){
+  paintField(ring);tex.needsUpdate=true;
+  paintMarks(ring);markTex.needsUpdate=true;
+  mountRingDecals(ring);
 };
-emblem.src='brand/emblem-helix.svg';
+ring.src='brand/emblem-helix.svg';
 let last=performance.now();
 function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;group.rotation.y+=(Math.PI*2/28)*dt;renderer.render(scene,camera);requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
