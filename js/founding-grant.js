@@ -1,6 +1,4 @@
-/** DualisCapax early public board — seats 11 to 100
- *  F(n) = round(1000 - (n-11) * 900 / 89)
- */
+/** DualisCapax early public board — seats 11 to 100 */
 window.DC_FOUNDING = {
   house: [1,10],
   early: [11,100],
@@ -17,28 +15,37 @@ window.DC_FOUNDING = {
     document.documentElement.classList.add('pre-onboard');
   }
   function ready(){
-    var bind=document.getElementById('bind');
-    if(!bind) return;
-    var ps=bind.querySelectorAll('p');
-    if(ps[1]) ps[1].textContent='Fuel is open. Prepaid time. Pay in crypto on the Fuel gateway. Not a seat and not onboard.';
-    var br=bind.querySelector('.sec-break');
-    if(br && !bind.querySelector('[data-fuel-link]')){
+    var o=document.querySelector('.hud-onboard');
+    if(o && o.tagName!=='A'){
       var a=document.createElement('a');
-      a.href='/fuel.html';
-      a.setAttribute('data-fuel-link','1');
-      a.textContent='Fuel';
-      br.appendChild(a);
+      a.className='hud-donate';
+      a.href='/onboard.html';
+      a.textContent='Onboard now';
+      o.replaceWith(a);
+    }
+    var bind=document.getElementById('bind');
+    if(bind){
+      var ps=bind.querySelectorAll('p');
+      if(ps[1]) ps[1].textContent='Fuel is open. Prepaid time. Pay in crypto on the Fuel gateway.';
+      var br=bind.querySelector('.sec-break');
+      if(br && !bind.querySelector('[data-fuel-link]')){
+        var f=document.createElement('a');
+        f.href='/fuel.html';
+        f.setAttribute('data-fuel-link','1');
+        f.textContent='Fuel';
+        br.appendChild(f);
+      }
     }
     var m=document.getElementById('measure');
     if(m){
       var c=m.querySelector('.closed');
-      if(c) c.innerHTML='<strong>Fuel is open.</strong> Prepaid time, crypto only. Seats and HUD Onboard stay closed.';
+      if(c) c.innerHTML='<strong>HUD is open.</strong> Fuel and Residual Law are live. Card waits on Stripe. Seats wait on a completed join.';
     }
     var nav=document.getElementById('nav-panel');
-    if(nav && !nav.querySelector('[href="/fuel.html"]')){
+    if(nav && !nav.querySelector('[href="/onboard.html"]')){
       var n=document.createElement('a');
-      n.href='/fuel.html';
-      n.textContent='Fuel';
+      n.href='/onboard.html';
+      n.textContent='Onboard';
       nav.appendChild(n);
     }
   }
