@@ -100,10 +100,39 @@ markTex.anisotropy=8;
 const group=new THREE.Group();
 scene.add(group);
 
-const earthMat=new THREE.MeshPhongMaterial({color:0x1a4a7a,shininess:8,specular:new THREE.Color(0x224466)});
-const earth=new THREE.Mesh(new THREE.SphereGeometry(0.34,64,48),earthMat);
+const ER=0.38;
+const earthPaint=document.createElement('canvas');
+earthPaint.width=1024;earthPaint.height=512;
+{
+  const c=earthPaint.getContext('2d');
+  const g=c.createLinearGradient(0,0,0,512);
+  g.addColorStop(0,'#0b1a3a');
+  g.addColorStop(0.18,'#123a72');
+  g.addColorStop(0.5,'#0c5a3a');
+  g.addColorStop(0.82,'#123a72');
+  g.addColorStop(1,'#0b1a3a');
+  c.fillStyle=g;c.fillRect(0,0,1024,512);
+  c.fillStyle='#1e7a46';
+  function blob(x,y,rw,rh){c.beginPath();c.ellipse(x,y,rw,rh,0,0,Math.PI*2);c.fill();}
+  blob(280,220,160,70);blob(250,250,90,50);blob(620,240,140,55);
+  blob(780,280,70,40);blob(120,300,50,28);blob(430,210,70,32);
+  c.fillStyle='#d8e4ef';c.fillRect(0,18,1024,36);c.fillRect(0,458,1024,36);
+}
+const earthFallback=new THREE.CanvasTexture(earthPaint);
+earthFallback.colorSpace=THREE.SRGBColorSpace;
+const earthMat=new THREE.MeshPhongMaterial({
+  map:earthFallback,color:0xffffff,shininess:10,specular:new THREE.Color(0x335577)
+});
+const earth=new THREE.Mesh(new THREE.SphereGeometry(ER,64,48),earthMat);
+earth.position.set(0,0,0);
 earth.renderOrder=0;
 group.add(earth);
+const earthAtmos=new THREE.Mesh(
+  new THREE.SphereGeometry(ER*1.04,48,32),
+  new THREE.MeshBasicMaterial({color:0x6aa8ff,transparent:true,opacity:0.16,side:THREE.BackSide,depthWrite:false})
+);
+earthAtmos.position.set(0,0,0);
+group.add(earthAtmos);
 const loader=new THREE.TextureLoader();
 loader.crossOrigin='anonymous';
 loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble.jpg',function(t){
@@ -112,7 +141,7 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
 
 const body=new THREE.Mesh(
   new THREE.SphereGeometry(0.92,96,64),
-  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.62,depthWrite:false})
+  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.40,depthWrite:false})
 );
 body.renderOrder=1;
 group.add(body);
@@ -267,7 +296,7 @@ function addFeed(pt){
 addFeed(new THREE.Vector3(0.92,0,0));
 addFeed(new THREE.Vector3(-0.92,0,0));
 function ribbonPath(from,now,phase){
-  const dest=from.clone().setLength(0.34);
+  const dest=from.clone().setLength(ER);
   const dir=dest.clone().sub(from);
   const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
@@ -355,9 +384,11 @@ ring.onload=function(){
 };
 ring.src='brand/emblem-helix.svg';
 
-scene.add(new THREE.AmbientLight(0x6b7a92,0.45));
-const sun=new THREE.DirectionalLight(0xfff4e6,1.15);
+scene.add(new THREE.AmbientLight(0x6b7a92,0.58));
+const sun=new THREE.DirectionalLight(0xfff4e6,1.28);
 sun.position.set(-2.2,0.55,2.4);scene.add(sun);
+const fill=new THREE.DirectionalLight(0x4a8fd8,0.22);
+fill.position.set(2.4,-0.4,-1.2);scene.add(fill);
 
 const OMEGA=Math.PI*2/28;
 const camDir=new THREE.Vector3(0,0,1);
