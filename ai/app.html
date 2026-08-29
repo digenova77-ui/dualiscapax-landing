@@ -11,16 +11,16 @@
   <link rel="icon" href="icon.svg" />
   <link rel="apple-touch-icon" href="icon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script src="../assets/spine-nav.js" defer></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; background: #050505; color: #f5f5f5; font-family: "IBM Plex Sans", system-ui, sans-serif; }
     body { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; padding: calc(0.75rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 5.5rem max(1rem, env(safe-area-inset-left)); }
     header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; gap: 0.75rem; }
-    .who-head { display: grid; gap: 0.1rem; }
+    .who-head { display: grid; gap: 0.1rem; text-align: center; flex: 1; }
     header strong { font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; font-family: "IBM Plex Mono", ui-monospace, monospace; }
     header span { font-size: 0.72rem; color: rgba(158,197,255,0.75); letter-spacing: 0.08em; text-transform: uppercase; font-family: "IBM Plex Mono", ui-monospace, monospace; }
-    .back { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(158,197,255,0.75); text-decoration: none; font-family: "IBM Plex Mono", ui-monospace, monospace; }
+    .mark, .home { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: #9ec5ff; text-decoration: none; font-family: "IBM Plex Mono", ui-monospace, monospace; min-height: 2.75rem; display: inline-flex; align-items: center; }
+    .mark { color: #e8f1ff; }
     .log { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 0.85rem; padding: 0.25rem 0 1rem; }
     .bubble { max-width: 92%; padding: 0.9rem 1rem; border: 1px solid rgba(158,197,255,0.18); font-size: 1.02rem; line-height: 1.5; }
     .bubble.them { align-self: flex-start; background: rgba(12,18,28,0.92); }
@@ -35,11 +35,12 @@
 </head>
 <body>
   <header>
+    <a class="mark" href="/index.html?land=1">DualisCapax</a>
     <div class="who-head">
       <strong>Iris</strong>
-      <span>DualisCapax Logic AI</span>
+      <span>Logic AI</span>
     </div>
-    <a class="back" href="/">House</a>
+    <a class="home" href="/index.html?land=1">Home</a>
   </header>
   <div class="log" id="log"></div>
   <div class="dock">
@@ -64,9 +65,6 @@
       }).catch(function () {});
     }
     var log = document.getElementById("log");
-    function esc(s) {
-      return String(s || "").replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">");
-    }
     function add(who, html) {
       var d = document.createElement("div");
       d.className = "bubble " + who;
