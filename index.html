@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>DualisCapax · Advanced Engineering</title>
-<meta name="description" content="Advanced engineering. Residual law finance. Edge technologies. Adaptive AI. Research."/>
+<meta name="description" content="Crypto, information, and tools for a future that works. DualisCapax."/>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/glass-tiers.css"/>
@@ -53,14 +53,7 @@
     backdrop-filter:blur(18px) saturate(1.25);
     -webkit-backdrop-filter:blur(18px) saturate(1.25);
   }
-  .hud{
-    width:100%;
-    min-width:0;
-    border:0;
-    background:transparent;
-    padding:0;
-    font-family:"IBM Plex Mono",ui-monospace,monospace;
-  }
+  .hud{width:100%;min-width:0;border:0;background:transparent;padding:0;font-family:"IBM Plex Mono",ui-monospace,monospace}
   .burger{width:2.2rem;height:2.2rem;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;background:transparent}
   .burger span{display:block;width:1.1rem;height:1px;background:#e8f1ff}
   .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
@@ -69,13 +62,7 @@
   .nav-panel{position:absolute;top:calc(100% + 0.2rem);right:max(.6rem,env(safe-area-inset-right));width:min(18rem,calc(100vw - 1.4rem));background:rgba(5,7,10,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(158,197,255,0.22);padding:0.35rem;opacity:0;visibility:hidden;transform:translateY(-6px);max-height:min(70dvh,28rem);overflow-y:auto}
   .nav-panel.is-open{opacity:1;visibility:visible;transform:translateY(0)}
   .nav-panel a{display:block;padding:0.7rem 0.85rem;font-size:0.78rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;font-family:"IBM Plex Mono",ui-monospace,monospace}
-  .hero{
-    min-height:calc(100svh - var(--bar));
-    width:100%;max-width:56rem;margin:0 auto;
-    padding:max(0.4rem,env(safe-area-inset-top)) max(1rem,env(safe-area-inset-right)) 1.2rem max(1rem,env(safe-area-inset-left));
-    display:flex;flex-direction:column;align-items:center;text-align:center;
-    scroll-margin-top:var(--bar);
-  }
+  .hero{min-height:calc(100svh - var(--bar));width:100%;max-width:56rem;margin:0 auto;padding:max(0.4rem,env(safe-area-inset-top)) max(1rem,env(safe-area-inset-right)) 1.2rem max(1rem,env(safe-area-inset-left));display:flex;flex-direction:column;align-items:center;text-align:center;scroll-margin-top:var(--bar)}
   .stack{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;gap:clamp(0.28rem,1.2vh,0.75rem);padding-block:.4rem;perspective:1100px;transform-style:preserve-3d}
   .geo-wrap{width:min(78vw,22rem);height:min(78vw,22rem);background:transparent;border:0}
   #geo-earth{width:100%;height:100%;display:block}
@@ -95,11 +82,7 @@
   .hud-donate,.hud-onboard{display:flex;align-items:center;justify-content:center;min-height:1.85rem;padding:.28rem .4rem;border:1px solid rgba(158,197,255,.45);background:rgba(158,197,255,.1);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-align:center}
   .hud-onboard{border-color:rgba(158,197,255,.22);background:rgba(255,255,255,.04);color:rgba(232,241,255,.42);pointer-events:none;cursor:not-allowed}
   .hud-foot{margin-top:0.45rem;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.48);text-align:center;line-height:1.35}
-  @media (max-width:40rem){
-    .hud-foot{display:none}
-    .hud-rail{margin-top:.28rem}
-    :root{--bar:3.7rem}
-  }
+  @media (max-width:40rem){.hud-foot{display:none}.hud-rail{margin-top:.28rem}:root{--bar:3.7rem}}
   .jump{padding:0.35rem 0.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.78rem,3.2vw,0.92rem);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9ec5ff}
   .jump span{display:block;margin-top:0.25rem;font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:none;color:rgba(245,245,245,0.48)}
   .scroll-stage{width:min(46rem,calc(100% - 1.2rem));margin:0 auto 2rem;perspective:1400px}
@@ -124,30 +107,19 @@
   .pack .cad{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;font-family:"IBM Plex Mono",ui-monospace,monospace}
   .pack .amt{font-size:1.25rem;font-weight:700;margin:.1rem 0}
   .pack .sub{font-size:.95rem;color:var(--faint)}
-  .sec-break{
-    display:flex;flex-wrap:wrap;gap:.45rem .7rem;align-items:center;
-    margin-top:1.15rem;padding-top:.85rem;border-top:1px dashed rgba(158,197,255,.28);
-    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);
-  }
+  .sec-break{display:flex;flex-wrap:wrap;gap:.45rem .7rem;align-items:center;margin-top:1.15rem;padding-top:.85rem;border-top:1px dashed rgba(158,197,255,.28);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
   .sec-break a{color:var(--blue)}
   .sec-break .dim{color:var(--faint);letter-spacing:.08em}
   .iris-mark{position:fixed;right:max(0.75rem,env(safe-area-inset-right));bottom:max(0.6rem,env(safe-area-inset-bottom));z-index:var(--z-nav);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.7rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(158,197,255,.7);text-shadow:0 0 18px rgba(158,197,255,.35)}
   .foot{padding:1.4rem 1rem max(2.2rem,env(safe-area-inset-bottom));text-align:center;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-top:1px solid rgba(158,197,255,.16)}
 }
 @layer motion {
-  @media (prefers-reduced-motion:reduce){
-    html{scroll-behavior:auto}
-    .tear,.tier,.line{animation:none!important}
-  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tear,.tier,.line{animation:none!important}}
 }
 </style>
 </head>
 <body>
-<script>
-(function(){
-  document.documentElement.classList.add('land-direct');
-})();
-</script>
+<script>(function(){document.documentElement.classList.add('land-direct');})();</script>
 <div class="site" id="site">
   <canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
   <div class="tears" aria-hidden="true">
@@ -169,9 +141,7 @@
       <div class="hud-act"><a class="hud-donate" href="/donate.html">Donate</a><span class="hud-onboard" aria-disabled="true">Onboard now</span></div>
       <div class="hud-foot" id="hud-foot">Early residual · ledger at zero</div>
     </div>
-    <button type="button" class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel">
-      <span></span><span></span><span></span>
-    </button>
+    <button type="button" class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel"><span></span><span></span><span></span></button>
     <nav class="nav-panel" id="nav-panel" aria-label="Primary" hidden>
       <a href="#top">Home</a>
       <a href="#for-you">For you</a>
@@ -179,176 +149,116 @@
       <a href="#measure">Measure</a>
       <a href="#bind">Bind</a>
       <a href="#founding">Founding</a>
-      <a href="#finance">Residual law finance</a>
-      <a href="#ai">Adaptive AI</a>
+      <a href="#finance">Crypto and finance</a>
+      <a href="#ai">AI</a>
       <a href="/donate.html">Donate</a>
     </nav>
   </div>
-
   <section class="hero" id="top">
     <div class="stack">
       <div class="tier tier-geo"><div class="geo-wrap"><canvas id="geo-earth" width="512" height="512" aria-label="DualisCapax"></canvas></div></div>
       <div class="tier tier-copy">
-        <p class="classif">Financial Law - Edge Tech - AI - Research</p>
+        <p class="classif">Crypto - Information - AI - Research</p>
         <h1>Truth<br>Prevails</h1>
         <div class="lines">
-          <a class="line" href="#finance">RESIDUAL LAW FINANCE</a>
-          <a class="line" href="#edge">EDGE TECHNOLOGIES</a>
-          <a class="line" href="#ai">ADAPTIVE AI</a>
-          <a class="line" href="#look">RESEARCH</a>
+          <a class="line" href="#finance">CRYPTO AND FINANCE</a>
+          <a class="line" href="#edge">NEW MACHINES</a>
+          <a class="line" href="#ai">AI YOU CAN TALK TO</a>
+          <a class="line" href="#look">OPEN RESEARCH</a>
         </div>
       </div>
       <div class="tier tier-jump"><a class="jump" href="#for-you">Continue<span id="peg-clock">—</span></a></div>
     </div>
   </section>
-
   <div class="scroll-stage">
   <div class="pane glass is-on">
-    <div class="pane-art" aria-hidden="true">
-      <img src="brand/emblem-helix.svg" alt=""/>
-    </div>
+    <div class="pane-art" aria-hidden="true"><img src="brand/emblem-helix.svg" alt=""/></div>
     <div class="pane-copy">
   <section class="band" id="for-you">
     <p class="kicker">For you</p>
-    <h2>Overview</h2>
+    <h2>The next chapter is already running</h2>
     <ul>
-      <li>DualisCapax built Iris, an adaptive agent. Inquiry is open and complimentary.</li>
-      <li>Research sections are public.</li>
-      <li>Commercial products are not for sale.</li>
-      <li>No payment is accepted on this site.</li>
+      <li>DualisCapax is building tools so money, messages, and machines can be checked — not just believed.</li>
+      <li>Talk to Iris. She is our AI. Ask anything. It is free.</li>
+      <li>Crypto here means real cryptography: locks you can test, ledgers you can read, rules that do not hide.</li>
+      <li>The future we want is simple. Better tools. Clearer information. A fairer shot for the people who do the work.</li>
     </ul>
-    <nav class="sec-break" aria-label="Jump">
-      <a href="#top">Top</a>
-      <span class="dim">·</span>
-      <a href="#look">Look</a>
-      <a href="#measure">Measure</a>
-      <a href="#bind">Bind</a>
-      <a href="/ai/app">Iris</a>
-    </nav>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#measure">Measure</a><a href="#bind">Bind</a><a href="/ai/app">Iris</a></nav>
   </section>
-
   <section class="band" id="look">
     <p class="kicker">Look</p>
-    <h2>Surfaces</h2>
-    <p>Each section stands alone. You do not need to read the site in sequence.</p>
-    <div class="row"><strong>Talk to Iris</strong>Open inquiry. No charge.</div>
-    <div class="row"><strong>Health</strong>Working notes. Not a diagnosis and not a treatment.</div>
-    <div class="row"><strong>Operations</strong>Hours, logistics, and plant constraints.</div>
-    <div class="row"><strong>Mathematics</strong>Claims that can be verified, and those that cannot.</div>
-    <nav class="sec-break" aria-label="Jump">
-      <a href="#top">Top</a>
-      <span class="dim">·</span>
-      <a href="#for-you">For you</a>
-      <a href="#measure">Measure</a>
-      <a href="#finance">Finance</a>
-    </nav>
+    <h2>Open the doors</h2>
+    <p>Start anywhere. You do not have to read in order. If you are twelve, start with Iris. If you want the hard math, jump to research.</p>
+    <div class="row"><strong>Talk to Iris</strong>A real conversation. Free. She answers in the first person and keeps it short.</div>
+    <div class="row"><strong>Health notes</strong>Working notes on bodies and strain. Not a doctor. Not a prescription.</div>
+    <div class="row"><strong>Operations</strong>How a long shift, a plant, or a warehouse actually holds together.</div>
+    <div class="row"><strong>Mathematics</strong>Problems you can check. Claims that have to survive a test.</div>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#for-you">For you</a><a href="#measure">Measure</a><a href="#finance">Finance</a></nav>
   </section>
-
   <section class="band" id="measure">
     <p class="kicker">Measure</p>
-    <h2>Access is not for sale.</h2>
-    <p>When DualisCapax opens, time is prepaid. Unused capacity remains with the holder. Payment is not accepted now.</p>
-    <div class="closed"><strong>Closed.</strong> Pricing and legal instruments are incomplete. This section describes the model. There is no checkout.</div>
-    <p>Work produces waste. That waste can be measured, then tested in a bounded trial. If the figure cannot be inverted, there is no charge.</p>
-    <nav class="sec-break" aria-label="Jump">
-      <a href="#top">Top</a>
-      <span class="dim">·</span>
-      <a href="#look">Look</a>
-      <a href="#bind">Bind</a>
-      <a href="#founding">Founding</a>
-    </nav>
+    <h2>See the number. Then decide.</h2>
+    <p>Every system leaks. A bill. A protocol. A plant line. A wallet. DualisCapax measures that leak, writes the figure down, and lets you test it.</p>
+    <div class="closed"><strong>The shop is still being built.</strong> You can read the model now. Checkout for time and seats is not live. Research gifts live on Donate.</div>
+    <p>If the figure cannot be turned back into a proof you can hold, nothing is owed. That is the invert rule. It is how we keep the future honest.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#bind">Bind</a><a href="#founding">Founding</a></nav>
   </section>
-
   <section class="band" id="bind">
     <p class="kicker">Bind</p>
-    <h2>Schedule of rates. Payment is closed.</h2>
-    <p>At opening, time is purchased. Unused time remains with the holder. This is not equity.</p>
+    <h2>When the door opens, time is prepaid</h2>
+    <p>Fuel is prepaid time. Unused time stays with you. It is not a coin offering and it is not a share of the firm.</p>
     <div class="packs">
       <div class="pack"><div class="cad">CAD $20</div><div class="amt">40 Fuel</div><div class="sub">Trial</div></div>
       <div class="pack"><div class="cad">CAD $50</div><div class="amt">120 Fuel</div><div class="sub">Practice</div></div>
       <div class="pack"><div class="cad">CAD $120</div><div class="amt">320 Fuel</div><div class="sub">Retain</div></div>
     </div>
-    <p>Commerce is closed. DualisCapax is not accepting payment.</p>
-    <nav class="sec-break" aria-label="Jump">
-      <a href="#top">Top</a>
-      <span class="dim">·</span>
-      <a href="#measure">Measure</a>
-      <a href="#founding">Founding</a>
-      <a href="#finance">Finance</a>
-    </nav>
+    <p>Fuel is not for sale on this page yet. When instruments and pricing lock, this is the schedule.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#measure">Measure</a><a href="#founding">Founding</a><a href="#finance">Finance</a></nav>
   </section>
-
   <section class="band" id="founding">
     <p class="kicker">Foundry</p>
-    <h2>Order of seats</h2>
-    <p>Access proceeds from family, then kin, then close allies, then the public. That sequence is DualisCapax. It is not a general prescription.</p>
-    <div class="row"><strong>Seats 1 to 5 — Family</strong>Household first.</div>
+    <h2>Who comes in first</h2>
+    <p>Family, then kin, then close allies, then everyone else. That is the house rule. It is how DualisCapax opens. It is not a sermon for the rest of the world.</p>
+    <div class="row"><strong>Seats 1 to 5 — Family</strong>The household first.</div>
     <div class="row"><strong>Seats 6 to 8 — Kin</strong>Blood and the wider house.</div>
-    <div class="row"><strong>Seats 9 to 10 — Allies</strong>Close allies and major counterparts.</div>
-    <div class="row"><strong>Seat 11 and after</strong>Completed joins, in order, after the first ten.</div>
-    <p>Names appear after a completed join. None are listed.</p>
-    <nav class="sec-break" aria-label="Jump">
-      <a href="#top">Top</a>
-      <span class="dim">·</span>
-      <a href="#bind">Bind</a>
-      <a href="#finance">Finance</a>
-      <a href="/ai/app">Iris</a>
-    </nav>
+    <div class="row"><strong>Seats 9 to 10 — Allies</strong>People who already stand with the work.</div>
+    <div class="row"><strong>Seat 11 and after</strong>Everyone who completes a join, in order.</div>
+    <p>Names go up after a completed join. The board is empty on purpose.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#bind">Bind</a><a href="#finance">Finance</a><a href="/ai/app">Iris</a></nav>
   </section>
-
   <section class="band" id="finance">
-    <p class="kicker">Residual law finance</p>
-    <h2>Waste is already a cost</h2>
-    <p>DualisCapax sits between the holder and that cost. Inspect it. Measure it. Bind only if the figure holds. The same sequence applies to a person, a laboratory, or a firm.</p>
-    <div class="closed"><strong>Seats remain closed until pricing and intellectual-property protection are locked.</strong> Residual order is recorded when access opens. This is the financial surface language — not a checkout.</div>
+    <p class="kicker">Crypto and finance</p>
+    <h2>Cryptography first. Markets second.</h2>
+    <p>Crypto here is the original meaning: secret-keeping that can be proven. Keys. Hashes. Signatures. Ledgers you can audit. Coins and tokens sit on top of that. DualisCapax works on the layer you can test.</p>
+    <p>Waste is already a cost — in a wallet, a protocol, a plant, or a household bill. We sit between you and that cost. Look. Measure. Bind only if the figure holds.</p>
+    <div class="closed"><strong>Financial instruments stay closed until pricing, securities analysis, and intellectual-property protection are locked.</strong> Nothing on this page is an offer of securities, a sale of tokens, or investment advice. Canadian and cryptographic-asset rules apply. If you enter this section to transact, the work gets technical on purpose.</div>
     <ul>
-      <li>Look — research remains public. No payment.</li>
-      <li>Measure — one leak on a bill, protocol, or plant line. A figure that can be checked.</li>
-      <li>Bind later — prepaid depth, or ten percent of validated savings, with ninety retained by the holder.</li>
+      <li>Look — research stays public. Read it. Fork the questions.</li>
+      <li>Measure — one leak. One bill, one contract, one chain, one line. A figure you can check.</li>
+      <li>Bind later — prepaid time, or ten percent of proven savings, ninety kept by you.</li>
       <li>Seal — if the figure cannot be inverted, nothing is owed.</li>
     </ul>
-    <nav class="sec-break" aria-label="Jump">
-      <a href="#top">Top</a>
-      <span class="dim">·</span>
-      <a href="#edge">Edge</a>
-      <a href="#ai">AI</a>
-      <a href="#look">Look</a>
-    </nav>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#edge">Edge</a><a href="#ai">AI</a><a href="#look">Look</a></nav>
   </section>
-
   <section class="band" id="edge">
-    <p class="kicker">Edge technologies</p>
-    <h2>Software first drives hardware</h2>
-    <p>The surface is spare by design. Beneath it the field is already running — geodesic, residual HUD, pointer grain. That is the control plane for hardware that has not shipped.</p>
-    <p>Surface → invert → edge hardware. Where the screen cannot express the grain, the hardware will. Until then the site is the instrument.</p>
-    <nav class="sec-break" aria-label="Jump">
-      <a href="#top">Top</a>
-      <span class="dim">·</span>
-      <a href="#finance">Finance</a>
-      <a href="#ai">AI</a>
-      <a href="#look">Look</a>
-    </nav>
+    <p class="kicker">New machines</p>
+    <h2>Software now. Hardware next.</h2>
+    <p>The page you are on is not decoration. The spinning sphere, the live clock, the grain behind the pointer — that is a control room for machines that have not shipped yet.</p>
+    <p>First the surface. Then the proof. Then the hardware. When a screen cannot carry the idea, the device will. Until then this site is the instrument.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#finance">Finance</a><a href="#ai">AI</a><a href="#look">Look</a></nav>
   </section>
-
   <section class="band" id="ai">
-    <p class="kicker">Adaptive AI</p>
-    <h2>Adaptive systems</h2>
-    <p>Systems that adapt under real constraints: capacity, residual cost, and friction that cannot be removed by preference.</p>
-    <p>Adaptive systems here support residual-law finance and research in mathematics and science. Adaptation is accountable to the same invert rule as the firm — not to a preferred constituency or a hidden channel.</p>
-    <p>Not a consumer storefront. Not a diagnosis. Not a prescription. Not equity.</p>
-    <nav class="sec-break" aria-label="Jump">
-      <a href="#top">Top</a>
-      <span class="dim">·</span>
-      <a href="#for-you">For you</a>
-      <a href="#look">Look</a>
-      <a href="/ai/app">Iris</a>
-    </nav>
+    <p class="kicker">AI you can talk to</p>
+    <h2>Iris is already here</h2>
+    <p>Iris is the DualisCapax agent. She learns under real limits: time, cost, and facts that do not care what we wish. Talk to her. She will not drown you in words.</p>
+    <p>The point of this AI is a future that is actually better — clearer information, safer crypto, research a kid can open and a specialist can finish.</p>
+    <p>She is not a store, not a doctor, and not a stock tip. She is a working mind on the public side of the house.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#for-you">For you</a><a href="#look">Look</a><a href="/ai/app">Iris</a></nav>
   </section>
     </div>
   </div>
   </div>
-
-  <div class="foot">DualisCapax · Truth Prevails · commerce closed</div>
+  <div class="foot">DualisCapax · Truth Prevails · the future is a tool you can check</div>
   <a class="iris-mark" href="/ai/app">Iris</a>
 </div>
 <script>
@@ -416,7 +326,7 @@
     var d = Math.floor(ms / 86400000);
     if (d < 1) return 'Day one · earned ledger at zero';
     if (d < 7) return d + ' days · early residual';
-    if (d < 30) return d + ' days · commerce closed';
+    if (d < 30) return d + ' days · doors still opening';
     if (d < 180) return d + ' days · earned should track age';
     return d + ' days · scale should read on the ledger';
   }
