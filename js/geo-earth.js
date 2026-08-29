@@ -133,6 +133,71 @@ inner.add(veil);
 inner.add(ember);
 group.add(inner);
 
+const feedPts=[];
+const BOLT_SEGS=9;
+function makeFeedLine(color,opacity){
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(BOLT_SEGS*3),3));
+  const line=new THREE.Line(g,new THREE.LineBasicMaterial({
+    color:color,
+    transparent:true,
+    opacity:opacity,
+    blending:THREE.AdditiveBlending,
+    depthWrite:false
+  }));
+  line.renderOrder=2;
+  group.add(line);
+  return {g:g,line:line};
+}
+const spokes=[];
+const bolts=[];
+function addFeed(pt){
+  feedPts.push(pt.clone());
+  spokes.push(makeFeedLine(0x6aa8ff,0.07));
+  bolts.push(makeFeedLine(0xb8dcff,0.16));
+}
+addFeed(new THREE.Vector3(0.92,0,0));
+addFeed(new THREE.Vector3(-0.92,0,0));
+
+function writeLine(geo,pts){
+  const arr=geo.attributes.position.array;
+  for(let i=0;i<BOLT_SEGS;i++){
+    const p=pts[Math.min(i,pts.length-1)];
+    arr[i*3]=p.x;arr[i*3+1]=p.y;arr[i*3+2]=p.z;
+  }
+  geo.attributes.position.needsUpdate=true;
+}
+function spokePts(from){
+  const out=[];
+  for(let i=0;i<BOLT_SEGS;i++){
+    const t=i/(BOLT_SEGS-1);
+    out.push(from.clone().multiplyScalar(1-t*0.78));
+  }
+  return out;
+}
+function boltPts(from,now){
+  const dest=from.clone().multiplyScalar(0.22);
+  const dir=dest.clone().sub(from);
+  const up=Math.abs(dir.y)<0.9?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
+  const n1=dir.clone().cross(up).normalize();
+  const n2=dir.clone().cross(n1).normalize();
+  const out=[];
+  const seed=(now*0.013+from.x*12.7+from.y*7.1)%1;
+  for(let i=0;i<BOLT_SEGS;i++){
+    const t=i/(BOLT_SEGS-1);
+    const p=from.clone().lerp(dest,t);
+    if(i>0&&i<BOLT_SEGS-1){
+      const jag=(1-Math.abs(2*t-1))*0.045;
+      const a=Math.sin((t*11+seed*6.28+now*0.01)*1.7);
+      const b=Math.cos((t*9+seed*4.2+now*0.013)*1.3);
+      p.addScaledVector(n1,a*jag);
+      p.addScaledVector(n2,b*jag*0.7);
+    }
+    out.push(p);
+  }
+  return out;
+}
+
 function c60Points(radius){
   const phi=PHI;
   const raw=[];
@@ -283,6 +348,7 @@ function mountRingDecals(img){
     disc.position.copy(p.n).multiplyScalar(0.946);
     disc.lookAt(p.n.clone().multiplyScalar(2));
     group.add(disc);
+    addFeed(disc.position);
   });
 }
 
@@ -300,6 +366,13 @@ function frame(now){
   last=now;
   group.rotation.y+=OMEGA*dt;
   inner.rotation.y-=2*OMEGA*dt;
+  for(let i=0;i<feedPts.length;i++){
+    writeLine(spokes[i].g,spokePts(feedPts[i]));
+    writeLine(bolts[i].g,boltPts(feedPts[i],now));
+    const flick=0.10+0.10*Math.abs(Math.sin(now*0.011+i*1.7));
+    bolts[i].line.material.opacity=flick;
+  }
+  ember.material.opacity=0.08+0.04*Math.abs(Math.sin(now*0.006));
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
