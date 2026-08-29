@@ -14,33 +14,79 @@ const R=0.93;
 
 function stampWord(ctx,x,y){
   ctx.save();
-  ctx.font='700 112px "IBM Plex Sans", Inter, Arial, sans-serif';  // slightly bigger (was 103px)
+  ctx.font='700 118px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
-  ctx.shadowColor='rgba(255,255,255,0.55)';  // reduced bloom — no magnifier glass look
-  ctx.shadowBlur=8;                            // reduced from 20
+  // tight dark edge so letters stay sharp on the curve
+  ctx.lineJoin='round';
+  ctx.miterLimit=2;
+  ctx.lineWidth=6;
+  ctx.strokeStyle='rgba(0,0,0,0.78)';
+  ctx.strokeText('DualisCapax',x,y);
+  // soft outer glow — not a milky magnifier
+  ctx.shadowColor='rgba(180,210,255,0.35)';
+  ctx.shadowBlur=10;
+  ctx.fillStyle='#f4f8ff';
+  ctx.fillText('DualisCapax',x,y);
+  ctx.shadowBlur=0;
+  // crisp core pass
   ctx.fillStyle='#ffffff';
   ctx.fillText('DualisCapax',x,y);
   ctx.restore();
 }
+
+// Pure canvas DNA — no SVG load (drawImage SVG is unreliable on canvas)
+function stampDNA(ctx,cx,cy,size){
+  ctx.save();
+  ctx.translate(cx,cy);
+  const s=size/256;
+  ctx.scale(s,s);
+  ctx.translate(-128,-128);
+  // gold→blue ring
+  const rg=ctx.createLinearGradient(40,40,216,216);
+  rg.addColorStop(0,'#C9A227');
+  rg.addColorStop(1,'#3B82F6');
+  ctx.beginPath();
+  ctx.arc(128,128,108,0,Math.PI*2);
+  ctx.strokeStyle=rg;
+  ctx.lineWidth=7;
+  ctx.globalAlpha=0.95;
+  ctx.stroke();
+  // helix strands
+  const sg=ctx.createLinearGradient(0,48,0,208);
+  sg.addColorStop(0,'#F5D76E');
+  sg.addColorStop(0.5,'#60A5FA');
+  sg.addColorStop(1,'#2563EB');
+  ctx.strokeStyle=sg;
+  ctx.lineWidth=12;
+  ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(88,48); ctx.bezierCurveTo(148,88,148,168,88,208); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(168,48); ctx.bezierCurveTo(108,88,108,168,168,208); ctx.stroke();
+  // rungs
+  ctx.strokeStyle='#1e3a5f';
+  ctx.lineWidth=5;
+  [[100,78,156,92],[96,112,160,124],[96,146,160,158],[100,180,156,192]].forEach(function(L){
+    ctx.beginPath(); ctx.moveTo(L[0],L[1]); ctx.lineTo(L[2],L[3]); ctx.stroke();
+  });
+  // bases
+  const bases=[[100,78,'#EF4444'],[156,92,'#3B82F6'],[112,128,'#22C55E'],[152,152,'#EAB308'],[120,188,'#0a0a0a']];
+  bases.forEach(function(b){
+    ctx.beginPath(); ctx.arc(b[0],b[1],8,0,Math.PI*2);
+    ctx.fillStyle=b[2]; ctx.fill();
+    if(b[2]==='#0a0a0a'){ ctx.strokeStyle='#666'; ctx.lineWidth=1.5; ctx.stroke(); }
+  });
+  ctx.restore();
+}
+
 function paintMarks(){
   mtx.clearRect(0,0,w,h);
+  // two wordmarks on opposite faces of the equator
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
-
-  // BURN tiny DNA emblem into the equator between the two wordmarks
-  const logo = new Image();
-  logo.crossOrigin = 'anonymous';
-  logo.onload = () => {
-    const size = 36; // TINY
-    mtx.save();
-    mtx.globalAlpha = 0.92;
-    mtx.drawImage(logo, w*0.5 - size/2, h*0.5 - size/2, size, size);
-    mtx.restore();
-    markTex.needsUpdate = true;
-  };
-  logo.onerror = () => console.warn('[geo-earth] emblem-helix load failed');
-  logo.src = 'brand/emblem-helix.svg';
+  // DNA burned between them (and the antipode) so it reads as the sphere turns
+  const dna=56; // visible but still small on the 2048 map
+  stampDNA(mtx,w*0.5,h*0.5,dna);
+  stampDNA(mtx,0,h*0.5,dna); // seam / antipode
 }
 paintMarks();
 const markTex=new THREE.CanvasTexture(mark);
