@@ -34,7 +34,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/ai/app">Iris</a></div>
   <p class="kicker">Two rails</p>
   <h1>Fund the work</h1>
-  <p class="lede">Research: Interac, EFT, XRP, ZEC, SOL, ETH, Polygon, DOT. Iris time: DOGE.</p>
+  <p class="lede">Research: Interac, EFT, XRP, ZEC, SOL, ETH, Polygon, LINK, DOT. Iris time: DOGE.</p>
   <button type="button" class="go" id="interac">Send Interac e-Transfer</button>
   <button type="button" class="alt" id="eft">Send EFT</button>
   <button type="button" class="alt" id="xrp">Research — XRP</button>
@@ -42,6 +42,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   <button type="button" class="alt" id="sol">Research — SOL</button>
   <button type="button" class="alt" id="eth">Research — ETH</button>
   <button type="button" class="alt" id="pol">Research — Polygon</button>
+  <button type="button" class="alt" id="link">Research — LINK</button>
   <button type="button" class="alt" id="dot">Research — DOT</button>
   <button type="button" class="alt" id="doge">Iris time — DOGE</button>
   <div class="steps" id="howto" hidden></div>
@@ -74,9 +75,10 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   bind('xrp', !!(pay.crypto_enabled&&pay.research_xrp), pay.research_xrp, 'Research — XRP', 'XRP copied — open your wallet', '<strong>Research — XRP</strong><ol><li>Paste from the tap.</li></ol>');
   bind('zec', !!(pay.crypto_enabled&&pay.research_zec), pay.research_zec, 'Research — ZEC', 'ZEC copied — open your wallet', '<strong>Research — ZEC</strong><ol><li>Paste from the tap.</li></ol>');
   bind('sol', !!(pay.crypto_enabled&&pay.research_sol), pay.research_sol, 'Research — SOL', 'SOL copied — open your wallet', '<strong>Research — SOL</strong><ol><li>Paste from the tap.</li></ol>');
-  bind('eth', !!(pay.crypto_enabled&&pay.research_eth), pay.research_eth, 'Research — ETH', 'ETH copied — send on Ethereum', '<strong>Research — ETH</strong><ol><li>Send on Ethereum mainline. Not Polygon.</li></ol>');
-  bind('pol', !!(pay.crypto_enabled&&pay.research_pol), pay.research_pol, 'Research — Polygon', 'Polygon copied — send on Polygon', '<strong>Research — Polygon</strong><ol><li>Switch wallet to Polygon. Same 0x as ETH.</li></ol>');
-  bind('dot', !!(pay.crypto_enabled&&pay.research_dot), pay.research_dot, 'Research — DOT', 'DOT copied — open Polkadot wallet', '<strong>Research — DOT</strong><ol><li>Open Polkadot.js or Nova.</li><li>Paste from the tap. Send on Polkadot, not Kusama.</li></ol>');
+  bind('eth', !!(pay.crypto_enabled&&pay.research_eth), pay.research_eth, 'Research — ETH', 'ETH copied — send on Ethereum', '<strong>Research — ETH</strong><ol><li>Send ETH on Ethereum. Not LINK. Not Polygon.</li></ol>');
+  bind('pol', !!(pay.crypto_enabled&&pay.research_pol), pay.research_pol, 'Research — Polygon', 'Polygon copied — send on Polygon', '<strong>Research — Polygon</strong><ol><li>Switch wallet to Polygon. Same 0x.</li></ol>');
+  bind('link', !!(pay.crypto_enabled&&pay.research_link), pay.research_link, 'Research — LINK', 'LINK copied — send LINK token', '<strong>Research — LINK</strong><ol><li>Paste the same 0x from the tap.</li><li>Send the LINK token on Ethereum. Not native ETH.</li></ol>');
+  bind('dot', !!(pay.crypto_enabled&&pay.research_dot), pay.research_dot, 'Research — DOT', 'DOT copied — open Polkadot wallet', '<strong>Research — DOT</strong><ol><li>Send on Polkadot, not Kusama.</li></ol>');
   bind('doge', !!(pay.crypto_enabled&&pay.ai_doge), pay.ai_doge, 'Iris time — DOGE', 'DOGE copied — open your wallet', '<strong>Iris time — DOGE</strong><ol><li>Iris proceeds. Not medical.</li></ol>');
 })();
 </script>
