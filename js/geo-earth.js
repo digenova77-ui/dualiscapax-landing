@@ -36,7 +36,7 @@ function stampRing(ctx,img,x,y,size){
 }
 function stampEquator(ctx,img){
   if(!img)return;
-  const size=108;
+  const size=88;
   const y=h*0.5-size/2;
   ctx.drawImage(img,w*0.5-size/2,y,size,size);
   ctx.drawImage(img,-size/2,y,size,size);
@@ -48,9 +48,12 @@ function dirToUV(v){
   if(u<0)u+=1;
   return {u,v:Math.acos(Math.max(-1,Math.min(1,n.y)))/Math.PI};
 }
-function hitsWord(uv){
+function nearWord(n){
+  const uv=dirToUV(n);
   const du=Math.min(Math.abs(uv.u-0.25),Math.abs(uv.u-0.75),Math.abs(uv.u+0.75),Math.abs(uv.u-1.25));
-  return du<0.16 && Math.abs(uv.v-0.5)<0.09;
+  if(du<0.22 && Math.abs(uv.v-0.5)<0.22)return true;
+  if(Math.abs(n.y)<0.62)return true;
+  return false;
 }
 function paintField(img,pents){
   ftx.fillStyle='#070708';
@@ -59,9 +62,8 @@ function paintField(img,pents){
   stampWord(ftx,w*0.75,h*0.5);
   stampEquator(ftx,img);
   (pents||[]).forEach(function(p){
-    const uv=dirToUV(p.n);
-    if(hitsWord(uv))return;
-    stampRing(ftx,img,uv.u*w,uv.v*h,84);
+    if(nearWord(p.n))return;
+    stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,84);
   });
 }
 function paintMarks(img,pents){
@@ -70,9 +72,8 @@ function paintMarks(img,pents){
   stampWord(mtx,w*0.75,h*0.5);
   stampEquator(mtx,img);
   (pents||[]).forEach(function(p){
-    const uv=dirToUV(p.n);
-    if(hitsWord(uv))return;
-    stampRing(mtx,img,uv.u*w,uv.v*h,84);
+    if(nearWord(p.n))return;
+    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,84);
   });
 }
 paintField(null,[]);
@@ -225,8 +226,7 @@ function mountRingDecals(img){
   const ringTex=new THREE.CanvasTexture(punch);
   ringTex.colorSpace=THREE.SRGBColorSpace;
   pents.forEach(function(p){
-    const uv=dirToUV(p.n);
-    if(hitsWord(uv))return;
+    if(nearWord(p.n))return;
     const r=Math.max(0.07,p.rin*0.84);
     const disc=new THREE.Mesh(
       new THREE.CircleGeometry(r,48),
