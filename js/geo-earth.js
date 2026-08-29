@@ -53,7 +53,9 @@ function dirToUV(v){
 const PHI=(1+Math.sqrt(5))/2;
 const pentDirs=[
   new THREE.Vector3(0,1,PHI),
-  new THREE.Vector3(0,1,-PHI)
+  new THREE.Vector3(0,1,-PHI),
+  new THREE.Vector3(0,-1,PHI),
+  new THREE.Vector3(0,-1,-PHI)
 ];
 function paintField(img){
   ftx.fillStyle='#070708';
