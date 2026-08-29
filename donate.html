@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Donate · Research — DualisCapax</title>
+<meta name="description" content="Gift to DualisCapax research. Not a share. Not Fuel. Not a seat."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:34rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.1rem,env(safe-area-inset-right)) max(2.4rem,env(safe-area-inset-bottom)) max(1.1rem,env(safe-area-inset-left))}
+.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.4rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+.top a{color:#9ec5ff}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9ec5ff}
+h1{font-size:clamp(1.7rem,7vw,2.4rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin:.45rem 0 .7rem}
+.lede{font-size:1.05rem;line-height:1.55;color:rgba(245,245,245,.72);margin-bottom:1.1rem}
+.closed{border:1px solid rgba(212,160,23,.4);padding:.75rem .9rem;margin:0 0 1.1rem;font-size:.95rem;color:rgba(245,245,245,.78);background:rgba(212,160,23,.06)}
+.closed strong{color:#e8c36a}
+.packs{display:grid;gap:.55rem;margin:0 0 1.1rem}
+.pack{border:1px solid rgba(126,182,255,.28);padding:.85rem .95rem;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2));color:#f5f5f5;text-align:left;width:100%;font:inherit;cursor:pointer}
+.pack .cad{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;font-family:"IBM Plex Mono",ui-monospace,monospace}
+.pack .amt{font-size:1.2rem;font-weight:700;margin:.1rem 0}
+.pack .sub{font-size:.95rem;color:rgba(245,245,245,.5)}
+.rail{border:1px solid rgba(158,197,255,.22);padding:.9rem 1rem;margin:0 0 1rem;font-size:.98rem;line-height:1.5;color:rgba(245,245,245,.78)}
+.rail strong{display:block;color:#f5f5f5;margin-bottom:.25rem}
+.rail a{color:#9ec5ff}
+.note{font-size:.88rem;color:rgba(245,245,245,.48);line-height:1.45}
+foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(158,197,255,.16);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.38)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="/index.html?land=1">DualisCapax</a>
+    <a href="/ai/app">Iris</a>
+  </div>
+  <p class="kicker">Research gift</p>
+  <h1>Fund the work</h1>
+  <p class="lede">A gift to DualisCapax research. Not Fuel. Not a seat. Not a share of the company.</p>
+  <div class="closed"><strong>Gift, not a purchase.</strong> You are not buying access. You are not buying time. If a card rail is live, the button below opens it. If not, send Interac.</div>
+  <div class="packs">
+    <a class="pack" data-cad="20" href="#send">
+      <div class="cad">CAD $20</div>
+      <div class="amt">Coffee on the bench</div>
+      <div class="sub">Keeps a night of notes going</div>
+    </a>
+    <a class="pack" data-cad="50" href="#send">
+      <div class="cad">CAD $50</div>
+      <div class="amt">A week of compute</div>
+      <div class="sub">Pays a real residual bill</div>
+    </a>
+    <a class="pack" data-cad="120" href="#send">
+      <div class="cad">CAD $120</div>
+      <div class="amt">A month of lab</div>
+      <div class="sub">Holds the open surface open</div>
+    </a>
+  </div>
+  <div class="rail" id="send">
+    <strong>Send</strong>
+    <p id="stripe" hidden>Card rail is live. <a id="stripe-link" href="#">Open Stripe</a></p>
+    <p>Interac e-Transfer: <a href="mailto:digenova77@gmail.com?subject=DualisCapax%20research%20gift">digenova77@gmail.com</a></p>
+    <p>Memo: DualisCapax research gift.</p>
+  </div>
+  <p class="note">Ontario. Not a security. Walk away whenever you want.</p>
+  <foot>DualisCapax · Truth Prevails</foot>
+</div>
+<script src="/js/payments-config.js"></script>
+<script>
+(function(){
+  var c=window.DC_PAYMENTS||{};
+  var url=c.research||c.cost_reduction||'';
+  var stripe=document.getElementById('stripe');
+  var link=document.getElementById('stripe-link');
+  if(url&&String(url).indexOf('http')===0){
+    stripe.hidden=false;
+    link.href=url;
+    document.querySelectorAll('.pack').forEach(function(a){a.href=url});
+  }
+})();
+</script>
+</body>
+</html>
