@@ -1,39 +1,35 @@
 /**
- * DualisCapax · light haptic on control taps
- * Progressive: only if navigator.vibrate exists (mostly mobile).
- * Short pulse so users feel the press without noise.
+ * DualisCapax · haptic on tap
+ * navigator.vibrate on Android. iOS Safari has no vibrate API — silent no-op.
  */
 (function () {
   if (typeof document === 'undefined') return;
+  var last = 0;
 
   function pulse() {
+    var now = Date.now();
+    if (now - last < 50) return;
+    last = now;
     try {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-        navigator.vibrate(10);
+        navigator.vibrate(12);
       }
     } catch (e) {}
   }
 
-  function isControl(el) {
-    if (!el || el.nodeType !== 1) return false;
-    var tag = el.tagName;
-    if (tag === 'BUTTON' || tag === 'A') return true;
-    if (el.getAttribute('role') === 'button') return true;
-    if (el.classList && (el.classList.contains('burger') || el.classList.contains('jump') || el.classList.contains('skip'))) return true;
-    return false;
+  function hit(t) {
+    if (!t || !t.closest) return null;
+    return t.closest('button, a, [role="button"], .burger, .jump, .skip, .line, .hud-donate, .iris-mark, .pack, .geo-wrap, #geo-earth');
   }
 
-  document.addEventListener(
-    'pointerdown',
-    function (e) {
-      if (e.button != null && e.button !== 0) return;
-      var t = e.target;
-      if (!t || !t.closest) return;
-      var el = t.closest('button, a, [role="button"], .burger, .jump, .skip');
-      if (!el || !isControl(el)) return;
-      if (el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true') return;
-      pulse();
-    },
-    { passive: true, capture: true }
-  );
+  function onTap(e) {
+    if (e.button != null && e.button !== 0) return;
+    var el = hit(e.target);
+    if (!el) return;
+    if (el.hasAttribute('disabled') || el.getAttribute('aria-disabled') === 'true') return;
+    pulse();
+  }
+
+  document.addEventListener('pointerdown', onTap, { passive: true, capture: true });
 })();
