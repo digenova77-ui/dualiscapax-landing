@@ -1,5 +1,5 @@
 /* DCLM Look — cache this folder only. Not Bind. */
-var CACHE = "dclm-look-v10";
+var CACHE = "dclm-look-v11";
 var ASSETS = [
   "./app",
   "./dclm-look.js",
@@ -66,8 +66,7 @@ self.addEventListener("install", function (e) {
       );
     }).then(function () {
       return self.skipWaiting();
-    }).catch(function (err) {
-      console.warn("Look cache open failed", err && err.message ? err.message : err);
+    }).catch(function () {
       return self.skipWaiting();
     })
   );
@@ -81,8 +80,6 @@ self.addEventListener("activate", function (e) {
           return caches.delete(k);
         })
       );
-    }).catch(function (err) {
-      console.warn("Look cache activate", err && err.message ? err.message : err);
     }).then(function () {
       return self.clients.claim();
     })
@@ -107,6 +104,19 @@ self.addEventListener("fetch", function (e) {
   var url = new URL(e.request.url);
   if (url.origin !== self.location.origin) return;
   var dest = pretty(e.request.url);
+  var live = /dclm-look\.js|app\.html|\/app$/.test(url.pathname);
+  if (live) {
+    e.respondWith(
+      fetch(e.request, { cache: "no-store" }).then(function (res) {
+        var copy = res.clone();
+        caches.open(CACHE).then(function (cache) { cache.put(dest, copy); });
+        return res;
+      }).catch(function () {
+        return caches.match(dest).then(function (hit) { return hit || caches.match(e.request); });
+      })
+    );
+    return;
+  }
   e.respondWith(
     caches.match(dest).then(function (hit) {
       if (hit) return hit;
