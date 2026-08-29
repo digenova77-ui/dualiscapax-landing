@@ -48,11 +48,20 @@ function dirToUV(v){
   if(u<0)u+=1;
   return {u,v:Math.acos(Math.max(-1,Math.min(1,n.y)))/Math.PI};
 }
-function nearWord(n){
+function uToWord(u){
+  return Math.min(Math.abs(u-0.25),Math.abs(u-0.75),Math.abs(u+0.75),Math.abs(u-1.25));
+}
+// BRAND LAW: DNA above and below the DualisCapax wordmark is permanent.
+function aboveBelowWord(n){
   const uv=dirToUV(n);
-  const du=Math.min(Math.abs(uv.u-0.25),Math.abs(uv.u-0.75),Math.abs(uv.u+0.75),Math.abs(uv.u-1.25));
-  if(du<0.22 && Math.abs(uv.v-0.5)<0.22)return true;
-  if(Math.abs(n.y)<0.62)return true;
+  const off=Math.abs(uv.v-0.5);
+  return uToWord(uv.u)<0.10 && off>0.10 && off<0.30;
+}
+function skipPent(n){
+  if(aboveBelowWord(n))return false;
+  const uv=dirToUV(n);
+  if(uToWord(uv.u)<0.20 && Math.abs(uv.v-0.5)<0.08)return true;
+  if(Math.abs(n.y)<0.35)return true;
   return false;
 }
 function paintField(img,pents){
@@ -62,7 +71,7 @@ function paintField(img,pents){
   stampWord(ftx,w*0.75,h*0.5);
   stampEquator(ftx,img);
   (pents||[]).forEach(function(p){
-    if(nearWord(p.n))return;
+    if(skipPent(p.n))return;
     stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,84);
   });
 }
@@ -72,7 +81,7 @@ function paintMarks(img,pents){
   stampWord(mtx,w*0.75,h*0.5);
   stampEquator(mtx,img);
   (pents||[]).forEach(function(p){
-    if(nearWord(p.n))return;
+    if(skipPent(p.n))return;
     stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,84);
   });
 }
@@ -226,7 +235,7 @@ function mountRingDecals(img){
   const ringTex=new THREE.CanvasTexture(punch);
   ringTex.colorSpace=THREE.SRGBColorSpace;
   pents.forEach(function(p){
-    if(nearWord(p.n))return;
+    if(skipPent(p.n))return;
     const r=Math.max(0.07,p.rin*0.84);
     const disc=new THREE.Mesh(
       new THREE.CircleGeometry(r,48),
