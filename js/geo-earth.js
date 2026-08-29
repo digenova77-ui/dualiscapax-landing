@@ -27,16 +27,16 @@ function uToWord(u){
 function hideDna(n){
   if(Math.abs(n.y)<0.22)return true;
   const uv=dirToUV(n);
-  return uToWord(uv.u)<0.15 && Math.abs(uv.v-0.5)<0.12;
+  return uToWord(uv.u)<0.18 && Math.abs(uv.v-0.5)<0.14;
 }
 
 function stampWord(ctx,x,y){
   ctx.save();
-  ctx.font='700 82px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.font='700 103px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   ctx.shadowColor='rgba(255,255,255,0.85)';
-  ctx.shadowBlur=18;
+  ctx.shadowBlur=20;
   ctx.fillStyle='#ffffff';
   ctx.fillText('DualisCapax',x,y);
   ctx.restore();
