@@ -6,8 +6,24 @@
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W = 0, H = 0;
-  var N = 56;
+  var N = 34;
   var pts = [];
+  var hole = {cx: 0, cy: 0, r: 0};
+
+  function measureHole(){
+    var el = document.getElementById('geo-earth') || document.querySelector('.geo-wrap');
+    if (!el) { hole.r = 0; return; }
+    var b = el.getBoundingClientRect();
+    hole.cx = b.left + b.width / 2;
+    hole.cy = b.top + b.height / 2;
+    hole.r = Math.min(b.width, b.height) * 0.56;
+  }
+  function insideHole(x, y, pad){
+    if (hole.r <= 0) return false;
+    var dx = x - hole.cx, dy = y - hole.cy;
+    var rr = hole.r + (pad || 0);
+    return dx * dx + dy * dy < rr * rr;
+  }
   function resize(){
     W = window.innerWidth;
     H = window.innerHeight;
@@ -16,27 +32,41 @@
     canvas.style.width = W + 'px';
     canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    measureHole();
   }
   function seed(){
+    measureHole();
     pts = [];
-    for (var i = 0; i < N; i++) {
-      pts.push({x: Math.random() * W,y: Math.random() * H,r: 0.35 + Math.random() * 0.95,vx: (Math.random() - 0.5) * 0.14,vy: (Math.random() - 0.5) * 0.11,phase: Math.random() * Math.PI * 2,speed: 0.01 + Math.random() * 0.018});
+    var guard = 0;
+    while (pts.length < N && guard < N * 12) {
+      guard++;
+      var x = Math.random() * W;
+      var y = Math.random() * H;
+      if (insideHole(x, y, 12)) continue;
+      pts.push({
+        x: x, y: y,
+        r: 0.28 + Math.random() * 0.7,
+        vx: (Math.random() - 0.5) * 0.1,
+        vy: (Math.random() - 0.5) * 0.08,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.008 + Math.random() * 0.014
+      });
     }
   }
   function drawGrid(){
     var t = performance.now() * 0.00004;
-    var step = 56;
-    var ox = reduce ? 0 : (t * 18) % step;
-    var oy = reduce ? 0 : (t * 10) % step;
+    var step = 64;
+    var ox = reduce ? 0 : (t * 14) % step;
+    var oy = reduce ? 0 : (t * 8) % step;
     ctx.lineWidth = 1;
     for (var x = -step + ox; x <= W + step; x += step) {
       var fadeX = 1 - Math.abs((x / W) - 0.5) * 1.35; if (fadeX < 0) fadeX = 0;
-      ctx.strokeStyle = 'rgba(158,197,255,' + (0.035 * fadeX) + ')';
+      ctx.strokeStyle = 'rgba(158,197,255,' + (0.022 * fadeX) + ')';
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
     }
     for (var y = -step + oy; y <= H + step; y += step) {
       var fadeY = 1 - Math.abs((y / H) - 0.5) * 1.2; if (fadeY < 0) fadeY = 0;
-      ctx.strokeStyle = 'rgba(158,197,255,' + (0.03 * fadeY) + ')';
+      ctx.strokeStyle = 'rgba(158,197,255,' + (0.018 * fadeY) + ')';
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
     }
   }
@@ -47,31 +77,43 @@
         p.phase += p.speed; p.x += p.vx; p.y += p.vy;
         if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
         if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;
+        if (insideHole(p.x, p.y, 8)) {
+          p.x = Math.random() * W;
+          p.y = Math.random() * H;
+          if (insideHole(p.x, p.y, 8)) { p.x = 12; p.y = 12; }
+        }
       }
-      var pulse = 0.45 + 0.45 * (0.5 + 0.5 * Math.sin(p.phase));
+      if (insideHole(p.x, p.y, 6)) continue;
+      var pulse = 0.4 + 0.4 * (0.5 + 0.5 * Math.sin(p.phase));
       var r = p.r * (0.82 + 0.28 * pulse);
-      var halo = r * 2.15;
+      var halo = r * 2.05;
       var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, halo);
-      g.addColorStop(0, 'rgba(210,228,255,' + (0.88 * pulse) + ')');
-      g.addColorStop(0.42, 'rgba(126,182,255,' + (0.28 * pulse) + ')');
+      g.addColorStop(0, 'rgba(158,197,255,' + (0.42 * pulse) + ')');
+      g.addColorStop(0.45, 'rgba(126,182,255,' + (0.14 * pulse) + ')');
       g.addColorStop(1, 'rgba(74,143,216,0)');
       ctx.beginPath(); ctx.fillStyle = g; ctx.arc(p.x, p.y, halo, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.fillStyle = 'rgba(236,244,255,' + (0.92 * pulse) + ')'; ctx.arc(p.x, p.y, Math.max(0.38, r * 0.36), 0, Math.PI * 2); ctx.fill();
-      if (i % 5 === 0) {
-        ctx.save(); ctx.translate(p.x + 4, p.y - 6); ctx.rotate(0.32);
-        ctx.beginPath(); ctx.moveTo(0, -r * 1.7);
-        ctx.bezierCurveTo(r * 0.75, -r * 0.55, r * 0.6, r * 0.85, 0, r * 1.8);
-        ctx.bezierCurveTo(-r * 0.6, r * 0.85, -r * 0.75, -r * 0.55, 0, -r * 1.7);
-        ctx.fillStyle = 'rgba(180,220,255,' + (0.14 * pulse) + ')'; ctx.fill(); ctx.restore();
-      }
+      ctx.beginPath(); ctx.fillStyle = 'rgba(210,228,255,' + (0.48 * pulse) + ')'; ctx.arc(p.x, p.y, Math.max(0.32, r * 0.32), 0, Math.PI * 2); ctx.fill();
     }
   }
+  function punch(){
+    measureHole();
+    if (hole.r <= 0) return;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(hole.cx, hole.cy, hole.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
   function frame(){
-    if (!document.body.classList.contains('is-live')) { requestAnimationFrame(frame); return; }
-    ctx.clearRect(0, 0, W, H); drawGrid(); drawSprites();
+    ctx.clearRect(0, 0, W, H);
+    drawGrid();
+    drawSprites();
+    punch();
     if (!reduce) requestAnimationFrame(frame);
   }
   resize(); seed();
   window.addEventListener('resize', function(){ resize(); seed(); if (reduce) frame(); });
+  window.addEventListener('scroll', function(){ measureHole(); }, {passive:true});
   requestAnimationFrame(frame);
 })();
