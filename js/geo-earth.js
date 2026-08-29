@@ -14,12 +14,12 @@ const R=0.93;
 
 function stampWord(ctx,x,y){
   ctx.save();
-  ctx.font='700 56px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.font='700 112px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   ctx.lineJoin='round';
   ctx.miterLimit=2;
-  ctx.lineWidth=3;
+  ctx.lineWidth=5;
   ctx.strokeStyle='rgba(0,0,0,0.82)';
   ctx.strokeText('DualisCapax',x,y);
   ctx.shadowColor='rgba(180,210,255,0.28)';
