@@ -1,1 +1,378 @@
-PLACEHOLDER_WILL_FAIL
+<!DOCTYPE html>
+<html lang="en" class="land-direct">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>DualisCapax · Advanced Engineering</title>
+<meta name="description" content="Crypto, information, and tools for a future that works. DualisCapax."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/glass-tiers.css"/>
+<style>
+@layer reset, base, site, motion;
+@layer reset {
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+}
+@layer base {
+  :root{
+    color-scheme:dark;
+    --fg:#f5f5f5;
+    --muted:rgba(245,245,245,.68);
+    --faint:rgba(245,245,245,.42);
+    --line:rgba(158,197,255,.22);
+    --blue:#9ec5ff;
+    --z-nav:50;
+    --bar:4.85rem;
+  }
+  body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:var(--fg);overflow-x:hidden;overflow-y:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+}
+@layer site {
+  .quarks{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;display:block}
+  .tears{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .site{position:relative;z-index:1;min-height:100dvh}
+  .topbar{
+    position:sticky;top:0;z-index:var(--z-nav);
+    display:grid;grid-template-columns:1fr auto;align-items:center;gap:.35rem;
+    min-height:var(--bar);
+    margin:.28rem max(.55rem,env(safe-area-inset-right)) 0 max(.55rem,env(safe-area-inset-left));
+    padding:.32rem .38rem .32rem .5rem;
+    border:1px solid rgba(158,197,255,0.32);
+    background:
+      linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 14px 1px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 1px 14px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 14px 1px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 1px 14px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 14px 1px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 1px 14px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 14px 1px no-repeat,
+      linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 1px 14px no-repeat,
+      linear-gradient(180deg,rgba(18,26,40,.55),rgba(0,0,0,.42));
+    backdrop-filter:blur(18px) saturate(1.25);
+    -webkit-backdrop-filter:blur(18px) saturate(1.25);
+  }
+  .hud{width:100%;min-width:0;border:0;background:transparent;padding:0;font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .burger{width:2.2rem;height:2.2rem;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;background:transparent}
+  .burger span{display:block;width:1.1rem;height:1px;background:#e8f1ff}
+  .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+  .nav-panel{position:absolute;top:calc(100% + 0.2rem);right:max(.6rem,env(safe-area-inset-right));width:min(18rem,calc(100vw - 1.4rem));background:rgba(5,7,10,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(158,197,255,0.22);padding:0.35rem;opacity:0;visibility:hidden;transform:translateY(-6px);max-height:min(70dvh,28rem);overflow-y:auto}
+  .nav-panel.is-open{opacity:1;visibility:visible;transform:translateY(0)}
+  .nav-panel a{display:block;padding:0.7rem 0.85rem;font-size:0.78rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .hero{min-height:calc(100svh - var(--bar));width:100%;max-width:56rem;margin:0 auto;padding:max(0.4rem,env(safe-area-inset-top)) max(1rem,env(safe-area-inset-right)) 1.2rem max(1rem,env(safe-area-inset-left));display:flex;flex-direction:column;align-items:center;text-align:center;scroll-margin-top:var(--bar)}
+  .stack{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;padding-block:.25rem .15rem;perspective:1100px;transform-style:preserve-3d}
+  .geo-wrap{width:min(92vw,44rem);height:min(92vw,44rem);background:transparent;border:0;margin:0}
+  #geo-earth{width:100%;height:100%;display:block}
+  .tier-copy{display:flex;flex-direction:column;align-items:center;gap:0.28rem;width:max-content;max-width:min(92vw,22rem);margin:0.35rem auto 0}
+  .classif{margin:0;width:var(--truth-w,100%);display:flex;align-items:baseline;justify-content:space-between;gap:0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.82rem,3.6vw,1.12rem);font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:#9ec5ff;line-height:1.15}
+  .classif span{flex:0 0 auto}
+  h1{margin:0;width:max-content;max-width:100%;font-size:clamp(1.55rem,6.8vw,2.45rem);font-weight:700;line-height:1;letter-spacing:.03em;text-transform:uppercase;font-family:"IBM Plex Sans",system-ui,sans-serif;text-align:center;white-space:nowrap}
+  .hud-row{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:0.35rem;align-items:center}
+  .hud-cell{text-align:center;padding:0.15rem 0.2rem;min-width:0}
+  .hud-cell + .hud-cell{border-left:1px solid rgba(158,197,255,0.18)}
+  .hud-k{display:block;font-size:0.62rem;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:rgba(158,197,255,0.72);margin-bottom:0.18rem}
+  .hud-v{display:block;font-size:clamp(0.82rem,3.2vw,0.98rem);font-weight:600;font-variant-numeric:tabular-nums;color:#e8f1ff;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hud-rail{margin-top:0.45rem;height:2px;background:rgba(158,197,255,0.12);overflow:hidden}
+  .hud-fill{height:100%;width:8%;background:#9ec5ff}
+  .hud-act{margin-top:.4rem;display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+  .hud-donate,.hud-onboard{display:flex;align-items:center;justify-content:center;min-height:1.85rem;padding:.28rem .4rem;border:1px solid rgba(158,197,255,.45);background:rgba(158,197,255,.1);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-align:center}
+  .hud-onboard{border-color:rgba(158,197,255,.18);background:rgba(255,255,255,.03);color:rgba(232,241,255,.38);pointer-events:none;cursor:not-allowed}
+  .hud-foot{margin-top:0.45rem;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.48);text-align:center;line-height:1.35}
+  @media (max-width:40rem){.hud-foot{display:none}.hud-rail{margin-top:.28rem}:root{--bar:3.7rem}}
+  .jump{margin-top:auto;padding:0.35rem 0.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.78rem,3.2vw,0.92rem);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9ec5ff}
+  .jump span{display:block;margin-top:0.25rem;font-size:0.64rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:rgba(245,245,245,0.48);white-space:nowrap}
+  .scroll-stage{width:min(46rem,calc(100% - 1.2rem));margin:0 auto 2rem;perspective:1400px}
+  .pane.glass{position:relative;overflow:hidden;padding:1.6rem 1.15rem 1.8rem;min-height:70vh}
+  .pane-art{position:absolute;left:50%;top:42%;width:min(72vw,22rem);height:min(72vw,22rem);transform:translate3d(-50%,-50%,-48px);opacity:.5;pointer-events:none;z-index:0;display:flex;align-items:center;justify-content:center}
+  .pane-art img{width:100%;height:100%;object-fit:contain;display:block}
+  .pane-copy{position:relative;z-index:1}
+  .band{scroll-margin-top:calc(var(--bar) + .7rem);padding:2.15rem 0 1.35rem}
+  .band + .band{border-top:1px solid rgba(158,197,255,.14)}
+  .kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:.55rem}
+  .band h2{font-size:clamp(1.45rem,6.4vw,2.1rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin-bottom:.7rem}
+  .band p,.band li{font-size:1.05rem;line-height:1.55;color:var(--muted);margin-bottom:.75rem}
+  .band ul{list-style:none}
+  .band li{position:relative;padding-left:1.05rem}
+  .band li::before{content:"";position:absolute;left:0;top:.62em;width:.38rem;height:.38rem;border-radius:50%;background:#9ec5ff}
+  .closed{border:1px solid rgba(212,160,23,0.4);padding:0.75rem 0.9rem;margin:0 0 1rem;font-size:.95rem;color:rgba(245,245,245,0.78);background:rgba(212,160,23,0.06)}
+  .closed strong{color:#e8c36a}
+  .row{border:1px solid var(--line);padding:.85rem .95rem;margin:0 0 .55rem;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.18));display:block}
+  a.row{color:inherit}
+  a.row:hover,.row:hover{border-color:rgba(158,197,255,.45)}
+  .row strong{display:block;color:var(--fg);margin-bottom:.2rem}
+  .packs{display:grid;gap:.55rem;margin:.4rem 0 1rem}
+  .pack{border:1px solid rgba(126,182,255,.28);padding:.85rem .95rem;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2));display:block;color:inherit}
+  a.pack:hover{border-color:rgba(158,197,255,.55)}
+  .pack .cad{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;font-family:"IBM Plex Mono",ui-monospace,monospace}
+  .pack .amt{font-size:1.25rem;font-weight:700;margin:.1rem 0}
+  .pack .sub{font-size:.95rem;color:var(--faint)}
+  .sec-break{display:flex;flex-wrap:wrap;gap:.45rem .7rem;align-items:center;margin-top:1.15rem;padding-top:.85rem;border-top:1px dashed rgba(158,197,255,.28);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+  .sec-break a{color:var(--blue)}
+  .sec-break .dim{color:var(--faint);letter-spacing:.08em}
+  .iris-mark{position:fixed;right:max(0.75rem,env(safe-area-inset-right));bottom:max(0.6rem,env(safe-area-inset-bottom));z-index:var(--z-nav);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.7rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(158,197,255,.7);text-shadow:0 0 18px rgba(158,197,255,.35)}
+  .foot{padding:1.4rem 1rem max(2.2rem,env(safe-area-inset-bottom));text-align:center;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-top:1px solid rgba(158,197,255,.16)}
+}
+@layer motion {
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tear,.tier{animation:none!important}}
+}
+</style>
+</head>
+<body>
+<script>(function(){document.documentElement.classList.add('land-direct');})();</script>
+<div class="site" id="site">
+  <canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
+  <div class="tears" aria-hidden="true">
+    <i class="tear t1" style="left:8%;top:18%"></i>
+    <i class="tear t2" style="left:78%;top:12%"></i>
+    <i class="tear t3" style="left:18%;top:68%"></i>
+    <i class="tear t4" style="left:86%;top:58%"></i>
+    <i class="tear t5" style="left:48%;top:8%"></i>
+    <i class="tear t6" style="left:62%;top:76%"></i>
+  </div>
+  <div class="topbar" id="hud-dock">
+    <div class="hud" aria-label="Onboard singularity HUD">
+      <div class="hud-row">
+        <div class="hud-cell"><span class="hud-k">Live</span><span class="hud-v" id="uptime">0d 00h 00m</span></div>
+        <div class="hud-cell"><span class="hud-k">Earned</span><span class="hud-v" id="earned">CAD $0</span></div>
+        <div class="hud-cell"><span class="hud-k">Singularity</span><span class="hud-v" id="singularity-cd">—</span></div>
+      </div>
+      <div class="hud-rail" aria-hidden="true"><div class="hud-fill" id="hud-fill"></div></div>
+      <div class="hud-act"><a class="hud-donate" href="/donate.html">Donate</a><span class="hud-onboard" aria-disabled="true">Onboard now</span></div>
+      <div class="hud-foot" id="hud-foot">0 days · early residual</div>
+    </div>
+    <button type="button" class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel"><span></span><span></span><span></span></button>
+    <nav class="nav-panel" id="nav-panel" aria-label="Primary" hidden>
+      <a href="#top">Home</a>
+      <a href="#for-you">For you</a>
+      <a href="#look">Look</a>
+      <a href="#measure">Measure</a>
+      <a href="#bind">Bind</a>
+      <a href="#founding">Founding</a>
+      <a href="#finance">Crypto and finance</a>
+      <a href="#ai">AI</a>
+      <a href="/donate.html">Donate</a>
+    </nav>
+  </div>
+  <section class="hero" id="top">
+    <div class="stack">
+      <div class="tier tier-geo"><div class="geo-wrap"><canvas id="geo-earth" width="512" height="512" aria-label="DualisCapax"></canvas></div></div>
+      <div class="tier tier-copy">
+        <p class="classif" id="ntp"><span>No</span><span>Tribes</span><span>Preferred</span></p>
+        <h1 id="truth">Truth Prevails</h1>
+      </div>
+      <div class="tier tier-jump"><a class="jump" href="#for-you">Continue<span id="peg-clock">TIME TO SINGULARITY —</span></a></div>
+    </div>
+  </section>
+  <div class="scroll-stage">
+  <div class="pane glass is-on">
+    <div class="pane-art" aria-hidden="true"><img src="brand/emblem-helix.svg" alt=""/></div>
+    <div class="pane-copy">
+  <section class="band" id="for-you">
+    <p class="kicker">For you</p>
+    <h2>The next chapter is already running</h2>
+    <ul>
+      <li>DualisCapax is building tools so money, messages, and machines can be checked — not just believed.</li>
+      <li>Talk to Iris. She is our AI. Ask anything. It is free.</li>
+      <li>Crypto here means real cryptography: locks you can test, ledgers you can read, rules that do not hide.</li>
+      <li>The future we want is simple. Better tools. Clearer information. A fairer shot for the people who do the work.</li>
+    </ul>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#measure">Measure</a><a href="#bind">Bind</a><a href="/ai/app">Iris</a></nav>
+  </section>
+  <section class="band" id="look">
+    <p class="kicker">Look</p>
+    <h2>Open the doors</h2>
+    <p>Start anywhere. You do not have to read in order. If you are twelve, start with Iris. If you want the hard math, jump to research.</p>
+    <a class="row" href="/ai/app"><strong>Talk to Iris</strong>A real conversation. Free. She answers in the first person and keeps it short.</a>
+    <a class="row" href="/research/"><strong>Health notes</strong>Working notes on bodies and strain. Not a doctor. Not a prescription.</a>
+    <a class="row" href="#measure"><strong>Operations</strong>How a long shift, a plant, or a warehouse actually holds together.</a>
+    <a class="row" href="/research/"><strong>Mathematics</strong>Problems you can check. Claims that have to survive a test.</a>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#for-you">For you</a><a href="#measure">Measure</a><a href="#finance">Finance</a></nav>
+  </section>
+  <section class="band" id="measure">
+    <p class="kicker">Measure</p>
+    <h2>See the number. Then decide.</h2>
+    <p>Every system leaks. A bill. A protocol. A plant line. A wallet. DualisCapax measures that leak, writes the figure down, and lets you test it.</p>
+    <div class="closed"><strong>The shop is still being built.</strong> You can read the model now. Checkout for time is not live. Research gifts live on Donate. Early public seats 11 to 100 are open as a founding mark.</div>
+    <p>If the figure cannot be turned back into a proof you can hold, nothing is owed. That is the invert rule. It is how we keep the future honest.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#bind">Bind</a><a href="#founding">Founding</a></nav>
+  </section>
+  <section class="band" id="bind">
+    <p class="kicker">Bind</p>
+    <h2>When the door opens, time is prepaid</h2>
+    <p>Fuel is prepaid time. Unused time stays with you. It is not a coin offering and it is not a share of the firm.</p>
+    <div class="packs">
+      <a class="pack" href="#founding"><div class="cad">CAD $20</div><div class="amt">40 Fuel</div><div class="sub">Trial</div></a>
+      <a class="pack" href="#founding"><div class="cad">CAD $50</div><div class="amt">120 Fuel</div><div class="sub">Practice</div></a>
+      <a class="pack" href="#founding"><div class="cad">CAD $120</div><div class="amt">320 Fuel</div><div class="sub">Retain</div></a>
+    </div>
+    <p>Fuel packs are not for sale on this page yet. Founding Fuel on seats 11 and 100 is a grant bound to the seat — prepaid time, not a purchase.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#measure">Measure</a><a href="#founding">Founding</a><a href="#finance">Finance</a></nav>
+  </section>
+  <section class="band" id="founding">
+    <p class="kicker">Foundry</p>
+    <h2>Early board is open</h2>
+    <p>Seats 1 to 10 are the house. They do not move. The public board starts at 11.</p>
+    <a class="row" href="#founding"><strong>Seats 1 to 10 — House</strong>Family, kin, allies. Locked. They are not superseded by anyone who joins later.</a>
+    <a class="row" href="/donate.html"><strong>Seat 11 — first public mark</strong>1,000 Fuel. Prepaid time. First name on the early board after the house.</a>
+    <a class="row" href="/donate.html"><strong>Seat 100 — last early mark</strong>100 Fuel. Prepaid time. After this seat the early window closes.</a>
+    <p>Seats 12 to 99 are open and step down in order. The middle is not printed. That is the early-bird.</p>
+    <p>Fuel bound to a seat is prepaid time. It is not equity and it is not a coin. Names go up after a completed join.</p>
+    <p><a href="/donate.html">Research gifts are live this weekend.</a></p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#bind">Bind</a><a href="#finance">Finance</a><a href="/ai/app">Iris</a></nav>
+  </section>
+  <section class="band" id="finance">
+    <p class="kicker">Crypto and finance</p>
+    <h2>Cryptography first. Markets second.</h2>
+    <p>Crypto here is the original meaning: secret-keeping that can be proven. Keys. Hashes. Signatures. Ledgers you can audit. Coins and tokens sit on top of that. DualisCapax works on the layer you can test.</p>
+    <p>Waste is already a cost — in a wallet, a protocol, a plant, or a household bill. We sit between you and that cost. Look. Measure. Bind only if the figure holds.</p>
+    <div class="closed"><strong>Financial instruments stay closed until pricing, securities analysis, and intellectual-property protection are locked.</strong> Nothing on this page is an offer of securities, a sale of tokens, or investment advice. Canadian and cryptographic-asset rules apply. If you enter this section to transact, the work gets technical on purpose.</div>
+    <ul>
+      <li>Look — research stays public. Read it. Fork the questions.</li>
+      <li>Measure — one leak. One bill, one contract, one chain, one line. A figure you can check.</li>
+      <li>Bind later — prepaid time, or ten percent of proven savings, ninety kept by you.</li>
+      <li>Seal — if the figure cannot be inverted, nothing is owed.</li>
+    </ul>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#edge">Edge</a><a href="#ai">AI</a><a href="#look">Look</a></nav>
+  </section>
+  <section class="band" id="edge">
+    <p class="kicker">New machines</p>
+    <h2>Software now. Hardware next.</h2>
+    <p>The page you are on is not decoration. The spinning sphere, the live clock, the grain behind the pointer — that is a control room for machines that have not shipped yet.</p>
+    <p>First the surface. Then the proof. Then the hardware. When a screen cannot carry the idea, the device will. Until then this site is the instrument.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#finance">Finance</a><a href="#ai">AI</a><a href="#look">Look</a></nav>
+  </section>
+  <section class="band" id="ai">
+    <p class="kicker">AI you can talk to</p>
+    <h2>Iris is already here</h2>
+    <p>Iris is the DualisCapax agent. She learns under real limits: time, cost, and facts that do not care what we wish. Talk to her. She will not drown you in words.</p>
+    <p>The point of this AI is a future that is actually better — clearer information, safer crypto, research a kid can open and a specialist can finish.</p>
+    <p>She is not a store, not a doctor, and not a stock tip. She is a working mind on the public side of the house.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#for-you">For you</a><a href="#look">Look</a><a href="/ai/app">Iris</a></nav>
+  </section>
+    </div>
+  </div>
+  </div>
+  <div class="foot">DualisCapax · Truth Prevails · the future is a tool you can check</div>
+  <a class="iris-mark" href="/ai/app">Iris</a>
+</div>
+<script>
+(function(){
+  var burger=document.getElementById('burger');
+  var panel=document.getElementById('nav-panel');
+  if(!burger||!panel)return;
+  function setOpen(open){
+    burger.setAttribute('aria-expanded',open?'true':'false');
+    burger.setAttribute('aria-label',open?'Close menu':'Open menu');
+    panel.classList.toggle('is-open',open);
+    if(open)panel.removeAttribute('hidden');else panel.setAttribute('hidden','');
+  }
+  burger.addEventListener('click',function(e){e.stopPropagation();setOpen(burger.getAttribute('aria-expanded')!=='true')});
+  document.addEventListener('click',function(e){if(!panel.classList.contains('is-open'))return;if(panel.contains(e.target)||burger.contains(e.target))return;setOpen(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
+  panel.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setOpen(false)})});
+})();
+</script>
+<script>
+(function(){
+  var h=document.getElementById('truth');
+  var c=document.getElementById('ntp');
+  if(!h||!c)return;
+  function lock(){
+    var w=Math.ceil(h.getBoundingClientRect().width);
+    if(w>0)c.style.width=w+'px';
+  }
+  lock();
+  window.addEventListener('resize',lock);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(lock);
+})();
+</script>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
+<script type="module" src="js/geo-earth.js"></script>
+<script src="js/founding-grant.js"></script>
+<script>
+(function(){
+  var LAUNCH_MS = Date.UTC(2026, 7, 24, 0, 0, 0);
+  var BASE_SINGULARITY_MS = Date.UTC(2036, 7, 24, 0, 0, 0);
+  var CAD_PER_DAY = 1000;
+  var MAX_ADVANCE_DAYS = 3650;
+  var PLEDGED_CAD = 0;
+  var EARNED_CAD = 0;
+  var upEl = document.getElementById('uptime');
+  var earnedEl = document.getElementById('earned');
+  var singEl = document.getElementById('singularity-cd');
+  var pegEl = document.getElementById('peg-clock');
+  var hudFoot = document.getElementById('hud-foot');
+  var hudFill = document.getElementById('hud-fill');
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function fmtMoney(n){
+    try { return 'CAD $' + Number(n).toLocaleString('en-CA', { maximumFractionDigits: 0 }); }
+    catch(e){ return 'CAD $' + n; }
+  }
+  function fmtUptime(ms){
+    if (ms < 0) ms = 0;
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s %= 86400;
+    var h = Math.floor(s / 3600); s %= 3600;
+    var m = Math.floor(s / 60); s %= 60;
+    // continuous format — never jumps shape at day boundary
+    return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
+  }
+  function fmtCountdown(ms){
+    if (ms <= 0) return 'NOW';
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s %= 86400;
+    var h = Math.floor(s / 3600); s %= 3600;
+    var m = Math.floor(s / 60); s %= 60;
+    if (d > 365) {
+      var y = Math.floor(d / 365);
+      var rd = d % 365;
+      return y + 'y ' + rd + 'd ' + pad(h) + 'h';
+    }
+    if (d > 0) return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
+    return pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  function ageLabel(ms){
+    var d = Math.floor(ms / 86400000);
+    if (d < 1) return '0 days · early residual';
+    if (d < 7) return d + ' days · early residual';
+    if (d < 30) return d + ' days · doors still opening';
+    if (d < 180) return d + ' days · earned should track age';
+    return d + ' days · scale should read on the ledger';
+  }
+  function singularityMs(pledged){
+    var advanceDays = Math.min(MAX_ADVANCE_DAYS, Math.floor(Math.max(0, pledged) / CAD_PER_DAY));
+    var target = BASE_SINGULARITY_MS - advanceDays * 86400000;
+    var floor = Date.now() + 30 * 86400000;
+    if (target < floor) target = floor;
+    return target;
+  }
+  function tick(){
+    var now = Date.now();
+    var age = now - LAUNCH_MS;
+    if (upEl) upEl.textContent = fmtUptime(age);
+    if (earnedEl) earnedEl.textContent = EARNED_CAD === 0 ? 'CAD $0' : fmtMoney(EARNED_CAD);
+    var target = singularityMs(PLEDGED_CAD);
+    var left = target - now;
+    var cd = fmtCountdown(left);
+    if (singEl) singEl.textContent = cd;
+    if (pegEl) pegEl.textContent = 'TIME TO SINGULARITY ' + cd;
+    if (hudFoot) hudFoot.textContent = ageLabel(age);
+    if (hudFill) {
+      var d = Math.floor(age / 86400000);
+      var pct = Math.min(92, 6 + d * 1.2 + Math.min(40, PLEDGED_CAD / 500));
+      hudFill.style.width = pct + '%';
+    }
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+<script src="assets/haptic.js"></script>
+<script src="js/no-select.js"></script>
+<script src="js/home-quarks.js"></script>
+<script src="js/scroll-tiers.js"></script>
+</body>
+</html>
