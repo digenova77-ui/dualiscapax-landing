@@ -31,7 +31,7 @@ function stampWord(ctx,x,y){
 function stampRing(ctx,img,x,y,size){
   if(!img)return;
   ctx.save();
-  ctx.globalCompositeOperation='lighter';
+  ctx.globalCompositeOperation='source-over';
   ctx.drawImage(img,x-size/2,y-size/2,size,size);
   ctx.restore();
 }
@@ -51,11 +51,13 @@ function dirToUV(v){
   return {u,v:vcoord};
 }
 const PHI=(1+Math.sqrt(5))/2;
+// Pentagon centers above/below the equator helixes (helix faces ±X).
+// These are the faces the arrows marked: top + bottom of the facing ball.
 const pentDirs=[
-  new THREE.Vector3(0,1,PHI),
-  new THREE.Vector3(0,1,-PHI),
-  new THREE.Vector3(0,-1,PHI),
-  new THREE.Vector3(0,-1,-PHI)
+  new THREE.Vector3(1,PHI,0),
+  new THREE.Vector3(1,-PHI,0),
+  new THREE.Vector3(-1,PHI,0),
+  new THREE.Vector3(-1,-PHI,0)
 ];
 function paintField(img){
   ftx.fillStyle='#070708';
@@ -65,7 +67,7 @@ function paintField(img){
   stampEquator(ftx,img);
   pentDirs.forEach(function(d){
     const uv=dirToUV(d);
-    stampRing(ftx,img,uv.u*w,uv.v*h,96);
+    stampRing(ftx,img,uv.u*w,uv.v*h,88);
   });
 }
 function paintMarks(img){
@@ -75,7 +77,7 @@ function paintMarks(img){
   stampEquator(mtx,img);
   pentDirs.forEach(function(d){
     const uv=dirToUV(d);
-    stampRing(mtx,img,uv.u*w,uv.v*h,96);
+    stampRing(mtx,img,uv.u*w,uv.v*h,88);
   });
 }
 paintField(null);
@@ -94,7 +96,7 @@ const group=new THREE.Group();
 group.add(body);
 scene.add(group);
 
-function c60Geometry(radius){
+function c60Points(radius){
   const phi=PHI;
   const raw=[];
   function even(x,y,z){ raw.push(x,y,z, z,x,y, y,z,x); }
@@ -111,6 +113,9 @@ function c60Geometry(radius){
     pts.push(v);
   }
   pts.forEach(v=>v.multiplyScalar(radius/max));
+  return pts;
+}
+function edgeLength(pts){
   let min=Infinity;
   for(let i=0;i<pts.length;i++){
     for(let j=i+1;j<pts.length;j++){
@@ -118,6 +123,9 @@ function c60Geometry(radius){
       if(d>1e-6&&d<min)min=d;
     }
   }
+  return min;
+}
+function c60Geometry(pts,min){
   const pos=[];
   const cut=min*1.12;
   for(let i=0;i<pts.length;i++){
@@ -131,7 +139,9 @@ function c60Geometry(radius){
   g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
   return g;
 }
-const cage=c60Geometry(0.933);
+const cagePts=c60Points(0.933);
+const cageMin=edgeLength(cagePts);
+const cage=c60Geometry(cagePts,cageMin);
 const glow=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
   color:0x6aa8ff,transparent:true,opacity:0.16,
   blending:THREE.AdditiveBlending,depthWrite:false
@@ -154,6 +164,45 @@ const shell=new THREE.Mesh(
 );
 group.add(shell);
 
+function nearestPentagonCenter(dir,pts,min){
+  const n=dir.clone().normalize();
+  const cut=min*1.12;
+  const adj=pts.map(()=>[]);
+  for(let i=0;i<pts.length;i++){
+    for(let j=i+1;j<pts.length;j++){
+      if(pts[i].distanceTo(pts[j])<=cut){
+        adj[i].push(j);adj[j].push(i);
+      }
+    }
+  }
+  let best=null,bestDot=-2;
+  const seen=new Set();
+  for(let s=0;s<pts.length;s++){
+    const a=s;
+    for(const b of adj[a]){
+      for(const c of adj[b]){
+        if(c===a)continue;
+        for(const d of adj[c]){
+          if(d===a||d===b)continue;
+          for(const e of adj[d]){
+            if(e===a||e===b||e===c)continue;
+            if(adj[e].indexOf(a)<0)continue;
+            const idx=[a,b,c,d,e].sort((p,q)=>p-q).join(',');
+            if(seen.has(idx))continue;
+            seen.add(idx);
+            const cen=new THREE.Vector3();
+            [a,b,c,d,e].forEach(i=>cen.add(pts[i]));
+            cen.multiplyScalar(0.2);
+            const dot=cen.clone().normalize().dot(n);
+            if(dot>bestDot){bestDot=dot;best=cen;}
+          }
+        }
+      }
+    }
+  }
+  return best||n.multiplyScalar(0.933);
+}
+
 function mountRingDecals(img){
   const punch=document.createElement('canvas');
   punch.width=192;punch.height=192;
@@ -170,21 +219,27 @@ function mountRingDecals(img){
   const ringTex=new THREE.CanvasTexture(punch);
   ringTex.colorSpace=THREE.SRGBColorSpace;
   pentDirs.forEach(function(dir){
-    const n=dir.clone().normalize();
+    const cen=nearestPentagonCenter(dir,cagePts,cageMin);
+    const n=cen.clone().normalize();
     const disc=new THREE.Mesh(
-      new THREE.CircleGeometry(0.105,48),
+      new THREE.CircleGeometry(0.118,48),
       new THREE.MeshBasicMaterial({
         map:ringTex,
         transparent:true,
         depthWrite:false,
-        alphaTest:0.12,
+        alphaTest:0.1,
         side:THREE.DoubleSide
       })
     );
-    disc.position.copy(n).multiplyScalar(0.944);
+    disc.position.copy(n).multiplyScalar(0.946);
     disc.lookAt(n.clone().multiplyScalar(2));
     group.add(disc);
+    const uv=dirToUV(n);
+    stampRing(ftx,img,uv.u*w,uv.v*h,88);
+    stampRing(mtx,img,uv.u*w,uv.v*h,88);
   });
+  tex.needsUpdate=true;
+  markTex.needsUpdate=true;
 }
 
 const ring=new Image();
