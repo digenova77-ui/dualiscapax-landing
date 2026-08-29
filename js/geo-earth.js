@@ -110,18 +110,9 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
   t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;earthMat.map=t;earthMat.needsUpdate=true;
 });
 
-const coreHalo=new THREE.Mesh(new THREE.SphereGeometry(0.12,32,24),new THREE.MeshBasicMaterial({
-  color:0xffffff,transparent:true,opacity:0.20,blending:THREE.AdditiveBlending,depthWrite:false
-}));
-const core=new THREE.Mesh(new THREE.SphereGeometry(0.055,32,24),new THREE.MeshBasicMaterial({
-  color:0xffffff,transparent:true,opacity:0.88,blending:THREE.AdditiveBlending,depthWrite:false
-}));
-coreHalo.renderOrder=0;core.renderOrder=0;
-group.add(coreHalo);group.add(core);
-
 const body=new THREE.Mesh(
   new THREE.SphereGeometry(0.92,96,64),
-  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.62,depthWrite:true})
+  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.62,depthWrite:false})
 );
 body.renderOrder=1;
 group.add(body);
@@ -241,7 +232,6 @@ function makeDotTex(hex){
 }
 const texBlue=makeDotTex('rgba(122,176,255,1)');
 const texGold=makeDotTex('rgba(232,184,74,1)');
-const texWhite=makeDotTex('rgba(255,255,255,1)');
 const SN=16;
 function makeSprites(map){
   const g=new THREE.BufferGeometry();
@@ -271,14 +261,13 @@ function addFeed(pt){
     blue:makeRibbon(0x6aa8ff,0.20),
     gold:makeRibbon(0xe0b84a,0.16),
     sBlue:makeSprites(texBlue),
-    sGold:makeSprites(texGold),
-    sWhite:makeSprites(texWhite)
+    sGold:makeSprites(texGold)
   });
 }
 addFeed(new THREE.Vector3(0.92,0,0));
 addFeed(new THREE.Vector3(-0.92,0,0));
 function ribbonPath(from,now,phase){
-  const dest=from.clone().setLength(0.06);
+  const dest=from.clone().setLength(0.34);
   const dir=dest.clone().sub(from);
   const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
   const n1=dir.clone().cross(up).normalize();
@@ -378,8 +367,6 @@ function frame(now){
   last=now;
   group.rotation.y+=OMEGA*dt;
   earth.rotation.y+=OMEGA*dt*0.35;
-  core.material.opacity=0.72+0.18*Math.abs(Math.sin(now*0.003));
-  coreHalo.material.opacity=0.14+0.08*Math.abs(Math.sin(now*0.0024));
   for(let i=0;i<feeds.length;i++){
     const f=feeds[i];
     const bluePath=ribbonPath(f.from,now,0);
@@ -388,13 +375,11 @@ function frame(now){
     writeRibbon(f.gold.g,goldPath,0.008);
     writeSprites(f.sBlue.g,bluePath,now,i*0.13);
     writeSprites(f.sGold.g,goldPath,now,i*0.13+0.5);
-    writeSprites(f.sWhite.g,bluePath,now,i*0.13+0.72);
     const pulse=0.12+0.10*Math.abs(Math.sin(now*0.0028+i));
     f.blue.mesh.material.opacity=pulse;
     f.gold.mesh.material.opacity=pulse*0.8;
     f.sBlue.mesh.material.opacity=0.45+pulse;
     f.sGold.mesh.material.opacity=0.38+pulse*0.8;
-    f.sWhite.mesh.material.opacity=0.22+0.28*(1-Math.abs(Math.sin(now*0.002+i)));
   }
   for(let i=0;i<decals.length;i++){
     const wn=decals[i].n.clone().applyQuaternion(group.quaternion);
