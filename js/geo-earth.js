@@ -15,20 +15,6 @@ mark.width=w;mark.height=h;
 const mtx=mark.getContext('2d');
 const PHI=(1+Math.sqrt(5))/2;
 const CAGE_R=0.933;
-function dirToUV(v){
-  const n=v.clone().normalize();
-  let u=Math.atan2(n.z,-n.x)/(Math.PI*2);
-  if(u<0)u+=1;
-  return {u,v:Math.acos(Math.max(-1,Math.min(1,n.y)))/Math.PI};
-}
-function uToWord(u){
-  return Math.min(Math.abs(u-0.25),Math.abs(u-0.75),Math.abs(u+0.75),Math.abs(u-1.25));
-}
-function hideDna(n){
-  if(Math.abs(n.y)<0.22)return true;
-  const uv=dirToUV(n);
-  return uToWord(uv.u)<0.18 && Math.abs(uv.v-0.5)<0.14;
-}
 
 function stampWord(ctx,x,y){
   ctx.save();
@@ -41,29 +27,17 @@ function stampWord(ctx,x,y){
   ctx.fillText('DualisCapax',x,y);
   ctx.restore();
 }
-function stampRing(ctx,img,x,y,size,alpha){
-  if(!img)return;
-  ctx.save();
-  ctx.globalAlpha=alpha==null?1:alpha;
-  ctx.drawImage(img,x-size/2,y-size/2,size,size);
-  ctx.restore();
-}
 function paintField(){
   ftx.fillStyle='#050506';
   ftx.fillRect(0,0,w,h);
 }
-function paintMarks(img,faces){
+function paintMarks(){
   mtx.clearRect(0,0,w,h);
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
-  (faces||[]).forEach(function(p){
-    if(hideDna(p.n))return;
-    const uv=dirToUV(p.n);
-    stampRing(mtx,img,uv.u*w,uv.v*h,p.sides===5?52:44,0.78);
-  });
 }
 paintField();
-paintMarks(null,[]);
+paintMarks();
 const tex=new THREE.CanvasTexture(field);
 tex.colorSpace=THREE.SRGBColorSpace;
 const markTex=new THREE.CanvasTexture(mark);
@@ -152,53 +126,6 @@ function edgeLength(pts){
   }
   return min;
 }
-function adjacency(pts,min){
-  const cut=min*1.12;
-  const adj=pts.map(()=>[]);
-  for(let i=0;i<pts.length;i++){
-    for(let j=i+1;j<pts.length;j++){
-      if(pts[i].distanceTo(pts[j])<=cut){adj[i].push(j);adj[j].push(i);}
-    }
-  }
-  return adj;
-}
-function ringFaces(pts,min,sides){
-  const adj=adjacency(pts,min);
-  const seen=new Set();
-  const faces=[];
-  function walk(start,path){
-    if(path.length===sides){
-      if(adj[path[sides-1]].indexOf(start)<0)return;
-      const key=path.slice().sort(function(a,b){return a-b;}).join(',');
-      if(seen.has(key))return;
-      seen.add(key);
-      const verts=path.map(function(i){return pts[i].clone();});
-      const cen=new THREE.Vector3();
-      verts.forEach(function(v){cen.add(v);});
-      cen.multiplyScalar(1/sides);
-      const n=cen.clone().normalize();
-      let rin=Infinity;
-      for(let i=0;i<sides;i++){
-        const A=verts[i],B=verts[(i+1)%sides];
-        const ab=B.clone().sub(A);
-        const ap=cen.clone().sub(A);
-        const dist=ap.clone().cross(ab).length()/ab.length();
-        if(dist<rin)rin=dist;
-      }
-      faces.push({cen:cen,n:n,rin:rin,verts:verts,sides:sides});
-      return;
-    }
-    const last=path[path.length-1];
-    const links=adj[last];
-    for(let k=0;k<links.length;k++){
-      const nxt=links[k];
-      if(path.indexOf(nxt)>=0)continue;
-      walk(start,path.concat(nxt));
-    }
-  }
-  for(let i=0;i<pts.length;i++) walk(i,[i]);
-  return faces;
-}
 function c60Geometry(pts,min){
   const pos=[];
   const cut=min*1.12;
@@ -215,9 +142,6 @@ function c60Geometry(pts,min){
 }
 const cagePts=c60Points(CAGE_R);
 const cageMin=edgeLength(cagePts);
-const pents=ringFaces(cagePts,cageMin,5);
-const hexes=ringFaces(cagePts,cageMin,6);
-const faces=pents.concat(hexes);
 const cage=c60Geometry(cagePts,cageMin);
 const glow=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
   color:0x6aa8ff,transparent:true,opacity:0.16,blending:THREE.AdditiveBlending,depthWrite:false
@@ -323,49 +247,6 @@ function writeSprites(geo,pts,now,offset){
   }
   geo.attributes.position.needsUpdate=true;
 }
-
-const decals=[];
-function mountRingDecals(img){
-  const punch=document.createElement('canvas');
-  punch.width=192;punch.height=192;
-  const ptx=punch.getContext('2d');
-  ptx.drawImage(img,0,0,192,192);
-  const data=ptx.getImageData(0,0,192,192);
-  const px=data.data;
-  for(let i=0;i<px.length;i+=4){
-    const lum=0.21*px[i]+0.72*px[i+1]+0.07*px[i+2];
-    if(lum<16)px[i+3]=0;
-    else if(lum<30)px[i+3]=Math.round(255*(lum-16)/14);
-  }
-  ptx.putImageData(data,0,0);
-  const ringTex=new THREE.CanvasTexture(punch);
-  ringTex.colorSpace=THREE.SRGBColorSpace;
-  faces.forEach(function(p){
-    if(hideDna(p.n))return;
-    const fit=p.sides===5?0.70:0.58;
-    const r=Math.max(0.038,p.rin*fit);
-    const disc=new THREE.Mesh(
-      new THREE.CircleGeometry(r,48),
-      new THREE.MeshBasicMaterial({
-        map:ringTex,transparent:true,opacity:0.82,
-        depthWrite:false,side:THREE.FrontSide
-      })
-    );
-    disc.position.copy(p.n).multiplyScalar(0.946);
-    disc.lookAt(p.n.clone().multiplyScalar(2));
-    disc.renderOrder=3;
-    group.add(disc);
-    decals.push({mesh:disc,n:p.n.clone()});
-    if(p.sides===5) addFeed(disc.position);
-  });
-}
-
-const ring=new Image();
-ring.onload=function(){
-  paintMarks(ring,faces);markTex.needsUpdate=true;
-  mountRingDecals(ring);
-};
-ring.src='brand/emblem-helix.svg';
 
 scene.add(new THREE.AmbientLight(0x8aa0bc,0.9));
 const sun=new THREE.DirectionalLight(0xfff4e6,1.85);
