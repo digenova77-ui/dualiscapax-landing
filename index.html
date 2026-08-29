@@ -35,17 +35,10 @@
   .site{position:relative;z-index:1;min-height:100dvh}
   .topbar{
     position:sticky;top:0;z-index:var(--z-nav);
-    display:grid;grid-template-columns:1fr auto;align-items:stretch;gap:.45rem;
+    display:grid;grid-template-columns:1fr auto;align-items:center;gap:.35rem;
     min-height:var(--bar);
-    padding:.28rem max(.55rem,env(safe-area-inset-right)) .28rem max(.55rem,env(safe-area-inset-left));
-    background:rgba(0,0,0,.82);
-    backdrop-filter:blur(16px) saturate(1.2);
-    -webkit-backdrop-filter:blur(16px) saturate(1.2);
-    border-bottom:1px solid var(--line);
-  }
-  .hud{
-    width:100%;
-    min-width:0;
+    margin:.28rem max(.55rem,env(safe-area-inset-right)) 0 max(.55rem,env(safe-area-inset-left));
+    padding:.32rem .38rem .32rem .5rem;
     border:1px solid rgba(158,197,255,0.32);
     background:
       linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 14px 1px no-repeat,
@@ -57,11 +50,18 @@
       linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 14px 1px no-repeat,
       linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 1px 14px no-repeat,
       linear-gradient(180deg,rgba(18,26,40,.55),rgba(0,0,0,.42));
-    backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);
-    padding:0.38rem 0.55rem 0.32rem;
+    backdrop-filter:blur(18px) saturate(1.25);
+    -webkit-backdrop-filter:blur(18px) saturate(1.25);
+  }
+  .hud{
+    width:100%;
+    min-width:0;
+    border:0;
+    background:transparent;
+    padding:0;
     font-family:"IBM Plex Mono",ui-monospace,monospace;
   }
-  .burger{width:2.4rem;height:2.4rem;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid rgba(158,197,255,0.28);background:rgba(0,0,0,0.28)}
+  .burger{width:2.2rem;height:2.2rem;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;background:transparent}
   .burger span{display:block;width:1.1rem;height:1px;background:#e8f1ff}
   .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
   .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
