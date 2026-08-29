@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="land-direct">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
@@ -38,7 +38,7 @@
   .smoke.is-clear{opacity:0}
 }
 @layer site {
-  .site{position:fixed;inset:0;z-index:var(--z-site);opacity:0;visibility:hidden;background:#000;overflow:hidden}
+  .site{position:fixed;inset:0;z-index:var(--z-site);opacity:1;visibility:visible;background:#000;overflow:hidden}
   body.is-live .site{opacity:1;visibility:visible}
   html.land-direct .intro,
   html.land-direct .smoke{display:none!important}
@@ -101,18 +101,11 @@
 }
 </style>
 </head>
-<body>
+<body class="is-live">
 <script>
 (function(){
-  try{
-    var q=new URLSearchParams(location.search);
-    var land=q.get('land')==='1'||q.get('land')==='true'||location.hash==='#land'||location.hash==='#site';
-    if(land){
-      document.documentElement.classList.add('land-direct');
-      document.addEventListener('DOMContentLoaded',function(){document.body.classList.add('is-live');});
-      try{history.replaceState(null,'',location.pathname);}catch(e){}
-    }
-  }catch(e){}
+  document.documentElement.classList.add('land-direct');
+  document.body.classList.add('is-live');
 })();
 </script>
 <div class="intro" id="intro">
@@ -168,7 +161,6 @@
     <a class="iris-mark" href="/story/iris.html">Iris</a>
   </div>
 </div>
-<script src="assets/intro-sequence.js"></script>
 <script>
 (function(){
   var burger=document.getElementById('burger');
