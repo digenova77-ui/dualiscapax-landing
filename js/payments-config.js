@@ -15,5 +15,6 @@ window.DC_PAYMENTS = {
   research_eth: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
   research_pol: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
   research_link: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-  research_dot: "16946KsPFchfAEC7MNQNSLLJb1kUzBug1fbPqBtbfZtW7X6n"
+  research_dot: "16946KsPFchfAEC7MNQNSLLJb1kUzBug1fbPqBtbfZtW7X6n",
+  research_dgb: "dgb1qegfaue6jd8msnlr7akr9ts0akgse6q4f4wgxec"
 };
