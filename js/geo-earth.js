@@ -4,8 +4,8 @@ const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
 renderer.setClearColor(0x000000,0);
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(36,1,0.1,20);
-camera.position.z=3.35;
+const camera=new THREE.PerspectiveCamera(34,1,0.1,20);
+camera.position.z=3.55;
 const w=2048,h=1024;
 const field=document.createElement('canvas');
 field.width=w;field.height=h;
@@ -15,20 +15,6 @@ mark.width=w;mark.height=h;
 const mtx=mark.getContext('2d');
 const PHI=(1+Math.sqrt(5))/2;
 
-function stampWord(ctx,x,y){
-  ctx.save();
-  ctx.font='700 96px "IBM Plex Sans", Inter, Arial, sans-serif';
-  ctx.textAlign='center';
-  ctx.textBaseline='middle';
-  ctx.shadowColor='#7eb6ff';
-  ctx.shadowBlur=48;
-  ctx.fillStyle='#9ec5ff';
-  ctx.fillText('DualisCapax',x,y);
-  ctx.shadowBlur=20;
-  ctx.fillStyle='#f4f7ff';
-  ctx.fillText('DualisCapax',x,y);
-  ctx.restore();
-}
 function stampRing(ctx,img,x,y,size,alpha){
   if(!img)return;
   ctx.save();
@@ -61,7 +47,7 @@ function aboveBelowWord(n){
 function skipPent(n){
   if(aboveBelowWord(n))return false;
   const uv=dirToUV(n);
-  if(uToWord(uv.u)<0.20 && Math.abs(uv.v-0.5)<0.08)return true;
+  if(uToWord(uv.u)<0.16 && Math.abs(uv.v-0.5)<0.08)return true;
   return false;
 }
 function pentStamp(n){return aboveBelowWord(n)?54:72;}
@@ -69,8 +55,6 @@ function pentAlpha(n){return aboveBelowWord(n)?0.62:0.92;}
 function paintField(img,pents){
   ftx.fillStyle='#050506';
   ftx.fillRect(0,0,w,h);
-  stampWord(ftx,w*0.25,h*0.5);
-  stampWord(ftx,w*0.75,h*0.5);
   stampEquator(ftx,img);
   (pents||[]).forEach(function(p){
     if(skipPent(p.n))return;
@@ -79,8 +63,6 @@ function paintField(img,pents){
 }
 function paintMarks(img,pents){
   mtx.clearRect(0,0,w,h);
-  stampWord(mtx,w*0.25,h*0.5);
-  stampWord(mtx,w*0.75,h*0.5);
   stampEquator(mtx,img);
   (pents||[]).forEach(function(p){
     if(skipPent(p.n))return;
@@ -123,15 +105,14 @@ const earthMat=new THREE.MeshPhongMaterial({
   map:earthFallback,color:0xffffff,shininess:14,specular:new THREE.Color(0x557799),
   emissive:new THREE.Color(0x163056),emissiveIntensity:0.16
 });
-const earth=new THREE.Mesh(new THREE.SphereGeometry(ER,64,48),earthMat);
+const earth=new THREE.Mesh(new THREE.SphereGeometry(ER,96,72),earthMat);
 earth.position.set(0,0,0);
 earth.renderOrder=0;
 group.add(earth);
 const earthAtmos=new THREE.Mesh(
-  new THREE.SphereGeometry(ER*1.06,48,32),
+  new THREE.SphereGeometry(ER*1.06,64,48),
   new THREE.MeshBasicMaterial({color:0x7eb6ff,transparent:true,opacity:0.18,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending})
 );
-earthAtmos.position.set(0,0,0);
 group.add(earthAtmos);
 const loader=new THREE.TextureLoader();
 loader.crossOrigin='anonymous';
@@ -140,8 +121,8 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
 });
 
 const body=new THREE.Mesh(
-  new THREE.SphereGeometry(0.92,96,64),
-  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.52,depthWrite:false})
+  new THREE.SphereGeometry(0.92,96,72),
+  new THREE.MeshBasicMaterial({color:0x050506,transparent:true,opacity:0.58,depthWrite:false})
 );
 body.renderOrder=1;
 group.add(body);
@@ -246,10 +227,50 @@ const cageCore=new THREE.LineSegments(cage.clone(),new THREE.LineBasicMaterial({
 group.add(glow);group.add(cageCore);
 
 const shell=new THREE.Mesh(
-  new THREE.SphereGeometry(0.948,96,64),
+  new THREE.SphereGeometry(0.948,96,72),
   new THREE.MeshBasicMaterial({map:markTex,transparent:true,depthWrite:false,alphaTest:0.08})
 );
 group.add(shell);
+
+function makeWordTex(){
+  const c=document.createElement('canvas');
+  c.width=1536;c.height=256;
+  const x=c.getContext('2d');
+  x.clearRect(0,0,1536,256);
+  x.font='700 148px "IBM Plex Sans", Inter, Arial, sans-serif';
+  x.textAlign='center';
+  x.textBaseline='middle';
+  x.shadowColor='#7eb6ff';
+  x.shadowBlur=36;
+  x.fillStyle='#9ec5ff';
+  x.fillText('DualisCapax',768,128);
+  x.shadowBlur=14;
+  x.fillStyle='#f4f7ff';
+  x.fillText('DualisCapax',768,128);
+  const t=new THREE.CanvasTexture(c);
+  t.colorSpace=THREE.SRGBColorSpace;
+  t.anisotropy=8;
+  return t;
+}
+const wordTex=makeWordTex();
+const wordOrbit=new THREE.Group();
+scene.add(wordOrbit);
+const ORBIT_R=1.22;
+function makeWordPlane(angle){
+  const mesh=new THREE.Mesh(
+    new THREE.PlaneGeometry(1.72,0.286),
+    new THREE.MeshBasicMaterial({
+      map:wordTex,transparent:true,depthWrite:false,side:THREE.DoubleSide,alphaTest:0.08
+    })
+  );
+  mesh.position.set(Math.sin(angle)*ORBIT_R,0,Math.cos(angle)*ORBIT_R);
+  mesh.rotation.y=angle;
+  mesh.renderOrder=8;
+  wordOrbit.add(mesh);
+  return mesh;
+}
+const wordA=makeWordPlane(0);
+const wordB=makeWordPlane(Math.PI);
 
 function makeDotTex(hex){
   const c=document.createElement('canvas');c.width=64;c.height=64;
@@ -397,13 +418,21 @@ goldLight.position.set(0,0,0);
 group.add(goldLight);
 
 const OMEGA=Math.PI*2/28;
+const WORD_OMEGA=Math.PI*2/22;
 const camDir=new THREE.Vector3(0,0,1);
+const _n=new THREE.Vector3();
 let last=performance.now();
 function frame(now){
   const dt=Math.min(0.05,(now-last)/1000);
   last=now;
   group.rotation.y+=OMEGA*dt;
   earth.rotation.y+=OMEGA*dt*0.35;
+  wordOrbit.rotation.y+=WORD_OMEGA*dt;
+  [wordA,wordB].forEach(function(m){
+    m.getWorldDirection(_n);
+    const facing=_n.dot(camDir);
+    m.material.opacity=facing<0?0.28:1;
+  });
   let energy=0;
   for(let i=0;i<feeds.length;i++){
     const f=feeds[i];
