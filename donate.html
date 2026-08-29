@@ -4,32 +4,27 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Donate · DualisCapax</title>
-<meta name="description" content="Research gift or Iris time. Not Fuel. Not a seat. Not equity."/>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;-webkit-tap-highlight-color:transparent}
-html{-webkit-text-size-adjust:100%}
-body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;-webkit-user-select:none!important;user-select:none!important}
-a,button,p,h1,li,strong,span,div{-webkit-user-select:none!important;user-select:none!important}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-.wrap{max-width:34rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.1rem,env(safe-area-inset-right)) max(2.4rem,env(safe-area-inset-bottom)) max(1.1rem,env(safe-area-inset-left))}
-.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.4rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+.wrap{max-width:34rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.1rem max(2.4rem,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;margin-bottom:1.4rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
 .top a{color:#9ec5ff}
 .kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9ec5ff}
-h1{font-size:clamp(1.7rem,7vw,2.4rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin:.45rem 0 .7rem}
+h1{font-size:clamp(1.7rem,7vw,2.4rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin:.45rem 0 .7rem}
 .lede{font-size:1.05rem;line-height:1.55;color:rgba(245,245,245,.72);margin-bottom:1.1rem}
 .go,.alt{display:block;width:100%;min-height:2.6rem;margin:0 0 .55rem;border:1px solid rgba(158,197,255,.22);background:rgba(255,255,255,.03);color:#9ec5ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
-.go{min-height:3.1rem;border-color:rgba(158,197,255,.55);background:rgba(158,197,255,.14);color:#e8f1ff;font-size:.82rem;letter-spacing:.14em}
+.go{min-height:3.1rem;border-color:rgba(158,197,255,.55);background:rgba(158,197,255,.14);color:#e8f1ff;font-size:.82rem}
 .go.ok,.alt.ok{border-color:rgba(126,200,140,.55);background:rgba(126,200,140,.16)}
 .steps{border:1px solid rgba(158,197,255,.22);padding:.9rem 1rem;margin:0 0 1rem;font-size:.98rem;line-height:1.5;color:rgba(245,245,245,.78)}
 .steps strong{display:block;color:#f5f5f5;margin-bottom:.35rem}
 .steps ol{margin:.2rem 0 0 1.1rem}
-.steps li{margin:0 0 .35rem}
-.closed{border:1px solid rgba(212,160,23,.4);padding:.75rem .9rem;margin:0 0 1rem;font-size:.95rem;color:rgba(245,245,245,.78);background:rgba(212,160,23,.06)}
+.closed{border:1px solid rgba(212,160,23,.4);padding:.75rem .9rem;margin:0 0 1rem;font-size:.95rem;background:rgba(212,160,23,.06)}
 .closed strong{color:#e8c36a}
-.wait{opacity:.72;border:1px solid rgba(158,197,255,.22);padding:.9rem 1rem;margin:0 0 1rem;font-size:.98rem;line-height:1.5}
 .note{font-size:.88rem;color:rgba(245,245,245,.48);line-height:1.45}
 foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(158,197,255,.16);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.38)}
 </style>
@@ -39,17 +34,17 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/ai/app">Iris</a></div>
   <p class="kicker">Two rails</p>
   <h1>Fund the work</h1>
-  <p class="lede">Research: Interac, EFT, XRP, ZEC, SOL. Iris time: DOGE. They do not mix. Not Fuel. Not a seat. Not medical.</p>
+  <p class="lede">Research: Interac, EFT, XRP, ZEC, SOL, ETH. Iris time: DOGE. They do not mix.</p>
   <button type="button" class="go" id="interac">Send Interac e-Transfer</button>
   <button type="button" class="alt" id="eft">Send EFT</button>
   <button type="button" class="alt" id="xrp">Research — XRP</button>
   <button type="button" class="alt" id="zec">Research — ZEC</button>
   <button type="button" class="alt" id="sol">Research — SOL</button>
+  <button type="button" class="alt" id="eth">Research — ETH</button>
   <button type="button" class="alt" id="doge">Iris time — DOGE</button>
   <div class="steps" id="howto" hidden></div>
   <div class="closed"><strong>Card stays gated.</strong> Fuel and onboard stay gated.</div>
-  <div class="wait" id="stripe-box" hidden><strong>Card</strong><p id="stripe-live" hidden><a id="stripe-link" href="#">Pay by card</a></p></div>
-  <p class="note">No tribes preferred. Voluntary. Invert rule: if the work cannot be checked, nothing is owed.</p>
+  <p class="note">No tribes preferred. Voluntary. Invert rule holds.</p>
   <foot>DualisCapax · Truth Prevails</foot>
 </div>
 <script src="/js/payments-config.js"></script>
@@ -61,41 +56,24 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   var box=document.getElementById('howto');
   var pay=window.DC_PAYMENTS||{};
   function tap(){ try{if(navigator.vibrate)navigator.vibrate(12);}catch(e){} }
-  function copy(text){
-    if(navigator.clipboard&&navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
-    return Promise.reject();
-  }
-  function show(html){ box.hidden=false; box.innerHTML=html; }
-  function bind(id, enabled, addr, label, ok, steps){
+  function copy(t){ return (navigator.clipboard&&navigator.clipboard.writeText)?navigator.clipboard.writeText(t):Promise.reject(); }
+  function bind(id, on, addr, label, ok, html){
     var el=document.getElementById(id);
     if(!el)return;
-    if(!enabled){ el.hidden=true; return; }
+    if(!on){el.hidden=true;return;}
     el.addEventListener('click',function(){
       tap();
-      if(addr){
-        copy(addr).then(function(){ el.classList.add('ok'); el.textContent=ok; }).catch(function(){ el.textContent=label; });
-      }
-      show(steps);
+      if(addr) copy(addr).then(function(){el.classList.add('ok');el.textContent=ok;}).catch(function(){el.textContent=label;});
+      box.hidden=false; box.innerHTML=html;
     });
   }
-  bind('interac', pay.interac_enabled!==false, MAIL, 'Send Interac e-Transfer', 'Copied — open your bank',
-    '<strong>Research — Interac</strong><ol><li>Open your bank.</li><li>Paste Autodeposit from the tap.</li></ol>');
-  bind('eft', pay.eft_enabled!==false, MAIL, 'Send EFT', 'EFT — same research account',
-    '<strong>Research — EFT</strong><ol><li>Same account as Interac.</li><li>Routing stays off this page.</li></ol>');
-  bind('xrp', !!(pay.crypto_enabled && pay.research_xrp), pay.research_xrp, 'Research — XRP', 'XRP copied — open your wallet',
-    '<strong>Research — XRP</strong><ol><li>Paste the address from the tap.</li><li>Research gift, not Iris.</li></ol>');
-  bind('zec', !!(pay.crypto_enabled && pay.research_zec), pay.research_zec, 'Research — ZEC', 'ZEC copied — open your wallet',
-    '<strong>Research — ZEC</strong><ol><li>Paste the transparent address from the tap.</li><li>Research gift, not Iris.</li></ol>');
-  bind('sol', !!(pay.crypto_enabled && pay.research_sol), pay.research_sol, 'Research — SOL', 'SOL copied — open your wallet',
-    '<strong>Research — SOL</strong><ol><li>Open your Solana wallet.</li><li>Paste the address from the tap.</li><li>Research gift, not Iris.</li></ol>');
-  bind('doge', !!(pay.crypto_enabled && pay.ai_doge), pay.ai_doge, 'Iris time — DOGE', 'DOGE copied — open your wallet',
-    '<strong>Iris time — DOGE</strong><ol><li>Paste the address from the tap.</li><li>Iris proceeds. Not medical.</li></ol>');
-  var url=pay.research||'';
-  if(url&&String(url).indexOf('http')===0){
-    document.getElementById('stripe-box').hidden=false;
-    document.getElementById('stripe-live').hidden=false;
-    document.getElementById('stripe-link').href=url;
-  }
+  bind('interac', pay.interac_enabled!==false, MAIL, 'Send Interac e-Transfer', 'Copied — open your bank', '<strong>Research — Interac</strong><ol><li>Open your bank.</li><li>Paste Autodeposit from the tap.</li></ol>');
+  bind('eft', pay.eft_enabled!==false, MAIL, 'Send EFT', 'EFT — same research account', '<strong>Research — EFT</strong><ol><li>Same account as Interac.</li></ol>');
+  bind('xrp', !!(pay.crypto_enabled&&pay.research_xrp), pay.research_xrp, 'Research — XRP', 'XRP copied — open your wallet', '<strong>Research — XRP</strong><ol><li>Paste from the tap.</li></ol>');
+  bind('zec', !!(pay.crypto_enabled&&pay.research_zec), pay.research_zec, 'Research — ZEC', 'ZEC copied — open your wallet', '<strong>Research — ZEC</strong><ol><li>Paste from the tap.</li></ol>');
+  bind('sol', !!(pay.crypto_enabled&&pay.research_sol), pay.research_sol, 'Research — SOL', 'SOL copied — open your wallet', '<strong>Research — SOL</strong><ol><li>Paste from the tap.</li></ol>');
+  bind('eth', !!(pay.crypto_enabled&&pay.research_eth), pay.research_eth, 'Research — ETH', 'ETH copied — open your wallet', '<strong>Research — ETH</strong><ol><li>Paste from the tap.</li><li>Ethereum mainline. Same key on other EVM chains only if you use it there.</li></ol>');
+  bind('doge', !!(pay.crypto_enabled&&pay.ai_doge), pay.ai_doge, 'Iris time — DOGE', 'DOGE copied — open your wallet', '<strong>Iris time — DOGE</strong><ol><li>Paste from the tap.</li><li>Iris proceeds. Not medical.</li></ol>');
 })();
 </script>
 </body>
