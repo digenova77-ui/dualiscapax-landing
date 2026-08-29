@@ -15,6 +15,7 @@ mark.width=w;mark.height=h;
 const mtx=mark.getContext('2d');
 const PHI=(1+Math.sqrt(5))/2;
 const CAGE_R=0.933;
+function onEquator(n){return Math.abs(n.y)<0.22;}
 
 function stampWord(ctx,x,y){
   ctx.save();
@@ -34,14 +35,6 @@ function stampRing(ctx,img,x,y,size,alpha){
   ctx.drawImage(img,x-size/2,y-size/2,size,size);
   ctx.restore();
 }
-function stampEquator(ctx,img){
-  if(!img)return;
-  const size=64;
-  const y=h*0.5-size/2;
-  ctx.drawImage(img,w*0.5-size/2,y,size,size);
-  ctx.drawImage(img,-size/2,y,size,size);
-  ctx.drawImage(img,w-size/2,y,size,size);
-}
 function dirToUV(v){
   const n=v.clone().normalize();
   let u=Math.atan2(n.z,-n.x)/(Math.PI*2);
@@ -56,8 +49,8 @@ function paintMarks(img,faces){
   mtx.clearRect(0,0,w,h);
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
-  stampEquator(mtx,img);
   (faces||[]).forEach(function(p){
+    if(onEquator(p.n))return;
     const uv=dirToUV(p.n);
     stampRing(mtx,img,uv.u*w,uv.v*h,p.sides===5?52:44,0.78);
   });
@@ -341,6 +334,7 @@ function mountRingDecals(img){
   const ringTex=new THREE.CanvasTexture(punch);
   ringTex.colorSpace=THREE.SRGBColorSpace;
   faces.forEach(function(p){
+    if(onEquator(p.n))return;
     const fit=p.sides===5?0.70:0.58;
     const r=Math.max(0.038,p.rin*fit);
     const disc=new THREE.Mesh(
