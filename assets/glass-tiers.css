@@ -1,5 +1,17 @@
 /* DualisCapax — glass tiers + sprite tears (deeper visual law)
    Visual only. Do not invent sections. Respect reduced motion. */
+html, body, .site {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+img, canvas, svg {
+  -webkit-user-drag: none;
+}
+input, textarea, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
 :root {
   --glass-fill: linear-gradient(165deg, rgba(232,241,255,0.14) 0%, rgba(18,26,40,0.22) 42%, rgba(8,12,18,0.38) 100%);
   --glass-edge: rgba(158,197,255,0.30);
