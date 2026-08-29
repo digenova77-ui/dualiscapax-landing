@@ -40,34 +40,26 @@ function dirToUV(v){
 function uToWord(u){
   return Math.min(Math.abs(u-0.25),Math.abs(u-0.75),Math.abs(u+0.75),Math.abs(u-1.25));
 }
-function aboveBelowWord(n){
+function keepPent(n){
   const uv=dirToUV(n);
   const off=Math.abs(uv.v-0.5);
   return uToWord(uv.u)<0.10 && off>0.10 && off<0.30;
 }
-function skipPent(n){
-  if(aboveBelowWord(n))return false;
-  const uv=dirToUV(n);
-  if(uToWord(uv.u)<0.16 && Math.abs(uv.v-0.5)<0.08)return true;
-  return false;
-}
-function pentStamp(n){return aboveBelowWord(n)?54:72;}
-function pentAlpha(n){return aboveBelowWord(n)?0.62:0.92;}
 function paintField(img,pents){
   ftx.fillStyle='#050506';
   ftx.fillRect(0,0,w,h);
   stampEquator(ftx,img);
   (pents||[]).forEach(function(p){
-    if(skipPent(p.n))return;
-    stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,pentStamp(p.n),pentAlpha(p.n));
+    if(!keepPent(p.n))return;
+    stampRing(ftx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,54,0.62);
   });
 }
 function paintMarks(img,pents){
   mtx.clearRect(0,0,w,h);
   stampEquator(mtx,img);
   (pents||[]).forEach(function(p){
-    if(skipPent(p.n))return;
-    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,pentStamp(p.n),pentAlpha(p.n));
+    if(!keepPent(p.n))return;
+    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,54,0.62);
   });
 }
 paintField(null,[]);
@@ -233,11 +225,6 @@ const cageCore=new THREE.LineSegments(cage.clone(),new THREE.LineBasicMaterial({
   color:0x9ec5ff,transparent:true,opacity:0.28,blending:THREE.AdditiveBlending,depthWrite:false
 }));
 group.add(glow);group.add(cageCore);
-const limb=new THREE.LineSegments(
-  new THREE.WireframeGeometry(new THREE.SphereGeometry(CAGE_R,48,36)),
-  new THREE.LineBasicMaterial({color:0x6aa8ff,transparent:true,opacity:0.05,blending:THREE.AdditiveBlending,depthWrite:false})
-);
-group.add(limb);
 
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(0.948,96,72),
@@ -390,14 +377,12 @@ function mountRingDecals(img){
   const ringTex=new THREE.CanvasTexture(punch);
   ringTex.colorSpace=THREE.SRGBColorSpace;
   pents.forEach(function(p){
-    if(skipPent(p.n))return;
-    const behind=aboveBelowWord(p.n);
-    const fit=behind?0.52:0.72;
-    const r=Math.max(0.045,p.rin*fit);
+    if(!keepPent(p.n))return;
+    const r=Math.max(0.045,p.rin*0.52);
     const disc=new THREE.Mesh(
       new THREE.CircleGeometry(r,48),
       new THREE.MeshBasicMaterial({
-        map:ringTex,transparent:true,opacity:behind?0.58:0.92,
+        map:ringTex,transparent:true,opacity:0.62,
         depthWrite:false,alphaTest:0.06,side:THREE.DoubleSide
       })
     );
@@ -405,8 +390,8 @@ function mountRingDecals(img){
     disc.lookAt(p.n.clone().multiplyScalar(2));
     disc.renderOrder=3;
     group.add(disc);
-    decals.push({mesh:disc,n:p.n.clone(),behind:behind});
-    if(behind) addFeed(disc.position);
+    decals.push({mesh:disc,n:p.n.clone()});
+    addFeed(disc.position);
   });
 }
 
@@ -470,8 +455,7 @@ function frame(now){
   for(let i=0;i<decals.length;i++){
     const wn=decals[i].n.clone().applyQuaternion(group.quaternion);
     const facing=wn.dot(camDir);
-    const base=decals[i].behind?0.58:0.92;
-    decals[i].mesh.material.opacity=facing<0?base*0.42:base;
+    decals[i].mesh.material.opacity=facing<0?0.26:0.62;
   }
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
