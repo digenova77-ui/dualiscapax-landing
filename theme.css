@@ -1,3 +1,4 @@
+@import url("assets/glass-tiers.css");
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 :root{
   color-scheme:dark;
@@ -24,7 +25,7 @@ img,canvas{-webkit-user-drag:none;user-drag:none}
 .site{max-width:42rem;margin:0 auto;padding:0 1.5rem 3rem;position:relative}
 .site::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 40% at 50% 0%,var(--glow),transparent 62%);z-index:0}
 .site>*{position:relative;z-index:1}
-header{display:flex;align-items:center;justify-content:space-between;padding:1.35rem 0;border-bottom:1px solid var(--line);gap:1rem}
+header{display:flex;align-items:center;justify-content:space-between;padding:1.35rem 0;border-bottom:1px solid var(--line);gap:1rem;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .mark{font-size:.9rem;font-weight:700;letter-spacing:-.03em}
 nav{display:flex;gap:1.05rem;flex-wrap:wrap}
 nav a{font-size:.78rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
@@ -35,7 +36,9 @@ h2{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weig
 p,li{font-size:1.04rem;color:var(--muted)}
 p+p,ul+p,p+ul,ol+p{margin-top:.85rem}
 .strong{color:var(--fg);font-weight:500}
-section{padding:2.15rem 0;border-top:1px solid var(--line-dim)}
+section{padding:2.15rem 0;border-top:1px solid var(--line-dim);animation:slide-up .7s cubic-bezier(.22,1,.36,1) both}
+section:nth-of-type(odd){animation-name:slide-left}
+section:nth-of-type(even){animation-name:slide-right}
 .label{font-size:.66rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:1rem}
 ol,ul{padding-left:1.15rem}
 li+li{margin-top:.42rem}
