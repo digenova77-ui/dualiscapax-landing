@@ -75,6 +75,11 @@ input, textarea, [contenteditable] {
 .tier-z-far, .tier-doors { transform: translate3d(0,0,-36px); }
 .tier-z-back { transform: translate3d(0,0,-72px) scale(0.985); }
 .tier-jump { transform: none; }
+.hero .stack {
+  perspective: none !important;
+  transform: none !important;
+  transform-style: flat;
+}
 .tier-geo, .geo-wrap, #geo-earth {
   transform: none !important;
   animation: none !important;
@@ -82,10 +87,18 @@ input, textarea, [contenteditable] {
   position: relative;
   z-index: 2;
 }
-.hero .stack {
-  perspective: none !important;
-  transform: none !important;
-  transform-style: flat;
+.geo-wrap {
+  flex: 0 0 auto !important;
+  aspect-ratio: 1 / 1;
+  width: min(72vw, calc(100svh - 14rem), 26rem) !important;
+  height: auto !important;
+  max-height: min(72vw, calc(100svh - 14rem), 26rem);
+}
+#geo-earth {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
 }
 
 .tier-logo { animation-name: slide-back; }
@@ -172,6 +185,10 @@ input, textarea, [contenteditable] {
   from { transform: translate3d(18px,-8px,10px) rotate(8deg); }
   to   { transform: translate3d(-16px,20px,-28px) rotate(22deg); }
 }
+@keyframes slide-right {
+  from { transform: translate3d(40px,12px,-28px); }
+  to   { transform: translate3d(0,0,0); }
+}
 @keyframes tear-slide-right {
   from { transform: translate3d(-14px,6px,-8px) rotate(20deg); }
   to   { transform: translate3d(20px,18px,18px) rotate(32deg); }
@@ -180,7 +197,6 @@ input, textarea, [contenteditable] {
   from { transform: translate3d(0,-16px,30px) rotate(10deg) scale(0.92); opacity: 0.15; }
   to   { transform: translate3d(8px,28px,-20px) rotate(18deg) scale(1); opacity: 0.45; }
 }
-
 @keyframes slide-up {
   from { opacity: 0; transform: translate3d(0,32px,-48px); }
   to   { opacity: 1; transform: translate3d(0,0,0); }
@@ -191,10 +207,6 @@ input, textarea, [contenteditable] {
 }
 @keyframes slide-left {
   from { opacity: 0; transform: translate3d(-40px,12px,-28px); }
-  to   { opacity: 1; transform: translate3d(0,0,0); }
-}
-@keyframes slide-right {
-  from { opacity: 0; transform: translate3d(40px,12px,-28px); }
   to   { opacity: 1; transform: translate3d(0,0,0); }
 }
 @keyframes slide-back {
@@ -217,7 +229,7 @@ input, textarea, [contenteditable] {
 .slide-up { animation: slide-up .75s var(--tier-ease) both; }
 .slide-down { animation: slide-down .75s var(--tier-ease) both; }
 .slide-left { animation: slide-left .75s var(--tier-ease) both; }
-.slide-right { animation: slide-right .75s var(--tier-ease) both; }
+.slide-right { animation: slide-right .45s var(--tier-ease) both; }
 .slide-back { animation: slide-back .85s var(--tier-ease) both; }
 .slide-forward { animation: slide-forward .7s var(--tier-ease) both; }
 
