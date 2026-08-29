@@ -51,7 +51,6 @@ function dirToUV(v){
 function uToWord(u){
   return Math.min(Math.abs(u-0.25),Math.abs(u-0.75),Math.abs(u+0.75),Math.abs(u-1.25));
 }
-// BRAND LAW: DNA above and below the DualisCapax wordmark is permanent.
 function aboveBelowWord(n){
   const uv=dirToUV(n);
   const off=Math.abs(uv.v-0.5);
@@ -96,11 +95,43 @@ markTex.colorSpace=THREE.SRGBColorSpace;
 markTex.anisotropy=8;
 const body=new THREE.Mesh(
   new THREE.SphereGeometry(0.92,96,64),
-  new THREE.MeshBasicMaterial({map:tex})
+  new THREE.MeshBasicMaterial({
+    map:tex,
+    transparent:true,
+    opacity:0.84,
+    depthWrite:true
+  })
 );
+body.renderOrder=1;
 const group=new THREE.Group();
 group.add(body);
 scene.add(group);
+
+const inner=new THREE.Group();
+inner.renderOrder=0;
+const veil=new THREE.Mesh(
+  new THREE.SphereGeometry(0.68,48,32),
+  new THREE.MeshBasicMaterial({
+    color:0x3d6fb8,
+    transparent:true,
+    opacity:0.08,
+    blending:THREE.AdditiveBlending,
+    depthWrite:false
+  })
+);
+const ember=new THREE.Mesh(
+  new THREE.SphereGeometry(0.24,32,24),
+  new THREE.MeshBasicMaterial({
+    color:0xb8923a,
+    transparent:true,
+    opacity:0.10,
+    blending:THREE.AdditiveBlending,
+    depthWrite:false
+  })
+);
+inner.add(veil);
+inner.add(ember);
+group.add(inner);
 
 function c60Points(radius){
   const phi=PHI;
@@ -203,12 +234,12 @@ const glow=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
   blending:THREE.AdditiveBlending,depthWrite:false
 }));
 glow.scale.setScalar(1.008);
-const core=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
+const cageCore=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
   color:0x9ec5ff,transparent:true,opacity:0.28,
   blending:THREE.AdditiveBlending,depthWrite:false
 }));
 group.add(glow);
-group.add(core);
+group.add(cageCore);
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(0.948,96,64),
   new THREE.MeshBasicMaterial({
@@ -262,8 +293,16 @@ ring.onload=function(){
   mountRingDecals(ring);
 };
 ring.src='brand/emblem-helix.svg';
+const OMEGA=Math.PI*2/28;
 let last=performance.now();
-function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;group.rotation.y+=(Math.PI*2/28)*dt;renderer.render(scene,camera);requestAnimationFrame(frame)}
+function frame(now){
+  const dt=Math.min(0.05,(now-last)/1000);
+  last=now;
+  group.rotation.y+=OMEGA*dt;
+  inner.rotation.y-=2*OMEGA*dt;
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
 requestAnimationFrame(frame);
 function onResize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(w<1||h<1)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 window.addEventListener('resize',onResize);onResize();
