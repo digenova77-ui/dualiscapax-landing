@@ -8,13 +8,13 @@
 }
 .quark {
   position: absolute;
-  width: 2px;
-  height: 2px;
+  width: 1.25px;
+  height: 1.25px;
   border-radius: 50%;
   background: #7eb6ff;
   box-shadow:
-    0 0 4px 1px rgba(126, 182, 255, 0.85),
-    0 0 10px 2px rgba(90, 150, 255, 0.35);
+    0 0 2px 0.4px rgba(126, 182, 255, 0.7),
+    0 0 5px 1px rgba(90, 150, 255, 0.22);
   opacity: 0.55;
   animation: quarkPulse 3.8s ease-in-out infinite;
 }
@@ -39,6 +39,6 @@
 .quark:nth-child(19) { left: 39%; top: 91%; width: 1.5px; height: 1.5px; animation-delay: 0.8s; }
 .quark:nth-child(20) { left: 95%; top: 88%; width: 1px; height: 1px; animation-delay: 2.4s; opacity: 0.35; }
 @keyframes quarkPulse {
-  0%, 100% { opacity: 0.2; transform: scale(0.85); }
-  50% { opacity: 0.9; transform: scale(1.2); }
+  0%, 100% { opacity: 0.22; transform: scale(0.92); }
+  50% { opacity: 0.78; transform: scale(1.08); }
 }
