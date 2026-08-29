@@ -9,8 +9,8 @@ img, canvas, svg {
   -webkit-user-drag: none;
 }
 input, textarea, [contenteditable] {
-  -webkit-user-select: text;
-  user-select: text;
+  -webkit-user-select: none;
+  user-select: none;
 }
 :root {
   --glass-fill: linear-gradient(165deg, rgba(232,241,255,0.14) 0%, rgba(18,26,40,0.22) 42%, rgba(8,12,18,0.38) 100%);
@@ -276,6 +276,21 @@ input, textarea, [contenteditable] {
 }
 .bubble.them { animation: slide-left .45s var(--tier-ease) both; }
 .bubble.you { animation: slide-right .45s var(--tier-ease) both; }
+
+html:not(.is-onboard) .pack .cad,
+html:not(.is-onboard) [data-money] {
+  display: none !important;
+}
+html:not(.is-onboard) #earned {
+  font-size: 0 !important;
+  color: transparent !important;
+}
+html:not(.is-onboard) #earned::after {
+  content: "\2014";
+  font-size: clamp(0.82rem, 3.2vw, 0.98rem);
+  font-weight: 600;
+  color: #e8f1ff;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .tear, .tier, .glass, .slide-up, .slide-down, .slide-left, .slide-right, .slide-back, .slide-forward,
