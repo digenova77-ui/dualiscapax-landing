@@ -111,7 +111,7 @@ group.add(body);
 scene.add(group);
 
 const fracVert=`varying vec2 vUv;varying vec3 vPos;void main(){vUv=uv;vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
-const fracFrag=`varying vec2 vUv;varying vec3 vPos;uniform float uTime;
+const fracFrag=`varying vec2 vUv;varying vec3 vPos;uniform float uTime;uniform float uDim;
 void main(){
   vec2 z=vec2(vPos.x,vPos.y)*10.0;
   vec2 c=vec2(-0.745+0.035*sin(uTime*0.13),0.186+0.028*cos(uTime*0.10));
@@ -122,9 +122,10 @@ void main(){
     n+=1.0;
   }
   float t=n/28.0;
+  float d=clamp((uDim-1.2)/0.7,0.0,1.0);
   vec3 gold=vec3(0.88,0.72,0.29);
   vec3 blue=vec3(0.40,0.66,1.0);
-  vec3 col=mix(gold,blue,clamp(t*1.2,0.0,1.0));
+  vec3 col=mix(gold,blue,mix(clamp(t*1.15,0.0,1.0),d,0.62));
   col=mix(col,vec3(1.0),pow(t,7.0));
   float glow=0.18+0.55*t;
   gl_FragColor=vec4(col,glow);
@@ -132,7 +133,7 @@ void main(){
 const fracMat=new THREE.ShaderMaterial({
   vertexShader:fracVert,
   fragmentShader:fracFrag,
-  uniforms:{uTime:{value:0}},
+  uniforms:{uTime:{value:0},uDim:{value:1.45}},
   transparent:true,
   blending:THREE.AdditiveBlending,
   depthWrite:false
@@ -153,6 +154,61 @@ const coreGlow=new THREE.Mesh(new THREE.SphereGeometry(0.155,64,48),fracMat);
 inner.add(halo);
 inner.add(coreGlow);
 group.add(inner);
+
+const BC=48;
+const bcGrid=new Uint8Array(BC*BC);
+function juliaIter(zx,zy,cx,cy){
+  for(let i=0;i<28;i++){
+    const x=zx*zx-zy*zy+cx;
+    const y=2*zx*zy+cy;
+    zx=x;zy=y;
+    if(zx*zx+zy*zy>4)return i;
+  }
+  return 28;
+}
+function boxHits(size){
+  let n=0;
+  for(let y=0;y<BC;y+=size){
+    for(let x=0;x<BC;x+=size){
+      let hit=0;
+      for(let j=0;j<size&&y+j<BC&&!hit;j++){
+        for(let i=0;i<size&&x+i<BC;i++){
+          if(bcGrid[(y+j)*BC+(x+i)]){hit=1;break;}
+        }
+      }
+      n+=hit;
+    }
+  }
+  return n;
+}
+function boxDim(cx,cy){
+  const span=3.1;
+  for(let y=0;y<BC;y++){
+    const zy=(y/(BC-1)-0.5)*span;
+    for(let x=0;x<BC;x++){
+      const zx=(x/(BC-1)-0.5)*span;
+      const it=juliaIter(zx,zy,cx,cy);
+      bcGrid[y*BC+x]=(it>2&&it<27)?1:0;
+    }
+  }
+  const sizes=[1,2,4,8];
+  const logs=[];
+  const ns=[];
+  for(let s=0;s<sizes.length;s++){
+    const N=boxHits(sizes[s]);
+    if(N<2)continue;
+    logs.push(Math.log(1/sizes[s]));
+    ns.push(Math.log(N));
+  }
+  if(logs.length<2)return 1.4;
+  let sx=0,sy=0,sxx=0,sxy=0,m=logs.length;
+  for(let i=0;i<m;i++){sx+=logs[i];sy+=ns[i];sxx+=logs[i]*logs[i];sxy+=logs[i]*ns[i];}
+  const den=m*sxx-sx*sx;
+  if(Math.abs(den)<1e-8)return 1.4;
+  const slope=(m*sxy-sx*sy)/den;
+  return Math.max(1.05,Math.min(1.95,slope));
+}
+let dimB=1.45,dimTarget=1.45,dimClock=0;
 
 const feedPts=[];
 const RS=12;
@@ -396,7 +452,17 @@ function frame(now){
   last=now;
   group.rotation.y+=OMEGA*dt;
   inner.rotation.y-=2*OMEGA*dt;
-  fracMat.uniforms.uTime.value=now*0.001;
+  const t=now*0.001;
+  fracMat.uniforms.uTime.value=t;
+  dimClock+=dt;
+  if(dimClock>0.28){
+    dimClock=0;
+    const cx=-0.745+0.035*Math.sin(t*0.13);
+    const cy=0.186+0.028*Math.cos(t*0.10);
+    dimTarget=boxDim(cx,cy);
+  }
+  dimB+=(dimTarget-dimB)*Math.min(1,dt*2.2);
+  fracMat.uniforms.uDim.value=dimB;
   for(let i=0;i<feedPts.length;i++){
     writeRibbon(blues[i].g,ribbonPath(feedPts[i],now,0.0),0.012);
     writeRibbon(golds[i].g,ribbonPath(feedPts[i],now,Math.PI),0.010);
