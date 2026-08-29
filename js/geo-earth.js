@@ -386,7 +386,7 @@ function mountRingDecals(img){
     disc.renderOrder=3;
     group.add(disc);
     decals.push({mesh:disc,n:p.n.clone(),behind:behind});
-    addFeed(disc.position);
+    if(behind) addFeed(disc.position);
   });
 }
 
