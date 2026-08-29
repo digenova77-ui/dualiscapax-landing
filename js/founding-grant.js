@@ -4,6 +4,7 @@
  *  F(n) = round(1000 - (n-11) * 900 / 89)
  *  F(11)=1000  F(100)=100
  *  Page prints only the two ends.
+ *  Money figures stay hidden until html.is-onboard.
  */
 window.DC_FOUNDING = {
   house: [1,10],
@@ -16,3 +17,8 @@ window.DC_FOUNDING = {
     return Math.round(1000 - (n-11)*900/89);
   }
 };
+(function(){
+  if(!document.documentElement.classList.contains('is-onboard')){
+    document.documentElement.classList.add('pre-onboard');
+  }
+})();
