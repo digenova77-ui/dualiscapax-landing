@@ -5,7 +5,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
 renderer.setClearColor(0x000000,0);
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(30,1,0.1,20);
-camera.position.z=4.2;
+camera.position.z=3.95;
 const w=2048,h=1024;
 const field=document.createElement('canvas');
 field.width=w;field.height=h;
@@ -247,19 +247,19 @@ group.add(shell);
 
 function makeWordTex(){
   const c=document.createElement('canvas');
-  c.width=1536;c.height=256;
+  c.width=2048;c.height=320;
   const x=c.getContext('2d');
-  x.clearRect(0,0,1536,256);
-  x.font='700 148px "IBM Plex Sans", Inter, Arial, sans-serif';
+  x.clearRect(0,0,2048,320);
+  x.font='700 220px "IBM Plex Sans", Inter, Arial, sans-serif';
   x.textAlign='center';
   x.textBaseline='middle';
   x.shadowColor='#7eb6ff';
-  x.shadowBlur=36;
+  x.shadowBlur=42;
   x.fillStyle='#9ec5ff';
-  x.fillText('DualisCapax',768,128);
-  x.shadowBlur=14;
+  x.fillText('DualisCapax',1024,160);
+  x.shadowBlur=16;
   x.fillStyle='#f4f7ff';
-  x.fillText('DualisCapax',768,128);
+  x.fillText('DualisCapax',1024,160);
   const t=new THREE.CanvasTexture(c);
   t.colorSpace=THREE.SRGBColorSpace;
   t.anisotropy=8;
@@ -268,22 +268,22 @@ function makeWordTex(){
 const wordTex=makeWordTex();
 const wordOrbit=new THREE.Group();
 scene.add(wordOrbit);
-const ORBIT_R=1.58;
-function makeWordPlane(angle){
+const ORBIT_R=1.055;
+const WORD_ARC=2.05;
+function makeWordBand(yaw){
   const mesh=new THREE.Mesh(
-    new THREE.PlaneGeometry(1.02,0.17),
+    new THREE.CylinderGeometry(ORBIT_R,ORBIT_R,0.34,72,1,true,-WORD_ARC/2,WORD_ARC),
     new THREE.MeshBasicMaterial({
       map:wordTex,transparent:true,depthWrite:false,side:THREE.DoubleSide,alphaTest:0.08
     })
   );
-  mesh.position.set(Math.sin(angle)*ORBIT_R,0,Math.cos(angle)*ORBIT_R);
-  mesh.rotation.y=angle;
+  mesh.rotation.y=yaw+Math.PI/2;
   mesh.renderOrder=8;
   wordOrbit.add(mesh);
-  return mesh;
+  return {mesh:mesh,yaw:yaw};
 }
-const wordA=makeWordPlane(0);
-const wordB=makeWordPlane(Math.PI);
+const wordA=makeWordBand(0);
+const wordB=makeWordBand(Math.PI);
 
 function makeDotTex(hex){
   const c=document.createElement('canvas');c.width=64;c.height=64;
@@ -433,7 +433,6 @@ group.add(goldLight);
 const OMEGA=Math.PI*2/28;
 const WORD_OMEGA=Math.PI*2/22;
 const camDir=new THREE.Vector3(0,0,1);
-const _n=new THREE.Vector3();
 let last=performance.now();
 function frame(now){
   const dt=Math.min(0.05,(now-last)/1000);
@@ -441,10 +440,9 @@ function frame(now){
   group.rotation.y+=OMEGA*dt;
   earth.rotation.y+=OMEGA*dt*0.35;
   wordOrbit.rotation.y+=WORD_OMEGA*dt;
-  [wordA,wordB].forEach(function(m){
-    m.getWorldDirection(_n);
-    const facing=_n.dot(camDir);
-    m.material.opacity=facing<0?0.22:1;
+  [wordA,wordB].forEach(function(b){
+    const facing=Math.cos(wordOrbit.rotation.y+b.yaw);
+    b.mesh.material.opacity=facing<0?0.22:1;
   });
   let energy=0;
   for(let i=0;i<feeds.length;i++){
