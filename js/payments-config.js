@@ -1,10 +1,11 @@
-/** DualisCapax payment rails. Addresses copy-on-tap only. */
+/** DualisCapax payment rails. No Stripe. CAD = Interac. Else crypto. */
 window.DC_PAYMENTS = {
   interac_enabled: true,
   eft_enabled: true,
   sri_enabled: true,
   fuel_enabled: true,
   onboard_enabled: true,
+  stripe_enabled: false,
   research: "",
   cost_reduction: "",
   capacity: "",
