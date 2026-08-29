@@ -48,26 +48,18 @@ function dirToUV(v){
   if(u<0)u+=1;
   return {u,v:Math.acos(Math.max(-1,Math.min(1,n.y)))/Math.PI};
 }
-function uToWord(u){
-  return Math.min(Math.abs(u-0.25),Math.abs(u-0.75),Math.abs(u+0.75),Math.abs(u-1.25));
-}
-function keepPent(n){
-  const uv=dirToUV(n);
-  const off=Math.abs(uv.v-0.5);
-  return uToWord(uv.u)<0.10 && off>0.10 && off<0.30;
-}
 function paintField(){
   ftx.fillStyle='#050506';
   ftx.fillRect(0,0,w,h);
 }
-function paintMarks(img,pents){
+function paintMarks(img,faces){
   mtx.clearRect(0,0,w,h);
   stampWord(mtx,w*0.25,h*0.5);
   stampWord(mtx,w*0.75,h*0.5);
   stampEquator(mtx,img);
-  (pents||[]).forEach(function(p){
-    if(!keepPent(p.n))return;
-    stampRing(mtx,img,dirToUV(p.n).u*w,dirToUV(p.n).v*h,48,0.7);
+  (faces||[]).forEach(function(p){
+    const uv=dirToUV(p.n);
+    stampRing(mtx,img,uv.u*w,uv.v*h,p.sides===5?52:44,0.78);
   });
 }
 paintField();
@@ -170,41 +162,41 @@ function adjacency(pts,min){
   }
   return adj;
 }
-function pentagonFaces(pts,min){
+function ringFaces(pts,min,sides){
   const adj=adjacency(pts,min);
   const seen=new Set();
   const faces=[];
-  for(let a=0;a<pts.length;a++){
-    for(const b of adj[a]){
-      for(const c of adj[b]){
-        if(c===a)continue;
-        for(const d of adj[c]){
-          if(d===a||d===b)continue;
-          for(const e of adj[d]){
-            if(e===a||e===b||e===c)continue;
-            if(adj[e].indexOf(a)<0)continue;
-            const key=[a,b,c,d,e].sort((p,q)=>p-q).join(',');
-            if(seen.has(key))continue;
-            seen.add(key);
-            const verts=[a,b,c,d,e].map(i=>pts[i].clone());
-            const cen=new THREE.Vector3();
-            verts.forEach(v=>cen.add(v));
-            cen.multiplyScalar(0.2);
-            const n=cen.clone().normalize();
-            let rin=Infinity;
-            for(let i=0;i<5;i++){
-              const A=verts[i],B=verts[(i+1)%5];
-              const ab=B.clone().sub(A);
-              const ap=cen.clone().sub(A);
-              const dist=ap.clone().cross(ab).length()/ab.length();
-              if(dist<rin)rin=dist;
-            }
-            faces.push({cen,n,rin,verts});
-          }
-        }
+  function walk(start,path){
+    if(path.length===sides){
+      if(adj[path[sides-1]].indexOf(start)<0)return;
+      const key=path.slice().sort(function(a,b){return a-b;}).join(',');
+      if(seen.has(key))return;
+      seen.add(key);
+      const verts=path.map(function(i){return pts[i].clone();});
+      const cen=new THREE.Vector3();
+      verts.forEach(function(v){cen.add(v);});
+      cen.multiplyScalar(1/sides);
+      const n=cen.clone().normalize();
+      let rin=Infinity;
+      for(let i=0;i<sides;i++){
+        const A=verts[i],B=verts[(i+1)%sides];
+        const ab=B.clone().sub(A);
+        const ap=cen.clone().sub(A);
+        const dist=ap.clone().cross(ab).length()/ab.length();
+        if(dist<rin)rin=dist;
       }
+      faces.push({cen:cen,n:n,rin:rin,verts:verts,sides:sides});
+      return;
+    }
+    const last=path[path.length-1];
+    const links=adj[last];
+    for(let k=0;k<links.length;k++){
+      const nxt=links[k];
+      if(path.indexOf(nxt)>=0)continue;
+      walk(start,path.concat(nxt));
     }
   }
+  for(let i=0;i<pts.length;i++) walk(i,[i]);
   return faces;
 }
 function c60Geometry(pts,min){
@@ -223,7 +215,9 @@ function c60Geometry(pts,min){
 }
 const cagePts=c60Points(CAGE_R);
 const cageMin=edgeLength(cagePts);
-const pents=pentagonFaces(cagePts,cageMin);
+const pents=ringFaces(cagePts,cageMin,5);
+const hexes=ringFaces(cagePts,cageMin,6);
+const faces=pents.concat(hexes);
 const cage=c60Geometry(cagePts,cageMin);
 const glow=new THREE.LineSegments(cage,new THREE.LineBasicMaterial({
   color:0x6aa8ff,transparent:true,opacity:0.16,blending:THREE.AdditiveBlending,depthWrite:false
@@ -346,13 +340,13 @@ function mountRingDecals(img){
   ptx.putImageData(data,0,0);
   const ringTex=new THREE.CanvasTexture(punch);
   ringTex.colorSpace=THREE.SRGBColorSpace;
-  pents.forEach(function(p){
-    if(!keepPent(p.n))return;
-    const r=Math.max(0.045,p.rin*0.52);
+  faces.forEach(function(p){
+    const fit=p.sides===5?0.70:0.58;
+    const r=Math.max(0.038,p.rin*fit);
     const disc=new THREE.Mesh(
       new THREE.CircleGeometry(r,48),
       new THREE.MeshBasicMaterial({
-        map:ringTex,transparent:true,opacity:0.7,
+        map:ringTex,transparent:true,opacity:0.82,
         depthWrite:false,side:THREE.FrontSide
       })
     );
@@ -361,13 +355,12 @@ function mountRingDecals(img){
     disc.renderOrder=3;
     group.add(disc);
     decals.push({mesh:disc,n:p.n.clone()});
-    addFeed(disc.position);
   });
 }
 
 const ring=new Image();
 ring.onload=function(){
-  paintMarks(ring,pents);markTex.needsUpdate=true;
+  paintMarks(ring,faces);markTex.needsUpdate=true;
   mountRingDecals(ring);
 };
 ring.src='brand/emblem-helix.svg';
