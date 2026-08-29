@@ -6,7 +6,7 @@
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W = 0, H = 0;
-  var N = 52;
+  var N = 22;
   var pts = [];
   var hole = {cx: 0, cy: 0, r: 0};
 
@@ -45,9 +45,9 @@
       if (insideHole(x, y, 12)) continue;
       pts.push({
         x: x, y: y,
-        r: 0.7 + Math.random() * 1.6,
-        vx: (Math.random() - 0.5) * 0.12,
-        vy: (Math.random() - 0.5) * 0.1,
+        r: 0.55 + Math.random() * 1.15,
+        vx: (Math.random() - 0.5) * 0.11,
+        vy: (Math.random() - 0.5) * 0.09,
         phase: Math.random() * Math.PI * 2,
         speed: 0.01 + Math.random() * 0.016
       });
@@ -55,18 +55,18 @@
   }
   function drawGrid(){
     var t = performance.now() * 0.00004;
-    var step = 64;
+    var step = 72;
     var ox = reduce ? 0 : (t * 14) % step;
     var oy = reduce ? 0 : (t * 8) % step;
     ctx.lineWidth = 1;
     for (var x = -step + ox; x <= W + step; x += step) {
       var fadeX = 1 - Math.abs((x / W) - 0.5) * 1.35; if (fadeX < 0) fadeX = 0;
-      ctx.strokeStyle = 'rgba(158,197,255,' + (0.055 * fadeX) + ')';
+      ctx.strokeStyle = 'rgba(158,197,255,' + (0.04 * fadeX) + ')';
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
     }
     for (var y = -step + oy; y <= H + step; y += step) {
       var fadeY = 1 - Math.abs((y / H) - 0.5) * 1.2; if (fadeY < 0) fadeY = 0;
-      ctx.strokeStyle = 'rgba(158,197,255,' + (0.045 * fadeY) + ')';
+      ctx.strokeStyle = 'rgba(158,197,255,' + (0.032 * fadeY) + ')';
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
     }
   }
@@ -86,13 +86,13 @@
       if (insideHole(p.x, p.y, 6)) continue;
       var pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(p.phase));
       var r = p.r * (0.85 + 0.3 * pulse);
-      var halo = r * 3.1;
+      var halo = r * 2.6;
       var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, halo);
-      g.addColorStop(0, 'rgba(210,228,255,' + (0.95 * pulse) + ')');
-      g.addColorStop(0.35, 'rgba(158,197,255,' + (0.55 * pulse) + ')');
+      g.addColorStop(0, 'rgba(210,228,255,' + (0.9 * pulse) + ')');
+      g.addColorStop(0.35, 'rgba(158,197,255,' + (0.48 * pulse) + ')');
       g.addColorStop(1, 'rgba(74,143,216,0)');
       ctx.beginPath(); ctx.fillStyle = g; ctx.arc(p.x, p.y, halo, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.fillStyle = 'rgba(236,244,255,' + (0.95 * pulse) + ')'; ctx.arc(p.x, p.y, Math.max(0.55, r * 0.42), 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.fillStyle = 'rgba(236,244,255,' + (0.92 * pulse) + ')'; ctx.arc(p.x, p.y, Math.max(0.5, r * 0.4), 0, Math.PI * 2); ctx.fill();
     }
   }
   function punch(){
