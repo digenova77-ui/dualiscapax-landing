@@ -15,15 +15,14 @@
     :root {
       --bg: #050508;
       --text: #f4f4f5;
-      --muted: rgba(244,244,245,0.55);
+      --muted: rgba(244,244,245,0.52);
       --line: rgba(255,255,255,0.10);
       --cyan: #4a9fe0;
-      --gold: #c9a227;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html, body {
       height: 100%;
-      background: #050508;
+      background: var(--bg);
       color: var(--text);
       font-family: Inter, system-ui, sans-serif;
       overflow: hidden;
@@ -31,7 +30,7 @@
     body {
       height: 100dvh;
       display: grid;
-      grid-template-rows: 3.25rem 1fr auto;
+      grid-template-rows: auto 1fr auto;
     }
 
     header {
@@ -39,85 +38,38 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
-      padding: 0 max(0.9rem, env(safe-area-inset-right)) 0 max(0.9rem, env(safe-area-inset-left));
-      padding-top: env(safe-area-inset-top);
+      min-height: 3rem;
+      padding: env(safe-area-inset-top) max(0.85rem, env(safe-area-inset-right)) 0 max(0.85rem, env(safe-area-inset-left));
       border-bottom: 1px solid var(--line);
-      background: rgba(5,5,8,0.92);
-      backdrop-filter: blur(12px);
-      min-height: 3.25rem;
+      background: #050508;
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      min-width: 0;
       text-decoration: none;
       color: inherit;
-      min-width: 0;
     }
     .brand img {
-      height: 1.35rem;
+      height: 1.28rem;
       width: auto;
       display: block;
     }
     .who {
-      display: grid;
-      line-height: 1.05;
-    }
-    .who b {
-      font-size: 0.82rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .who span {
-      font-size: 0.62rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .home {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--muted);
-      text-decoration: none;
-      padding: 0.45rem 0.6rem;
-    }
-
-    .stage {
-      display: none;
-      position: relative;
-      height: 7.5rem;
-      border-bottom: 1px solid var(--line);
-      background: radial-gradient(ellipse at 50% 40%, rgba(74,159,224,0.14), transparent 62%);
-      overflow: hidden;
-    }
-    .stage.on { display: block; }
-    .iris-face {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .iris-face img { height: 2.4rem; width: auto; }
-    .you {
-      position: absolute;
-      right: 0.7rem;
-      bottom: 0.55rem;
-      width: 4.4rem;
-      height: 5.4rem;
-      object-fit: cover;
-      border: 1px solid var(--line);
-      background: #000;
-      border-radius: 8px;
+      padding: 0.4rem 0;
     }
 
     .log {
+      position: relative;
       min-height: 0;
       overflow-y: auto;
       overscroll-behavior: contain;
-      padding: 1rem max(1rem, env(safe-area-inset-right)) 1.1rem max(1rem, env(safe-area-inset-left));
+      padding: 1rem max(1rem, env(safe-area-inset-right)) 1rem max(1rem, env(safe-area-inset-left));
       display: flex;
       flex-direction: column;
       gap: 0.7rem;
@@ -140,31 +92,53 @@
       border: 1px solid rgba(74,159,224,0.28);
     }
 
+    .stage {
+      display: none;
+      position: absolute;
+      top: 0.7rem;
+      right: max(0.7rem, env(safe-area-inset-right));
+      width: 4.4rem;
+      height: 5.4rem;
+      z-index: 2;
+    }
+    .stage.on { display: block; }
+    .stage video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #000;
+    }
+
     .dock {
       border-top: 1px solid var(--line);
-      padding: 0.65rem max(0.75rem, env(safe-area-inset-right)) calc(0.65rem + env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
-      background: rgba(5,5,8,0.96);
+      padding: 0.55rem max(0.75rem, env(safe-area-inset-right)) calc(0.55rem + env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+      background: #050508;
     }
     .err {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: #f87171;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
     form {
       display: grid;
-      grid-template-columns: auto 1fr auto auto;
+      grid-template-columns: auto 1fr auto;
       gap: 0.4rem;
       align-items: end;
     }
-    form button.icon {
+    form button.icon,
+    form button.send {
       width: 44px;
       height: 44px;
-      border: 1px solid var(--line);
       border-radius: 12px;
-      background: transparent;
-      color: var(--text);
       font-size: 1.05rem;
       line-height: 1;
+    }
+    form button.icon {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
     }
     form button.icon.on {
       background: var(--cyan);
@@ -174,7 +148,7 @@
     textarea {
       width: 100%;
       min-height: 44px;
-      max-height: 96px;
+      max-height: 88px;
       resize: none;
       padding: 0.7rem 0.85rem;
       border-radius: 14px;
@@ -186,42 +160,32 @@
       line-height: 1.35;
     }
     form button.send {
-      width: 44px;
-      height: 44px;
       border: 0;
-      border-radius: 12px;
       background: #fff;
       color: #050508;
       font-weight: 800;
-      font-size: 1.1rem;
     }
   </style>
 </head>
 <body>
   <header>
     <a class="brand" href="/index.html?land=1">
-      <img src="/logo-helix.svg" alt="DualisCapax" />
+      <img src="/brand/logo-mark-dark.svg" alt="DualisCapax" />
     </a>
-    <div class="who">
-      <b>Iris</b>
-      <span>Logic AI</span>
-    </div>
-    <a class="home" href="/index.html?land=1">Home</a>
+    <div class="who" id="who">Iris</div>
   </header>
 
-  <div class="stage" id="stage">
-    <div class="iris-face"><img src="/brand/emblem-helix.svg" alt="" /></div>
-    <video class="you" id="you" autoplay muted playsinline aria-label="You"></video>
+  <div class="log" id="log">
+    <div class="stage" id="stage">
+      <video id="you" autoplay muted playsinline aria-label="You"></video>
+    </div>
   </div>
-
-  <div class="log" id="log"></div>
 
   <div class="dock">
     <p class="err" id="err" hidden></p>
     <form id="form">
       <button class="icon" type="button" id="talk" aria-label="Talk">●</button>
       <textarea id="input" rows="1" placeholder="Message Iris"></textarea>
-      <button class="icon" type="button" id="files" aria-label="Attach">+</button>
       <button class="send" type="submit" aria-label="Send">↑</button>
     </form>
     <input id="file" type="file" hidden accept="image/jpeg,image/png,image/webp,text/plain,text/markdown,text/csv,application/json,application/pdf,.txt,.md,.csv,.json,.pdf" />
@@ -268,7 +232,7 @@
     }
     function fitBox() {
       input.style.height = "44px";
-      input.style.height = Math.min(96, input.scrollHeight) + "px";
+      input.style.height = Math.min(88, input.scrollHeight) + "px";
     }
     async function send(text) {
       text = (text || "").trim();
@@ -317,7 +281,7 @@
       rec.start();
     });
 
-    document.querySelector(".who").addEventListener("click", function () {
+    document.getElementById("who").addEventListener("click", function () {
       taps += 1;
       clearTimeout(tapTimer);
       tapTimer = setTimeout(function () { taps = 0; }, 600);
@@ -344,9 +308,13 @@
       }).catch(function () { showErr("Camera did not open."); });
     });
 
-    document.getElementById("files").addEventListener("click", function () {
-      document.getElementById("file").click();
+    var hold;
+    document.querySelector(".send").addEventListener("pointerdown", function () {
+      hold = setTimeout(function () { document.getElementById("file").click(); }, 650);
     });
+    document.querySelector(".send").addEventListener("pointerup", function () { clearTimeout(hold); });
+    document.querySelector(".send").addEventListener("pointerleave", function () { clearTimeout(hold); });
+
     document.getElementById("file").addEventListener("change", async function (e) {
       var f = e.target.files && e.target.files[0];
       e.target.value = "";
