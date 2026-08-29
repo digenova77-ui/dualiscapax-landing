@@ -2,7 +2,7 @@
 window.DC_PAYMENTS = {
   interac_enabled: true,
   eft_enabled: true,
-  sri_enabled: false,
+  sri_enabled: true,
   research: "",
   cost_reduction: "",
   capacity: "",
