@@ -1,7 +1,7 @@
 # DualisCapax · Agent Handoff
 
-**Current as of:** `2026-08-29T07:04:00Z` (UTC)
-**Local context:** 2026-08-29 03:04 AM EDT
+**Current as of:** `2026-08-29T07:08:00Z` (UTC)
+**Local context:** 2026-08-29 03:08 AM EDT
 **Repo:** `digenova77-ui/dualiscapax-landing` · `main`
 **Live:** https://dualiscapax.ai/
 **Rule:** Future agents start here. Do not start behind this timestamp. Update after every ship.
@@ -10,7 +10,7 @@
 
 ## 0. Start the next prompt with
 
-Medical door is live for .org / .gov / SEAL-1 ranking affiliates. Bind more ranking marks if Dualis issues them. Card / Stripe still closed.
+Iris kernel is live (`ai/dclm-look.js` v kernel-2026-08-29). Ontario Measure sheet is live at `/measure.html`. Card / Stripe still closed.
 
 ---
 
@@ -21,16 +21,16 @@ Medical door is live for .org / .gov / SEAL-1 ranking affiliates. Bind more rank
 - **Offer:** a prediction model shaped to the visitor's constraints, built ahead of time. Simulation is not treatment. Not a coin. Not a diagnosis. Not shares.
 - **Motto:** Truth Prevails · No tribes preferred · No shove
 - **Law:** Ontario and Canadian law apply.
-- **Rails live:** Fuel (crypto), SRI-1 hash bind, Donate (Interac + crypto), HUD onboard door. Card waits.
+- **Rails live:** Fuel (crypto), SRI-1 hash bind, Donate (Interac + crypto), HUD onboard door, Ontario Measure sheet. Card waits.
 - **Medical door:** .org · .gov · ranking affiliate at top SEAL tier. Law: `research/MEDICAL-GATE.md`.
 
 ---
 
-## 2. What shipped 29 Aug ~03:04 EDT
+## 2. What shipped 29 Aug ~03:08 EDT
 
-- Sphere: DNA off, hex cage off, rounded vantablack ball, wordmark wrapped.
-- Medical gate open under constraint: `js/medical-gate.js`, `/research/healthcare/`, `/research/healthcare/locked.html`.
-- Library no longer a dead closed stub after grant.
+- Iris: `ai/app.html` already called `DCLMLook.run`. Kernel expanded. `ai/portal.js` now calls the same kernel. First person. Short. Veto first.
+- Ontario Measure: `/measure.html` · `DC-MS-ON-TOU-1` · energy line invert + SHA-256 sheet hash.
+- Tools / HUD copy point at the sheet.
 
 ---
 
@@ -44,10 +44,9 @@ Medical door is live for .org / .gov / SEAL-1 ranking affiliates. Bind more rank
 
 ## 4. Still leftover
 
-1. `ai/portal.js` is still keyword lookup — not wired to the kernel
-2. Card / Stripe Payment Link still closed
-3. Drive file-body write WAIT_GRANT
-4. One Ontario Measure sheet still unwrapped
-5. Email is session-checked, not mailbox-verified
+1. Card / Stripe Payment Link still closed
+2. Drive file-body write WAIT_GRANT
+3. Medical email is session-checked, not mailbox-verified
+4. Iris has no remote model stream — book + veto only
 
 **Truth prevails.**

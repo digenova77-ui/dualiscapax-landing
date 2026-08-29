@@ -73,7 +73,15 @@ window.DC_FOUNDING = {
     var m=document.getElementById('measure');
     if(m){
       var c=m.querySelector('.closed');
-      if(c) c.innerHTML='<strong>HUD epoch resets 3:00 AM EDT.</strong> Fuel and Residual Law are live. Card waits on Stripe.';
+      if(c) c.innerHTML='<strong>Ontario Measure is live.</strong> Time-of-use leftover. Fuel and Residual Law stay open. Card waits on Stripe.';
+      var br=m.querySelector('.sec-break');
+      if(br && !m.querySelector('[data-measure-link]')){
+        var s=document.createElement('a');
+        s.href='/measure.html';
+        s.setAttribute('data-measure-link','1');
+        s.textContent='Ontario sheet';
+        br.appendChild(s);
+      }
     }
     var nav=document.getElementById('nav-panel');
     if(nav && !nav.querySelector('[href="/onboard.html"]')){
@@ -81,6 +89,12 @@ window.DC_FOUNDING = {
       n.href='/onboard.html';
       n.textContent='Onboard';
       nav.appendChild(n);
+    }
+    if(nav && !nav.querySelector('[href="/measure.html"]')){
+      var nm=document.createElement('a');
+      nm.href='/measure.html';
+      nm.textContent='Measure';
+      nav.appendChild(nm);
     }
     tickOpen();
     setInterval(tickOpen, 250);
