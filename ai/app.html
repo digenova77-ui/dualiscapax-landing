@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
@@ -12,26 +12,17 @@
 <link rel="apple-touch-icon" href="icon.svg"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --bg:#050508;--fg:#f4f4f5;--muted:rgba(244,244,245,.55);--line:rgba(158,197,255,.18);
-  --blue:#9ec5ff;--you:rgba(158,197,255,.14);
-}
+:root{--bg:#050508;--fg:#f4f4f5;--muted:rgba(244,244,245,.55);--line:rgba(158,197,255,.18);--blue:#9ec5ff;--you:rgba(158,197,255,.14)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans",system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none}
+html,body{height:100%;background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
 body{height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
-header{
-  display:flex;align-items:center;gap:.6rem;min-height:3rem;
-  padding:env(safe-area-inset-top) max(.85rem,env(safe-area-inset-right)) 0 max(.85rem,env(safe-area-inset-left));
-  border-bottom:1px solid var(--line);background:#050508;
-}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+header{display:flex;align-items:center;gap:.6rem;min-height:3rem;padding:env(safe-area-inset-top) max(.85rem,env(safe-area-inset-right)) 0 max(.85rem,env(safe-area-inset-left));border-bottom:1px solid var(--line);background:#050508}
 .brand{display:flex;align-items:center;min-width:0;text-decoration:none;color:inherit}
 .brand img{height:1.2rem;width:auto;display:block}
 .who{margin-left:.2rem;font:600 .68rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .tools{margin-left:auto;display:flex;gap:.35rem}
-.tools button{
-  width:2.2rem;height:2.2rem;border:1px solid var(--line);background:transparent;color:var(--fg);
-  font:600 .72rem "IBM Plex Mono",ui-monospace,monospace;
-}
+.tools button{width:2.2rem;height:2.2rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .72rem "IBM Plex Mono",ui-monospace,monospace}
 .tools button.on{border-color:var(--blue);color:var(--blue)}
 .log{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:1rem max(1rem,env(safe-area-inset-right)) 1rem max(1rem,env(safe-area-inset-left));display:flex;flex-direction:column;gap:.65rem}
 .bubble{max-width:min(34rem,92%);padding:.8rem .95rem;font-size:1.05rem;line-height:1.5}
@@ -43,56 +34,48 @@ header{
 .stage video{width:100%;height:100%;object-fit:cover;border:1px solid var(--line);background:#000}
 .dock{border-top:1px solid var(--line);padding:.45rem max(.75rem,env(safe-area-inset-right)) calc(.5rem + env(safe-area-inset-bottom)) max(.75rem,env(safe-area-inset-left));background:#050508}
 .chips{display:flex;gap:.4rem;overflow-x:auto;padding:0 0 .45rem;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
-.chips button{
-  flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--blue);
-  font:600 .68rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .65rem;
-}
+.chips button{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--blue);font:600 .68rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .65rem}
 .err{font-size:.78rem;color:#f87171;margin-bottom:.3rem}
 form{display:grid;grid-template-columns:auto auto 1fr auto;gap:.35rem;align-items:end}
-form button{
-  width:44px;height:44px;border:1px solid var(--line);background:transparent;color:var(--fg);font-size:1rem;
-}
+form button{width:44px;height:44px;border:1px solid var(--line);background:transparent;color:var(--fg);font-size:1rem}
 form button.on{background:var(--blue);color:#050508;border-color:var(--blue)}
 form button.send{border:0;background:#fff;color:#050508;font-weight:800}
-textarea{
-  width:100%;min-height:44px;max-height:96px;resize:none;padding:.7rem .8rem;
-  border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-size:1.02rem;line-height:1.35;
-  -webkit-user-select:text;user-select:text;
-}
+textarea{width:100%;min-height:44px;max-height:96px;resize:none;padding:.7rem .8rem;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-size:1.02rem;line-height:1.35}
 </style>
 </head>
 <body>
+<a class="sr" href="#input">Skip to message</a>
 <header>
-  <a class="brand" href="/index.html?land=1"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax"/><span class="who" id="who">Iris</span></a>
+  <a class="brand" href="/index.html?land=1"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who" id="who">Iris</span></a>
   <div class="tools">
-    <button type="button" id="hear" class="on" aria-label="Hear replies" title="Hear">♪</button>
-    <button type="button" id="cam" aria-label="Camera" title="Camera">□</button>
-    <button type="button" id="wipe" aria-label="Clear" title="Clear">×</button>
+    <button type="button" id="hear" class="on" aria-pressed="true" aria-label="Screen reader voice on">♪</button>
+    <button type="button" id="cam" aria-pressed="false" aria-label="Open camera">□</button>
+    <button type="button" id="wipe" aria-label="Clear chat">×</button>
   </div>
 </header>
-<div class="log" id="log">
-  <div class="stage" id="stage"><video id="you" autoplay muted playsinline aria-label="You"></video></div>
+<div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Iris conversation">
+  <div class="stage" id="stage"><video id="you" autoplay muted playsinline aria-label="Live camera"></video></div>
 </div>
+<p class="sr" id="announce" aria-live="assertive"></p>
 <div class="dock">
-  <div class="chips" id="chips">
+  <div class="chips" id="chips" aria-label="Suggested questions">
     <button type="button" data-q="What can you do?">Help</button>
+    <button type="button" data-q="Can you see me?">See</button>
+    <button type="button" data-q="Read the screen">Read</button>
     <button type="button" data-q="Ontario measure sheet">Bill</button>
-    <button type="button" data-q="What is Fuel?">Fuel</button>
-    <button type="button" data-q="How do I donate?">Donate</button>
   </div>
-  <p class="err" id="err" hidden></p>
-  <form id="form">
-    <button type="button" id="filebtn" aria-label="Attach">+</button>
-    <button type="button" id="talk" aria-label="Talk">●</button>
-    <textarea id="input" rows="1" placeholder="Ask Iris"></textarea>
+  <p class="err" id="err" hidden role="alert"></p>
+  <form id="form" aria-label="Message Iris">
+    <button type="button" id="filebtn" aria-label="Attach a file">+</button>
+    <button type="button" id="talk" aria-pressed="false" aria-label="Talk">●</button>
+    <textarea id="input" rows="1" placeholder="Ask Iris" aria-label="Message"></textarea>
     <button class="send" type="submit" aria-label="Send">↑</button>
   </form>
   <input id="file" type="file" hidden accept="image/jpeg,image/png,image/webp,text/plain,text/markdown,text/csv,application/json,application/pdf,.txt,.md,.csv,.json,.pdf"/>
 </div>
 <script src="/js/no-select.js"></script>
 <script src="/assets/haptic.js"></script>
-<script src="dclm-look.js"></script>
+<script src="dclm-look.js?v=29d"></script>
 <script>
 (function(){
   if(navigator.serviceWorker){
@@ -105,11 +88,12 @@ textarea{
   var input=document.getElementById("input");
   var chips=document.getElementById("chips");
   var hearBtn=document.getElementById("hear");
+  var announce=document.getElementById("announce");
   var KEY="dc.iris.v1";
-  var stream=null, rec=null, listening=false, videoOn=false;
+  var stream=null, rec=null, listening=false, videoOn=false, lastIris="";
   var hear=true;
   if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches) hear=false;
-  if(!hear) hearBtn.classList.remove("on");
+  if(!hear){ hearBtn.classList.remove("on"); hearBtn.setAttribute("aria-pressed","false"); hearBtn.setAttribute("aria-label","Screen reader voice off"); }
 
   function tap(){ try{ if(navigator.vibrate) navigator.vibrate(12); }catch(e){} }
   function showErr(t){ errEl.hidden=!t; errEl.textContent=t||""; }
@@ -126,18 +110,19 @@ textarea{
     var d=document.createElement("div");
     d.className="bubble "+who;
     d.setAttribute("data-text", text);
+    d.setAttribute("role","article");
+    d.setAttribute("aria-label", (who==="you"?"You said. ":"Iris said. ")+text);
     d.textContent=text;
     if(extra.href){
       d.setAttribute("data-href", extra.href);
       d.setAttribute("data-label", extra.label||"Open");
       var a=document.createElement("a");
-      a.href=extra.href;
-      a.textContent=extra.label||"Open";
-      d.appendChild(document.createElement("br"));
-      d.appendChild(a);
+      a.href=extra.href; a.textContent=extra.label||"Open";
+      d.appendChild(document.createElement("br")); d.appendChild(a);
     }
     if(who==="them"){
-      d.title="Tap to copy";
+      lastIris=text;
+      announce.textContent="Iris. "+text;
       d.addEventListener("click", function(e){
         if(e.target.tagName==="A") return;
         if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -157,9 +142,26 @@ textarea{
     u.rate=0.94; u.lang="en-CA";
     window.speechSynthesis.speak(u);
   }
-  function fitBox(){
-    input.style.height="44px";
-    input.style.height=Math.min(96, input.scrollHeight)+"px";
+  function fitBox(){ input.style.height="44px"; input.style.height=Math.min(96, input.scrollHeight)+"px"; }
+  async function hexOf(s){
+    var buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0");}).join("");
+  }
+  async function grabFrame(){
+    if(!videoOn || !you.videoWidth) return { live:false };
+    var c=document.createElement("canvas");
+    var w=you.videoWidth, h=you.videoHeight;
+    c.width=Math.min(320,w); c.height=Math.round(c.width*h/w);
+    var x=c.getContext("2d");
+    x.drawImage(you,0,0,c.width,c.height);
+    var pix=x.getImageData(0,0,c.width,c.height).data;
+    var sum=0, n=0, sample="";
+    for(var i=0;i<pix.length;i+=64){
+      sum += pix[i]*0.3 + pix[i+1]*0.59 + pix[i+2]*0.11;
+      n++;
+      if(sample.length<48) sample += pix[i]+",";
+    }
+    return { live:true, w:w, h:h, luma: n? sum/n : 0, hash: await hexOf(w+"x"+h+"|"+sample) };
   }
   async function send(text){
     text=(text||"").trim();
@@ -168,48 +170,50 @@ textarea{
     add("you", text);
     input.value=""; fitBox();
     if(!window.DCLMLook){ add("them", "I don't know that. I won't invent it."); return; }
-    var recu=await DCLMLook.run(text,{voice:"you",case_id:"look-app"});
+    var vision=await grabFrame();
+    var recu=await DCLMLook.run(text,{ voice:"you", case_id:"look-app", vision:vision, last:lastIris });
     var spoken=recu&&recu.spoken?recu.spoken:"I don't know that. I won't invent it.";
     add("them", spoken, {href:recu&&recu.href, label:recu&&recu.label});
     speakOut(spoken);
-  }
-  async function hexOf(s){
-    var buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-    return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0");}).join("");
   }
 
   document.getElementById("form").addEventListener("submit", function(e){ e.preventDefault(); tap(); send(input.value); });
   input.addEventListener("input", fitBox);
   input.addEventListener("keydown", function(e){ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); tap(); send(input.value); } });
-  chips.querySelectorAll("button").forEach(function(b){
-    b.addEventListener("click", function(){ tap(); send(b.getAttribute("data-q")); });
-  });
+  chips.querySelectorAll("button").forEach(function(b){ b.addEventListener("click", function(){ tap(); send(b.getAttribute("data-q")); }); });
 
   document.getElementById("talk").addEventListener("click", function(){
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(!SR){ showErr("Talk needs a mic. Type instead."); return; }
-    if(listening&&rec){ rec.stop(); listening=false; this.classList.remove("on"); return; }
+    if(listening&&rec){ rec.stop(); listening=false; this.classList.remove("on"); this.setAttribute("aria-pressed","false"); return; }
     rec=new SR(); rec.lang="en-CA"; rec.interimResults=false;
     rec.onresult=function(ev){ send(ev.results[0][0].transcript); };
-    rec.onend=function(){ listening=false; document.getElementById("talk").classList.remove("on"); };
+    rec.onend=function(){ listening=false; var t=document.getElementById("talk"); t.classList.remove("on"); t.setAttribute("aria-pressed","false"); };
     rec.onerror=rec.onend;
-    listening=true; this.classList.add("on"); rec.start();
+    listening=true; this.classList.add("on"); this.setAttribute("aria-pressed","true"); rec.start();
   });
 
   hearBtn.addEventListener("click", function(){
     hear=!hear;
     this.classList.toggle("on", hear);
+    this.setAttribute("aria-pressed", hear?"true":"false");
+    this.setAttribute("aria-label", hear?"Screen reader voice on":"Screen reader voice off");
     if(!hear&&window.speechSynthesis) window.speechSynthesis.cancel();
+    else if(hear&&lastIris) speakOut(lastIris);
   });
 
   document.getElementById("cam").addEventListener("click", function(){
     if(videoOn){
       if(stream) stream.getTracks().forEach(function(t){ t.stop(); });
-      stream=null; you.srcObject=null; videoOn=false; stage.classList.remove("on"); this.classList.remove("on"); return;
+      stream=null; you.srcObject=null; videoOn=false; stage.classList.remove("on");
+      this.classList.remove("on"); this.setAttribute("aria-pressed","false"); this.setAttribute("aria-label","Open camera");
+      announce.textContent="Camera off."; return;
     }
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ showErr("Camera did not open."); return; }
     navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false}).then(function(s){
-      stream=s; you.srcObject=s; videoOn=true; stage.classList.add("on"); document.getElementById("cam").classList.add("on"); showErr("");
+      stream=s; you.srcObject=s; videoOn=true; stage.classList.add("on");
+      var cam=document.getElementById("cam"); cam.classList.add("on"); cam.setAttribute("aria-pressed","true"); cam.setAttribute("aria-label","Close camera");
+      showErr(""); announce.textContent="Camera on.";
     }).catch(function(){ showErr("Camera did not open."); });
   });
 
@@ -221,15 +225,15 @@ textarea{
     add("you", f.name||"A file leftover.");
     var receipt=await hexOf([f.name,f.size,f.lastModified,f.type].join("|"));
     var spoken="File "+(f.name||"unnamed").slice(0,80)+". "+f.size+" bytes. Receipt "+receipt.slice(0,16)+". I keep a receipt, not the body.";
-    add("them", spoken);
-    speakOut(spoken);
+    add("them", spoken); speakOut(spoken);
   });
 
   document.getElementById("wipe").addEventListener("click", function(){
     log.querySelectorAll(".bubble").forEach(function(b){ b.remove(); });
     try{ sessionStorage.removeItem(KEY); }catch(e){}
-    chips.hidden=false;
+    chips.hidden=false; lastIris="";
     add("them", "I'm Iris. Ask. If I don't know, I'll say so.");
+    speakOut("I'm Iris. Ask. If I don't know, I'll say so.");
   });
 
   var restored=false;
