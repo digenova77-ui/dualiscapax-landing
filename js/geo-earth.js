@@ -143,30 +143,48 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
   t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;earthMat.map=t;earthMat.needsUpdate=true;
 });
 
+// Geodesic outer shell (icosahedron)
+const GEO_DETAIL=3; // 320 faces — readable geodesic, not muddy
+const bodyGeo=new THREE.IcosahedronGeometry(R, GEO_DETAIL);
 const body=new THREE.Mesh(
-  new THREE.SphereGeometry(R,128,96),
+  bodyGeo,
   new THREE.MeshPhongMaterial({
     color:0x000000,
     emissive:new THREE.Color(0x05070c),
     specular:new THREE.Color(0x2a3a55),
     shininess:26,
-    transparent:false
+    flatShading:true
   })
 );
 body.renderOrder=1;
 group.add(body);
 
+// Geodesic edge lattice
+const edgeGeo=new THREE.EdgesGeometry(bodyGeo, 1);
+const edges=new THREE.LineSegments(
+  edgeGeo,
+  new THREE.LineBasicMaterial({
+    color:0x7eb6ff,
+    transparent:true,
+    opacity:0.42,
+    depthWrite:false
+  })
+);
+edges.renderOrder=3;
+edges.scale.setScalar(1.002);
+group.add(edges);
+
 const limb=new THREE.Mesh(
-  new THREE.SphereGeometry(R+0.01,128,96),
+  new THREE.IcosahedronGeometry(R+0.012, GEO_DETAIL),
   new THREE.MeshBasicMaterial({
-    color:0x7eb6ff,transparent:true,opacity:0.22,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending
+    color:0x7eb6ff,transparent:true,opacity:0.18,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending
   })
 );
 limb.renderOrder=1;
 group.add(limb);
 
 const shell=new THREE.Mesh(
-  new THREE.SphereGeometry(R+0.012,128,96),
+  new THREE.IcosahedronGeometry(R+0.014, GEO_DETAIL),
   new THREE.MeshBasicMaterial({
     map:markTex,transparent:true,opacity:1,depthWrite:false,side:THREE.FrontSide
   })
