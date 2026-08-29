@@ -16,6 +16,20 @@ const mtx=mark.getContext('2d');
 const PHI=(1+Math.sqrt(5))/2;
 const CAGE_R=0.933;
 
+function stampWord(ctx,x,y){
+  ctx.save();
+  ctx.font='700 128px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.shadowColor='#ffffff';
+  ctx.shadowBlur=56;
+  ctx.fillStyle='#ffffff';
+  ctx.fillText('DualisCapax',x,y);
+  ctx.shadowBlur=18;
+  ctx.fillStyle='#ffffff';
+  ctx.fillText('DualisCapax',x,y);
+  ctx.restore();
+}
 function stampRing(ctx,img,x,y,size,alpha){
   if(!img)return;
   ctx.save();
@@ -25,7 +39,7 @@ function stampRing(ctx,img,x,y,size,alpha){
 }
 function stampEquator(ctx,img){
   if(!img)return;
-  const size=88;
+  const size=72;
   const y=h*0.5-size/2;
   ctx.drawImage(img,w*0.5-size/2,y,size,size);
   ctx.drawImage(img,-size/2,y,size,size);
@@ -48,6 +62,8 @@ function keepPent(n){
 function paintField(img,pents){
   ftx.fillStyle='#050506';
   ftx.fillRect(0,0,w,h);
+  stampWord(ftx,w*0.25,h*0.5);
+  stampWord(ftx,w*0.75,h*0.5);
   stampEquator(ftx,img);
   (pents||[]).forEach(function(p){
     if(!keepPent(p.n))return;
@@ -56,6 +72,8 @@ function paintField(img,pents){
 }
 function paintMarks(img,pents){
   mtx.clearRect(0,0,w,h);
+  stampWord(mtx,w*0.25,h*0.5);
+  stampWord(mtx,w*0.75,h*0.5);
   stampEquator(mtx,img);
   (pents||[]).forEach(function(p){
     if(!keepPent(p.n))return;
@@ -124,7 +142,7 @@ loader.load('https://unpkg.com/three-globe@2.41.12/example/img/earth-blue-marble
 
 const body=new THREE.Mesh(
   new THREE.SphereGeometry(0.92,96,72),
-  new THREE.MeshBasicMaterial({color:0x050506,transparent:true,opacity:0.40,depthWrite:false})
+  new THREE.MeshBasicMaterial({map:tex,transparent:true,opacity:0.46,depthWrite:false})
 );
 body.renderOrder=1;
 group.add(body);
@@ -228,49 +246,9 @@ group.add(glow);group.add(cageCore);
 
 const shell=new THREE.Mesh(
   new THREE.SphereGeometry(0.948,96,72),
-  new THREE.MeshBasicMaterial({map:markTex,transparent:true,depthWrite:false,alphaTest:0.08})
+  new THREE.MeshBasicMaterial({map:markTex,transparent:true,depthWrite:false,alphaTest:0.04,opacity:1})
 );
 group.add(shell);
-
-function makeWordTex(){
-  const c=document.createElement('canvas');
-  c.width=2048;c.height=320;
-  const x=c.getContext('2d');
-  x.clearRect(0,0,2048,320);
-  x.font='700 220px "IBM Plex Sans", Inter, Arial, sans-serif';
-  x.textAlign='center';
-  x.textBaseline='middle';
-  x.shadowColor='#7eb6ff';
-  x.shadowBlur=42;
-  x.fillStyle='#9ec5ff';
-  x.fillText('DualisCapax',1024,160);
-  x.shadowBlur=16;
-  x.fillStyle='#f4f7ff';
-  x.fillText('DualisCapax',1024,160);
-  const t=new THREE.CanvasTexture(c);
-  t.colorSpace=THREE.SRGBColorSpace;
-  t.anisotropy=8;
-  return t;
-}
-const wordTex=makeWordTex();
-const wordOrbit=new THREE.Group();
-scene.add(wordOrbit);
-const ORBIT_R=1.055;
-const WORD_ARC=2.05;
-function makeWordBand(yaw){
-  const mesh=new THREE.Mesh(
-    new THREE.CylinderGeometry(ORBIT_R,ORBIT_R,0.34,72,1,true,-WORD_ARC/2,WORD_ARC),
-    new THREE.MeshBasicMaterial({
-      map:wordTex,transparent:true,depthWrite:false,side:THREE.DoubleSide,alphaTest:0.08
-    })
-  );
-  mesh.rotation.y=yaw+Math.PI/2;
-  mesh.renderOrder=8;
-  wordOrbit.add(mesh);
-  return {mesh:mesh,yaw:yaw};
-}
-const wordA=makeWordBand(0);
-const wordB=makeWordBand(Math.PI);
 
 function makeDotTex(hex){
   const c=document.createElement('canvas');c.width=64;c.height=64;
@@ -416,7 +394,6 @@ goldLight.position.set(0,0,0);
 group.add(goldLight);
 
 const OMEGA=Math.PI*2/28;
-const WORD_OMEGA=Math.PI*2/8;
 const camDir=new THREE.Vector3(0,0,1);
 let last=performance.now();
 function frame(now){
@@ -424,11 +401,6 @@ function frame(now){
   last=now;
   group.rotation.y+=OMEGA*dt;
   earth.rotation.y+=OMEGA*dt*0.35;
-  wordOrbit.rotation.y+=WORD_OMEGA*dt;
-  [wordA,wordB].forEach(function(b){
-    const facing=Math.cos(wordOrbit.rotation.y+b.yaw);
-    b.mesh.material.opacity=facing<0?0.22:1;
-  });
   let energy=0;
   for(let i=0;i<feeds.length;i++){
     const f=feeds[i];
