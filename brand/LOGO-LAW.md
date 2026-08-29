@@ -1,16 +1,11 @@
 # LOGO LAW
 Updated 28 August 2026. Owner mark. Do not restyle.
 
-## Public marks
-- `brand/emblem-ring.svg` — circular gold-to-blue helix. Background stripped. No tail.
+## Public mark
 - `brand/word-dark.svg` — DualisCapax word only, white, centered.
 
-The trailing DNA strand is retired. Do not put a helix after Capax.
+The trailing DNA strand / XD tail is retired. Do not put a helix after Capax.
 Do not restore the tail.
+Aliases (`brand/logo-dna-x.svg`, `brand/logo-mark-dark.svg`, `brand/wordmark.svg`) point at the same word-only file.
 
-Source plate: operator circular helix still of 28 August 2026.
-The circular mark sits over the word. The word is centered.
-
-## Wired
-- Home stacks emblem over word (`brand/emblem-ring.svg` + `brand/word-dark.svg`).
-- Iris header is emblem then word, same two files.
+The circular helix emblem is a separate plate. It does not sit to the right of the word.
