@@ -1,7 +1,7 @@
 # DualisCapax · Agent Handoff
 
-**Current as of:** `2026-08-28T08:28:00Z` (UTC)
-**Local context:** 2026-08-28 04:28 AM EDT
+**Current as of:** `2026-08-29T01:50:00Z` (UTC)
+**Local context:** 2026-08-28 09:50 PM EDT
 **Repo:** `digenova77-ui/dualiscapax-landing` · `main`
 **Live:** https://dualiscapax.ai/
 **Rule:** Future agents start here. Do not start behind this timestamp. Update after every ship.
@@ -25,17 +25,16 @@ Did you want to wire Iris (`ai/portal.js`) to the DCLM kernel, wrap one Ontario 
 
 ---
 
-## 2. What shipped 28 Aug 04:28 EDT
+## 2. What shipped 28 Aug 21:50 EDT
 
-DCLM-AI logical kernel under `engine/dclm/`.
+Owner plates baked as SVG law.
 
-- Layer [0] veto is executable, not a slogan
-- Meter refuses to invent residual numbers (SEED)
-- P2 cannot graduate to P1
-- 19 tests pass locally
-- CLI: `python -m engine.dclm --voice cfo 'Belleville overtime is $180000. Time-boxed pilot can walk back.'`
+- `brand/logo-mark-dark.svg` / `brand/logo-mark-light.svg` redrawn from the 28 Aug plates (word + figure-8 helix + tail)
+- Aliases updated: `logo-dark.svg`, `logo-light.svg`, `logo-helix.svg`, `brand/logo-dna-x.svg`, `brand/wordmark.svg`
+- `brand/LOGO-LAW.md` sealed to those two marks
+- Iris (`ai/app.html`): full-viewport 3-row shell. Camera is overlay only — no fourth grid row. Home text button and attach button removed. Logo is the home link. Long-press send attaches.
 
-Lander drop not touched. Seats not reopened.
+Lander copy not rewritten. Seats not reopened.
 
 ---
 
