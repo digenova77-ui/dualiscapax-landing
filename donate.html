@@ -19,7 +19,8 @@ h1{font-size:clamp(1.7rem,7vw,2.4rem);font-weight:600;letter-spacing:.02em;text-
 .lede{font-size:1.05rem;line-height:1.55;color:rgba(245,245,245,.72);margin-bottom:1.1rem}
 .go,.alt{display:block;width:100%;min-height:2.6rem;margin:0 0 .55rem;border:1px solid rgba(158,197,255,.22);background:rgba(255,255,255,.03);color:#9ec5ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
 .go{min-height:3.1rem;border-color:rgba(158,197,255,.55);background:rgba(158,197,255,.14);color:#e8f1ff;font-size:.82rem}
-.go.ok,.alt.ok{border-color:rgba(126,200,140,.55);background:rgba(126,200,140,.16)}
+.go.ok,.alt.ok,.go.on,.alt.on{border-color:rgba(126,200,140,.55);background:rgba(126,200,140,.16)}
+.go.on:not(.ok),.alt.on:not(.ok){border-color:rgba(158,197,255,.75);background:rgba(158,197,255,.18)}
 .steps{border:1px solid rgba(158,197,255,.22);padding:.9rem 1rem;margin:0 0 1rem;font-size:.98rem;line-height:1.5;color:rgba(245,245,245,.78)}
 .steps strong{display:block;color:#f5f5f5;margin-bottom:.35rem}
 .steps ol{margin:.2rem 0 0 1.1rem}
@@ -32,9 +33,9 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
 <body>
 <div class="wrap">
   <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/ai/app">Iris</a></div>
-  <p class="kicker">Two rails</p>
+  <p class="kicker">One rail</p>
   <h1>Fund the work</h1>
-  <p class="lede">CAD: Interac e-Transfer. Everything else: crypto. No card. No Stripe.</p>
+  <p class="lede">One rail. One send. CAD via Interac, or one crypto chain. No card. No Stripe.</p>
   <button type="button" class="go" id="interac">Send Interac e-Transfer</button>
   <button type="button" class="alt" id="eft">Send EFT</button>
   <button type="button" class="alt" id="xrp">Research — XRP</button>
@@ -49,8 +50,8 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   <button type="button" class="alt" id="bch">Research — BCH</button>
   <button type="button" class="alt" id="doge">Iris time — DOGE</button>
   <div class="steps" id="howto" hidden></div>
-  <div class="closed"><strong>Card is off.</strong> That bank account is not a Stripe payout. Use e-Transfer or crypto.</div>
-  <p class="note">No tribes preferred. Voluntary. Invert rule holds.</p>
+  <div class="closed"><strong>Card is off.</strong> Use e-Transfer or one crypto rail per send.</div>
+  <p class="note">Voluntary. One rail per send.</p>
   <foot>DualisCapax · Truth Prevails</foot>
 </div>
 <script src="/js/payments-config.js"></script>
@@ -61,16 +62,36 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   var MAIL='donate@dualiscapax.ai';
   var box=document.getElementById('howto');
   var pay=window.DC_PAYMENTS||{};
+  var rails=[];
   function tap(){ try{if(navigator.vibrate)navigator.vibrate(12);}catch(e){} }
   function copy(t){ return (navigator.clipboard&&navigator.clipboard.writeText)?navigator.clipboard.writeText(t):Promise.reject(); }
+  function clearAll(except){
+    rails.forEach(function(r){
+      if(r.el===except) return;
+      r.el.classList.remove('on','ok');
+      r.el.textContent=r.label;
+    });
+  }
   function bind(id, on, addr, label, ok, html){
     var el=document.getElementById(id);
     if(!el)return;
     if(!on){el.hidden=true;return;}
+    var rec={el:el,label:label,ok:ok,addr:addr,html:html};
+    rails.push(rec);
     el.addEventListener('click',function(){
       tap();
-      if(addr) copy(addr).then(function(){el.classList.add('ok');el.textContent=ok;}).catch(function(){el.textContent=label;});
-      box.hidden=false; box.innerHTML=html;
+      clearAll(el);
+      el.classList.add('on');
+      el.classList.remove('ok');
+      el.textContent=label;
+      if(addr){
+        copy(addr).then(function(){
+          el.classList.add('ok');
+          el.textContent=ok;
+        }).catch(function(){});
+      }
+      box.hidden=false;
+      box.innerHTML=html+'<p style="margin-top:.55rem;font-size:.88rem;color:rgba(245,245,245,.55)">One rail only. Pick another if you change your mind.</p>';
     });
   }
   bind('interac', pay.interac_enabled!==false, MAIL, 'Send Interac e-Transfer', 'Copied — open your bank', '<strong>Research — Interac</strong><ol><li>Open your bank.</li><li>Paste Autodeposit from the tap.</li></ol>');
@@ -80,12 +101,12 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   bind('sol', !!(pay.crypto_enabled&&pay.research_sol), pay.research_sol, 'Research — SOL', 'SOL copied — open your wallet', '<strong>Research — SOL</strong><ol><li>Paste from the tap.</li></ol>');
   bind('eth', !!(pay.crypto_enabled&&pay.research_eth), pay.research_eth, 'Research — ETH', 'ETH copied — send on Ethereum', '<strong>Research — ETH</strong><ol><li>Send ETH on Ethereum.</li></ol>');
   bind('pol', !!(pay.crypto_enabled&&pay.research_pol), pay.research_pol, 'Research — Polygon', 'Polygon copied — send on Polygon', '<strong>Research — Polygon</strong><ol><li>Switch wallet to Polygon. Same 0x.</li></ol>');
-  bind('bsc', !!(pay.crypto_enabled&&pay.research_bsc), pay.research_bsc, 'Research — BNB', 'BNB copied — send on BNB Smart Chain', '<strong>Research — BNB Smart Chain</strong><ol><li>Switch to BNB Smart Chain. Not a Binance-exchange deposit.</li></ol>');
+  bind('bsc', !!(pay.crypto_enabled&&pay.research_bsc), pay.research_bsc, 'Research — BNB', 'BNB copied — send on BNB Smart Chain', '<strong>Research — BNB Smart Chain</strong><ol><li>Switch to BNB Smart Chain.</li></ol>');
   bind('link', !!(pay.crypto_enabled&&pay.research_link), pay.research_link, 'Research — LINK', 'LINK copied — send LINK token', '<strong>Research — LINK</strong><ol><li>Send LINK token on Ethereum.</li></ol>');
-  bind('dot', !!(pay.crypto_enabled&&pay.research_dot), pay.research_dot, 'Research — DOT', 'DOT copied — open Polkadot wallet', '<strong>Research — DOT</strong><ol><li>Send on Polkadot, not Kusama.</li></ol>');
+  bind('dot', !!(pay.crypto_enabled&&pay.research_dot), pay.research_dot, 'Research — DOT', 'DOT copied — open Polkadot wallet', '<strong>Research — DOT</strong><ol><li>Send on Polkadot.</li></ol>');
   bind('dgb', !!(pay.crypto_enabled&&pay.research_dgb), pay.research_dgb, 'Research — DGB', 'DGB copied — open DigiByte wallet', '<strong>Research — DGB</strong><ol><li>Send DigiByte only.</li></ol>');
-  bind('bch', !!(pay.crypto_enabled&&pay.research_bch), pay.research_bch, 'Research — BCH', 'BCH copied — open Bitcoin Cash wallet', '<strong>Research — BCH</strong><ol><li>Send Bitcoin Cash. Not Bitcoin.</li></ol>');
-  bind('doge', !!(pay.crypto_enabled&&pay.ai_doge), pay.ai_doge, 'Iris time — DOGE', 'DOGE copied — open your wallet', '<strong>Iris time — DOGE</strong><ol><li>Iris proceeds. Not medical.</li></ol>');
+  bind('bch', !!(pay.crypto_enabled&&pay.research_bch), pay.research_bch, 'Research — BCH', 'BCH copied — open Bitcoin Cash wallet', '<strong>Research — BCH</strong><ol><li>Send Bitcoin Cash.</li></ol>');
+  bind('doge', !!(pay.crypto_enabled&&pay.ai_doge), pay.ai_doge, 'Iris time — DOGE', 'DOGE copied — open your wallet', '<strong>Iris time — DOGE</strong><ol><li>Iris proceeds.</li></ol>');
 })();
 </script>
 </body>
