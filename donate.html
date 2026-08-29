@@ -34,7 +34,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/ai/app">Iris</a></div>
   <p class="kicker">Two rails</p>
   <h1>Fund the work</h1>
-  <p class="lede">Research: Interac, EFT, XRP, ZEC, SOL, ETH, Polygon, BNB, LINK, DOT, DGB, BCH. Iris time: DOGE.</p>
+  <p class="lede">CAD: Interac e-Transfer. Everything else: crypto. No card. No Stripe.</p>
   <button type="button" class="go" id="interac">Send Interac e-Transfer</button>
   <button type="button" class="alt" id="eft">Send EFT</button>
   <button type="button" class="alt" id="xrp">Research — XRP</button>
@@ -49,7 +49,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   <button type="button" class="alt" id="bch">Research — BCH</button>
   <button type="button" class="alt" id="doge">Iris time — DOGE</button>
   <div class="steps" id="howto" hidden></div>
-  <div class="closed"><strong>Card stays gated.</strong> Fuel and onboard stay gated.</div>
+  <div class="closed"><strong>Card is off.</strong> That bank account is not a Stripe payout. Use e-Transfer or crypto.</div>
   <p class="note">No tribes preferred. Voluntary. Invert rule holds.</p>
   <foot>DualisCapax · Truth Prevails</foot>
 </div>
@@ -84,7 +84,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
   bind('link', !!(pay.crypto_enabled&&pay.research_link), pay.research_link, 'Research — LINK', 'LINK copied — send LINK token', '<strong>Research — LINK</strong><ol><li>Send LINK token on Ethereum.</li></ol>');
   bind('dot', !!(pay.crypto_enabled&&pay.research_dot), pay.research_dot, 'Research — DOT', 'DOT copied — open Polkadot wallet', '<strong>Research — DOT</strong><ol><li>Send on Polkadot, not Kusama.</li></ol>');
   bind('dgb', !!(pay.crypto_enabled&&pay.research_dgb), pay.research_dgb, 'Research — DGB', 'DGB copied — open DigiByte wallet', '<strong>Research — DGB</strong><ol><li>Send DigiByte only.</li></ol>');
-  bind('bch', !!(pay.crypto_enabled&&pay.research_bch), pay.research_bch, 'Research — BCH', 'BCH copied — open Bitcoin Cash wallet', '<strong>Research — BCH</strong><ol><li>Paste the cashaddr from the tap.</li><li>Send Bitcoin Cash. Not Bitcoin.</li></ol>');
+  bind('bch', !!(pay.crypto_enabled&&pay.research_bch), pay.research_bch, 'Research — BCH', 'BCH copied — open Bitcoin Cash wallet', '<strong>Research — BCH</strong><ol><li>Send Bitcoin Cash. Not Bitcoin.</li></ol>');
   bind('doge', !!(pay.crypto_enabled&&pay.ai_doge), pay.ai_doge, 'Iris time — DOGE', 'DOGE copied — open your wallet', '<strong>Iris time — DOGE</strong><ol><li>Iris proceeds. Not medical.</li></ol>');
 })();
 </script>
