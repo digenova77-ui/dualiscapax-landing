@@ -1,0 +1,14 @@
+{
+  "name": "stripe-fulfill-v2",
+  "private": true,
+  "version": "0.1.0",
+  "description": "DualisCapax Stripe fulfill worker — checkout.session.completed",
+  "main": "worker.js",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "versions": "wrangler versions upload"
+  },
+  "devDependencies": {
+    "wrangler": "^4.33.1"
+  }
+}
