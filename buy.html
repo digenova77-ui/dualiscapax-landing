@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Buy — DualisCapax</title>
-<meta name="description" content="Priced residual packs and Fuel. Seats closed until settlement links are live. Equal-CAD crypto rail."/>
+<meta name="description" content="Priced residual packs and Fuel. Seats closed until live settlement links. Equal-CAD crypto rail."/>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/cta.css"/>
@@ -64,7 +64,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(25
 
   <p class="kicker">Catalog</p>
   <h1>What you can buy</h1>
-  <p class="lede">Prices from the live jacket. Seat packs wait on settlement. Fuel can use the crypto rail. Equal-CAD when open — not an exchange.</p>
+  <p class="lede">Prices from the live jacket. Seat packs wait on live settlement. Fuel can use the crypto rail. Equal-CAD when open — not an exchange.</p>
   <p class="sector" id="sectorLine" hidden></p>
 
   <div class="banner" id="banner">
@@ -103,12 +103,13 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(25
     open: false,
     list_currency: 'CAD',
     gateway_law: 'Do not invent prices at checkout.',
+    payment_links: { live: {}, test: {} },
     skus: {
       look: { name: 'Look', cad: 0, status: 'open' },
       basic: { name: 'Basic measure', cad: 0, status: 'open' },
       leaf: { name: 'Single leaf pack 12 mo', cad: 49, crypto_equal_cad: true, status: 'priced_closed' },
       branch: { name: 'Branch access 12 mo', cad: 149, crypto_equal_cad: true, status: 'priced_closed' },
-      library: { name: 'Full residual library 12 mo', cad: 499, crypto_equal_cad: true, status: 'priced_closed' },
+      library: { name: 'Domain library 12 mo', cad: 499, crypto_equal_cad: true, status: 'priced_closed' },
       depth_s: { name: 'Depth 40 Fuel', cad: 20, crypto_equal_cad: true, status: 'priced_closed' },
       depth_m: { name: 'Depth 120 Fuel', cad: 50, crypto_equal_cad: true, status: 'priced_closed' },
       depth_l: { name: 'Depth 320 Fuel', cad: 120, crypto_equal_cad: true, status: 'priced_closed' }
@@ -150,11 +151,20 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(25
     return FUEL_KEYS.indexOf(key) >= 0;
   }
 
+  /** Live link only when jacket.open; never surface test buy.stripe.com on production open path. */
+  function linkFor(key) {
+    var j = state.jacket;
+    if (!j || !j.open) return null;
+    var live = (j.payment_links && j.payment_links.live) || {};
+    var u = live[key];
+    return (u && typeof u === 'string' && u.indexOf('buy.stripe.com') === 0 && u.indexOf('/test_') < 0) ? u : null;
+  }
+
   function renderBanner(j) {
     if (j.open) {
       banner.innerHTML = '<strong>Checkout open.</strong> CAD list · equal residual crypto.';
     } else {
-      banner.innerHTML = '<strong>Seats closed.</strong> Prices are real; card links not wired. Fuel crypto rail is available on the Fuel page. ' + (j.gateway_law || '');
+      banner.innerHTML = '<strong>Seats closed.</strong> Prices are real; live card links not published. Sandbox catalog exists for operator test only. Fuel crypto rail on the Fuel page. ' + (j.gateway_law || '');
     }
   }
 
@@ -213,10 +223,18 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(25
       '</p><p style="color:rgba(245,245,245,0.55);font-size:0.92rem;margin-top:0.35rem">Status: ' + (s.status || '—') + '</p>';
 
     howto.className = 'howto';
+    var payUrl = linkFor(key);
+
     if (isOpenSku(s)) {
       btnPay.disabled = false;
       btnPay.textContent = 'Continue free → Iris';
       btnPay.onclick = function () { location.href = 'ai/app.html'; };
+    } else if (payUrl) {
+      btnPay.disabled = false;
+      btnPay.textContent = 'Pay with card (Stripe)';
+      btnPay.onclick = function () { location.href = payUrl; };
+      howto.className = 'howto show';
+      howto.innerHTML = '<strong>Card path</strong>Stripe Payment Link. After pay, webhook grants access; onboard is UX only.';
     } else if (isFuelish(key)) {
       btnPay.disabled = false;
       btnPay.textContent = 'Pay this Fuel pack (crypto)';
@@ -229,7 +247,7 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(25
       btnPay.disabled = true;
       btnPay.textContent = 'Seat checkout closed';
       howto.className = 'howto show';
-      howto.innerHTML = '<strong>Seat pack</strong>Price is itemized. Card / Stripe Payment Link not published yet. Residual order is remembered when access opens. Measure free with Iris in the meantime.';
+      howto.innerHTML = '<strong>Seat pack</strong>Price is itemized. Live Stripe Payment Link not published. Residual order is remembered when access opens. Measure free with Iris in the meantime.';
     }
   }
 
