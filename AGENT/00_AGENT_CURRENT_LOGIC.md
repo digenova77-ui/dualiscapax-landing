@@ -1,83 +1,70 @@
 # 00_AGENT_CURRENT_LOGIC
-LOAD AT START. Beats older notes.
-Written: Thursday 27 August 2026 03:16 America/Toronto
+LOAD AT START — this hour wins older Drive / GitHub agent files.
 
-## Session open
-So did you want to carry on with **lander drop smash** (index.html still old Truth Prevails) or address something else?
+Written: Sunday 30 August 2026 01:55 EDT
+Entity: DualisCapax / 1001718450 ONTARIO INCORPORATED
+Owner: David J Di Genova 100% sole
+Repo: digenova77-ui/dualiscapax-landing · main
+Live: https://dualiscapax.ai/
+Drive SoR: planned rollout front end `1t_Vx6C-rOLpBAqt3E54FeqbMihRt2NIk`
 
-## Entity
-1001718450 ONTARIO INCORPORATED operating as DualisCapax.
-PERSON-001 DOB 1977-10-31. GDI OUT of corp rails.
-Ontario and Canadian law. No coin. Seats closed until settlement.
+Ask first: carry on from unified API jacket on the worker, or something else?
 
-## Method (not a jersey)
-Three things in a container. Smash. Stand against the mirror.
-Invert stands. Fork is leftover. Dualis picks no side.
-1.0 unused. Cap we walk toward is 0.9999999999 then call the day.
-A decision always remains. That remainder is the next grain.
+---
 
-## Vision (visitor, not Dualis)
-We sit between you and the future cost. Proven only when used. Never shoved.
-Four couplets:
-- I don't want your money / I want the money you already burn on waste named.
-- I don't want your time / I want leftover hours handed back as a path.
-- I don't want your goal / I want the next step until the goal is still yours.
-- I don't want your credit / I want tools so the credit lands on you.
+## 0. Opening line for the next agent
 
-Build toward 1.0 at every measure, every level, until we stop. Confront friction head-on. That is the manifesto.
+Did you want to deploy the worker (`wrangler publish` — owner click), wire `js/api-unified.js` onto an existing room, or address something else?
 
-## Two depths, one site
-Door (ten-year-old, adult register): Choosing uses something up. A good measurement runs backwards. Look is free. Walk away.
-Rooms: journals, medical, industrial, math. Do not flatten. University care at the end, not university names on the drop.
-Theme: futuristic + professional + financial + AI-driven + research-minded. Not cute.
+---
 
-## Gate / offer
-Simple at the door. Rooms get hard on purpose.
-You pay for that complexity or for the solution to it.
-ONLY offer: a prediction model shaped to *your* constraints, built ahead of time.
-Two paths: intelligence grain, or simulation documentation you take to your own professionals.
-Simulation is not treatment, not a coin, not a diagnosis.
-If the number cannot invert, you do not pay.
-Theoretical limit = the model. Real time = the point difference. That gap is leftover.
+## 1. What shipped this hour
 
-## Free will
-Someone may invert what they can see and leapfrog in their own world without sealed method. Credit lands on them. Dualis does not own their path.
+Unified API interface bind. Lander not touched. Access stays CLOSED.
 
-## Surface architecture
-Keep intro assemble (sprites from nothing), geodesic, quarks.
-Software first drives hardware. Quarks + pointer affinity + short haptic stub where device allows.
-If motion cannot later drive an instrument, it does not ship as theme.
-Magic to the eye. Invertible underneath. Nothing basic. Nothing ornamental.
+- `docs/API-UNIFIED.md` — FE rollout ideas 01–06 bound to live routes
+- `docs/API-v2.md` — restamped; leftover chat paths aliased
+- `js/api-unified.js` — one client (`dcApi`)
+- `server/worker.js` — `/v2/dclm/*` sandbox envelope + `/api/v2/chat` alias
+- `ops/apiv2/dclm_jacket.py` — Drive jacket → `engine.dclm` kernel
 
-## Live public rooms (test after hard-refresh)
-- https://dualiscapax.ai/principle.html
-- https://dualiscapax.ai/for-people.html
-- https://dualiscapax.ai/manifesto.html
-- https://dualiscapax.ai/access.html
-- https://dualiscapax.ai/limit.html
-- https://dualiscapax.ai/architecture.html
-- https://dualiscapax.ai/journey.html
-- https://dualiscapax.ai/path.html
-- https://dualiscapax.ai/faq.html
-- https://dualiscapax.ai/vision-score.html
-- https://dualiscapax.ai/research/
+Jacket mode = SANDBOX. Real TEE / Stripe open = WAIT_GRANT.
 
-## Named leftover (do not costume)
-- index.html DROP still old: Truth Prevails + product shelves + Jump-start Unity Framework. Smash said change drop to For-you voice; file write collided. Intro JS/video stay.
-- Inner research/medical/financial pages still Dualis-to-Dualis in places.
-- Site vs vision score last stamped ~0.58. Do not stamp 0.9999999999 as current L.
-- Bind/payments closed. CIBC E = WAIT. Cloudflare token C = WAIT_GRANT where still needed.
-- Haptic is a stub (8ms path proof), not a shipped instrument.
+---
 
-## Branches
-A LIVE · B LIVE · C WAIT_GRANT · E WAIT · X WAIT_GRANT · GDI OUT
-Crown wet-ink only. Master NO for CRA send-as-agent.
+## 2. Standing law (still true)
 
-## CIBC (still current)
-E = WAIT. No third email after 17:40 Wed.
-Thu 09:00 America/Toronto: Dualis CIBC morning watch (task 29fbe084-a655-4aa3-aa2a-abb0cf185038).
-Basic account locked: $6 + $1 self-serve. Everyday cheaper only at 15+ txns or $20k parked.
+- DCLM. YES/NO is grant law. WAIT_GRANT when a vendor write is missing.
+- Crown wet-ink = owner only.
+- Secrets sealed. No password POST. No keys in repo.
+- Public GitHub is the encyclopedia body. Drive file-body write still WAIT_GRANT.
+- Simulation is not treatment. Seats closed until pricing + IP + settlement live.
+- Do not smash the locked drop unless the owner names it.
 
-## Agent start law
-Load this file first. Carry on with the leftover named above unless the operator names something else.
-Cannot = WAIT_GRANT or unify/cant. Never terminal cannot. Never expose keys across agents.
+Serialized clocks remain:
+
+| ID | value | status |
+|----|-------|--------|
+| T-LAUNCH | 2026-08-24 00:00 UTC | locked |
+| T-SING-BASE | 2036-08-24 00:00 UTC | model M |
+| R-CAD-DAY | 1000 CAD / day | model M |
+| LEDGER-EARNED | 0 CAD | closed |
+| ACCESS | closed | locked |
+
+---
+
+## 3. Named leftovers
+
+- Worker deploy to Cloudflare still needs owner `wrangler` (WAIT_GRANT if token missing)
+- Drive file-body write not in this Grok grant
+- CIBC business digits TBD
+- Enterprise onboarding V5 HTML stays in Drive SoR — not copied onto the lander
+- Haptic is still an 8ms stub
+
+---
+
+## 4. Agent start law
+
+1. Load this file first. Then AGENT_HANDOFF.md / Drive handoff asof 2026-08-29 23:03 EDT.
+2. Visitor eyes on public pages. Dualis-to-Dualis stays off the drop.
+3. After every agency ship: bump this timestamp.
