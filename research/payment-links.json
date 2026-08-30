@@ -2,14 +2,42 @@
   "jacket": "access.dual.v2",
   "list_currency": "CAD",
   "open": false,
-  "locked_as_of": "2026-08-30T03:40:00-04:00",
-  "gateway_law": "Single settlement rail: fiat in → equal-CAD crypto out. Prices only from this jacket. Library is one domain class, not the full Dualis vault. Do not open checkout until Stripe Payment Links exist.",
+  "locked_as_of": "2026-08-30T04:05:00-04:00",
+  "gateway_law": "Single settlement rail: fiat in → equal-CAD crypto out. Prices only from this jacket. Library is one domain class, not the full Dualis vault. open stays false until live Payment Links exist and operator orders open.",
   "settlement_rail": "fiat_to_crypto",
   "ip_gate": {
     "doc": "research/IP-GATE.md",
     "medical": "research/MEDICAL-GATE.md",
     "engineering": "research/ENGINEERING-GATE.md",
     "rule": "Look/Measure open. Depth requires identity gate and/or paid seat when open. Crypto audit ≠ IP unlock."
+  },
+  "webhook": {
+    "worker_path": "workers/stripe-fulfill/",
+    "events": ["checkout.session.completed", "checkout.session.async_payment_succeeded"],
+    "deployed_url": null,
+    "status": "scaffold_ready"
+  },
+  "payment_links": {
+    "test": {
+      "account": "acct_1U88YYDqmjVPW2C0",
+      "livemode": false,
+      "leaf": "https://buy.stripe.com/test_aFaeVdcQm5pJ8IJ1oN3ZK00",
+      "branch": "https://buy.stripe.com/test_fZueVd5nU4lF9MNd7v3ZK01",
+      "library": "https://buy.stripe.com/test_5kQ14n6rYbO78IJ0kJ3ZK02",
+      "depth_s": "https://buy.stripe.com/test_7sY00j9Ea05p2klebz3ZK03",
+      "depth_m": "https://buy.stripe.com/test_3cI00j7w24lF3op2sR3ZK04",
+      "depth_l": "https://buy.stripe.com/test_8x200j2bI4lF2kl1oN3ZK05"
+    },
+    "live": {
+      "account": null,
+      "livemode": true,
+      "leaf": null,
+      "branch": null,
+      "library": null,
+      "depth_s": null,
+      "depth_m": null,
+      "depth_l": null
+    }
   },
   "access_layers": {
     "L0_LOOK": { "who": "anyone", "invoke": "read public residual prose", "cad": 0, "status": "open" },
@@ -38,10 +66,11 @@
     "pages_host": { "cad_month": 0, "status": "defined", "note": "GitHub Pages" },
     "stripe_fee_when_open": { "rate": "processor schedule at open", "status": "named_formula" },
     "crypto_network_fee": { "payer": "sender or processor", "status": "named" },
-    "stripe_link": { "status": "WAIT_RAIL" },
+    "stripe_link": { "status": "TEST_LINKS_MAPPED", "note": "Sandbox buy.stripe.com/test_* only" },
     "treasury_address": { "status": "WAIT_RAIL" },
-    "fiat_to_crypto_processor": { "status": "WAIT_RAIL" }
+    "fiat_to_crypto_processor": { "status": "WAIT_RAIL" },
+    "webhook_worker": { "status": "scaffold_in_repo" }
   },
   "receive": { "usdc": null, "btc": null, "chain_usdc": null },
-  "ready_except": ["Stripe Payment Link", "treasury address", "fiat-to-crypto processor account"]
+  "ready_except": ["Live Stripe Payment Links", "Deployed webhook URL + whsec", "treasury address", "explicit open:true order"]
 }
