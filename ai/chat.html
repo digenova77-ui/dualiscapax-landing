@@ -295,7 +295,7 @@
   </div>
 
   <script src="../js/fuel-ledger.js"></script>
-  <script src="../js/api-config.js"></script>
+  <script src="../js/api-unified.js?v=30a"></script>
   <script>
   (function () {
     var log = document.getElementById('log');
@@ -305,6 +305,15 @@
     var buy = document.getElementById('buy');
     var sendBtn = document.getElementById('send');
     var history = [];
+
+    function hasApiBase() {
+      try {
+        if (window.DC_API_BASE) return true;
+        return Boolean(new URLSearchParams(location.search).get('api'));
+      } catch (e) {
+        return false;
+      }
+    }
 
     function uiFuel() {
       var b = DCFuel.balance();
@@ -327,23 +336,19 @@
       if (s.indexOf('fuel') >= 0) return 'Fuel pays for depth AI so the server is not free-drained. Open research stays free.';
       if (s.indexOf('dualis') >= 0) return 'DualisCapax: networked plane — open research, metered adaptive intelligence, equal rules.';
       if (s.indexOf('access') >= 0) return 'Open layer free. Depth burns Fuel. Live Grok runs only via server API key.';
-      return 'Demo engine (no server key configured). Deploy server/worker.js and set DC_API_BASE for live Grok.';
+      return 'Demo engine (no worker origin). After wrangler deploy, set DC_API_BASE or ?api=. Access stays closed.';
     }
 
     async function serverAnswer(messages) {
-      var base = (window.DC_API_BASE || '').replace(/\/$/, '');
-      if (!base) return null;
-      var res = await fetch(base + '/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-DC-Fuel': String(DCFuel.balance())
-        },
-        body: JSON.stringify({ messages: messages })
+      if (!window.dcApi || !hasApiBase()) return null;
+      var data = await dcApi.chat(messages, {
+        channel: 'depth',
+        fuelBalance: DCFuel.balance(),
       });
-      var data = await res.json().catch(function () { return {}; });
-      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
-      return data.content || '';
+      if (!data) return null;
+      if (data.code === 'NO_BASE' || data.status === 'FAIL_CLOSED_NO_BASE') return null;
+      if (data.ok === false) throw new Error(data.error || data.code || 'API fail-closed');
+      return data.content || data.response_text || '';
     }
 
     async function send(text) {
@@ -382,7 +387,7 @@
     });
 
     uiFuel();
-    var mode = window.DC_API_BASE ? 'Live server path ready' : 'Demo mode';
+    var mode = hasApiBase() ? 'Live server path ready' : 'Demo mode — worker origin unpublished';
     add('bot', 'Adaptive Intelligence online. Depth uses Fuel. ' + mode + '.');
   })();
   </script>
