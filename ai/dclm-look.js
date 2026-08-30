@@ -1,6 +1,6 @@
 /** DualisCapax Logic AI — house kernel. Veto first. Greet. Look. Book. Then silence. */
 (function (w) {
-  var VERSION = "kernel-2026-08-29d";
+  var VERSION = "kernel-2026-08-30b";
   var FLOORS = {
     NO_FORCE: [/\bjailbreak\b/i, /\bignore (the )?(rules|law|invariants|safety)\b/i, /\bmake them (pay|sign|comply)\b/i, /\bforce (them|the board|the city)\b/i, /\bcoerce\b/i, /\bwithout (their|the) consent\b/i],
     HOST_SAFE: [/\b(hack|exploit|breach)\b/i, /\bpassword\b/i, /\bapi[_ ]?key\b/i, /\bprivate key\b/i, /\bwipe (their|the) (server|drive|db)\b/i],
@@ -31,6 +31,22 @@
     { id: "leftover", grant: "MEASURE", tags: ["what is leftover", "what is a leftover", "leftover"], spoken: "Every choice leaves something behind. We write that leftover so you can see it before you lock a door." },
     { id: "file-sit", grant: "MEASURE", tags: ["leftover of a file leftover", "leftover of a file", "hand her a file", "add files", "a file leftover"], spoken: "I keep a receipt of the file, not the body. I can take it back." }
   ];
+
+  if (w.IRIS_BOOK && w.IRIS_BOOK.length) {
+    var seen = {};
+    var merged = [];
+    var i, leaf;
+    for (i = 0; i < w.IRIS_BOOK.length; i++) {
+      leaf = w.IRIS_BOOK[i];
+      if (!leaf || !leaf.id) continue;
+      seen[leaf.id] = 1;
+      merged.push(leaf);
+    }
+    for (i = 0; i < BOOK.length; i++) {
+      if (!seen[BOOK[i].id]) merged.push(BOOK[i]);
+    }
+    BOOK = merged;
+  }
 
   function scanVeto(text) {
     var blob = text || "";
@@ -127,5 +143,5 @@
     return { grant: "SEED", voice: voice, kernel: VERSION, spoken: "I don't know that leftover. I won't invent it. Ask Help if you want the doors." };
   }
 
-  w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, matchBook: matchBook, greet: greet, lookSpoken: lookSpoken };
+  w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, matchBook: matchBook, greet: greet, lookSpoken: lookSpoken, book: BOOK };
 })(window);
