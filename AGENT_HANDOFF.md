@@ -1,7 +1,7 @@
 # DualisCapax · Agent Handoff
 
-**Current as of:** `2026-08-29T07:12:00Z` (UTC)
-**Local context:** 2026-08-29 03:12 AM EDT
+**Current as of:** `2026-08-30T22:40:00Z` (UTC)
+**Local context:** 2026-08-30 06:40 PM EDT
 **Repo:** `digenova77-ui/dualiscapax-landing` · `main`
 **Live:** https://dualiscapax.ai/
 **Corp:** 1001718450 ONTARIO INCORPORATED · Articles 21 Aug 2026
@@ -11,7 +11,7 @@
 
 ## 0. Start the next prompt with
 
-Iris is a one-screen chat. Kernel `kernel-2026-08-29b`. Ontario Measure live. Medical door open to .org / .gov / SEAL-1. Card / Stripe still closed.
+Iris is a one-screen chat. Kernel `kernel-2026-08-30b`. Book mined from GitHub (`ai/iris-book.js`). Live bridge `IrisLive` book-first, remote only if `DC_API_BASE` or `?api=` is set. Ontario Measure live. Medical door open to .org / .gov / SEAL-1. Card / Stripe still closed. Worker origin still unpublished.
 
 ---
 
@@ -36,20 +36,22 @@ Iris is a one-screen chat. Kernel `kernel-2026-08-29b`. Ontario Measure live. Me
 | Onboard | `/onboard.html` | Door open. |
 | Ontario Measure | `/measure.html` | Open. `DC-MS-ON-TOU-1`. |
 | Medical | `/research/healthcare/` | Open under constraint. |
-| Iris | `/ai/app.html` | One-screen chat. Talk, attach, hear, cam, memory. |
+| Iris | `/ai/app.html` | One-screen chat. Book + veto + live bridge. |
 | Card / Stripe | — | **Closed.** |
 
 HUD epoch: `Date.UTC(2026, 7, 29, 7, 0, 0)` · 3:00 AM EDT 29 Aug 2026.
 
 ---
 
-## 3. Iris UI law (29 Aug 03:12)
+## 3. Iris UI law (30 Aug 18:40 EDT)
 
 - Full viewport. No page jump. Four dock controls only: attach, talk, field, send.
 - Header tools: hear, camera, clear. No hidden long-press. No triple-tap.
 - Chips vanish after first turn. Session memory in `sessionStorage` key `dc.iris.v1`.
 - Tap an Iris bubble to copy. Door links come from kernel `href` / `label`.
-- Kernel still has no remote model stream. Book + veto only.
+- Load order: `/js/api-unified.js` → `iris-book.js` → `dclm-look.js` → `iris-live.js`.
+- `IrisLive.run`: VETO first, book MEASURE next, remote `/v2/chat` only on SEED when `DC_API_BASE` or `?api=` is set.
+- Public book leaves mined from canon, unity, fuel, residual, FAQ, law of the land. No invented numbers.
 
 ---
 
@@ -66,6 +68,7 @@ HUD epoch: `Date.UTC(2026, 7, 29, 7, 0, 0)` · 3:00 AM EDT 29 Aug 2026.
 1. Card / Stripe Payment Link still closed
 2. Drive file-body write WAIT_GRANT
 3. Medical email is session-checked, not mailbox-verified
-4. Iris has no remote model stream — book + veto only
+4. Cloudflare worker `dualiscapax-depth` origin unpublished (`CF_DEPLOY_ENABLED` not true; no token in agent chat)
+5. Operator must: `cd server && wrangler deploy`, `wrangler secret put XAI_API_KEY`, set repo var `CF_DEPLOY_ENABLED=true`, then set `DC_API_BASE` on the live page or pass `?api=`
 
 **Truth prevails.**
