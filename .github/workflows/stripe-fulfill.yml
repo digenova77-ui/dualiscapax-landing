@@ -1,0 +1,50 @@
+name: stripe-fulfill-v2
+
+# DualisCapax — last mile before Cloudflare privilege.
+# This workflow is the deploy button. It cannot mint Cloudflare access.
+# Operator one-time: repo Settings → Secrets → Actions
+#   CLOUDFLARE_API_TOKEN   (template: Edit Cloudflare Workers)
+#   CLOUDFLARE_ACCOUNT_ID
+# Then Run workflow, or push under workers/stripe-fulfill/.
+# Webhook secret stays on the Worker (wrangler secret put / dashboard). Never git.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "workers/stripe-fulfill/**"
+      - ".github/workflows/stripe-fulfill.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stripe-fulfill-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy stripe-fulfill-v2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require Cloudflare silo secrets
+        run: |
+          set -euo pipefail
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are not in this repo's Actions secrets."
+            echo "That is the only remaining privileged step. Add them, then re-run this workflow."
+            echo "Do not paste those values into chat."
+            exit 1
+          fi
+
+      - name: wrangler deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: workers/stripe-fulfill
+          command: deploy
