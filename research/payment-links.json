@@ -2,7 +2,8 @@
   "jacket": "access.dual.v2",
   "list_currency": "CAD",
   "open": false,
-  "locked_as_of": "2026-08-30T04:05:00-04:00",
+  "locked_as_of": "2026-08-30T07:45:00-04:00",
+  "current_as_of": "2026-08-30",
   "gateway_law": "Single settlement rail: fiat in → equal-CAD crypto out. Prices only from this jacket. Library is one domain class, not the full Dualis vault. open stays false until live Payment Links exist and operator orders open.",
   "settlement_rail": "fiat_to_crypto",
   "ip_gate": {
@@ -26,7 +27,18 @@
       "library": "https://buy.stripe.com/test_5kQ14n6rYbO78IJ0kJ3ZK02",
       "depth_s": "https://buy.stripe.com/test_7sY00j9Ea05p2klebz3ZK03",
       "depth_m": "https://buy.stripe.com/test_3cI00j7w24lF3op2sR3ZK04",
-      "depth_l": "https://buy.stripe.com/test_8x200j2bI4lF2kl1oN3ZK05"
+      "depth_l": "https://buy.stripe.com/test_8x200j2bI4lF2kl1oN3ZK05",
+      "hockey_game": null,
+      "hockey_mo": null,
+      "hockey_season": null,
+      "golf_round": null,
+      "golf_mo": null,
+      "golf_season": null,
+      "med_mono": null,
+      "med_lab": null,
+      "med_compendium": null,
+      "kitchen_mo": null,
+      "kitchen_year": null
     },
     "live": {
       "account": null,
@@ -36,7 +48,18 @@
       "library": null,
       "depth_s": null,
       "depth_m": null,
-      "depth_l": null
+      "depth_l": null,
+      "hockey_game": null,
+      "hockey_mo": null,
+      "hockey_season": null,
+      "golf_round": null,
+      "golf_mo": null,
+      "golf_season": null,
+      "med_mono": null,
+      "med_lab": null,
+      "med_compendium": null,
+      "kitchen_mo": null,
+      "kitchen_year": null
     }
   },
   "access_layers": {
@@ -53,20 +76,37 @@
     "WAIT_GRANT": { "who": "owner yes/no", "invoke": "OAuth / token for a named realm", "cad": 0, "status": "slot" }
   },
   "skus": {
-    "look": { "name": "Look", "cad": 0, "status": "open", "ip": "public_floor" },
-    "basic": { "name": "Basic measure", "cad": 0, "status": "open", "ip": "public_floor" },
-    "leaf": { "name": "Single leaf pack 12 mo", "cad": 49, "crypto_equal_cad": true, "status": "priced_closed", "ip": "one_room", "domain_class": "choose_one" },
-    "branch": { "name": "Branch access 12 mo", "cad": 149, "crypto_equal_cad": true, "status": "priced_closed", "ip": "one_field", "domain_class": "choose_one" },
-    "library": { "name": "Domain library 12 mo", "cad": 499, "crypto_equal_cad": true, "status": "priced_closed", "ip": "domain_class_toolkit", "domain_class": "medical_xor_engineering_xor_ops", "notes": "Not full Dualis vault. Not cross-class." },
-    "depth_s": { "name": "Depth 40 Fuel", "cad": 20, "crypto_equal_cad": true, "status": "priced_closed", "ip": "fuel_time" },
-    "depth_m": { "name": "Depth 120 Fuel", "cad": 50, "crypto_equal_cad": true, "status": "priced_closed", "ip": "fuel_time" },
-    "depth_l": { "name": "Depth 320 Fuel", "cad": 120, "crypto_equal_cad": true, "status": "priced_closed", "ip": "fuel_time" }
+    "look": { "name": "Look", "cad": 0, "status": "open", "ip": "public_floor", "tab": "free" },
+    "basic": { "name": "Basic measure", "cad": 0, "status": "open", "ip": "public_floor", "tab": "free" },
+    "leaf": { "name": "Single leaf pack 12 mo", "cad": 49, "crypto_equal_cad": true, "status": "priced_closed", "ip": "one_room", "domain_class": "choose_one", "tab": "seats" },
+    "branch": { "name": "Branch access 12 mo", "cad": 149, "crypto_equal_cad": true, "status": "priced_closed", "ip": "one_field", "domain_class": "choose_one", "tab": "seats" },
+    "library": { "name": "Domain library 12 mo", "cad": 499, "crypto_equal_cad": true, "status": "priced_closed", "ip": "domain_class_toolkit", "domain_class": "medical_xor_engineering_xor_ops", "notes": "Not full Dualis vault. Not cross-class.", "tab": "seats" },
+    "depth_s": { "name": "Depth 40 Fuel", "cad": 20, "crypto_equal_cad": true, "status": "priced_closed", "ip": "fuel_time", "tab": "fuel" },
+    "depth_m": { "name": "Depth 120 Fuel", "cad": 50, "crypto_equal_cad": true, "status": "priced_closed", "ip": "fuel_time", "tab": "fuel" },
+    "depth_l": { "name": "Depth 320 Fuel", "cad": 120, "crypto_equal_cad": true, "status": "priced_closed", "ip": "fuel_time", "tab": "fuel" },
+    "hockey_game": { "name": "Hockey gameplan", "cad": 19, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "cadence": "per_game", "ip": "one_run", "tab": "alacarte" },
+    "hockey_mo": { "name": "Hockey tournament pack", "cad": 59, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "cadence": "monthly", "ip": "month_pass", "tab": "alacarte" },
+    "hockey_season": { "name": "Hockey season campaign", "cad": 249, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "cadence": "season", "ip": "season_pass", "notes": "~CAD $14.65 / player at 17-skater roster", "tab": "alacarte" },
+    "golf_round": { "name": "Golf 18-hole caddie", "cad": 9.99, "crypto_equal_cad": true, "status": "priced_closed", "hub": "golf", "cadence": "per_round", "ip": "one_run", "tab": "alacarte" },
+    "golf_mo": { "name": "Golf unlimited monthly pass", "cad": 39, "crypto_equal_cad": true, "status": "priced_closed", "hub": "golf", "cadence": "monthly", "ip": "month_pass", "tab": "alacarte" },
+    "golf_season": { "name": "Golf 6-month season pass", "cad": 149, "crypto_equal_cad": true, "status": "priced_closed", "hub": "golf", "cadence": "season", "ip": "season_pass", "tab": "alacarte" },
+    "med_mono": { "name": "Medical monograph", "cad": 49, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "cadence": "per_item", "ip": "one_room", "tab": "alacarte" },
+    "med_lab": { "name": "Medical lab pass (10 models)", "cad": 149, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "cadence": "monthly", "ip": "month_pass", "tab": "alacarte" },
+    "med_compendium": { "name": "Medical master compendium", "cad": 1499, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "cadence": "annual", "ip": "domain_class_toolkit", "notes": "117 indications. One domain class.", "tab": "alacarte" },
+    "kitchen_mo": { "name": "Kitchen operations pack", "cad": 79, "crypto_equal_cad": true, "status": "priced_closed", "hub": "kitchen", "cadence": "monthly", "ip": "month_pass", "tab": "alacarte" },
+    "kitchen_year": { "name": "Kitchen commercial charter", "cad": 699, "crypto_equal_cad": true, "status": "priced_closed", "hub": "kitchen", "cadence": "annual", "ip": "year_pass", "tab": "alacarte" }
+  },
+  "alacarte_hubs": {
+    "hockey": { "headline": "Stop 3rd-period fatigue collapses.", "cta": "Generate tonight's gameplan", "primary": "hockey_game" },
+    "golf": { "headline": "The caddie that knows the physics of every yard.", "cta": "Start 18-hole caddie pass", "primary": "golf_round" },
+    "medical": { "headline": "180-day biophysical simulation monographs on demand.", "cta": "Download research monograph", "primary": "med_mono" },
+    "kitchen": { "headline": "Cut kitchen energy and food waste.", "cta": "Optimize kitchen operations", "primary": "kitchen_mo" }
   },
   "system_costs": {
     "pages_host": { "cad_month": 0, "status": "defined", "note": "GitHub Pages" },
     "stripe_fee_when_open": { "rate": "processor schedule at open", "status": "named_formula" },
     "crypto_network_fee": { "payer": "sender or processor", "status": "named" },
-    "stripe_link": { "status": "TEST_LINKS_MAPPED", "note": "Sandbox buy.stripe.com/test_* only" },
+    "stripe_link": { "status": "TEST_LINKS_MAPPED", "note": "Sandbox buy.stripe.com/test_* only. Live slots stay null until operator pastes real Payment Links." },
     "treasury_address": { "status": "WAIT_RAIL" },
     "fiat_to_crypto_processor": { "status": "WAIT_RAIL" },
     "webhook_worker": { "status": "scaffold_in_repo" }
