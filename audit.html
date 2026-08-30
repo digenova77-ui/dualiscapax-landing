@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Audit — real-time crypto — DualisCapax</title>
+<meta name="description" content="Run a residual audit anytime. SHA-256 receipt. Parent chain. No appointment."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh}
+a{color:#9ec5ff;text-decoration:none}
+button,textarea{font:inherit;color:inherit}
+.wrap{max-width:36rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.1rem max(2.4rem,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;margin-bottom:1.2rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9ec5ff}
+h1{font-size:clamp(1.7rem,7vw,2.3rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin:.4rem 0 .55rem}
+.lede{font-size:1.02rem;line-height:1.5;color:rgba(245,245,245,.7);margin-bottom:1rem}
+.hud{border:1px solid rgba(158,197,255,.28);padding:.75rem .9rem;margin-bottom:1rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.75rem;letter-spacing:.04em;color:rgba(245,245,245,.65);line-height:1.55}
+label{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,245,245,.45);margin:0.75rem 0 .35rem}
+textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);background:rgba(158,197,255,.05);padding:.85rem .95rem;resize:vertical;border-radius:2px}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.4rem 0}
+.chip{padding:.4rem .7rem;border:1px solid rgba(255,255,255,.16);background:transparent;color:rgba(245,245,245,.75);font-size:.85rem;cursor:pointer}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.85rem}
+.go,.ghost{min-height:2.8rem;border:1px solid rgba(158,197,255,.45);background:rgba(158,197,255,.12);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.ghost{background:transparent;border-color:rgba(255,255,255,.18);color:rgba(245,245,245,.7)}
+.go:disabled{opacity:.4;cursor:not-allowed}
+.out{margin-top:1rem;border:1px solid rgba(158,197,255,.25);padding:.9rem 1rem;background:rgba(158,197,255,.05);font-size:.95rem;line-height:1.5;display:none;white-space:pre-wrap;word-break:break-word}
+.out.show{display:block}
+.rcpt{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;color:#9ec5ff;margin-top:.55rem;word-break:break-all}
+.chain{margin-top:1.25rem}
+.chain h2{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,245,245,.45);margin-bottom:.5rem}
+.item{border:1px solid rgba(255,255,255,.1);padding:.65rem .8rem;margin:0 0 .4rem;font-size:.88rem}
+.item .h{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;color:#9ec5ff;word-break:break-all}
+.item .m{color:rgba(245,245,245,.55);font-size:.82rem;margin-top:.2rem}
+.note{margin-top:1.4rem;font-size:.86rem;color:rgba(245,245,245,.45);line-height:1.45}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/onboard.html">Onboard</a></div>
+  <p class="kicker">Audit · crypto · real time</p>
+  <h1>Anytime</h1>
+  <p class="lede">Name a residual. Get a SHA-256 receipt on this device. Chain to the last write. No appointment. No gate except Layer [0] truth.</p>
+
+  <div class="hud" id="hud">Session — · tip — · chain 0</div>
+
+  <div class="chips">
+    <button type="button" class="chip" data-ex="School board overtime is $180000. Time-boxed pilot can walk back supply hours.">School overtime</button>
+    <button type="button" class="chip" data-ex="Facility energy is $2.1M. Weekend setback is inconsistent.">Energy</button>
+    <button type="button" class="chip" data-ex="Empty classroom capacity while two sites report pressure.">Capacity</button>
+  </div>
+
+  <label for="ask">Residual to audit</label>
+  <textarea id="ask" placeholder="Poles, unit, walk-back — or we stay SEED."></textarea>
+
+  <div class="actions">
+    <button type="button" class="go" id="run">Audit now</button>
+    <button type="button" class="ghost" id="verify">Verify tip</button>
+  </div>
+
+  <div class="out" id="out"></div>
+
+  <div class="chain">
+    <h2>Receipt chain (this device)</h2>
+    <div id="list"></div>
+  </div>
+
+  <p class="note">Local Web Crypto SHA-256 when available. Optional server measure via ?api=. Seats closed. Not securities. Not medical advice. Ontario / Canada first.</p>
+</div>
+
+<script src="/js/session-stamp.js"></script>
+<script src="/js/audit-crypto.js"></script>
+<script src="/js/api-config.js"></script>
+<script src="/js/api-unified.js"></script>
+<script>
+(function () {
+  var ask = document.getElementById('ask');
+  var out = document.getElementById('out');
+  var list = document.getElementById('list');
+  var hud = document.getElementById('hud');
+  var run = document.getElementById('run');
+
+  if (!DCSession.read()) DCSession.stamp();
+
+  function refreshHud() {
+    var tip = DCAudit.tip();
+    var n = DCAudit.chain().length;
+    var sid = DCSession.id() || '—';
+    hud.textContent =
+      'Session ' + sid.slice(0, 8) +
+      ' · tip ' + (tip ? tip.receipt.slice(0, 12) + '…' : '—') +
+      ' · chain ' + n +
+      ' · ' + (tip ? tip.algo : 'SHA-256');
+  }
+
+  function renderChain() {
+    var chain = DCAudit.chain().slice().reverse();
+    if (!chain.length) {
+      list.innerHTML = '<p class="m" style="color:rgba(245,245,245,.45)">No audits yet. Run one.</p>';
+      return;
+    }
+    list.innerHTML = chain
+      .slice(0, 12)
+      .map(function (e) {
+        var line = (e.payload && (e.payload.sentence || e.payload.grant)) || 'receipt';
+        return (
+          '<div class="item"><div class="h">' +
+          e.receipt +
+          '</div><div class="m">' +
+          e.at +
+          ' · ' +
+          String(line).slice(0, 120) +
+          '</div></div>'
+        );
+      })
+      .join('');
+  }
+
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      ask.value = c.getAttribute('data-ex') || '';
+    });
+  });
+
+  function localMeasure(text) {
+    var t = (text || '').toLowerCase();
+    var unit = /\$|cad|dollar/.test(t) ? 'CAD' : /hour|fte/.test(t) ? 'hours' : 'unnamed';
+    var money = (text.match(/\$[\d,]+(?:\.\d+)?/) || [])[0] || 'SEED';
+    var invert = /walk back|pilot|time-boxed|reversible/.test(t)
+      ? 'yes'
+      : /irreversible|permanent/.test(t)
+        ? 'no'
+        : 'unknown';
+    var domain = /school|board|trustee/.test(t)
+      ? 'school_board'
+      : /city|municipal|budget/.test(t)
+        ? 'municipal'
+        : 'general';
+    var grant = money !== 'SEED' && invert !== 'unknown' ? 'MEASURE' : 'SEED';
+    var sentence =
+      domain +
+      ' · client audit. Cost of being wrong: ' +
+      money +
+      ' ' +
+      unit +
+      '. Walk-back: ' +
+      invert +
+      '. Status ' +
+      (grant === 'MEASURE' ? 'lifting' : 'seed') +
+      '. Numbers not in the ask stay SEED.';
+    return { grant: grant, sentence: sentence, residual_value: money, residual_unit: unit, invertibility: invert, domain: domain, source: 'local' };
+  }
+
+  run.addEventListener('click', async function () {
+    var text = (ask.value || '').trim();
+    if (!text) {
+      out.className = 'out show';
+      out.textContent = 'Name a residual first.';
+      return;
+    }
+    run.disabled = true;
+    out.className = 'out show';
+    out.textContent = 'Auditing…';
+
+    var measure;
+    try {
+      var base = (window.DC_API_BASE || '').replace(/\/$/, '');
+      try {
+        var q = new URLSearchParams(location.search).get('api');
+        if (q) base = q.replace(/\/$/, '');
+      } catch (e) {}
+
+      if (base && window.dcApi && typeof window.dcApi.sandboxExecute === 'function') {
+        var data = await window.dcApi.sandboxExecute({ text: text, voice: 'cfo', case_id: 'audit-web' });
+        measure = {
+          grant: data.grant || data.status || 'MEASURE',
+          sentence:
+            (data.measure && data.measure.sentence) ||
+            data.sentence ||
+            data.reply ||
+            JSON.stringify(data).slice(0, 400),
+          commitment: data.measure && data.measure.commitment,
+          source: 'api',
+        };
+      } else {
+        measure = localMeasure(text);
+      }
+    } catch (err) {
+      measure = localMeasure(text);
+      measure.note = 'api_fail_local: ' + (err.message || err);
+    }
+
+    var entry = await DCAudit.commit({
+      text: text.slice(0, 500),
+      grant: measure.grant,
+      sentence: measure.sentence,
+      commitment: measure.commitment || null,
+      residual_value: measure.residual_value,
+      residual_unit: measure.residual_unit,
+      invertibility: measure.invertibility,
+      domain: measure.domain,
+      source: measure.source,
+    });
+
+    out.innerHTML =
+      measure.sentence +
+      '<div class="rcpt">receipt ' +
+      entry.receipt +
+      (entry.parent ? '\nparent  ' + entry.parent : '') +
+      '\nalgo    ' +
+      entry.algo +
+      '</div>';
+
+    refreshHud();
+    renderChain();
+    run.disabled = false;
+  });
+
+  document.getElementById('verify').addEventListener('click', async function () {
+    var v = await DCAudit.verifyTip();
+    out.className = 'out show';
+    out.textContent = v.ok
+      ? 'Tip verifies. receipt matches recomputed hash (' + (v.algo || 'SHA-256') + ').'
+      : 'Verify fail: ' + (v.reason || 'mismatch');
+  });
+
+  refreshHud();
+  renderChain();
+})();
+</script>
+</body>
+</html>
