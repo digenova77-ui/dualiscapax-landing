@@ -44,17 +44,17 @@
     .tier {
       border: 1px solid var(--border); border-radius: 8px;
       padding: 1rem; margin-bottom: 0.85rem; background: var(--surface);
-      opacity: 0.72;
     }
     .tier-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; align-items: baseline; margin-bottom: 0.45rem; }
     .tier-name { font-weight: 700; font-size: 1.05rem; }
-    .tier-price { font-size: 0.9rem; font-weight: 600; color: var(--muted); }
+    .tier-price { font-size: 0.9rem; font-weight: 600; color: var(--gold); }
     .tier ul { margin: 0.4rem 0 0 1.1rem; font-size: 0.9rem; color: var(--muted); }
     .tier li { margin-bottom: 0.25rem; }
     .tier li strong { color: var(--fg); }
     .note { font-size: 0.78rem; color: var(--muted); margin-top: 1.25rem; overflow-wrap: anywhere; }
     .note strong { color: var(--fg); }
     footer { border-top: 1px solid var(--border); padding: 1rem; text-align: center; font-size: 0.68rem; color: var(--muted); }
+    a.inline { color: var(--accent); }
   </style>
 </head>
 <body class="dc-scale-root">
@@ -67,57 +67,97 @@
   </nav>
   <div class="shell">
     <h1>Document access</h1>
-    <p class="lead">Jacket <code>access.dual.v2</code>. Public residual prose on research leaves stays readable. <strong>Paid packs and dated depth are not for sale.</strong></p>
+    <p class="lead">Jacket <code>access.dual.v2</code>. Public residual prose stays readable. <strong>Paid packs are priced and closed.</strong> Library ≠ full Dualis vault.</p>
 
     <div class="closed-banner">
-      <div class="tag">Closed · 24 Aug 2026</div>
-      <p><strong>Access is closed.</strong> No card checkout. No crypto invoices for packs. Pricing is not final.</p>
-      <p>Paid residual access will not open until the pricing structure is locked and <strong>IP protection is in place</strong>. That is intentional — not a missing button.</p>
-      <p>Stripe Payment Links and equal-crypto rails stay unwired while <code>open: false</code>.</p>
+      <div class="tag">Closed · consistent jacket · 30 Aug 2026</div>
+      <p><strong>Access sales closed.</strong> CAD amounts below match <code>payment-links.json</code>. No card checkout until Stripe Payment Links exist.</p>
+      <p><strong>IP gate:</strong> Look + Measure open. Medical depth and engineering depth use identity doors (org/gov/edu/SEAL). Paid seat unlocks room/field when open — not cross-class Crown.</p>
+      <p>Full matrix: <a class="inline" href="IP-GATE.md">IP-GATE.md</a> · <a class="inline" href="MEDICAL-GATE.md">Medical</a> · <a class="inline" href="ENGINEERING-GATE.md">Engineering</a></p>
     </div>
 
-    <h2>Reserved tiers (not on sale)</h2>
-    <p class="lead" style="margin-bottom:0.85rem">Structure only — amounts and checkout return when access is dated open.</p>
+    <h2>Open (free)</h2>
+    <div class="tier">
+      <div class="tier-head">
+        <span class="tier-name">Look · Measure · Audit</span>
+        <span class="tier-price">CAD $0</span>
+      </div>
+      <ul>
+        <li><strong>Look</strong> — public residual prose (medical tribute floor, eng public sheets)</li>
+        <li><strong>Measure / Audit</strong> — residual measure + SHA-256 receipt anytime</li>
+        <li>Crypto audit is a receipt — <strong>not</strong> an IP unlock</li>
+      </ul>
+    </div>
+
+    <h2>Priced · not on sale</h2>
 
     <div class="tier" data-sku="leaf">
       <div class="tier-head">
-        <span class="tier-name">Single leaf pack</span>
-        <span class="tier-price">Closed</span>
+        <span class="tier-name">Leaf</span>
+        <span class="tier-price">CAD $49 · 12 mo · closed</span>
       </div>
       <ul>
-        <li>One disease leaf at prototype density</li>
-        <li>Pack JSON · simulation report where published</li>
+        <li><strong>One</strong> gated room — one disease leaf <em>or</em> one eng sheet pack</li>
+        <li>Not the vault</li>
       </ul>
     </div>
 
     <div class="tier" data-sku="branch">
       <div class="tier-head">
-        <span class="tier-name">Branch access</span>
-        <span class="tier-price">Closed</span>
+        <span class="tier-name">Branch</span>
+        <span class="tier-price">CAD $149 · 12 mo · closed</span>
       </div>
       <ul>
-        <li>Neurological <em>or</em> Oncology branch · 12 months when open</li>
+        <li><strong>One</strong> field — e.g. neurological <em>or</em> oncology <em>or</em> thermo residual</li>
+        <li>12 months when open</li>
       </ul>
     </div>
 
     <div class="tier" data-sku="library">
       <div class="tier-head">
-        <span class="tier-name">Full residual library</span>
-        <span class="tier-price">Closed</span>
+        <span class="tier-name">Domain library</span>
+        <span class="tier-price">CAD $499 · 12 mo · closed</span>
       </div>
       <ul>
-        <li>All medical leaves + life systems · 12 months when open</li>
+        <li>Multi-room toolkit in <strong>one</strong> domain class: medical <em>or</em> engineering <em>or</em> ops</li>
+        <li><strong>Not</strong> “everything Dualis knows.” Cross-class = Crown only</li>
+      </ul>
+    </div>
+
+    <div class="tier" data-sku="fuel">
+      <div class="tier-head">
+        <span class="tier-name">Fuel depth</span>
+        <span class="tier-price">CAD $20 / $50 / $120 · closed</span>
+      </div>
+      <ul>
+        <li>40 / 120 / 320 Fuel — prepaid time, not a document seat</li>
+      </ul>
+    </div>
+
+    <h2>IP gate examples</h2>
+    <div class="tier">
+      <div class="tier-head"><span class="tier-name">Medical</span></div>
+      <ul>
+        <li><strong>Public:</strong> tribute, path language, journal links</li>
+        <li><strong>Depth:</strong> .org / .gov / .gc.ca or SEAL-1 — or paid medical-class seat when open</li>
+        <li>Simulation ≠ treatment</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <div class="tier-head"><span class="tier-name">Engineering</span></div>
+      <ul>
+        <li><strong>Public:</strong> residual language under /research/engineering/</li>
+        <li><strong>Depth:</strong> .edu / .org / .gov / .gc.ca or SEAL-1 — or paid eng-class seat when open</li>
+        <li>Simulation ≠ stamped design</li>
       </ul>
     </div>
 
     <p class="note">
-      <strong>What stays free:</strong> public residual prose on disease leaves under the research surface.<br>
-      <strong>What is closed:</strong> sale of dated packs, branch/library continuity, gated depth.<br>
-      <strong>Why:</strong> pricing not final · IP protection required before go-live sales.<br>
-      Not medical advice. Not securities.
+      <strong>Source of truth:</strong> <code>payment-links.json</code> · <code>IP-GATE.md</code><br>
+      Not medical advice. Not a P.Eng. stamp. Not securities. Ontario / Canada first.
     </p>
   </div>
-  <footer>DualisCapax · access.dual.v2 · CLOSED 24 Aug 2026 · Not for sale · Not medical advice · Not securities</footer>
+  <footer>DualisCapax · access.dual.v2 · CLOSED · consistent CAD · Not for sale</footer>
   <script src="../assets/text-scale.js" defer></script>
 </body>
 </html>
