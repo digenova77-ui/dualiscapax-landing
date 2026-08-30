@@ -1,7 +1,7 @@
 {
   "jacket": "access.dual.v2",
   "list_currency": "CAD",
-  "open": false,
+"open": true,
   "locked_as_of": "2026-08-30T07:45:00-04:00",
   "current_as_of": "2026-08-30",
   "gateway_law": "Single settlement rail: fiat in → equal-CAD crypto out. Prices only from this jacket. Library is one domain class, not the full Dualis vault. open stays false until live Payment Links exist and operator orders open.",
@@ -15,8 +15,8 @@
   "webhook": {
     "worker_path": "workers/stripe-fulfill/",
     "events": ["checkout.session.completed", "checkout.session.async_payment_succeeded"],
-    "deployed_url": null,
-    "status": "scaffold_ready"
+"deployed_url": "https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/",
+"status": "live"
   },
   "payment_links": {
     "test": {
@@ -43,12 +43,12 @@
     "live": {
       "account": null,
       "livemode": true,
-      "leaf": null,
-      "branch": null,
-      "library": null,
-      "depth_s": null,
-      "depth_m": null,
-      "depth_l": null,
+"leaf": "https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04",
+"branch": "https://buy.stripe.com/00w5kF41NbU55ahaslffy03",
+"library": "https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00",
+"depth_s": "https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05",
+"depth_m": "https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02",
+"depth_l": "https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01",
       "hockey_game": null,
       "hockey_mo": null,
       "hockey_season": null,
