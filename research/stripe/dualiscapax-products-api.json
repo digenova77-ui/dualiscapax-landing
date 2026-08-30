@@ -1,0 +1,117 @@
+{
+  "jacket": "access.dual.v2",
+  "as_of": "2026-08-30",
+  "list_currency": "cad",
+  "open": false,
+  "note": "Create Product then Price then Payment Link. Amounts are in the smallest currency unit (cents). One-time only.",
+  "products": [
+    {
+      "sku": "leaf",
+      "product": {
+        "name": "DualisCapax Leaf — single room 12 mo",
+        "description": "One gated residual room for 12 months (one disease leaf OR one engineering sheet pack). Not the full vault. Not medical advice. Not a P.Eng. stamp. Not securities.",
+        "metadata": {
+          "sku": "leaf",
+          "jacket": "access.dual.v2",
+          "ip": "one_room",
+          "term_months": "12"
+        }
+      },
+      "price": {
+        "currency": "cad",
+        "unit_amount": 4900,
+        "lookup_key": "dc_leaf_12mo"
+      }
+    },
+    {
+      "sku": "branch",
+      "product": {
+        "name": "DualisCapax Branch — one field 12 mo",
+        "description": "One residual field for 12 months. Not cross-class library. Not medical advice. Not a P.Eng. stamp. Not securities.",
+        "metadata": {
+          "sku": "branch",
+          "jacket": "access.dual.v2",
+          "ip": "one_field",
+          "term_months": "12"
+        }
+      },
+      "price": {
+        "currency": "cad",
+        "unit_amount": 14900,
+        "lookup_key": "dc_branch_12mo"
+      }
+    },
+    {
+      "sku": "library",
+      "product": {
+        "name": "DualisCapax Domain library 12 mo",
+        "description": "Multi-room toolkit in ONE domain class (medical XOR engineering XOR ops) for 12 months. Not full vault. Not securities.",
+        "metadata": {
+          "sku": "library",
+          "jacket": "access.dual.v2",
+          "ip": "domain_class_toolkit",
+          "term_months": "12"
+        }
+      },
+      "price": {
+        "currency": "cad",
+        "unit_amount": 49900,
+        "lookup_key": "dc_library_12mo"
+      }
+    },
+    {
+      "sku": "depth_s",
+      "product": {
+        "name": "DualisCapax Fuel 40",
+        "description": "Prepaid depth time — 40 Fuel. Unused time stays with the buyer. Not a document seat.",
+        "metadata": {
+          "sku": "depth_s",
+          "jacket": "access.dual.v2",
+          "ip": "fuel_time",
+          "fuel_units": "40"
+        }
+      },
+      "price": {
+        "currency": "cad",
+        "unit_amount": 2000,
+        "lookup_key": "dc_fuel_40"
+      }
+    },
+    {
+      "sku": "depth_m",
+      "product": {
+        "name": "DualisCapax Fuel 120",
+        "description": "Prepaid depth time — 120 Fuel. Unused time stays with the buyer.",
+        "metadata": {
+          "sku": "depth_m",
+          "jacket": "access.dual.v2",
+          "ip": "fuel_time",
+          "fuel_units": "120"
+        }
+      },
+      "price": {
+        "currency": "cad",
+        "unit_amount": 5000,
+        "lookup_key": "dc_fuel_120"
+      }
+    },
+    {
+      "sku": "depth_l",
+      "product": {
+        "name": "DualisCapax Fuel 320",
+        "description": "Prepaid depth time — 320 Fuel. Unused time stays with the buyer.",
+        "metadata": {
+          "sku": "depth_l",
+          "jacket": "access.dual.v2",
+          "ip": "fuel_time",
+          "fuel_units": "320"
+        }
+      },
+      "price": {
+        "currency": "cad",
+        "unit_amount": 12000,
+        "lookup_key": "dc_fuel_320"
+      }
+    }
+  ]
+}
