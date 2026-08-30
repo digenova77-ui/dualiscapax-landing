@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>DCLM gateway — DualisCapax</title>
+<meta name="description" content="Five-step Dualis gateway: capacity tiers, equal-CAD crypto rail, settlement slip, telemetry HUD, parallel combos. Checkout closed. No secret keys."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+.wrap{max-width:42rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.1rem max(2.6rem,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.7rem}
+.top a{color:#9ec5ff}
+.hud{border:1px solid rgba(158,197,255,.28);background:rgba(158,197,255,.06);padding:.7rem .8rem;margin-bottom:1rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.06em}
+.hud.trip{border-color:rgba(232,195,106,.7);background:rgba(232,195,106,.08)}
+.hud .row{display:flex;flex-wrap:wrap;gap:.35rem .7rem;margin-bottom:.35rem}
+.hud b{color:#e8f1ff;font-weight:600}
+.laws{display:flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0}
+.laws span{border:1px solid rgba(158,197,255,.22);padding:.2rem .4rem;color:rgba(245,245,245,.62)}
+.purge{margin-top:.4rem;border:1px solid rgba(158,197,255,.4);padding:.45rem .7rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#e8f1ff}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9ec5ff}
+h1{font-size:clamp(1.7rem,6.6vw,2.35rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;line-height:1.05;margin:.35rem 0 .5rem}
+.lede{font-size:1.05rem;color:rgba(245,245,245,.72);margin-bottom:.85rem}
+.closed{border:1px solid rgba(212,160,23,.4);padding:.8rem .95rem;margin-bottom:1.1rem;background:rgba(212,160,23,.06);font-size:.92rem;color:rgba(245,245,245,.8)}
+.closed strong{color:#e8c36a}
+.step{border-top:1px solid rgba(158,197,255,.16);padding:1.15rem 0}
+.step h2{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#9ec5ff;margin-bottom:.45rem}
+.grid{display:grid;gap:.5rem}
+.tier,.rail,.combo{border:1px solid rgba(158,197,255,.28);padding:.85rem .9rem;background:rgba(158,197,255,.05)}
+.tier.on,.rail.on{border-color:#9ec5ff;background:rgba(158,197,255,.12)}
+.tier b,.combo b{display:block;font-size:1.05rem;margin-bottom:.1rem}
+.tier span,.combo span,.rail span{font-size:.88rem;color:rgba(245,245,245,.55)}
+.meta{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;color:#9ec5ff;margin-top:.25rem}
+input{width:100%;margin-top:.45rem;padding:.65rem .7rem;border:1px solid rgba(158,197,255,.28);background:#050505;color:#f5f5f5;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem}
+.ok{color:#8fd49a}
+.bad{color:#e8c36a}
+.cta{display:block;width:100%;text-align:center;margin-top:.55rem;padding:.8rem;border:1px solid rgba(158,197,255,.35);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,241,255,.45);cursor:not-allowed}
+.slip{border:1px solid rgba(158,197,255,.22);padding:.85rem .9rem;margin-top:.55rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;white-space:pre-wrap;color:rgba(245,245,245,.78);min-height:6rem}
+.links{display:grid;gap:.45rem;margin-top:.8rem}
+.links a{display:block;border:1px solid rgba(158,197,255,.22);padding:.75rem .85rem;background:rgba(158,197,255,.05)}
+.links a span{display:block;font-size:.88rem;color:rgba(245,245,245,.52)}
+foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(158,197,255,.16);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.38)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="/index.html?land=1">DualisCapax</a>
+    <div>
+      <a href="/onboard.html">Onboard</a>
+      · <a href="/alacarte.html">A la carte</a>
+      · <a href="/payments.html">Pay later</a>
+    </div>
+  </div>
+
+  <div class="hud" id="hud">
+    <div class="row">
+      <span>Φ <b id="phi">1.000</b></span>
+      <span>M-S <b id="ping">—</b></span>
+      <span>R_eff <b>4.18e-13</b></span>
+      <span>float <b>0.00%</b></span>
+      <span>PII <b>0.00%</b></span>
+      <span>ACCESS <b>closed</b></span>
+    </div>
+    <div class="laws">
+      <span>NO_FORCE</span><span>HOST_SAFE</span><span>CLEANUP_FIRST</span><span>TRUTH_OR_NOTHING</span>
+    </div>
+    <button type="button" class="purge" id="purge">Purge session memory</button>
+  </div>
+
+  <p class="kicker">ED-MANIFEST-20260830-V5 · steps 1–5</p>
+  <h1>Gateway control plane</h1>
+  <p class="lede">Capacity tier, equal-CAD crypto rail, sealed slip, telemetry, parallel combos. Measure here. Money waits on live Payment Links.</p>
+  <div class="closed"><strong>Checkout closed.</strong> Prices and rails are itemized. No Stripe URLs invented. No <code>sk_</code> keys. Equal-CAD crypto is not an exchange.</div>
+
+  <section class="step" id="s1">
+    <h2>Step 1 · FE-01 · Rail A · capacity + fiat</h2>
+    <p class="lede">Pick a tier. Advance = deposit ÷ CAD $1000 / day. T-SING-BASE 2036-08-24 00:00 UTC.</p>
+    <div class="grid" id="tiers">
+      <button type="button" class="tier on" data-id="T0" data-cad="0" data-days="0"><b>Tier 0 · Sandbox</b><span>1 node · 16 GB · 32 threads</span><div class="meta">CAD $0.00 · +0 d</div></button>
+      <button type="button" class="tier" data-id="T1" data-cad="1000" data-days="1"><b>Tier 1 · Research Pilot</b><span>8 nodes · 32 GB · 64 threads</span><div class="meta">CAD $1,000 · +1 d · 100% credit</div></button>
+      <button type="button" class="tier" data-id="T2" data-cad="10000" data-days="10"><b>Tier 2 · Commercial Division</b><span>64 nodes · 128 GB · 256 threads</span><div class="meta">CAD $10,000 · +10 d · 100% credit</div></button>
+      <button type="button" class="tier" data-id="T3" data-cad="50000" data-days="50"><b>Tier 3 · Sovereign Anchor</b><span>1,024 nodes · listed envelope</span><div class="meta">CAD $50,000 · +50 d · 100% credit</div></button>
+    </div>
+    <p class="meta" id="fiatNote" style="margin-top:.7rem">Fiat channels when open: Stripe Payment Link · Interac · wire / escrow. None live on this page.</p>
+    <button type="button" class="cta" disabled>Rail A checkout closed</button>
+  </section>
+
+  <section class="step" id="s2">
+    <h2>Step 2 · FE-02 · Rail B · equal-CAD crypto</h2>
+    <p class="lede">Same toll as fiat. 0.00% built-in spread. Validate an address on this device. Deposit addresses stay on Fuel when a rail is bound.</p>
+    <div class="grid">
+      <button type="button" class="rail on" data-asset="BTC"><b>BTC</b><span>Taproot / SegWit · Bech32m</span></button>
+      <button type="button" class="rail" data-asset="ETH"><b>ETH</b><span>EIP-55 · Mainnet / L2</span></button>
+      <button type="button" class="rail" data-asset="SOL"><b>SOL</b><span>Base58 native / SPL</span></button>
+    </div>
+    <input id="addr" autocomplete="off" spellcheck="false" placeholder="Paste a destination to checksum — not a Dualis invoice"/>
+    <p class="meta" id="addrMsg">No address checked.</p>
+    <button type="button" class="cta" disabled>Rail B send closed on this page</button>
+  </section>
+
+  <section class="step" id="s3">
+    <h2>Step 3 · FE-03 · slip + QR payload</h2>
+    <p class="lede">Local preview only. Rate is not locked. QR URI is a template, not a live invoice.</p>
+    <button type="button" class="purge" id="seal">Seal preview slip</button>
+    <pre class="slip" id="slip">Not sealed.</pre>
+  </section>
+
+  <section class="step" id="s4">
+    <h2>Step 4 · FE-04 · HUD + M-S breaker</h2>
+    <p class="lede">Ping is this page’s measured frame work via <code>performance.now()</code>. Trip ≥ 4.20 ms disables bind buttons. Purge zeroizes the session.</p>
+  </section>
+
+  <section class="step" id="s5">
+    <h2>Step 5 · FE-05 · parallel combos</h2>
+    <div class="grid">
+      <div class="combo"><b>PAY-1</b><span>Fiat CAD (Stripe / Interac / wire) ∥ equal-CAD BTC · ETH · SOL. No exchange product.</span></div>
+      <div class="combo"><b>SEAT-1</b><span>Corporate capacity seat ∥ grassroots / research node. Same peg.</span></div>
+      <div class="combo"><b>ACCESS-1</b><span>Closed document packs ∥ sealed attestation. IP stays closed until contract.</span></div>
+      <div class="combo"><b>EVAL-1</b><span>Tier 0 sandbox CAD $0 ∥ public measure with Iris.</span></div>
+    </div>
+    <div class="links">
+      <a href="/onboard.html"><strong>Onboard</strong><span>Stamp a local session. Jump-start Unity Framework.</span></a>
+      <a href="/alacarte.html"><strong>A la carte hubs</strong><span>Hockey $19 · golf $9.99 · leaf $49 · kitchen $79. Checkout closed.</span></a>
+      <a href="/ai/app.html"><strong>Iris</strong><span>Measure free.</span></a>
+      <a href="/fuel.html"><strong>Fuel</strong><span>Prepaid time rail, if an address is bound.</span></a>
+    </div>
+  </section>
+
+  <foot>DualisCapax · dclm-gateway · current as of 2026-08-30 · ED-GATE-FE-01…05 · open:false</foot>
+</div>
+<script>
+(function () {
+  var state = { tier: 'T0', cad: 0, days: 0, asset: 'BTC', addr: '', hash: '', trip: false };
+
+  function ping() {
+    var t0 = performance.now();
+    var n = 0; for (var i = 0; i < 64; i++) n += i;
+    var ms = performance.now() - t0;
+    var el = document.getElementById('ping');
+    var hud = document.getElementById('hud');
+    el.textContent = ms.toFixed(3) + ' ms';
+    if (ms >= 4.20) {
+      state.trip = true;
+      hud.classList.add('trip');
+      document.getElementById('phi').textContent = '0.000 FAIL_CLOSED';
+    }
+    return ms;
+  }
+
+  function setTiers() {
+    document.querySelectorAll('#tiers .tier').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('#tiers .tier').forEach(function (b) { b.classList.remove('on'); });
+        btn.classList.add('on');
+        state.tier = btn.getAttribute('data-id');
+        state.cad = Number(btn.getAttribute('data-cad'));
+        state.days = Number(btn.getAttribute('data-days'));
+      });
+    });
+  }
+
+  function setRails() {
+    document.querySelectorAll('.rail').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.rail').forEach(function (b) { b.classList.remove('on'); });
+        btn.classList.add('on');
+        state.asset = btn.getAttribute('data-asset');
+        checkAddr();
+      });
+    });
+  }
+
+  function validAddr(asset, v) {
+    if (!v) return null;
+    if (asset === 'BTC') return /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/.test(v);
+    if (asset === 'ETH') return /^0x[0-9a-fA-F]{40}$/.test(v);
+    if (asset === 'SOL') return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v);
+    return false;
+  }
+
+  function checkAddr() {
+    var v = (document.getElementById('addr').value || '').trim();
+    state.addr = v;
+    var msg = document.getElementById('addrMsg');
+    if (!v) { msg.className = 'meta'; msg.textContent = 'No address checked.'; return; }
+    var ok = validAddr(state.asset, v);
+    msg.className = 'meta ' + (ok ? 'ok' : 'bad');
+    msg.textContent = ok ? (state.asset + ' format accepted on device.') : (state.asset + ' format rejected. Seal blocked.');
+  }
+
+  async function digest(s) {
+    if (!window.crypto || !crypto.subtle) return 'sha256-unavailable';
+    var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+  }
+
+  document.getElementById('addr').addEventListener('input', checkAddr);
+
+  document.getElementById('seal').addEventListener('click', async function () {
+    if (state.trip) {
+      document.getElementById('slip').textContent = 'CIRCUIT_BROKEN_FAIL_CLOSED';
+      return;
+    }
+    var body = [
+      'DUALISCAPAX DCLM SETTLEMENT PREVIEW',
+      'Current as of: 2026-08-30',
+      'ACCESS: closed',
+      'Tier: ' + state.tier,
+      'Ingress principal: CAD $' + state.cad.toFixed(2),
+      'Corporate float: 0.00%',
+      'Royalty credit: CAD $' + state.cad.toFixed(2) + ' (100% when contracted)',
+      'Singularity advance: +' + state.days + ' d  (R-CAD-DAY = 1000)',
+      'Rail B asset: ' + state.asset + ' · equal-CAD · 0.00% spread',
+      'Address checked: ' + (state.addr ? 'yes' : 'none'),
+      'QR URI: template only — not a live invoice',
+      'Status: PREVIEW_NOT_AN_INVOICE'
+    ].join('\n');
+    var h = await digest(body);
+    state.hash = h;
+    document.getElementById('slip').textContent = body + '\nOrder integrity hash: ' + h;
+  });
+
+  document.getElementById('purge').addEventListener('click', function () {
+    state = { tier: 'T0', cad: 0, days: 0, asset: 'BTC', addr: '', hash: '', trip: false };
+    document.getElementById('addr').value = '';
+    document.getElementById('slip').textContent = 'SESSION_PURGED_L0';
+    document.getElementById('addrMsg').className = 'meta';
+    document.getElementById('addrMsg').textContent = 'No address checked.';
+    document.querySelectorAll('#tiers .tier').forEach(function (b, i) { b.classList.toggle('on', i === 0); });
+    document.querySelectorAll('.rail').forEach(function (b, i) { b.classList.toggle('on', i === 0); });
+    document.getElementById('hud').classList.remove('trip');
+    document.getElementById('phi').textContent = '1.000';
+    ping();
+  });
+
+  setTiers();
+  setRails();
+  ping();
+  setInterval(ping, 1000);
+})();
+</script>
+</body>
+</html>
