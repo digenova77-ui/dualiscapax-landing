@@ -1,7 +1,7 @@
 # DualisCapax · Agent Handoff
 
-**Current as of:** `2026-08-31T18:05:00Z` (UTC)
-**Local context:** 2026-08-31 02:05 PM EDT
+**Current as of:** `2026-08-31T18:20:00Z` (UTC)
+**Local context:** 2026-08-31 02:20 PM EDT
 **Repo:** `digenova77-ui/dualiscapax-landing` · `main`
 **Live:** https://dualiscapax.ai/
 **Corp:** 1001718450 ONTARIO INCORPORATED · Articles 21 Aug 2026
@@ -11,7 +11,7 @@
 
 ## 0. Start the next prompt with
 
-Iris is a one-screen chat. Kernel `kernel-2026-08-31a`. Iris book removed. Live bridge `IrisLive` veto/greet/look first, remote only if `DC_API_BASE` or `?api=` is set. Ontario Measure live. Medical door open to .org / .gov / SEAL-1. **Card / Stripe OPEN** (live Payment Links wired 31 Aug 2026). Worker origin still unpublished. Unbound gateways dealt with in real time.
+Iris is a one-screen chat. Kernel `kernel-2026-08-31a`. Iris book removed. Live bridge `IrisLive` veto/greet/look first, remote only if `DC_API_BASE` or `?api=` is set. Ontario Measure live. Medical door open to .org / .gov / SEAL-1. **Card / Stripe OPEN** (live Payment Links wired 31 Aug 2026). HUD uses locked T-LAUNCH 2026-08-24 00:00 UTC. Worker origin still unpublished. Unbound gateways dealt with in real time.
 
 ---
 
@@ -39,7 +39,19 @@ Iris is a one-screen chat. Kernel `kernel-2026-08-31a`. Iris book removed. Live 
 | Iris | `/ai/app.html` | One-screen chat. Veto + greet/look + live fallback. |
 | Card / Stripe | `/payments.html` · `/research/access.html` | **OPEN.** Live Payment Links. |
 
-HUD epoch: `Date.UTC(2026, 7, 29, 7, 0, 0)` · 3:00 AM EDT 29 Aug 2026.
+### Serialized clock / ledger (HUD)
+
+| ID | Parameter | Value | Unit | Status |
+|----|-----------|-------|------|--------|
+| T-LAUNCH | Public surface start | 2026-08-24 00:00 UTC | datetime | locked |
+| T-SING-BASE | Singularity if pledged = 0 | 2036-08-24 00:00 UTC | datetime | model M |
+| R-CAD-DAY | Pledge advance rate | 1000 | CAD / day | model M |
+| R-MAX-ADV | Max advance days | 3650 | days | model M |
+| R-FLOOR | Singularity floor | now + 30 | days | UI guard |
+| LEDGER-EARNED | Total earned | 0 | CAD | honest until verified |
+| LEDGER-PLEDGED | Total pledged | 0 | CAD | honest until verified |
+
+HUD: Live | Earned | Singularity + rail + foot line. No old epoch dates on glass.
 
 ---
 
@@ -66,9 +78,9 @@ HUD epoch: `Date.UTC(2026, 7, 29, 7, 0, 0)` · 3:00 AM EDT 29 Aug 2026.
 ## 5. Still leftover (real-time)
 
 1. Drive file-body write WAIT_GRANT
-2. Medical email is session-checked, not mailbox-verified
-3. Cloudflare worker `dualiscapax-depth` origin unpublished (`CF_DEPLOY_ENABLED` not true; no token in agent chat)
-4. Operator may still: `cd server && wrangler deploy`, `wrangler secret put XAI_API_KEY`, set repo var `CF_DEPLOY_ENABLED=true`, then set `DC_API_BASE` or pass `?api=`
+2. Medical email is session-checked, not mailbox-verified; MEDICAL-GATE still omits paid-seat door (operator to choose A/B/C)
+3. Cloudflare worker `dualiscapax-depth` origin unpublished
+4. Operator may still deploy worker + set `DC_API_BASE`
 5. Webhook + treasury + equal-CAD crypto rail verification — deal in real time if unbound
 
-**Payment gateway opened by operator order 2026-08-31.** Truth prevails.
+**Payment gateway opened by operator order 2026-08-31. HUD clock locked to T-LAUNCH 2026-08-24.** Truth prevails.
