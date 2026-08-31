@@ -1,10 +1,11 @@
 /**
  * DualisCapax API client config — v2
- * Set DC_API_BASE after worker deploy (no trailing slash).
+ * Default origin is the live depth worker. Secret stays on the worker only.
  */
 (function (g) {
   g.DC_API_VERSION = '2';
-  g.DC_API_BASE = g.DC_API_BASE || '';
+  // Public worker origin (no trailing slash). Key is NOT here.
+  g.DC_API_BASE = g.DC_API_BASE || 'https://dualiscapax-depth.digenova77.workers.dev';
   try {
     var q = new URLSearchParams(location.search).get('api');
     if (q) g.DC_API_BASE = q.replace(/\/$/, '');
