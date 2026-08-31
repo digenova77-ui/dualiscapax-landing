@@ -81,7 +81,32 @@
   .hud-donate,.hud-onboard{display:flex;align-items:center;justify-content:center;min-height:1.85rem;padding:.28rem .4rem;border:1px solid rgba(158,197,255,.45);background:rgba(158,197,255,.1);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-align:center}
   .hud-onboard{border-color:rgba(158,197,255,.45);background:rgba(158,197,255,.1);color:#e8f1ff;pointer-events:auto;cursor:pointer}
   .hud-foot{margin-top:0.45rem;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.48);text-align:center;line-height:1.35}
-  @media (max-width:40rem){.hud-foot{display:none}.hud-rail{margin-top:.28rem}:root{--bar:3.7rem}}
+  @media (max-width:40rem){
+    :root{--bar:4.1rem}
+    .hud-foot{display:none}
+    .hud-rail{margin-top:.28rem}
+    .hud-k{font-size:0.7rem;letter-spacing:0.12em}
+    .hud-v{font-size:clamp(0.95rem,4vw,1.12rem)}
+    .hud-donate,.hud-onboard{min-height:2.15rem;font-size:.72rem;letter-spacing:.1em}
+    .nav-panel a{padding:0.85rem 0.95rem;font-size:0.88rem}
+    .classif{font-size:clamp(0.82rem,3.6vw,1.05rem)}
+    h1{font-size:clamp(1.75rem,7.2vw,2.55rem);white-space:normal}
+    .jump{font-size:clamp(0.88rem,3.6vw,1.02rem)}
+    .jump span{font-size:0.72rem}
+    .band h2{font-size:clamp(1.65rem,6.8vw,2.2rem);line-height:1.12}
+    .band p,.band li{font-size:1.18rem;line-height:1.6}
+    .closed{font-size:1.05rem;padding:0.9rem 1rem}
+    .row{padding:1rem 1.05rem}
+    .row strong{font-size:1.12rem}
+    .pack .cad{font-size:.82rem}
+    .pack .amt{font-size:1.4rem}
+    .pack .sub{font-size:1.05rem}
+    .sec-break{font-size:.78rem}
+    .iris-mark{font-size:.78rem}
+    .foot{font-size:.8rem}
+    .scroll-stage{width:min(46rem,calc(100% - 0.8rem))}
+    .pane.glass{padding:1.35rem 1rem 1.6rem}
+  }
   .jump{margin-top:auto;padding:0.35rem 0.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.78rem,3.2vw,0.92rem);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9ec5ff}
   .jump span{display:block;margin-top:0.25rem;font-size:0.64rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:rgba(245,245,245,0.48);white-space:nowrap}
   .scroll-stage{width:min(46rem,calc(100% - 1.2rem));margin:0 auto 2rem;perspective:1400px}
