@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Bound · DualisCapax</title>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{color-scheme:dark;--fg:#f5f5f5;--muted:rgba(245,245,245,.7);--blue:#9ec5ff;--line:rgba(158,197,255,.22)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:var(--fg);min-height:100dvh;padding:max(1.2rem,env(safe-area-inset-top)) max(1.1rem,env(safe-area-inset-right)) max(2rem,env(safe-area-inset-bottom)) max(1.1rem,env(safe-area-inset-left))}
+.wrap{max-width:28rem;margin:0 auto}
+.kicker{font:600 .72rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+h1{font-size:clamp(1.6rem,6vw,2.1rem);font-weight:700;margin:.5rem 0 .75rem}
+p{color:var(--muted);line-height:1.5;margin-bottom:.75rem}
+.card{border:1px solid var(--line);padding:1rem 1.05rem;margin:1rem 0;background:rgba(158,197,255,.06)}
+.card strong{display:block;color:var(--fg);margin-bottom:.35rem;font-size:1.15rem}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.25rem}
+a.btn{display:inline-flex;align-items:center;justify-content:center;min-height:2.6rem;padding:.55rem 1rem;border:1px solid var(--blue);color:var(--blue);text-decoration:none;font:600 .78rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase}
+a.btn.primary{background:rgba(158,197,255,.15)}
+.foot{margin-top:2rem;font-size:.8rem;color:rgba(245,245,245,.4)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">Bind · settled</p>
+  <h1>Purchase received</h1>
+  <p>Stripe confirmed payment. The fulfill webhook maps this checkout to the product you bought — Fuel credit or a document seat.</p>
+  <div class="card" id="grant">
+    <strong id="title">Resolving grant…</strong>
+    <p id="detail">If metadata was set on the Payment Link, the grant matches that SKU. Amount fallback covers the six live CAD faces.</p>
+  </div>
+  <div class="row">
+    <a class="btn primary" href="/ai/app.html">Talk to Iris</a>
+    <a class="btn" href="/payments.html">Back to Bind</a>
+    <a class="btn" href="/">Home</a>
+  </div>
+  <p class="foot">Medical / engineering depth rooms still require identity where IP-GATE says so. Pay opens settlement — not a securities offer.</p>
+</div>
+<script>
+(function(){
+  var SKU = {
+    depth_s: { title: "40 Fuel credited", detail: "Trial pack. Iris SPARK tier unlocks when Fuel is on the session." },
+    depth_m: { title: "120 Fuel credited", detail: "Practice pack. Stronger Iris product answers when balance is applied." },
+    depth_l: { title: "320 Fuel credited", detail: "Retain pack. Depth-capable Iris path when balance is applied." },
+    leaf: { title: "Leaf seat (12 mo)", detail: "One gated room. Identity gate may still apply for sealed rooms." },
+    branch: { title: "Branch seat (12 mo)", detail: "One field. Identity gate may still apply for sealed rooms." },
+    library: { title: "Domain library (12 mo)", detail: "One domain class toolkit — not the full vault." }
+  };
+  var q = new URLSearchParams(location.search);
+  var sku = (q.get("sku") || q.get("dc_sku") || "").toLowerCase();
+  var title = document.getElementById("title");
+  var detail = document.getElementById("detail");
+  if (SKU[sku]) {
+    title.textContent = SKU[sku].title;
+    detail.textContent = SKU[sku].detail;
+    if (SKU[sku].title.indexOf("Fuel") >= 0) {
+      try {
+        var units = { depth_s: 40, depth_m: 120, depth_l: 320 }[sku] || 0;
+        var prev = Number(sessionStorage.getItem("dc.fuel") || 0);
+        sessionStorage.setItem("dc.fuel", String(prev + units));
+        detail.textContent += " Local session Fuel now " + (prev + units) + " (until server ledger is authoritative).";
+      } catch (e) {}
+    }
+  } else {
+    title.textContent = "Payment recorded";
+    detail.textContent = "Webhook will match SKU by metadata or CAD amount. Check your email on the Stripe receipt.";
+  }
+})();
+</script>
+</body>
+</html>
