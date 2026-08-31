@@ -79,7 +79,7 @@
   .hud-fill{height:100%;width:8%;background:#9ec5ff}
   .hud-act{margin-top:.4rem;display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
   .hud-donate,.hud-onboard{display:flex;align-items:center;justify-content:center;min-height:1.85rem;padding:.28rem .4rem;border:1px solid rgba(158,197,255,.45);background:rgba(158,197,255,.1);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-align:center}
-  .hud-onboard{border-color:rgba(158,197,255,.18);background:rgba(255,255,255,.03);color:rgba(232,241,255,.38);pointer-events:none;cursor:not-allowed}
+  .hud-onboard{border-color:rgba(158,197,255,.45);background:rgba(158,197,255,.1);color:#e8f1ff;pointer-events:auto;cursor:pointer}
   .hud-foot{margin-top:0.45rem;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.48);text-align:center;line-height:1.35}
   @media (max-width:40rem){.hud-foot{display:none}.hud-rail{margin-top:.28rem}:root{--bar:3.7rem}}
   .jump{margin-top:auto;padding:0.35rem 0.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.78rem,3.2vw,0.92rem);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9ec5ff}
@@ -140,7 +140,7 @@
         <div class="hud-cell"><span class="hud-k">Singularity</span><span class="hud-v" id="singularity-cd">—</span></div>
       </div>
       <div class="hud-rail" aria-hidden="true"><div class="hud-fill" id="hud-fill"></div></div>
-      <div class="hud-act"><a class="hud-donate" href="/donate.html">Donate</a><span class="hud-onboard" aria-disabled="true">Onboard now</span></div>
+      <div class="hud-act"><a class="hud-donate" href="/donate.html">Donate</a><a class="hud-onboard" href="/onboard.html">Onboard now</a></div>
       <div class="hud-foot" id="hud-foot">0 days · early residual</div>
     </div>
     <button type="button" class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel"><span></span><span></span><span></span></button>
@@ -195,7 +195,7 @@
     <p class="kicker">Measure</p>
     <h2>See the number. Then decide.</h2>
     <p>Every system leaks. A bill. A protocol. A plant line. A wallet. DualisCapax measures that leak, writes the figure down, and lets you test it.</p>
-    <div class="closed"><strong>The shop is still being built.</strong> You can read the model now. Checkout for time is not live. Research gifts live on Donate. Early public seats 11 to 100 are open as a founding mark.</div>
+    <div class="closed"><strong>Prepaid time is open.</strong> Fuel and document seats settle on <a href="/payments.html">Bind</a>. Research gifts remain on Donate. Early public seats 11 to 100 are open as a founding mark.</div>
     <p>If the figure cannot be turned back into a proof you can hold, nothing is owed. That is the invert rule. It is how we keep the future honest.</p>
     <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#bind">Bind</a><a href="#founding">Founding</a></nav>
   </section>
@@ -204,11 +204,11 @@
     <h2>When the door opens, time is prepaid</h2>
     <p>Fuel is prepaid time. Unused time stays with you.</p>
     <div class="packs">
-      <a class="pack" href="#founding"><div class="cad">CAD $20</div><div class="amt">40 Fuel</div><div class="sub">Trial</div></a>
-      <a class="pack" href="#founding"><div class="cad">CAD $50</div><div class="amt">120 Fuel</div><div class="sub">Practice</div></a>
-      <a class="pack" href="#founding"><div class="cad">CAD $120</div><div class="amt">320 Fuel</div><div class="sub">Retain</div></a>
+      <a class="pack" href="/payments.html"><div class="cad">CAD $20</div><div class="amt">40 Fuel</div><div class="sub">Trial</div></a>
+      <a class="pack" href="/payments.html"><div class="cad">CAD $50</div><div class="amt">120 Fuel</div><div class="sub">Practice</div></a>
+      <a class="pack" href="/payments.html"><div class="cad">CAD $120</div><div class="amt">320 Fuel</div><div class="sub">Retain</div></a>
     </div>
-    <p>Fuel packs wait on checkout. Founding Fuel on seats 11 and 100 is prepaid time bound to the seat.</p>
+    <p>Fuel packs settle on <a href="/payments.html">Bind</a>. Founding Fuel on seats 11 and 100 is prepaid time bound to the seat.</p>
     <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#measure">Measure</a><a href="#founding">Founding</a><a href="#finance">Finance</a></nav>
   </section>
   <section class="band" id="founding">
@@ -220,7 +220,7 @@
     <a class="row" href="/donate.html"><strong>Seat 100 — last early mark</strong>100 Fuel. Prepaid time. After this seat the early window closes.</a>
     <p>Seats 12 to 99 are open and step down in order. The middle is not printed. That is the early-bird.</p>
     <p>Fuel bound to a seat is prepaid time. Names go up after a completed join.</p>
-    <p><a href="/donate.html">Research gifts are live this weekend.</a></p>
+    <p><a href="/donate.html">Research gifts are live on Donate.</a></p>
     <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#bind">Bind</a><a href="#finance">Finance</a><a href="/ai/app">Iris</a></nav>
   </section>
   <section class="band" id="finance">
@@ -228,7 +228,7 @@
     <h2>Cryptography first. Markets second.</h2>
     <p>Crypto here is the original meaning: secret-keeping that can be proven. Keys. Hashes. Signatures. Ledgers you can audit. Coins and tokens sit on top of that. DualisCapax works on the layer you can test.</p>
     <p>Waste is already a cost — in a wallet, a protocol, a plant, or a household bill. We sit between you and that cost. Look. Measure. Bind only if the figure holds.</p>
-    <div class="closed"><strong>Financial instruments stay closed until pricing, securities analysis, and intellectual-property protection are locked.</strong> Nothing on this page is an offer of securities, a sale of tokens, or investment advice. Canadian and cryptographic-asset rules apply. If you enter this section to transact, the work gets technical on purpose.</div>
+    <div class="closed"><strong>Prepaid time is open on Bind.</strong> Nothing on this page is an offer of securities, a sale of tokens, or investment advice. Canadian and cryptographic-asset rules apply. Equal-CAD crypto settlement is verified in real time.</div>
     <ul>
       <li>Look — research stays public. Read it. Fork the questions.</li>
       <li>Measure — one leak. One bill, one contract, one chain, one line. A figure you can check.</li>
@@ -294,8 +294,8 @@
 <script src="js/founding-grant.js"></script>
 <script>
 (function(){
-  var LAUNCH_MS = Date.UTC(2026, 7, 29, 7, 0, 0); // 2026-08-29 03:00 EDT
-  var BASE_SINGULARITY_MS = Date.UTC(2036, 7, 24, 0, 0, 0);
+  var LAUNCH_MS = Date.UTC(2026, 7, 24, 0, 0, 0); // T-LAUNCH locked 2026-08-24 00:00 UTC
+  var BASE_SINGULARITY_MS = Date.UTC(2036, 7, 24, 0, 0, 0); // T-SING-BASE
   var CAD_PER_DAY = 1000;
   var MAX_ADVANCE_DAYS = 3650;
   var PLEDGED_CAD = 0;
