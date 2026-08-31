@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Pay later — DualisCapax</title>
+<title>Bind — DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/cta.css"/>
@@ -17,8 +17,8 @@ a{color:inherit;text-decoration:none}
 h1{font-size:clamp(1.85rem,7vw,2.5rem);font-weight:900;letter-spacing:-.04em;line-height:.95;margin:.55rem 0 .7rem}
 .lede{font-size:1.1rem;color:rgba(245,245,245,.78);margin-bottom:1.1rem}
 .packs{display:grid;gap:.7rem;margin:1rem 0}
-.pack{text-align:left;width:100%;border:1px solid rgba(126,182,255,.28);border-radius:14px;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2));padding:1rem 1.05rem;color:#f5f5f5;cursor:pointer;font:inherit}
-.pack.on{border-color:#9ec5ff}
+.pack{text-align:left;width:100%;border:1px solid rgba(126,182,255,.28);border-radius:14px;background:linear-gradient(180deg,rgba(126,182,255,.07),rgba(0,0,0,.2));padding:1rem 1.05rem;color:#f5f5f5;cursor:pointer;font:inherit;display:block}
+.pack:hover,.pack.on{border-color:#9ec5ff}
 .pack .cad{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff}
 .pack .amt{font-size:1.55rem;font-weight:900;letter-spacing:-.03em;margin:.15rem 0}
 .pack .sub{font-size:1rem;color:rgba(245,245,245,.58)}
@@ -26,7 +26,11 @@ h1{font-size:clamp(1.85rem,7vw,2.5rem);font-weight:900;letter-spacing:-.04em;lin
 .read .t{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.35rem}
 .read p{font-size:1.05rem}
 .hold{font-size:1.05rem;color:rgba(245,245,245,.62);margin:.35rem 0 1rem}
+.pay{display:inline-block;margin-top:.6rem;padding:.55rem 1rem;border:1px solid #7eb6ff;border-radius:8px;font-weight:700;font-size:.95rem;color:#7eb6ff}
+.pay:hover{background:rgba(126,182,255,.12)}
 foot{display:block;margin-top:2.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:0.88rem;color:rgba(245,245,245,.38)}
+.seats{margin-top:1.5rem}
+.seats h2{font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin-bottom:.6rem}
 </style>
 </head>
 <body>
@@ -41,46 +45,71 @@ foot{display:block;margin-top:2.2rem;padding-top:1rem;border-top:1px solid rgba(
       <a href="founding.html">Founding</a>
     </div>
   </div>
-  <p class="kicker">Pay later</p>
-  <h1>These are prices. You cannot pay yet.</h1>
-  <p class="lede">When Dualis opens, you buy time. What you don't use stays yours. Not a share of the company.</p>
+  <p class="kicker">Bind · open</p>
+  <h1>Buy prepaid time.</h1>
+  <p class="lede">What you do not use stays yours. Not a share of the company. CAD primary. Equal-CAD crypto when the rail settles.</p>
+
   <div class="packs" id="packs">
-    <button type="button" class="pack on" data-cad="20" data-fuel="40" data-note="Small. Enough to try it.">
+    <a class="pack on" href="https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05" data-cad="20" data-fuel="40" data-note="Small. Enough to try it.">
       <div class="cad">CAD $20</div>
       <div class="amt">40 Fuel</div>
       <div class="sub">Try it</div>
-    </button>
-    <button type="button" class="pack" data-cad="50" data-fuel="120" data-note="Middle. For a real question.">
+    </a>
+    <a class="pack" href="https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02" data-cad="50" data-fuel="120" data-note="Middle. For a real question.">
       <div class="cad">CAD $50</div>
       <div class="amt">120 Fuel</div>
       <div class="sub">Work</div>
-    </button>
-    <button type="button" class="pack" data-cad="120" data-fuel="320" data-note="Large. For staying with it.">
+    </a>
+    <a class="pack" href="https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01" data-cad="120" data-fuel="320" data-note="Large. For staying with it.">
       <div class="cad">CAD $120</div>
       <div class="amt">320 Fuel</div>
       <div class="sub">Stay</div>
-    </button>
+    </a>
   </div>
+
   <div class="read" id="read">
     <div class="t">This pack</div>
-    <p>CAD $20 → 40 Fuel. Small. Enough to try it.</p>
+    <p>CAD $20 → 40 Fuel. Small. Enough to try it. Tap a pack to open Stripe.</p>
   </div>
-  <p class="hold">No button. Dualis is not taking money.</p>
+
+  <div class="seats">
+    <h2>Document seats (12 mo)</h2>
+    <div class="packs">
+      <a class="pack" href="https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04">
+        <div class="cad">CAD $49</div>
+        <div class="amt">Leaf</div>
+        <div class="sub">One gated room · 12 mo</div>
+      </a>
+      <a class="pack" href="https://buy.stripe.com/00w5kF41NbU55ahaslffy03">
+        <div class="cad">CAD $149</div>
+        <div class="amt">Branch</div>
+        <div class="sub">One field · 12 mo</div>
+      </a>
+      <a class="pack" href="https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00">
+        <div class="cad">CAD $499</div>
+        <div class="amt">Domain library</div>
+        <div class="sub">One domain class · 12 mo · not full vault</div>
+      </a>
+    </div>
+  </div>
+
+  <p class="hold">Payment gateway open by operator order 31 Aug 2026. Unbound rails (treasury, equal-CAD crypto settlement) dealt with in real time.</p>
   <div class="cta-row cta-2">
     <a class="cta primary" href="ai/app.html">Ask Iris</a>
-    <a class="cta" href="research/">Read</a>
+    <a class="cta" href="research/access.html">Access matrix</a>
   </div>
-  <foot>DualisCapax · not taking dollars</foot>
+  <foot>DualisCapax · access.dual.v2 · open · CAD primary · not securities</foot>
 </div>
 <script>
 (function(){
-  var packs=document.querySelectorAll('.pack');
+  var packs=document.querySelectorAll('.packs > .pack');
   var read=document.getElementById('read');
   packs.forEach(function(p){
     p.addEventListener('click',function(){
+      if(!p.dataset.cad) return;
       packs.forEach(function(x){x.classList.remove('on')});
       p.classList.add('on');
-      read.innerHTML='<div class="t">This pack</div><p>CAD $'+p.dataset.cad+' → '+p.dataset.fuel+' Fuel. '+p.dataset.note+'</p>';
+      read.innerHTML='<div class="t">This pack</div><p>CAD $'+p.dataset.cad+' → '+p.dataset.fuel+' Fuel. '+p.dataset.note+' Stripe opens on tap.</p>';
     });
   });
 })();

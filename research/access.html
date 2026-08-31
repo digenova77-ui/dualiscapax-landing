@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Access — DualisCapax Research (Closed)</title>
+  <title>Access — DualisCapax Research</title>
   <link rel="stylesheet" href="../assets/text-scale.css"/>
   <style>
     :root { --bg:#000; --fg:#fff; --muted:#8a8a8a; --border:#222; --accent:#1e90ff; --gold:#d4a017; --surface:#0a0a0a; }
@@ -19,27 +19,27 @@
     h1 { font-size: clamp(1.4rem, 1.2rem + 1vw, 1.75rem); margin-bottom: 0.4rem; }
     .lead { color: var(--muted); margin-bottom: 1rem; font-size: 1rem; }
     .lead strong { color: var(--fg); }
-    .closed-banner {
+    .open-banner {
       border: 1px solid var(--border);
       background: var(--surface);
       padding: 1rem 1.1rem;
       margin-bottom: 1.25rem;
       border-radius: 6px;
     }
-    .closed-banner .tag {
+    .open-banner .tag {
       display: inline-block;
       font-size: 0.65rem;
       font-weight: 700;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      border: 1px solid var(--gold);
-      color: var(--gold);
+      border: 1px solid var(--accent);
+      color: var(--accent);
       padding: 0.25rem 0.5rem;
       margin-bottom: 0.65rem;
     }
-    .closed-banner p { font-size: 0.95rem; color: var(--muted); margin: 0 0 0.5rem; }
-    .closed-banner p:last-child { margin-bottom: 0; }
-    .closed-banner strong { color: var(--fg); }
+    .open-banner p { font-size: 0.95rem; color: var(--muted); margin: 0 0 0.5rem; }
+    .open-banner p:last-child { margin-bottom: 0; }
+    .open-banner strong { color: var(--fg); }
     h2 { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 1.5rem 0 0.65rem; }
     .tier {
       border: 1px solid var(--border); border-radius: 8px;
@@ -51,6 +51,8 @@
     .tier ul { margin: 0.4rem 0 0 1.1rem; font-size: 0.9rem; color: var(--muted); }
     .tier li { margin-bottom: 0.25rem; }
     .tier li strong { color: var(--fg); }
+    .buy { display: inline-block; margin-top: 0.55rem; font-size: 0.85rem; font-weight: 600; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent); }
+    .buy:hover { opacity: 0.85; }
     .note { font-size: 0.78rem; color: var(--muted); margin-top: 1.25rem; overflow-wrap: anywhere; }
     .note strong { color: var(--fg); }
     footer { border-top: 1px solid var(--border); padding: 1rem; text-align: center; font-size: 0.68rem; color: var(--muted); }
@@ -67,12 +69,12 @@
   </nav>
   <div class="shell">
     <h1>Document access</h1>
-    <p class="lead">Jacket <code>access.dual.v2</code>. Public residual prose stays readable. <strong>Paid packs are priced and closed.</strong> Library ≠ full Dualis vault.</p>
+    <p class="lead">Jacket <code>access.dual.v2</code>. Public residual prose stays readable. <strong>Paid packs are open.</strong> Library ≠ full Dualis vault.</p>
 
-    <div class="closed-banner">
-      <div class="tag">Closed · consistent jacket · 30 Aug 2026</div>
-      <p><strong>Access sales closed.</strong> CAD amounts below match <code>payment-links.json</code>. No card checkout until Stripe Payment Links exist.</p>
-      <p><strong>IP gate:</strong> Look + Measure open. Medical depth and engineering depth use identity doors (org/gov/edu/SEAL). Paid seat unlocks room/field when open — not cross-class Crown.</p>
+    <div class="open-banner">
+      <div class="tag">Open · operator order · 31 Aug 2026</div>
+      <p><strong>Payment gateway open.</strong> CAD amounts match <code>payment-links.json</code>. Live Stripe Payment Links are the only fiat path. No secret keys on the page.</p>
+      <p><strong>IP gate:</strong> Look + Measure open. Medical depth and engineering depth still use identity doors (org/gov/edu/SEAL) or a paid seat. Paid seat unlocks room/field — not cross-class Crown.</p>
       <p>Full matrix: <a class="inline" href="IP-GATE.md">IP-GATE.md</a> · <a class="inline" href="MEDICAL-GATE.md">Medical</a> · <a class="inline" href="ENGINEERING-GATE.md">Engineering</a></p>
     </div>
 
@@ -89,49 +91,53 @@
       </ul>
     </div>
 
-    <h2>Priced · not on sale</h2>
+    <h2>Priced · on sale</h2>
 
     <div class="tier" data-sku="leaf">
       <div class="tier-head">
         <span class="tier-name">Leaf</span>
-        <span class="tier-price">CAD $49 · 12 mo · closed</span>
+        <span class="tier-price">CAD $49 · 12 mo</span>
       </div>
       <ul>
         <li><strong>One</strong> gated room — one disease leaf <em>or</em> one eng sheet pack</li>
         <li>Not the vault</li>
       </ul>
+      <a class="buy" href="https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04">Buy Leaf →</a>
     </div>
 
     <div class="tier" data-sku="branch">
       <div class="tier-head">
         <span class="tier-name">Branch</span>
-        <span class="tier-price">CAD $149 · 12 mo · closed</span>
+        <span class="tier-price">CAD $149 · 12 mo</span>
       </div>
       <ul>
         <li><strong>One</strong> field — e.g. neurological <em>or</em> oncology <em>or</em> thermo residual</li>
-        <li>12 months when open</li>
+        <li>12 months</li>
       </ul>
+      <a class="buy" href="https://buy.stripe.com/00w5kF41NbU55ahaslffy03">Buy Branch →</a>
     </div>
 
     <div class="tier" data-sku="library">
       <div class="tier-head">
         <span class="tier-name">Domain library</span>
-        <span class="tier-price">CAD $499 · 12 mo · closed</span>
+        <span class="tier-price">CAD $499 · 12 mo</span>
       </div>
       <ul>
         <li>Multi-room toolkit in <strong>one</strong> domain class: medical <em>or</em> engineering <em>or</em> ops</li>
         <li><strong>Not</strong> “everything Dualis knows.” Cross-class = Crown only</li>
       </ul>
+      <a class="buy" href="https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00">Buy Domain library →</a>
     </div>
 
     <div class="tier" data-sku="fuel">
       <div class="tier-head">
         <span class="tier-name">Fuel depth</span>
-        <span class="tier-price">CAD $20 / $50 / $120 · closed</span>
+        <span class="tier-price">CAD $20 / $50 / $120</span>
       </div>
       <ul>
         <li>40 / 120 / 320 Fuel — prepaid time, not a document seat</li>
       </ul>
+      <a class="buy" href="../payments.html">Buy Fuel on Bind →</a>
     </div>
 
     <h2>IP gate examples</h2>
@@ -139,7 +145,7 @@
       <div class="tier-head"><span class="tier-name">Medical</span></div>
       <ul>
         <li><strong>Public:</strong> tribute, path language, journal links</li>
-        <li><strong>Depth:</strong> .org / .gov / .gc.ca or SEAL-1 — or paid medical-class seat when open</li>
+        <li><strong>Depth:</strong> .org / .gov / .gc.ca or SEAL-1 — or paid medical-class seat</li>
         <li>Simulation ≠ treatment</li>
       </ul>
     </div>
@@ -147,7 +153,7 @@
       <div class="tier-head"><span class="tier-name">Engineering</span></div>
       <ul>
         <li><strong>Public:</strong> residual language under /research/engineering/</li>
-        <li><strong>Depth:</strong> .edu / .org / .gov / .gc.ca or SEAL-1 — or paid eng-class seat when open</li>
+        <li><strong>Depth:</strong> .edu / .org / .gov / .gc.ca or SEAL-1 — or paid eng-class seat</li>
         <li>Simulation ≠ stamped design</li>
       </ul>
     </div>
@@ -157,7 +163,7 @@
       Not medical advice. Not a P.Eng. stamp. Not securities. Ontario / Canada first.
     </p>
   </div>
-  <footer>DualisCapax · access.dual.v2 · CLOSED · consistent CAD · Not for sale</footer>
+  <footer>DualisCapax · access.dual.v2 · OPEN · consistent CAD · operator order 31 Aug 2026</footer>
   <script src="../assets/text-scale.js" defer></script>
 </body>
 </html>
