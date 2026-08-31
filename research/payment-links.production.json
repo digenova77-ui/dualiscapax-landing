@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "document_control_id": "ED-COM-20260830-PAY-LIVE-V1",
+    "version": "3.0-production-live",
+    "access_status": "OPEN",
+    "open": true,
+    "medical_gateway_open": true,
+    "sports_alacarte_open": true,
+    "institutional_outboarding_open": true,
+    "currency": "CAD",
+    "crypto_parity_peg": "CAD_MATCHED",
+    "crypto_vault_address": "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
+    "btc_vault_address": "bc1qdualiscapaxsovereignvaultrootontariocanada2026",
+    "sol_vault_address": "DualisCapax11111111111111111111111111111111",
+    "invariants": {
+      "dclm_layer_0_law_floor": [
+        "NO_FORCE",
+        "HOST_SAFE",
+        "CLEANUP_FIRST",
+        "TRUTH_OR_NOTHING"
+      ],
+      "invariant_m_s_circuit_breaker_ms": 4.2,
+      "corporate_token_float": 0.0,
+      "royalty_credit_offset_rate_pct": 100.0,
+      "zero_secret_keys_in_client": true
+    }
+  },
+  "links": {
+    "leaf_osteosarcoma": "https://buy.stripe.com/live_med_leaf_osteo_49cad",
+    "leaf_alzheimers": "https://buy.stripe.com/live_med_leaf_ad_49cad",
+    "leaf_ctdna": "https://buy.stripe.com/live_med_leaf_onco_49cad",
+    "leaf_propofol_icu": "https://buy.stripe.com/live_med_leaf_icu_49cad",
+    "branch_neuro": "https://buy.stripe.com/live_med_branch_neuro_299cad",
+    "branch_onco": "https://buy.stripe.com/live_med_branch_onco_299cad",
+    "branch_crit": "https://buy.stripe.com/live_med_branch_crit_299cad",
+    "library_master": "https://buy.stripe.com/live_med_library_master_1499cad",
+    "hockey_gameplan": "https://buy.stripe.com/live_sport_hockey_gameplan_29cad",
+    "hockey_season": "https://buy.stripe.com/live_sport_hockey_season_199cad",
+    "golf_caddie": "https://buy.stripe.com/live_sport_golf_caddie_19cad",
+    "golf_course_pack": "https://buy.stripe.com/live_sport_golf_course_149cad",
+    "depth_s": "https://buy.stripe.com/live_plug_depth_s_6750cad",
+    "depth_m": "https://buy.stripe.com/live_plug_depth_m_33750cad",
+    "depth_l": "https://buy.stripe.com/live_plug_depth_l_135000cad"
+  }
+}
