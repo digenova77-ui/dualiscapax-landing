@@ -69,8 +69,8 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
 <div class="dock">
   <div class="chips" id="chips" aria-label="Suggested questions">
     <button type="button" data-q="What can you do?">Help</button>
-    <button type="button" data-q="Can you see me?">See</button>
-    <button type="button" data-q="Read the screen">Read</button>
+    <button type="button" data-q="What is Fuel?">Fuel</button>
+    <button type="button" data-q="How do I pay?">Bind</button>
     <button type="button" data-q="Ontario measure sheet">Bill</button>
   </div>
   <p class="err" id="err" hidden role="alert"></p>
@@ -84,8 +84,10 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
 </div>
 <script src="/js/no-select.js"></script>
 <script src="/assets/haptic.js"></script>
-<script src="dclm-look.js?v=31b"></script>
-<script src="iris-live.js?v=31b"></script>
+<script src="/js/api-config.js?v=31c"></script>
+<script src="/js/api-unified.js?v=31c"></script>
+<script src="dclm-look.js?v=31c"></script>
+<script src="iris-live.js?v=31c"></script>
 <script>
 (function(){
   if(navigator.serviceWorker){
@@ -123,12 +125,16 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
         ? await window.IrisLive.run(text,{log:log,voice:"you",vision:vision,last:lastSpoken})
         : (window.DCLMLook && window.DCLMLook.run)
           ? await window.DCLMLook.run(text,{voice:"you",vision:vision,last:lastSpoken})
-          : {spoken:"Four doors: Help, Bill, Fuel, Donate."};
-      var spoken=(recu&&recu.spoken)?recu.spoken:"Four doors: Help, Bill, Fuel, Donate.";
+          : {spoken:"I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure."};
+      var spoken=(recu&&recu.spoken)?recu.spoken:"I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure.";
       addBubble("them",spoken,recu&&recu.href,recu&&recu.label);
+      if(document.getElementById("hear").classList.contains("on")&&window.speechSynthesis&&spoken){
+        var u=new SpeechSynthesisUtterance(spoken); u.rate=1.02;
+        window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+      }
     }catch(e){
       showErr("Send failed.");
-      addBubble("them","Four doors: Help, Bill, Fuel, Donate.");
+      addBubble("them","I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure.");
     }
   }
   document.getElementById("form").addEventListener("submit",function(e){e.preventDefault();send(input.value);});
@@ -163,7 +169,7 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
     }).catch(function(){showErr("Camera blocked.");});
   });
   document.getElementById("filebtn").addEventListener("click",function(){document.getElementById("file").click();});
-  addBubble("them","Hi. I'm Iris. Ask about your bill, Fuel, or Donate.");
+  addBubble("them","Hi. I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or research.");
 })();
 </script>
 </body>
