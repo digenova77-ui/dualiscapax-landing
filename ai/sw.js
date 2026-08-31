@@ -1,5 +1,5 @@
 /* DCLM Look — cache this folder only. Not Bind. */
-var CACHE = "dclm-look-v12";
+var CACHE = "dclm-look-v13";
 var ASSETS = ["./app","./dclm-look.js","./icon.svg","./icon-maskable.svg","./manifest-dclm.json","./room","./nursery"];
 function pretty(url) {
   try { var u = new URL(url); if (u.pathname.slice(-5) === ".html") u.pathname = u.pathname.slice(0, -5); return u.toString(); }
