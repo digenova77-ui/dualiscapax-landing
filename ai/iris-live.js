@@ -1,6 +1,6 @@
-/** Iris live bridge — book first, remote only when an API origin is set. */
+/** Iris live bridge — veto/greet/look first, remote only when an API origin is set. No book. */
 (function (w) {
-  var VERSION = "iris-live-2026-08-30b";
+  var VERSION = "iris-live-2026-08-31a";
 
   function apiBase() {
     var base = (w.DC_API_BASE || "").replace(/\/$/, "");

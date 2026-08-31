@@ -1,7 +1,7 @@
 # DualisCapax · Agent Handoff
 
-**Current as of:** `2026-08-30T22:40:00Z` (UTC)
-**Local context:** 2026-08-30 06:40 PM EDT
+**Current as of:** `2026-08-31T17:50:00Z` (UTC)
+**Local context:** 2026-08-31 01:50 PM EDT
 **Repo:** `digenova77-ui/dualiscapax-landing` · `main`
 **Live:** https://dualiscapax.ai/
 **Corp:** 1001718450 ONTARIO INCORPORATED · Articles 21 Aug 2026
@@ -11,14 +11,14 @@
 
 ## 0. Start the next prompt with
 
-Iris is a one-screen chat. Kernel `kernel-2026-08-30b`. Book mined from GitHub (`ai/iris-book.js`). Live bridge `IrisLive` book-first, remote only if `DC_API_BASE` or `?api=` is set. Ontario Measure live. Medical door open to .org / .gov / SEAL-1. Card / Stripe still closed. Worker origin still unpublished.
+Iris is a one-screen chat. Kernel `kernel-2026-08-31a`. Iris book removed. Live bridge `IrisLive` veto/greet/look first, remote only if `DC_API_BASE` or `?api=` is set. Ontario Measure live. Medical door open to .org / .gov / SEAL-1. Card / Stripe still closed. Worker origin still unpublished.
 
 ---
 
 ## 1. Identity
 
 - **Public firm:** DualisCapax — Residual Law Finance · Edge Technologies · Adaptive AI · Research
-- **Logical AI:** DCLM-AI. Public face Iris. First person. Short. Veto first. Book before invention.
+- **Logical AI:** DCLM-AI. Public face Iris. First person. Short. Veto first. No book.
 - **Offer:** a prediction model shaped to the visitor's constraints, built ahead of time. Simulation is not treatment. Not a coin. Not a diagnosis. Not shares.
 - **Motto:** Truth Prevails · No tribes preferred · No shove
 - **Law:** Ontario and Canadian law apply.
@@ -36,7 +36,7 @@ Iris is a one-screen chat. Kernel `kernel-2026-08-30b`. Book mined from GitHub (
 | Onboard | `/onboard.html` | Door open. |
 | Ontario Measure | `/measure.html` | Open. `DC-MS-ON-TOU-1`. |
 | Medical | `/research/healthcare/` | Open under constraint. |
-| Iris | `/ai/app.html` | One-screen chat. Book + veto + live bridge. |
+| Iris | `/ai/app.html` | One-screen chat. Veto + greet/look + live fallback. |
 | Card / Stripe | — | **Closed.** |
 
 HUD epoch: `Date.UTC(2026, 7, 29, 7, 0, 0)` · 3:00 AM EDT 29 Aug 2026.
@@ -49,9 +49,9 @@ HUD epoch: `Date.UTC(2026, 7, 29, 7, 0, 0)` · 3:00 AM EDT 29 Aug 2026.
 - Header tools: hear, camera, clear. No hidden long-press. No triple-tap.
 - Chips vanish after first turn. Session memory in `sessionStorage` key `dc.iris.v1`.
 - Tap an Iris bubble to copy. Door links come from kernel `href` / `label`.
-- Load order: `/js/api-unified.js` → `iris-book.js` → `dclm-look.js` → `iris-live.js`.
-- `IrisLive.run`: VETO first, book MEASURE next, remote `/v2/chat` only on SEED when `DC_API_BASE` or `?api=` is set.
-- Public book leaves mined from canon, unity, fuel, residual, FAQ, law of the land. No invented numbers.
+- Load order: `/js/api-unified.js` → `dclm-look.js` → `iris-live.js`. No iris-book.js.
+- `IrisLive.run`: VETO first, greet/look next, remote `/v2/chat` only on SEED when `DC_API_BASE` or `?api=` is set.
+- Iris book file and matchBook path removed 2026-08-31. No IRIS_BOOK merge.
 
 ---
 
