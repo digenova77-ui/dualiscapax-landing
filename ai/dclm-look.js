@@ -139,8 +139,18 @@
     var s = (text || "").toLowerCase();
     if (/leftover/.test(s) && /(year|minute|hour|walk-back|time-box)/.test(s)) {
       return { grant: "MEASURE", voice: voice, kernel: VERSION, spoken: "Every choice leaves a leftover in " + domainOf(text) + ". I don't invent a name." };
-    }
-    return { grant: "SEED", voice: voice, kernel: VERSION, spoken: "I don't know that leftover. I won't invent it. Ask Help if you want the doors." };
+    }try {
+  var res = await fetch("https://dualiscapax-depth.digenova77.workers.dev/v2/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: [{ role: "user", content: text }] })
+  });
+  var data = await res.json();
+  if (data && data.ok && data.content) {
+    return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "ai-fallback", spoken: data.content };
+  }
+} catch (e) { /* worker unreachable, fall through */ }
+return { grant: "SEED", voice: voice, kernel: VERSION, spoken: "I don't know that leftover. I won't invent it. Ask Help if you wa..." };
   }
 
   w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, matchBook: matchBook, greet: greet, lookSpoken: lookSpoken, book: BOOK };
