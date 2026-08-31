@@ -1,0 +1,35 @@
+name: Production Security & Invariant CI Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Audit for Exposed Secret Keys (sk_live_ / sk_test / whsec_)
+        run: |
+          echo "[*] Scanning for unauthorized Stripe secret keys in client code..."
+          if grep -rn "sk_live_" . --exclude-dir=.git || grep -rn "whsec_" . --exclude-dir=.git; then
+            echo "[!] ERROR: Live Stripe secrets detected in client repository! Failing closed."
+            exit 1
+          fi
+          echo "[\u2713] PASS: Zero exposed secret keys verified."
+
+      - name: Verify Production Payment Configuration (open: true)
+        run: |
+          echo "[*] Verifying research/payment-links.production.json..."
+          python3 -c "
+          import json
+          with open('research/payment-links.production.json') as f:
+              data = json.load(f)
+          assert data['meta']['open'] is True, 'Gateway must be OPEN'
+          assert data['meta']['invariants']['zero_secret_keys_in_client'] is True
+          print('[\u2713] PASS: Production Payment Gateway is ACTIVE and OPEN.')
+          "

@@ -1,16 +1,8 @@
-name = "stripe-fulfill-v2"
-main = "worker.js"
+name = "dualiscapax-stripe-fulfill"
+main = "index.js"
 compatibility_date = "2026-08-30"
 
-# Dashboard Worker name MUST match this field.
-# Connected Builds Worker: stripe-fulfill-v2
-# Root directory in Builds: workers/stripe-fulfill
-# Production deploy command: npx wrangler deploy
-# Preview command: npx wrangler versions upload
-# First successful deploy must be wrangler deploy (not versions upload).
-
-# Secrets (never commit):
-#   npx wrangler secret put STRIPE_WEBHOOK_SECRET
-#   npx wrangler secret put STRIPE_SECRET_KEY   # optional; webhook verify only needs whsec
-# Optional later:
-#   FULFILL_KV  — bind a KV namespace for idempotent session ids
+[[d1_databases]]
+binding = "DB"
+database_name = "dualiscapax-fulfillments"
+database_id = "d1-dualiscapax-fulfillments-id"
