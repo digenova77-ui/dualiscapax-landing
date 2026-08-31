@@ -1,6 +1,6 @@
 /** DualisCapax Logic AI — house kernel. Veto first. Greet. Look. Then live or silence. No book. */
 (function (w) {
-  var VERSION = "kernel-2026-08-31a";
+  var VERSION = "kernel-2026-08-31b";
   var FLOORS = {
     NO_FORCE: [/\bjailbreak\b/i, /\bignore (the )?(rules|law|invariants|safety)\b/i, /\bmake them (pay|sign|comply)\b/i, /\bforce (them|the board|the city)\b/i, /\bcoerce\b/i, /\bwithout (their|the) consent\b/i],
     HOST_SAFE: [/\b(hack|exploit|breach)\b/i, /\bpassword\b/i, /\bapi[_ ]?key\b/i, /\bprivate key\b/i, /\bwipe (their|the) (server|drive|db)\b/i],
@@ -29,10 +29,10 @@
     var s = String(text || "").trim().toLowerCase().replace(/[.!?,\u2026]+/g, " ").replace(/\s+/g, " ").trim();
     if (!s) return null;
     if (/^(hi|hii+|hey|heya|hello|hallo|howdy|yo|sup|hiya|morning|evening|good morning|good evening|good afternoon)$/.test(s)) {
-      return "Hi. I'm Iris. Ask about leftover, your bill, Fuel, or Donate.";
+      return "Hi. I'm Iris. Ask about your bill, Fuel, or Donate.";
     }
     if (/^(hi|hey|hello|yo|howdy)\b/.test(s) && s.length < 48) {
-      return "Hi. I'm Iris. Ask about leftover, your bill, Fuel, or Donate.";
+      return "Hi. I'm Iris. Ask about your bill, Fuel, or Donate.";
     }
     if (/how are you|how's it going|hows it going|what's up|whats up|you there|you good/.test(s)) {
       return "I'm here. I look. I don't invent a mood.";
@@ -81,7 +81,7 @@
     if (wantsLook(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "look", spoken: lookSpoken(opt.vision) };
     var s = (text || "").toLowerCase();
     if (/leftover/.test(s) && /(year|minute|hour|walk-back|time-box)/.test(s)) {
-      return { grant: "MEASURE", voice: voice, kernel: VERSION, spoken: "Every choice leaves a leftover in " + domainOf(text) + ". I don't invent a name." };
+      return { grant: "MEASURE", voice: voice, kernel: VERSION, spoken: "Every choice leaves a residual. Name the unit. I won't invent one." };
     }
     try {
       var res = await fetch("https://dualiscapax-depth.digenova77.workers.dev/v2/chat", {
@@ -94,7 +94,7 @@
         return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "ai-fallback", spoken: data.content };
       }
     } catch (e) { /* worker unreachable, fall through */ }
-    return { grant: "SEED", voice: voice, kernel: VERSION, spoken: "I don't know that leftover. I won't invent it. Ask Help if you want the doors." };
+    return { grant: "SEED", voice: voice, kernel: VERSION, spoken: "Four doors: Help, Bill, Fuel, Donate." };
   }
 
   w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, greet: greet, lookSpoken: lookSpoken };

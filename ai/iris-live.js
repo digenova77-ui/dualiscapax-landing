@@ -1,6 +1,6 @@
 /** Iris live bridge — veto/greet/look first, remote only when an API origin is set. No book. */
 (function (w) {
-  var VERSION = "iris-live-2026-08-31a";
+  var VERSION = "iris-live-2026-08-31b";
 
   function apiBase() {
     var base = (w.DC_API_BASE || "").replace(/\/$/, "");
@@ -45,7 +45,7 @@
   async function run(text, opt) {
     opt = opt || {};
     if (!w.DCLMLook || typeof w.DCLMLook.run !== "function") {
-      return { grant: "SEED", kernel: VERSION, spoken: "I don't know that leftover. I won't invent it." };
+      return { grant: "SEED", kernel: VERSION, spoken: "Four doors: Help, Bill, Fuel, Donate." };
     }
     var recu = await w.DCLMLook.run(text, opt);
     if (recu && recu.grant === "VETO") return recu;
@@ -56,7 +56,7 @@
         return { grant: "MEASURE", voice: (opt && opt.voice) || "you", kernel: VERSION, id: "remote", spoken: spoken };
       }
     } catch (e) {}
-    return recu || { grant: "SEED", kernel: VERSION, spoken: "I don't know that leftover. I won't invent it." };
+    return recu || { grant: "SEED", kernel: VERSION, spoken: "Four doors: Help, Bill, Fuel, Donate." };
   }
 
   w.IrisLive = { version: VERSION, run: run, apiBase: apiBase };
