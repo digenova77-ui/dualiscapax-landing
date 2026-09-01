@@ -1,11 +1,12 @@
 {
   "jacket": "access.dual.v2",
   "list_currency": "CAD",
-  "open": true,
-  "locked_as_of": "2026-08-30T07:45:00-04:00",
+  "open": false,
+  "locked_as_of": "2026-08-31T22:00:00-04:00",
   "current_as_of": "2026-08-31",
-  "opened_by_operator": "2026-08-31T18:05:00Z",
-  "gateway_law": "Single settlement rail: fiat in → equal-CAD crypto out. Prices only from this jacket. Library is one domain class, not the full Dualis vault. Payment gateway opened by explicit operator order 2026-08-31.",
+  "opened_by_operator": null,
+  "closed_by_operator": "2026-08-31T22:40:00Z",
+  "gateway_law": "Access sales CLOSED until pricing is final and IP protection is in place. Single settlement rail when reopened: fiat in → equal-CAD crypto out. Prices only from this jacket. Library is one domain class, not the full Dualis vault.",
   "settlement_rail": "fiat_to_crypto",
   "ip_gate": {
     "doc": "research/IP-GATE.md",
@@ -17,7 +18,7 @@
     "worker_path": "workers/stripe-fulfill/",
     "events": ["checkout.session.completed", "checkout.session.async_payment_succeeded"],
     "deployed_url": "https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/",
-    "status": "live"
+    "status": "code_present_secrets_unbound"
   },
   "payment_links": {
     "test": {
@@ -66,12 +67,12 @@
   "access_layers": {
     "L0_LOOK": { "who": "anyone", "invoke": "read public residual prose", "cad": 0, "status": "open" },
     "L1_MEASURE": { "who": "anyone", "invoke": "measure + crypto audit receipt", "cad": 0, "status": "open" },
-    "L2_LEAF": { "who": "prepaid seat", "invoke": "one gated room, 12 mo, one domain", "cad": 49, "status": "open" },
-    "L3_BRANCH": { "who": "prepaid seat", "invoke": "one field, 12 mo", "cad": 149, "status": "open" },
-    "L4_LIBRARY": { "who": "prepaid seat", "invoke": "multi-room toolkit in ONE domain class (medical OR engineering OR ops), 12 mo — not full vault", "cad": 499, "status": "open" },
-    "L5_DEPTH_S": { "who": "prepaid fuel", "invoke": "40 Fuel depth run", "cad": 20, "status": "open" },
-    "L5_DEPTH_M": { "who": "prepaid fuel", "invoke": "120 Fuel depth run", "cad": 50, "status": "open" },
-    "L5_DEPTH_L": { "who": "prepaid fuel", "invoke": "320 Fuel depth run", "cad": 120, "status": "open" },
+    "L2_LEAF": { "who": "prepaid seat", "invoke": "one gated room, 12 mo, one domain", "cad": 49, "status": "closed" },
+    "L3_BRANCH": { "who": "prepaid seat", "invoke": "one field, 12 mo", "cad": 149, "status": "closed" },
+    "L4_LIBRARY": { "who": "prepaid seat", "invoke": "multi-room toolkit in ONE domain class (medical OR engineering OR ops), 12 mo — not full vault", "cad": 499, "status": "closed" },
+    "L5_DEPTH_S": { "who": "prepaid fuel", "invoke": "40 Fuel depth run", "cad": 20, "status": "closed" },
+    "L5_DEPTH_M": { "who": "prepaid fuel", "invoke": "120 Fuel depth run", "cad": 50, "status": "closed" },
+    "L5_DEPTH_L": { "who": "prepaid fuel", "invoke": "320 Fuel depth run", "cad": 120, "status": "closed" },
     "FOUNDING": { "who": "verified founding seat", "invoke": "plaque + residual order memory", "cad": "TBD · closed", "status": "priced_closed" },
     "CROWN": { "who": "owner wet-ink only", "invoke": "cross-class vault, CRA, government", "cad": null, "status": "never_agent" },
     "WAIT_GRANT": { "who": "owner yes/no", "invoke": "OAuth / token for a named realm", "cad": 0, "status": "slot" }
@@ -79,12 +80,12 @@
   "skus": {
     "look": { "name": "Look", "cad": 0, "status": "open", "ip": "public_floor", "tab": "free" },
     "basic": { "name": "Basic measure", "cad": 0, "status": "open", "ip": "public_floor", "tab": "free" },
-    "leaf": { "name": "Single leaf pack 12 mo", "cad": 49, "crypto_equal_cad": true, "status": "open", "ip": "one_room", "domain_class": "choose_one", "tab": "seats", "live_url": "https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04" },
-    "branch": { "name": "Branch access 12 mo", "cad": 149, "crypto_equal_cad": true, "status": "open", "ip": "one_field", "domain_class": "choose_one", "tab": "seats", "live_url": "https://buy.stripe.com/00w5kF41NbU55ahaslffy03" },
-    "library": { "name": "Domain library 12 mo", "cad": 499, "crypto_equal_cad": true, "status": "open", "ip": "domain_class_toolkit", "domain_class": "medical_xor_engineering_xor_ops", "notes": "Not full Dualis vault. Not cross-class.", "tab": "seats", "live_url": "https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00" },
-    "depth_s": { "name": "Depth 40 Fuel", "cad": 20, "crypto_equal_cad": true, "status": "open", "ip": "fuel_time", "tab": "fuel", "live_url": "https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05" },
-    "depth_m": { "name": "Depth 120 Fuel", "cad": 50, "crypto_equal_cad": true, "status": "open", "ip": "fuel_time", "tab": "fuel", "live_url": "https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02" },
-    "depth_l": { "name": "Depth 320 Fuel", "cad": 120, "crypto_equal_cad": true, "status": "open", "ip": "fuel_time", "tab": "fuel", "live_url": "https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01" },
+    "leaf": { "name": "Single leaf pack 12 mo", "cad": 49, "crypto_equal_cad": true, "status": "closed", "ip": "one_room", "domain_class": "choose_one", "tab": "seats", "live_url": "https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04" },
+    "branch": { "name": "Branch access 12 mo", "cad": 149, "crypto_equal_cad": true, "status": "closed", "ip": "one_field", "domain_class": "choose_one", "tab": "seats", "live_url": "https://buy.stripe.com/00w5kF41NbU55ahaslffy03" },
+    "library": { "name": "Domain library 12 mo", "cad": 499, "crypto_equal_cad": true, "status": "closed", "ip": "domain_class_toolkit", "domain_class": "medical_xor_engineering_xor_ops", "notes": "Not full Dualis vault. Not cross-class.", "tab": "seats", "live_url": "https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00" },
+    "depth_s": { "name": "Depth 40 Fuel", "cad": 20, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "live_url": "https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05" },
+    "depth_m": { "name": "Depth 120 Fuel", "cad": 50, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "live_url": "https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02" },
+    "depth_l": { "name": "Depth 320 Fuel", "cad": 120, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "live_url": "https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01" },
     "hockey_game": { "name": "Hockey gameplan", "cad": 19, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "cadence": "per_game", "ip": "one_run", "tab": "alacarte" },
     "hockey_mo": { "name": "Hockey tournament pack", "cad": 59, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "cadence": "monthly", "ip": "month_pass", "tab": "alacarte" },
     "hockey_season": { "name": "Hockey season campaign", "cad": 249, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "cadence": "season", "ip": "season_pass", "notes": "~CAD $14.65 / player at 17-skater roster", "tab": "alacarte" },
@@ -107,11 +108,17 @@
     "pages_host": { "cad_month": 0, "status": "defined", "note": "GitHub Pages" },
     "stripe_fee_when_open": { "rate": "processor schedule", "status": "named_formula" },
     "crypto_network_fee": { "payer": "sender or processor", "status": "named" },
-    "stripe_link": { "status": "LIVE_LINKS_WIRED", "note": "Live buy.stripe.com links active for leaf/branch/library/depth." },
+    "stripe_link": { "status": "LINKS_PRESENT_SALES_CLOSED", "note": "Live buy.stripe.com URLs exist but Access sales flag is closed." },
     "treasury_address": { "status": "WAIT_RAIL" },
     "fiat_to_crypto_processor": { "status": "WAIT_RAIL" },
-    "webhook_worker": { "status": "live_url_present" }
+    "webhook_worker": { "status": "url_present_cloudflare_secrets_unbound" }
+  },
+  "ledger": {
+    "LEDGER-EARNED": 0,
+    "LEDGER-PLEDGED": 0,
+    "unit": "CAD",
+    "status": "closed"
   },
   "receive": { "usdc": null, "btc": null, "chain_usdc": null },
-  "ready_except": ["treasury address", "equal-CAD crypto settlement verification", "alacarte live links still null"]
+  "ready_except": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "treasury address", "equal-CAD crypto settlement verification", "alacarte live links still null"]
 }
