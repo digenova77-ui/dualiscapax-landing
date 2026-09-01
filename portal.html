@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Portal — DualisCapax</title>
+<meta name="theme-color" content="#02040c"/>
+<meta name="description" content="Enter DualisCapax with a phrase that lives only on this device. No password. No account on our servers."/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="theme.css"/>
+<style>
+body{background:#02040c}
+.site{max-width:36rem}
+.panel{border:1px solid rgba(158,197,255,.28);padding:1.1rem 1rem;margin:0 0 .75rem;background:linear-gradient(180deg,rgba(158,197,255,.07),rgba(0,0,0,.28))}
+.roles{display:grid;gap:.5rem;margin:.4rem 0 1rem}
+.role{display:block;width:100%;text-align:left;border:1px solid rgba(158,197,255,.28);background:rgba(158,197,255,.05);color:#e8f1ff;padding:.85rem .95rem;font:inherit;cursor:pointer}
+.role.on{border-color:rgba(158,197,255,.7);background:rgba(158,197,255,.16)}
+.role b{display:block;font-size:1rem}
+.role span{display:block;font-size:.9rem;color:rgba(245,245,245,.58);margin-top:.15rem}
+.phrase{width:100%;min-height:4.2rem;padding:.8rem;border:1px solid rgba(158,197,255,.35);background:#05070c;color:#f5f5f5;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.95rem;line-height:1.5;resize:vertical}
+.rowbtns{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.7rem 0}
+.act{min-height:3rem;border:1px solid rgba(158,197,255,.5);background:rgba(158,197,255,.14);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.act.ghost{background:transparent;border-color:rgba(158,197,255,.28)}
+.warn{font-size:.92rem;color:rgba(245,245,245,.62);line-height:1.5;margin:.4rem 0 0}
+.ok{color:#c8f0d2}
+.bad{color:#ffb4b4}
+.doors{display:grid;gap:.5rem;margin-top:.8rem}
+.door{border:1px solid rgba(158,197,255,.28);padding:.85rem .95rem;background:rgba(158,197,255,.06);display:block}
+.door b{display:block}
+.tiny{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.42)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
+<div class="site">
+  <header>
+    <a class="mark" href="index.html?land=1">DualisCapax</a>
+    <nav>
+      <a href="look.html">Look</a>
+      <a href="portal.html" class="on">Portal</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </header>
+  <p class="eyebrow">Portal</p>
+  <h1>Your phrase. This device.</h1>
+  <p class="lede">No password. No account on our computers. The eight words stay on this phone or computer. If you lose the words, we cannot get you back in.</p>
+
+  <div id="gate" class="panel">
+    <p class="tiny" id="gate-state">Choose how you arrive</p>
+    <div class="roles">
+      <button type="button" class="role on" data-role="visitor"><b>For you</b><span>Look around. Talk to Iris. Nothing to buy.</span></button>
+      <button type="button" class="role" data-role="onboarder"><b>Onboarder</b><span>You bring other people in. Same device phrase.</span></button>
+      <button type="button" class="role" data-role="csuite"><b>C-suite / client</b><span>Your desk: measure, audit, pay, Iris. Tailored to your seat.</span></button>
+    </div>
+    <label class="tiny" for="phrase">Eight-word phrase</label>
+    <textarea id="phrase" class="phrase" autocomplete="off" spellcheck="false" placeholder="eight words that live only here"></textarea>
+    <div class="rowbtns">
+      <button type="button" class="act" id="make">Make a phrase</button>
+      <button type="button" class="act" id="open">Open</button>
+    </div>
+    <button type="button" class="act ghost" id="unlock" style="width:100%">I already have my words</button>
+    <p class="warn" id="note">Write the words on paper. We never see them. There is no reset email.</p>
+  </div>
+
+  <div id="desk" class="hide">
+    <div class="panel">
+      <p class="tiny">Open on this device</p>
+      <p id="who" class="ok"></p>
+      <p class="warn">This seat is local. Paying for minutes still happens on Pay. Other people pay for their own seat.</p>
+      <div class="rowbtns">
+        <button type="button" class="act ghost" id="lock">Lock</button>
+        <button type="button" class="act ghost" id="forget">Forget this device</button>
+      </div>
+    </div>
+    <p class="tiny">Your doors</p>
+    <div class="doors" id="doors"></div>
+  </div>
+
+  <footer>DualisCapax · phrase on device · no password file</footer>
+</div>
+<script src="js/home-quarks.js"></script>
+<script src="js/session-stamp.js"></script>
+<script src="js/device-pass.js"></script>
+<script src="js/no-select.js"></script>
+<script>
+(function(){
+  var role = 'visitor';
+  var roles = document.querySelectorAll('.role');
+  var phrase = document.getElementById('phrase');
+  var note = document.getElementById('note');
+  var gate = document.getElementById('gate');
+  var desk = document.getElementById('desk');
+  var who = document.getElementById('who');
+  var doors = document.getElementById('doors');
+  var MAP = {
+    visitor: [
+      ['look.html','Look','Open pages. No account.'],
+      ['ai/app.html','Iris','A first talk costs nothing.'],
+      ['for-people.html','What this is','Five facts.'],
+      ['donate.html','Give','A gift. No card needed.']
+    ],
+    onboarder: [
+      ['look.html','Look','Show someone the first rooms.'],
+      ['ai/app.html','Iris','Walk them through a first talk.'],
+      ['payments.html','Pay','They pay their own minutes.'],
+      ['donate.html','Give','If they want to give, not buy.']
+    ],
+    csuite: [
+      ['ai/app.html','Iris','Your helper. Short answers.'],
+      ['audit.html','Audit','Receipts you can check.'],
+      ['measure.html','Measure','Ontario measure path.'],
+      ['payments.html','Pay','Prepaid minutes for this seat.'],
+      ['schools.html','Schools','Board residual path.'],
+      ['dclm-gateway.html','Gateway','Tiers and rails.']
+    ]
+  };
+  function setRole(r){
+    role = r;
+    roles.forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-role')===r); });
+  }
+  roles.forEach(function(b){
+    b.addEventListener('click', function(){ setRole(b.getAttribute('data-role')); });
+  });
+  function paint(s){
+    gate.classList.add('hide');
+    desk.classList.remove('hide');
+    who.textContent = (s.role || 'visitor') + ' · ' + String(s.id||'').slice(0,8) + ' · this device';
+    var list = MAP[s.role] || MAP.visitor;
+    doors.innerHTML = list.map(function(d){
+      return '<a class="door" href="'+d[0]+'"><b>'+d[1]+'</b><span class="warn">'+d[2]+'</span></a>';
+    }).join('');
+  }
+  function fail(e){
+    note.className = 'warn bad';
+    note.textContent = (e && e.message) ? e.message : 'That phrase does not open this device.';
+  }
+  document.getElementById('make').addEventListener('click', function(){
+    phrase.value = DCVault.generate();
+    note.className = 'warn';
+    note.textContent = 'Copy these eight words now. Then tap Open. We cannot show them again.';
+  });
+  document.getElementById('open').addEventListener('click', function(){
+    DCVault.create(phrase.value, role).then(function(s){
+      phrase.value = '';
+      paint(s);
+    }).catch(fail);
+  });
+  document.getElementById('unlock').addEventListener('click', function(){
+    DCVault.unlock(phrase.value).then(function(s){
+      phrase.value = '';
+      paint(s);
+    }).catch(fail);
+  });
+  document.getElementById('lock').addEventListener('click', function(){
+    DCVault.lock();
+    desk.classList.add('hide');
+    gate.classList.remove('hide');
+    note.className = 'warn';
+    note.textContent = 'Locked. Same eight words open it again on this device.';
+  });
+  document.getElementById('forget').addEventListener('click', function(){
+    if (!confirm('Erase the vault on this device? Your words will not open it here until you make a new phrase.')) return;
+    DCVault.clearDevice();
+    desk.classList.add('hide');
+    gate.classList.remove('hide');
+    phrase.value = '';
+    note.className = 'warn';
+    note.textContent = 'This device forgot you.';
+  });
+  var open = DCVault.session();
+  if (open) paint(open);
+  else if (DCVault.hasVault()) {
+    note.textContent = 'This device already has a phrase. Type the eight words and tap “I already have my words”.';
+  }
+})();
+</script>
+</body>
+</html>

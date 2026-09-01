@@ -2,78 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Onboard — DualisCapax</title>
-<meta name="theme-color" content="#050505"/>
-<meta name="description" content="One click. Seconds. Then measure or audit anytime."/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;display:flex;flex-direction:column}
-a{color:inherit;text-decoration:none}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-.wrap{max-width:34rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.1rem max(2.4rem,env(safe-area-inset-bottom));flex:1;display:flex;flex-direction:column}
-.top{display:flex;justify-content:space-between;margin-bottom:1.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
-.top a{color:#9ec5ff}
-.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#9ec5ff}
-h1{font-size:clamp(1.85rem,8vw,2.5rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin:.45rem 0 .55rem;line-height:1.05}
-.lede{font-size:1.05rem;line-height:1.5;color:rgba(245,245,245,.7);margin-bottom:1.4rem}
-.hero{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0.85rem}
-.enter{display:block;width:100%;min-height:3.4rem;border:1px solid rgba(158,197,255,.55);background:rgba(158,197,255,.14);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.85rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border-radius:4px}
-.enter:active{background:rgba(158,197,255,.22)}
-.enter.done{border-color:rgba(126,200,140,.55);background:rgba(126,200,140,.16);color:#d8f5de}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
-.door{display:block;border:1px solid rgba(158,197,255,.28);padding:.85rem .9rem;background:rgba(158,197,255,.06);text-align:left;border-radius:4px}
-.door b{display:block;font-size:1rem;margin-bottom:.15rem}
-.door span{font-size:.88rem;color:rgba(245,245,245,.55)}
-.stamp{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;color:rgba(245,245,245,.42);letter-spacing:.06em;min-height:1.2rem;margin-top:.35rem}
-.note{font-size:.88rem;color:rgba(245,245,245,.48);line-height:1.45;margin-top:1.25rem}
-foot{display:block;margin-top:auto;padding-top:1.5rem;border-top:1px solid rgba(158,197,255,.16);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.38)}
-</style>
+<meta http-equiv="refresh" content="0;url=portal.html"/>
+<link rel="canonical" href="https://dualiscapax.ai/portal.html"/>
 </head>
 <body>
-<div class="wrap">
-  <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/audit.html">Audit</a></div>
-  <p class="kicker">Preemptive</p>
-  <h1>In. Seconds.</h1>
-  <p class="lede">One click stamps a local session. No form. Audit anytime with a crypto receipt. Seat checkout still waits on Stripe links.</p>
-
-  <div class="hero">
-    <button type="button" class="enter" id="enter">Enter — stamp session</button>
-    <p class="stamp" id="stamp">Not stamped yet.</p>
-    <div class="row">
-      <a class="door" href="/audit.html"><b>Audit now</b><span>Crypto · real time · anytime</span></a>
-      <a class="door" href="/ai/app.html"><b>Iris</b><span>Measure residual</span></a>
-      <a class="door" href="/buy.html"><b>Buy</b><span>Catalog · seats closed</span></a>
-      <a class="door" href="/schools.html"><b>Schools</b><span>Board residual path</span></a>
-      <a class="door" href="/dclm-gateway.html"><b>Gateway</b><span>Tiers · rails · slip · closed</span></a>
-      <a class="door" href="/alacarte.html"><b>A la carte</b><span>Hockey · golf · leaf · kitchen</span></a>
-    </div>
-  </div>
-
-  <p class="note">Session lives on this device. Receipts are SHA-256. You can audit again whenever you want — no appointment.</p>
-  <foot>DualisCapax · onboard · click not form</foot>
-</div>
-<script src="/js/no-select.js"></script>
-<script src="/js/session-stamp.js"></script>
-<script src="/assets/haptic.js"></script>
-<script>
-(function () {
-  var btn = document.getElementById('enter');
-  var stamp = document.getElementById('stamp');
-  function show(s) {
-    if (!s) { stamp.textContent = 'Not stamped yet.'; return; }
-    stamp.textContent = 'Session ' + s.id.slice(0, 8) + ' · ' + s.at + ' · ready';
-    btn.classList.add('done');
-    btn.textContent = 'In — go audit or measure';
-  }
-  show(window.DCSession && DCSession.read());
-  btn.addEventListener('click', function () {
-    try { if (navigator.vibrate) navigator.vibrate(10); } catch (e) {}
-    var s = DCSession.stamp();
-    show(s);
-  });
-})();
-</script>
+<p><a href="portal.html">Continue to the portal</a></p>
+<script>location.replace('portal.html');</script>
 </body>
 </html>
