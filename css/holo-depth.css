@@ -1,4 +1,4 @@
-/* Glass goes back. Hologram is the nearest plane. Copy stays readable. */
+/* Glass goes back. Hologram and geodesic are the nearest plane. Copy stays readable. */
 :root{
   --z-void: 0;
   --z-glass: 1;
@@ -10,17 +10,17 @@ canvas.quarks,.quarks,.tears,.pane-art,#holo-well{
   transform: translateZ(-2400px) scale(1.42);
   filter: saturate(1.25) brightness(.58);
 }
-.pane.glass,.topbar,.hud,.panel,.plate{
+.pane.glass,.topbar .hud-foot,.panel,.plate{
   z-index: var(--z-glass);
   transform: translateZ(-900px) scale(0.94);
-  filter: blur(0.55px) brightness(.74);
+  filter: blur(0.45px) brightness(.78);
 }
 .site,.pane-copy,header,nav,h1,h2,p,.lede,.step{
   position: relative;
   z-index: var(--z-copy);
   transform: translateZ(16px);
 }
-.iris-holo,.iris-mark,#iris-stage,#holo,#holo-stage,.holo-front{
+.tier-geo,.geo-wrap,#geo-earth,.seat-door,#iris-stage,.iris-holo,.iris-mark,#holo,#holo-stage,.holo-front{
   position: relative;
   z-index: var(--z-holo);
   transform: translateZ(720px);
@@ -28,7 +28,7 @@ canvas.quarks,.quarks,.tears,.pane-art,#holo-well{
   pointer-events: auto;
 }
 @media (prefers-reduced-motion: reduce){
-  canvas.quarks,.quarks,.tears,.pane.glass,.iris-holo,.panel,.plate,.site{
+  canvas.quarks,.quarks,.tears,.pane.glass,.iris-holo,.panel,.plate,.site,.tier-geo,.geo-wrap{
     transform: none;
     filter: none;
   }
