@@ -4,9 +4,10 @@
  * Private lists are merit-gated.
  * Merit is invert-or-nothing, not a plaque and not a purchase.
  * We are the anything that binds everything.
+ * Unusual lattice: domain-colored hex nodes, filament web, orbiting specks.
  */
 (function (w) {
-  var VERSION = "bind-center-20260901m";
+  var VERSION = "bind-center-20260901q";
   var INDEX = "data/bind-index.json";
   var HOSTS = "data/geo-hosts.json";
   var MERIT_KEY = "dc.merit.bind";
@@ -28,7 +29,51 @@
       var y = 50 + Math.sin(t) * (ring * 0.88);
       el.style.left = x + "%";
       el.style.top = y + "%";
+      el.dataset.x = String(x);
+      el.dataset.y = String(y);
     });
+  }
+
+  function drawWeb(host, nodes) {
+    var old = host.querySelector("svg.bind-web");
+    if (old) old.remove();
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "bind-web");
+    svg.setAttribute("viewBox", "0 0 100 100");
+    svg.setAttribute("preserveAspectRatio", "none");
+    var pts = [];
+    nodes.forEach(function (el) {
+      pts.push([Number(el.dataset.x || 50), Number(el.dataset.y || 50)]);
+    });
+    pts.forEach(function (a, i) {
+      var b = pts[(i + 1) % pts.length];
+      var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", a[0]);
+      line.setAttribute("y1", a[1]);
+      line.setAttribute("x2", b[0]);
+      line.setAttribute("y2", b[1]);
+      svg.appendChild(line);
+      if (i % 2 === 0) {
+        var c = pts[(i + 3) % pts.length];
+        var cross = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        cross.setAttribute("x1", a[0]);
+        cross.setAttribute("y1", a[1]);
+        cross.setAttribute("x2", c[0]);
+        cross.setAttribute("y2", c[1]);
+        svg.appendChild(cross);
+      }
+    });
+    host.insertBefore(svg, host.firstChild);
+  }
+
+  function specks(host) {
+    for (var i = 0; i < 7; i++) {
+      var s = document.createElement("i");
+      s.className = "bind-speck";
+      s.setAttribute("aria-hidden", "true");
+      s.style.animationDelay = (i * -2.4) + "s";
+      host.appendChild(s);
+    }
   }
 
   function paintRead(domain) {
@@ -37,7 +82,7 @@
     var knows = (domain.knows || []).slice(0, 6).join(" · ");
     box.innerHTML =
       '<p class="k">' +
-      (domain.open ? "Open look" : "Held · merit") +
+      (domain.open ? "Open look · goal onboard" : "Held · merit · goal onboard") +
       "</p><p class=\"w\">" +
       domain.bind +
       "</p><p class=\"d\">" +
@@ -51,13 +96,15 @@
     if (!host) return;
     host.innerHTML =
       '<i class="bind-core" aria-hidden="true"></i><i class="bind-ring"></i><i class="bind-ring"></i><i class="bind-ring"></i>';
+    specks(host);
     (pack.domains || []).forEach(function (d) {
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "bind-node";
       btn.dataset.id = d.id;
       btn.dataset.open = d.open ? "true" : "false";
-      btn.innerHTML = "<b>" + (d.open ? "LOOK" : "HELD") + "</b><span>" + d.word + "</span>";
+      btn.setAttribute("aria-label", (d.open ? "Look " : "Held ") + d.word);
+      btn.innerHTML = "<b>" + (d.open ? "GOAL" : "HELD") + "</b><span>" + d.word + "</span>";
       btn.addEventListener("click", function () {
         host.querySelectorAll(".bind-node").forEach(function (n) {
           n.classList.toggle("is-on", n === btn);
@@ -70,7 +117,9 @@
       });
       host.appendChild(btn);
     });
-    place(host.querySelectorAll(".bind-node"));
+    var nodes = host.querySelectorAll(".bind-node");
+    place(nodes);
+    drawWeb(host, nodes);
     var start = (pack.domains || []).find(function (d) { return d.id === "bind"; }) || (pack.domains || [])[0];
     if (start) {
       activeId = start.id;
@@ -221,6 +270,16 @@
     var last = w.DCLookReceipt && DCLookReceipt.last && DCLookReceipt.last();
     if (last) showSlip(last);
     if (w.DCTheme && DCTheme.apply) DCTheme.apply("nation", { keyword: "Bind" });
+    var sky = $(".bind-sky");
+    if (sky && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      sky.addEventListener("pointermove", function (ev) {
+        var r = sky.getBoundingClientRect();
+        var nx = ((ev.clientX - r.left) / r.width) * 2 - 1;
+        var ny = ((ev.clientY - r.top) / r.height) * 2 - 1;
+        sky.style.setProperty("--bind-tilt-x", (16 - ny * 8).toFixed(2) + "deg");
+        sky.style.setProperty("--bind-tilt-y", (-8 + nx * 10).toFixed(2) + "deg");
+      });
+    }
   }
 
   w.DCBindCenter = { version: VERSION, boot: boot };
