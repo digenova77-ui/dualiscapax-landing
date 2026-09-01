@@ -1,16 +1,15 @@
 /**
- * Iris hologram — presence field or sound wave.
+ * Iris hologram — wave or sun-orb.
  * Person-facing to a person. Simulation-facing to an agent.
- * A wave is not a person.
  */
 (function (w) {
-  var VERSION = "iris-hologram-2026-09-01-f";
+  var VERSION = "iris-hologram-2026-09-01-g";
   var canvas = null;
   var ctx = null;
   var raf = 0;
   var energy = 0.22;
   var mood = "rest";
-  var form = "wave";
+  var form = "orb";
   var observer = "agent";
   var speaking = false;
   var listening = false;
@@ -47,7 +46,10 @@
   }
 
   function setEnergy(n) { energy = Math.max(0, Math.min(1, n)); }
-  function setForm(next) { form = next === "field" ? "field" : "wave"; return form; }
+  function setForm(next) {
+    form = next === "wave" || next === "field" || next === "orb" ? next : "orb";
+    return form;
+  }
   function setObserver(who) { observer = who === "person" ? "person" : "agent"; return observer; }
   function setSpeaking(on) { speaking = !!on; if (speaking) mood = "intend"; }
   function setListening(on) {
@@ -79,13 +81,14 @@
   }
 
   function labelFor() {
-    if (observer !== "person") return "SIM · WAVE · " + String(mood || "rest").toUpperCase();
+    var body = form === "orb" ? "ORB" : "WAVE";
+    if (observer !== "person") return "SIM · " + body + " · " + String(mood || "rest").toUpperCase();
     if (mood === "listen" || listening) return "LISTENING";
     if (mood === "agree") return "WITH YOU";
     if (mood === "lost") return "LOST";
     if (mood === "curious") return "CURIOUS";
     if (mood === "intend" || speaking) return "INTEND";
-    return "WAVE";
+    return body;
   }
 
   function drawWave(t, W, H) {
@@ -106,11 +109,48 @@
         : "rgba(180,215,255," + (0.38 + energy * 0.4 - k * 0.12) + ")";
       ctx.stroke();
     }
-    var g = ctx.createRadialGradient(W * 0.5, mid, 8, W * 0.5, mid, H * 0.7);
-    g.addColorStop(0, "rgba(158,197,255," + (0.08 + energy * 0.12) + ")");
-    g.addColorStop(1, "rgba(0,1,8,0)");
-    ctx.fillStyle = g;
+  }
+
+  function drawOrb(t, W, H) {
+    var cx = W * (0.5 + lookX * 0.06);
+    var cy = H * (0.48 + lookY * 0.05 + (nod > 0 ? Math.sin(t * 7.4) * 0.05 : 0) - (mood === "curious" ? 0.04 : 0));
+    var pulse = mood === "agree" || nod > 0 ? 1 + Math.abs(Math.sin(t * 8)) * 0.12 : 1 + Math.sin(t * 1.4) * 0.03;
+    var R = Math.min(W, H) * (0.16 + energy * 0.1 + (mood === "curious" ? 0.05 : 0) + (mood === "intend" ? 0.03 : 0)) * pulse;
+    var lost = mood === "lost";
+    var corona = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 3.2);
+    corona.addColorStop(0, lost ? "rgba(255,210,170,0.95)" : "rgba(255,244,210,0.96)");
+    corona.addColorStop(0.18, lost ? "rgba(255,160,90,0.7)" : "rgba(255,196,90,0.8)");
+    corona.addColorStop(0.42, lost ? "rgba(180,70,30,0.22)" : "rgba(255,140,40,0.28)");
+    corona.addColorStop(0.7, "rgba(80,40,10,0.08)");
+    corona.addColorStop(1, "rgba(0,1,8,0)");
+    ctx.fillStyle = corona;
     ctx.fillRect(0, 0, W, H);
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    var core = ctx.createRadialGradient(cx - R * 0.2, cy - R * 0.25, R * 0.05, cx, cy, R);
+    core.addColorStop(0, "rgba(255,252,240,0.98)");
+    core.addColorStop(0.45, lost ? "rgba(255,170,110,0.9)" : "rgba(255,186,64,0.95)");
+    core.addColorStop(1, lost ? "rgba(120,40,20,0.0)" : "rgba(180,70,10,0.0)");
+    ctx.fillStyle = core;
+    ctx.fill();
+    var rays = lost ? 10 : 16;
+    ctx.strokeStyle = "rgba(255,210,120," + (0.12 + energy * 0.18) + ")";
+    ctx.lineWidth = Math.max(1, W * 0.0018);
+    for (var i = 0; i < rays; i++) {
+      var a = (i / rays) * Math.PI * 2 + t * 0.08;
+      var inner = R * 1.05;
+      var outer = R * (1.55 + energy * 0.55 + Math.sin(t * 2 + i) * 0.08);
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a) * inner, cy + Math.sin(a) * inner);
+      ctx.lineTo(cx + Math.cos(a) * outer, cy + Math.sin(a) * outer);
+      ctx.stroke();
+    }
+    if (lost) {
+      ctx.beginPath();
+      ctx.arc(cx + R * 0.22, cy - R * 0.08, R * 0.72, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(2,4,12,0.42)";
+      ctx.fill();
+    }
   }
 
   function loop(now) {
@@ -122,11 +162,12 @@
     if (nod > 0) nod = Math.max(0, nod - 0.018);
     var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
-    drawWave(t, W, H);
-    ctx.fillStyle = "rgba(158,197,255,0.72)";
+    if (form === "wave") drawWave(t, W, H);
+    else drawOrb(t, W, H);
+    ctx.fillStyle = "rgba(255,224,170,0.78)";
     ctx.font = "600 " + Math.round(Math.max(10, W * 0.024)) + "px ui-monospace,monospace";
     ctx.textAlign = "center";
-    ctx.fillText(labelFor(), W * 0.5, H * 0.88);
+    ctx.fillText(labelFor(), W * 0.5, H * 0.9);
   }
 
   function stop() {
