@@ -12,9 +12,14 @@ body{background:#02040c}
 .site{max-width:36rem}
 .step{border:1px solid rgba(158,197,255,.28);padding:1rem .95rem;margin:0 0 .55rem;background:linear-gradient(180deg,rgba(158,197,255,.07),rgba(0,0,0,.28))}
 .step b{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#9ec5ff;margin-bottom:.35rem}
+.step p{margin:0 0 .7rem;color:rgba(245,245,245,.78);line-height:1.55}
 .act{display:flex;align-items:center;justify-content:center;min-height:3rem;margin:.7rem 0 0;border:1px solid rgba(158,197,255,.5);background:rgba(158,197,255,.14);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
 .act.ghost{background:transparent;border-color:rgba(158,197,255,.28)}
+button.act{width:100%;cursor:pointer}
 .why{margin:0 0 1rem;font-size:1.08rem;line-height:1.62;color:rgba(245,245,245,.78)}
+.note{margin:.55rem 0 0;font-size:.92rem;line-height:1.5;color:rgba(245,245,245,.62)}
+.field{display:block;width:100%;margin:.45rem 0 0;padding:.7rem .75rem;border:1px solid rgba(158,197,255,.28);background:rgba(0,0,0,.28);color:#e8f1ff;font:inherit}
+.field::file-selector-button{margin-right:.7rem;border:0;background:rgba(158,197,255,.16);color:#e8f1ff;padding:.35rem .6rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -41,10 +46,25 @@ body{background:#02040c}
   <p>A hospital shift, a school board, a plant, a warehouse — the public already paid. The leftover is already a cost. A city desk wants the same invert rule: if the number cannot be walked back to a record, nothing is owed and nobody is sold a miracle.</p>
 
   <h2>The path</h2>
-  <div class="step"><b>1 · Bring what you already keep</b>A spreadsheet. A payroll export. A link to the books you use. The file stays on your device. We do not take the book home.</div>
+
+  <div class="step" id="stop-1">
+    <b>1 · Hear the room</b>
+    <p>This is the Unity preview. Sound starts on. If the room is talking and you want quiet, say shut up — or stop talking, or be quiet. Say start talking, or talk again, when you want the voice back. No new password. The grant stays on this device.</p>
+    <button class="act" type="button" id="unity-btn">Start Unity preview</button>
+    <p class="note" id="unity-note">Sound on. The preview does not leave this page.</p>
+  </div>
+
   <div class="step"><b>2 · See the leftover</b>One leak. One bill, one contract, one line. A figure you can read out loud to a twelve-year-old.</div>
   <div class="step"><b>3 · Decide with time prepaid</b>If the figure holds, you may bind prepaid minutes. Unused time stays with you. Other people pay their own seat.</div>
   <div class="step"><b>4 · Stop if it will not invert</b>If the number cannot be turned back into a proof, the door closes clean. No leftover debt. No story in place of a measure.</div>
+
+  <div class="step" id="stop-5">
+    <b>5 · Bring the books</b>
+    <p>A spreadsheet. A payroll export. A link to the tax or payroll software you already use. Whatever keeps your books is enough. The file stays on this device. We do not take the book home. We measure the numbers you keep.</p>
+    <input class="field" id="books-file" type="file" accept=".xlsx,.xls,.csv,.tsv,.json,text/csv,application/json"/>
+    <input class="field" id="books-link" type="url" inputmode="url" autocomplete="off" placeholder="Link to the books you already use"/>
+    <p class="note" id="books-note">Nothing here is uploaded. A name and a local mark are enough to start.</p>
+  </div>
 
   <p class="why">The math sits behind this glass. You do not have to speak it to use the door. You only have to know that time moves one way, and a false number will not survive the walk-back.</p>
 
@@ -54,5 +74,100 @@ body{background:#02040c}
 </div>
 <script src="js/home-quarks.js"></script>
 <script src="js/no-select.js"></script>
+<script src="js/viewer-mute.js"></script>
+<script src="js/voice-mute.js"></script>
+<script>
+(function(){
+  var btn = document.getElementById("unity-btn");
+  var note = document.getElementById("unity-note");
+  var listening = false;
+  var rec = null;
+  var previewOn = false;
+
+  var STOP = /\b(shut up|stop talking|be quiet|quiet|silence|mute|enough|hush)\b/i;
+  var PLAY = /\b(start talking|talk again|speak again|unmute|sound on|keep talking|i didn't mean|did not mean)\b/i;
+
+  function say(text){
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (window.DCMute && DCMute.muted && DCMute.muted()) return;
+    var u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.96;
+    u.pitch = 1;
+    window.speechSynthesis.speak(u);
+  }
+
+  function setNote(t){ if (note) note.textContent = t; }
+
+  function hear(text){
+    text = String(text || "");
+    if (STOP.test(text)) {
+      if (window.DCMute && DCMute.set) DCMute.set(true);
+      else if (window.speechSynthesis) window.speechSynthesis.cancel();
+      setNote("Quiet. Say start talking when you want the voice back.");
+      return;
+    }
+    if (PLAY.test(text)) {
+      if (window.DCMute && DCMute.set) DCMute.set(false);
+      setNote("Sound on.");
+      say("The room is open again. The books stay with you.");
+    }
+  }
+
+  function startListen(){
+    var Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Rec || listening) return;
+    rec = new Rec();
+    rec.continuous = true;
+    rec.interimResults = false;
+    rec.lang = "en-CA";
+    rec.onresult = function(ev){
+      var t = ev.results[ev.results.length-1];
+      if (t && t[0]) hear(t[0].transcript);
+    };
+    rec.onend = function(){ if (previewOn) try { rec.start(); } catch(e){} };
+    try { rec.start(); listening = true; } catch(e){}
+  }
+
+  function startPreview(){
+    previewOn = true;
+    if (btn) btn.textContent = "Preview is live";
+    setNote("Sound on. Say shut up to stop. Say start talking to begin again.");
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream){
+        try { stream.getTracks().forEach(function(tr){ tr.stop(); }); } catch(e){}
+        startListen();
+        say("This is the Unity preview. Sound is on. If you want quiet, say shut up. When you want the voice back, say start talking. The books stay on your device.");
+      }).catch(function(){
+        startListen();
+        say("The preview can still speak. The microphone was not granted, so say the words after you press the sound control.");
+        setNote("Voice-in was not granted. Use the sound control, or grant the microphone and press again.");
+      });
+    } else {
+      say("This is the Unity preview. Sound is on.");
+    }
+  }
+
+  if (btn) btn.addEventListener("click", startPreview);
+
+  var file = document.getElementById("books-file");
+  var link = document.getElementById("books-link");
+  var booksNote = document.getElementById("books-note");
+  function markBooks(){
+    var name = file && file.files && file.files[0] ? file.files[0].name : "";
+    var href = link && link.value ? String(link.value).trim() : "";
+    var row = { v: "books-local-v1", name: name || null, hasLink: !!href, ts: new Date().toISOString() };
+    try { localStorage.setItem("dc.books.local", JSON.stringify(row)); } catch(e){}
+    if (booksNote) {
+      if (name && href) booksNote.textContent = name + " is on this device. The link stays here too. Nothing was uploaded.";
+      else if (name) booksNote.textContent = name + " stays on this device. Nothing was uploaded.";
+      else if (href) booksNote.textContent = "The link stays on this device. We do not fetch the books from here.";
+      else booksNote.textContent = "Nothing here is uploaded. A name and a local mark are enough to start.";
+    }
+  }
+  if (file) file.addEventListener("change", markBooks);
+  if (link) link.addEventListener("change", markBooks);
+})();
+</script>
 </body>
 </html>
