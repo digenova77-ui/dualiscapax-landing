@@ -4,10 +4,18 @@ on:
   push:
     paths:
       - "encyclopedia/**"
+      - "playground.html"
+      - "helix.html"
+      - "ai/app.html"
+      - "js/**"
       - ".github/workflows/encyclopedia-verify.yml"
   pull_request:
     paths:
       - "encyclopedia/**"
+      - "playground.html"
+      - "helix.html"
+      - "ai/app.html"
+      - "js/**"
       - ".github/workflows/encyclopedia-verify.yml"
   workflow_dispatch:
 
@@ -16,7 +24,7 @@ permissions:
 
 jobs:
   verify:
-    name: Fail-closed encyclopedia spine
+    name: DCLM preflight then encyclopedia spine
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,8 +35,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Verify encyclopedia against actual repository contents
+      - name: Check above — DCLM Layer [0] preflight
         run: |
           set -euo pipefail
-          python3 encyclopedia/crypto_tools/verify_encyclopedia.py --report
+          python3 encyclopedia/crypto_tools/dclm_preflight.py
           echo "SEALED is an integrity state only and is not scientific validation."
