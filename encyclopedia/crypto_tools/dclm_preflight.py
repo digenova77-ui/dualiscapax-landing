@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 """DCLM Layer [0] preflight. Check above before you push.
 
+Every job begins with DCLM. The six-matrix cube is DCLM.
 Fail closed. SEALED is integrity only. Silence is HOLE not zero.
 Does not rewrite encyclopedia articles.
 """
 from __future__ import annotations
 
-import os, re, sys
+import json, os, re, sys
 
 AXIOMS = ("NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING")
+FACES = ("L1", "L2", "L3", "L4", "L5", "L6")
 LAW = "encyclopedia/governance_and_protocols/dclm_layer_zero_law_floor.md"
 BIND = "encyclopedia/BIND.md"
+JOB_LAW = "encyclopedia/governance_and_protocols/dclm_job_start.md"
+JOB_CARD = "encyclopedia/crypto_tools/dclm_job_card.json"
 
-# A page that names a job must load the engine that does the job.
 PAGE_BINDS = {
     "playground.html": (
         "js/l2-plug.js",
@@ -68,6 +71,36 @@ def main():
         if "HOLE" not in t:
             rows.append("BIND_MISSING_HOLE_RULE")
 
+    job_law = os.path.join(repo, JOB_LAW)
+    if not os.path.isfile(job_law):
+        rows.append("MISSING_JOB_START_LAW")
+    else:
+        text = open(job_law, encoding="utf-8").read()
+        miss = [a for a in AXIOMS if a not in text]
+        if miss:
+            rows.append("JOB_START_MISSING_AXIOMS " + ",".join(miss))
+        miss_f = [f for f in FACES if f not in text]
+        if miss_f:
+            rows.append("JOB_START_MISSING_FACES " + ",".join(miss_f))
+        if "EVERY JOB BEGINS" not in text.upper():
+            rows.append("JOB_START_MISSING_OPENING_LAW")
+
+    job_card = os.path.join(repo, JOB_CARD)
+    if not os.path.isfile(job_card):
+        rows.append("MISSING_JOB_CARD")
+    else:
+        try:
+            card = json.loads(open(job_card, encoding="utf-8").read())
+        except Exception as e:
+            rows.append("JOB_CARD_INVALID_JSON %s" % e)
+            card = {}
+        if card.get("scientific_validation") is True:
+            rows.append("JOB_CARD_SCIENCE_CLAIM")
+        need = {"hole_or_one", "world", "faces", "directive", "refuse", "axioms"}
+        have = set(card.get("required") or [])
+        if not need.issubset(have):
+            rows.append("JOB_CARD_MISSING_REQUIRED")
+
     for page, scripts in PAGE_BINDS.items():
         path = os.path.join(repo, page)
         if not os.path.isfile(path):
@@ -101,6 +134,8 @@ def main():
         return fail(rows)
     print("DCLM PREFLIGHT  PASS")
     print("axioms=" + ",".join(AXIOMS))
+    print("faces=" + ",".join(FACES))
+    print("law=EVERY_JOB_BEGINS_WITH_DCLM")
     print("silence=HOLE_NOT_ZERO")
     print("scientific_validation=false")
     return 0
