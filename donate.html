@@ -6,12 +6,14 @@
 <title>Donate · DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/glass-tiers.css"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh}
+.quarks{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
 a{color:#9ec5ff;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-.wrap{max-width:34rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.1rem max(2.4rem,env(safe-area-inset-bottom))}
+.wrap{position:relative;z-index:1;max-width:34rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.1rem max(2.4rem,env(safe-area-inset-bottom))}
 .top{display:flex;justify-content:space-between;gap:1rem;margin-bottom:1.2rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
 .kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#9ec5ff}
 h1{font-size:clamp(1.7rem,7vw,2.35rem);font-weight:700;margin:.4rem 0 .65rem}
@@ -20,15 +22,15 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
 .go,.rail{display:block;width:100%;min-height:2.85rem;margin:0 0 .5rem;padding:.75rem .9rem;border:1px solid rgba(158,197,255,.35);background:rgba(158,197,255,.1);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:left}
 .go{border-color:rgba(158,197,255,.65);background:rgba(158,197,255,.18);font-size:.85rem}
 .rail{background:rgba(255,255,255,.03);color:#9ec5ff}
-.rail:disabled,.go:disabled{opacity:.35}
 .panel{border:1px solid rgba(158,197,255,.25);padding:.9rem 1rem;margin:.35rem 0 1rem;font-size:1rem;line-height:1.5;color:rgba(245,245,245,.82)}
 .panel strong{display:block;color:#fff;margin-bottom:.4rem}
 .addr{margin-top:.55rem;padding:.65rem .7rem;border:1px solid rgba(158,197,255,.2);background:#0a0b10;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem;word-break:break-all;-webkit-user-select:text!important;user-select:text!important}
-.note{font-size:.92rem;color:rgba(245,245,245,.55);margin:1rem 0}
+.note{font-size:.92rem;color:rgba(245,245,245,.55);margin:1rem 0;line-height:1.55}
 .foot{margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.1);font-size:.8rem;color:rgba(245,245,245,.4)}
 </style>
 </head>
 <body>
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
 <div class="wrap">
   <div class="top">
     <a href="/index.html?land=1">Home</a>
@@ -36,16 +38,14 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     <a href="/ai/app.html">Iris</a>
   </div>
   <p class="kicker">Donate</p>
-  <h1>Send a research gift</h1>
-  <p class="lede">Each button opens a real path: your email app for Interac, or a wallet link for crypto. Addresses stay visible so you can check them. Not a purchase of shares or tokens.</p>
-
+  <h1>A gift with no ticket back</h1>
+  <p class="lede">If Bind is the transit counter, this room is the jar on the shelf. You put something in because the work should keep going. You do not get a pass, a seat, or a share in return. Addresses stay on the page so you can read them with your own eyes.</p>
+  <p class="lede">Each button opens a real path: your email app for Interac, or a wallet link for crypto. One method per send. Card checkout stays on Bind.</p>
   <h2>Canada — bank</h2>
   <button type="button" class="go" id="interac">Open Interac e-Transfer</button>
   <button type="button" class="rail" id="eft">Open email for EFT instructions</button>
-
-  <h2>Card (prepaid Fuel &amp; seats)</h2>
-  <a class="go" href="/payments.html" style="text-decoration:none;display:flex;align-items:center">Open Bind — pay with card</a>
-
+  <h2>Card (prepaid Fuel & seats)</h2>
+  <a class="go" href="/payments.html" style="text-decoration:none;display:flex;align-items:center">Open Bind — load the pass with a card</a>
   <h2>Crypto — one chain per send</h2>
   <button type="button" class="rail" id="xrp" data-chain="xrp">Open XRP send</button>
   <button type="button" class="rail" id="zec" data-chain="zec">Open Zcash send</button>
@@ -58,64 +58,45 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <button type="button" class="rail" id="dgb" data-chain="dgb">Open DigiByte send</button>
   <button type="button" class="rail" id="bch" data-chain="bch">Open Bitcoin Cash send</button>
   <button type="button" class="rail" id="doge" data-chain="doge">Open Dogecoin send (Iris time)</button>
-
   <div class="panel" id="panel" hidden></div>
-  <p class="note">Voluntary gift. One method per send. Card checkout is on Bind, not this page.</p>
+  <p class="note">Voluntary gift. One method per send. If you want prepaid time for yourself, that is Bind, not this jar.</p>
   <p class="foot">DualisCapax · Truth Prevails</p>
 </div>
 <script src="/js/payments-config.js"></script>
+<script src="/js/home-quarks.js"></script>
 <script src="/js/no-select.js"></script>
 <script>
 (function(){
   var MAIL = 'donate@dualiscapax.ai';
   var pay = window.DC_PAYMENTS || {};
   var panel = document.getElementById('panel');
-
   function show(html){
     panel.hidden = false;
     panel.innerHTML = html;
     try { panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
   }
-
   function openUrl(url){
     if (!url) return;
     try {
       var a = document.createElement('a');
-      a.href = url;
-      a.rel = 'noopener';
-      a.target = '_blank';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    } catch (e) {
-      try { location.href = url; } catch (e2) {}
-    }
+      a.href = url; a.rel = 'noopener'; a.target = '_blank';
+      document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) { try { location.href = url; } catch (e2) {} }
   }
-
   function interacMail(){
     var sub = encodeURIComponent('Interac e-Transfer · DualisCapax research');
-    var body = encodeURIComponent(
-      'Send Interac e-Transfer to this Autodeposit email:\n' +
-      MAIL +
-      '\n\nAmount: (you choose)\nMemo: DualisCapax research gift\n'
-    );
+    var body = encodeURIComponent('Send Interac e-Transfer to this Autodeposit email:\n' + MAIL + '\n\nAmount: (you choose)\nMemo: DualisCapax research gift\n');
     return 'mailto:' + MAIL + '?subject=' + sub + '&body=' + body;
   }
-
   function eftMail(){
     var sub = encodeURIComponent('EFT · DualisCapax research');
-    var body = encodeURIComponent(
-      'Please reply with EFT instructions request, or send Interac to ' + MAIL + ' (Autodeposit).\n'
-    );
+    var body = encodeURIComponent('Please reply with EFT instructions request, or send Interac to ' + MAIL + ' (Autodeposit).\n');
     return 'mailto:' + MAIL + '?subject=' + sub + '&body=' + body;
   }
-
-  /** Open wallet deep link when the OS supports it; always show address. */
   function walletUri(chain, addr){
     if (!addr) return null;
     switch (chain) {
-      case 'eth':
-      case 'link': return 'ethereum:' + addr;
+      case 'eth': case 'link': return 'ethereum:' + addr;
       case 'pol': return 'ethereum:' + addr + '@137';
       case 'bsc': return 'ethereum:' + addr + '@56';
       case 'sol': return 'solana:' + addr;
@@ -124,48 +105,24 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
       case 'dgb': return 'digibyte:' + addr;
       case 'zec': return 'zcash:' + addr;
       case 'xrp': return 'ripple:' + addr;
-      case 'dot': return null; // no universal URI
       default: return null;
     }
   }
-
   function chainLabel(chain){
-    return ({
-      xrp: 'XRP', zec: 'Zcash', sol: 'Solana', eth: 'Ethereum', pol: 'Polygon',
-      bsc: 'BNB Smart Chain', link: 'LINK (Ethereum)', dot: 'Polkadot',
-      dgb: 'DigiByte', bch: 'Bitcoin Cash', doge: 'Dogecoin'
-    })[chain] || chain;
+    return ({xrp:'XRP',zec:'Zcash',sol:'Solana',eth:'Ethereum',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK (Ethereum)',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
   }
-
   function addrFor(chain){
-    var map = {
-      xrp: pay.research_xrp, zec: pay.research_zec, sol: pay.research_sol,
-      eth: pay.research_eth, pol: pay.research_pol, bsc: pay.research_bsc,
-      link: pay.research_link, dot: pay.research_dot, dgb: pay.research_dgb,
-      bch: pay.research_bch, doge: pay.ai_doge
-    };
+    var map = {xrp:pay.research_xrp,zec:pay.research_zec,sol:pay.research_sol,eth:pay.research_eth,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,bch:pay.research_bch,doge:pay.ai_doge};
     return map[chain] || '';
   }
-
   document.getElementById('interac').addEventListener('click', function(){
     openUrl(interacMail());
-    show(
-      '<strong>Interac e-Transfer</strong>' +
-      '<p>Your email app should open with <em>' + MAIL + '</em> ready. In your bank app, send Interac to that same Autodeposit address.</p>' +
-      '<div class="addr">' + MAIL + '</div>' +
-      '<p style="margin-top:.6rem">If email did not open: open your bank → Interac → send to the address above.</p>'
-    );
+    show('<strong>Interac e-Transfer</strong><p>Your email app should open with <em>' + MAIL + '</em> ready. In your bank app, send Interac to that same Autodeposit address.</p><div class="addr">' + MAIL + '</div><p style="margin-top:.6rem">If email did not open: open your bank → Interac → send to the address above.</p>');
   });
-
   document.getElementById('eft').addEventListener('click', function(){
     openUrl(eftMail());
-    show(
-      '<strong>EFT</strong>' +
-      '<p>Email opened for the research desk. Prefer Interac Autodeposit when you can:</p>' +
-      '<div class="addr">' + MAIL + '</div>'
-    );
+    show('<strong>EFT</strong><p>Email opened for the research desk. Prefer Interac Autodeposit when you can:</p><div class="addr">' + MAIL + '</div>');
   });
-
   ['xrp','zec','sol','eth','pol','bsc','link','dot','dgb','bch','doge'].forEach(function(chain){
     var el = document.getElementById(chain);
     if (!el) return;
@@ -174,15 +131,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     el.addEventListener('click', function(){
       var uri = walletUri(chain, addr);
       if (uri) openUrl(uri);
-      show(
-        '<strong>' + chainLabel(chain) + '</strong>' +
-        '<p>' + (uri
-          ? 'Tried to open your wallet app. If nothing opened, copy the address below into the wallet yourself.'
-          : 'No automatic wallet link for this chain. Copy the address into your wallet and send on the correct network.') +
-        '</p>' +
-        '<div class="addr">' + addr + '</div>' +
-        '<p style="margin-top:.6rem">Send only on <strong>' + chainLabel(chain) + '</strong>. Wrong network = lost funds.</p>'
-      );
+      show('<strong>' + chainLabel(chain) + '</strong><p>' + (uri ? 'Tried to open your wallet app. If nothing opened, copy the address below into the wallet yourself.' : 'No automatic wallet link for this chain. Copy the address into your wallet and send on the correct network.') + '</p><div class="addr">' + addr + '</div><p style="margin-top:.6rem">Send only on <strong>' + chainLabel(chain) + '</strong>. Wrong network = lost funds.</p>');
     });
   });
 })();
