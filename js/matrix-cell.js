@@ -1,13 +1,16 @@
 /**
- * Double Matrix cell — more signal in one locker.
- * Parallel = seven streams + two planes in the same record.
- * Serial = stamp + status ratchet.
+ * Double Matrix cell inside a six-face cube.
+ * Faces = Unity L1-L6 views of ONE cell. Time is the stamp, not a seventh face.
+ * Parallel = seven streams + two planes + six faces in the same record.
+ * Serial = stamp + status ratchet (Δt > 0).
  * Zero becomes One only when physical and logical both seat.
+ * L2 lights only the One face. It cannot light ownership or root.
  * BIND fields stay the only numbering system: ID YEAR SOURCE STAMP STATUS HASH.
  */
 (function (w) {
   var VERSION = "matrix-cell-2026-09-01";
   var STREAMS = ["bus", "care", "event", "portal", "pt", "sport", "office"];
+  var FACES = ["L1", "L2", "L3", "L4", "L5", "L6"];
   var RATCHET = ["INDEXED", "CATALOGED", "SOURCED", "REVIEWED", "SEALED", "LIVE"];
   var KEY = "dc.matrix.cell.v1";
 
@@ -44,9 +47,15 @@
     return out;
   }
 
+  function faceBits(cell) {
+    var lit = (cell && cell.faces) || {};
+    return FACES.map(function (f) { return lit[f] ? "1" : "0"; }).join("");
+  }
+
   function pack(cell) {
     var p = cell.physical || {};
     var l = cell.logical || {};
+    var c = cell.cube || {};
     var bits = STREAMS.map(function (s) { return cell.streams && cell.streams[s] ? "1" : "0"; }).join("");
     return [
       "M",
@@ -57,6 +66,9 @@
       "P:" + (p.ulin || "-") + ":" + (p.venue || "-") + ":" + (p.bytes || 0),
       "L:" + (l.gate || "L2") + ":" + (l.layer || "L2"),
       "S:" + bits,
+      "C:" + (c.x || p.ulin || "-") + ":" + (c.y || p.venue || "device") + ":" + (c.z || l.gate || "L2"),
+      "F:" + faceBits(cell),
+      "T:" + String(cell.stamp || "").replace(/[:.]/g, "").slice(0, 15),
       cell.hash ? String(cell.hash).slice(0, 16) : "-"
     ].join("|");
   }
@@ -113,6 +125,13 @@
         layer: "L2_PLAYGROUND"
       },
       streams: streamsFromBits(bits),
+      faces: { L1: false, L2: true, L3: false, L4: false, L5: false, L6: false },
+      cube: {
+        x: plug.hash ? String(plug.hash).slice(0, 16) : "seed",
+        y: "device",
+        z: "L2",
+        t: stamp
+      },
       numbers: plug.numbers || 0,
       residual_unit: plug.residual_unit || "SEED"
     };
@@ -121,7 +140,9 @@
       stamp: draft.stamp,
       physical: draft.physical,
       logical: draft.logical,
-      streams: draft.streams
+      streams: draft.streams,
+      faces: draft.faces,
+      cube: draft.cube
     });
     draft.hash = await sha256(body);
     draft.id = "M-" + draft.hash.slice(0, 12).toUpperCase();
@@ -142,6 +163,7 @@
   w.DCMatrix = {
     version: VERSION,
     streams: STREAMS,
+    faces: FACES,
     ratchet: RATCHET,
     law: "ZERO_TO_ONE_BOTH_PLANES_OR_HOLE",
     merge: merge,
