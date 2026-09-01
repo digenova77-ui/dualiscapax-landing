@@ -1,5 +1,5 @@
 {
-  "manifest_version": "2.0",
+  "manifest_version": "2.1",
   "algorithm": "SHA-256",
   "disclaimer": "SEALED is an integrity state only. It does not mean the content is scientifically validated, medically validated, or peer-reviewed.",
   "states": [
@@ -10,7 +10,7 @@
     "SEALED",
     "LIVE"
   ],
-  "generated_utc": "2026-09-01T14:15:19Z",
+  "generated_utc": "2026-09-01T14:41:45Z",
   "files": {
     "BIND.md": {
       "size_bytes": 2286,
@@ -69,8 +69,8 @@
       "scientific_validation": false
     },
     "crypto_tools/verify_encyclopedia.py": {
-      "size_bytes": 29495,
-      "sha256": "a43cef6af43e81f174904bc76f1f820161df938f6e64bcb80537d14243c54567",
+      "size_bytes": 14818,
+      "sha256": "0223ab33455522bef57f9f9d6c067aacfd19907ff0c035889df434939edd5e00",
       "ids": [],
       "references": [],
       "year": null,
@@ -111,14 +111,28 @@
       "scientific_validation": false
     },
     "governance_and_protocols/unity_framework_v040_spec.md": {
-      "size_bytes": 1223,
-      "sha256": "5202075b3f97f16393e486e1f448bfe8a9a0bac207504715e2e51014cb3f8171",
+      "size_bytes": 1481,
+      "sha256": "87381f6b58f38f41a6edc34d17830053a83432afa4e6f6785370520ecf239daf",
       "ids": [],
       "references": [],
-      "year": null,
+      "year": "2026",
       "source": null,
-      "stamp": null,
+      "stamp": "2026-09-01",
       "hole": true,
+      "state": "SEALED",
+      "states": ["INDEXED", "CATALOGED", "SEALED"],
+      "live": false,
+      "scientific_validation": false
+    },
+    "governance_and_protocols/world_name_map.md": {
+      "size_bytes": 1850,
+      "sha256": "47276336256ce05e21db6b1fde6e918f31ec0c757d214f340575689e7f4accbd",
+      "ids": ["ED-GOV-20260901-WORLD-NAME-MAP-V1"],
+      "references": [],
+      "year": "2026",
+      "source": null,
+      "stamp": "2026-09-01",
+      "hole": false,
       "state": "SEALED",
       "states": ["INDEXED", "CATALOGED", "SEALED"],
       "live": false,
