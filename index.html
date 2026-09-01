@@ -33,26 +33,7 @@
   .quarks{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;display:block}
   .tears{position:fixed;inset:0;z-index:0;pointer-events:none}
   .site{position:relative;z-index:1;min-height:100dvh}
-  .topbar{
-    position:sticky;top:0;z-index:var(--z-nav);
-    display:grid;grid-template-columns:1fr auto;align-items:center;gap:.35rem;
-    min-height:var(--bar);
-    margin:.28rem max(.55rem,env(safe-area-inset-right)) 0 max(.55rem,env(safe-area-inset-left));
-    padding:.32rem .38rem .32rem .5rem;
-    border:1px solid rgba(158,197,255,0.32);
-    background:
-      linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 14px 1px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 1px 14px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 14px 1px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 1px 14px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 14px 1px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 1px 14px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 14px 1px no-repeat,
-      linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 1px 14px no-repeat,
-      linear-gradient(180deg,rgba(18,26,40,.55),rgba(0,0,0,.42));
-    backdrop-filter:blur(18px) saturate(1.25);
-    -webkit-backdrop-filter:blur(18px) saturate(1.25);
-  }
+  .topbar{position:sticky;top:0;z-index:var(--z-nav);display:grid;grid-template-columns:1fr auto;align-items:center;gap:.35rem;min-height:var(--bar);margin:.28rem max(.55rem,env(safe-area-inset-right)) 0 max(.55rem,env(safe-area-inset-left));padding:.32rem .38rem .32rem .5rem;border:1px solid rgba(158,197,255,0.32);background:linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 14px 1px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 1px 14px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 14px 1px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 1px 14px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 14px 1px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 1px 14px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 14px 1px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 1px 14px no-repeat,linear-gradient(180deg,rgba(18,26,40,.55),rgba(0,0,0,.42));backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25)}
   .hud{width:100%;min-width:0;border:0;background:transparent;padding:0;font-family:"IBM Plex Mono",ui-monospace,monospace}
   .burger{width:2.2rem;height:2.2rem;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;background:transparent}
   .burger span{display:block;width:1.1rem;height:1px;background:#e8f1ff}
@@ -81,34 +62,8 @@
   .hud-fill{height:100%;width:8%;background:#9ec5ff}
   .hud-act{margin-top:.4rem;display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
   .hud-donate,.hud-onboard{display:flex;align-items:center;justify-content:center;min-height:1.85rem;padding:.28rem .4rem;border:1px solid rgba(158,197,255,.45);background:rgba(158,197,255,.1);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-align:center}
-  .hud-onboard{border-color:rgba(158,197,255,.45);background:rgba(158,197,255,.1);color:#e8f1ff;pointer-events:auto;cursor:pointer}
   .hud-foot{margin-top:0.45rem;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.48);text-align:center;line-height:1.35}
-  @media (max-width:40rem){
-    :root{--bar:4.1rem}
-    .hud-foot{display:none}
-    .hud-rail{margin-top:.28rem}
-    .hud-k{font-size:0.7rem;letter-spacing:0.12em}
-    .hud-v{font-size:clamp(0.95rem,4vw,1.12rem)}
-    .hud-donate,.hud-onboard{min-height:2.15rem;font-size:.72rem;letter-spacing:.1em}
-    .nav-panel a{padding:0.85rem 0.95rem;font-size:0.88rem}
-    .classif{font-size:clamp(0.82rem,3.6vw,1.05rem)}
-    h1{font-size:clamp(1.75rem,7.2vw,2.55rem);white-space:normal}
-    .jump{font-size:clamp(0.88rem,3.6vw,1.02rem)}
-    .jump span{font-size:0.72rem}
-    .band h2{font-size:clamp(1.65rem,6.8vw,2.2rem);line-height:1.12}
-    .band p,.band li{font-size:1.18rem;line-height:1.6}
-    .closed{font-size:1.05rem;padding:0.9rem 1rem}
-    .row{padding:1rem 1.05rem}
-    .row strong{font-size:1.12rem}
-    .pack .cad{font-size:.82rem}
-    .pack .amt{font-size:1.4rem}
-    .pack .sub{font-size:1.05rem}
-    .sec-break{font-size:.78rem}
-    .iris-mark{font-size:.78rem}
-    .foot{font-size:.8rem}
-    .scroll-stage{width:min(46rem,calc(100% - 0.8rem))}
-    .pane.glass{padding:1.35rem 1rem 1.6rem}
-  }
+  @media (max-width:40rem){:root{--bar:4.1rem}.hud-foot{display:none}.hud-rail{margin-top:.28rem}.hud-k{font-size:0.7rem}.hud-v{font-size:clamp(0.95rem,4vw,1.12rem)}.hud-donate,.hud-onboard{min-height:2.15rem;font-size:.72rem}.nav-panel a{padding:0.85rem 0.95rem;font-size:0.88rem}.classif{font-size:clamp(0.82rem,3.6vw,1.05rem)}h1{font-size:clamp(1.75rem,7.2vw,2.55rem);white-space:normal}}
   .jump{margin-top:auto;padding:0.35rem 0.5rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(0.78rem,3.2vw,0.92rem);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#9ec5ff}
   .jump span{display:block;margin-top:0.25rem;font-size:0.64rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:rgba(245,245,245,0.48);white-space:nowrap}
   .scroll-stage{width:min(46rem,calc(100% - 1.2rem));margin:0 auto 2rem;perspective:1400px}
@@ -194,3 +149,192 @@
       <div class="tier tier-jump"><a class="jump" href="#for-you">Continue<span id="peg-clock">LAUNCH IN —</span></a></div>
     </div>
   </section>
+  <div class="scroll-stage">
+  <div class="pane glass is-on">
+    <div class="pane-art" aria-hidden="true"><img src="brand/emblem-helix.svg" alt=""/></div>
+    <div class="pane-copy">
+  <section class="band" id="for-you">
+    <p class="kicker">For you</p>
+    <h2>The next chapter is already running</h2>
+    <ul>
+      <li>DualisCapax is building tools so money, messages, and machines can be checked — not just believed.</li>
+      <li>Talk to Iris. She is our AI. Ask anything. It is free.</li>
+      <li>Crypto here means real cryptography: locks you can test, ledgers you can read, rules that do not hide.</li>
+      <li>The future we want is simple. Better tools. Clearer information. A fairer shot for the people who do the work.</li>
+    </ul>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#measure">Measure</a><a href="#bind">Bind</a><a href="/ai/app">Iris</a></nav>
+  </section>
+  <section class="band" id="look">
+    <p class="kicker">Look</p>
+    <h2>Open the doors</h2>
+    <p>Start anywhere. You do not have to read in order. If you are twelve, start with Iris. If you want the hard math, jump to research.</p>
+    <a class="row" href="/ai/app"><strong>Talk to Iris</strong>A real conversation. Free. She answers in the first person and keeps it short.</a>
+    <a class="row" href="/research/"><strong>Health notes</strong>Working notes on bodies and strain. Open research you can read and check.</a>
+    <a class="row" href="#measure"><strong>Operations</strong>How a long shift, a plant, or a warehouse actually holds together.</a>
+    <a class="row" href="/research/"><strong>Mathematics</strong>Problems you can check. Claims that have to survive a test.</a>
+  </section>
+  <section class="band" id="measure">
+    <p class="kicker">Measure</p>
+    <h2>See the number. Then decide.</h2>
+    <p>Every system leaks. A bill. A protocol. A plant line. A wallet. DualisCapax measures that leak, writes the figure down, and lets you test it.</p>
+    <div class="closed"><strong>Prepaid time is open.</strong> Fuel and document seats settle on <a href="/payments.html">Bind</a>. Research gifts remain on Donate.</div>
+  </section>
+  <section class="band" id="bind">
+    <p class="kicker">Bind</p>
+    <h2>When the door opens, time is prepaid</h2>
+    <p>Fuel is prepaid time. Unused time stays with you.</p>
+    <div class="packs">
+      <a class="pack" href="/payments.html"><div class="cad">CAD $20</div><div class="amt">40 Fuel</div><div class="sub">Trial</div></a>
+      <a class="pack" href="/payments.html"><div class="cad">CAD $50</div><div class="amt">120 Fuel</div><div class="sub">Practice</div></a>
+      <a class="pack" href="/payments.html"><div class="cad">CAD $120</div><div class="amt">320 Fuel</div><div class="sub">Retain</div></a>
+    </div>
+  </section>
+  <section class="band" id="founding">
+    <p class="kicker">Foundry</p>
+    <h2>Early board is open</h2>
+    <p>Seats 1 to 10 are the house. They do not move. The public board starts at 11.</p>
+  </section>
+  <section class="band" id="finance">
+    <p class="kicker">Crypto and finance</p>
+    <h2>Cryptography first. Markets second.</h2>
+    <p>Crypto here is the original meaning: secret-keeping that can be proven.</p>
+  </section>
+  <section class="band" id="edge">
+    <p class="kicker">New machines</p>
+    <h2>Software now. Hardware next.</h2>
+    <p>First the surface. Then the proof. Then the hardware.</p>
+  </section>
+  <section class="band" id="ai">
+    <p class="kicker">AI you can talk to</p>
+    <h2>Iris is already here</h2>
+    <p>Iris is the DualisCapax agent. Talk to her.</p>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="/ai/app">Iris</a></nav>
+  </section>
+    </div>
+  </div>
+  </div>
+  <div class="foot">DualisCapax · Truth Prevails · the future is a tool you can check</div>
+  <a class="iris-mark" href="/ai/app">Iris</a>
+</div>
+<script>
+(function(){
+  var burger=document.getElementById('burger');
+  var panel=document.getElementById('nav-panel');
+  if(!burger||!panel)return;
+  function setOpen(open){
+    burger.setAttribute('aria-expanded',open?'true':'false');
+    burger.setAttribute('aria-label',open?'Close menu':'Open menu');
+    panel.classList.toggle('is-open',open);
+    if(open)panel.removeAttribute('hidden');else panel.setAttribute('hidden','');
+  }
+  burger.addEventListener('click',function(e){e.stopPropagation();setOpen(burger.getAttribute('aria-expanded')!=='true')});
+  document.addEventListener('click',function(e){if(!panel.classList.contains('is-open'))return;if(panel.contains(e.target)||burger.contains(e.target))return;setOpen(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
+  panel.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setOpen(false)})});
+})();
+</script>
+<script>
+(function(){
+  var h=document.getElementById('truth');
+  var c=document.getElementById('ntp');
+  if(!h||!c)return;
+  function lock(){
+    var w=Math.ceil(h.getBoundingClientRect().width);
+    if(w>0)c.style.width=w+'px';
+  }
+  lock();
+  window.addEventListener('resize',lock);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(lock);
+})();
+</script>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
+<script type="module" src="js/geo-earth.js"></script>
+<script src="js/founding-grant.js"></script>
+<script>
+(function(){
+  var LAUNCH_MS = Date.UTC(2026, 8, 1, 0, 0, 0);
+  var BASE_SINGULARITY_MS = Date.UTC(2036, 7, 24, 0, 0, 0);
+  var CAD_PER_DAY = 1000;
+  var MAX_ADVANCE_DAYS = 3650;
+  var PLEDGED_CAD = 0;
+  var EARNED_CAD = 0;
+  var upEl = document.getElementById('uptime');
+  var earnedEl = document.getElementById('earned');
+  var singEl = document.getElementById('singularity-cd');
+  var pegEl = document.getElementById('peg-clock');
+  var hudFoot = document.getElementById('hud-foot');
+  var hudFill = document.getElementById('hud-fill');
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function fmtMoney(n){
+    try { return 'CAD $' + Number(n).toLocaleString('en-CA', { maximumFractionDigits: 0 }); }
+    catch(e){ return 'CAD $' + n; }
+  }
+  function fmtLeft(ms){
+    if (ms <= 0) return 'OPEN';
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s %= 86400;
+    var h = Math.floor(s / 3600); s %= 3600;
+    var m = Math.floor(s / 60); s %= 60;
+    if (d > 0) return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
+    return pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  function fmtCountdown(ms){
+    if (ms <= 0) return 'NOW';
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s %= 86400;
+    var h = Math.floor(s / 3600); s %= 3600;
+    var m = Math.floor(s / 60); s %= 60;
+    if (d > 365) {
+      var y = Math.floor(d / 365);
+      var rd = d % 365;
+      return y + 'y ' + rd + 'd ' + pad(h) + 'h';
+    }
+    if (d > 0) return d + 'd ' + pad(h) + 'h ' + pad(m) + 'm';
+    return pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+  function launchFoot(ms){
+    if (ms <= 0) return 'launch open · residual live';
+    var d = Math.floor(ms / 86400000);
+    var h = Math.floor((ms % 86400000) / 3600000);
+    if (d >= 1) return d + (d === 1 ? ' day' : ' days') + ' left until launch';
+    if (h >= 1) return h + (h === 1 ? ' hour' : ' hours') + ' left until launch';
+    return 'minutes left until launch';
+  }
+  function singularityMs(pledged){
+    var advanceDays = Math.min(MAX_ADVANCE_DAYS, Math.floor(Math.max(0, pledged) / CAD_PER_DAY));
+    var target = BASE_SINGULARITY_MS - advanceDays * 86400000;
+    var floor = Date.now() + 30 * 86400000;
+    if (target < floor) target = floor;
+    return target;
+  }
+  function tick(){
+    var now = Date.now();
+    var untilLaunch = LAUNCH_MS - now;
+    if (upEl) upEl.textContent = fmtLeft(untilLaunch);
+    if (earnedEl) earnedEl.textContent = EARNED_CAD === 0 ? 'CAD $0' : fmtMoney(EARNED_CAD);
+    var target = singularityMs(PLEDGED_CAD);
+    var left = target - now;
+    var cd = fmtCountdown(left);
+    if (singEl) singEl.textContent = cd;
+    if (pegEl) {
+      pegEl.textContent = untilLaunch > 0 ? ('LAUNCH IN ' + fmtLeft(untilLaunch)) : ('TIME TO SINGULARITY ' + cd);
+    }
+    if (hudFoot) hudFoot.textContent = launchFoot(untilLaunch);
+    if (hudFill) {
+      var windowMs = 30 * 86400000;
+      var elapsed = windowMs - Math.min(windowMs, Math.max(0, untilLaunch));
+      var pct = Math.min(96, 8 + (elapsed / windowMs) * 88 + Math.min(20, PLEDGED_CAD / 500));
+      if (untilLaunch <= 0) pct = Math.min(96, 70 + Math.min(26, PLEDGED_CAD / 400));
+      hudFill.style.width = pct + '%';
+    }
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+<script src="assets/haptic.js"></script>
+<script src="js/no-select.js"></script>
+<script src="js/home-quarks.js"></script>
+<script src="js/scroll-tiers.js"></script>
+</body>
+</html>
