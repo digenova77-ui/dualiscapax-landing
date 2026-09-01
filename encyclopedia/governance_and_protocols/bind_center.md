@@ -1,5 +1,7 @@
 # Bind center
 
+**Document Control ID:** ED-GOV-20260901-BIND-CENTER-V1  
+**Year:** 2026  
 **Stamp:** 2026-09-01n  
 **Surface:** https://dualiscapax.ai/center.html  
 **Law:** We are the anything that binds everything.
