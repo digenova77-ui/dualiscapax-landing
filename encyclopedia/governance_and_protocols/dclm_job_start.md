@@ -3,7 +3,7 @@
 **Document Control ID:** ED-GOV-20260901-DCLM-JOB-START-V1  
 **Year:** 2026  
 **Stamp:** 2026-09-01  
-**Source:** encyclopedia/governance_and_protocols/dclm_layer_zero_law_floor.md · encyclopedia/governance_and_protocols/cube_six_matrix_time.md  
+**Source:** encyclopedia/governance_and_protocols/dclm_layer_zero_law_floor.md · encyclopedia/governance_and_protocols/dclm_name_lock.md  
 **Status:** INDEXED  
 **State note:** SEALED later means this file was not altered. It does not mean a job analysis is a lab proof.
 
@@ -13,11 +13,11 @@ This file does not rewrite the encyclopedia. It names the opening move every job
 
 Every job begins with a DCLM analysis.
 
-DCLM is not a seventh matrix. DCLM is the six-matrix cube, standing on Layer [0].
+Speak **DCLM**. Do not say matrix model. DCLM is the lock: four words, six faces, time climbing. Old matrix filenames stay on disk as aliases.
 
 If a prompt skips this card, the job is a hole. Do not call that hole zero. Do not start building.
 
-## Layer [0] — four words above the cube
+## Layer [0] — four words above the lock
 
 Ask these first. A broken word vetoes the job.
 
@@ -28,9 +28,9 @@ Ask these first. A broken word vetoes the job.
 
 Any no is refuse. One reason. Stop.
 
-## The cube — six faces of the same job
+## Six faces of the same job
 
-Turn the die. Do not mint six new catalogs.
+Turn the die. Do not mint six new catalogs. This is still DCLM, not another model.
 
 | Face | Spoken | Question | Default light |
 |---|---|---|---|
@@ -55,6 +55,7 @@ Do not take the gym phone into the front hall.
 ## The card every job fills
 
 ```
+DCLM
 HOLE or ONE?
 World 0 or 1?
 Faces lit: F:______
