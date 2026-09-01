@@ -1,0 +1,21 @@
+html.present-on,body.present-on{background:#000008}
+#present-field{
+  position:fixed;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;display:block;
+}
+html.present-on .site h1,
+html.present-on .site .lede,
+html.present-on .site .warn,
+html.present-on .site .eyebrow,
+html.present-on .site .law,
+html.present-on .site .kicker,
+html.present-on .site p.tiny{
+  color:transparent !important;
+  text-shadow:none !important;
+}
+html.present-on .quarks,html.present-on canvas.quarks{opacity:.35}
+@media (prefers-reduced-motion:reduce){
+  #present-field{display:none}
+  html.present-on .site h1,
+  html.present-on .site .lede,
+  html.present-on .site .warn{color:inherit !important}
+}
