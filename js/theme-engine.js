@@ -2,10 +2,11 @@
  * Preemptive theme engine.
  * A targeted seat walks into a room that was already themed.
  * Theme is not a deal. Targeted is not signed. Plaques stay dark.
- * Current as of: 2026-09-01
+ * Onboard is the goal of every class.
+ * Current as of: 2026-09-01g
  */
 (function (g) {
-  var VERSION = "theme-engine-v1-20260901";
+  var VERSION = "theme-engine-v3-20260901g";
   var STORE = "dc.theme.live.v1";
 
   var HOUSE = {
@@ -29,7 +30,7 @@
     nation: "nation", canada: "nation",
     treasury: "bank", "nat-health": "sector", defence: "nation", roads: "sector", crown: "nation",
     province: "province", ontario: "province", "other-prov": "province",
-    school: "sector", hospital: "sector", grid: "sector", city: "sector",
+    school: "sector", hospital: "sector", grid: "sector", city: "sector", sector: "sector",
     bank: "bank", pharma: "pharma", plant: "plant", tech: "tech", corp: "plant",
     shop: "street", house: "street", club: "street", gift: "street", street: "street",
     "desk-treasury": "bank", "desk-nat-health": "sector", "desk-defence": "nation",
@@ -40,14 +41,14 @@
   };
 
   var VOICE = {
-    nation: "A country till leaks the way a pipe leaks. Count the drip on the books you already keep.",
-    province: "Ontario is the first room because this house lives here. Other rooms use the same step.",
-    sector: "The books stay with the desk. We measure leftover. We do not invent a diagnosis.",
-    bank: "A house of money already knows the drip. Dualis does not take the book home.",
-    pharma: "Plant line, cold chain, trial ops. Measure the line. Not a drug. Not a diagnosis.",
-    plant: "A shift, scrap, heat. Bring the sheet the floor already keeps.",
-    tech: "Idle cloud, license waste, desk time. If the number holds, prepaid minutes. If it does not, stop.",
-    street: "A small till and a light left on. Same invert rule as a ministry."
+    nation: "Onboard is the goal of a country seat. Deeper in this sector, onboard is good for the books that country already keeps.",
+    province: "Onboard is the goal of a province seat. Deeper in Ontario or another room, onboard is built for that province’s sheet.",
+    sector: "Onboard is the goal of the room that spends. Deeper in school, hospital, grid, or city, onboard is good for that sector.",
+    bank: "Onboard is the goal of a house of money. Deeper at the till, onboard is good for this sector: the ledger never leaves the bank.",
+    pharma: "Onboard is the goal of a pharma line. Deeper on the plant sheet, onboard is good for this sector. Not a drug. Not a diagnosis.",
+    plant: "Onboard is the goal of a plant seat. Deeper on the floor, onboard is good for this sector: scrap and heat stay on the shift sheet.",
+    tech: "Onboard is the goal of a tech seat. Deeper on the bill, onboard is good for this sector: idle cloud and license waste are named here.",
+    street: "Onboard is the goal of a street seat. Deeper at a shop or kitchen table, onboard is good for that smaller room."
   };
 
   function klass(id) {
@@ -66,13 +67,15 @@
       accent: skin.accent,
       wash: skin.wash,
       tone: skin.tone,
-      voice: extra.story || VOICE[k],
+      voice: extra.story || extra.why || VOICE[k],
       public_claim: false,
       signed: false,
       house_state: "HOUSE_SIGNED",
       counterparty: "UNBOUND",
       instruments: ["AGR-LOOK", "AGR-DATA-STAY", "AGR-BIND", "AGR-SEAT", "AGR-INVERT"],
-      note: "Theme prepared ahead of time. Targeted is not a signed deal."
+      goal: "onboard",
+      sector: extra.sector || k,
+      note: "Theme prepared ahead of time. Onboard is the goal of every seat. Deeper in this sector, onboard is built for this room. Targeted is not a signed deal."
     };
   }
 
@@ -82,6 +85,7 @@
     node.style.setProperty("--seat-wash", theme.wash);
     node.setAttribute("data-theme", theme.class);
     node.setAttribute("data-signed", "false");
+    node.setAttribute("data-goal", "onboard");
   }
 
   function apply(id, extra) {
