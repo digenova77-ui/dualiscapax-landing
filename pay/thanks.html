@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Paid · DualisCapax</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+body{margin:0;background:#050508;color:#f4f4f5;font-family:"IBM Plex Sans",system-ui,sans-serif;min-height:100dvh;display:grid;place-items:center;padding:1.5rem}
+.card{max-width:28rem;width:100%;border:1px solid rgba(158,197,255,.22);padding:1.4rem 1.35rem}
+h1{font-size:1.6rem;margin:0 0 .6rem}
+p{line-height:1.5;color:rgba(244,244,245,.78)}
+.amt{font-size:1.2rem;color:#9ec5ff;margin:.8rem 0}
+a{color:#9ec5ff}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>Payment received on Stripe</h1>
+  <p id="line">Stripe sent you back here. Fuel or a seat is recorded in this browser when the pack is known. The house webhook also listens on the live fulfill worker.</p>
+  <p class="amt" id="grant"></p>
+  <p><a href="/ai/app.html">Talk to Iris</a> · <a href="/payments.html">Bind again</a> · <a href="/">Home</a></p>
+</main>
+<script src="/js/fuel-ledger.js"></script>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var session = q.get("session_id") || q.get("cs") || "";
+  var sku = (q.get("sku") || "").toLowerCase();
+  var map = {depth_s:40, depth_m:120, depth_l:320};
+  var units = map[sku] || 0;
+  var el = document.getElementById("grant");
+  if (units && window.DCFuel && typeof DCFuel.grant === "function") {
+    var bal = DCFuel.grant(units);
+    el.textContent = "Added " + units + " Fuel on this device. Balance now " + bal + ".";
+  } else if (session) {
+    el.textContent = "Stripe session " + session.slice(0, 18) + "… landed. Pack will match when the webhook names the SKU.";
+  } else {
+    el.textContent = "If you paid, keep the Stripe receipt. Fuel appears here when the pack is named.";
+  }
+})();
+</script>
+</body>
+</html>
