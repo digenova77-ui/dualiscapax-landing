@@ -1,30 +1,42 @@
-# Stripe Payment Links — DualisCapax access.dual.v2
+# Stripe Payment Links — DualisCapax access.dual.v8
+
+Current as of: 2026-09-01
+Source: ED-PRC-20260901-120-TIER-MASTER-V8
+Access: CLOSED (`open: false`)
 
 **Never put `sk_test_` / `sk_live_` in this repo or on the site.**
 
-## Create links (Dashboard · ~5 min)
+## Public SKUs (itemize)
 
-1. Open [Stripe Dashboard → Payment Links](https://dashboard.stripe.com/test/payment-links) (use **Test mode** first).
-2. **Create payment link** for each SKU:
+| ID | SKU | Name | CAD | Equal-crypto | Status | Live Payment Link |
+|----|-----|------|-----|--------------|--------|-------------------|
+| SKU-001 | fuel_10 | Fuel 10 | 5 | 5.00 CAD-eq | closed | none yet |
+| SKU-002 | depth_s | Fuel 40 | 20 | 20.00 CAD-eq | closed | amount-matched URL reserved |
+| SKU-003 | depth_m | Fuel 120 | 50 | 50.00 CAD-eq | closed | amount-matched URL reserved |
+| SKU-004 | depth_l | Fuel 320 | 120 | 120.00 CAD-eq | closed | amount-matched URL reserved |
+| SKU-005 | fuel_1000 | Fuel 1,000 | 350 | 350.00 CAD-eq | closed | none yet |
+| SKU-016 | edu_leaf | Educational leaf | 19 | 19.00 CAD-eq | closed | none yet |
+| SKU-017 | leaf | Indication leaf 12 mo | 49 | 49.00 CAD-eq | closed | amount-matched URL reserved |
+| SKU-018 | branch | Clade branch 12 mo | 299 | 299.00 CAD-eq | closed | none — v2 $149 URL retired |
+| SKU-019 | trunk | Super-Trunk 12 mo | 499 | 499.00 CAD-eq | closed | v2 $499 library URL remapped |
+| SKU-029 | library | Master library perpetual | 1499 | 1,499.00 CAD-eq | closed | none yet |
 
-| SKU | Product name | Price |
-|-----|----------------|-------|
-| `leaf` | DualisCapax · Single leaf pack | **CAD $49** one-time |
-| `branch` | DualisCapax · Branch access 12 mo | **CAD $149** one-time |
-| `library` | DualisCapax · Full residual library 12 mo | **CAD $499** one-time |
+## Dual-rail
 
-3. Copy each link (`https://buy.stripe.com/...`).
-4. Paste into `research/payment-links.json`:
+| Combo | Path A | Path B | Rule |
+|-------|--------|--------|------|
+| PAY-1 | Stripe Payment Link (when open) | Equal-CAD BTC / ETH / SOL / USDC | No exchange product |
 
-```json
-"stripe_payment_link": "https://buy.stripe.com/test_xxxxx"
-```
+## Create missing links (Dashboard · operator only)
 
-5. Hard-refresh https://dualiscapax.ai/research/access.html — status should read live.
-6. When ready for real money: repeat in **Live mode**, set `"mode": "live"`, paste live URLs.
+1. Open Stripe Dashboard → Payment Links. Test mode first.
+2. Create one-time CAD prices for the rows with `none yet`.
+3. Paste only `https://buy.stripe.com/...` URLs into `research/payment-links.json`.
+4. Do not set `open: true` from this file. That is an operator order after IP lock.
 
 ## Security
 
 - Only `buy.stripe.com` URLs are public.
 - Card data never hits dualiscapax.ai.
 - Crypto remains equal-CAD outside Stripe.
+- Do not invent Payment Link URLs.
