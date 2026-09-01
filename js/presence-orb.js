@@ -1,6 +1,6 @@
-/** Presence orb sleeve. Loads shift, reader, and the presentation field. */
+/** Presence orb sleeve. Loads inflection before the field speaks. */
 (function (w) {
-  var VERSION = "presence-orb-2026-09-01-d";
+  var VERSION = "presence-orb-2026-09-01-f";
   function load(src) {
     if (document.querySelector('script[src="' + src + '"]')) return;
     var s = document.createElement("script");
@@ -20,9 +20,11 @@
     if (w.IrisHolo && IrisHolo.setForm) IrisHolo.setForm(saved || "orb");
     css("css/sprite-read.css");
     css("css/present-field.css");
+    load("js/token-inflect.js");
     load("js/presence-shift.js");
     load("js/sprite-read.js");
     load("js/present-field.js");
+    load("js/iris-materialize.js");
     return VERSION;
   }
   w.DCOrb = { version: VERSION, law: "PRESENCE_ORB", mount: mount };
