@@ -6,8 +6,8 @@
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W = 0, H = 0;
-  var N_NEAR = 320;
-  var N_OPEN = 520;
+  var N_NEAR = 360;
+  var N_OPEN = 560;
   var N = N_NEAR;
   var pts = [];
   var clouds = [];
@@ -33,7 +33,7 @@
   function insideHole(x, y, pad){
     if (hole.r <= 0) return false;
     var dx = x - hole.cx, dy = y - hole.cy;
-    var rr = hole.r + (pad || 0);
+    var rr = hole.r * 0.22 + (pad || 0);
     return dx * dx + dy * dy < rr * rr;
   }
   function resize(){
@@ -47,12 +47,16 @@
     measureHole();
   }
   function seedClouds(){
+    var cx = hole.r ? hole.cx : W * 0.5;
+    var cy = hole.r ? hole.cy : H * 0.42;
     clouds = [
-      {x: W * 0.50, y: H * 0.10, r: Math.max(W, H) * 0.42, c0: 'rgba(70,130,230,0.22)', c1: 'rgba(70,130,230,0)'},
-      {x: W * 0.12, y: H * 0.82, r: Math.max(W, H) * 0.28, c0: 'rgba(120,60,180,0.16)', c1: 'rgba(120,60,180,0)'},
-      {x: W * 0.92, y: H * 0.68, r: Math.max(W, H) * 0.24, c0: 'rgba(30,120,190,0.14)', c1: 'rgba(30,120,190,0)'},
-      {x: W * 0.72, y: H * 0.22, r: Math.max(W, H) * 0.16, c0: 'rgba(210,170,80,0.08)', c1: 'rgba(210,170,80,0)'},
-      {x: W * 0.28, y: H * 0.30, r: Math.max(W, H) * 0.14, c0: 'rgba(90,160,255,0.10)', c1: 'rgba(90,160,255,0)'}
+      {x: cx, y: cy, r: Math.max(W, H) * 0.58, c0: 'rgba(56,118,230,0.42)', c1: 'rgba(56,118,230,0)'},
+      {x: cx - W * 0.12, y: cy + H * 0.04, r: Math.max(W, H) * 0.34, c0: 'rgba(128,62,196,0.30)', c1: 'rgba(128,62,196,0)'},
+      {x: cx + W * 0.16, y: cy - H * 0.06, r: Math.max(W, H) * 0.28, c0: 'rgba(28,150,210,0.24)', c1: 'rgba(28,150,210,0)'},
+      {x: W * 0.12, y: H * 0.82, r: Math.max(W, H) * 0.30, c0: 'rgba(120,60,180,0.22)', c1: 'rgba(120,60,180,0)'},
+      {x: W * 0.92, y: H * 0.68, r: Math.max(W, H) * 0.26, c0: 'rgba(30,120,190,0.20)', c1: 'rgba(30,120,190,0)'},
+      {x: W * 0.72, y: H * 0.18, r: Math.max(W, H) * 0.20, c0: 'rgba(210,170,80,0.14)', c1: 'rgba(210,170,80,0)'},
+      {x: W * 0.22, y: H * 0.28, r: Math.max(W, H) * 0.18, c0: 'rgba(90,160,255,0.16)', c1: 'rgba(90,160,255,0)'}
     ];
   }
   function seed(){
@@ -65,7 +69,7 @@
       guard++;
       var x = Math.random() * W;
       var y = Math.random() * H;
-      if (insideHole(x, y, 10)) continue;
+      if (insideHole(x, y, 8)) continue;
       var roll = Math.random();
       var giant = roll > 0.97;
       var mid = !giant && roll > 0.86;
@@ -101,12 +105,12 @@
     var x, y, fade;
     for (x = -step + ox; x <= W + step; x += step) {
       fade = 1 - Math.abs((x / W) - 0.5) * 1.15; if (fade < 0) fade = 0;
-      ctx.strokeStyle = 'rgba(158,197,255,' + ((sphereOn ? 0.09 : 0.13) * fade) + ')';
+      ctx.strokeStyle = 'rgba(158,197,255,' + ((sphereOn ? 0.08 : 0.13) * fade) + ')';
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
     }
     for (y = -step + oy; y <= H + step; y += step) {
       fade = 1 - Math.abs((y / H) - 0.5) * 1.05; if (fade < 0) fade = 0;
-      ctx.strokeStyle = 'rgba(158,197,255,' + ((sphereOn ? 0.07 : 0.11) * fade) + ')';
+      ctx.strokeStyle = 'rgba(158,197,255,' + ((sphereOn ? 0.06 : 0.11) * fade) + ')';
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
     }
   }
@@ -163,15 +167,18 @@
       ctx.fill();
     }
   }
-  function punch(){
+  function glowBehind(){
     measureHole();
     if (hole.r <= 0) return;
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-out';
+    var g = ctx.createRadialGradient(hole.cx, hole.cy, hole.r * 0.08, hole.cx, hole.cy, hole.r * 1.35);
+    g.addColorStop(0, 'rgba(90,150,255,0.28)');
+    g.addColorStop(0.35, 'rgba(70,90,210,0.16)');
+    g.addColorStop(0.7, 'rgba(40,20,80,0.08)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.arc(hole.cx, hole.cy, hole.r, 0, Math.PI * 2);
+    ctx.arc(hole.cx, hole.cy, hole.r * 1.35, 0, Math.PI * 2);
     ctx.fill();
-    ctx.restore();
   }
   var lastMode = true;
   function frame(){
@@ -179,14 +186,14 @@
     if (on !== lastMode) { lastMode = on; seed(); }
     ctx.clearRect(0, 0, W, H);
     drawWash();
+    glowBehind();
     drawGrid();
     drawLinks();
     drawSprites();
-    punch();
     if (!reduce) requestAnimationFrame(frame);
   }
   resize(); seed();
   window.addEventListener('resize', function(){ resize(); seed(); if (reduce) frame(); });
-  window.addEventListener('scroll', function(){ measureHole(); }, {passive:true});
+  window.addEventListener('scroll', function(){ measureHole(); seedClouds(); }, {passive:true});
   requestAnimationFrame(frame);
 })();
