@@ -2,13 +2,57 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Onboard — DualisCapax</title>
-<meta http-equiv="refresh" content="0;url=portal.html"/>
-<link rel="canonical" href="https://dualiscapax.ai/portal.html"/>
+<meta name="theme-color" content="#02040c"/>
+<meta name="description" content="Onboard here. Why a company wants this. Why a public desk wants this. The books stay with you."/>
+<link rel="stylesheet" href="theme.css"/>
+<style>
+body{background:#02040c}
+.site{max-width:36rem}
+.step{border:1px solid rgba(158,197,255,.28);padding:1rem .95rem;margin:0 0 .55rem;background:linear-gradient(180deg,rgba(158,197,255,.07),rgba(0,0,0,.28))}
+.step b{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#9ec5ff;margin-bottom:.35rem}
+.act{display:flex;align-items:center;justify-content:center;min-height:3rem;margin:.7rem 0 0;border:1px solid rgba(158,197,255,.5);background:rgba(158,197,255,.14);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.act.ghost{background:transparent;border-color:rgba(158,197,255,.28)}
+.why{margin:0 0 1rem;font-size:1.08rem;line-height:1.62;color:rgba(245,245,245,.78)}
+</style>
 </head>
 <body>
-<p><a href="portal.html">Continue to the portal</a></p>
-<script>location.replace('portal.html');</script>
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
+<div class="site">
+  <header>
+    <a class="mark" href="index.html?land=1">DualisCapax</a>
+    <nav>
+      <a href="look.html">Look</a>
+      <a href="onboard.html" class="on">Onboard</a>
+      <a href="portal.html">Portal</a>
+    </nav>
+  </header>
+  <p class="eyebrow">Onboard here</p>
+  <h1>Start with the leak you already feel.</h1>
+  <p class="lede">A shop and a city desk want the same thing: a number they can check before they spend another year. That is the whole door.</p>
+
+  <p class="why">Every choice writes a line that time will not erase. Electricity keeps the copy even when nobody is watching. So the figure has to be honest, or you are buying a story.</p>
+
+  <h2>Why a company wants this</h2>
+  <p>Money leaves the way water leaves a pipe. You do not need a speech about the pipe. You need the drip counted, written down, and turned back into a proof you can hold. If the proof will not invert, you owe nothing. That is how a shop keeps next year’s budget from being a wish.</p>
+
+  <h2>Why a public desk wants this</h2>
+  <p>A hospital shift, a school board, a plant, a warehouse — the public already paid. The leftover is already a cost. A city desk wants the same invert rule: if the number cannot be walked back to a record, nothing is owed and nobody is sold a miracle.</p>
+
+  <h2>The path</h2>
+  <div class="step"><b>1 · Bring what you already keep</b>A spreadsheet. A payroll export. A link to the books you use. The file stays on your device. We do not take the book home.</div>
+  <div class="step"><b>2 · See the leftover</b>One leak. One bill, one contract, one line. A figure you can read out loud to a twelve-year-old.</div>
+  <div class="step"><b>3 · Decide with time prepaid</b>If the figure holds, you may bind prepaid minutes. Unused time stays with you. Other people pay their own seat.</div>
+  <div class="step"><b>4 · Stop if it will not invert</b>If the number cannot be turned back into a proof, the door closes clean. No leftover debt. No story in place of a measure.</div>
+
+  <p class="why">The math sits behind this glass. You do not have to speak it to use the door. You only have to know that time moves one way, and a false number will not survive the walk-back.</p>
+
+  <a class="act" href="portal.html">Open the portal</a>
+  <a class="act ghost" href="payments.html">See prepaid time</a>
+  <footer>DualisCapax · onboard first · books stay with you</footer>
+</div>
+<script src="js/home-quarks.js"></script>
+<script src="js/no-select.js"></script>
 </body>
 </html>
