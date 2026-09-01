@@ -4,29 +4,30 @@
 [![Deploy GitHub Pages](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/deploy.yml/badge.svg)](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/deploy.yml)
 
 **Live Surface:** [https://dualiscapax.ai](https://dualiscapax.ai)  
-**Document Control ID:** ED-DEPLOY-20260830-GITHUB-STRIPE-LIVE-V1  
+**Document Control ID:** ED-DEPLOY-20260831-ENCYCLOPEDIA-V1  
 **Operating Entity:** DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7)  
 **Governance Framework:** Dualis & Unity Framework (v0.40-Public) / DCLM Law Floor  
 
 ---
 
-## 1. Quick Start / Push to Live GitHub Pages
+## Production invariants (locked)
 
-To deploy this bundle immediately to `digenova77-ui/dualiscapax-landing`:
+- Access sales: **CLOSED** (`research/payment-links.production.json` → `open: false`).
+- LEDGER-EARNED: CAD $0.
+- LEDGER-PLEDGED: CAD $0.
+- Zero secret keys in client / public directories: no `sk_live_`, no `whsec_`.
+- DCLM Layer [0] Law Floor: `NO_FORCE`, `HOST_SAFE`, `CLEANUP_FIRST`, `TRUTH_OR_NOTHING`.
 
-```bash
-git init
-git remote add origin https://github.com/digenova77-ui/dualiscapax-landing.git
-git branch -M main
-git add .
-git commit -m "feat(dclm): activate master 10-sector production gateway, live Stripe links, and DCCP confinement"
-git push -u origin main
-```
+## Deploy
 
----
+GitHub Pages deploys from `main` via `.github/workflows/deploy.yml` and serves `https://dualiscapax.ai` (CNAME).
 
-## 2. Production Invariants & Security
-- **DCLM Layer [0] Law Floor:** `NO_FORCE`, `HOST_SAFE`, `CLEANUP_FIRST`, `TRUTH_OR_NOTHING`.
-- **Invariant M-S Watchdog:** Sub-4.20 ms fail-closed hardware circuit breaker.
-- **Zero Secret Keys in Client Code:** Zero `sk_live_` or `whsec_` credentials stored in repository.
-- **1:1 CAD Parity:** Stripe CAD checkout alongside Equal-Crypto rails (`BTC`, `ETH`, `SOL`).
+Cloudflare Workers (`workers-live`, `stripe-fulfill-v2`) require operator-set repository secrets. They cannot be minted from git or chat:
+
+1. Repo **Settings → Secrets and variables → Actions**
+2. Add `CLOUDFLARE_API_TOKEN` (Workers + D1 edit)
+3. Add `CLOUDFLARE_ACCOUNT_ID`
+4. Optional: `D1_DATABASE_ID`, `STRIPE_WEBHOOK_SECRET`, `XAI_API_KEY`
+5. Re-run workflow `workers-live`
+
+Never paste those values into source, issues, or chat.
