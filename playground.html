@@ -1,14 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>DualisCapax</title>
-  <meta http-equiv="refresh" content="0; url=index.html" />
-  <link rel="canonical" href="index.html" />
-  <style>body{background:#050505;color:#f5f5f5;font-family:system-ui,sans-serif;padding:2rem}</style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>L2 Playground — DualisCapax</title>
+<meta name="theme-color" content="#02040c"/>
+<meta name="description" content="L2 is plug and play, not hope and pray. Bring a file or a link you already use. It seats, or it says no."/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="theme.css"/>
+<style>
+body{background:#02040c}
+.site{max-width:36rem}
+.panel{border:1px solid rgba(158,197,255,.28);padding:1.1rem 1rem;margin:0 0 .75rem;background:linear-gradient(180deg,rgba(158,197,255,.07),rgba(0,0,0,.28))}
+.law{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#9ec5ff;margin:0 0 .6rem}
+.act{min-height:2.6rem;border:1px solid rgba(158,197,255,.5);background:rgba(158,197,255,.14);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:.4rem .7rem}
+.act.ghost{background:transparent;border-color:rgba(158,197,255,.28)}
+.url{width:100%;min-height:2.6rem;margin:.45rem 0;padding:.7rem;border:1px solid rgba(158,197,255,.35);background:#05070c;color:#f5f5f5;font-family:"IBM Plex Mono",ui-monospace,monospace}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.5rem 0}
+.warn{font-size:.95rem;line-height:1.5;color:rgba(245,245,245,.66);margin:.35rem 0 0}
+.ok{color:#c8f0d2}
+.bad{color:#ffb4b4}
+.tiny{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.42)}
+#drop{border:1px dashed rgba(158,197,255,.4);padding:1.1rem .9rem;text-align:center;margin:.5rem 0;color:rgba(245,245,245,.7)}
+#drop.on{border-color:#9ec5ff;background:rgba(158,197,255,.08)}
+</style>
 </head>
 <body>
-  <p><a href="index.html">DualisCapax</a></p>
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
+<div class="site">
+  <header>
+    <a class="mark" href="index.html?land=1">DualisCapax</a>
+    <nav>
+      <a href="look.html">Look</a>
+      <a href="playground.html" class="on">L2</a>
+      <a href="portal.html">Portal</a>
+    </nav>
+  </header>
+  <p class="eyebrow">Layer 2 · Playground</p>
+  <h1>Plug and play. Not hope and pray.</h1>
+  <p class="lede">Bring a sheet you already keep, or a link to the books tool you already use. It seats on this device, or it says no with one reason. Nothing is guessed.</p>
+
+  <div class="panel">
+    <p class="law">L2 · plug and play · not hope and pray</p>
+    <p class="warn">Your books stay with you. We count numbers on this screen. We do not take the book home. A password, a key, or a token is refused.</p>
+    <div id="drop">Drop a CSV, TSV, JSON, or Excel file here<br/><span class="tiny">or choose one</span></div>
+    <input id="file" type="file" accept=".csv,.tsv,.txt,.json,.xlsx,.xls" hidden/>
+    <div class="row">
+      <button type="button" class="act" id="pick">Choose file</button>
+      <button type="button" class="act ghost" id="wipe">Wipe this device</button>
+    </div>
+    <label class="tiny" for="url">Or a books link</label>
+    <input class="url" id="url" type="url" placeholder="https://…" autocomplete="off"/>
+    <button type="button" class="act" id="plugurl" style="width:100%">Plug the link</button>
+    <p class="warn" id="note">Looking stays free. No leftover is invented if the sheet never named a total.</p>
+  </div>
+  <footer>L2 cannot move L3 access or L4 ownership. Isolation holds.</footer>
+</div>
+<script src="js/home-quarks.js"></script>
+<script src="js/l2-plug.js"></script>
+<script src="js/no-select.js"></script>
+<script>
+(function(){
+  var note = document.getElementById('note');
+  var drop = document.getElementById('drop');
+  var file = document.getElementById('file');
+  function paint(row){
+    if (!row) return;
+    if (row.status === 'PLUGGED') {
+      note.className = 'warn ok';
+      note.textContent = 'PLUGGED · ' + (row.kind||'file') + ' · numbers ' + (row.numbers||0) + ' · leftover ' + (row.residual_unit||'SEED') + ' · stays on this device';
+    } else {
+      note.className = 'warn bad';
+      note.textContent = 'REFUSED · ' + (row.reason||'NO') + ' · nothing guessed';
+    }
+  }
+  function fail(e){
+    note.className = 'warn bad';
+    note.textContent = 'REFUSED · ' + ((e && e.message) || 'NO');
+  }
+  document.getElementById('pick').addEventListener('click', function(){ file.click(); });
+  file.addEventListener('change', function(){
+    if (!file.files || !file.files[0]) return;
+    DCL2.plugFile(file.files[0]).then(paint).catch(fail);
+  });
+  drop.addEventListener('dragover', function(e){ e.preventDefault(); drop.classList.add('on'); });
+  drop.addEventListener('dragleave', function(){ drop.classList.remove('on'); });
+  drop.addEventListener('drop', function(e){
+    e.preventDefault(); drop.classList.remove('on');
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (!f) return;
+    DCL2.plugFile(f).then(paint).catch(fail);
+  });
+  document.getElementById('plugurl').addEventListener('click', function(){
+    DCL2.plugUrl(document.getElementById('url').value).then(paint).catch(fail);
+  });
+  document.getElementById('wipe').addEventListener('click', function(){
+    DCL2.clear();
+    note.className = 'warn';
+    note.textContent = 'Wiped on this device. Looking still free.';
+  });
+  paint(DCL2.load());
+})();
+</script>
 </body>
 </html>
