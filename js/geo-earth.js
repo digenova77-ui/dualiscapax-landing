@@ -12,18 +12,18 @@ mark.width=w;mark.height=h;
 const mtx=mark.getContext('2d');
 const R=0.93;
 
-function stampWord(ctx,x,y){
+function stampWord(ctx,x,y,size){
   ctx.save();
-  ctx.font='700 112px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.font='700 '+(size||148)+'px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   ctx.lineJoin='round';
   ctx.miterLimit=2;
-  ctx.lineWidth=5;
-  ctx.strokeStyle='rgba(0,0,0,0.82)';
+  ctx.lineWidth=7;
+  ctx.strokeStyle='rgba(0,0,0,0.88)';
   ctx.strokeText('DualisCapax',x,y);
-  ctx.shadowColor='rgba(180,210,255,0.28)';
-  ctx.shadowBlur=6;
+  ctx.shadowColor='rgba(180,210,255,0.45)';
+  ctx.shadowBlur=10;
   ctx.fillStyle='#f4f8ff';
   ctx.fillText('DualisCapax',x,y);
   ctx.shadowBlur=0;
@@ -34,8 +34,8 @@ function stampWord(ctx,x,y){
 
 function paintMarks(){
   mtx.clearRect(0,0,w,h);
-  stampWord(mtx,w*0.25,h*0.5);
-  stampWord(mtx,w*0.75,h*0.5);
+  stampWord(mtx,w*0.25,h*0.5,156);
+  stampWord(mtx,w*0.75,h*0.5,156);
 }
 paintMarks();
 const markTex=new THREE.CanvasTexture(mark);
@@ -43,7 +43,7 @@ markTex.colorSpace=THREE.SRGBColorSpace;
 markTex.anisotropy=8;
 
 const group=new THREE.Group();
-group.rotation.y = Math.PI * 0.5;
+group.rotation.y = 0;
 scene.add(group);
 
 const ER=0.26;
@@ -140,6 +140,34 @@ const shell=new THREE.Mesh(
 );
 shell.renderOrder=2;
 group.add(shell);
+
+const facePaint=document.createElement('canvas');
+facePaint.width=1024;facePaint.height=256;
+{
+  const c=facePaint.getContext('2d');
+  c.clearRect(0,0,1024,256);
+  c.font='700 118px "IBM Plex Sans", Inter, Arial, sans-serif';
+  c.textAlign='center';
+  c.textBaseline='middle';
+  c.lineJoin='round';
+  c.lineWidth=8;
+  c.strokeStyle='rgba(0,0,0,0.78)';
+  c.strokeText('DualisCapax',512,128);
+  c.shadowColor='rgba(180,210,255,0.55)';
+  c.shadowBlur=14;
+  c.fillStyle='#ffffff';
+  c.fillText('DualisCapax',512,128);
+}
+const faceTex=new THREE.CanvasTexture(facePaint);
+faceTex.colorSpace=THREE.SRGBColorSpace;
+const face=new THREE.Mesh(
+  new THREE.PlaneGeometry(1.62,0.36),
+  new THREE.MeshBasicMaterial({map:faceTex,transparent:true,depthWrite:false,side:THREE.DoubleSide})
+);
+face.position.set(0,0,R+0.05);
+face.rotation.y=Math.PI;
+face.renderOrder=6;
+group.add(face);
 
 function makeDotTex(hex){
   const c=document.createElement('canvas');c.width=64;c.height=64;
@@ -244,11 +272,13 @@ goldLight.position.set(0,0,0);
 group.add(goldLight);
 
 const OMEGA=Math.PI*2/28;
+const HOLD=1600;
+const born=performance.now();
 let last=performance.now();
 function frame(now){
   const dt=Math.min(0.05,(now-last)/1000);
   last=now;
-  group.rotation.y+=OMEGA*dt;
+  if(now-born>HOLD) group.rotation.y+=OMEGA*dt;
   earth.rotation.y+=OMEGA*dt*0.35;
   let energy=0;
   for(let i=0;i<feeds.length;i++){
