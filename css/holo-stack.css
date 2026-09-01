@@ -1,7 +1,7 @@
-/* Holo stack. Glass and field go back. Presence comes forward. Copy stays sharp. */
+/* Holo stack. Everything from the glass goes deep. Presence stays nearest. */
 html.holo-on{
-  perspective:2200px;
-  perspective-origin:50% 42%;
+  perspective:3200px;
+  perspective-origin:50% 38%;
 }
 body.holo-on{
   transform-style:preserve-3d;
@@ -19,30 +19,35 @@ body.holo-on{
   position:absolute;
   left:50%;
   top:46%;
-  width:min(150vw,150vh);
-  height:min(150vw,150vh);
-  margin:-75vh 0 0 -75vw;
+  width:min(160vw,160vh);
+  height:min(160vw,160vh);
+  margin:-80vh 0 0 -80vw;
   border-radius:50%;
-  border:1px solid rgba(158,197,255,.035);
-  box-shadow:inset 0 0 48px rgba(70,130,220,.035);
+  border:1px solid rgba(158,197,255,.028);
+  box-shadow:inset 0 0 80px rgba(40,90,180,.03);
   transform:translateZ(var(--z, 0px)) scale(var(--s, 1));
 }
 #holo,#holo-stage,.holo-front,.iris-holo{
   position:relative;
-  z-index:120;
-  transform:translateZ(280px);
-  filter:drop-shadow(0 22px 48px rgba(90,160,255,.4));
+  z-index:900;
+  transform:translateZ(420px);
+  filter:drop-shadow(0 28px 70px rgba(90,160,255,.55));
 }
 .site{
-  transform:translateZ(36px);
+  transform:translateZ(12px);
+}
+header,nav,h1,h2,.lede,p,.eyebrow{
+  position:relative;
+  z-index:8;
 }
 canvas.quarks,.quarks{
-  transform:translateZ(-480px) scale(1.14);
-  filter:saturate(1.2) brightness(.88);
+  transform:translateZ(-1200px) scale(1.28);
+  filter:saturate(1.18) brightness(.72);
 }
-.panel,.plate{
-  transform:translateZ(-64px);
-  background:linear-gradient(180deg,rgba(158,197,255,.05),rgba(0,0,0,.42)) !important;
+.panel,.plate,.hud,.pane.glass{
+  transform:translateZ(-520px) scale(0.96);
+  filter:blur(0.35px) brightness(.82);
+  background:linear-gradient(180deg,rgba(158,197,255,.04),rgba(0,0,0,.55)) !important;
 }
 @media (prefers-reduced-motion:reduce){
   html.holo-on,body.holo-on,.site,canvas.quarks,#holo,.iris-holo,.panel,.plate{
