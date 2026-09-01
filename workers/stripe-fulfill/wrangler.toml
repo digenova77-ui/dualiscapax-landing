@@ -1,8 +1,9 @@
-name = "dualiscapax-stripe-fulfill"
-main = "index.js"
+name = "dualiscapax-stripe-fulfill-v2"
+main = "worker.js"
 compatibility_date = "2026-08-30"
 
-[[d1_databases]]
-binding = "DB"
-database_name = "dualiscapax-fulfillments"
-database_id = "d1-dualiscapax-fulfillments-id"
+# Optional KV for event/session idempotency + fuel balances.
+# Bind in Cloudflare dashboard as FULFILL_KV if not already attached.
+# [[kv_namespaces]]
+# binding = "FULFILL_KV"
+# id = "replace-in-dashboard-not-git"
