@@ -1,9 +1,9 @@
 /**
- * Iris hologram — wave or sun-orb.
- * Person-facing to a person. Simulation-facing to an agent.
+ * Iris hologram — wave, sun-orb, sprite, or field.
+ * Viewer chooses the clothes. Not a person. Not someone else's character.
  */
 (function (w) {
-  var VERSION = "iris-hologram-2026-09-01-g";
+  var VERSION = "iris-hologram-2026-09-01-h";
   var canvas = null;
   var ctx = null;
   var raf = 0;
@@ -47,7 +47,7 @@
 
   function setEnergy(n) { energy = Math.max(0, Math.min(1, n)); }
   function setForm(next) {
-    form = next === "wave" || next === "field" || next === "orb" ? next : "orb";
+    form = next === "wave" || next === "field" || next === "orb" || next === "sprite" ? next : form;
     return form;
   }
   function setObserver(who) { observer = who === "person" ? "person" : "agent"; return observer; }
@@ -71,17 +71,8 @@
   }
   function bindVideo() { return null; }
 
-  function hz() {
-    if (mood === "intend" || speaking) return 164;
-    if (mood === "curious") return 220 + energy * 80;
-    if (mood === "lost") return 92;
-    if (mood === "agree") return 196;
-    if (mood === "listen" || listening) return 110;
-    return 72 + energy * 30;
-  }
-
   function labelFor() {
-    var body = form === "orb" ? "ORB" : "WAVE";
+    var body = form === "orb" ? "ORB" : form === "sprite" ? "SPRITE" : form === "field" ? "FIELD" : "WAVE";
     if (observer !== "person") return "SIM · " + body + " · " + String(mood || "rest").toUpperCase();
     if (mood === "listen" || listening) return "LISTENING";
     if (mood === "agree") return "WITH YOU";
@@ -93,62 +84,58 @@
 
   function drawWave(t, W, H) {
     var mid = H * (0.52 + lookY * 0.04 + (nod > 0 ? Math.sin(t * 8) * 0.04 : 0));
-    var amp = H * (0.08 + energy * 0.18 + (mood === "agree" ? 0.06 : 0) + (mood === "lost" ? 0.1 : 0));
-    var freq = hz() / 40;
-    var waves = mood === "lost" ? 3 : mood === "intend" ? 1 : 2;
+    var amp = H * (0.08 + energy * 0.18);
     ctx.lineWidth = Math.max(1.4, W * 0.003);
-    for (var k = 0; k < waves; k++) {
-      ctx.beginPath();
-      for (var x = 0; x <= W; x += 2) {
-        var n = mood === "lost" ? (Math.random() - 0.5) * amp * 0.35 : 0;
-        var y = mid + Math.sin(x / W * Math.PI * freq * 2 + t * (1.6 + k * 0.4) + lookX) * amp * (1 - k * 0.28) + n;
-        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = mood === "lost"
-        ? "rgba(255,186,140," + (0.35 + energy * 0.3) + ")"
-        : "rgba(180,215,255," + (0.38 + energy * 0.4 - k * 0.12) + ")";
-      ctx.stroke();
+    ctx.beginPath();
+    for (var x = 0; x <= W; x += 2) {
+      var y = mid + Math.sin(x / W * Math.PI * 4 + t * 1.8 + lookX) * amp;
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
+    ctx.strokeStyle = "rgba(180,215,255,0.75)";
+    ctx.stroke();
   }
 
   function drawOrb(t, W, H) {
     var cx = W * (0.5 + lookX * 0.06);
-    var cy = H * (0.48 + lookY * 0.05 + (nod > 0 ? Math.sin(t * 7.4) * 0.05 : 0) - (mood === "curious" ? 0.04 : 0));
-    var pulse = mood === "agree" || nod > 0 ? 1 + Math.abs(Math.sin(t * 8)) * 0.12 : 1 + Math.sin(t * 1.4) * 0.03;
-    var R = Math.min(W, H) * (0.16 + energy * 0.1 + (mood === "curious" ? 0.05 : 0) + (mood === "intend" ? 0.03 : 0)) * pulse;
-    var lost = mood === "lost";
-    var corona = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 3.2);
-    corona.addColorStop(0, lost ? "rgba(255,210,170,0.95)" : "rgba(255,244,210,0.96)");
-    corona.addColorStop(0.18, lost ? "rgba(255,160,90,0.7)" : "rgba(255,196,90,0.8)");
-    corona.addColorStop(0.42, lost ? "rgba(180,70,30,0.22)" : "rgba(255,140,40,0.28)");
-    corona.addColorStop(0.7, "rgba(80,40,10,0.08)");
-    corona.addColorStop(1, "rgba(0,1,8,0)");
-    ctx.fillStyle = corona;
+    var cy = H * (0.48 + lookY * 0.05 + (nod > 0 ? Math.sin(t * 7.4) * 0.05 : 0));
+    var R = Math.min(W, H) * (0.16 + energy * 0.1) * (1 + Math.sin(t * 1.4) * 0.03);
+    var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 3.1);
+    g.addColorStop(0, "rgba(255,244,210,0.96)");
+    g.addColorStop(0.22, "rgba(255,196,90,0.8)");
+    g.addColorStop(1, "rgba(0,1,8,0)");
+    ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
     ctx.beginPath();
     ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    var core = ctx.createRadialGradient(cx - R * 0.2, cy - R * 0.25, R * 0.05, cx, cy, R);
-    core.addColorStop(0, "rgba(255,252,240,0.98)");
-    core.addColorStop(0.45, lost ? "rgba(255,170,110,0.9)" : "rgba(255,186,64,0.95)");
-    core.addColorStop(1, lost ? "rgba(120,40,20,0.0)" : "rgba(180,70,10,0.0)");
-    ctx.fillStyle = core;
+    ctx.fillStyle = mood === "lost" ? "rgba(255,170,110,0.9)" : "rgba(255,210,90,0.95)";
     ctx.fill();
-    var rays = lost ? 10 : 16;
-    ctx.strokeStyle = "rgba(255,210,120," + (0.12 + energy * 0.18) + ")";
-    ctx.lineWidth = Math.max(1, W * 0.0018);
-    for (var i = 0; i < rays; i++) {
-      var a = (i / rays) * Math.PI * 2 + t * 0.08;
-      var inner = R * 1.05;
-      var outer = R * (1.55 + energy * 0.55 + Math.sin(t * 2 + i) * 0.08);
+  }
+
+  function drawSprite(t, W, H) {
+    var u = Math.min(W, H) * 0.08;
+    var cx = W * (0.5 + lookX * 0.08);
+    var cy = H * (0.5 + lookY * 0.05 + (nod > 0 ? Math.sin(t * 8) * 0.06 : Math.sin(t * 2) * 0.015));
+    ctx.fillStyle = mood === "lost" ? "rgba(255,186,140,0.9)" : "rgba(180,220,255,0.95)";
+    ctx.fillRect(cx - u, cy - u * 1.4, u * 2, u * 2.2);
+    ctx.fillStyle = "rgba(8,12,24,0.9)";
+    ctx.fillRect(cx - u * 0.55 + lookX * u * 0.2, cy - u * 0.7, u * 0.35, u * 0.35);
+    ctx.fillRect(cx + u * 0.2 + lookX * u * 0.2, cy - u * 0.7, u * 0.35, u * 0.35);
+    if (mood === "agree" || nod > 0) ctx.fillRect(cx - u * 0.35, cy + u * 0.15, u * 0.7, u * 0.18);
+  }
+
+  function drawField(t, W, H) {
+    var cx = W * 0.5, cy = H * 0.5, R = Math.min(W, H) * 0.28;
+    for (var s = 8; s >= 1; s--) {
       ctx.beginPath();
-      ctx.moveTo(cx + Math.cos(a) * inner, cy + Math.sin(a) * inner);
-      ctx.lineTo(cx + Math.cos(a) * outer, cy + Math.sin(a) * outer);
+      ctx.arc(cx, cy, R * s / 8, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(158,197,255,0.12)";
       ctx.stroke();
     }
-    if (lost) {
+    for (var i = 0; i < 36; i++) {
+      var a = i / 36 * Math.PI * 2 + t * 0.2;
+      ctx.fillStyle = "rgba(226,232,255,0.55)";
       ctx.beginPath();
-      ctx.arc(cx + R * 0.22, cy - R * 0.08, R * 0.72, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(2,4,12,0.42)";
+      ctx.arc(cx + Math.cos(a) * R, cy + Math.sin(a) * R * 0.55, 2, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -163,6 +150,8 @@
     var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
     if (form === "wave") drawWave(t, W, H);
+    else if (form === "sprite") drawSprite(t, W, H);
+    else if (form === "field") drawField(t, W, H);
     else drawOrb(t, W, H);
     ctx.fillStyle = "rgba(255,224,170,0.78)";
     ctx.font = "600 " + Math.round(Math.max(10, W * 0.024)) + "px ui-monospace,monospace";
@@ -177,6 +166,7 @@
 
   w.IrisHolo = {
     version: VERSION,
+    get form() { return form; },
     mount: mount,
     setEnergy: setEnergy,
     setForm: setForm,
