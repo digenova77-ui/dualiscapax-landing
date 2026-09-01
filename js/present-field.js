@@ -1,9 +1,10 @@
-/** One field. Letters are lights. Scroll is a tape. Agents still only move forward. */
+/** Word clock on the field. Light on word start. Leave on word end. */
 (function (w) {
-  var VERSION = "present-field-2026-09-01-b";
+  var VERSION = "present-field-2026-09-01-c";
   var canvas = null;
   var ctx = null;
   var glyphs = [];
+  var words = [];
   var index = 0;
   var raf = 0;
   var t0 = 0;
@@ -13,6 +14,8 @@
   var washBuf = null;
   var washRev = null;
   var washNode = null;
+  var speaking = false;
+  var gen = 0;
 
   function hole(r) { return { status: "HOLE", reason: r || "HOLE_NOT_ZERO" }; }
 
@@ -31,18 +34,26 @@
 
   function layout(text) {
     glyphs = [];
+    words = [];
     var W = canvas.width, H = canvas.height;
     var size = Math.max(22, Math.min(42, Math.floor(W / 28)));
     ctx.font = "600 " + size + "px \"IBM Plex Sans\",system-ui,sans-serif";
     var x = W * 0.1, y = H * 0.28, line = size * 1.45, max = W * 0.9;
-    var chars = String(text || "").split("");
-    if (chars.length > 720) chars = chars.slice(0, 720);
-    for (var i = 0; i < chars.length; i++) {
-      var ch = chars[i];
-      var wdt = ctx.measureText(ch === " " ? " " : ch).width;
-      if (x + wdt > max) { x = W * 0.1; y += line; }
-      glyphs.push({ ch: ch, x: x, y: y, z: (Math.sin(i * 0.17) * 0.5 + 0.5), i: i });
-      x += wdt;
+    var raw = String(text || "").split(/(\s+)/);
+    if (raw.join("").length > 720) raw = String(text || "").slice(0, 720).split(/(\s+)/);
+    for (var r = 0; r < raw.length; r++) {
+      var piece = raw[r];
+      if (!piece) continue;
+      var isWord = /\S/.test(piece);
+      var start = glyphs.length;
+      for (var i = 0; i < piece.length; i++) {
+        var ch = piece.charAt(i);
+        var wdt = ctx.measureText(ch === " " ? " " : ch).width;
+        if (x + wdt > max) { x = W * 0.1; y += line; }
+        glyphs.push({ ch: ch, x: x, y: y, z: Math.sin(glyphs.length * 0.17) * 0.5 + 0.5, word: isWord ? words.length : -1 });
+        x += wdt;
+      }
+      if (isWord) words.push({ text: piece, start: start, end: glyphs.length, i: words.length });
     }
   }
 
@@ -80,9 +91,7 @@
     var ctxA = ensureAudio();
     if (!ctxA) return hole("NO_AUDIO");
     try { if (ctxA.state === "suspended") ctxA.resume(); } catch (e) {}
-    if (washNode) {
-      try { washNode.stop(); } catch (e2) {}
-    }
+    if (washNode) { try { washNode.stop(); } catch (e2) {} }
     var src = ctxA.createBufferSource();
     src.buffer = reverse ? washRev : washBuf;
     src.playbackRate.value = Math.max(0.45, Math.min(3.2, speed || 1));
@@ -92,8 +101,10 @@
     g.connect(ctxA.destination);
     try { src.start(); } catch (e3) {}
     washNode = src;
-    return { status: "ONE", reverse: !!reverse, rate: src.playbackRate.value };
+    return { status: "ONE" };
   }
+
+  function wordOf(i) { return words[Math.max(0, Math.min(words.length - 1, i || 0))]; }
 
   function draw(now) {
     raf = w.requestAnimationFrame(draw);
@@ -103,7 +114,7 @@
     var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
     var cx = W * 0.5, cy = H * 0.42;
-    var R = Math.min(W, H) * (0.09 + Math.sin(t * 1.2) * 0.008);
+    var R = Math.min(W, H) * 0.09;
     var sun = ctx.createRadialGradient(cx, cy, 4, cx, cy, R * 6);
     sun.addColorStop(0, dir < 0 ? "rgba(180,210,255,0.16)" : "rgba(255,230,160,0.16)");
     sun.addColorStop(1, "rgba(0,0,8,0)");
@@ -114,36 +125,31 @@
     ctx.fillStyle = dir < 0 ? "rgba(170,200,255,0.5)" : "rgba(255,210,90,0.55)";
     ctx.fill();
     var size = Math.max(22, Math.min(42, Math.floor(W / 28)));
+    var liveWord = wordOf(index);
     ctx.textBaseline = "alphabetic";
     for (var i = 0; i < glyphs.length; i++) {
       var gl = glyphs[i];
-      if (i > index + 1) continue;
-      var live = i === index;
-      var past = i < index;
-      var s = size * (0.82 + gl.z * 0.28) * (live ? 1.18 : 1);
+      var live = liveWord && gl.word === liveWord.i;
+      var past = gl.word >= 0 && gl.word < index;
+      if (!live && !past) continue;
+      var s = size * (0.82 + gl.z * 0.28) * (live ? 1.16 : 1);
       ctx.font = (live ? "700 " : "600 ") + s + "px \"IBM Plex Sans\",system-ui,sans-serif";
-      var ch = gl.ch;
-      if (live && dir < 0 && ch && ch.trim()) ch = ch;
       if (live) {
         ctx.fillStyle = dir < 0 ? "#d8e8ff" : "#fff6d8";
-        ctx.shadowColor = dir < 0 ? "rgba(140,190,255,0.95)" : "rgba(255,210,120,0.95)";
-        ctx.shadowBlur = 24;
-      } else if (past) {
-        ctx.fillStyle = "rgba(210,224,255," + (0.28 + gl.z * 0.35) + ")";
-        ctx.shadowBlur = 0;
+        ctx.shadowColor = dir < 0 ? "rgba(140,190,255,0.9)" : "rgba(255,210,120,0.9)";
+        ctx.shadowBlur = 22;
       } else {
-        ctx.fillStyle = "rgba(255,255,255,0.04)";
+        ctx.fillStyle = "rgba(210,224,255," + (0.3 + gl.z * 0.3) + ")";
         ctx.shadowBlur = 0;
       }
-      var drawX = gl.x;
-      if (live && dir < 0) drawX = gl.x - (rate - 1) * 2;
-      ctx.fillText(ch, drawX, gl.y + Math.sin(t * 1.4 + gl.z * 4) * (live ? 3 : 0.6));
+      ctx.fillText(gl.ch, gl.x, gl.y);
     }
     ctx.shadowBlur = 0;
+    ctx.textAlign = "center";
     ctx.fillStyle = dir < 0 ? "rgba(180,210,255,0.55)" : "rgba(255,224,170,0.5)";
     ctx.font = "600 " + Math.round(Math.max(10, W * 0.012)) + "px \"IBM Plex Mono\",monospace";
-    ctx.textAlign = "center";
-    ctx.fillText(dir < 0 ? "TAPE · BACK · " + rate.toFixed(1) + "x" : "TAPE · FWD", W * 0.5, H * 0.94);
+    var mark = (liveWord && liveWord.text) || "";
+    ctx.fillText((dir < 0 ? "WORD · BACK · " : "WORD · ") + mark, W * 0.5, H * 0.94);
     ctx.textAlign = "start";
   }
 
@@ -155,39 +161,53 @@
     })[0] || list.filter(function (v) { return /^en/i.test(v.lang || ""); })[0] || list[0] || null;
   }
 
-  function speak(from) {
-    dir = 1;
-    if (!w.speechSynthesis) { index = glyphs.length; return hole("NO_VOICE"); }
+  function speakWord(at, token) {
+    if (!w.speechSynthesis) return hole("NO_VOICE");
+    if (dir < 0) return hole("REVERSE_NO_TTS");
+    if (at >= words.length) { speaking = false; return { status: "ONE", done: true }; }
+    var word = words[at];
+    if (!word) return hole("NO_WORD");
     w.speechSynthesis.cancel();
-    index = Math.max(0, from || 0);
-    var text = glyphs.slice(index).map(function (g) { return g.ch; }).join("");
-    if (!text.trim()) return hole("NO_TEXT");
-    var u = new SpeechSynthesisUtterance(text);
+    var my = ++gen;
+    index = at;
+    speaking = true;
+    var u = new SpeechSynthesisUtterance(word.text);
     var v = voice();
     if (v) u.voice = v;
-    u.rate = Math.max(0.7, Math.min(1.15, 0.96));
-    var base = index;
-    u.onboundary = function (e) {
-      if (typeof e.charIndex !== "number" || dir < 0) return;
-      index = Math.min(glyphs.length, base + e.charIndex);
+    u.rate = Math.max(0.85, Math.min(1.15, 0.98));
+    u.onstart = function () {
+      if (my !== gen || dir < 0) return;
+      index = at;
     };
-    u.onend = function () { if (dir > 0) index = glyphs.length; };
+    u.onend = function () {
+      if (my !== gen || dir < 0) return;
+      speakWord(at + 1, my);
+    };
     w.speechSynthesis.speak(u);
-    return { status: "ONE", from: index, dir: dir };
+    return { status: "ONE", word: word.text, i: at, token: token || my };
+  }
+
+  function speak(from) {
+    dir = 1;
+    gen += 1;
+    if (w.speechSynthesis) w.speechSynthesis.cancel();
+    return speakWord(Math.max(0, from || 0));
   }
 
   function onWheel(e) {
-    var step = Math.max(1, Math.round(Math.abs(e.deltaY) / 3));
+    var step = Math.max(1, Math.round(Math.abs(e.deltaY) / 90));
     dir = e.deltaY < 0 ? -1 : 1;
     rate = Math.max(0.45, Math.min(3.2, Math.abs(e.deltaY) / 80));
-    index = Math.max(0, Math.min(glyphs.length, index + (dir * step)));
+    index = Math.max(0, Math.min(words.length - 1, index + dir * step));
+    gen += 1;
     if (w.speechSynthesis) w.speechSynthesis.cancel();
+    speaking = false;
     playWash(dir < 0, rate);
     clearTimeout(onWheel._t);
     onWheel._t = setTimeout(function () {
       if (dir < 0) return;
       speak(index);
-    }, 200);
+    }, 180);
   }
 
   function mount() {
@@ -209,15 +229,18 @@
       document.removeEventListener("pointerdown", once);
     });
     if (!raf) draw();
-    return { status: "ONE", glyphs: glyphs.length, version: VERSION };
+    return { status: "ONE", words: words.length, version: VERSION };
   }
 
   w.DCPresent = {
     version: VERSION,
-    law: "TAPE_NOT_TIME_TRAVEL",
+    law: "WORD_CLOCK",
     mount: mount,
     speak: speak,
-    state: function () { return { index: index, dir: dir, rate: rate, glyphs: glyphs.length }; }
+    state: function () {
+      var w0 = wordOf(index);
+      return { index: index, word: w0 && w0.text, dir: dir, rate: rate, words: words.length };
+    }
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
   else mount();
