@@ -1,0 +1,101 @@
+name: workers-live
+
+# One-click Cloudflare worker deploy from GitHub Actions.
+# Secrets live in repo Settings → Secrets and variables → Actions.
+# Never paste tokens into chat.
+#
+# Required:
+#   CLOUDFLARE_API_TOKEN     Edit Cloudflare Workers + D1
+#   CLOUDFLARE_ACCOUNT_ID
+# Optional (bound onto the Workers if present):
+#   XAI_API_KEY
+#   STRIPE_WEBHOOK_SECRET
+#   D1_DATABASE_ID           UUID from `wrangler d1 create dualiscapax-fulfillments`
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "workers/iris-gateway/**"
+      - "workers/stripe-fulfill/**"
+      - ".github/workflows/workers-live.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workers-live-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy Iris + Stripe fulfill
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require Cloudflare silo secrets
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "$CF_TOKEN" ] || [ -z "$CF_ACCOUNT" ]; then
+            echo "::error::Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID under Settings → Secrets → Actions, then re-run workers-live."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install wrangler
+        run: npm install -g wrangler@4
+
+      - name: Apply D1 schema
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          npx wrangler d1 execute dualiscapax-fulfillments --remote --file=workers/stripe-fulfill/schema.sql || {
+            echo "::warning::D1 execute failed. Create dualiscapax-fulfillments once, put D1_DATABASE_ID in secrets, patch wrangler.toml, re-run."
+            exit 0
+          }
+
+      - name: Deploy iris-gateway
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: workers/iris-gateway
+          command: deploy
+
+      - name: Deploy stripe-fulfill
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: workers/stripe-fulfill
+          command: deploy
+
+      - name: Bind worker secrets if present
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -n "${XAI_API_KEY}" ]; then
+            printf '%s' "$XAI_API_KEY" | npx wrangler secret put XAI_API_KEY --name dualiscapax-iris-gateway
+          else
+            echo "XAI_API_KEY not in Actions secrets — skip bind. Iris will return RAIL_UNBOUND until bound."
+          fi
+          if [ -n "${STRIPE_WEBHOOK_SECRET}" ]; then
+            printf '%s' "$STRIPE_WEBHOOK_SECRET" | npx wrangler secret put STRIPE_WEBHOOK_SECRET --name dualiscapax-stripe-fulfill
+          else
+            echo "STRIPE_WEBHOOK_SECRET not in Actions secrets — skip bind."
+          fi
