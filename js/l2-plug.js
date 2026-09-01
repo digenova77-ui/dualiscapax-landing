@@ -33,6 +33,7 @@
   function clear() {
     localStorage.removeItem(KEY);
     if (w.DCMatrix && typeof w.DCMatrix.clear === "function") w.DCMatrix.clear();
+    if (w.OneNet && typeof w.OneNet.releaseAll === "function") w.OneNet.releaseAll();
   }
 
   function refuse(reason, extra) {
@@ -55,13 +56,22 @@
     row.scientific_validation = false;
     row.ts = now();
     var saved = save(row);
+    var next = Promise.resolve(saved);
     if (w.DCMatrix && typeof w.DCMatrix.merge === "function") {
-      return w.DCMatrix.merge(saved).then(function (cell) {
+      next = w.DCMatrix.merge(saved).then(function (cell) {
         saved.matrix = cell;
         return save(saved);
       });
     }
-    return saved;
+    return next.then(function (row2) {
+      if (w.OneNet && typeof w.OneNet.lease === "function") {
+        return w.OneNet.lease(row2).then(function (lease) {
+          row2.lease = lease;
+          return save(row2);
+        });
+      }
+      return row2;
+    });
   }
 
   function parseTable(text) {
