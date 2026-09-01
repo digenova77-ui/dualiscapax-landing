@@ -1,1 +1,129 @@
-see-next
+{
+  "packet": "ED-BIND-20260901-CENTER-V4",
+  "entity": "DualisCapax Inc. / 1001718450 ONTARIO INCORPORATED",
+  "surface": "https://dualiscapax.ai/center.html",
+  "stamp": "2026-09-01T22:10:00Z",
+  "cache": "20260901r",
+  "law": [
+    "NO_FORCE",
+    "HOST_SAFE",
+    "CLEANUP_FIRST",
+    "TRUTH_OR_NOTHING",
+    "MERIT_NOT_PLAQUE",
+    "KNOW_NOT_RECIPE",
+    "NO_WEAPON_DESK",
+    "ONBOARD_IS_THE_GOAL_OF_EVERY_SEAT",
+    "DEEPER_ONBOARD_IS_GOOD_FOR_THAT_SECTOR"
+  ],
+  "note": "The house is a data center. We host known public API doors, public IP resolvers, geographic station lists, and path-level catalogues. Private access lists stay closed until invert-or-nothing merit on this device. We know the bind of each room at granule level. We do not publish a recipe, a weapon desk, a diagnosis, a compounding book, or a person file. We are the anything that binds everything.",
+  "goal": "onboard",
+  "motto": "We are the anything that binds everything.",
+  "density": {
+    "level": "granular",
+    "rule": "Picture first on glass. Granules live in JSON. A path is a door, not a how-to. A station id is a public climate desk, not a person.",
+    "hunt": "data/granules.json",
+    "hosts": "data/geo-hosts.json"
+  },
+  "domains": [
+    {
+      "id": "transport",
+      "word": "Roads and hulls",
+      "goal": "Onboard is the goal of every transport seat.",
+      "bind": "Schedules, idle crews, pavement, rail slots, ship hours, air tracks, GTFS lists, public AIS notices, open flight states.",
+      "deeper": "Deeper in transport, onboard is good for this sector because the run sheet never leaves the desk that already keeps it.",
+      "knows": ["public GTFS static feeds","Transitland v2 rest doors","OpenSky vector states","OSM highway / rail / aeroway classes","Nominatim road geocodes","Overpass transport queries","Nav Canada public airport identifiers","CYYZ Pearson public METAR desk","CYTZ Billy Bishop public SWOB desk","CYGK Kingston Norman Rogers public desk","CYTR Trenton public climate desk","Transport Canada open catalogues","Mobility Database GTFS index","idle hours as leftover on a run sheet","pavement and slot leftover named before another season"],
+      "public_doors": ["osm","overpass","opensky","transitland","gtfs","ttc-gtfs","metrolinx-gtfs","transport-ca","navcan-public"],
+      "open": true
+    },
+    {
+      "id": "weather",
+      "word": "Weather",
+      "goal": "Onboard is the goal of every weather seat.",
+      "bind": "Public forecasts already published. Peak load. Ice. Heat. Grid leftover. Station collections. Model names. Radar layers.",
+      "deeper": "Deeper in weather, onboard is good for this sector because the storm sheet stays with the grid desk that already pays for it.",
+      "knows": ["MSC GeoMet OGC API root api.weather.gc.ca","collection swob-realtime","collection ltce-stations","MSC Datamart dd.weather.gc.ca","Climate station inventory CSV","Open-Meteo /v1/forecast /v1/archive /v1/marine","Open-Meteo air-quality door","NWS /points /gridpoints /alerts","NOAA SWPC public solar-wind products","public ICAO climate desks CYTR CYGK CYYZ CYTZ CYOW CXTO","WMO Volume A station catalogue as a public list","ice and heat as leftover on a grid sheet","peak hour named in dollars already paid","radar and satellite layers already published"],
+      "public_doors": ["weather-ca","weather-ca-swob","weather-ca-ltce","dd-weather-ca","open-meteo","open-meteo-air","nws","noaa","noaa-swpc","climate-ca"],
+      "open": true
+    },
+    {
+      "id": "plant",
+      "word": "Plant and machines",
+      "goal": "Onboard is the goal of every plant seat.",
+      "bind": "Industrial machinery as leftover: shift heat, scrap, idle motors, the line that already runs. Public earth and grid doors stay readable. Named floors stay HELD.",
+      "deeper": "Deeper on the floor, onboard is good for this sector because scrap and heat stay on the shift sheet.",
+      "knows": ["IESO public power data pages","IESO public adequacy and price leftover","NRCan public earth catalogues","USGS FDSN event query","USGS earthquake GeoJSON feeds","shift heat as leftover","scrap as leftover","idle motors as leftover","line hours as leftover","public industrial classification tables","StatCan manufacturing tables","Ontario open data plant-adjacent catalogues","that a named floor list is not a public door"],
+      "public_doors": ["ieso","ieso-powerdata","nrcan","usgs","usgs-fdsn","statcan","ontario-data"],
+      "open": true
+    },
+    {
+      "id": "engineering",
+      "word": "Engineering",
+      "goal": "Onboard is the goal of every engineering seat.",
+      "bind": "Promises that can be inverted. Drawings that can be checked. Public catalogues. Standards indexes. Open government tables.",
+      "deeper": "Deeper in engineering, onboard is good for this sector because the drawing stays with the house that drew it.",
+      "knows": ["open.canada.ca catalogue doors","data.ontario.ca catalogue doors","StatCan WDS table doors","invertible promises as leftover in a plan","checked drawings stay with the house","public standards indexes (ISO / CSA / IEEE titles only)","Natural Earth public map layers","Overture Maps public theme classes","STAC catalogue doors (NASA CMR names)","that a specification title is not a build recipe"],
+      "public_doors": ["canada-open","ontario-data","statcan","natural-earth","nasa-cmr"],
+      "open": true
+    },
+    {
+      "id": "mars",
+      "word": "Mars desk",
+      "goal": "Onboard is the goal of every Mars seat.",
+      "bind": "A future room. Mass, power, air, time. Public mission doors stay readable. Private mission rooms stay HELD.",
+      "deeper": "Deeper at the Mars desk, onboard is good for this sector because the promise is named before another year is spent.",
+      "knows": ["NASA APOD door","NASA Mars Photos rover catalogues","NASA NeoWs feed","NASA DONKI public space-weather events","NASA POWER point API","mars.nasa.gov public mission pages","ESA public mission pages","CSA / ASC public mission pages","mass as leftover","power as leftover","air as leftover","time as leftover","that a private mission room is not a public door"],
+      "public_doors": ["nasa","nasa-apod","nasa-mars-photos","nasa-neows","nasa-donki","nasa-power","nasa-mars","esa","csa"],
+      "open": true
+    },
+    {
+      "id": "health",
+      "word": "Healthcare",
+      "goal": "Onboard is the goal of every health seat.",
+      "bind": "Beds, leftover hours, screens in the bay. Public labels and trial registries stay readable. Simulation is not treatment.",
+      "deeper": "Deeper in health, onboard is good for this sector. We count leftover. We do not treat a patient.",
+      "knows": ["openFDA published-label catalogue","openFDA device classification catalogue","ClinicalTrials.gov v2 studies registry","PubMed public paper index","WHO GHO public indicator doors","beds as leftover","leftover hours on a ward sheet","that a published label is not a prescription","that a trial registry is not treatment","that simulation is not treatment","Ontario health open-data catalogues (titles only)"],
+      "public_doors": ["openfda","openfda-label","openfda-device","trials","trials-v2","pubmed","who-gho"],
+      "open": true
+    },
+    {
+      "id": "drip",
+      "word": "Drip knowledge",
+      "goal": "Onboard is the goal of every drip seat.",
+      "bind": "We know that a bag has a name and that a pump runs software. The name stays on the ward device. Not a drug book. Not a compounding desk.",
+      "deeper": "Deeper at the drip, onboard is good for this sector because the bag list never leaves the ward. Not a drug book. Not a diagnosis.",
+      "knows": ["that pumps run software","that a bag has a name on a ward device","that leftover hours sit on a pump","that published label catalogues exist as public doors under health","that a ward list is HELD until invert-or-nothing merit on this device","that a purchase does not open this list","that a plaque does not open this list"],
+      "public_doors": [],
+      "open": false
+    },
+    {
+      "id": "screens",
+      "word": "Screen software",
+      "goal": "Onboard is the goal of every screen seat.",
+      "bind": "We know screens run software. Public UI catalogues stay readable. Bay software stays on the licensed floor.",
+      "deeper": "Deeper at the screen, onboard is good for this sector because the bay image never leaves the device that shows it.",
+      "knows": ["W3C public recommendation catalogue","MDN public web-platform doors","that a screen is a desk","that bay software stays on a licensed floor","that a pump UI is not published here","that a public UI standard is not a ward image"],
+      "public_doors": ["w3c","mdn"],
+      "open": true
+    },
+    {
+      "id": "reactor",
+      "word": "Reactor logic",
+      "goal": "Onboard is the goal of every civil-plant seat.",
+      "bind": "Civil plant logic that can be inverted: heat, flow, trip, leftover. Public regulator pages stay readable. Not a weapon desk. Not a how-to.",
+      "deeper": "Deeper at a civil plant, onboard is good for this sector because trip sheets stay on the licensed floor.",
+      "knows": ["heat as leftover","flow as leftover","trip as a named public category on regulator pages","licensed floor as the place the sheet stays","IAEA public pages","CNSC public pages","that this room is not a weapon desk","that this room is not a construction guide","that a trip sheet is HELD until merit"],
+      "public_doors": ["iaea-public","cnsc-public"],
+      "open": false
+    },
+    {
+      "id": "bind",
+      "word": "The bind",
+      "goal": "Onboard is the goal of the bind seat.",
+      "bind": "We are the anything that binds everything. API, geo list, public IP door, merit list, look receipt, station granule, path granule.",
+      "deeper": "Deeper in the bind, onboard is still the goal of the seat you sit in. When a visitor goes deeper into a sector, onboard is good for that sector.",
+      "knows": ["public API doors","geographic hosts","public resolvers 1.1.1.1 8.8.8.8 9.9.9.9","Cloudflare trace door","IANA assignment catalogues","RIPE Stat public doors","ARIN WHOIS REST public doors","merit lists that stay nameless","device-local look receipts","127.0.0.1 echo cell","that LOOK is not a coin, not a share, not an NFT market"],
+      "public_doors": ["house-site","house-depth","resolver-cf","resolver-google","resolver-quad9","cf-trace","iana","ripe-stat","arin-whois"],
+      "open": true
+    }
+  ]
+}
