@@ -1,0 +1,70 @@
+{
+  "packet": "ED-AGR-20260901-HOUSE-PRESIGN-V1",
+  "entity": "DualisCapax Inc. / 1001718450 ONTARIO INCORPORATED",
+  "surface": "https://dualiscapax.ai",
+  "stamp": "2026-09-01T19:22:00Z",
+  "signer": "HOUSE",
+  "state": "HOUSE_SIGNED",
+  "counterparty_default": "UNBOUND",
+  "public_claim": false,
+  "law": ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"],
+  "note": "Dualis signs its own side now. The other party is unbound until they bind on their device. Targeted is not signed. Founder plaques stay unpublished.",
+  "instruments": [
+    {
+      "id": "AGR-LOOK",
+      "name": "Look",
+      "terms": "Looking is free. A first talk is free. Nothing is bought by opening a card.",
+      "sha256": "7156b45df9946a5e1695662d5c7244d3380d886bda5a28e5a7fa3abea0a64583",
+      "house_state": "HOUSE_SIGNED",
+      "opens_room": false
+    },
+    {
+      "id": "AGR-DATA-STAY",
+      "name": "Books stay",
+      "terms": "Your books stay on this device. Dualis does not take the file. Models may run against a number you keep. Dualis does not keep the number.",
+      "sha256": "660eced9e3550db993b76aa878efe39fd416e716eeddcdad30cde3f5011f188a",
+      "house_state": "HOUSE_SIGNED",
+      "opens_room": false
+    },
+    {
+      "id": "AGR-BIND",
+      "name": "Device bind",
+      "terms": "The eight-word phrase and the passkey never leave this device. No password file. No seed phrase. Ack is a second bind.",
+      "sha256": "d835773d4a64bd55b938fc1a0414fec56b94a9d5abe3af641a833069402c05d2",
+      "house_state": "HOUSE_SIGNED",
+      "opens_room": false
+    },
+    {
+      "id": "AGR-FUEL",
+      "name": "Fuel",
+      "terms": "Prepaid time is prepaid time. Fuel credits time on the house rail. Fuel does not open a gated room by itself.",
+      "sha256": "ff8cf485ec4f08ff5f9c863214fa124a1c66ee565390e8c9dc9b6085e397589a",
+      "house_state": "HOUSE_SIGNED",
+      "opens_room": false
+    },
+    {
+      "id": "AGR-SEAT",
+      "name": "Seat",
+      "terms": "A seat is a room for a term. A targeted seat is not a signed deal. A paid seat without a device bind stays held. Held is not open.",
+      "sha256": "ee17a79e58ad452618f40e11b29c2a139bbc073559efa898f6324a4d458b66ac",
+      "house_state": "HOUSE_SIGNED",
+      "opens_room": false
+    },
+    {
+      "id": "AGR-INVERT",
+      "name": "Invert or nothing owed",
+      "terms": "If the figure cannot be inverted, nothing is owed. Simulation is not treatment. A leftover is a leftover.",
+      "sha256": "4c3805386352c43cf1dd991a74f78187a79764d98d7ad3ad5e72b8ffa45809ec",
+      "house_state": "HOUSE_SIGNED",
+      "opens_room": false
+    },
+    {
+      "id": "AGR-CROWN",
+      "name": "Wet-ink limit",
+      "terms": "Crown wet-ink is the only wet-ink. A house offer is not Crown wet-ink. A house offer is DualisCapax signing its own side.",
+      "sha256": "93f9584d6188b632e08a14fca292f0ed15bd461bcf5276abb4743381919060ef",
+      "house_state": "HOUSE_SIGNED",
+      "opens_room": false
+    }
+  ]
+}
