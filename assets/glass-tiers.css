@@ -301,3 +301,63 @@ html:not(.is-onboard) #earned::after {
     transform: none !important;
   }
 }
+/* DualisCapax — COSMOS ELEVATION
+   Visual only. Same class names. First fold must read as space, not flat black. */
+
+html, body {
+  background-color: #02040c !important;
+}
+body {
+  background:
+    radial-gradient(ellipse 82% 52% at 50% 4%, rgba(78,138,235,0.38), transparent 58%),
+    radial-gradient(ellipse 48% 36% at 6% 90%, rgba(128,52,176,0.24), transparent 56%),
+    radial-gradient(ellipse 42% 30% at 96% 70%, rgba(28,118,198,0.20), transparent 52%),
+    radial-gradient(ellipse 28% 20% at 72% 28%, rgba(210,168,78,0.10), transparent 62%),
+    #02040c !important;
+}
+
+.geo-wrap {
+  filter: drop-shadow(0 0 32px rgba(140,190,255,0.58)) drop-shadow(0 0 92px rgba(70,130,255,0.34));
+}
+.geo-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  box-shadow:
+    0 0 72px 20px rgba(150,198,255,0.32),
+    0 0 150px 48px rgba(80,140,255,0.18),
+    inset 0 0 54px rgba(210,230,255,0.10);
+}
+
+.hero h1,
+#truth {
+  text-shadow:
+    0 0 18px rgba(220,235,255,0.55),
+    0 0 48px rgba(110,170,255,0.38),
+    0 0 90px rgba(70,130,255,0.18);
+}
+.classif,
+#ntp {
+  text-shadow: 0 0 14px rgba(130,185,255,0.40);
+}
+
+.topbar {
+  box-shadow:
+    0 14px 42px rgba(0,0,0,0.48),
+    0 0 40px rgba(90,150,255,0.14);
+}
+
+.iris-mark {
+  text-shadow: 0 0 20px rgba(158,197,255,0.75);
+}
+
+.hud-v {
+  text-shadow: 0 0 12px rgba(180,210,255,0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .geo-wrap { filter: none; }
+}
