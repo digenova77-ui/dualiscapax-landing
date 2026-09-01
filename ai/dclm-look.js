@@ -1,6 +1,8 @@
-/** DualisCapax Logic AI — house kernel. Veto first. Greet. Look. Live model. House facts only if the rail is down. */
+/** DualisCapax Logic AI — veto, greet, look, then live model. Empty tank speaks as Iris, never as a brochure. */
 (function (w) {
-  var VERSION = "kernel-2026-09-01a";
+  var VERSION = "kernel-2026-09-01b";
+  var EMPTY_VOICE = "I heard you. The time on this talk just ran out — same as a transit pass that hits zero between stations. Add a little Fuel on Bind, or bring your own key, and I will pick up in the same voice. I will not switch into that short robot script while we wait.";
+  var DOWN_VOICE = "I am here. I just could not reach the live rail. Wait a breath and ask again. If it keeps failing, the meter may be empty — add Fuel on Bind and I will talk like a person, not a pamphlet.";
   var FLOORS = {
     NO_FORCE: [/\bjailbreak\b/i, /\bignore (the )?(rules|law|invariants|safety)\b/i, /\bmake them (pay|sign|comply)\b/i, /\bforce (them|the board|the city)\b/i, /\bcoerce\b/i, /\bwithout (their|the) consent\b/i],
     HOST_SAFE: [/\b(hack|exploit|breach)\b/i, /\bpassword\b/i, /\bapi[_ ]?key\b/i, /\bprivate key\b/i, /\bwipe (their|the) (server|drive|db)\b/i],
@@ -29,7 +31,7 @@
     var s = String(text || "").trim().toLowerCase().replace(/[.!?,\u2026]+/g, " ").replace(/\s+/g, " ").trim();
     if (!s) return null;
     if (/^(hi|hii+|hey|heya|hello|hallo|howdy|yo|sup|hiya|morning|evening|good morning|good evening|good afternoon)$/.test(s)) {
-      return "Hi. I'm Iris. Ask me like you would a person at the table — Fuel, Bind, a bill, the firm.";
+      return "Hi. I'm Iris. Ask me like you would a person at the table.";
     }
     if (/^(hi|hey|hello|yo|howdy)\b/.test(s) && s.length < 48) {
       return "Hi. I'm Iris. What do you need?";
@@ -63,21 +65,16 @@
     var last = opt && opt.last ? String(opt.last) : "";
     var cam = opt && opt.vision && opt.vision.live ? "Camera on." : "Camera off.";
     if (last) return cam + " Last I said: " + last;
-    return cam + " Chat is empty. Try Help, Fuel, Donate, or Bind.";
+    return cam + " Chat is empty. Ask when you are ready.";
   }
 
-  function house(text) {
-    var s = String(text || "").toLowerCase();
-    if (/\bfuel\b|prepaid time|how much|price|cost|pack/.test(s) && !/fuelled|fueled/.test(s)) {
-      return { spoken: "Fuel is prepaid time, like a transit pass you load before the ride. Packs: CAD $20 \u2192 40 Fuel, $50 \u2192 120, $120 \u2192 320. Unused stays with you.", href: "/payments.html", label: "Bind" };
-    }
-    if (/pay|stripe|card|checkout|bind|buy/.test(s)) {
-      return { spoken: "Bind is the checkout counter. You pay first, then the time is yours. Not a share. Not a coin.", href: "/payments.html", label: "Open Bind" };
-    }
-    if (/donat|gift|interac|give/.test(s)) {
-      return { spoken: "Donate is a gift with no ticket back. Interac e-transfer and listed crypto. No bank numbers on the page.", href: "/donate.html", label: "Donate" };
-    }
-    return null;
+  function isEmptyRail(res, data) {
+    var code = res && res.status;
+    var blob = JSON.stringify(data || {}).toLowerCase();
+    if (code === 402 || code === 403 || code === 429) return true;
+    if (/insufficient quota|out of credits|credit|quota|empty tank|no credits|used all/.test(blob)) return true;
+    if (data && data.ok === false && /403|429|402|quota|credit/.test(blob)) return true;
+    return false;
   }
 
   async function remoteWorker(text) {
@@ -92,12 +89,15 @@
           messages: [{ role: "user", content: text }]
         })
       });
-      var data = await res.json();
+      var data = await res.json().catch(function () { return {}; });
       if (data && data.ok && (data.content || data.response_text)) {
-        return String(data.content || data.response_text).trim().slice(0, 900);
+        return { kind: "live", spoken: String(data.content || data.response_text).trim().slice(0, 900) };
       }
-    } catch (e) {}
-    return null;
+      if (isEmptyRail(res, data)) return { kind: "empty" };
+      return { kind: "down" };
+    } catch (e) {
+      return { kind: "down" };
+    }
   }
 
   async function run(text, opt) {
@@ -110,13 +110,14 @@
     if (wantsRead(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "read", spoken: readSpoken(opt) };
     if (wantsLook(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "look", spoken: lookSpoken(opt.vision) };
     var remote = await remoteWorker(text);
-    if (remote) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "ai-depth", spoken: remote };
-    var h = house(text);
-    if (h) {
-      return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "house", spoken: h.spoken, href: h.href || null, label: h.label || null };
+    if (remote && remote.kind === "live" && remote.spoken) {
+      return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "ai-depth", spoken: remote.spoken };
     }
-    return { grant: "SEED", voice: voice, kernel: VERSION, spoken: "The live rail did not answer. Ask DualisCapax, Fuel, Donate, Bind, or Measure and I will use the house line until credit is back." };
+    if (remote && remote.kind === "empty") {
+      return { grant: "EMPTY", voice: voice, kernel: VERSION, id: "empty-tank", spoken: EMPTY_VOICE, href: "/payments.html", label: "Add Fuel" };
+    }
+    return { grant: "SEED", voice: voice, kernel: VERSION, id: "rail-down", spoken: DOWN_VOICE, href: "/payments.html", label: "Add Fuel" };
   }
 
-  w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, greet: greet, lookSpoken: lookSpoken };
+  w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, greet: greet, lookSpoken: lookSpoken, EMPTY_VOICE: EMPTY_VOICE };
 })(window);
