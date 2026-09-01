@@ -117,6 +117,7 @@
     });
     html += "</div>";
     mount.innerHTML = html;
+    if (root.DCTheme && DCTheme.apply) DCTheme.apply(deckId, { keyword: deckId });
   }
 
   function paintDesk(mount, deskId, deep) {
@@ -130,6 +131,7 @@
     if (art) art.style.backgroundImage = "url('" + ART + desk.art + "')";
     if (word) word.textContent = desk.keyword;
     if (story) story.textContent = desk.story;
+    if (root.DCTheme && DCTheme.apply) DCTheme.apply(deskId, desk);
     try {
       localStorage.setItem("dc.seat.desk", JSON.stringify({ id: deskId, keyword: desk.keyword, ts: new Date().toISOString() }));
     } catch (e) {}
