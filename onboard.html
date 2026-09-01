@@ -59,9 +59,9 @@ button.act{width:100%;cursor:pointer}
       </div>
       <div class="step" id="stop-bind">
         <b>Bind on this device</b>
-        <p>Eight words or a passkey stay here. No password file. A targeted card is not a signed deal.</p>
+        <p>Dualis already signed its side. Your eight words stay here. A targeted card is not a signed deal.</p>
         <button class="act" type="button" id="bind-btn">Lock the seat to this device</button>
-        <p class="note" id="bind-note">Nothing is sent. A hole is not zero.</p>
+        <p class="note" id="bind-note">House signed. You are unbound until you lock.</p>
       </div>
       <a class="act" href="portal.html">Open the portal</a>
       <a class="act ghost" href="payments.html">Prepaid time stays closed</a>
@@ -77,6 +77,7 @@ button.act{width:100%;cursor:pointer}
 <script src="js/device-pass.js"></script>
 <script src="js/onboard.js"></script>
 <script src="js/audit-crypto.js"></script>
+<script src="js/house-sign.js"></script>
 <script src="js/contract-bind.js"></script>
 <script src="js/seat-deck.js"></script>
 <script>
@@ -89,7 +90,7 @@ DCSeatDeck.boot({ table: "#seat-table", deep: "#seat-deep" });
     function afterVault(){
       if (!window.DCContract) { bindLine("Bind engine missing."); return; }
       DCContract.bind({}).then(function(res){
-        bindLine(res && res.ok ? "Seat locked to this device. Hash only. Phrase never left the machine." : "Bind refused. The device layer is still a hole.");
+        bindLine(res && res.ok ? "House was already signed. This device is now bound. Phrase never left the machine." : "Bind refused. The device layer is still a hole.");
       }).catch(function(){ bindLine("Bind refused."); });
     }
     if (window.DCVault && !DCVault.hasVault()) {
