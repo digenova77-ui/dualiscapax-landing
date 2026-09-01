@@ -20,6 +20,7 @@ button.act{width:100%;cursor:pointer}
 .field{display:block;width:100%;margin:.45rem 0 0;padding:.7rem .75rem;border:1px solid rgba(158,197,255,.28);background:rgba(0,0,0,.28);color:#e8f1ff;font:inherit}
 .note{margin:.55rem 0 0;font-size:.92rem;line-height:1.5;color:rgba(245,245,245,.62)}
 .law{margin:.8rem 0 0;text-align:center;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(158,197,255,.55)}
+#sense-dock{margin:.4rem 0 0}
 </style>
 </head>
 <body>
@@ -45,10 +46,8 @@ button.act{width:100%;cursor:pointer}
         </div>
       </div>
       <div class="step" id="stop-1">
-        <b>Listen if you want</b>
-        <p>Sound starts on so the page can talk. Say shut up when you want quiet. You do not need a new password.</p>
-        <button class="act" type="button" id="unity-btn">Start Unity preview</button>
-        <p class="note" id="unity-note">Sound on. The preview does not leave this page.</p>
+        <b>Sound is a choice</b>
+        <p>Looking does not require sound. If you want the hall to talk, tap Open sound. Say quiet, or tap Quiet, when you are done. The microphone stays off until you ask it to listen for that word.</p>
       </div>
       <div class="step" id="stop-5">
         <b>Bring the books you already keep</b>
@@ -72,14 +71,14 @@ button.act{width:100%;cursor:pointer}
 </div>
 <script src="js/home-quarks.js"></script>
 <script src="js/no-select.js"></script>
-<script src="js/viewer-mute.js"></script>
-<script src="js/voice-mute.js"></script>
 <script src="js/device-pass.js"></script>
 <script src="js/onboard.js"></script>
 <script src="js/audit-crypto.js"></script>
 <script src="js/house-sign.js"></script>
 <script src="js/contract-bind.js"></script>
-<script src="js/seat-deck.js"></script>
+<script src="js/seat-deck.js?v=20260901s"></script>
+<script src="js/sense.js?v=20260901s"></script>
+<script src="assets/haptic.js"></script>
 <script>
 DCSeatDeck.boot({ table: "#seat-table", deep: "#seat-deep" });
 (function(){
