@@ -1,8 +1,8 @@
 /** Iris live bridge — veto/greet/look first, then depth worker. Empty tank keeps her voice. */
 (function (w) {
-  var VERSION = "iris-live-2026-09-01b";
+  var VERSION = "iris-live-2026-09-01c";
   var DEFAULT_BASE = "https://dualiscapax-depth.digenova77.workers.dev";
-  var EMPTY_VOICE = (w.DCLMLook && w.DCLMLook.EMPTY_VOICE) || "I heard you. The time on this talk just ran out — same as a transit pass that hits zero between stations. Add a little Fuel on Bind, or bring your own key, and I will pick up in the same voice. I will not switch into that short robot script while we wait.";
+  var EMPTY_VOICE = (w.DCLMLook && w.DCLMLook.EMPTY_VOICE) || "We need more Fuel, boss, if you want to ride any further. Tap Bind when you are ready — I will be here in the same voice.";
 
   function apiBase() {
     var base = (w.DC_API_BASE || DEFAULT_BASE || "").replace(/\/$/, "");

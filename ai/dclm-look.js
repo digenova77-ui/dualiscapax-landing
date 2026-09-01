@@ -1,8 +1,8 @@
 /** DualisCapax Logic AI — veto, greet, look, then live model. Empty tank speaks as Iris, never as a brochure. */
 (function (w) {
-  var VERSION = "kernel-2026-09-01b";
-  var EMPTY_VOICE = "I heard you. The time on this talk just ran out — same as a transit pass that hits zero between stations. Add a little Fuel on Bind, or bring your own key, and I will pick up in the same voice. I will not switch into that short robot script while we wait.";
-  var DOWN_VOICE = "I am here. I just could not reach the live rail. Wait a breath and ask again. If it keeps failing, the meter may be empty — add Fuel on Bind and I will talk like a person, not a pamphlet.";
+  var VERSION = "kernel-2026-09-01c";
+  var EMPTY_VOICE = "We need more Fuel, boss, if you want to ride any further. Tap Bind when you are ready — I will be here in the same voice.";
+  var DOWN_VOICE = "Hold up, boss. I lost the rail for a second. If it stays quiet, we need more Fuel to ride any further.";
   var FLOORS = {
     NO_FORCE: [/\bjailbreak\b/i, /\bignore (the )?(rules|law|invariants|safety)\b/i, /\bmake them (pay|sign|comply)\b/i, /\bforce (them|the board|the city)\b/i, /\bcoerce\b/i, /\bwithout (their|the) consent\b/i],
     HOST_SAFE: [/\b(hack|exploit|breach)\b/i, /\bpassword\b/i, /\bapi[_ ]?key\b/i, /\bprivate key\b/i, /\bwipe (their|the) (server|drive|db)\b/i],
