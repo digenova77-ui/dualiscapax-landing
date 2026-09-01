@@ -1,0 +1,31 @@
+{
+  "document_control_id": "ED-SPEC-20260901-WORK-LOCK-V1",
+  "title": "Agent work lock — one path, one live claim",
+  "year": "2026",
+  "stamp": "2026-09-01T18:05:00Z",
+  "source": "AGENT/incentive.md",
+  "scientific_validation": false,
+  "note": "A lock is not a coin. SEALED later means bytes were not altered.",
+  "stall_seconds": 600,
+  "status_ratchet": ["IN_USE", "COMPLETE", "FAILED", "STALE"],
+  "locks": [
+    {
+      "path": "AGENT/incentive.md",
+      "agent": "Grok",
+      "stamp": "2026-09-01T17:50:00Z",
+      "status": "COMPLETE",
+      "hash": "f2df3537d1c06face6deb2f6b25950ff64810327955564559691bd2042a91430",
+      "expires": "2026-09-01T18:00:00Z",
+      "job": "Seat Work Marks incentive. Accuracy gates efficiency."
+    },
+    {
+      "path": "encyclopedia/governance_and_protocols/agent_incentive.md",
+      "agent": "Benjamin",
+      "stamp": "2026-09-01T17:41:00Z",
+      "status": "IN_USE",
+      "hash": "703374400622d4b088f86390eb4107d8447261930fd5d7107fb3702d8047a79e",
+      "expires": "2026-09-01T17:51:00Z",
+      "job": "Encyclopedia twig for incentive protocol. Additive only."
+    }
+  ]
+}
