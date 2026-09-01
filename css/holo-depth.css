@@ -2,29 +2,29 @@
 :root{
   --z-void: 0;
   --z-glass: 1;
-  --z-copy: 8;
-  --z-holo: 900;
+  --z-copy: 10;
+  --z-holo: 1200;
 }
 canvas.quarks,.quarks,.tears,.pane-art,#holo-well{
   z-index: var(--z-void);
-  transform: translateZ(-1200px) scale(1.28);
-  filter: saturate(1.18) brightness(.72);
+  transform: translateZ(-2400px) scale(1.42);
+  filter: saturate(1.25) brightness(.58);
 }
 .pane.glass,.topbar,.hud,.panel,.plate{
   z-index: var(--z-glass);
-  transform: translateZ(-520px) scale(0.96);
-  filter: blur(0.35px) brightness(.82);
+  transform: translateZ(-900px) scale(0.94);
+  filter: blur(0.55px) brightness(.74);
 }
 .site,.pane-copy,header,nav,h1,h2,p,.lede,.step{
   position: relative;
   z-index: var(--z-copy);
-  transform: translateZ(8px);
+  transform: translateZ(16px);
 }
 .iris-holo,.iris-mark,#iris-stage,#holo,#holo-stage,.holo-front{
   position: relative;
   z-index: var(--z-holo);
-  transform: translateZ(420px);
-  filter: drop-shadow(0 28px 70px rgba(90,160,255,.55));
+  transform: translateZ(720px);
+  filter: drop-shadow(0 40px 90px rgba(80,160,255,.7));
   pointer-events: auto;
 }
 @media (prefers-reduced-motion: reduce){
