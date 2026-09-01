@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Onboard — DualisCapax</title>
+<title>Pick your desk — DualisCapax</title>
 <meta name="theme-color" content="#02040c"/>
-<meta name="description" content="Pick a seat. Pictures first. Books stay with you."/>
+<meta name="description" content="Start with the desk you know: nation, province, hospital, school, shop, household. Books stay on this device. A card is not a contract."/>
 <link rel="stylesheet" href="theme.css"/>
 <link rel="stylesheet" href="assets/seat-deck.css"/>
 <style>
@@ -41,34 +41,34 @@ button.act{width:100%;cursor:pointer}
         <div>
           <p class="seat-deep-word"></p>
           <p class="seat-deep-story"></p>
-          <p class="seat-note">A targeted seat is not a signed deal. The books stay on this device.</p>
+          <p class="seat-note">This card is not a signed deal. Your books stay on this device. Nothing is uploaded.</p>
         </div>
       </div>
       <div class="step" id="stop-1">
-        <b>Hear the room</b>
-        <p>Sound starts on. Say shut up when you want quiet. No new password.</p>
+        <b>Listen if you want</b>
+        <p>Sound starts on so the page can talk. Say shut up when you want quiet. You do not need a new password.</p>
         <button class="act" type="button" id="unity-btn">Start Unity preview</button>
         <p class="note" id="unity-note">Sound on. The preview does not leave this page.</p>
       </div>
       <div class="step" id="stop-5">
-        <b>Bring the books</b>
-        <p>A spreadsheet. A payroll export. A link you already use. The file stays here. Nothing is uploaded.</p>
+        <b>Bring the books you already keep</b>
+        <p>A spreadsheet, a payroll export, or a link you already use. The file stays on this machine. Nothing is uploaded to us.</p>
         <input class="field" id="books-file" type="file" accept=".xlsx,.xls,.csv,.tsv,.json,text/csv,application/json"/>
         <input class="field" id="books-link" type="url" inputmode="url" autocomplete="off" placeholder="Link to the books you already use"/>
         <p class="note" id="books-note">A name and a local mark are enough to start.</p>
       </div>
       <div class="step" id="stop-bind">
-        <b>Bind on this device</b>
-        <p>Dualis already signed its side. Your eight words stay here. A targeted card is not a signed deal.</p>
-        <button class="act" type="button" id="bind-btn">Lock the seat to this device</button>
-        <p class="note" id="bind-note">House signed. You are unbound until you lock.</p>
+        <b>Lock this desk to this device</b>
+        <p>DualisCapax already signed its side. Your eight words stay on this machine. Picking a card is not a contract with a ministry or a bank.</p>
+        <button class="act" type="button" id="bind-btn">Lock this desk to this device</button>
+        <p class="note" id="bind-note">Our side is signed. Yours is not, until you lock it here.</p>
       </div>
       <a class="act" href="portal.html">Open the portal</a>
-      <a class="act ghost" href="payments.html">Prepaid time stays closed</a>
+      <a class="act ghost" href="payments.html">Prepaid minutes — still your choice</a>
     </div>
   </div>
-  <p class="law">Country · province · the room that spends · then the street</p>
-  <footer>DualisCapax · cards first · targeted is not signed</footer>
+  <p class="law">Country, then province, then the desk that spends, then the street</p>
+  <footer>DualisCapax · a card is not a contract · the books stay here</footer>
 </div>
 <script src="js/home-quarks.js"></script>
 <script src="js/no-select.js"></script>
@@ -90,8 +90,8 @@ DCSeatDeck.boot({ table: "#seat-table", deep: "#seat-deep" });
     function afterVault(){
       if (!window.DCContract) { bindLine("Bind engine missing."); return; }
       DCContract.bind({}).then(function(res){
-        bindLine(res && res.ok ? "House was already signed. This device is now bound. Phrase never left the machine." : "Bind refused. The device layer is still a hole.");
-      }).catch(function(){ bindLine("Bind refused."); });
+        bindLine(res && res.ok ? "Our side was already signed. This device is now locked. The words never left the machine." : "Lock refused. The device step is still missing.");
+      }).catch(function(){ bindLine("Lock refused."); });
     }
     if (window.DCVault && !DCVault.hasVault()) {
       var phrase = DCVault.generate();
