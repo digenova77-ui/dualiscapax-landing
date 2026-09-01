@@ -6,14 +6,18 @@
 ---
 
 ## The 6-Layer Architectural Hierarchy
+Spoken names from 2026-09-01 sit beside the old codes. Nothing is deleted.
+See `world_name_map.md`.
 ```
 L6 Master         (Private - not in public tree)
 L5 DNA            (Named reference only - not published)
 L4 Ownership Pack (Gated + transferable ownership)
 L3 Access         (Gated permissions & entry)
-L2 Playground     (Low-stakes sandbox environment)
-L1 Public Face    (Public discovery surface)
+L2 Playground     spoken ONE — the river, low-stakes sandbox
+L1 Public Face    spoken ZERO — public discovery surface
 ```
+Ground Zero is the current live world. It is not an L-code.
+DCLM Layer [0] remains the law floor. Do not smash it into Ground Zero.
 
 ## Public Physics Rules
 1. **No Upward Leakage:** Public surfaces never leak information regarding L5/L6 beyond opaque named references.
