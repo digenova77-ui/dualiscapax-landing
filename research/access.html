@@ -19,40 +19,22 @@
     h1 { font-size: clamp(1.4rem, 1.2rem + 1vw, 1.75rem); margin-bottom: 0.4rem; }
     .lead { color: var(--muted); margin-bottom: 1rem; font-size: 1rem; }
     .lead strong { color: var(--fg); }
-    .open-banner {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      padding: 1rem 1.1rem;
-      margin-bottom: 1.25rem;
-      border-radius: 6px;
-    }
-    .open-banner .tag {
-      display: inline-block;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      padding: 0.25rem 0.5rem;
-      margin-bottom: 0.65rem;
-    }
+    .open-banner { border: 1px solid var(--gold); background: var(--surface); padding: 1rem 1.1rem; margin-bottom: 1.25rem; border-radius: 6px; }
+    .open-banner .tag { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid var(--gold); color: var(--gold); padding: 0.25rem 0.5rem; margin-bottom: 0.65rem; }
     .open-banner p { font-size: 0.95rem; color: var(--muted); margin: 0 0 0.5rem; }
     .open-banner p:last-child { margin-bottom: 0; }
     .open-banner strong { color: var(--fg); }
     h2 { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 1.5rem 0 0.65rem; }
-    .tier {
-      border: 1px solid var(--border); border-radius: 8px;
-      padding: 1rem; margin-bottom: 0.85rem; background: var(--surface);
-    }
+    .tier { border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 0.85rem; background: var(--surface); }
     .tier-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; align-items: baseline; margin-bottom: 0.45rem; }
     .tier-name { font-weight: 700; font-size: 1.05rem; }
     .tier-price { font-size: 0.9rem; font-weight: 600; color: var(--gold); }
     .tier ul { margin: 0.4rem 0 0 1.1rem; font-size: 0.9rem; color: var(--muted); }
     .tier li { margin-bottom: 0.25rem; }
     .tier li strong { color: var(--fg); }
-    .buy { display: inline-block; margin-top: 0.55rem; font-size: 0.85rem; font-weight: 600; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent); }
-    .buy:hover { opacity: 0.85; }
+    table.item { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0.4rem 0 1rem; }
+    table.item th, table.item td { border-bottom: 1px solid var(--border); padding: 0.4rem 0.35rem; text-align: left; vertical-align: top; }
+    table.item th { color: var(--muted); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.68rem; }
     .note { font-size: 0.78rem; color: var(--muted); margin-top: 1.25rem; overflow-wrap: anywhere; }
     .note strong { color: var(--fg); }
     footer { border-top: 1px solid var(--border); padding: 1rem; text-align: center; font-size: 0.68rem; color: var(--muted); }
@@ -69,101 +51,46 @@
   </nav>
   <div class="shell">
     <h1>Document access</h1>
-    <p class="lead">Jacket <code>access.dual.v2</code>. Public residual prose stays readable. <strong>Paid packs are open.</strong> Library ≠ full Dualis vault.</p>
-
+    <p class="lead">Jacket <code>access.dual.v8</code>. Source <code>ED-PRC-20260901-120-TIER-MASTER-V8</code>. Public residual prose stays readable. <strong>Paid packs stay closed.</strong></p>
     <div class="open-banner">
-      <div class="tag">Open · operator order · 31 Aug 2026</div>
-      <p><strong>Payment gateway open.</strong> CAD amounts match <code>payment-links.json</code>. Live Stripe Payment Links are the only fiat path. No secret keys on the page.</p>
-      <p><strong>IP gate:</strong> Look + Measure open. Medical depth and engineering depth still use identity doors (org/gov/edu/SEAL) or a paid seat. Paid seat unlocks room/field — not cross-class Crown.</p>
-      <p>Full matrix: <a class="inline" href="IP-GATE.md">IP-GATE.md</a> · <a class="inline" href="MEDICAL-GATE.md">Medical</a> · <a class="inline" href="ENGINEERING-GATE.md">Engineering</a></p>
+      <div class="tag">Closed · open: false · 1 Sep 2026</div>
+      <p><strong>Payment gateway closed.</strong> CAD amounts match the V8 120-tier matrix. Stripe Payment Links fire only after operator <code>open: true</code> + IP lock. No secret keys. No invented checkout URLs.</p>
+      <p><strong>Dual-rail:</strong> Fiat CAD Stripe Payment Link when open ∥ equal-CAD BTC / ETH / SOL / USDC. Not an exchange product.</p>
+      <p>Matrix: <a class="inline" href="../encyclopedia/governance_and_protocols/dclm_all_markets_deep_granular_pricing_matrix.md">V8 120-tier</a> · <a class="inline" href="IP-GATE.md">IP-GATE.md</a></p>
     </div>
-
     <h2>Open (free)</h2>
     <div class="tier">
-      <div class="tier-head">
-        <span class="tier-name">Look · Measure · Audit</span>
-        <span class="tier-price">CAD $0</span>
-      </div>
+      <div class="tier-head"><span class="tier-name">Look · Measure · Audit</span><span class="tier-price">CAD $0</span></div>
       <ul>
-        <li><strong>Look</strong> — public residual prose (medical tribute floor, eng public sheets)</li>
-        <li><strong>Measure / Audit</strong> — residual measure + SHA-256 receipt anytime</li>
-        <li>Crypto audit is a receipt — <strong>not</strong> an IP unlock</li>
+        <li><strong>Look</strong> — public residual prose</li>
+        <li><strong>Measure / Audit</strong> — residual measure + SHA-256 receipt</li>
+        <li>Earned while closed remains honest CAD $0</li>
       </ul>
     </div>
-
-    <h2>Priced · on sale</h2>
-
-    <div class="tier" data-sku="leaf">
-      <div class="tier-head">
-        <span class="tier-name">Leaf</span>
-        <span class="tier-price">CAD $49 · 12 mo</span>
-      </div>
-      <ul>
-        <li><strong>One</strong> gated room — one disease leaf <em>or</em> one eng sheet pack</li>
-        <li>Not the vault</li>
-      </ul>
-      <a class="buy" href="https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04">Buy Leaf →</a>
-    </div>
-
-    <div class="tier" data-sku="branch">
-      <div class="tier-head">
-        <span class="tier-name">Branch</span>
-        <span class="tier-price">CAD $149 · 12 mo</span>
-      </div>
-      <ul>
-        <li><strong>One</strong> field — e.g. neurological <em>or</em> oncology <em>or</em> thermo residual</li>
-        <li>12 months</li>
-      </ul>
-      <a class="buy" href="https://buy.stripe.com/00w5kF41NbU55ahaslffy03">Buy Branch →</a>
-    </div>
-
-    <div class="tier" data-sku="library">
-      <div class="tier-head">
-        <span class="tier-name">Domain library</span>
-        <span class="tier-price">CAD $499 · 12 mo</span>
-      </div>
-      <ul>
-        <li>Multi-room toolkit in <strong>one</strong> domain class: medical <em>or</em> engineering <em>or</em> ops</li>
-        <li><strong>Not</strong> “everything Dualis knows.” Cross-class = Crown only</li>
-      </ul>
-      <a class="buy" href="https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00">Buy Domain library →</a>
-    </div>
-
-    <div class="tier" data-sku="fuel">
-      <div class="tier-head">
-        <span class="tier-name">Fuel depth</span>
-        <span class="tier-price">CAD $20 / $50 / $120</span>
-      </div>
-      <ul>
-        <li>40 / 120 / 320 Fuel — prepaid time, not a document seat</li>
-      </ul>
-      <a class="buy" href="../payments.html">Buy Fuel on Bind →</a>
-    </div>
-
-    <h2>IP gate examples</h2>
-    <div class="tier">
-      <div class="tier-head"><span class="tier-name">Medical</span></div>
-      <ul>
-        <li><strong>Public:</strong> tribute, path language, journal links</li>
-        <li><strong>Depth:</strong> .org / .gov / .gc.ca or SEAL-1 — or paid medical-class seat</li>
-        <li>Simulation ≠ treatment</li>
-      </ul>
-    </div>
-    <div class="tier">
-      <div class="tier-head"><span class="tier-name">Engineering</span></div>
-      <ul>
-        <li><strong>Public:</strong> residual language under /research/engineering/</li>
-        <li><strong>Depth:</strong> .edu / .org / .gov / .gc.ca or SEAL-1 — or paid eng-class seat</li>
-        <li>Simulation ≠ stamped design</li>
-      </ul>
-    </div>
-
-    <p class="note">
-      <strong>Source of truth:</strong> <code>payment-links.json</code> · <code>IP-GATE.md</code><br>
-      Not medical advice. Not a P.Eng. stamp. Not securities. Ontario / Canada first.
-    </p>
+    <h2>Public SKUs · priced · closed</h2>
+    <table class="item">
+      <thead><tr><th>ID</th><th>Name</th><th>CAD</th><th>Equal-crypto</th><th>Unit</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td>SKU-001</td><td>Fuel 10</td><td>5</td><td>5.00 CAD-eq</td><td>10 runs</td><td>none yet</td></tr>
+        <tr><td>SKU-002</td><td>Fuel 40</td><td>20</td><td>20.00 CAD-eq</td><td>40 runs</td><td>reserved</td></tr>
+        <tr><td>SKU-003</td><td>Fuel 120</td><td>50</td><td>50.00 CAD-eq</td><td>120 runs</td><td>reserved</td></tr>
+        <tr><td>SKU-004</td><td>Fuel 320</td><td>120</td><td>120.00 CAD-eq</td><td>320 runs</td><td>reserved</td></tr>
+        <tr><td>SKU-005</td><td>Fuel 1,000</td><td>350</td><td>350.00 CAD-eq</td><td>1,000 runs</td><td>none yet</td></tr>
+        <tr><td>SKU-016</td><td>Educational leaf</td><td>19</td><td>19.00 CAD-eq</td><td>30-day</td><td>none yet</td></tr>
+        <tr><td>SKU-017</td><td>Indication leaf</td><td>49</td><td>49.00 CAD-eq</td><td>12 mo</td><td>reserved</td></tr>
+        <tr><td>SKU-018</td><td>Clade branch</td><td>299</td><td>299.00 CAD-eq</td><td>12 mo</td><td>none — $149 retired</td></tr>
+        <tr><td>SKU-019</td><td>Super-Trunk</td><td>499</td><td>499.00 CAD-eq</td><td>12 mo</td><td>remapped</td></tr>
+        <tr><td>SKU-029</td><td>Master library</td><td>1,499</td><td>1,499.00 CAD-eq</td><td>perpetual</td><td>none yet</td></tr>
+      </tbody>
+    </table>
+    <div class="tier"><div class="tier-head"><span class="tier-name">Indication leaf</span><span class="tier-price">CAD $49 · 12 mo</span></div><ul><li>One gated room. Not the vault.</li></ul></div>
+    <div class="tier"><div class="tier-head"><span class="tier-name">Clade branch</span><span class="tier-price">CAD $299 · 12 mo</span></div><ul><li>Was CAD $149 in v2. Old $149 Stripe URL retired.</li></ul></div>
+    <div class="tier"><div class="tier-head"><span class="tier-name">Super-Trunk</span><span class="tier-price">CAD $499 · 12 mo</span></div><ul><li>Former v2 $499 library slot remapped here. Not the $1,499 master library.</li></ul></div>
+    <div class="tier"><div class="tier-head"><span class="tier-name">Master library</span><span class="tier-price">CAD $1,499 · perpetual</span></div><ul><li>Full multi-kingdom compendium. Not Crown.</li></ul></div>
+    <div class="tier"><div class="tier-head"><span class="tier-name">Fuel depth</span><span class="tier-price">CAD $5 / $20 / $50 / $120 / $350</span></div><ul><li>Fuel 10 / 40 / 120 / 320 / 1,000</li></ul></div>
+    <p class="note"><strong>Source of truth:</strong> payment-links.json · ED-PRC-20260901-120-TIER-MASTER-V8<br>Current as of: 2026-09-01. Not medical advice. Not securities.</p>
   </div>
-  <footer>DualisCapax · access.dual.v2 · OPEN · consistent CAD · operator order 31 Aug 2026</footer>
+  <footer>DualisCapax · access.dual.v8 · CLOSED · Current as of: 2026-09-01</footer>
   <script src="../assets/text-scale.js" defer></script>
 </body>
 </html>
