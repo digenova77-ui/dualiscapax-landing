@@ -13,6 +13,7 @@ body{background:#02040c}
 .site{max-width:40rem}
 .plate{border:1px solid rgba(158,197,255,.28);background:linear-gradient(180deg,rgba(158,197,255,.07),rgba(0,0,0,.28));margin:0 0 .75rem}
 #tongue{display:block;width:100%;height:26rem}
+#glyphs{display:block;width:100%;height:9rem}
 .legend{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;padding:0 0 1rem}
 .legend p{margin:0;font-size:.92rem;line-height:1.45;color:rgba(245,245,245,.72)}
 .pack{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.06em;color:#9ec5ff;word-break:break-all}
@@ -30,10 +31,13 @@ body{background:#02040c}
     </nav>
   </header>
   <p class="eyebrow">Helix Tongue</p>
-  <h1>The file is the ladder.</h1>
-  <p class="lede">Two strands. Rungs between them. The climb is time. An empty ring is a hole, not a count of zero.</p>
+  <h1>The file fills the box.</h1>
+  <p class="lede">Not writing on the walls. A solid inside the cube. A certain triangle can stand for a whole page. An empty ring is a hole, not a count of zero.</p>
   <div class="plate">
     <canvas id="tongue" aria-label="Helix drawing of the seated cell"></canvas>
+  </div>
+  <div class="plate">
+    <canvas id="glyphs" aria-label="Volume glyphs for this card"></canvas>
   </div>
   <p class="pack" id="pack">H:0:1:0:0:R:0</p>
   <div class="legend">
@@ -41,7 +45,7 @@ body{background:#02040c}
     <p>Blue strand — the bind on this device. The gate. The layer.</p>
     <p>A rung — both sides present. That is One.</p>
     <p>No rung — a hole. Nothing invented.</p>
-    <p>Six dots around it — six views of the same cell. One lights only the playground face.</p>
+    <p>Solids in the lower box — one shape for one phrase. Same page, same triangle.</p>
     <p>Ripples on the left — lists that share the locker. Bus, care, trips, boards, talks, sports, office.</p>
   </div>
   <footer>Looking does not seat a cell. A drawing is not a lab proof. Founders stay unsealed.</footer>
@@ -49,12 +53,24 @@ body{background:#02040c}
 <script src="js/home-quarks.js"></script>
 <script src="js/matrix-cell.js"></script>
 <script src="js/helix-tongue.js"></script>
+<script src="js/volume-glyph.js"></script>
 <script src="js/no-select.js"></script>
 <script>
 (function(){
   var cell = (window.DCMatrix && DCMatrix.load && DCMatrix.load()) || null;
   var m = HelixTongue.mount(document.getElementById("tongue"), cell);
-  if (m && m.pack) document.getElementById("pack").textContent = (cell && cell.pack ? cell.pack + " | " : "") + m.pack;
+  var packed = window.DCGlyph && DCGlyph.packCard({
+    status: cell && cell.id ? "ONE" : "HOLE",
+    world: window.DC_WORLD === 1 ? 1 : 0,
+    faces: cell && cell.faces,
+    smash: true
+  });
+  if (packed && window.DCGlyph) DCGlyph.draw(document.getElementById("glyphs"), packed);
+  var line = [];
+  if (cell && cell.pack) line.push(cell.pack);
+  if (m && m.pack) line.push(m.pack);
+  if (packed && packed.tokens) line.push(packed.tokens.join(" "));
+  document.getElementById("pack").textContent = line.join(" | ") || "V|G-HOLE|ring|R|0|0";
 })();
 </script>
 </body>
