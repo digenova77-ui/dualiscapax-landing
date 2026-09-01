@@ -8,6 +8,7 @@
 <meta name="description" content="One is plug and play, not hope and pray. Bring a file. It seats, or it says no."/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="theme.css"/>
+<link rel="stylesheet" href="css/holo-stack.css"/>
 <style>
 body{background:#02040c}
 .site{max-width:36rem}
@@ -24,6 +25,7 @@ body{background:#02040c}
 #drop{border:1px dashed rgba(158,197,255,.4);padding:1.1rem .9rem;text-align:center;margin:.5rem 0;color:rgba(245,245,245,.7)}
 #drop.on{border-color:#9ec5ff;background:rgba(158,197,255,.08)}
 #helix{display:block;width:100%;height:14rem;margin:.6rem 0 0}
+#holo-stage{height:12rem;margin:0 0 .8rem}
 </style>
 </head>
 <body>
@@ -38,6 +40,7 @@ body{background:#02040c}
     </nav>
   </header>
   <p class="eyebrow">One · Playground · API v2</p>
+  <div id="holo-stage" class="holo-front" aria-hidden="true"></div>
   <h1>Plug and play. Not hope and pray.</h1>
   <p class="lede">Bring a sheet you already keep. It seats on this device, or it says no with one reason. Nothing is guessed.</p>
   <div class="panel">
@@ -66,6 +69,8 @@ body{background:#02040c}
 <script src="js/dclm-job.js"></script>
 <script src="js/dclm-dual.js"></script>
 <script src="js/l2-plug.js"></script>
+<script src="js/iris-hologram.js"></script>
+<script src="js/holo-sense.js"></script>
 <script src="js/no-select.js"></script>
 <script>
 (function(){
@@ -83,9 +88,11 @@ body{background:#02040c}
       var name = (row.lease && row.lease.name) || '';
       var pack = (row.matrix && row.matrix.pack) || '';
       note.textContent = 'PLUGGED · ONE · v2 · ' + (name || 'no-name') + ' · ' + (row.kind||'file') + ' · numbers ' + (row.numbers||0) + (pack ? ' · ' + pack : '') + ' · stays on this device';
+      if (window.HoloSense) HoloSense.pulse('seat');
     } else {
       note.className = 'warn bad';
       note.textContent = 'REFUSED · ' + (row.reason||'NO') + ' · nothing guessed';
+      if (window.HoloSense) HoloSense.pulse('rest');
     }
     paintHelix();
   }
@@ -114,6 +121,7 @@ body{background:#02040c}
     note.className = 'warn';
     note.textContent = 'Wiped on this device. Yearbook empty. Looking still free.';
     paintHelix();
+    if (window.HoloSense) HoloSense.pulse('rest');
   });
   paint(DCL2.load());
 })();
