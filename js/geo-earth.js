@@ -12,30 +12,73 @@ mark.width=w;mark.height=h;
 const mtx=mark.getContext('2d');
 const R=0.93;
 
-function stampWord(ctx,x,y,size){
+function stampWord(ctx,text,x,y,size){
   ctx.save();
-  ctx.font='700 '+(size||148)+'px "IBM Plex Sans", Inter, Arial, sans-serif';
+  ctx.font='700 '+(size||118)+'px "IBM Plex Sans", Inter, Arial, sans-serif';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
   ctx.lineJoin='round';
   ctx.miterLimit=2;
-  ctx.lineWidth=7;
+  ctx.lineWidth=Math.max(4, size*0.045);
   ctx.strokeStyle='rgba(0,0,0,0.88)';
-  ctx.strokeText('DualisCapax',x,y);
+  ctx.strokeText(text,x,y);
   ctx.shadowColor='rgba(180,210,255,0.45)';
   ctx.shadowBlur=10;
   ctx.fillStyle='#f4f8ff';
-  ctx.fillText('DualisCapax',x,y);
+  ctx.fillText(text,x,y);
   ctx.shadowBlur=0;
   ctx.fillStyle='#ffffff';
-  ctx.fillText('DualisCapax',x,y);
+  ctx.fillText(text,x,y);
+  ctx.restore();
+}
+
+function drawHelix(ctx,cx,cy,hgt){
+  const hh=hgt*0.52, ww=hgt*0.42;
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.strokeStyle='rgba(158,197,255,0.95)';
+  ctx.lineWidth=Math.max(3,hgt*0.055);
+  ctx.lineCap='round';
+  ctx.beginPath();
+  for(let i=0;i<=24;i++){
+    const t=i/24, y=-hh+t*hh*2, x=Math.sin(t*Math.PI*2)*ww;
+    if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle='rgba(232,184,74,0.92)';
+  ctx.beginPath();
+  for(let i=0;i<=24;i++){
+    const t=i/24, y=-hh+t*hh*2, x=Math.sin(t*Math.PI*2+Math.PI)*ww;
+    if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+  ctx.lineWidth=Math.max(2,hgt*0.03);
+  ctx.strokeStyle='rgba(232,244,255,0.55)';
+  for(let i=1;i<=6;i++){
+    const t=i/7, y=-hh+t*hh*2;
+    const a=Math.sin(t*Math.PI*2)*ww, b=Math.sin(t*Math.PI*2+Math.PI)*ww;
+    ctx.beginPath(); ctx.moveTo(a,y); ctx.lineTo(b,y); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function paintBand(ctx,cx,y,size){
+  ctx.save();
+  ctx.font='700 '+size+'px "IBM Plex Sans", Inter, Arial, sans-serif';
+  const dw=ctx.measureText('Dualis').width;
+  const cw=ctx.measureText('Capax').width;
+  const gap=Math.max(size*1.15, 96);
+  const helix=Math.min(gap*0.92, size*1.08);
+  stampWord(ctx,'Dualis',cx-(dw/2+gap/2),y,size);
+  drawHelix(ctx,cx,y,helix);
+  stampWord(ctx,'Capax',cx+(cw/2+gap/2),y,size);
   ctx.restore();
 }
 
 function paintMarks(){
   mtx.clearRect(0,0,w,h);
-  stampWord(mtx,w*0.25,h*0.5,156);
-  stampWord(mtx,w*0.75,h*0.5,156);
+  paintBand(mtx, w*0.25, h*0.5, 118);
+  paintBand(mtx, w*0.75, h*0.5, 118);
 }
 paintMarks();
 const markTex=new THREE.CanvasTexture(mark);
@@ -146,22 +189,12 @@ facePaint.width=1024;facePaint.height=256;
 {
   const c=facePaint.getContext('2d');
   c.clearRect(0,0,1024,256);
-  c.font='700 118px "IBM Plex Sans", Inter, Arial, sans-serif';
-  c.textAlign='center';
-  c.textBaseline='middle';
-  c.lineJoin='round';
-  c.lineWidth=8;
-  c.strokeStyle='rgba(0,0,0,0.78)';
-  c.strokeText('DualisCapax',512,128);
-  c.shadowColor='rgba(180,210,255,0.55)';
-  c.shadowBlur=14;
-  c.fillStyle='#ffffff';
-  c.fillText('DualisCapax',512,128);
+  paintBand(c, 512, 128, 96);
 }
 const faceTex=new THREE.CanvasTexture(facePaint);
 faceTex.colorSpace=THREE.SRGBColorSpace;
 const face=new THREE.Mesh(
-  new THREE.PlaneGeometry(1.62,0.36),
+  new THREE.PlaneGeometry(1.38,0.31),
   new THREE.MeshBasicMaterial({map:faceTex,transparent:true,depthWrite:false,side:THREE.DoubleSide})
 );
 face.position.set(0,0,R+0.05);
