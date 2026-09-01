@@ -18,7 +18,7 @@ Four drawers. About two dozen files. Not a thousand monographs.
 | BIND.md | Law pointer. Entity. Four Ontario CSDs. Medical catalog pointer. | L6 + L1 |
 | governance_and_protocols/ | DCLM law, job start, name lock, worlds, One yearbook, helix, Unity spec | L6 |
 | crypto_tools/ | Verifier, preflight, job card, query, schemas | L2 tools |
-| ai_systems_internal/ | Iris teaching ladder only | L5 look |
+| ai_systems_internal/ | Iris ladder, alchemy room, engineering foundation stack (2026-09-01) | L5 look |
 | medical_biophysical/ | One index of 1,000 names. Not 1,000 books. | L1 look |
 
 Manifest on disk is stale (generated 14:41Z). It lists 10 files. The drawer already holds more. That is a hole, not zero.
