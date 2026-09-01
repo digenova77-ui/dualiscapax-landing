@@ -135,7 +135,7 @@ def inspect(path, enc):
                 rec["refs"].append(raw)
     rec["text"] = text
     if mine:
-        url = re.search(r"https?://[^\s)>"]+", text or "")
+        url = re.search(r'https?://[^\s)>" ]+', text or "")
         rec["source"] = (url.group(0).rstrip(".,;`")[:240] if url else None)
         rec["sourced"] = bool(rec["source"])
         rec["year"] = None
