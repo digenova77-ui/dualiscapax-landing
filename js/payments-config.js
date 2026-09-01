@@ -1,17 +1,19 @@
-/** DualisCapax payment rails. No Stripe. CAD = Interac. Else crypto. */
+/** DualisCapax payment rails. Card = Stripe Payment Links. CAD = Interac. Else crypto. */
 window.DC_PAYMENTS = {
   interac_enabled: true,
   eft_enabled: true,
   sri_enabled: true,
   fuel_enabled: true,
   onboard_enabled: true,
-  stripe_enabled: false,
+  stripe_enabled: true,
   research: "",
   cost_reduction: "",
   capacity: "",
   fuel: "",
   ubi: "",
   crypto_enabled: true,
+  fulfill_worker: "https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/",
+  thanks: "/pay/thanks.html",
   ai_doge: "D92zKrKoBeUouG5Jqo96Q5DWZ4G7iU8JFK",
   research_xrp: "rNbfUBt3vgUDu9kEL5TxbgLHxtKbyyKyRz",
   research_zec: "t1XXgbcak1o85jd4PWwBzatqxbDSkuwSTaZ",
