@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 const canvas=document.getElementById('geo-earth');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,preserveDrawingBuffer:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
 renderer.setClearColor(0x000000,0);
 const scene=new THREE.Scene();
