@@ -1,20 +1,22 @@
 {
-  "packet": "ED-BIND-20260901-CENTER-V1",
+  "packet": "ED-BIND-20260901-CENTER-V3",
   "entity": "DualisCapax Inc. / 1001718450 ONTARIO INCORPORATED",
   "surface": "https://dualiscapax.ai/center.html",
-  "stamp": "2026-09-01T21:15:00Z",
-  "law": ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING", "MERIT_NOT_PLAQUE"],
-  "note": "The house hosts the bind. Public lists stay readable. Private lists stay closed until merit is proven on the device. Not a coin. Not shares. Simulation is not treatment.",
+  "stamp": "2026-09-01T21:55:00Z",
+  "law": ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING", "MERIT_NOT_PLAQUE", "KNOW_NOT_RECIPE", "NO_WEAPON_DESK"],
+  "note": "The house is becoming a data center. We host known public API doors, public IP resolvers, and geographic lists. Private access lists stay closed until merit. We know the bind of each room. We do not publish a recipe, a weapon desk, a diagnosis, or a person file. We are the anything that binds everything.",
   "goal": "onboard",
+  "motto": "We are the anything that binds everything.",
   "domains": [
-    {"id": "transport", "word": "Roads and hulls", "bind": "Schedules, idle crews, pavement, rail slots, ship hours.", "deeper": "Deeper in transport, onboard is good because the run sheet never leaves the desk.", "open": true},
-    {"id": "weather", "word": "Weather", "bind": "Public forecasts already published. Peak load. Ice. Heat.", "deeper": "Deeper in weather, onboard is good because the storm sheet stays with the grid desk.", "open": true},
-    {"id": "plant", "word": "Plant and machines", "bind": "Shift heat, scrap, idle motors, the line that already runs.", "deeper": "Deeper on the floor, onboard is good because scrap stays on the shift sheet.", "open": true},
-    {"id": "engineering", "word": "Engineering", "bind": "Promises that can be inverted. Drawings that can be checked.", "deeper": "Deeper in engineering, onboard is good because the drawing stays with the house that drew it.", "open": true},
-    {"id": "mars", "word": "Mars desk", "bind": "A future room. Mass, power, air, time. A promise is still a leftover.", "deeper": "Deeper at the Mars desk, onboard is good because the promise is named before another year is spent.", "open": true},
-    {"id": "health", "word": "Healthcare", "bind": "Beds, leftover hours, screens in the bay. Simulation is not treatment.", "deeper": "Deeper in health, onboard is good for this sector. We count leftover. We do not treat a patient.", "open": true},
-    {"id": "drip", "word": "Drip and screens", "bind": "The pump software. The bay screen. The name on the bag stays with the hospital.", "deeper": "Deeper at the drip, onboard is good because the bag list never leaves the ward device. Not a drug. Not a diagnosis.", "open": false},
-    {"id": "reactor", "word": "Reactor logic", "bind": "Civil plant logic that can be inverted: heat, flow, trip, leftover. Not a weapon desk.", "deeper": "Deeper at a civil plant, onboard is good because trip sheets stay on the licensed floor.", "open": false},
-    {"id": "bind", "word": "The bind", "bind": "We are the thing that holds the rooms together. API, geo list, merit list, look receipt.", "deeper": "Deeper in the bind, onboard is still the goal of the seat you sit in.", "open": true}
+    {"id":"transport","word":"Roads and hulls","bind":"Schedules, idle crews, pavement, rail slots, ship hours, air tracks.","deeper":"Deeper in transport, onboard is good because the run sheet never leaves the desk.","knows":["schedules","idle hours","pavement","rail slots","hull hours","public flight doors"],"open":true},
+    {"id":"weather","word":"Weather","bind":"Public forecasts already published. Peak load. Ice. Heat. Grid leftover.","deeper":"Deeper in weather, onboard is good because the storm sheet stays with the grid desk.","knows":["public forecasts","ice","heat","peak load","open government weather doors"],"open":true},
+    {"id":"plant","word":"Plant and machines","bind":"Industrial machinery as leftover: shift heat, scrap, idle motors, the line that already runs.","deeper":"Deeper on the floor, onboard is good because scrap stays on the shift sheet.","knows":["shift heat","scrap","idle motors","line hours","industrial leftover"],"open":true},
+    {"id":"engineering","word":"Engineering","bind":"Promises that can be inverted. Drawings that can be checked. Public catalogues.","deeper":"Deeper in engineering, onboard is good because the drawing stays with the house that drew it.","knows":["invertible promises","checked drawings","public catalogues","leftover in a plan"],"open":true},
+    {"id":"mars","word":"Mars desk","bind":"A future room. Mass, power, air, time. A promise is still a leftover.","deeper":"Deeper at the Mars desk, onboard is good because the promise is named before another year is spent.","knows":["mass","power","air","time","public mission doors"],"open":true},
+    {"id":"health","word":"Healthcare","bind":"Beds, leftover hours, screens in the bay. Simulation is not treatment.","deeper":"Deeper in health, onboard is good for this sector. We count leftover. We do not treat a patient.","knows":["beds","leftover hours","public labels","trial registries"],"open":true},
+    {"id":"drip","word":"Drip knowledge","bind":"We know that a bag has a name and that a pump runs software. The name stays on the ward device.","deeper":"Deeper at the drip, onboard is good because the bag list never leaves the ward. Not a drug book. Not a diagnosis.","knows":["that pumps run software","that a bag has a name on a ward device","that leftover hours sit on a pump"],"open":false},
+    {"id":"screens","word":"Screen software","bind":"We know screens run software. Public UI catalogues stay readable. Bay software stays on the licensed floor.","deeper":"Deeper at the screen, onboard is good because the bay image never leaves the device that shows it.","knows":["that a screen is a desk","public UI catalogues","that bay software stays on a licensed floor"],"open":true},
+    {"id":"reactor","word":"Reactor logic","bind":"Civil plant logic that can be inverted: heat, flow, trip, leftover. Not a weapon desk.","deeper":"Deeper at a civil plant, onboard is good because trip sheets stay on the licensed floor.","knows":["heat","flow","trip","leftover","licensed floor"],"open":false},
+    {"id":"bind","word":"The bind","bind":"We are the anything that binds everything. API, geo list, public IP door, merit list, look receipt.","deeper":"Deeper in the bind, onboard is still the goal of the seat you sit in.","knows":["public API doors","geographic hosts","public resolvers","merit lists","device-local look receipts"],"open":true}
   ]
 }
