@@ -82,14 +82,101 @@ addFeed(new THREE.Vector3(R,0,0)); addFeed(new THREE.Vector3(-R,0,0));
 function ribbonPath(from,now,phase){ const dest=from.clone().setLength(ER*0.92); const dir=dest.clone().sub(from); const up=Math.abs(from.y)<0.85?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0); const n1=dir.clone().cross(up).normalize(); const n2=dir.clone().cross(n1).normalize(); const out=[]; for(let i=0;i<SN;i++){ const t=i/(SN-1); const p=from.clone().lerp(dest,t*t); const twist=t*5.8+now*0.002+phase; const rad=0.018*Math.sin(t*Math.PI)*(1-t); p.addScaledVector(n1,Math.cos(twist)*rad); p.addScaledVector(n2,Math.sin(twist)*rad); out.push(p);} return out; }
 function writeRibbon(geo,pts,width){ const arr=geo.attributes.position.array; for(let i=0;i<pts.length;i++){ const p=pts[i]; const q=pts[Math.min(i+1,pts.length-1)]; const prev=pts[Math.max(i-1,0)]; const tan=q.clone().sub(prev).normalize(); const side=new THREE.Vector3().crossVectors(tan,p).normalize().multiplyScalar(width*0.5*(1-i/(pts.length-1))); if(!isFinite(side.x))side.set(0,width*0.5,0); const a=p.clone().add(side); const b=p.clone().sub(side); arr[i*6]=a.x;arr[i*6+1]=a.y;arr[i*6+2]=a.z; arr[i*6+3]=b.x;arr[i*6+4]=b.y;arr[i*6+5]=b.z; } geo.attributes.position.needsUpdate=true; }
 function writeSprites(geo,pts,now,offset){ const arr=geo.attributes.position.array; const travel=((now*0.0018)+offset)%1; for(let i=0;i<pts.length;i++){ let t=(i/(pts.length-1)+travel)%1; t=t*t; const p=pts[Math.min(pts.length-1,Math.floor(t*(pts.length-1)))]; arr[i*3]=p.x;arr[i*3+1]=p.y;arr[i*3+2]=p.z; } geo.attributes.position.needsUpdate=true; }
+
+/* LOCKSCREEN RING + INFINITY DNA  — ring OUTSIDE cage, figure-8 DNA INSIDE cage */
+const RING_R=R*1.20;
+function paintRingTex(){
+  const c=document.createElement('canvas'); c.width=1024; c.height=64;
+  const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,1024,0);
+  g.addColorStop(0,'#e8b84a'); g.addColorStop(0.22,'#f0d060');
+  g.addColorStop(0.50,'#4ec8ff'); g.addColorStop(0.78,'#1e8cff'); g.addColorStop(1,'#e8b84a');
+  x.fillStyle=g; x.fillRect(0,0,1024,64);
+  x.fillStyle='rgba(255,255,255,0.28)'; x.fillRect(0,18,1024,8);
+  const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.wrapS=THREE.RepeatWrapping; t.anisotropy=8; return t;
+}
+const ringTex=paintRingTex();
+const ringPivot=new THREE.Group();
+ringPivot.rotation.x=Math.PI/2;
+const ring=new THREE.Mesh(
+  new THREE.TorusGeometry(RING_R,0.022,20,160),
+  new THREE.MeshBasicMaterial({ map:ringTex, transparent:true, opacity:0.96, depthWrite:false, blending:THREE.AdditiveBlending })
+);
+ring.renderOrder=6;
+const ringGlow=new THREE.Mesh(
+  new THREE.TorusGeometry(RING_R,0.038,16,128),
+  new THREE.MeshBasicMaterial({ color:0x7ec8ff, transparent:true, opacity:0.22, depthWrite:false, blending:THREE.AdditiveBlending })
+);
+ringGlow.renderOrder=5;
+ringPivot.add(ring); ringPivot.add(ringGlow);
+group.add(ringPivot);
+
+function fig8(t,a){
+  return new THREE.Vector3(a*Math.sin(2*t)*0.55, a*Math.sin(t), 0);
+}
+function fig8Frame(t,a){
+  const p=fig8(t,a);
+  const q=fig8(t+0.01,a);
+  const tan=q.clone().sub(p).normalize();
+  const up=new THREE.Vector3(0,0,1);
+  let n=new THREE.Vector3().crossVectors(tan,up);
+  if(n.lengthSq()<1e-8) n=new THREE.Vector3().crossVectors(tan,new THREE.Vector3(1,0,0));
+  n.normalize();
+  const b=new THREE.Vector3().crossVectors(tan,n).normalize();
+  return {p,n,b,tan};
+}
+function strandPts(phase,a,twistAmp,count){
+  const out=[];
+  for(let i=0;i<=count;i++){
+    const t=(i/count)*Math.PI*2;
+    const f=fig8Frame(t,a);
+    const twist=Math.sin(t*3+phase)*twistAmp;
+    out.push(f.p.clone().addScaledVector(f.n,twist).addScaledVector(f.b,Math.cos(t*3+phase)*twistAmp*0.35));
+  }
+  return out;
+}
+function tubeFromPts(pts,color,radius){
+  const curve=new THREE.CatmullRomCurve3(pts,true, 'catmullrom', 0.12);
+  const mesh=new THREE.Mesh(
+    new THREE.TubeGeometry(curve,160,radius,8,true),
+    new THREE.MeshPhongMaterial({ color, emissive:new THREE.Color(color), emissiveIntensity:0.55, shininess:40, transparent:true, opacity:0.96 })
+  );
+  mesh.renderOrder=4;
+  return mesh;
+}
+const DNA_A=0.46;
+const goldStrand=tubeFromPts(strandPts(0,DNA_A,0.055,80),0xe8c45a,0.016);
+const blueStrand=tubeFromPts(strandPts(Math.PI,DNA_A,0.055,80),0x2b9bff,0.016);
+group.add(goldStrand); group.add(blueStrand);
+const rungMat=new THREE.MeshPhongMaterial({ color:0xcfd8e6, emissive:new THREE.Color(0x334455), shininess:20 });
+const nodeColors=[0xe24b4b,0x3d9be9,0x2a9b5c,0xe8a317,0x111111,0x3d9be9,0xe24b4b,0x2a9b5c];
+for(let i=0;i<8;i++){
+  const t=(i+0.5)/8*Math.PI*2;
+  const a=fig8Frame(t,DNA_A);
+  const twist=0.055;
+  const p1=a.p.clone().addScaledVector(a.n, Math.sin(t*3)*twist);
+  const p2=a.p.clone().addScaledVector(a.n, Math.sin(t*3+Math.PI)*twist);
+  const len=p1.distanceTo(p2);
+  const mid=p1.clone().add(p2).multiplyScalar(0.5);
+  const rung=new THREE.Mesh(new THREE.CylinderGeometry(0.007,0.007,Math.max(0.02,len),8), rungMat);
+  rung.position.copy(mid);
+  rung.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), p2.clone().sub(p1).normalize());
+  rung.renderOrder=4;
+  group.add(rung);
+  const n1=new THREE.Mesh(new THREE.SphereGeometry(0.022,16,12), new THREE.MeshPhongMaterial({ color:nodeColors[i], emissive:new THREE.Color(nodeColors[i]), emissiveIntensity:0.35, shininess:50 }));
+  n1.position.copy(p1); n1.renderOrder=5; group.add(n1);
+  const n2=new THREE.Mesh(new THREE.SphereGeometry(0.022,16,12), new THREE.MeshPhongMaterial({ color:nodeColors[(i+3)%nodeColors.length], emissive:new THREE.Color(nodeColors[(i+3)%nodeColors.length]), emissiveIntensity:0.35, shininess:50 }));
+  n2.position.copy(p2); n2.renderOrder=5; group.add(n2);
+}
+
 scene.add(new THREE.AmbientLight(0x2a2210,0.62));
 const sun=new THREE.DirectionalLight(0xffffff,0.7); sun.position.set(-2.2,0.8,2.6); scene.add(sun);
 const fill=new THREE.DirectionalLight(0x8a6a28,0.42); fill.position.set(2.2,-0.6,-1.4); scene.add(fill);
 const rimLight=new THREE.DirectionalLight(0xf0d48a,1.05); rimLight.position.set(0.2,0.4,-2.4); scene.add(rimLight);
 const ribbonLight=new THREE.PointLight(0xe8c45a,2.1,2.1); ribbonLight.position.set(0,0,0); group.add(ribbonLight);
 const goldLight=new THREE.PointLight(0xffe08a,1.35,1.9); goldLight.position.set(0,0,0); group.add(goldLight);
-const OMEGA=Math.PI*2/28; const HOLD=1600; const born=performance.now(); let last=performance.now();
-function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; if(now-born>HOLD) group.rotation.y+=OMEGA*dt; earth.rotation.y+=OMEGA*dt*0.35; let energy=0; for(let i=0;i<feeds.length;i++){ const f=feeds[i]; const bluePath=ribbonPath(f.from,now,0); const goldPath=ribbonPath(f.from,now,Math.PI); writeRibbon(f.blue.g,bluePath,0.012); writeRibbon(f.gold.g,goldPath,0.009); writeSprites(f.sBlue.g,bluePath,now,i*0.13); writeSprites(f.sGold.g,goldPath,now,i*0.13+0.5); const pulse=0.22+0.16*Math.abs(Math.sin(now*0.0028+i)); energy+=pulse; f.blue.mesh.material.opacity=pulse; f.gold.mesh.material.opacity=pulse*0.85; f.sBlue.mesh.material.opacity=0.6+pulse; f.sGold.mesh.material.opacity=0.52+pulse*0.9; } energy=feeds.length?energy/feeds.length:0.25; ribbonLight.intensity=1.4+energy*2.4; goldLight.intensity=0.55+energy*1.5; earthMat.emissiveIntensity=0.55+energy*0.95; earthAtmos.material.opacity=0.34+energy*0.38; earthHalo.material.opacity=0.14+energy*0.28; limb.material.opacity=0.24+energy*0.22; renderer.render(scene,camera); requestAnimationFrame(frame); }
+const OMEGA=Math.PI*2/28; const RING_OMEGA=Math.PI*2/9; const HOLD=1600; const born=performance.now(); let last=performance.now();
+function frame(now){ const dt=Math.min(0.05,(now-last)/1000); last=now; if(now-born>HOLD) group.rotation.y+=OMEGA*dt; earth.rotation.y+=OMEGA*dt*0.35; ringPivot.rotation.z+=RING_OMEGA*dt; let energy=0; for(let i=0;i<feeds.length;i++){ const f=feeds[i]; const bluePath=ribbonPath(f.from,now,0); const goldPath=ribbonPath(f.from,now,Math.PI); writeRibbon(f.blue.g,bluePath,0.012); writeRibbon(f.gold.g,goldPath,0.009); writeSprites(f.sBlue.g,bluePath,now,i*0.13); writeSprites(f.sGold.g,goldPath,now,i*0.13+0.5); const pulse=0.22+0.16*Math.abs(Math.sin(now*0.0028+i)); energy+=pulse; f.blue.mesh.material.opacity=pulse; f.gold.mesh.material.opacity=pulse*0.85; f.sBlue.mesh.material.opacity=0.6+pulse; f.sGold.mesh.material.opacity=0.52+pulse*0.9; } energy=feeds.length?energy/feeds.length:0.25; ribbonLight.intensity=1.4+energy*2.4; goldLight.intensity=0.55+energy*1.5; earthMat.emissiveIntensity=0.55+energy*0.95; earthAtmos.material.opacity=0.34+energy*0.38; earthHalo.material.opacity=0.14+energy*0.28; limb.material.opacity=0.24+energy*0.22; renderer.render(scene,camera); requestAnimationFrame(frame); }
 requestAnimationFrame(frame);
 function onResize(){ const box=canvas.getBoundingClientRect(); const s=Math.max(1,Math.round(Math.min(box.width||canvas.clientWidth,box.height||canvas.clientHeight))); renderer.setSize(s,s,false); camera.aspect=1; camera.updateProjectionMatrix(); }
 window.addEventListener('resize',onResize);onResize();
