@@ -1,11 +1,14 @@
 /* Seat deck — civic hall under a night sky.
    Five pillars: two left, bright center, two right.
-   Government and business first. One gift card may stay a little philosophical. */
+   Government and business first. One gift card may stay a little quiet. */
 .seat-stage{width:min(52rem,calc(100% - 1.2rem));margin:0 auto;padding:0 0 2rem}
 .seat-table[data-depth="0"] .seat-word,
 .seat-table[data-depth="1"] .seat-word,
-.seat-table[data-depth="2"] .seat-word{font-size:.72rem}
+.seat-table[data-depth="2"] .seat-word,
+.seat-table[data-depth="3"] .seat-word{font-size:.72rem}
+.seat-table[data-depth="3"] .seat-word{font-size:.66rem;letter-spacing:.12em}
 .seat-table[data-depth="0"] .seat-card{width:min(42vw,11.2rem)}
+.seat-table[data-depth="3"] .seat-card{width:min(42vw,11.4rem)}
 .seat-back{display:inline-flex;margin:0 0 .7rem;padding:.35rem .7rem;border:1px solid rgba(158,197,255,.35);background:transparent;color:#9ec5ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
 .seat-row{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center}
 .seat-card{position:relative;width:min(44vw,12.4rem);padding:0;border:1px solid rgba(158,197,255,.28);background:rgba(2,4,12,.72);cursor:pointer;color:#e8f1ff;display:flex;flex-direction:column;overflow:hidden;transform:translateZ(0);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
