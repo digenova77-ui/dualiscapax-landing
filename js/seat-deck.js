@@ -3,7 +3,6 @@
    Five pillars. Gift is the one quiet card. A card is not a signed deal. */
 (function (root) {
   "use strict";
-  var ART = "brand/deck/";
 
   function lines(back, kind, rows) {
     return {
@@ -196,6 +195,18 @@
   function hall() {
     return '<span class="sky"></span><span class="glow"></span><span class="hall"><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i></span>';
   }
+  function restTalk() {
+    return "Same hall. Same door. A card is not a signed deal.";
+  }
+  function speak(mount, card) {
+    var talk = el(".seat-talk", mount);
+    if (!talk) return;
+    var word = card.querySelector(".seat-word");
+    var hint = card.querySelector(".seat-hint");
+    var w = word ? word.textContent : "";
+    var h = hint ? hint.textContent : "";
+    talk.textContent = w && h ? w + " — " + h : restTalk();
+  }
 
   function paintCards(mount, deckId) {
     var deck = DECKS[deckId];
@@ -204,16 +215,16 @@
     var html = "";
     if (deck.back) html += '<button class="seat-back" type="button" data-back="' + deck.back + '">Back</button>';
     html += '<div class="seat-row">';
-    deck.cards.forEach(function (card) {
+    deck.cards.forEach(function (card, i) {
       var kind = card.kind || "nation";
-      html += '<button class="seat-card" type="button" data-next="' + card.next + '" data-kind="' + kind + '">' +
+      html += '<button class="seat-card" type="button" data-next="' + card.next + '" data-kind="' + kind + '" style="--i:' + i + '">' +
         (card.ribbon ? '<span class="seat-ribbon">' + card.ribbon + "</span>" : "") +
         '<span class="seat-art">' + hall() + "</span>" +
         '<span class="seat-word">' + card.keyword + "</span>" +
         (card.hint ? '<span class="seat-hint">' + card.hint + "</span>" : "") +
       "</button>";
     });
-    html += "</div>";
+    html += "</div><p class=\"seat-talk\" aria-live=\"polite\">" + restTalk() + "</p>";
     mount.innerHTML = html;
     if (root.DCTheme && DCTheme.apply) DCTheme.apply(deckId, { keyword: deckId });
   }
@@ -253,6 +264,20 @@
       if (back) { go(back.getAttribute("data-back"), table, deep); return; }
       var card = ev.target.closest("[data-next]");
       if (card) go(card.getAttribute("data-next"), table, deep);
+    });
+    table.addEventListener("pointerover", function (ev) {
+      var card = ev.target.closest(".seat-card");
+      if (card) speak(table, card);
+    });
+    table.addEventListener("focusin", function (ev) {
+      var card = ev.target.closest(".seat-card");
+      if (card) speak(table, card);
+    });
+    table.addEventListener("pointerout", function (ev) {
+      if (!table.contains(ev.relatedTarget)) {
+        var talk = el(".seat-talk", table);
+        if (talk) talk.textContent = restTalk();
+      }
     });
   }
 
