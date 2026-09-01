@@ -1,55 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>FAQ — DualisCapax</title>
-  <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, sans-serif; background: #050505; color: #f5f5f5; -webkit-font-smoothing: antialiased; }
-    a { color: inherit; text-decoration: none; }
-    .shell { max-width: 44rem; margin: 0 auto; padding: 0 1.25rem 3.5rem; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0 0; gap: 1rem; }
-    .mark { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.04em; }
-    nav { display: flex; gap: 1.1rem; flex-wrap: wrap; }
-    nav a { font-size: 0.95rem; font-weight: 600; color: rgba(245,245,245,0.7); }
-    nav a.on { color: #f5f5f5; }
-    h1 { font-size: clamp(3rem, 12vw, 4.75rem); font-weight: 900; line-height: 0.88; letter-spacing: -0.05em; text-transform: uppercase; margin: 2.25rem 0 1.5rem; }
-    h2 { font-size: 1.05rem; font-weight: 800; margin: 1.75rem 0 0.55rem; }
-    article p { font-size: clamp(1.15rem, 4vw, 1.4rem); line-height: 1.4; font-weight: 500; margin: 0 0 1.15rem; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>FAQ — DualisCapax</title>
+<meta name="theme-color" content="#020308"/>
+<meta name="description" content="Plain answers. What DualisCapax is, what it is not, and what you can do today."/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="theme.css"/>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <a href="index.html?land=1" class="mark">DualisCapax</a>
-      <nav>
-        <a href="for-people.html">For you</a>
-        <a href="research/">Look</a>
-        <a href="onboard.html">Measure</a>
-        <a href="payments.html">Bind</a>
-        <a href="faq.html" class="on">FAQ</a>
-      </nav>
-    </header>
-    <h1>FAQ</h1>
-    <article>
-      <h2>What is this for me?</h2>
-      <p>You already pay for waste — extra steps, extra heat, extra waiting. We name that cost in your units. If we cannot name it, you owe nothing.</p>
-      <h2>Do you want my money?</h2>
-      <p>We want the waste you already pay for to be visible, so the rest stays yours. Reading is free. Binding is optional and waits on real settlement.</p>
-      <h2>Do you want my time?</h2>
-      <p>We want wasted hours turned into a path you can walk without a multi-day queue.</p>
-      <h2>Do you want my goal?</h2>
-      <p>We want to hand you the next step, then the next, while the goal stays yours.</p>
-      <h2>Do you want my credit?</h2>
-      <p>We want tools in your hands so the credit lands on you.</p>
-      <h2>Will you push this?</h2>
-      <p>Walk away whenever you want. We are proven when you use us.</p>
-      <h2>Is this an investment?</h2>
-      <p>This is research and prepaid time. Research stays readable. Counsel handles measured seats.</p>
-    </article>
-  </div>
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
+<div class="site">
+  <header>
+    <a class="mark" href="index.html?land=1">DualisCapax</a>
+    <nav>
+      <a href="look.html">Look</a>
+      <a href="for-people.html">For you</a>
+      <a href="onboard.html">Start</a>
+      <a href="donate.html">Give</a>
+      <a href="faq.html" class="on">FAQ</a>
+    </nav>
+  </header>
+  <p class="eyebrow">FAQ</p>
+  <h1>Ask it straight</h1>
+  <p class="lede">If a fifteen-year-old cannot follow the answer, the answer is wrong. Here are the short ones.</p>
+  <section>
+    <h2>What is this?</h2>
+    <p>A small Canadian studio that builds tools to find leftover waste — extra steps, extra waiting, extra cost — the way you find a leak under a sink. We write the number down. You can check it.</p>
+  </section>
+  <section>
+    <h2>What can I do today?</h2>
+    <p>Read. Talk to Iris, our helper. Give a research gift if you want. You do not need an account to look.</p>
+  </section>
+  <section>
+    <h2>Is Iris a doctor?</h2>
+    <p>No. She is not a doctor, a lawyer, or a bank. She is a helper on this site. If you need care, call a real clinic.</p>
+  </section>
+  <section>
+    <h2>Is Fuel a coin or a stock?</h2>
+    <p>No. Fuel is prepaid minutes for our tools, like putting money on a transit card. What you do not use stays yours. It is not a share. It is not investment advice.</p>
+  </section>
+  <section>
+    <h2>Do I have to pay?</h2>
+    <p>No. Looking is free. Talking to Iris is free. Giving is optional. Buying minutes is optional.</p>
+  </section>
+  <section>
+    <h2>What if the number is wrong?</h2>
+    <p>Then you owe nothing. If we cannot show the same figure again, the deal does not stand. That is the house rule.</p>
+  </section>
+  <section>
+    <h2>Can I leave?</h2>
+    <p>Yes. Close the tab. Walk away. We are only useful if you choose to use us.</p>
+  </section>
+  <nav class="sec-break"><a href="index.html?land=1">Home</a><span class="dim">·</span><a href="look.html">Look</a><a href="ai/app.html">Iris</a><a href="donate.html">Give</a></nav>
+  <footer>DualisCapax · Truth Prevails · a tool you can check</footer>
+</div>
+<a class="iris-mark" href="ai/app.html">Iris</a>
+<script src="js/home-quarks.js"></script>
+<script src="js/no-select.js"></script>
+<script src="assets/haptic.js"></script>
 </body>
 </html>
