@@ -1,24 +1,69 @@
-/* Seat deck — picture first. Words arrive after a click.
-   Goal stamp + ribbon live on every card and every desk. */
+/* Seat deck — civic hall under a night sky.
+   Five pillars: two left, bright center, two right.
+   Government and business first. One gift card may stay a little philosophical. */
 .seat-stage{width:min(52rem,calc(100% - 1.2rem));margin:0 auto;padding:0 0 2rem}
-.seat-table[data-depth="0"] .seat-word,.seat-table[data-depth="1"] .seat-word,.seat-table[data-depth="2"] .seat-word{font-size:.72rem}
+.seat-table[data-depth="0"] .seat-word,
+.seat-table[data-depth="1"] .seat-word,
+.seat-table[data-depth="2"] .seat-word{font-size:.72rem}
 .seat-table[data-depth="0"] .seat-card{width:min(42vw,11.2rem)}
 .seat-back{display:inline-flex;margin:0 0 .7rem;padding:.35rem .7rem;border:1px solid rgba(158,197,255,.35);background:transparent;color:#9ec5ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
-.seat-law{width:100%;margin:0 0 .85rem;text-align:center;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(226,194,122,.82);line-height:1.45}
 .seat-row{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center}
-.seat-card{position:relative;width:min(44vw,12.4rem);padding:0;border:1px solid rgba(158,197,255,.28);background:linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 10px 1px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 0 0 / 1px 10px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 10px 1px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 100% 0 / 1px 10px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 10px 1px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 0 100% / 1px 10px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 10px 1px no-repeat,linear-gradient(#9ec5ff,#9ec5ff) 100% 100% / 1px 10px no-repeat,rgba(2,4,12,.55);cursor:pointer;color:#e8f1ff;display:flex;flex-direction:column;transform:translateZ(0);transition:transform .22s ease, border-color .22s ease, box-shadow .22s ease}
-.seat-card:hover,.seat-card:focus-visible{transform:translateY(-6px) rotate3d(1,0,0,6deg);border-color:rgba(212,160,23,.55);box-shadow:0 18px 40px rgba(0,0,0,.45), 0 0 24px rgba(158,197,255,.18)}
+.seat-card{position:relative;width:min(44vw,12.4rem);padding:0;border:1px solid rgba(158,197,255,.28);background:rgba(2,4,12,.72);cursor:pointer;color:#e8f1ff;display:flex;flex-direction:column;overflow:hidden;transform:translateZ(0);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.seat-card:hover,.seat-card:focus-visible{transform:translateY(-6px);border-color:rgba(226,194,122,.6);box-shadow:0 18px 40px rgba(0,0,0,.45),0 0 24px rgba(158,197,255,.18)}
 .seat-ribbon{position:absolute;top:.38rem;left:.38rem;z-index:2;max-width:calc(100% - .76rem);padding:.18rem .32rem;border:1px solid rgba(226,194,122,.45);background:rgba(2,4,12,.72);color:#e2c27a;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.52rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;line-height:1.2;pointer-events:none}
-.seat-art{display:block;width:100%;aspect-ratio:2/3;background-color:#05070d;background-size:cover;background-position:center;background-repeat:no-repeat}
+.seat-art{position:relative;display:block;width:100%;aspect-ratio:2/3;background-color:#070b16;background-size:cover;background-position:center;background-repeat:no-repeat;overflow:hidden}
+.seat-art .sky,.seat-art .hall,.seat-art .glow{position:absolute;inset:0;pointer-events:none}
+.seat-art .sky{background:
+  radial-gradient(1px 1px at 12% 10%,#d7e6ff 70%,transparent 71%),
+  radial-gradient(1px 1px at 28% 18%,#d7e6ff 70%,transparent 71%),
+  radial-gradient(1.4px 1.4px at 46% 8%,#fff6d2 70%,transparent 71%),
+  radial-gradient(1px 1px at 68% 14%,#d7e6ff 70%,transparent 71%),
+  radial-gradient(1px 1px at 86% 9%,#d7e6ff 70%,transparent 71%),
+  radial-gradient(1px 1px at 18% 28%,#9ec5ff 70%,transparent 71%),
+  radial-gradient(1px 1px at 90% 26%,#9ec5ff 70%,transparent 71%),
+  linear-gradient(180deg,#070b16 0%,#10182c 42%,#1a2740 72%,#0b101c 100%)}
+.seat-art .glow{background:radial-gradient(circle at 50% 38%,rgba(244,226,168,.55),rgba(158,197,255,.12) 36%,transparent 62%)}
+.seat-art .hall{display:flex;align-items:flex-end;justify-content:center;gap:4%;padding:0 10% 12%;background:
+  linear-gradient(180deg,transparent 58%,rgba(5,7,13,.55) 78%,#05070d 100%)}
+.seat-art .p{display:block;width:10%;background:linear-gradient(180deg,#d7e6ff,#6f8cb3);opacity:.82;box-shadow:0 0 0 1px rgba(158,197,255,.18) inset}
+.seat-art .p:nth-child(1),.seat-art .p:nth-child(5){height:58%;opacity:.68}
+.seat-art .p:nth-child(2),.seat-art .p:nth-child(4){height:66%;opacity:.8}
+.seat-art .p:nth-child(3){width:14%;height:78%;background:linear-gradient(180deg,#fff6d2,#e2c27a 46%,#8a6a28);opacity:1;box-shadow:0 0 18px rgba(244,226,168,.55)}
 .seat-word{display:block;padding:.45rem .4rem .2rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#9ec5ff;text-align:center}
-.seat-hint{display:block;padding:0 .45rem .5rem;font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.62rem;letter-spacing:.02em;text-transform:none;color:rgba(245,245,245,.62);text-align:center;line-height:1.35}
-.seat-table[data-depth="0"] .seat-hint{display:none}
+.seat-hint{display:block;padding:0 .45rem .55rem;font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.62rem;letter-spacing:.01em;text-transform:none;color:rgba(245,245,245,.62);text-align:center;line-height:1.35}
+.seat-table[data-depth="0"] .seat-hint{display:block}
+.seat-card[data-kind="nation"] .seat-art .sky{filter:saturate(1.05)}
+.seat-card[data-kind="province"] .p:nth-child(3){background:linear-gradient(180deg,#e8f1ff,#9ec5ff 50%,#35598a)}
+.seat-card[data-kind="employer"] .seat-art .sky{background:
+  radial-gradient(1px 1px at 20% 12%,#d7e6ff 70%,transparent 71%),
+  linear-gradient(180deg,#0a1018,#1b2838 55%,#0b1016)}
+.seat-card[data-kind="employer"] .p{background:linear-gradient(180deg,#c5d4e6,#4d647c)}
+.seat-card[data-kind="employer"] .p:nth-child(3){background:linear-gradient(180deg,#f3f6fa,#9ec5ff 40%,#2c4a6e)}
+.seat-card[data-kind="street"] .p{background:linear-gradient(180deg,#f0e2c4,#8a7350)}
+.seat-card[data-kind="street"] .p:nth-child(3){background:linear-gradient(180deg,#ffe7a8,#e2c27a 50%,#7a5a20)}
+.seat-card[data-kind="gift"] .seat-art .sky{background:
+  radial-gradient(1.6px 1.6px at 18% 10%,#fff 70%,transparent 71%),
+  radial-gradient(1px 1px at 40% 16%,#e6ddff 70%,transparent 71%),
+  radial-gradient(1.3px 1.3px at 72% 8%,#fff6d2 70%,transparent 71%),
+  radial-gradient(1px 1px at 88% 22%,#c9b6ff 70%,transparent 71%),
+  linear-gradient(180deg,#0a0714,#1a1230 50%,#0b0a12)}
+.seat-card[data-kind="gift"] .seat-art .glow{background:radial-gradient(circle at 50% 32%,rgba(255,244,200,.7),rgba(201,182,255,.2) 40%,transparent 66%)}
+.seat-card[data-kind="gift"] .p:nth-child(3){background:linear-gradient(180deg,#fff8e0,#c9a227)}
 .seat-deep{margin:1.1rem auto 0;width:min(36rem,100%)}
 .seat-deep-face{display:grid;grid-template-columns:7.2rem 1fr;gap:.85rem;align-items:start;margin:0 0 1rem}
-.seat-deep-art{width:7.2rem;aspect-ratio:2/3;background:#05070d center/cover no-repeat;border:1px solid rgba(158,197,255,.28)}
+.seat-deep-art{position:relative;width:7.2rem;aspect-ratio:2/3;background:#070b16 center/cover no-repeat;border:1px solid rgba(158,197,255,.28);overflow:hidden}
+.seat-deep-art .sky,.seat-deep-art .hall,.seat-deep-art .glow{position:absolute;inset:0}
+.seat-deep-art .sky{background:linear-gradient(180deg,#070b16,#1a2740)}
+.seat-deep-art .glow{background:radial-gradient(circle at 50% 38%,rgba(244,226,168,.5),transparent 60%)}
+.seat-deep-art .hall{display:flex;align-items:flex-end;justify-content:center;gap:4%;padding:0 10% 12%}
+.seat-deep-art .p{display:block;width:10%;height:62%;background:linear-gradient(180deg,#d7e6ff,#6f8cb3)}
+.seat-deep-art .p:nth-child(3){width:14%;height:78%;background:linear-gradient(180deg,#fff6d2,#8a6a28)}
 .seat-deep-word{margin:0 0 .35rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#9ec5ff}
-.seat-goal{display:inline-block;margin:0 0 .45rem;padding:.18rem .4rem;border:1px solid rgba(226,194,122,.5);background:rgba(226,194,122,.1);color:#e2c27a;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.58rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
 .seat-deep-story{margin:0;color:rgba(245,245,245,.78);line-height:1.58;font-size:1.02rem}
-.seat-deeper{margin:.45rem 0 0;color:rgba(226,194,122,.86);line-height:1.5;font-size:.94rem}
 .seat-note{margin:.45rem 0 0;font-size:.88rem;color:rgba(245,245,245,.58)}
-@media (max-width:40rem){.seat-card{width:calc(50% - .4rem)}.seat-deep-face{grid-template-columns:1fr}.seat-deep-art{width:min(12rem,46vw)}.seat-ribbon{font-size:.48rem}}
+@media (max-width:40rem){
+  .seat-card{width:calc(50% - .4rem)}
+  .seat-deep-face{grid-template-columns:1fr}
+  .seat-deep-art{width:min(12rem,46vw)}
+  .seat-ribbon{font-size:.48rem}
+}
