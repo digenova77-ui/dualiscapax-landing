@@ -1,11 +1,11 @@
-/* Holo stack. Everything from the glass goes deep. Presence stays nearest. */
+/* Holo stack. Field falls away. Presence is the nearest plane. */
 html.holo-on{
-  perspective:3200px;
-  perspective-origin:50% 38%;
+  perspective:6400px;
+  perspective-origin:50% 36%;
 }
 body.holo-on{
   transform-style:preserve-3d;
-  background-color:#010208;
+  background-color:#00010a;
 }
 #holo-well{
   position:fixed;
@@ -14,40 +14,44 @@ body.holo-on{
   z-index:0;
   transform-style:preserve-3d;
   overflow:hidden;
+  will-change:transform;
 }
 #holo-well i{
   position:absolute;
   left:50%;
-  top:46%;
-  width:min(160vw,160vh);
-  height:min(160vw,160vh);
-  margin:-80vh 0 0 -80vw;
+  top:44%;
+  width:min(190vw,190vh);
+  height:min(190vw,190vh);
+  margin:-95vh 0 0 -95vw;
   border-radius:50%;
-  border:1px solid rgba(158,197,255,.028);
-  box-shadow:inset 0 0 80px rgba(40,90,180,.03);
+  border:1px solid rgba(158,197,255,.02);
+  box-shadow:
+    inset 0 0 120px rgba(30,70,160,.04),
+    0 0 2px rgba(120,180,255,.03);
   transform:translateZ(var(--z, 0px)) scale(var(--s, 1));
 }
 #holo,#holo-stage,.holo-front,.iris-holo{
   position:relative;
-  z-index:900;
-  transform:translateZ(420px);
-  filter:drop-shadow(0 28px 70px rgba(90,160,255,.55));
+  z-index:1200;
+  transform:translateZ(720px);
+  filter:drop-shadow(0 40px 90px rgba(80,160,255,.7));
+  will-change:transform,filter;
 }
 .site{
-  transform:translateZ(12px);
+  transform:translateZ(16px);
 }
 header,nav,h1,h2,.lede,p,.eyebrow{
   position:relative;
-  z-index:8;
+  z-index:10;
 }
 canvas.quarks,.quarks{
-  transform:translateZ(-1200px) scale(1.28);
-  filter:saturate(1.18) brightness(.72);
+  transform:translateZ(-2400px) scale(1.42);
+  filter:saturate(1.25) brightness(.58);
 }
 .panel,.plate,.hud,.pane.glass{
-  transform:translateZ(-520px) scale(0.96);
-  filter:blur(0.35px) brightness(.82);
-  background:linear-gradient(180deg,rgba(158,197,255,.04),rgba(0,0,0,.55)) !important;
+  transform:translateZ(-900px) scale(0.94);
+  filter:blur(0.55px) brightness(.74);
+  background:linear-gradient(180deg,rgba(158,197,255,.035),rgba(0,0,0,.62)) !important;
 }
 @media (prefers-reduced-motion:reduce){
   html.holo-on,body.holo-on,.site,canvas.quarks,#holo,.iris-holo,.panel,.plate{
