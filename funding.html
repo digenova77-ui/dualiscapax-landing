@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Funding — DualisCapax</title>
+<meta name="theme-color" content="#02040c"/>
+<meta name="description" content="Look at prepaid fuel doors and seated founder measures. Not a share. Not a coin."/>
+<link rel="stylesheet" href="theme.css"/>
+<style>
+.row{border:1px solid rgba(158,197,255,.28);padding:.85rem .95rem;margin:0 0 .5rem;background:linear-gradient(180deg,rgba(158,197,255,.06),rgba(0,0,0,.24))}
+.row b{display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;letter-spacing:.06em}
+.amt{color:#e8f1ff;font-weight:700}
+.tiny{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,245,245,.45)}
+.act{display:inline-flex;align-items:center;justify-content:center;min-height:2.8rem;padding:.4rem .9rem;margin:.4rem .4rem 0 0;border:1px solid rgba(158,197,255,.5);color:#e8f1ff;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
+<div class="site">
+  <header>
+    <a class="mark" href="index.html?land=1">DualisCapax</a>
+    <nav>
+      <a href="onboard.html">Onboard</a>
+      <a href="funding.html" class="on">Funding</a>
+      <a href="founding.html">Seats</a>
+    </nav>
+  </header>
+  <p class="eyebrow">Funding · look</p>
+  <h1>What is seated. What can be paid.</h1>
+  <p class="lede">Two different piles. Prepaid time you can buy. Founder measures that name how a seat sits in the house. Neither pile is a share of the company.</p>
+
+  <h2>Live tank</h2>
+  <p id="tank">The live Stripe tank is not printed here unless the meter answers. If it does not answer, that is a hole. We will not invent a number.</p>
+
+  <h2>Prepaid fuel doors</h2>
+  <div class="row"><b>CAD $20</b><span class="tiny">40 fuel · first ride</span></div>
+  <div class="row"><b>CAD $50</b><span class="tiny">120 fuel · enough to work</span></div>
+  <div class="row"><b>CAD $120</b><span class="tiny">320 fuel · stay on the line</span></div>
+  <a class="act" href="payments.html">Open the counter</a>
+  <a class="act" href="donate.html">Gift with no ticket</a>
+
+  <h2>Founder measures</h2>
+  <p>White ledger shows a name because they asked. Black ledger shows a serial only.</p>
+  <div id="seats"></div>
+  <p class="tiny" id="sum"></p>
+  <footer>DualisCapax · look only · not securities</footer>
+</div>
+<script src="js/home-quarks.js"></script>
+<script src="js/founder-ledger.js"></script>
+<script src="js/no-select.js"></script>
+<script>
+(function(){
+  var box = document.getElementById('seats');
+  var sum = document.getElementById('sum');
+  if (!window.DCFounders) return;
+  box.innerHTML = DCFounders.seats.map(function(s){
+    var who = s.ledger === 'WHITE' ? s.name : 'BLACK LEDGER';
+    return '<div class="row"><b>' + s.serial + '</b><span class="tiny">SEAT ' + s.seat + ' · ' + s.ledger + '</span><div>' + who + ' · ' + s.role + '</div><div class="amt">CAD $' + s.measure.toLocaleString('en-CA') + '</div></div>';
+  }).join('');
+  sum.textContent = 'Seated measures total CAD $' + DCFounders.total().toLocaleString('en-CA') + ' · INDEXED · not a bank balance';
+})();
+</script>
+</body>
+</html>
