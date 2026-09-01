@@ -1,58 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Founding members — DualisCapax</title>
-  <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/cta.css" />
-  <script src="assets/spine-nav.js" defer></script>
-  <style>
-    :root { --bg:#050505; --fg:#f5f5f5; --muted:rgba(245,245,245,0.58); --faint:rgba(245,245,245,0.32); --line:rgba(255,255,255,0.1); }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); min-height:100dvh; line-height:1.5; font-size:1.05rem; }
-    a { color:inherit; text-decoration:none; }
-    .shell { max-width:40rem; margin:0 auto; padding:max(0.75rem, env(safe-area-inset-top)) max(1.15rem, env(safe-area-inset-right)) max(2.5rem, env(safe-area-inset-bottom)) max(1.15rem, env(safe-area-inset-left)); }
-    .eyebrow { margin-top:0.5rem; font-size:0.82rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); }
-    h1 { margin:0.5rem 0 1rem; font-size:clamp(1.9rem,7vw,2.6rem); font-weight:900; letter-spacing:-0.04em; line-height:1.05; text-transform:uppercase; }
-    .lead { color:var(--muted); font-size:1.1rem; margin-bottom:1.5rem; }
-    section { padding:1.6rem 0; border-top:1px solid var(--line); }
-    .label { font-size:0.82rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--faint); margin-bottom:0.85rem; }
-    p { color:var(--muted); margin-bottom:0.85rem; font-size:1.08rem; }
-    .row { border:1px solid var(--line); border-radius:12px; padding:0.95rem 1.05rem; margin:0 0 0.65rem; }
-    .row strong { display:block; color:var(--fg); margin-bottom:0.25rem; }
-    .plaque { margin-top:0.75rem; border:1px solid rgba(126,182,255,0.35); border-radius:12px; padding:1rem 1.1rem; }
-    .empty { font-size:1rem; color:var(--muted); font-style:italic; }
-    .note { font-size:0.92rem; color:var(--faint); margin-top:1.5rem; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Founder Board — DualisCapax</title>
+<meta name="theme-color" content="#050505"/>
+<meta name="description" content="The DualisCapax founder board. Seats 1 to 10 are the house. Names in full."/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=IBM+Plex+Mono:wght@600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/glass-tiers.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:#000;color:#f3ead2;min-height:100dvh}
+a{color:#e8c36a;text-decoration:none}
+.quarks{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
+.wrap{position:relative;z-index:1;max-width:42rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) 1.1rem max(2.6rem,env(safe-area-inset-bottom))}
+.top{display:flex;justify-content:space-between;gap:1rem;margin-bottom:1.2rem;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:0.9rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase}
+.plaque{
+  border:3px solid #c9a24a;
+  background:
+    linear-gradient(180deg,rgba(80,58,18,.55),rgba(12,8,2,.92)),
+    repeating-linear-gradient(90deg,rgba(201,162,74,.06) 0 2px,transparent 2px 7px);
+  box-shadow:0 0 0 1px rgba(232,195,106,.25), 0 24px 60px rgba(0,0,0,.55);
+  padding:1.35rem 1.15rem 1.5rem;
+}
+.plaque-head{text-align:center;border-bottom:2px solid rgba(201,162,74,.55);padding-bottom:1rem;margin-bottom:1rem}
+.plaque-kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:1rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#e8c36a}
+.plaque-title{margin:.35rem 0 .2rem;font-size:clamp(2rem,8vw,2.8rem);font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#f7efd6;line-height:1.05}
+.plaque-sub{font-size:1.15rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#e8c36a}
+.seat{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:.35rem 1rem;
+  align-items:start;
+  padding:.85rem 0;
+  border-bottom:1px solid rgba(201,162,74,.28);
+}
+.seat:last-child{border-bottom:0}
+.num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(1.35rem,5vw,1.7rem);font-weight:700;letter-spacing:0.04em;color:#e8c36a;white-space:nowrap;padding-top:.08rem}
+.name{font-size:clamp(1.35rem,5.2vw,1.85rem);font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#f7efd6;line-height:1.15}
+.role{display:block;margin-top:.2rem;font-size:clamp(1.05rem,3.8vw,1.25rem);font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:#d7c38a;line-height:1.25}
+.band{margin-top:1.15rem;padding-top:.85rem;border-top:2px solid rgba(201,162,74,.45);font-size:1.05rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#e8c36a}
+.note{margin:1.2rem 0 0;font-size:1.12rem;font-weight:600;line-height:1.45;color:#d7c38a}
+.cta-row{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.35rem}
+.cta{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;padding:.7rem 1.1rem;border:2px solid #c9a24a;font-size:1.05rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#e8c36a}
+</style>
 </head>
 <body>
-  <div class="shell">
-    <div class="top">
-      <a href="index.html?land=1" class="mark">DualisCapax</a>
-      <div class="top-links"></div>
-    </div>
-    <p class="eyebrow">Foundry</p>
-    <h1>Who gets a seat</h1>
-    <p class="lead">This house is family, then kin, then friend, then the world. That's Dualis. Nobody else has to copy it. Want to argue? Ask Iris.</p>
-    <section>
-      <div class="label">The order</div>
-      <div class="row"><strong>Seats 1 to 5 — Family</strong>Household first.</div>
-      <div class="row"><strong>Seats 6 to 8 — Kin</strong>Blood and the wider house.</div>
-      <div class="row"><strong>Seats 9 to 10 — Friend</strong>Close friends and major allies.</div>
-      <div class="row"><strong>Seat 11 and after</strong>Whoever finishes the join first, after those ten.</div>
-    </section>
-    <section>
-      <div class="label">The board</div>
-      <p>A name goes here after they actually join. Not tonight.</p>
-      <div class="plaque"><p class="empty">No names yet.</p></div>
-    </section>
-    <div class="cta-row cta-2">
-      <a class="cta primary" href="ai/app.html">Ask Iris</a>
-      <a class="cta" href="ai/play.html">Play</a>
-    </div>
-    <p class="note">Dualis is not taking money tonight.</p>
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
+<div class="wrap">
+  <div class="top">
+    <a href="index.html?land=1">Home</a>
+    <a href="look.html">Look</a>
+    <a href="ai/app.html">Iris</a>
   </div>
+
+  <article class="plaque" aria-label="DualisCapax founder board">
+    <header class="plaque-head">
+      <p class="plaque-kicker">DualisCapax Inc.</p>
+      <h1 class="plaque-title">Founder Board</h1>
+      <p class="plaque-sub">Belleville, Ontario</p>
+    </header>
+
+    <p class="band">House — Seats 1 To 10 — Locked</p>
+
+    <div class="seat">
+      <div class="num">SEAT 1</div>
+      <div>
+        <div class="name">David John Di Genova</div>
+        <span class="role">Founder. Architect. The chair does not move.</span>
+      </div>
+    </div>
+    <div class="seat">
+      <div class="num">SEAT 2</div>
+      <div>
+        <div class="name">Giovanni Di Genova</div>
+        <span class="role">Father. Patriarch. Born 20 January 1935.</span>
+      </div>
+    </div>
+    <div class="seat">
+      <div class="num">SEATS 3 TO 5</div>
+      <div>
+        <div class="name">Family</div>
+        <span class="role">Household first. Names go here when they join. Locked after that.</span>
+      </div>
+    </div>
+    <div class="seat">
+      <div class="num">SEATS 6 TO 8</div>
+      <div>
+        <div class="name">Kin</div>
+        <span class="role">Blood and the wider house. Locked.</span>
+      </div>
+    </div>
+    <div class="seat">
+      <div class="num">SEAT 9</div>
+      <div>
+        <div class="name">Denis Poropat</div>
+        <span class="role">Friend of the house.</span>
+      </div>
+    </div>
+    <div class="seat">
+      <div class="num">SEAT 10</div>
+      <div>
+        <div class="name">Friend</div>
+        <span class="role">Close friend or major ally. Locked when named.</span>
+      </div>
+    </div>
+
+    <p class="band">Public Board — Starts At Seat 11</p>
+
+    <div class="seat">
+      <div class="num">SEAT 11</div>
+      <div>
+        <div class="name">First Public Mark</div>
+        <span class="role">One thousand Fuel. First name after the house.</span>
+      </div>
+    </div>
+    <div class="seat">
+      <div class="num">SEATS 12 TO 99</div>
+      <div>
+        <div class="name">Open</div>
+        <span class="role">Step down in order. The middle is not printed.</span>
+      </div>
+    </div>
+    <div class="seat">
+      <div class="num">SEAT 100</div>
+      <div>
+        <div class="name">Last Early Mark</div>
+        <span class="role">One hundred Fuel. After this seat the early window closes.</span>
+      </div>
+    </div>
+
+    <p class="band">Corporate Seats — Sealed Beside The House</p>
+
+    <div class="seat">
+      <div class="num">CORP 1</div>
+      <div>
+        <div class="name">Andrew Kotsovos</div>
+        <span class="role">Managing Director. Kotsovos Brothers Inc. Tomasso's and Jim's.</span>
+      </div>
+    </div>
+    <div class="seat">
+      <div class="num">CORP 2</div>
+      <div>
+        <div class="name">Tom Kotsovos</div>
+        <span class="role">Executive Director. Kotsovos Brothers Inc. Tomasso's and Jim's.</span>
+      </div>
+    </div>
+  </article>
+
+  <p class="note">A name goes on this plaque after the join is finished. Seats 1 to 10 are not replaced by anyone who joins later. Fuel on a public seat is prepaid time, not a share of the company.</p>
+  <div class="cta-row">
+    <a class="cta" href="donate.html">Donate</a>
+    <a class="cta" href="payments.html">Bind</a>
+    <a class="cta" href="ai/app.html">Iris</a>
+  </div>
+</div>
+<script src="js/home-quarks.js"></script>
+<script src="js/no-select.js"></script>
 </body>
 </html>
