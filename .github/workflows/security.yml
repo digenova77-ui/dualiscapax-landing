@@ -1,4 +1,4 @@
-name: Production Security & Invariant CI Gate
+name: "Production Security and Invariant CI Gate"
 
 on:
   push:
@@ -20,16 +20,20 @@ jobs:
             echo "[!] ERROR: Live Stripe secrets detected in client repository! Failing closed."
             exit 1
           fi
-          echo "[\u2713] PASS: Zero exposed secret keys verified."
+          echo "[ok] PASS: Zero exposed secret keys verified."
 
-      - name: Verify Production Payment Configuration (open: true)
+      - name: Verify Production Payment Configuration (open: false)
         run: |
-          echo "[*] Verifying research/payment-links.production.json..."
+          echo "[*] Verifying research/payment-links.production.json remains CLOSED..."
           python3 -c "
           import json
           with open('research/payment-links.production.json') as f:
               data = json.load(f)
-          assert data['meta']['open'] is True, 'Gateway must be OPEN'
+          assert data['meta']['open'] is False, 'Gateway must be CLOSED (open: false)'
+          assert data['meta'].get('access_status') == 'CLOSED'
           assert data['meta']['invariants']['zero_secret_keys_in_client'] is True
-          print('[\u2713] PASS: Production Payment Gateway is ACTIVE and OPEN.')
+          ledger = data['meta'].get('ledger', {})
+          assert ledger.get('LEDGER-EARNED', 0) == 0
+          assert ledger.get('LEDGER-PLEDGED', 0) == 0
+          print('[ok] PASS: Access sales CLOSED; ledgers CAD 0; zero secret keys invariant holds.')
           "
