@@ -13,6 +13,9 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/glass-tiers.css"/>
 <link rel="stylesheet" href="assets/site-lander.css"/>
+<link rel="stylesheet" href="css/holo-depth.css?v=20260901p"/>
+<link rel="stylesheet" href="assets/seat-deck.css?v=20260901p"/>
+<link rel="stylesheet" href="css/bind-center.css?v=20260901p"/>
 </head>
 <body>
 <script>(function(){document.documentElement.classList.add('land-direct');})();</script>
@@ -43,6 +46,7 @@
       <a href="#for-you">For you</a>
       <a href="/for-people.html">The people who pay</a>
       <a href="/onboard.html">Desks</a>
+      <a href="/center.html">Center</a>
       <a href="#measure">Measure</a>
       <a href="/payments.html">Minutes</a>
       <a href="/research/demo/">Demonstration</a>
@@ -57,6 +61,8 @@
         <p class="classif" id="ntp"><span>P</span><span>E</span><span>O</span><span>P</span><span>L</span><span>E</span><span class="gap" aria-hidden="true"></span><span>F</span><span>I</span><span>R</span><span>S</span><span>T</span></p>
         <h1 id="truth">Your taxes should come home</h1>
         <a class="seat-door" href="/onboard.html">Pick your desk</a>
+        <a class="seat-door" href="/center.html">Enter the bind center</a>
+        <p class="law-line" style="margin:.55rem auto 0;max-width:28rem;text-align:center;font-family:&quot;IBM Plex Mono&quot;,ui-monospace,monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(158,197,255,.58);line-height:1.55">Onboard is the goal of every seat. Deeper in a sector, onboard is good for that sector.</p>
       </div>
       <div class="tier tier-jump"><a class="jump" href="#for-you">Read why<span id="peg-clock">How the money comes back</span></a></div>
     </div>
@@ -74,7 +80,17 @@
       <li>Talk to Iris if you want a plain answer. The first conversation is free. If she talks in riddles, tell her to stop.</li>
       <li>Crypto here means locks and signatures you can test, the way you check a receipt. Not a coin. Not a share.</li>
     </ul>
-    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#measure">Measure</a><a href="#bind">Bind</a><a href="/ai/app">Iris</a></nav>
+    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#measure">Measure</a><a href="#bind">Bind</a><a href="/center.html">Center</a><a href="/ai/app">Iris</a></nav>
+  </section>
+  <section class="band" id="center">
+    <p class="kicker">The bind</p>
+    <h2>We are the anything that binds everything</h2>
+    <p>Public API doors, public IP resolvers, and geographic lists stay readable. Private lists stay closed until merit. A look is a receipt on this device. Not a coin. Not a share.</p>
+    <a class="row" href="/center.html"><strong>Open the bind center</strong>Roads, weather, plant, engineering, Mars, health, drip, screens, reactor logic. Onboard remains the goal of the seat you sit in.</a>
+    <div class="seat-stage" style="padding-top:.6rem">
+      <p class="seat-deck-law">Goal · onboard · nation · province · sector · major house · street</p>
+      <div class="seat-table" id="seat-table" data-depth="0"></div>
+    </div>
   </section>
   <section class="band" id="look">
     <p class="kicker">Look</p>
@@ -185,5 +201,8 @@
 <script src="assets/haptic.js"></script>
 <script src="js/home-quarks.js"></script>
 <script src="js/scroll-tiers.js"></script>
+<script src="js/theme-engine.js?v=20260901p"></script>
+<script src="js/seat-deck.js?v=20260901p"></script>
+<script>if (window.DCSeatDeck) DCSeatDeck.boot({ table: "#seat-table" });</script>
 </body>
 </html>
