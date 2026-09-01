@@ -33,9 +33,25 @@ python3 runtime/dualis.py --invite --file ./books.csv
 
 The file never leaves the machine. The printout is a receipt.
 
+## Local echo on the desktop
+
+Open a terminal on the same computer that holds the sheet:
+
+```bash
+python3 runtime/local_echo.py --invite --file ./books.csv
+```
+
+Then open http://127.0.0.1:18771/ in a desktop browser.
+
+That page draws their own numbers as a line chart and a table.
+The server binds 127.0.0.1 only. A forged Host header is refused.
+POST is refused. Close the terminal and the picture is gone.
+Dualis staff cannot see this page.
+
 ## Not this
 
 Not an implant.
 Not a safety-rated PLC.
 Not a claim that Dualis is already on every controller on Earth.
 Not a mined smart-contract settlement until chain write is granted.
+Not a public web dashboard.
