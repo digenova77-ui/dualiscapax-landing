@@ -1,0 +1,27 @@
+{
+  "document_control_id": "ED-SPEC-20260901-MATRIX-CELL-V1",
+  "title": "Double Matrix cell",
+  "description": "One cell holds BIND identifiers plus physical and logical planes. Parallel streams share the cell. Serial state is the stamp and status ratchet. SEALED is integrity only.",
+  "year": "2026",
+  "stamp": "2026-09-01",
+  "source": "encyclopedia/governance_and_protocols/double_matrix_zero_to_one.md",
+  "scientific_validation": false,
+  "required": ["cell_id", "year", "source", "stamp", "status", "hash", "merger", "physical", "logical"],
+  "status_ratchet": ["INDEXED", "CATALOGED", "SOURCED", "REVIEWED", "SEALED", "LIVE"],
+  "merger_states": ["HOLE", "ZERO", "ONE"],
+  "streams": ["bus", "care", "event", "portal", "pt", "sport", "office"],
+  "identity_layers": ["L1_STATUTORY", "L2_DOMAIN", "L3_PASSKEY", "L4_TREASURY", "L5_MERKLE"],
+  "unity_layers": ["L1", "L2", "L3", "L4", "L5", "L6"],
+  "fields": {
+    "cell_id": "BIND id packed into the cell",
+    "year": "four digit year",
+    "source": "file name, domain, or pointer",
+    "stamp": "when the cell seated",
+    "status": "INDEXED through LIVE",
+    "hash": "SHA-256 of the packed planes",
+    "merger": "HOLE or ONE",
+    "pack": "single line holding parallel streams and serial state",
+    "physical": "file, tap, room, bytes",
+    "logical": "device bind, gate, layer"
+  }
+}
