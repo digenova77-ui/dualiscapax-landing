@@ -59,7 +59,7 @@
   function layers() {
     return [
       { id: "L1", name: "Statutory name", hint: "The legal name of the house. We keep a hash, not the name." },
-      { id: "L2", name: "Wire proof", hint: "A domain you control. Optional today." },
+      { id: "L2", name: "Wire proof", hint: "A domain you control. It plugs or it stays a hole. Not optional-maybe." },
       { id: "L3", name: "This device", hint: "Eight-word phrase and optional passkey. No password file." },
       { id: "L4", name: "Treasury", hint: "Stripe, Interac, or crypto — only if you choose Bind." },
       { id: "L5", name: "Seal", hint: "A Merkle hash of this seat. You can copy it. We cannot read you back from it." }
