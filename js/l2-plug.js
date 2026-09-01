@@ -32,6 +32,7 @@
 
   function clear() {
     localStorage.removeItem(KEY);
+    if (w.DCMatrix && typeof w.DCMatrix.clear === "function") w.DCMatrix.clear();
   }
 
   function refuse(reason, extra) {
@@ -53,7 +54,14 @@
     row.stays = "device";
     row.scientific_validation = false;
     row.ts = now();
-    return save(row);
+    var saved = save(row);
+    if (w.DCMatrix && typeof w.DCMatrix.merge === "function") {
+      return w.DCMatrix.merge(saved).then(function (cell) {
+        saved.matrix = cell;
+        return save(saved);
+      });
+    }
+    return saved;
   }
 
   function parseTable(text) {
@@ -70,7 +78,7 @@
         if (isFinite(n) && String(cells[c]).search(/[0-9]/) >= 0) numbers += 1;
       }
     }
-    return { numbers: numbers, headers: headers, residualNamed: labeledTotal };
+    return { numbers: numbers, headers: headers, residualNamed: labeledTotal, rows: Math.max(0, lines.length - 1) };
   }
 
   async function plugFile(file) {
@@ -91,6 +99,7 @@
         name: name,
         bytes: file.size,
         hash: hash,
+        headers: [],
         numbers: 0,
         residual_named: false,
         residual_unit: "SEED",
@@ -119,6 +128,7 @@
       name: name,
       bytes: file.size,
       hash: hash,
+      headers: stats.headers || [],
       numbers: stats.numbers,
       residual_named: !!stats.residualNamed,
       residual_unit: stats.residualNamed ? "NAMED" : "SEED"
@@ -140,6 +150,7 @@
       kind: "books_url",
       domain: parsed.host,
       hash: hash,
+      headers: [],
       numbers: 0,
       residual_named: false,
       residual_unit: "SEED",
