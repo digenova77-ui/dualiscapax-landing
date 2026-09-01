@@ -1,15 +1,20 @@
 /**
  * AV V2 jacket. Does not replace IrisLive / DCLMLook / dcApi.
- * Attaches hologram + DSAP + device AV to the existing chat path.
+ * Attaches hologram mood + DSAP + device AV to the existing chat path.
  */
 (function (w) {
-  var VERSION = "av-bridge-v2-2026-09-01";
+  var VERSION = "av-bridge-v2-2026-09-01-b";
   var FUEL_LINE = "We need more fuel boss if you want to ride any further.";
   var mounted = false;
 
   function fuelEmpty(text) {
     var t = String(text || "");
     return /403|429|insufficient|out of credits|no credits|empty tank|quota/i.test(t);
+  }
+
+  function mood(name) {
+    if (w.HoloSense && HoloSense.pulse) HoloSense.pulse(name);
+    else if (w.IrisHolo && IrisHolo.setMood) IrisHolo.setMood(name);
   }
 
   function caps() {
@@ -25,11 +30,20 @@
 
   function speak(text) {
     var line = String(text || "");
-    if (fuelEmpty(line)) line = FUEL_LINE;
+    if (fuelEmpty(line)) {
+      line = FUEL_LINE;
+      mood("lost");
+    } else {
+      mood("intend");
+    }
     if (w.IrisHolo) {
       w.IrisHolo.setSpeaking(true);
       w.IrisHolo.setEnergy(0.8);
-      setTimeout(function () { w.IrisHolo.setSpeaking(false); w.IrisHolo.setEnergy(0.22); }, Math.min(8000, 80 * line.length));
+      setTimeout(function () {
+        w.IrisHolo.setSpeaking(false);
+        w.IrisHolo.setEnergy(0.22);
+        mood("rest");
+      }, Math.min(8000, 80 * line.length));
     }
     if (w.IrisAV && w.IrisAV.speak) w.IrisAV.speak(line);
     else if (w.speechSynthesis) {
@@ -52,7 +66,17 @@
     if (!w.dcApi || w.dcApi.__avHooked) return;
     var orig = w.dcApi.chat.bind(w.dcApi);
     w.dcApi.chat = function (messages, opts) {
-      return orig(messages, decorateChatOpts(opts));
+      mood("curious");
+      return orig(messages, decorateChatOpts(opts)).then(function (res) {
+        var txt = (res && (res.text || res.content || res.message)) || "";
+        if (fuelEmpty(txt)) mood("lost");
+        else if (/\?\s*$/.test(txt) || /not sure|don't know|do not know|unclear/i.test(txt)) mood("lost");
+        else mood("agree");
+        return res;
+      }).catch(function (err) {
+        mood("lost");
+        throw err;
+      });
     };
     w.dcApi.__avHooked = true;
   }
@@ -69,17 +93,19 @@
           cam.classList.toggle("on", !!(res && res.live));
           cam.setAttribute("aria-pressed", res && res.live ? "true" : "false");
           if (w.IrisHolo) w.IrisHolo.bindVideo(document.getElementById("you"));
-        }).catch(function () {});
+          if (res && res.live) mood("curious");
+        }).catch(function () { mood("lost"); });
       });
     }
     if (talk && w.IrisAV) {
       talk.addEventListener("click", function () {
         var on = !talk.classList.contains("on");
         if (w.IrisHolo) w.IrisHolo.setListening(on);
+        mood(on ? "listen" : "rest");
         w.IrisAV.mic(on).then(function (res) {
           talk.classList.toggle("on", !!(res && res.live));
           talk.setAttribute("aria-pressed", res && res.live ? "true" : "false");
-        }).catch(function () {});
+        }).catch(function () { mood("lost"); });
       });
     }
     if (screenBtn && w.IrisAV) {
@@ -88,7 +114,8 @@
         w.IrisAV.screen(on).then(function (res) {
           screenBtn.classList.toggle("on", !!(res && res.live));
           screenBtn.setAttribute("aria-pressed", res && res.live ? "true" : "false");
-        }).catch(function () {});
+          if (res && res.live) mood("curious");
+        }).catch(function () { mood("lost"); });
       });
     }
     if (hear) {
@@ -128,7 +155,8 @@
     speak: speak,
     caps: caps,
     fuelLine: FUEL_LINE,
-    decorate: decorateChatOpts
+    decorate: decorateChatOpts,
+    mood: mood
   };
 
   if (document.readyState === "loading") {

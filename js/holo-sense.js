@@ -1,10 +1,9 @@
 /**
- * Holo sense. One energy drives depth, space, tone, and tap.
- * Twig on iris-hologram. Does not replace it.
- * Caps itself on small glass and reduced motion.
+ * Holo sense. One energy drives depth, space, tone, tap, and mood.
+ * Twig on iris-hologram. Does not replace it. Not a person.
  */
 (function (w) {
-  var VERSION = "holo-sense-2026-09-01-c";
+  var VERSION = "holo-sense-2026-09-01-d";
   var ctx = null;
   var oscA = null;
   var oscB = null;
@@ -82,7 +81,6 @@
       filt = ctx.createBiquadFilter();
       filt.type = "lowpass";
       filt.frequency.value = 380;
-      filt.Q.value = 0.7;
       panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
       delay = ctx.createDelay(1.2);
       delay.delayTime.value = 0.22;
@@ -90,8 +88,6 @@
       delayGain.gain.value = 0.12;
       comp = ctx.createDynamicsCompressor();
       comp.threshold.value = -28;
-      comp.knee.value = 18;
-      comp.ratio.value = 6;
       oscA = ctx.createOscillator();
       oscB = ctx.createOscillator();
       oscC = ctx.createOscillator();
@@ -113,19 +109,10 @@
       gain.connect(delay);
       delay.connect(delayGain);
       delayGain.connect(gain);
-      if (panner) {
-        gain.connect(panner);
-        panner.connect(comp);
-      } else {
-        gain.connect(comp);
-      }
+      if (panner) { gain.connect(panner); panner.connect(comp); }
+      else gain.connect(comp);
       comp.connect(ctx.destination);
-      try {
-        oscA.start();
-        oscB.start();
-        oscC.start();
-        noise.start();
-      } catch (e) {}
+      try { oscA.start(); oscB.start(); oscC.start(); noise.start(); } catch (e) {}
       unlocked = true;
       return true;
     }).catch(function () { return false; });
@@ -143,39 +130,41 @@
     oscA.frequency.linearRampToValueAtTime(48 + energy * 28, now + 0.12);
     oscB.frequency.linearRampToValueAtTime(72 + energy * 48, now + 0.12);
     oscC.frequency.linearRampToValueAtTime(144 + energy * 96, now + 0.12);
-    delay.delayTime.linearRampToValueAtTime(0.16 + energy * 0.28, now + 0.14);
     return energy;
   }
 
   function tap(kind) {
     if (!navigator.vibrate) return false;
     if (kind === "listen") navigator.vibrate([16, 28, 16, 28, 40]);
-    else if (kind === "speak") navigator.vibrate([10, 14, 10, 14, 10, 14, 36]);
+    else if (kind === "agree") navigator.vibrate([12, 18, 12, 18, 28]);
+    else if (kind === "lost") navigator.vibrate([30, 40, 18, 40, 30]);
+    else if (kind === "curious") navigator.vibrate([8, 16, 8, 16, 8]);
+    else if (kind === "intend") navigator.vibrate([10, 14, 10, 14, 10, 14, 36]);
     else if (kind === "seat") navigator.vibrate([22, 18, 44]);
-    else if (kind === "look") navigator.vibrate([6, 20, 6]);
     else navigator.vibrate(10);
     return true;
   }
 
   function pulse(kind) {
-    if (kind === "listen") {
-      setEnergy(0.62);
-      if (w.IrisHolo && IrisHolo.setListening) IrisHolo.setListening(true);
-      tap("listen");
-    } else if (kind === "speak") {
-      setEnergy(0.9);
-      if (w.IrisHolo && IrisHolo.setSpeaking) IrisHolo.setSpeaking(true);
-      tap("speak");
-    } else if (kind === "seat") {
-      setEnergy(0.74);
-      tap("seat");
-    } else if (kind === "rest") {
-      setEnergy(0.18);
-      if (w.IrisHolo) {
-        if (IrisHolo.setSpeaking) IrisHolo.setSpeaking(false);
-        if (IrisHolo.setListening) IrisHolo.setListening(false);
-      }
+    var map = {
+      listen: ["listen", 0.62],
+      agree: ["agree", 0.7],
+      lost: ["lost", 0.34],
+      curious: ["curious", 0.58],
+      intend: ["intend", 0.88],
+      speak: ["intend", 0.9],
+      seat: ["agree", 0.74],
+      rest: ["rest", 0.18]
+    };
+    var row = map[kind] || map.rest;
+    if (w.IrisHolo && IrisHolo.setMood) IrisHolo.setMood(row[0]);
+    setEnergy(row[1]);
+    if (kind === "listen" && w.IrisHolo && IrisHolo.setListening) IrisHolo.setListening(true);
+    if (kind === "rest" && w.IrisHolo) {
+      if (IrisHolo.setSpeaking) IrisHolo.setSpeaking(false);
+      if (IrisHolo.setListening) IrisHolo.setListening(false);
     }
+    tap(kind === "speak" ? "intend" : kind);
     return energy;
   }
 
@@ -184,11 +173,8 @@
     var wellEl = document.getElementById("holo-well");
     if (!wellEl) return;
     var t = performance.now() / 1000;
-    var z = -80 - energy * 220;
-    var rx = leanY * 8;
-    var ry = leanX * 10;
     wellEl.style.transform =
-      "translateZ(" + z + "px) rotateX(" + rx + "deg) rotateY(" + ry + "deg) rotateZ(" + (t * 2.2) + "deg)";
+      "translateZ(" + (-80 - energy * 220) + "px) rotateX(" + (leanY * 8) + "deg) rotateY(" + (leanX * 10) + "deg) rotateZ(" + (t * 2.2) + "deg)";
     if (panner) panner.pan.value = Math.max(-0.85, Math.min(0.85, leanX));
     if (unlocked && energy > 0.7 && navigator.vibrate && (t - buzz) > 1.6) {
       navigator.vibrate(8);
@@ -240,7 +226,7 @@
 
   w.HoloSense = {
     version: VERSION,
-    law: "ONE_ENERGY_FOUR_SENSES",
+    law: "ONE_ENERGY_MOOD_SENSES",
     mount: mount,
     unlock: unlock,
     setEnergy: setEnergy,
