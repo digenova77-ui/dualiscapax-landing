@@ -1,0 +1,10 @@
+name = "dualiscapax-iris-gateway"
+main = "index.js"
+compatibility_date = "2026-08-30"
+workers_dev = true
+
+[vars]
+IRIS_MODEL = "grok-2-latest"
+IRIS_MAX_CHARS = "4000"
+IRIS_MAX_TOKENS = "1024"
+ALLOWED_ORIGINS = "https://dualiscapax.ai,https://www.dualiscapax.ai,http://localhost:8787,http://127.0.0.1:8787"
