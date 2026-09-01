@@ -1,1 +1,65 @@
-PLACEHOLDER
+/* Public depth only. Cards sit nearest. Field stays far. No private-layer names on the glass. */
+:root{
+  --z-void: 0;
+  --z-field: 1;
+  --z-copy: 8;
+  --z-hall: 60;
+  --z-card: 180;
+  --z-door: 260;
+}
+html{
+  background: #020308;
+}
+body{
+  perspective: 1800px;
+  perspective-origin: 50% 18%;
+}
+canvas.quarks,
+.quarks{
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-void);
+  pointer-events: none;
+  opacity: .42;
+  filter: blur(.35px) saturate(.7) brightness(.55);
+}
+.site{
+  position: relative;
+  z-index: var(--z-copy);
+}
+.seat-stage{
+  position: relative;
+  z-index: var(--z-hall);
+  perspective: 1600px;
+  perspective-origin: 50% 20%;
+  transform-style: preserve-3d;
+}
+.seat-table,
+.seat-row{
+  transform-style: preserve-3d;
+  position: relative;
+  z-index: var(--z-card);
+}
+.seat-card{
+  z-index: var(--z-card);
+}
+.seat-door,
+.seat-deep,
+#seat-deep{
+  position: relative;
+  z-index: var(--z-door);
+}
+.iris-mark{
+  z-index: var(--z-door);
+}
+@media (prefers-reduced-motion: reduce){
+  body,
+  .seat-stage{
+    perspective: none;
+  }
+  canvas.quarks,
+  .quarks{
+    filter: none;
+    opacity: .28;
+  }
+}

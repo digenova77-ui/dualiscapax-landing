@@ -1,34 +1,76 @@
-/* Glass goes back. Hologram and geodesic are the nearest plane. Copy stays readable. */
+/* Field back. Hall forward. Copy readable. Cards nearest. */
 :root{
   --z-void: 0;
   --z-glass: 1;
   --z-copy: 10;
   --z-holo: 1200;
 }
-canvas.quarks,.quarks,.tears,.pane-art,#holo-well{
+canvas.quarks,
+.quarks,
+.tears,
+.pane-art,
+#holo-well{
   z-index: var(--z-void);
-  transform: translateZ(-2400px) scale(1.42);
-  filter: saturate(1.25) brightness(.58);
+  transform: translateZ(-2800px) scale(1.18);
+  filter: saturate(.65) brightness(.48);
 }
-.pane.glass,.topbar .hud-foot,.panel,.plate{
+.pane.glass,
+.topbar .hud-foot,
+.panel,
+.plate{
   z-index: var(--z-glass);
-  transform: translateZ(-900px) scale(0.94);
-  filter: blur(0.45px) brightness(.78);
+  transform: translateZ(-700px) scale(0.96);
+  filter: blur(0.2px) brightness(.82);
 }
-.site,.pane-copy,header,nav,h1,h2,p,.lede,.step{
+.site,
+.pane-copy,
+header,
+nav,
+h1,
+h2,
+p,
+.lede,
+.step{
   position: relative;
   z-index: var(--z-copy);
-  transform: translateZ(16px);
+  transform: translateZ(8px);
 }
-.tier-geo,.geo-wrap,#geo-earth,.seat-door,#iris-stage,.iris-holo,.iris-mark,#holo,#holo-stage,.holo-front{
+.seat-stage,
+.seat-table,
+.seat-row,
+.seat-card,
+.seat-door,
+.tier-geo,
+.geo-wrap,
+#geo-earth,
+#iris-stage,
+.iris-holo,
+.iris-mark,
+#holo,
+#holo-stage,
+.holo-front{
   position: relative;
   z-index: var(--z-holo);
-  transform: translateZ(720px);
-  filter: drop-shadow(0 40px 90px rgba(80,160,255,.7));
+  transform: translateZ(640px);
+  filter: drop-shadow(0 28px 70px rgba(80,160,255,.35));
   pointer-events: auto;
 }
+.seat-card{
+  filter: drop-shadow(0 18px 40px rgba(0,0,0,.55));
+}
 @media (prefers-reduced-motion: reduce){
-  canvas.quarks,.quarks,.tears,.pane.glass,.iris-holo,.panel,.plate,.site,.tier-geo,.geo-wrap{
+  canvas.quarks,
+  .quarks,
+  .tears,
+  .pane.glass,
+  .iris-holo,
+  .panel,
+  .plate,
+  .site,
+  .tier-geo,
+  .geo-wrap,
+  .seat-stage,
+  .seat-card{
     transform: none;
     filter: none;
   }
