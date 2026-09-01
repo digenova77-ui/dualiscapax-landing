@@ -1,6 +1,6 @@
-/** Presence orb sleeve. Loads field, mute, and encyclopedia power. */
+/** Presence orb sleeve. Loads field, mute, book power, voice mute. */
 (function (w) {
-  var VERSION = "presence-orb-2026-09-01-h";
+  var VERSION = "presence-orb-2026-09-01-i";
   function load(src) {
     if (document.querySelector('script[src="' + src + '"]')) return;
     var s = document.createElement("script");
@@ -27,6 +27,7 @@
     load("js/iris-materialize.js");
     load("js/viewer-mute.js");
     load("js/ency-power.js");
+    load("js/voice-mute.js");
     return VERSION;
   }
   w.DCOrb = { version: VERSION, law: "PRESENCE_ORB", mount: mount };
