@@ -1,6 +1,6 @@
-/** Presence orb sleeve. Loads inflection before the field speaks. */
+/** Presence orb sleeve. Loads inflection, field, pour, and mute. */
 (function (w) {
-  var VERSION = "presence-orb-2026-09-01-f";
+  var VERSION = "presence-orb-2026-09-01-g";
   function load(src) {
     if (document.querySelector('script[src="' + src + '"]')) return;
     var s = document.createElement("script");
@@ -25,6 +25,7 @@
     load("js/sprite-read.js");
     load("js/present-field.js");
     load("js/iris-materialize.js");
+    load("js/viewer-mute.js");
     return VERSION;
   }
   w.DCOrb = { version: VERSION, law: "PRESENCE_ORB", mount: mount };
