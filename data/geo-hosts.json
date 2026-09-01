@@ -1,0 +1,19 @@
+{
+  "packet": "ED-GEO-20260901-HOSTS-V1",
+  "stamp": "2026-09-01T21:15:00Z",
+  "note": "Known public hosts only. Private access lists are merit-gated and never printed here. An IP on this page is a public door, not a person.",
+  "local_cell": {"host": "127.0.0.1", "role": "device echo", "path": "/runtime/local_echo.html", "access": "this device"},
+  "public_hosts": [
+    {"id": "house-depth", "label": "House depth", "geo": "edge", "host": "dualiscapax-depth.digenova77.workers.dev", "role": "API", "access": "public look · depth needs fuel or BYOK"},
+    {"id": "house-fulfill", "label": "House fulfill", "geo": "edge", "host": "dualiscapax-stripe-fulfill-v2.digenova77.workers.dev", "role": "API", "access": "signed webhook only"},
+    {"id": "weather-ca", "label": "Canada weather", "geo": "Canada", "host": "api.weather.gc.ca", "role": "public weather", "access": "open government"},
+    {"id": "open-meteo", "label": "Open-Meteo", "geo": "world", "host": "api.open-meteo.com", "role": "public weather", "access": "open"},
+    {"id": "nasa", "label": "NASA public", "geo": "Mars desk / sky", "host": "api.nasa.gov", "role": "public mission data", "access": "open with their key"},
+    {"id": "osm", "label": "OpenStreetMap", "geo": "roads", "host": "nominatim.openstreetmap.org", "role": "public map", "access": "open · fair use"}
+  ],
+  "private_lists": [
+    {"id": "merit-ward", "label": "Ward drip list", "geo": "Ontario hospital desks", "state": "HELD", "count": 0, "rule": "Merit is invert-or-nothing on the device. A purchase does not open this list. A plaque does not open this list."},
+    {"id": "merit-plant", "label": "Plant trip list", "geo": "licensed civil floors", "state": "HELD", "count": 0, "rule": "Held is not open. Crown wet-ink only for a crown desk."},
+    {"id": "merit-geo", "label": "Known private ranges", "geo": "named when the desk binds", "state": "HELD", "count": 0, "rule": "No person list is published. Geography is named only after merit."}
+  ]
+}
