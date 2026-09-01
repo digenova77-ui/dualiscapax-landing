@@ -1,0 +1,33 @@
+/* Glass goes back. Hologram comes forward. Copy stays readable. */
+:root{
+  --z-void: 0;
+  --z-glass: 1;
+  --z-copy: 4;
+  --z-holo: 80;
+}
+canvas.quarks,.quarks,.tears,.pane-art{
+  z-index: var(--z-void);
+  transform: translateZ(-160px) scale(1.04);
+  filter: saturate(1.15);
+}
+.pane.glass,.topbar,.hud{
+  z-index: var(--z-glass);
+  transform: translateZ(-48px);
+}
+.site,.pane-copy,header,nav,h1,h2,p,.lede,.step{
+  position: relative;
+  z-index: var(--z-copy);
+}
+.iris-holo,.iris-mark,#iris-stage,.holo-front{
+  position: relative;
+  z-index: var(--z-holo);
+  transform: translateZ(120px);
+  filter: drop-shadow(0 0 28px rgba(158,197,255,.35));
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce){
+  canvas.quarks,.quarks,.tears,.pane.glass,.iris-holo{
+    transform: none;
+    filter: none;
+  }
+}
