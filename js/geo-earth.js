@@ -142,11 +142,14 @@ const bodyGeo=new THREE.IcosahedronGeometry(R, GEO_DETAIL);
 const body=new THREE.Mesh(
   bodyGeo,
   new THREE.MeshPhongMaterial({
-    color:0x000000,
-    emissive:new THREE.Color(0x05070c),
+    color:0x071018,
+    emissive:new THREE.Color(0x08101c),
     specular:new THREE.Color(0x2a3a55),
     shininess:26,
-    flatShading:true
+    flatShading:true,
+    transparent:true,
+    opacity:0.22,
+    depthWrite:false
   })
 );
 body.renderOrder=1;
@@ -183,24 +186,6 @@ const shell=new THREE.Mesh(
 );
 shell.renderOrder=2;
 group.add(shell);
-
-const facePaint=document.createElement('canvas');
-facePaint.width=1024;facePaint.height=256;
-{
-  const c=facePaint.getContext('2d');
-  c.clearRect(0,0,1024,256);
-  paintBand(c, 512, 128, 96);
-}
-const faceTex=new THREE.CanvasTexture(facePaint);
-faceTex.colorSpace=THREE.SRGBColorSpace;
-const face=new THREE.Mesh(
-  new THREE.PlaneGeometry(1.38,0.31),
-  new THREE.MeshBasicMaterial({map:faceTex,transparent:true,depthWrite:false,side:THREE.DoubleSide})
-);
-face.position.set(0,0,R+0.05);
-face.rotation.y=Math.PI;
-face.renderOrder=6;
-group.add(face);
 
 function makeDotTex(hex){
   const c=document.createElement('canvas');c.width=64;c.height=64;
