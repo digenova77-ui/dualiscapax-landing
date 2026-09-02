@@ -1,16 +1,18 @@
 /**
- * Iris AV V2 sleeve — camera, mic, screen, DSAP spatial voice.
+ * Iris AV V2.1 sleeve — camera, mic, screen, DSAP spatial voice.
  * Jacket only. Does not replace IrisLive / DCLMLook.
+ * Not a cloned voice. Not a codec. Not photoreal.
  */
 (function (w) {
-  var VERSION = "iris-av-v2-2026-09-01";
+  var VERSION = "iris-av-v2.1-2026-09-01";
   var state = {
     cam: null,
     mic: null,
     screen: null,
     rec: null,
     speaking: false,
-    spatial: false
+    spatial: false,
+    voicesReady: false
   };
 
   function err(msg) {
@@ -21,43 +23,91 @@
     el.textContent = msg;
   }
 
+  function emit(kind, extra) {
+    state.speaking = kind === "start";
+    try {
+      w.dispatchEvent(new CustomEvent("irisav", { detail: { kind: kind, extra: extra || null } }));
+    } catch (e) {}
+  }
+
+  function scoreVoice(v) {
+    var n = (v.name || "").toLowerCase();
+    var lang = (v.lang || "").toLowerCase();
+    var s = 0;
+    if (/^en/.test(lang)) s += 8;
+    if (/en-ca/.test(lang)) s += 4;
+    if (/en-us|en-gb/.test(lang)) s += 2;
+    if (/neural|premium|natural|enhanced/.test(n)) s += 6;
+    if (/samantha|daniel|aria|jenny|google uk|google us|siri/.test(n)) s += 3;
+    if (v.localService) s += 1;
+    if (/compact|eloquence|novelty/.test(n)) s -= 4;
+    return s;
+  }
+
   function studioVoice() {
     if (!w.speechSynthesis) return null;
     var list = w.speechSynthesis.getVoices() || [];
-    var want = list.filter(function (v) {
-      var n = (v.name || "").toLowerCase();
-      var lang = (v.lang || "").toLowerCase();
-      return /en/.test(lang) && /(natural|premium|samantha|daniel|google uk|google us|microsoft aria|neural)/.test(n);
-    });
-    return want[0] || list.filter(function (v) { return /^en/.test(v.lang || ""); })[0] || list[0] || null;
+    if (!list.length) return null;
+    var ranked = list.slice().sort(function (a, b) { return scoreVoice(b) - scoreVoice(a); });
+    return ranked[0] && scoreVoice(ranked[0]) > 0 ? ranked[0] : list[0];
+  }
+
+  function warmVoices() {
+    if (!w.speechSynthesis) return;
+    var list = w.speechSynthesis.getVoices() || [];
+    if (list.length) state.voicesReady = true;
   }
 
   function hearOn() {
     var hear = document.getElementById("hear");
-    if (!hear) return true;
+    if (!hear) return false;
     return hear.classList.contains("on");
   }
 
   function speak(text) {
     if (!text) return;
+    if (!hearOn()) return;
+    var line = String(text).replace(/\s+/g, " ").trim().slice(0, 900);
+    if (!line) return;
+
     if (w.DSAP && DSAP.unlock) {
       DSAP.unlock().then(function () {
+        if (!hearOn()) return;
         state.spatial = true;
-        DSAP.speakField(text);
+        if (DSAP.speakField) DSAP.speakField(line);
       }).catch(function () {});
     }
     if (!w.speechSynthesis) return;
-    if (!hearOn()) return;
-    var u = new SpeechSynthesisUtterance(String(text).slice(0, 900));
+
+    var u = new SpeechSynthesisUtterance(line);
     var voice = studioVoice();
     if (voice) u.voice = voice;
+    u.lang = (voice && voice.lang) || "en-CA";
     u.rate = 0.98;
-    u.pitch = 0.96;
+    u.pitch = 1;
     u.volume = 1;
-    state.speaking = true;
-    u.onend = function () { state.speaking = false; };
-    w.speechSynthesis.cancel();
+    u.onstart = function () { emit("start", line); };
+    u.onend = function () {
+      emit("end");
+      if (w.DSAP && DSAP.stop) DSAP.stop();
+    };
+    u.onerror = function () {
+      emit("error");
+      if (w.DSAP && DSAP.stop) DSAP.stop();
+    };
+    try { w.speechSynthesis.cancel(); } catch (e) {}
     w.speechSynthesis.speak(u);
+    if (!state.voicesReady) {
+      setTimeout(function () {
+        if (state.speaking || !hearOn()) return;
+        var again = studioVoice();
+        if (again && again !== voice) {
+          try { w.speechSynthesis.cancel(); } catch (e2) {}
+          u.voice = again;
+          w.speechSynthesis.speak(u);
+        }
+      }, 180);
+    }
   }
 
   async function camera(on) {
@@ -91,6 +141,7 @@
       state.rec = null;
       if (state.mic) state.mic.getTracks().forEach(function (t) { t.stop(); });
       state.mic = null;
+      emit("listen-off");
       return { live: false, kind: "mic" };
     }
     var SR = w.SpeechRecognition || w.webkitSpeechRecognition;
@@ -114,9 +165,11 @@
           talk.classList.remove("on");
           talk.setAttribute("aria-pressed", "false");
         }
+        emit("listen-off");
       };
       state.rec = rec;
       rec.start();
+      emit("listen-on");
       err("");
       return { live: true, kind: "mic-speech" };
     }
@@ -125,6 +178,7 @@
       return { live: false, kind: "mic" };
     }
     state.mic = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    emit("listen-on");
     err("Mic is live. Speech-to-text is not on this browser — type the words.");
     return { live: true, kind: "mic-stream" };
   }
@@ -179,9 +233,9 @@
     camera(false);
     mic(false);
     screen(false);
-    if (w.speechSynthesis) w.speechSynthesis.cancel();
+    if (w.speechSynthesis) try { w.speechSynthesis.cancel(); } catch (e) {}
     if (w.DSAP && DSAP.cleanup) DSAP.cleanup();
-    state.speaking = false;
+    emit("end");
   }
 
   function greet(line) {
@@ -189,6 +243,19 @@
     speak(text);
     return text;
   }
+
+  if (w.speechSynthesis) {
+    warmVoices();
+    w.speechSynthesis.addEventListener("voiceschanged", warmVoices);
+  }
+  w.addEventListener("pagehide", function () { stopAll(); });
+  w.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      if (w.speechSynthesis) try { w.speechSynthesis.cancel(); } catch (e) {}
+      if (w.DSAP && DSAP.stop) DSAP.stop();
+      emit("end");
+    }
+  });
 
   w.IrisAV = {
     version: VERSION,
@@ -202,6 +269,4 @@
     greet: greet,
     unlock: function () { return w.DSAP && DSAP.unlock ? DSAP.unlock() : Promise.resolve(null); }
   };
-
-  w.addEventListener("pagehide", function () { stopAll(); });
 })(window);
