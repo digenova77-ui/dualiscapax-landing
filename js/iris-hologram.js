@@ -1,9 +1,10 @@
 /**
  * Iris hologram — wave, sun-orb, sprite, or field.
- * Viewer chooses the clothes. Not a person. Not someone else's character.
+ * Depth AGAINST the glass: layer 1 at the pane, then down into the volume.
+ * Nothing rises off the glass. Not a person. Not a projector.
  */
 (function (w) {
-  var VERSION = "iris-hologram-2026-09-01-leather";
+  var VERSION = "iris-hologram-2026-09-01-depth-down";
   var canvas = null;
   var ctx = null;
   var raf = 0;
@@ -98,7 +99,21 @@
     ctx.stroke();
   }
 
+  function drawFarField(t, W, H, par) {
+    var cx = W * (0.5 + lookX * 0.02 * par);
+    var cy = H * (0.5 + lookY * 0.015 * par);
+    var R = Math.min(W, H) * 0.42;
+    var s;
+    for (s = 7; s >= 3; s--) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * s / 8, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(158,197,255," + (0.045 + energy * 0.04) + ")";
+      ctx.stroke();
+    }
+  }
+
   function drawOrb(t, W, H) {
+    drawFarField(t, W, H, 1);
     var cx = W * (0.5 + lookX * 0.06);
     var cy = H * (0.48 + lookY * 0.05 + (nod > 0 ? Math.sin(t * 7.4) * 0.05 : 0));
     var R = Math.min(W, H) * (0.28 + energy * 0.14) * (1 + Math.sin(t * 1.4) * 0.03);
@@ -128,14 +143,15 @@
 
   function drawField(t, W, H) {
     var cx = W * 0.5, cy = H * 0.5, R = Math.min(W, H) * 0.28;
-    for (var s = 8; s >= 1; s--) {
+    var s, i, a;
+    for (s = 8; s >= 1; s--) {
       ctx.beginPath();
       ctx.arc(cx, cy, R * s / 8, 0, Math.PI * 2);
       ctx.strokeStyle = "rgba(158,197,255,0.12)";
       ctx.stroke();
     }
-    for (var i = 0; i < 36; i++) {
-      var a = i / 36 * Math.PI * 2 + t * 0.2;
+    for (i = 0; i < 36; i++) {
+      a = i / 36 * Math.PI * 2 + t * 0.2;
       ctx.fillStyle = "rgba(226,232,255,0.55)";
       ctx.beginPath();
       ctx.arc(cx + Math.cos(a) * R, cy + Math.sin(a) * R * 0.55, 2, 0, Math.PI * 2);
