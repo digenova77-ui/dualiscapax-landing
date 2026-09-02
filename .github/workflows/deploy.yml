@@ -25,11 +25,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Rebuild plates on this side
-        run: 
-          set -e
-
-
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
