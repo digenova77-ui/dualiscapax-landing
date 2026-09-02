@@ -1,208 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" class="land-direct">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>DualisCapax · Your taxes should come home</title>
-<meta name="description" content="Tools so a government desk, a clinic, a school, a shop, or a household can see where public money leaked — and send what they recover back into the work."/>
-<meta name="theme-color" content="#05070d"/>
-<link rel="manifest" href="manifest.webmanifest"/>
-<link rel="apple-touch-icon" href="brand/logo-mark-light.svg"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="DualisCapax"/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="assets/glass-tiers.css"/>
-<link rel="stylesheet" href="assets/site-lander.css"/>
-<link rel="stylesheet" href="css/holo-depth.css?v=20260901p"/>
-<link rel="stylesheet" href="assets/seat-deck.css?v=20260901p"/>
-<link rel="stylesheet" href="css/bind-center.css?v=20260901p"/>
+<title>DualisCapax</title>
+<meta name="description" content="What if leftover public money came home. Pick a desk, invert a claim, or leave."/>
+<meta name="theme-color" content="#020308"/>
+<link rel="stylesheet" href="css/porch.css"/>
 </head>
 <body>
-<script>(function(){document.documentElement.classList.add('land-direct');})();</script>
-<div class="site" id="site">
-  <canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
-  <div class="tears" aria-hidden="true">
-    <i class="tear t1" style="left:8%;top:18%"></i>
-    <i class="tear t2" style="left:78%;top:12%"></i>
-    <i class="tear t3" style="left:18%;top:68%"></i>
-    <i class="tear t4" style="left:86%;top:58%"></i>
-    <i class="tear t5" style="left:48%;top:8%"></i>
-    <i class="tear t6" style="left:62%;top:76%"></i>
-  </div>
-  <div class="topbar" id="hud-dock">
-    <div class="hud" aria-label="Public books HUD">
-      <div class="hud-row">
-        <div class="hud-cell"><span class="hud-k">Status</span><span class="hud-v" id="uptime">Open</span></div>
-        <div class="hud-cell"><span class="hud-k">Books</span><span class="hud-v" id="earned">On device</span></div>
-        <div class="hud-cell"><span class="hud-k">Desks</span><span class="hud-v" id="singularity-cd">Nation–street</span></div>
-      </div>
-      <div class="hud-rail" aria-hidden="true"><div class="hud-fill" id="hud-fill"></div></div>
-      <div class="hud-act"><a class="hud-donate" href="/donate.html">Give</a><a class="hud-onboard" href="/onboard.html">Pick a desk</a></div>
-      <div class="hud-foot" id="hud-foot">A card is not a contract</div>
-    </div>
-    <button type="button" class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel"><span></span><span></span><span></span></button>
-    <nav class="nav-panel" id="nav-panel" aria-label="Primary" hidden>
-      <a href="#top">Home</a>
-      <a href="#for-you">For you</a>
-      <a href="/for-people.html">The people who pay</a>
-      <a href="/onboard.html">Desks</a>
-      <a href="/center.html">Center</a>
-      <a href="#measure">Measure</a>
-      <a href="/payments.html">Minutes</a>
-      <a href="/research/demo/">Demonstration</a>
-      <a href="/ai/app">Iris</a>
-      <a href="/donate.html">Give</a>
-    </nav>
-  </div>
-  <section class="hero" id="top">
-    <div class="stack">
-      <div class="tier tier-geo"><div class="geo-wrap"><canvas id="geo-earth" width="512" height="512" aria-label="DualisCapax"></canvas></div></div>
-      <div class="tier tier-copy">
-        <p class="classif" id="ntp"><span>P</span><span>E</span><span>O</span><span>P</span><span>L</span><span>E</span><span class="gap" aria-hidden="true"></span><span>F</span><span>I</span><span>R</span><span>S</span><span>T</span></p>
-        <h1 id="truth">Your taxes should come home</h1>
-        <a class="seat-door" href="/onboard.html">Pick your desk</a>
-        <a class="seat-door" href="/center.html">Enter the bind center</a>
-        <p class="law-line" style="margin:.55rem auto 0;max-width:28rem;text-align:center;font-family:&quot;IBM Plex Mono&quot;,ui-monospace,monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(158,197,255,.58);line-height:1.55">Onboard is the goal of every seat. Deeper in a sector, onboard is good for that sector.</p>
-      </div>
-      <div class="tier tier-jump"><a class="jump" href="#for-you">Read why<span id="peg-clock">How the money comes back</span></a></div>
-    </div>
-  </section>
-  <div class="scroll-stage">
-  <div class="pane glass is-on">
-    <div class="pane-art" aria-hidden="true"><img src="brand/emblem-helix.svg" alt=""/></div>
-    <div class="pane-copy">
-  <section class="band" id="for-you">
-    <p class="kicker">For the people who pay</p>
-    <h2>You paid. The work should show up.</h2>
-    <ul>
-      <li>Taxes and premiums already left your account. A case file, a blocked bed, a plow waiting on a part, a family that gets help in spring and a bill in fall — those leftovers stack.</li>
-      <li>DualisCapax measures leak on the books a desk already keeps. Recovered dollars go back into the work: beds, buses, case time, parts, household bills.</li>
-      <li>Talk to Iris if you want a plain answer. The first conversation is free. If she talks in riddles, tell her to stop.</li>
-      <li>Crypto here means locks and signatures you can test, the way you check a receipt. Not a coin. Not a share.</li>
-    </ul>
-    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="#look">Look</a><a href="#measure">Measure</a><a href="#bind">Bind</a><a href="/center.html">Center</a><a href="/ai/app">Iris</a></nav>
-  </section>
-  <section class="band" id="center">
-    <p class="kicker">The bind</p>
-    <h2>We are the anything that binds everything</h2>
-    <p>Public API doors, public IP resolvers, and geographic lists stay readable. Private lists stay closed until merit. A look is a receipt on this device. Not a coin. Not a share.</p>
-    <a class="row" href="/center.html"><strong>Open the bind center</strong>Roads, weather, plant, engineering, Mars, health, drip, screens, reactor logic. Onboard remains the goal of the seat you sit in.</a>
-    <div class="seat-stage" style="padding-top:.6rem">
-      <p class="seat-deck-law">Goal · onboard · nation · province · sector · major house · street</p>
-      <div class="seat-table" id="seat-table" data-depth="0"></div>
-    </div>
-  </section>
-  <section class="band" id="look">
-    <p class="kicker">Look</p>
-    <h2>Open the doors</h2>
-    <p>Start anywhere. You do not have to read in order. If you are twelve, start with Iris. If you want the hard math, jump to research.</p>
-    <a class="row" href="/ai/app"><strong>Talk to Iris</strong>A real conversation. Free. She answers in the first person and keeps it short.</a>
-    <a class="row" href="/research/"><strong>Health notes</strong>Working notes on bodies and strain. Open research you can read and check.</a>
-    <a class="row" href="#measure"><strong>Operations</strong>How a long shift, a plant, or a warehouse actually holds together.</a>
-    <a class="row" href="/research/"><strong>Mathematics</strong>Problems you can check. Claims that have to survive a test.</a>
-  </section>
-  <section class="band" id="measure">
-    <p class="kicker">Measure</p>
-    <h2>See the number. Then decide.</h2>
-    <p>A school board overtime file. A hospital discharge queue. A city intake desk. A plant shift sheet. We write one figure you can read out loud. If it will not stand on that sheet, nothing is owed.</p>
-    <div class="closed"><strong>A card is not a contract.</strong> Prepaid minutes are optional on <a href="/payments.html">payments</a>. A gift to the notebooks is Donate. Access to the deep tools stays closed until you choose it.</div>
-  </section>
-  <section class="band" id="bind">
-    <p class="kicker">Prepaid minutes</p>
-    <h2>Time you can stop</h2>
-    <p>Prepaid minutes are time on the tools. Unused minutes stay with you. This is not a share of the company and not a signed deal with a ministry.</p>
-    <div class="packs">
-      <a class="pack" href="/payments.html"><div class="cad">CAD $20</div><div class="amt">40 Fuel</div><div class="sub">Trial</div></a>
-      <a class="pack" href="/payments.html"><div class="cad">CAD $50</div><div class="amt">120 Fuel</div><div class="sub">Practice</div></a>
-      <a class="pack" href="/payments.html"><div class="cad">CAD $120</div><div class="amt">320 Fuel</div><div class="sub">Retain</div></a>
-    </div>
-  </section>
-  <section class="band" id="founding">
-    <p class="kicker">House</p>
-    <h2>The house stays the house</h2>
-    <p>Seats 1 to 10 are the people who built this. They do not move. Nothing here is a public offering.</p>
-  </section>
-  <section class="band" id="finance">
-    <p class="kicker">Crypto and finance</p>
-    <h2>Cryptography first. Markets second.</h2>
-    <p>Crypto here is the original meaning: secret-keeping that can be proven.</p>
-  </section>
-  <section class="band" id="edge">
-    <p class="kicker">New machines</p>
-    <h2>Software now. Hardware next.</h2>
-    <p>First the surface. Then the proof. Then the hardware.</p>
-  </section>
-  <section class="band" id="ai">
-    <p class="kicker">AI you can talk to</p>
-    <h2>Iris is already here</h2>
-    <p>Iris is the DualisCapax agent. Talk to her.</p>
-    <nav class="sec-break" aria-label="Jump"><a href="#top">Top</a><span class="dim">·</span><a href="/ai/app">Iris</a></nav>
-  </section>
-    </div>
-  </div>
-  </div>
-  <div class="foot">DualisCapax · measure the waste · put the dollars back into the work</div>
-  <a class="iris-mark" href="/ai/app">Iris</a>
-</div>
-<script>
-(function(){
-  var burger=document.getElementById('burger');
-  var panel=document.getElementById('nav-panel');
-  if(!burger||!panel)return;
-  function setOpen(open){
-    burger.setAttribute('aria-expanded',open?'true':'false');
-    burger.setAttribute('aria-label',open?'Close menu':'Open menu');
-    panel.classList.toggle('is-open',open);
-    if(open)panel.removeAttribute('hidden');else panel.setAttribute('hidden','');
-  }
-  burger.addEventListener('click',function(e){e.stopPropagation();setOpen(burger.getAttribute('aria-expanded')!=='true')});
-  document.addEventListener('click',function(e){if(!panel.classList.contains('is-open'))return;if(panel.contains(e.target)||burger.contains(e.target))return;setOpen(false)});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
-  panel.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setOpen(false)})});
-})();
-</script>
-<script>
-(function(){
-  var h=document.getElementById('truth');
-  var c=document.getElementById('ntp');
-  if(!h||!c)return;
-  function lock(){
-    var w=Math.ceil(h.getBoundingClientRect().width);
-    if(w>0)c.style.width=w+'px';
-  }
-  lock();
-  window.addEventListener('resize',lock);
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(lock);
-})();
-</script>
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
-<script type="module" src="js/geo-earth.js"></script>
-<script src="js/founding-grant.js"></script>
-<script>
-(function(){
-  var upEl = document.getElementById('uptime');
-  var earnedEl = document.getElementById('earned');
-  var singEl = document.getElementById('singularity-cd');
-  var pegEl = document.getElementById('peg-clock');
-  var hudFoot = document.getElementById('hud-foot');
-  var hudFill = document.getElementById('hud-fill');
-  function tick(){
-    if (upEl) upEl.textContent = 'Open';
-    if (earnedEl) earnedEl.textContent = 'On device';
-    if (singEl) singEl.textContent = 'Nation–street';
-    if (pegEl) pegEl.textContent = 'How the money comes back';
-    if (hudFoot) hudFoot.textContent = 'A card is not a contract';
-    if (hudFill) hudFill.style.width = '42%';
-  }
-  tick();
-})();
-</script>
-<script src="js/civic-face.js"></script>
-<script src="assets/haptic.js"></script>
-<script src="js/home-quarks.js"></script>
-<script src="js/scroll-tiers.js"></script>
-<script src="js/theme-engine.js?v=20260901p"></script>
-<script src="js/seat-deck.js?v=20260901p"></script>
-<script>if (window.DCSeatDeck) DCSeatDeck.boot({ table: "#seat-table" });</script>
+<a class="skip" href="#doors">Skip to doors</a>
+<main class="site" id="top">
+  <p class="eyebrow">DualisCapax</p>
+  <h1>What if leftover came home?</h1>
+  <p class="lede">A desk can measure leak on books it already keeps. You do not need an account. You can leave.</p>
+  <nav class="doors" id="doors" aria-label="Three doors">
+    <a class="door" href="/onboard.html">Desk<span>Pick a seat. Onboard stays the goal.</span></a>
+    <a class="door" href="/invert.html">Invert<span>Walk a claim back to its source.</span></a>
+    <a class="door leave" href="/leave.html">Leave<span>Nothing is owed. Close the tab if you want.</span></a>
+  </nav>
+</main>
 </body>
 </html>
