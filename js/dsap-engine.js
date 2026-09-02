@@ -1,20 +1,12 @@
 /**
- * DSAP-1.0 holographic spatial audio engine — browser sleeve.
+ * DSAP-1.0 holographic spatial audio engine — browser sleeve + felt roar.
  * Spec: encyclopedia/governance_and_protocols/dclm_dsap_holographic_spatial_audio_protocol_and_engine_spec.md
  *
- * Working subset that runs on current Chrome / Safari / Firefox:
- *   - 64-point speaker ring (360° / 64 = 5.625°)
- *   - PannerNode HRTF + ITD/ILD approximation
- *   - Proximity bass exciter under 1.2 m
- *   - Anechoic wet mix α = 0.998 (almost dry; tiny room tail)
- *   - Speech routed as a spatial presence field beside SpeechSynthesis
- *   - Fail closed: if AudioContext is blocked, engine stays silent (HOST_SAFE)
- *
- * Does not claim a sealed KEMAR measurement set is embedded.
- * Does not claim sub-15 ms WebTransport until that rail is bound.
+ * Felt layer: proximity bass under 0.4 m while speaking. Word pulses on the ring.
+ * Not a codec. Not KEMAR. Not WebTransport.
  */
 (function (w) {
-  var VERSION = "dsap-1.0-sleeve-2026-09-01";
+  var VERSION = "dsap-1.0-felt-2026-09-01";
   var SPEAKERS = 64;
   var STEP = 360 / SPEAKERS;
   var ALPHA = 0.998;
@@ -32,6 +24,7 @@
   var ready = false;
   var lastAz = 0;
   var lastDist = 1.6;
+  var felt = false;
 
   function lawFloor() {
     return Object.freeze({
@@ -123,7 +116,16 @@
     var d = Math.max(0.2, dist);
     lastDist = d;
     var near = d < PROX_M ? (PROX_M - d) / PROX_M : 0;
-    bassGain.gain.setTargetAtTime(near * 0.08, ctx ? ctx.currentTime : 0, 0.08);
+    var amp = felt ? 0.16 : 0.08;
+    bassGain.gain.setTargetAtTime(near * amp, ctx ? ctx.currentTime : 0, 0.08);
+  }
+
+  function setFelt(on) {
+    felt = !!on;
+    setProximity(felt ? 0.38 : 1.6);
+    if (bass && ctx) {
+      try { bass.frequency.setTargetAtTime(felt ? 36 : 42, ctx.currentTime, 0.12); } catch (e) {}
+    }
   }
 
   function pulse(az, dist, ms) {
@@ -134,9 +136,10 @@
     if (!node) return;
     var now = ctx.currentTime;
     var dur = Math.max(0.08, (ms || 420) / 1000);
+    var peak = felt ? 0.28 : 0.22;
     node.gain.gain.cancelScheduledValues(now);
     node.gain.gain.setValueAtTime(0.0001, now);
-    node.gain.gain.exponentialRampToValueAtTime(0.22, now + 0.03);
+    node.gain.gain.exponentialRampToValueAtTime(peak, now + 0.03);
     node.gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
   }
 
@@ -170,12 +173,26 @@
     }
   }
 
+  function roar(text) {
+    setFelt(true);
+    var words = String(text || "").split(/\s+/).filter(Boolean);
+    var n = Math.min(48, Math.max(4, words.length));
+    for (var i = 0; i < n; i++) {
+      (function (k) {
+        setTimeout(function () {
+          pulse((k * 23 + lastAz) % 360, 0.38, 130 + Math.min(80, (words[k] || "").length * 8));
+        }, k * 88);
+      })(i);
+    }
+  }
+
   function unlock() {
     return ensure();
   }
 
   function stop() {
     if (!ready) return;
+    felt = false;
     try {
       ring.forEach(function (n) { n.gain.gain.setTargetAtTime(0, ctx.currentTime, 0.05); });
       if (bassGain) bassGain.gain.setTargetAtTime(0, ctx.currentTime, 0.05);
@@ -197,6 +214,8 @@
     pulse: pulse,
     tone: tone,
     speakField: speakField,
+    roar: roar,
+    setFelt: setFelt,
     setProximity: setProximity,
     stop: stop,
     cleanup: cleanup,
@@ -206,6 +225,7 @@
         ctx: ctx ? ctx.state : "none",
         az: lastAz,
         dist: lastDist,
+        felt: felt,
         speakers: SPEAKERS
       };
     }
