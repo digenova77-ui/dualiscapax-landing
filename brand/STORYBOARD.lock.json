@@ -1,18 +1,17 @@
 {
-  "rule": "mutate only with consensus",
-  "photos": "HOLD",
-  "slot4_photo": "MISSING /brand/world-geo.svg",
-  "globe": "slot 4 only",
-  "words_sha256": "0a98486fa8033ec4ddb54d47413322a156759dd67f23bfdfbca702f38d515fde",
+  "frozen": true,
+  "consensus": "required to change title, line, or slot order",
+  "photos": "HOLD until owner files; slot 4 file missing",
+  "roster": "d98e40c7f065441aecb75a850c9b3474d1e120e8c755f485cac25c54f9d572b2",
   "beats": [
-    {"i":1,"title":"Meet","line":"Two people. That\u2019s the start."},
-    {"i":2,"title":"People","line":"People you actually know."},
-    {"i":3,"title":"Work","line":"A team in the middle of it."},
-    {"i":4,"title":"Out","line":"The city."},
-    {"i":5,"title":"School","line":"Drop-off. Real morning."},
-    {"i":6,"title":"Huddle","line":"Before the play."},
-    {"i":7,"title":"One","line":"One person getting better."},
-    {"i":8,"title":"Lab","line":"Hands in the job."},
-    {"i":9,"title":"Street","line":"A street with people on it."}
+    {"i":1,"title":"Meet","line":"Two people. That\u2019s the start.","src":"https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80","photo":"HOLD","sha256":"5db7daef55937d4a78eeec46b860ca0e25847941c04aec963423f75ac3edef92"},
+    {"i":2,"title":"People","line":"People you actually know.","src":"https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1920&q=80","photo":"HOLD","sha256":"f04068718610502b6a72db7a82821017aa5f8ef90f39b736ffa2a8410604a61b"},
+    {"i":3,"title":"Work","line":"A team in the middle of it.","src":"https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80","photo":"HOLD","sha256":"7133327c44a52e961a70b6519881ff0d376276b759cccb867cc1944678163479"},
+    {"i":4,"title":"Out","line":"The city.","src":"/brand/world-geo.svg","photo":"MISSING","sha256":"506b4257d97cfa4f6b3948ff2194e0f809f6eadc39c4be9ee9ae761c8c8a2462"},
+    {"i":5,"title":"School","line":"Drop-off. Real morning.","src":"https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80","photo":"HOLD","sha256":"70cd62d8b342ee7eac5f230d0232e9a399ac6dec72a8e14018862fbc866cb5a7"},
+    {"i":6,"title":"Huddle","line":"Before the play.","src":"https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1920&q=80","photo":"HOLD","sha256":"c134da18a2013a2e0c9218fd8395ebe12fc89d841861ffbaff6d0bfa51d78c76"},
+    {"i":7,"title":"One","line":"One person getting better.","src":"https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1920&q=80","photo":"HOLD","sha256":"d38f8fa404eef3589e5ad34e306fdea3cf2ea35fa38046dcb7303f1cc53d7d9c"},
+    {"i":8,"title":"Lab","line":"Hands in the job.","src":"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80","photo":"HOLD","sha256":"e325b9c72ff34f98f9fcbdf0e081978e8d5988b43109f61b56157b41deeadfd1"},
+    {"i":9,"title":"Street","line":"A street with people on it.","src":"https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1920&q=80","photo":"HOLD","sha256":"beb288dbb4ef30eca04e98b08ef78dc99a9280689b16df7769c7a99fd40a34c3"}
   ]
 }
