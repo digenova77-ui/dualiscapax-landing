@@ -15,17 +15,20 @@
 :root{--bg:#050508;--fg:#f4f4f5;--muted:rgba(244,244,245,.55);--line:rgba(158,197,255,.18);--blue:#9ec5ff;--you:rgba(158,197,255,.14)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
-body{height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
+body{height:100dvh;display:grid;grid-template-rows:auto auto 1fr auto}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 header{display:flex;align-items:center;gap:.6rem;min-height:3rem;padding:env(safe-area-inset-top) max(.85rem,env(safe-area-inset-right)) 0 max(.85rem,env(safe-area-inset-left));border-bottom:1px solid var(--line);background:#050508}
 .brand{display:flex;align-items:center;min-width:0;text-decoration:none;color:inherit}
 .brand img{height:1.2rem;width:auto;display:block}
 .who{margin-left:.2rem;font:600 .68rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.presence{width:2.2rem;height:2.2rem;flex:0 0 2.2rem;border:1px solid var(--line);overflow:hidden;background:#000}
-.presence canvas{display:block;width:100%;height:100%}
 .tools{margin-left:auto;display:flex;gap:.35rem}
 .tools button{width:2.2rem;height:2.2rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .72rem "IBM Plex Mono",ui-monospace,monospace}
 .tools button.on{border-color:var(--blue);color:var(--blue)}
+.feel{display:grid;grid-template-columns:5.6rem 1fr;gap:.7rem;align-items:center;min-height:4.4rem;padding:.4rem max(1rem,env(safe-area-inset-right)) .45rem max(1rem,env(safe-area-inset-left));border-bottom:1px solid var(--line);background:#050508}
+.presence{width:5.6rem;height:4rem;border:1px solid var(--line);overflow:hidden;background:#000}
+.presence canvas{display:block;width:100%;height:100%}
+.caption{min-width:0;font:500 .84rem/1.4 "IBM Plex Sans",system-ui,sans-serif;color:var(--muted);max-height:3.6rem;overflow:hidden}
+.caption[hidden]{display:none}
 .log{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:1rem max(1rem,env(safe-area-inset-right)) 1rem max(1rem,env(safe-area-inset-left));display:flex;flex-direction:column;gap:.65rem}
 .bubble{max-width:min(34rem,92%);padding:.85rem 1rem;font-size:1.12rem;line-height:1.55}
 .bubble.them{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid var(--line)}
@@ -49,12 +52,13 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
   textarea{font-size:1.14rem;min-height:52px}
   form button{width:48px;height:48px}
   .tools button{width:2.4rem;height:2.4rem}
-  .presence{width:2.4rem;height:2.4rem;flex-basis:2.4rem}
   .who{font-size:.78rem}
   .chips button{font-size:.85rem;padding:.55rem .8rem}
+  .caption{font-size:.9rem}
 }
 @media (prefers-reduced-motion:reduce){
   .presence{display:none}
+  .feel{grid-template-columns:1fr;min-height:0}
 }
 </style>
 </head>
@@ -62,13 +66,16 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
 <a class="sr" href="#input">Skip to message</a>
 <header>
   <a class="brand" href="/index.html?land=1"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who" id="who">Iris</span></a>
-  <div class="presence" id="presence" aria-hidden="true" title="Presence orb — not a person"></div>
   <div class="tools">
     <button type="button" id="hear" aria-pressed="false" aria-label="Voice off. Tap to hear Iris.">♪</button>
     <button type="button" id="cam" aria-pressed="false" aria-label="Open camera">□</button>
     <button type="button" id="wipe" aria-label="Clear chat">×</button>
   </div>
 </header>
+<div class="feel" id="feel">
+  <div class="presence" id="presence" aria-hidden="true" title="Voice as a wave. Not a person."></div>
+  <p class="caption" id="caption" hidden></p>
+</div>
 <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Iris conversation">
   <div class="stage" id="stage"><video id="you" autoplay muted playsinline aria-label="Live camera"></video></div>
 </div>
@@ -91,13 +98,13 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
 </div>
 <script src="/js/no-select.js"></script>
 <script src="/assets/haptic.js"></script>
-<script src="/js/api-config.js?v=31e"></script>
-<script src="/js/api-unified.js?v=31e"></script>
-<script src="dclm-look.js?v=31e"></script>
-<script src="iris-live.js?v=31e"></script>
-<script src="/js/dsap-engine.js?v=31e"></script>
-<script src="/js/iris-av.js?v=31e"></script>
-<script src="/js/iris-hologram.js?v=31e"></script>
+<script src="/js/api-config.js?v=31f"></script>
+<script src="/js/api-unified.js?v=31f"></script>
+<script src="dclm-look.js?v=31f"></script>
+<script src="iris-live.js?v=31f"></script>
+<script src="/js/dsap-engine.js?v=31f"></script>
+<script src="/js/iris-av.js?v=31f"></script>
+<script src="/js/iris-hologram.js?v=31f"></script>
 <script>
 (function(){
   if(navigator.serviceWorker){
@@ -107,10 +114,16 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
   var errEl=document.getElementById("err");
   var input=document.getElementById("input");
   var chips=document.getElementById("chips");
+  var cap=document.getElementById("caption");
+  var feel=document.getElementById("feel");
   var lastSpoken="";
   var vision={live:false};
   var stream=null;
   var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  try{
+    var lock={rate:0.98,pitch:0.96,kind:"device-voice"};
+    localStorage.setItem("dc-iris-voice",JSON.stringify(lock));
+  }catch(e){}
   if(!reduce && window.IrisHolo && IrisHolo.mount){
     IrisHolo.mount("#presence");
     IrisHolo.setForm("orb");
@@ -122,26 +135,46 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
     return !!(hear&&hear.classList.contains("on"));
   }
   function showErr(m){ if(!m){errEl.hidden=true;errEl.textContent="";return;} errEl.hidden=false;errEl.textContent=m; }
-  function paintVoice(on){
-    if(!(window.IrisHolo)) return;
-    IrisHolo.setSpeaking(!!on);
-    IrisHolo.setEnergy(on?0.72:0.22);
-    IrisHolo.setMood(on?"intend":"rest");
+  function feelVoice(on,text){
+    var line=String(text||lastSpoken||"");
+    if(cap){
+      if(on&&line){ cap.hidden=false; cap.textContent=line; }
+      else if(!line){ cap.hidden=true; cap.textContent=""; }
+    }
+    var ann=document.getElementById("announce");
+    if(ann&&on&&line) ann.textContent=line;
+    if(window.IrisHolo){
+      IrisHolo.setForm(on?"wave":"orb");
+      IrisHolo.setSpeaking(!!on);
+      IrisHolo.setEnergy(on?Math.min(0.92,0.38+line.length/280):0.22);
+      IrisHolo.setMood(on?"intend":"rest");
+    }
+    if(window.DSAP){
+      if(DSAP.setProximity) DSAP.setProximity(on?0.42:1.6);
+      if(on&&DSAP.pulse) DSAP.pulse(0,0.42,220);
+      if(!on&&DSAP.stop) DSAP.stop();
+    }
+    if(on&&!reduce&&navigator.vibrate){
+      try{ navigator.vibrate([16,28,16,40,22]); }catch(e){}
+    }
   }
   function voiceOut(text){
     if(!text||!hearOn()) return;
-    paintVoice(true);
+    feelVoice(true,text);
     if(window.IrisAV&&IrisAV.unlock) IrisAV.unlock();
-    if(window.IrisAV&&IrisAV.speak) IrisAV.speak(text);
-    else if(window.speechSynthesis){
+    if(window.IrisAV&&IrisAV.speak){
+      IrisAV.speak(text,function(){ feelVoice(false); });
+      return;
+    }
+    if(window.speechSynthesis){
       var u=new SpeechSynthesisUtterance(String(text).slice(0,900));
-      u.rate=1.02;
-      u.onend=function(){ paintVoice(false); };
+      u.rate=0.98; u.pitch=0.96;
+      u.onend=function(){ feelVoice(false); };
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
       return;
     }
-    setTimeout(function(){ paintVoice(false); }, Math.min(8000, 400+String(text).length*40));
+    setTimeout(function(){ feelVoice(false); }, Math.min(8000,400+String(text).length*40));
   }
   function addBubble(who,text,href,label){
     var d=document.createElement("div");
@@ -184,8 +217,9 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
     log.querySelectorAll(".bubble").forEach(function(b){b.remove();});
     lastSpoken=""; showErr(""); if(chips) chips.style.display="";
     if(window.speechSynthesis) window.speechSynthesis.cancel();
-    if(window.DSAP&&DSAP.stop) DSAP.stop();
-    paintVoice(false);
+    if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
+    feelVoice(false);
+    if(cap){ cap.hidden=true; cap.textContent=""; }
   });
   document.getElementById("hear").addEventListener("click",function(){
     var b=document.getElementById("hear");
@@ -198,7 +232,7 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
     }else{
       if(window.speechSynthesis) window.speechSynthesis.cancel();
       if(window.DSAP&&DSAP.stop) DSAP.stop();
-      paintVoice(false);
+      feelVoice(false);
     }
   });
   document.getElementById("cam").addEventListener("click",function(){
@@ -240,11 +274,25 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
       if(window.IrisHolo){
         IrisHolo.setListening(live);
         IrisHolo.setMood(live?"listen":"rest");
+        IrisHolo.setForm(live?"wave":"orb");
       }
     }).catch(function(){ showErr("Mic blocked."); });
   });
+  if(feel){
+    feel.addEventListener("pointermove",function(e){
+      if(!window.IrisHolo||!IrisHolo.lookAt) return;
+      var r=feel.getBoundingClientRect();
+      var x=((e.clientX-r.left)/Math.max(1,r.width))*2-1;
+      var y=((e.clientY-r.top)/Math.max(1,r.height))*2-1;
+      IrisHolo.lookAt(x,y);
+    },{passive:true});
+  }
+  window.addEventListener("pagehide",function(){
+    if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
+    if(window.IrisHolo&&IrisHolo.stop) IrisHolo.stop();
+  });
   document.getElementById("filebtn").addEventListener("click",function(){document.getElementById("file").click();});
-  addBubble("them","Hi. I'm Iris. Tap the note if you want me to speak. Ask about DualisCapax, Fuel, Donate, Bind, or research.");
+  addBubble("them","Hi. I'm Iris. Tap the note if you want to feel the voice. Ask about DualisCapax, Fuel, Donate, Bind, or research.");
 })();
 </script>
 </body>
