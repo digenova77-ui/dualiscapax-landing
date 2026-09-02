@@ -1,10 +1,11 @@
 /**
- * Iris AV V2 sleeve — camera, mic, screen, DSAP spatial voice.
+ * Iris AV V2 sleeve — camera, mic, screen, DSAP unlock.
  * Jacket only. Does not replace IrisLive / DCLMLook.
- * Not a cloned voice. Browser speechSynthesis + spatial field.
+ * Dry words: speechSynthesis only. Felt layer is the house's job, once.
+ * Not a cloned voice. Not a codec.
  */
 (function (w) {
-  var VERSION = "iris-av-v2-2026-09-01-leather";
+  var VERSION = "iris-av-v2-2026-09-01-dry";
   var state = {
     cam: null,
     mic: null,
@@ -48,10 +49,7 @@
       return;
     }
     if (w.DSAP && DSAP.unlock) {
-      DSAP.unlock().then(function () {
-        state.spatial = true;
-        if (DSAP.speakField) DSAP.speakField(text);
-      }).catch(function () {});
+      DSAP.unlock().then(function () { state.spatial = true; }).catch(function () {});
     }
     if (!w.speechSynthesis) {
       if (done) done();
