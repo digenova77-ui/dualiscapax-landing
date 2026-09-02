@@ -23,3 +23,35 @@ body:has(.pipe.out) .word{
   transform:scale(1);
   transition:transform .42s cubic-bezier(.16,.84,.28,1), filter .42s ease;
 }
+.said{
+  position:fixed;
+  left:max(1.15rem,env(safe-area-inset-left));
+  bottom:max(1.2rem,env(safe-area-inset-bottom));
+  z-index:8;
+  margin:0;
+  max-width:min(72vw,28rem);
+  color:#fff;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity .35s ease, transform .35s ease;
+  text-shadow:0 1px 18px rgba(0,0,0,.72);
+}
+body:has(.pipe.out) .said{
+  opacity:1;
+  transform:none;
+}
+.said strong{
+  display:block;
+  font:600 clamp(1.35rem,4.2vw,2.35rem)/1.05 system-ui,sans-serif;
+  letter-spacing:.03em;
+}
+.said span{
+  display:block;
+  margin-top:.28rem;
+  font:400 clamp(.82rem,1.7vw,1.05rem)/1.35 system-ui,sans-serif;
+  opacity:.88;
+}
+.world.shift ~ .said{
+  opacity:0;
+}
