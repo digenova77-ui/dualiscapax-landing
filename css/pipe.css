@@ -39,11 +39,13 @@ a{color:inherit;text-decoration:none}
 }
 .leave:hover{color:#fff}
 
+/* Camera lives here. Do not put overflow:hidden on this node — it flattens preserve-3d. */
 .pipe{
-  --lx:0;--ly:0;
+  --lx:0;--ly:0;--z:-800px;--s:1;
   position:relative;height:100dvh;background:#000;
-  perspective:1100px;perspective-origin:50% 48%;
-  overflow:hidden;cursor:crosshair;
+  perspective:1100px;
+  perspective-origin:50% 48%;
+  cursor:crosshair;
 }
 .weather{
   position:absolute;inset:0;z-index:2;
@@ -52,6 +54,7 @@ a{color:inherit;text-decoration:none}
 .tunnel{
   position:absolute;inset:0;z-index:1;
   transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
   transform:rotateX(calc(var(--ly)*-6deg)) rotateY(calc(var(--lx)*6deg));
   transition:filter .18s linear,opacity .7s ease;
   will-change:transform;
@@ -67,8 +70,10 @@ a{color:inherit;text-decoration:none}
     0 0 28px rgba(59,130,246,.08),
     inset 0 0 40px rgba(232,195,106,.04),
     inset 0 0 2px rgba(96,165,250,.25);
-  transform:translateZ(var(--z)) scale(var(--s,1));
+  transform-origin:50% 50%;
+  transform:translateZ(var(--z,-800px)) scale(var(--s,1));
   transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
 }
 .ring::before{
   content:"";
@@ -126,15 +131,22 @@ a{color:inherit;text-decoration:none}
   pointer-events:none;
 }
 
-.stream{position:absolute;inset:0;z-index:4;transform-style:preserve-3d;pointer-events:none;transition:opacity .5s ease}
+.stream{
+  position:absolute;inset:0;z-index:4;
+  transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
+  pointer-events:none;
+  transition:opacity .5s ease;
+}
 .station{
   position:absolute;left:50%;top:48%;
   width:min(42vw,280px);height:auto;
-  transform:translate3d(-50%,-50%,var(--z)) rotateY(calc(var(--lx)*3deg));
+  transform:translate3d(-50%,-50%,var(--z,-900px)) rotateY(calc(var(--lx)*3deg));
   border-radius:8px;opacity:0;pointer-events:none;
   box-shadow:0 0 40px rgba(0,0,0,.5);
 }
 
+/* Iris is a 2D mask. No translateZ — that fought the tunnel. */
 .iris{
   position:absolute;left:50%;top:48%;z-index:5;
   width:min(52vmax,620px);height:min(52vmax,620px);
@@ -148,7 +160,6 @@ a{color:inherit;text-decoration:none}
     0 0 0 6px rgba(232,195,106,.12),
     0 0 60px rgba(59,130,246,.15),
     inset 0 0 80px rgba(0,0,0,.6);
-  transform:translateZ(40px);
 }
 .iris::before{
   content:"";
