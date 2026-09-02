@@ -23,13 +23,18 @@ a{color:#e8c36a;text-decoration:none}
 .seat{display:grid;grid-template-columns:auto 1fr auto;gap:.35rem .8rem;align-items:start;padding:.85rem 0;border-bottom:1px solid rgba(201,162,74,.28)}
 .seat:last-child{border-bottom:0}
 .num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:1.05rem;font-weight:700;color:#e8c36a;white-space:nowrap;padding-top:.2rem}
+.name-row{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
 .name{font-size:clamp(1.15rem,4.2vw,1.55rem);font-weight:700;letter-spacing:0.03em;text-transform:uppercase;color:#f7efd6;line-height:1.15}
+.title-tag{font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:lowercase;color:#e8c36a;opacity:.92}
 .role{display:block;margin-top:.2rem;font-size:1rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:#d7c38a}
 .serial{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.82rem;letter-spacing:.08em;color:#e8c36a}
+.unity{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;letter-spacing:.1em;color:#9ec5ff;margin-top:.15rem}
 .amt{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.9rem;font-weight:700;color:#f7efd6;white-space:nowrap}
 .band{margin-top:1.15rem;padding-top:.85rem;border-top:2px solid rgba(201,162,74,.45);font-size:1.05rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#e8c36a}
 .note{margin:1.2rem 0 0;font-size:1.08rem;font-weight:600;line-height:1.45;color:#d7c38a}
 .cta{display:inline-flex;margin:.4rem .5rem 0 0;min-height:3rem;padding:.7rem 1.1rem;border:2px solid #c9a24a;font-size:1.05rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#e8c36a}
+.geo{width:18px;height:18px;flex-shrink:0;display:inline-block;vertical-align:middle;animation:spin 7s linear infinite;filter:drop-shadow(0 0 3px rgba(158,197,255,.55))}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -59,11 +64,15 @@ a{color:#e8c36a;text-decoration:none}
 <script src="js/no-select.js"></script>
 <script>
 (function(){
+  var GEO = '<svg class="geo" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none" stroke="#9ec5ff" stroke-width="1.1"><circle cx="12" cy="12" r="9.2"/><ellipse cx="12" cy="12" rx="9.2" ry="3.4"/><ellipse cx="12" cy="12" rx="9.2" ry="3.4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.2" ry="3.4" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="1.4" fill="#e8c36a" stroke="none"/></g></svg>';
   var box = document.getElementById('board');
   if (!window.DCFounders || !box) return;
   box.innerHTML = DCFounders.seats.map(function(s){
     var who = s.ledger === 'WHITE' ? s.name : 'Black ledger';
-    return '<div class="seat"><div class="num">SEAT '+s.seat+'</div><div><div class="name">'+who+'</div><span class="role">'+s.role+'</span><div class="serial">'+s.serial+' · '+s.ledger+'</div></div><div class="amt">$'+s.measure.toLocaleString('en-CA')+'</div></div>';
+    var title = s.title ? '<span class="title-tag"> · '+s.title+'</span>' : '';
+    var geo = s.geodesic ? GEO : '';
+    var unity = s.unityId ? '<div class="unity">Unity ID · '+s.unityId+'</div>' : '';
+    return '<div class="seat"><div class="num">SEAT '+s.seat+'</div><div><div class="name-row">'+geo+'<div class="name">'+who+'</div>'+title+'</div><span class="role">'+s.role+'</span><div class="serial">'+s.serial+' · '+s.ledger+'</div>'+unity+'</div><div class="amt">$'+s.measure.toLocaleString('en-CA')+'</div></div>';
   }).join('');
 })();
 </script>
