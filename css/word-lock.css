@@ -7,7 +7,6 @@
   display:block;
   width:100%;
   height:auto;
-  filter:drop-shadow(0 1px 0 #000) drop-shadow(0 0 14px rgba(0,0,0,.75));
 }
 body:has(.pipe.out) .word{
   left:max(.75rem,env(safe-area-inset-left));
@@ -15,15 +14,12 @@ body:has(.pipe.out) .word{
   max-width:min(28vw,220px);
   opacity:.5;
 }
-body:has(.pipe.out) .word .lockup{
-  filter:drop-shadow(0 1px 3px rgba(0,0,0,.55));
-}
 .world.shift{
-  filter:blur(22px) saturate(1.2) brightness(1.14) !important;
-  transform:scale(1.16) !important;
+  filter:blur(22px);
+  transform:scale(1.16);
 }
 .world.land{
-  filter:blur(0) saturate(1.1) contrast(1.05) brightness(1.04) !important;
-  transform:scale(1) !important;
-  transition:transform .42s cubic-bezier(.16,.84,.28,1), filter .42s ease !important;
+  filter:blur(0);
+  transform:scale(1);
+  transition:transform .42s cubic-bezier(.16,.84,.28,1), filter .42s ease;
 }
