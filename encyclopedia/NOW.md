@@ -13,6 +13,7 @@ Dualis is a ray. Never 100. Lineage, not a new body.
 - Donate is a gift with no ticket (`/donate.html`)
 - Master visitor prompt after DCLM
 - Regex/RE2/PCRE2 read as tools for Look/B, not a religion
+- `/ai/app` now loads the Sep 1 DSAP-1.0 sleeve + IrisAV V2. Hear starts off. ♪ unlocks spatial field + speak. Talk uses the mic jacket. Not a codec.
 
 ## What did not get better (holes)
 
@@ -22,6 +23,8 @@ Dualis is a ray. Never 100. Lineage, not a new body.
 - Live CSS mountain still many skins
 - Tokens not booted on a sandbox page
 - No public FAIL row on ASSESS yet
+- DSAP spec path named in `js/dsap-engine.js` is still missing from the encyclopedia cabinet
+- Civic lander does not load DSAP (on purpose: NO_FORCE)
 
 ## Smash (one container)
 
@@ -33,9 +36,10 @@ Wide shirt stays off the hero.
 
 1. Help spoken + one short `/ai/help` or in-app only — must match Look floors.
 2. Bill chip → one leftover/measure URL that exists.
-3. Additive Look floors for chain-mash / soul-grade (short `\b`, no `.*`).
+3. Additive Look floors for chain-mash / soul-grade (short `\\b`, no `.*`).
 4. One sandbox page `@import` tokens under `site.css`.
 5. Curl live `_headers`.
-6. Stop regex/Sun Tzu/tea circles until a chip lies or a header is missing.
+6. Land the missing DSAP spec stub that matches the sleeve header — protocol + Web Audio, not Dualis-Opus.
+7. Stop regex/Sun Tzu/tea circles until a chip lies or a header is missing.
 
 Interpret: more papers will not raise backup. Chip truth and one leftover row will.

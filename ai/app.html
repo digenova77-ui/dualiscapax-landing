@@ -57,7 +57,7 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
 <header>
   <a class="brand" href="/index.html?land=1"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who" id="who">Iris</span></a>
   <div class="tools">
-    <button type="button" id="hear" class="on" aria-pressed="true" aria-label="Screen reader voice on">♪</button>
+    <button type="button" id="hear" aria-pressed="false" aria-label="Voice off. Tap to hear Iris.">♪</button>
     <button type="button" id="cam" aria-pressed="false" aria-label="Open camera">□</button>
     <button type="button" id="wipe" aria-label="Clear chat">×</button>
   </div>
@@ -84,10 +84,12 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
 </div>
 <script src="/js/no-select.js"></script>
 <script src="/assets/haptic.js"></script>
-<script src="/js/api-config.js?v=31c"></script>
-<script src="/js/api-unified.js?v=31c"></script>
-<script src="dclm-look.js?v=31c"></script>
-<script src="iris-live.js?v=31c"></script>
+<script src="/js/api-config.js?v=31d"></script>
+<script src="/js/api-unified.js?v=31d"></script>
+<script src="dclm-look.js?v=31d"></script>
+<script src="iris-live.js?v=31d"></script>
+<script src="/js/dsap-engine.js?v=31d"></script>
+<script src="/js/iris-av.js?v=31d"></script>
 <script>
 (function(){
   if(navigator.serviceWorker){
@@ -100,7 +102,22 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
   var lastSpoken="";
   var vision={live:false};
   var stream=null;
+  function hearOn(){
+    var hear=document.getElementById("hear");
+    return !!(hear&&hear.classList.contains("on"));
+  }
   function showErr(m){ if(!m){errEl.hidden=true;errEl.textContent="";return;} errEl.hidden=false;errEl.textContent=m; }
+  function voiceOut(text){
+    if(!text||!hearOn()) return;
+    if(window.IrisAV&&IrisAV.unlock) IrisAV.unlock();
+    if(window.IrisAV&&IrisAV.speak) IrisAV.speak(text);
+    else if(window.speechSynthesis){
+      var u=new SpeechSynthesisUtterance(String(text).slice(0,900));
+      u.rate=1.02;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    }
+  }
   function addBubble(who,text,href,label){
     var d=document.createElement("div");
     d.className="bubble "+who;
@@ -128,10 +145,7 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
           : {spoken:"I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure."};
       var spoken=(recu&&recu.spoken)?recu.spoken:"I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure.";
       addBubble("them",spoken,recu&&recu.href,recu&&recu.label);
-      if(document.getElementById("hear").classList.contains("on")&&window.speechSynthesis&&spoken){
-        var u=new SpeechSynthesisUtterance(spoken); u.rate=1.02;
-        window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
-      }
+      voiceOut(spoken);
     }catch(e){
       showErr("Send failed.");
       addBubble("them","I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure.");
@@ -144,20 +158,37 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
   document.getElementById("wipe").addEventListener("click",function(){
     log.querySelectorAll(".bubble").forEach(function(b){b.remove();});
     lastSpoken=""; showErr(""); if(chips) chips.style.display="";
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    if(window.DSAP&&DSAP.stop) DSAP.stop();
   });
   document.getElementById("hear").addEventListener("click",function(){
     var b=document.getElementById("hear");
     var on=b.classList.toggle("on");
     b.setAttribute("aria-pressed",on?"true":"false");
-    if(on&&lastSpoken&&window.speechSynthesis){
-      var u=new SpeechSynthesisUtterance(lastSpoken); u.rate=1.02;
-      window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+    b.setAttribute("aria-label",on?"Voice on":"Voice off. Tap to hear Iris.");
+    if(on){
+      if(window.IrisAV&&IrisAV.unlock) IrisAV.unlock();
+      voiceOut(lastSpoken||"I'm Iris. Looking is free.");
+    }else{
+      if(window.speechSynthesis) window.speechSynthesis.cancel();
+      if(window.DSAP&&DSAP.stop) DSAP.stop();
     }
   });
   document.getElementById("cam").addEventListener("click",function(){
+    var btn=document.getElementById("cam");
+    var on=!btn.classList.contains("on");
+    if(window.IrisAV&&IrisAV.camera){
+      IrisAV.camera(on).then(function(res){
+        var live=!!(res&&res.live);
+        vision.live=live;
+        btn.classList.toggle("on",live);
+        btn.setAttribute("aria-pressed",live?"true":"false");
+        if(!live) showErr("");
+      }).catch(function(){ showErr("Camera blocked."); });
+      return;
+    }
     var stage=document.getElementById("stage");
     var vid=document.getElementById("you");
-    var btn=document.getElementById("cam");
     if(stream){
       stream.getTracks().forEach(function(t){t.stop();}); stream=null; vision.live=false;
       stage.classList.remove("on"); btn.classList.remove("on"); btn.setAttribute("aria-pressed","false"); return;
@@ -168,8 +199,21 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
       btn.classList.add("on"); btn.setAttribute("aria-pressed","true"); showErr("");
     }).catch(function(){showErr("Camera blocked.");});
   });
+  document.getElementById("talk").addEventListener("click",function(){
+    var btn=document.getElementById("talk");
+    var on=!btn.classList.contains("on");
+    if(!(window.IrisAV&&IrisAV.mic)){
+      showErr("Talk needs a browser that can hear.");
+      return;
+    }
+    IrisAV.mic(on).then(function(res){
+      var live=!!(res&&res.live);
+      btn.classList.toggle("on",live);
+      btn.setAttribute("aria-pressed",live?"true":"false");
+    }).catch(function(){ showErr("Mic blocked."); });
+  });
   document.getElementById("filebtn").addEventListener("click",function(){document.getElementById("file").click();});
-  addBubble("them","Hi. I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or research.");
+  addBubble("them","Hi. I'm Iris. Tap the note if you want me to speak. Ask about DualisCapax, Fuel, Donate, Bind, or research.");
 })();
 </script>
 </body>
