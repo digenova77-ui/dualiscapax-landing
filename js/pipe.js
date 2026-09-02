@@ -13,13 +13,15 @@
   var saidLine=document.getElementById('said-line');
   if(!pipe||!tunnel||!stream) return;
 
-  var RINGS=28;
-  var DEPTH=2400;
+  var RINGS=36;
+  var DEPTH=2800;
   var LAND=-420;
   var rings=[];
   for(var i=0;i<RINGS;i++){
     var el=document.createElement('div');
-    el.className='ring';
+    var parity = (i % 2 === 0) ? ' even' : ' odd';
+    var near = (i < 6) ? ' near' : '';
+    el.className = 'ring' + parity + near;
     tunnel.appendChild(el);
     rings.push({el:el,z:-i*(DEPTH/RINGS)});
   }
@@ -219,7 +221,7 @@
     cruise=0;
     boost=0;
     var meta=document.querySelector('meta[name="theme-color"]');
-    if(meta) meta.setAttribute('content','#9ec9e8');
+    if(meta) meta.setAttribute('content','#0a1628');
     if(said){said.hidden=false;said.classList.add('on');}
     wireEnter();
   }
@@ -416,7 +418,7 @@
       s=0.55+((o.z+DEPTH)/DEPTH)*0.7;
       o.el.style.setProperty('--z',o.z.toFixed(1)+'px');
       o.el.style.setProperty('--s',s.toFixed(3));
-      o.el.style.opacity=String(Math.max(0.05,Math.min(0.55,(o.z+2200)/2400)));
+      o.el.style.opacity=String(Math.max(0.08,Math.min(0.72,(o.z+2600)/2800)));
     }
     for(i=0;i<stations.length;i++){
       o=stations[i];
