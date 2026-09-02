@@ -1,12 +1,10 @@
 /**
  * Holo sense. One energy drives depth, space, tone, tap, and mood.
- * Pointer and tilt write the same look square. Fresh pointer wins (alpha).
  * Twig on iris-hologram. Does not replace it. Not a person.
+ * Look is fused: pointer while fresh, tilt when the hand leaves.
  */
 (function (w) {
-  var VERSION = "holo-sense-2026-09-01-fuse";
-  var FUSE_MS = 120;
-  var ALPHA_PTR = 0.75;
+  var VERSION = "holo-sense-2026-09-01-e";
   var ctx = null;
   var oscA = null;
   var oscB = null;
@@ -24,12 +22,14 @@
   var raf = 0;
   var leanX = 0;
   var leanY = 0;
-  var ptrX = 0;
-  var ptrY = 0;
+  var pointerX = 0;
+  var pointerY = 0;
   var tiltX = 0;
   var tiltY = 0;
-  var ptrAt = 0;
-  var tiltOn = false;
+  var hasTilt = false;
+  var lastPointerAt = 0;
+  var POINTER_FRESH_MS = 120;
+  var ALPHA_POINTER = 0.75;
   var buzz = 0;
 
   function hole(reason) {
@@ -177,23 +177,38 @@
     return energy;
   }
 
-  function clamp1(n) {
-    return Math.max(-1, Math.min(1, n));
+  function pointerFresh() {
+    return (performance.now() - lastPointerAt) < POINTER_FRESH_MS;
   }
 
-  function fuse() {
-    var fresh = (performance.now() - ptrAt) < FUSE_MS;
-    var a = fresh ? ALPHA_PTR : 0;
-    if (!tiltOn) a = fresh ? 1 : 0;
-    leanX = clamp1((1 - a) * tiltX + a * ptrX);
-    leanY = clamp1((1 - a) * tiltY + a * ptrY);
+  function fuseLook() {
+    var a = 0;
+    var srcX = 0;
+    var srcY = 0;
+    if (pointerFresh()) {
+      a = hasTilt ? ALPHA_POINTER : 1;
+      srcX = pointerX;
+      srcY = pointerY;
+    } else if (hasTilt) {
+      a = 0.35;
+      srcX = tiltX;
+      srcY = tiltY;
+    } else {
+      a = 0.12;
+      srcX = 0;
+      srcY = 0;
+    }
+    leanX = (1 - a) * leanX + a * srcX;
+    leanY = (1 - a) * leanY + a * srcY;
+    if (leanX > 1) leanX = 1; else if (leanX < -1) leanX = -1;
+    if (leanY > 1) leanY = 1; else if (leanY < -1) leanY = -1;
     if (w.IrisHolo && IrisHolo.lookAt) IrisHolo.lookAt(leanX, leanY);
-    return a;
+    return leanX;
   }
 
   function loop() {
     raf = w.requestAnimationFrame(loop);
-    fuse();
+    fuseLook();
     var wellEl = document.getElementById("holo-well");
     if (!wellEl) return;
     var t = performance.now() / 1000;
@@ -209,19 +224,19 @@
   function point(e) {
     var x = (e.clientX || 0) / Math.max(1, w.innerWidth);
     var y = (e.clientY || 0) / Math.max(1, w.innerHeight);
-    ptrX = clamp1((x - 0.5) * 2);
-    ptrY = clamp1((y - 0.5) * 2);
-    ptrAt = performance.now();
-    fuse();
-    setEnergy(0.22 + Math.min(0.55, Math.abs(ptrX) * 0.2 + Math.abs(ptrY) * 0.12));
+    pointerX = (x - 0.5) * 2;
+    pointerY = (y - 0.5) * 2;
+    lastPointerAt = performance.now();
+    fuseLook();
+    setEnergy(0.22 + Math.min(0.55, Math.abs(pointerX) * 0.2 + Math.abs(pointerY) * 0.12));
   }
 
   function tilt(e) {
     if (typeof e.gamma !== "number" || typeof e.beta !== "number") return;
-    tiltOn = true;
-    tiltX = clamp1(e.gamma / 28);
-    tiltY = clamp1((e.beta - 40) / 36);
-    fuse();
+    hasTilt = true;
+    tiltX = Math.max(-1, Math.min(1, e.gamma / 28));
+    tiltY = Math.max(-1, Math.min(1, (e.beta - 40) / 36));
+    fuseLook();
   }
 
   function mount(target) {
@@ -258,9 +273,7 @@
     setEnergy: setEnergy,
     pulse: pulse,
     tap: tap,
-    hole: hole,
-    fuseMs: FUSE_MS,
-    alphaPtr: ALPHA_PTR
+    hole: hole
   };
 
   if (document.readyState === "loading") {
