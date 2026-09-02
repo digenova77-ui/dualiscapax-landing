@@ -6,49 +6,52 @@
 <title>DualisCapax</title>
 <meta name="theme-color" content="#000000"/>
 <style>
+:root{--tint:212,168,72;--cool:80,170,255}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#000;color:#f3efe6;height:100%;overflow:hidden}
 body{font-family:Palatino,"Iowan Old Style","Times New Roman",serif;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.leave{position:fixed;top:max(.9rem,env(safe-area-inset-top));right:max(1.1rem,env(safe-area-inset-right));z-index:9;font:.62rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:rgba(243,239,230,.3)}
+.leave,.word{position:fixed;top:max(.9rem,env(safe-area-inset-top));z-index:9;font:.62rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.28em;text-transform:uppercase}
+.word{left:max(1.1rem,env(safe-area-inset-left));color:rgba(232,195,106,.72)}
+.leave{right:max(1.1rem,env(safe-area-inset-right));color:rgba(243,239,230,.3)}
 .leave:hover{color:#fff}
-.word{position:fixed;top:max(.9rem,env(safe-area-inset-top));left:max(1.1rem,env(safe-area-inset-left));z-index:9;font:.62rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,195,106,.72)}
-.stage{--lx:0;--ly:0;position:relative;height:100dvh;background:#000}
-.far{position:absolute;inset:-8%;transform:translate3d(calc(var(--lx)*-18px),calc(var(--ly)*-12px),0) scale(1.08)}
-.plate,.sigil{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.8s ease}
-.plate{object-fit:cover;filter:saturate(1.06) contrast(1.08)}
-.sigil{object-fit:contain;padding:16vh 14vw;filter:drop-shadow(0 0 42px rgba(212,168,72,.38)) drop-shadow(0 0 80px rgba(60,140,255,.16));transform:translate3d(calc(var(--lx)*22px),calc(var(--ly)*16px),0)}
-.plate.on,.sigil.on{opacity:1}
-.veil{position:absolute;inset:0;pointer-events:none;background:radial-gradient(90% 70% at 50% 42%,transparent 18%,rgba(0,0,0,.55) 100%)}
-.caption{position:absolute;left:0;right:0;bottom:9vh;z-index:4;text-align:center;font-size:clamp(1.35rem,4vw,2.5rem);letter-spacing:.04em;text-shadow:0 12px 48px #000;transform:translate3d(calc(var(--lx)*10px),0,0)}
+.stage{--lx:0;--ly:0;position:relative;height:100dvh;background:#000;perspective:820px;perspective-origin:calc(50% + var(--lx)*48px) calc(42% + var(--ly)*28px)}
+.tube{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(calc(var(--ly)*-6deg)) rotateY(calc(var(--lx)*6deg))}
+.ring{position:absolute;left:50%;top:46%;width:78vmin;height:78vmin;margin:-39vmin;border-radius:50%;border:1px solid rgba(var(--tint),.22);box-shadow:0 0 24px rgba(var(--cool),.08), inset 0 0 40px rgba(var(--tint),.05);transform:translateZ(var(--z))}
+.helix{position:absolute;left:50%;top:46%;width:min(46vmin,380px);margin-left:calc(min(46vmin,380px)/-2);margin-top:calc(min(46vmin,380px)/-2);transform-style:preserve-3d;animation:spin 28s linear infinite, approach 18s linear infinite;filter:drop-shadow(0 0 28px rgba(var(--tint),.45)) drop-shadow(0 0 70px rgba(var(--cool),.2));pointer-events:none}
+.helix img{width:100%;height:auto;display:block}
+.station{position:absolute;left:50%;top:50%;width:34vmin;height:22vmin;margin:-11vmin -17vmin;object-fit:cover;border-radius:2px;opacity:.0;transform:translate3d(var(--sx),var(--sy),var(--sz));filter:saturate(1.08) contrast(1.08);animation:pass 16s linear infinite;animation-delay:var(--d)}
+.caption{position:absolute;left:0;right:0;bottom:8.5vh;z-index:4;text-align:center;font-size:clamp(1.2rem,3.6vw,2.2rem);letter-spacing:.05em;text-shadow:0 12px 48px #000}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 60% at 50% 44%,transparent 10%,rgba(0,0,0,.72) 100%)}
+@keyframes spin{to{transform:translateZ(40px) rotateZ(360deg)}}
+@keyframes approach{0%{transform:translateZ(-900px) scale(.35)}40%{transform:translateZ(80px) scale(1)}100%{transform:translateZ(520px) scale(1.8)}}
+@keyframes pass{0%{opacity:0;transform:translate3d(var(--sx),var(--sy),-1400px)}18%{opacity:.9}55%{opacity:.85}100%{opacity:0;transform:translate3d(var(--sx),var(--sy),640px)}}
 </style>
 </head>
 <body>
 <p class="word">DualisCapax</p>
 <a class="leave" href="#">Leave</a>
 <main class="stage" id="stage">
-  <div class="far">
-    <img class="sigil on" src="/brand/holo-helix.svg" alt="" data-cap="DNA">
-    <img class="plate" src="https://images.unsplash.com/photo-1521791136064-7986c2928956?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A handshake">
-    <img class="plate" src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A life">
-    <img class="plate" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A chip">
-  </div>
-  <div class="veil"></div>
-  <p class="caption" id="cap">DNA</p>
+  <div class="tube" id="tube"></div>
+  <div class="helix"><img src="/brand/holo-helix.svg" alt=""></div>
+  <img class="station" style="--sx:-28vmin;--sy:-10vmin;--d:0s" src="https://images.unsplash.com/photo-1521791136064-7986c2928956?auto=format&fit=crop&w=900&q=80" alt="">
+  <img class="station" style="--sx:26vmin;--sy:8vmin;--d:5.2s" src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=900&q=80" alt="">
+  <img class="station" style="--sx:-8vmin;--sy:16vmin;--d:10.4s" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="">
+  <div class="vignette"></div>
+  <p class="caption">DNA</p>
 </main>
 <script>
 (function(){
-  var s=document.getElementById('stage');
-  var slides=s.querySelectorAll('.sigil, .plate');
-  var cap=document.getElementById('cap');
-  var i=0,lx=0,ly=0,tx=0,ty=0;
-  function c(n){return Math.max(-1,Math.min(1,n))}
-  function loop(){tx+=(lx-tx)*.05;ty+=(ly-ty)*.05;s.style.setProperty('--lx',tx.toFixed(4));s.style.setProperty('--ly',ty.toFixed(4));requestAnimationFrame(loop)}
+  var s=document.getElementById('stage'), t=document.getElementById('tube');
+  var n=18,i,r;
+  for(i=0;i<n;i++){r=document.createElement('div');r.className='ring';r.style.setProperty('--z', ((i-n+1)*90)+'px');t.appendChild(r)}
+  var lx=0,ly=0,tx=0,ty=0;
+  function c(v){return Math.max(-1,Math.min(1,v))}
+  function loop(){tx+=(lx-tx)*.06;ty+=(ly-ty)*.06;s.style.setProperty('--lx',tx.toFixed(4));s.style.setProperty('--ly',ty.toFixed(4));requestAnimationFrame(loop)}
   requestAnimationFrame(loop);
-  s.addEventListener('pointermove',function(e){var r=s.getBoundingClientRect();lx=c(((e.clientX-r.left)/r.width)*2-1);ly=c(((e.clientY-r.top)/r.height)*2-1)});
+  s.addEventListener('pointermove',function(e){var b=s.getBoundingClientRect();lx=c(((e.clientX-b.left)/b.width)*2-1);ly=c(((e.clientY-b.top)/b.height)*2-1)});
   s.addEventListener('pointerleave',function(){lx=0;ly=0});
   document.querySelector('.leave').addEventListener('click',function(e){e.preventDefault();document.body.style.transition='opacity .6s';document.body.style.opacity='0';setTimeout(function(){location.replace('about:blank')},600)});
-  setInterval(function(){slides[i].classList.remove('on');i=(i+1)%slides.length;slides[i].classList.add('on');cap.textContent=slides[i].getAttribute('data-cap')},5600);
 })();
 </script>
 </body>
