@@ -33,8 +33,10 @@
   });
 
   var worlds=[
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Queen%27s_Park_-_Toronto_-_2010_%28cropped-rotated%29.jpg/1280px-Queen%27s_Park_-_Toronto_-_2010_%28cropped-rotated%29.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Aldergrove_Public_School%2C_May_2018_%281%29.jpg/1280px-Aldergrove_Public_School%2C_May_2018_%281%29.jpg'
+    'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80',
+    'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=80',
+    'https://images.unsplash.com/photo-1548919973-5cef591cdbc9?auto=format&fit=crop&w=1920&q=80',
+    'https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1920&q=80'
   ];
   var worldI=0;
   var outside=false;
@@ -113,16 +115,21 @@
     outside=true;
     world.src=worlds[worldI%worlds.length];
     pipe.classList.add('out');
-    pipe.classList.remove('gating','rush','back');
+    pipe.classList.remove('gating','rush','back','held');
     snapQuarks(true,false);
     cruise=0;
     boost=0;
+    var meta=document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.setAttribute('content','#9ec9e8');
   }
 
   function reenter(){
     outside=false;
     pipe.classList.remove('out');
     cruise=docked?HOLD:CRUISE;
+    if(docked) pipe.classList.add('held');
+    var meta=document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.setAttribute('content','#000000');
   }
 
   function rushTo(target){
