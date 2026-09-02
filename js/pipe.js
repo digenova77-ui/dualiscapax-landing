@@ -8,6 +8,7 @@
 
   var RINGS=28;
   var DEPTH=2400;
+  var LAND=-420;
   var rings=[];
   for(var i=0;i<RINGS;i++){
     var el=document.createElement('div');
@@ -39,10 +40,13 @@
   pipe.addEventListener('pointerleave',function(){lx=0;ly=0});
 
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var cruise=reduce?0:2.4;
+  var CRUISE=reduce?0:2.4;
+  var HOLD=reduce?0:0.35;
+  var cruise=CRUISE;
   var speed=cruise;
   var boost=0;
   var busy=false;
+  var docked=null;
   var quarks=[];
   var zaps=[];
 
@@ -52,25 +56,36 @@
     return z;
   }
 
+  function shiftWorld(jump){
+    var i;
+    for(i=0;i<rings.length;i++) rings[i].z=wrap(rings[i].z+jump);
+    for(i=0;i<stations.length;i++) stations[i].z=wrap(stations[i].z+jump);
+  }
+
   function nextStation(){
     var best=null,i,o;
     for(i=0;i<stations.length;i++){
       o=stations[i];
+      if(o===docked) continue;
       if(o.z<-80&&(!best||o.z>best.z)) best=o;
     }
     return best||stations[0];
   }
 
-  function clearArmed(){
-    for(var i=0;i<stations.length;i++) stations[i].el.classList.remove('armed');
+  function clearMarks(){
+    for(var i=0;i<stations.length;i++){
+      stations[i].el.classList.remove('armed');
+      stations[i].el.classList.toggle('docked',stations[i]===docked);
+    }
   }
 
-  function snapQuarks(hard){
+  function snapQuarks(hard,back){
     var i,q,n=hard?16:7;
     for(i=0;i<quarks.length;i++){
       q=quarks[i];
       q.vx+=(Math.random()-.5)*(hard?10:4);
       q.vy+=(Math.random()-.5)*(hard?8:3);
+      q.dir=back?-1:1;
       q.life=1;
     }
     for(i=0;i<n;i++){
@@ -79,25 +94,39 @@
         y:.32+Math.random()*.36,
         w:.1+Math.random()*.28,
         a:1,
-        gold:Math.random()>.4
+        gold:back?Math.random()>.25:Math.random()>.4
       });
     }
   }
 
   function rushTo(target){
-    if(!target||reduce) return;
-    var jump=Math.max(420, Math.min(1680, -60-target.z));
-    var i;
-    for(i=0;i<rings.length;i++) rings[i].z=wrap(rings[i].z+jump);
-    for(i=0;i<stations.length;i++) stations[i].z=wrap(stations[i].z+jump);
-    boost=72;
-    pipe.classList.remove('gating');
+    if(!target||reduce){
+      if(target){
+        docked=target;
+        cruise=HOLD;
+        clearMarks();
+      }
+      return;
+    }
+    var back=target.z>-80;
+    var jump=back?clamp(-80-target.z,-320,-180):clamp(-80-target.z,180,320);
+    shiftWorld(jump);
+    boost=back?-72:72;
+    cruise=CRUISE;
+    docked=target;
+    pipe.classList.remove('gating','held');
+    pipe.classList.toggle('back',back);
     pipe.classList.add('rush');
-    snapQuarks(true);
+    snapQuarks(true,back);
     window.clearTimeout(rushTo._t);
     rushTo._t=window.setTimeout(function(){
-      pipe.classList.remove('rush');
-      clearArmed();
+      var park=LAND-target.z;
+      if(Math.abs(park)>8) shiftWorld(park);
+      pipe.classList.remove('rush','back');
+      pipe.classList.add('held');
+      cruise=HOLD;
+      boost=0;
+      clearMarks();
       busy=false;
     },820);
   }
@@ -106,14 +135,14 @@
     if(!target) return;
     if(reduce){rushTo(target);return;}
     if(busy){
-      rushTo(nextStation());
+      rushTo(target===docked?nextStation():target);
       return;
     }
     busy=true;
-    clearArmed();
+    clearMarks();
     target.el.classList.add('armed');
     pipe.classList.add('gating');
-    snapQuarks(false);
+    snapQuarks(false,target.z>-80);
     window.clearTimeout(gate._t);
     gate._t=window.setTimeout(function(){rushTo(target);},90);
   }
@@ -124,6 +153,7 @@
     if(e.target&&e.target.classList&&e.target.classList.contains('station')){
       for(var i=0;i<stations.length;i++) if(stations[i].el===e.target) hit=stations[i];
     }
+    if(hit&&hit===docked) hit=nextStation();
     gate(hit||nextStation());
   });
 
@@ -147,6 +177,7 @@
           vy:(Math.random()-.5)*.0006,
           r:.6+Math.random()*1.8,
           gold:Math.random()>.55,
+          dir:1,
           life:.35+Math.random()*.65
         });
       }
@@ -159,10 +190,11 @@
     if(!weather) return;
     var ctx=weather.getContext('2d');
     if(!ctx) return;
-    var w=pipe.clientWidth,h=pipe.clientHeight,i,q,px,py,pr,streak;
+    var w=pipe.clientWidth,h=pipe.clientHeight,i,q,px,py,pr,streak,dir;
     ctx.clearRect(0,0,w,h);
     ctx.globalCompositeOperation='lighter';
-    streak=boost>8;
+    streak=Math.abs(boost)>8;
+    dir=boost<0?-1:1;
     for(i=0;i<quarks.length;i++){
       q=quarks[i];
       q.x+=q.vx+(tx*.00035);
@@ -170,7 +202,7 @@
       q.z+=0.0018+(boost*0.0016);
       if(q.x<0) q.x+=1; if(q.x>1) q.x-=1;
       if(q.y<0) q.y+=1; if(q.y>1) q.y-=1;
-      if(q.z>1) q.z-=1;
+      if(q.z>1) q.z-=1; if(q.z<0) q.z+=1;
       px=(q.x-.5)*w*(1+q.z*1.8)+w/2;
       py=(q.y-.5)*h*(1+q.z*1.4)+h*.48;
       pr=q.r*(.4+q.z*2.2);
@@ -178,7 +210,7 @@
         ?('rgba(232,195,106,'+(0.18+q.z*0.55)+')')
         :('rgba(96,165,250,'+(0.12+q.z*0.5)+')');
       if(streak){
-        ctx.fillRect(px-pr*.4,py-pr*6,pr*.8,pr*12);
+        ctx.fillRect(px-pr*.4,py-(dir>0?pr*6:0),pr*.8,pr*12);
       }else{
         ctx.beginPath();ctx.arc(px,py,pr,0,Math.PI*2);ctx.fill();
       }
@@ -204,7 +236,7 @@
     pipe.style.setProperty('--ly',ty.toFixed(4));
     speed=cruise+boost;
     boost*=0.94;
-    if(boost<0.12) boost=0;
+    if(Math.abs(boost)<0.12) boost=0;
     var i,o,s,near,mid;
     for(i=0;i<rings.length;i++){
       o=rings[i];
@@ -216,12 +248,20 @@
     }
     for(i=0;i<stations.length;i++){
       o=stations[i];
-      o.z=wrap(o.z+speed*1.15);
+      if(o===docked&&pipe.classList.contains('held')){
+        o.z+=(LAND-o.z)*0.08;
+      }else{
+        o.z=wrap(o.z+speed*1.15);
+      }
       o.el.style.setProperty('--z',o.z.toFixed(1)+'px');
       near=o.z>-80&&o.z<200;
       mid=o.z>-1400&&o.z<220;
-      o.el.classList.toggle('on',mid);
-      if(!o.el.classList.contains('armed')) o.el.style.opacity=near?'0':(mid?'0.9':'0');
+      o.el.classList.toggle('on',mid||o===docked);
+      if(o===docked){
+        o.el.style.opacity='1';
+      }else if(!o.el.classList.contains('armed')){
+        o.el.style.opacity=near?'0':(mid?'0.9':'0');
+      }
     }
     drawWeather();
     requestAnimationFrame(tick);
