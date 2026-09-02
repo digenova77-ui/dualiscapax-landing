@@ -11,3 +11,4 @@ Do not put a geodesic on this mark.
 Do not gold-wash it.
 
 Live header serves that plate as-is.
+Served as PNG (magic 89 50 4E 47) so the eight-chunk transfer lands.

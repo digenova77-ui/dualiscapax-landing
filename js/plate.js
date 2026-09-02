@@ -4,6 +4,15 @@
     while (s.length < width) s = '0' + s;
     return s;
   }
+  function detectType(bytes) {
+    if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+      return 'image/jpeg';
+    }
+    if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+      return 'image/png';
+    }
+    return null;
+  }
   function assemble(img) {
     var stem = img.getAttribute('data-stem');
     var n = parseInt(img.getAttribute('data-parts') || '0', 10);
@@ -23,10 +32,11 @@
       var bin = atob(b64);
       var bytes = new Uint8Array(bin.length);
       for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-      if (bytes[0] !== 0xff || bytes[1] !== 0xd8 || bytes[2] !== 0xff) {
-        throw new Error(stem + ' not a jpeg');
+      var type = detectType(bytes);
+      if (!type) {
+        throw new Error(stem + ' not a jpeg or png');
       }
-      img.src = URL.createObjectURL(new Blob([bytes], { type: 'image/jpeg' }));
+      img.src = URL.createObjectURL(new Blob([bytes], { type: type }));
     }).catch(function (err) {
       console.warn('plate', stem, err);
     });
