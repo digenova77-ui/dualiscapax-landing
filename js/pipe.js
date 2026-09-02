@@ -6,6 +6,8 @@
   var weather=document.getElementById('weather');
   var door=document.getElementById('door');
   var world=document.getElementById('world');
+  var dna=document.getElementById('dna');
+  var grainsEl=document.getElementById('grains');
   if(!pipe||!tunnel||!stream) return;
 
   var RINGS=28;
@@ -32,14 +34,42 @@
     return {el:img,z:s.z};
   });
 
-  var worlds=[
-    'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80',
-    'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=80',
-    'https://images.unsplash.com/photo-1548919973-5cef591cdbc9?auto=format&fit=crop&w=1920&q=80',
-    'https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1920&q=80'
+  var grains=[
+    {src:'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80'},
+    {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Centre_Block_of_Parliament_Hill%2C_Canada.jpg/1280px-Centre_Block_of_Parliament_Hill%2C_Canada.jpg'},
+    {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/National_War_Memorial_Ottawa.jpg/1280px-National_War_Memorial_Ottawa.jpg'},
+    {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Queen%27s_Park_-_Toronto_-_2010_%28cropped-rotated%29.jpg/1280px-Queen%27s_Park_-_Toronto_-_2010_%28cropped-rotated%29.jpg'},
+    {src:'https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1920&q=80'},
+    {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Aldergrove_Public_School%2C_May_2018_%281%29.jpg/1280px-Aldergrove_Public_School%2C_May_2018_%281%29.jpg'},
+    {src:'https://images.unsplash.com/photo-1521791136064-7986c2928956?auto=format&fit=crop&w=1920&q=80'}
   ];
-  var worldI=0;
+  var grainI=0;
   var outside=false;
+  var hopping=false;
+
+  if(grainsEl){
+    grains.forEach(function(g,i){
+      var b=document.createElement('button');
+      b.type='button';
+      b.className='grain';
+      b.style.backgroundImage='url('+g.src+')';
+      b.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if(!outside) return;
+        hop(i);
+      });
+      grainsEl.appendChild(b);
+      g.tile=b;
+    });
+    grainsEl.hidden=false;
+  }
+
+  function markGrain(){
+    grains.forEach(function(g,i){
+      if(g.tile) g.tile.classList.toggle('on',i===grainI);
+    });
+  }
 
   var lx=0,ly=0,tx=0,ty=0;
   function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
@@ -110,10 +140,34 @@
     }
   }
 
+  function hop(i){
+    if(!world||hopping) return;
+    if(i<0) i=grains.length-1;
+    if(i>=grains.length) i=0;
+    if(i===grainI&&outside) return;
+    grainI=i;
+    markGrain();
+    var go=function(){world.src=grains[grainI].src};
+    if(reduce||!outside){
+      go();
+      return;
+    }
+    hopping=true;
+    world.classList.add('shift');
+    window.clearTimeout(hop._t);
+    hop._t=window.setTimeout(function(){
+      go();
+      window.setTimeout(function(){
+        world.classList.remove('shift');
+        hopping=false;
+      },40);
+    },240);
+  }
+
   function emerge(){
     if(!world) return;
     outside=true;
-    world.src=worlds[worldI%worlds.length];
+    hop(grainI);
     pipe.classList.add('out');
     pipe.classList.remove('gating','rush','back','held');
     snapQuarks(true,false);
@@ -125,6 +179,8 @@
 
   function reenter(){
     outside=false;
+    hopping=false;
+    if(world) world.classList.remove('shift');
     pipe.classList.remove('out');
     cruise=docked?HOLD:CRUISE;
     if(docked) pipe.classList.add('held');
@@ -186,7 +242,7 @@
       e.preventDefault();
       e.stopPropagation();
       if(!pipe.classList.contains('held')||outside) return;
-      worldI=0;
+      grainI=0;
       emerge();
     });
   }
@@ -194,20 +250,22 @@
     world.addEventListener('click',function(e){
       e.stopPropagation();
       if(!outside) return;
-      worldI+=1;
-      if(worldI>=worlds.length){
-        worldI=0;
-        reenter();
-      }else{
-        emerge();
-      }
+      hop(grainI+1);
+    });
+  }
+  if(dna){
+    dna.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      if(outside) reenter();
     });
   }
 
   pipe.addEventListener('click',function(e){
     if(e.target===leave||(leave&&leave.contains(e.target))) return;
-    if(e.target===door||e.target===world) return;
-    if(outside){reenter();return;}
+    if(e.target===door||e.target===world||e.target===dna) return;
+    if(e.target&&e.target.classList&&e.target.classList.contains('grain')) return;
+    if(outside) return;
     var hit=null;
     if(e.target&&e.target.classList&&e.target.classList.contains('station')){
       for(var i=0;i<stations.length;i++) if(stations[i].el===e.target) hit=stations[i];

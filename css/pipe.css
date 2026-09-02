@@ -49,7 +49,7 @@ a{color:inherit;text-decoration:none}
   filter:drop-shadow(0 0 36px rgba(212,168,72,.42)) drop-shadow(0 0 70px rgba(59,130,246,.18));
   transform:translate3d(calc(var(--lx)*18px),calc(var(--ly)*12px),80px) scale(1.02);
   animation:breathe 7s ease-in-out infinite;
-  transition:transform .55s cubic-bezier(.2,.8,.2,1), filter .35s ease, opacity .7s ease;
+  transition:transform .55s cubic-bezier(.2,.8,.2,1), filter .35s ease, opacity .7s ease, inset .55s ease;
 }
 @keyframes breathe{
   0%,100%{filter:drop-shadow(0 0 36px rgba(212,168,72,.42)) drop-shadow(0 0 70px rgba(59,130,246,.18))}
@@ -86,7 +86,11 @@ a{color:inherit;text-decoration:none}
   opacity:0;pointer-events:none;
   filter:saturate(1.12) contrast(1.06) brightness(1.05);
   transform:scale(1.08);
-  transition:opacity .85s ease, transform 1.4s cubic-bezier(.2,.8,.2,1), filter .8s ease;
+  transition:opacity .85s ease, transform .32s cubic-bezier(.2,.8,.2,1), filter .32s ease;
+}
+.world.shift{
+  filter:blur(18px) saturate(1.25) brightness(1.18);
+  transform:scale(1.14);
 }
 .door{
   position:absolute;left:50%;top:48%;z-index:10;
@@ -102,6 +106,30 @@ a{color:inherit;text-decoration:none}
 @keyframes doorpulse{
   0%,100%{transform:scale(1);box-shadow:0 0 0 1px rgba(232,195,106,.35),0 0 40px rgba(232,195,106,.18)}
   50%{transform:scale(1.08);box-shadow:0 0 0 2px rgba(244,226,176,.7),0 0 70px rgba(232,195,106,.4)}
+}
+.grains{
+  position:fixed;z-index:11;
+  left:50%;bottom:max(1.1rem,env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  display:none;
+  gap:.4rem;
+  padding:.35rem;
+  border-radius:4px;
+  background:rgba(8,10,12,.28);
+  backdrop-filter:blur(10px);
+}
+.pipe.out .grains{display:flex}
+.grain{
+  width:46px;height:46px;padding:0;border:0;
+  border-radius:2px;overflow:hidden;cursor:pointer;
+  background:#111 center/cover no-repeat;
+  box-shadow:0 0 0 1px rgba(255,255,255,.18);
+  opacity:.72;transform:scale(1);
+  transition:opacity .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.grain:hover,.grain.on{
+  opacity:1;transform:scale(1.08);
+  box-shadow:0 0 0 2px rgba(232,195,106,.85), 0 8px 24px rgba(0,0,0,.35);
 }
 .iris{
   position:absolute;inset:0;z-index:7;pointer-events:none;
@@ -161,7 +189,7 @@ a{color:inherit;text-decoration:none}
   transform:translate3d(calc(var(--lx)*12px),calc(var(--ly)*8px),70px) scale(.96);
 }
 .pipe.out{
-  cursor:zoom-out;
+  cursor:zoom-in;
   background:#9ec9e8;
 }
 .pipe.out .world{
@@ -177,12 +205,15 @@ a{color:inherit;text-decoration:none}
 }
 .pipe.out .dna{
   inset:auto;
-  left:50%;top:58%;
-  width:min(18vw,160px);height:min(18vw,160px);
-  margin:-9vw 0 0 -9vw;
-  opacity:.55;
-  transform:translate3d(calc(var(--lx)*8px),calc(var(--ly)*6px),0) scale(.42);
-  filter:drop-shadow(0 0 24px rgba(255,220,120,.8));
+  left:max(.8rem,env(safe-area-inset-left));
+  bottom:max(1.1rem,env(safe-area-inset-bottom));
+  top:auto;right:auto;
+  width:52px;height:52px;margin:0;
+  opacity:.9;
+  pointer-events:auto;cursor:pointer;
+  z-index:13;
+  transform:none;
+  filter:drop-shadow(0 0 16px rgba(255,220,120,.8));
 }
 .pipe.out .vignette{
   background:
@@ -220,4 +251,5 @@ a{color:inherit;text-decoration:none}
   .pipe.rush .zap,.pipe.gating .station.armed,.pipe.held .door,.pipe.out .zap{animation:none}
   .pipe.rush .tunnel{filter:none}
   .world,.dna,.tunnel,.iris,.vignette{transition:none}
+  .world.shift{filter:none;transform:none}
 }
