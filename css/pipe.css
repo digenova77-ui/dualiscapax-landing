@@ -31,6 +31,7 @@ a{color:inherit;text-decoration:none}
   position:absolute;inset:0;z-index:1;
   transform-style:preserve-3d;
   transform:rotateX(calc(var(--ly)*-7deg)) rotateY(calc(var(--lx)*7deg));
+  transition:filter .18s linear;
 }
 .ring{
   position:absolute;left:50%;top:48%;
@@ -47,7 +48,7 @@ a{color:inherit;text-decoration:none}
   filter:drop-shadow(0 0 36px rgba(212,168,72,.42)) drop-shadow(0 0 70px rgba(59,130,246,.18));
   transform:translate3d(calc(var(--lx)*18px),calc(var(--ly)*12px),80px) scale(1.02);
   animation:breathe 7s ease-in-out infinite;
-  transition:transform .28s cubic-bezier(.2,.8,.2,1), filter .28s ease;
+  transition:transform .2s cubic-bezier(.2,.8,.2,1), filter .2s ease;
 }
 @keyframes breathe{
   0%,100%{filter:drop-shadow(0 0 36px rgba(212,168,72,.42)) drop-shadow(0 0 70px rgba(59,130,246,.18))}
@@ -62,10 +63,15 @@ a{color:inherit;text-decoration:none}
   opacity:0;
   pointer-events:auto;cursor:pointer;
   transform:translate3d(-50%,-50%,var(--z)) rotateY(calc(var(--lx)*4deg));
-  box-shadow:0 20px 80px rgba(0,0,0,.65);
+  box-shadow:0 20px 80px rgba(0,0,0,.65), 0 0 0 1px rgba(96,165,250,.28), inset 0 0 0 1px rgba(232,195,106,.18);
   filter:saturate(1.08) contrast(1.06);
 }
 .station.on{opacity:.92}
+.station.armed{
+  opacity:1;
+  box-shadow:0 0 40px rgba(232,195,106,.55), 0 0 0 2px rgba(232,195,106,.8), inset 0 0 30px rgba(96,165,250,.28);
+  filter:saturate(1.2) contrast(1.15) brightness(1.12);
+}
 .iris{
   position:absolute;inset:0;z-index:7;pointer-events:none;
   background:
@@ -92,22 +98,35 @@ a{color:inherit;text-decoration:none}
     radial-gradient(70% 55% at 50% 46%,transparent 10%,rgba(0,0,0,.55) 100%),
     linear-gradient(180deg,rgba(0,0,0,.35),transparent 22%,transparent 70%,rgba(0,0,0,.55));
 }
-.pipe.shift .dna{
-  transform:translate3d(calc(var(--lx)*10px),calc(var(--ly)*6px),40px) scale(.72);
-  filter:drop-shadow(0 0 70px rgba(232,195,106,.8)) drop-shadow(0 0 120px rgba(59,130,246,.5));
+.pipe.gating .station.armed{animation:gatepulse .18s linear 2}
+.pipe.rush .dna{
+  transform:translate3d(calc(var(--lx)*6px),calc(var(--ly)*4px),20px) scale(.58);
+  filter:drop-shadow(0 0 80px rgba(232,195,106,.95)) drop-shadow(0 0 140px rgba(59,130,246,.6));
 }
-.pipe.shift .zap{animation:phase .42s ease-out}
-.pipe.shift .ring{
-  box-shadow:0 0 40px rgba(147,197,253,.35), inset 0 0 50px rgba(232,195,106,.18);
+.pipe.rush .tunnel{filter:blur(1.2px) saturate(1.25) contrast(1.2)}
+.pipe.rush .zap{animation:phase .78s ease-out}
+.pipe.rush .ring{
+  box-shadow:0 0 50px rgba(147,197,253,.45), inset 0 0 60px rgba(232,195,106,.22);
+  border-color:rgba(232,195,106,.45);
+}
+.pipe.rush .iris::after{
+  border-color:rgba(232,195,106,.45);
+  transform:scale(.92);
+}
+@keyframes gatepulse{
+  0%,100%{filter:saturate(1.2) contrast(1.15) brightness(1.05)}
+  50%{filter:saturate(1.5) contrast(1.3) brightness(1.35)}
 }
 @keyframes phase{
   0%{opacity:0;filter:contrast(1)}
-  12%{opacity:1;filter:contrast(1.6) saturate(1.4)}
-  28%{opacity:.35}
-  46%{opacity:.9}
+  8%{opacity:1;filter:contrast(1.8) saturate(1.5)}
+  22%{opacity:.25}
+  40%{opacity:.95}
+  70%{opacity:.35}
   100%{opacity:0;filter:contrast(1)}
 }
 @media (prefers-reduced-motion:reduce){
   .dna{animation:none}
-  .pipe.shift .zap{animation:none}
+  .pipe.rush .zap,.pipe.gating .station.armed{animation:none}
+  .pipe.rush .tunnel{filter:none}
 }
