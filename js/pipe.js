@@ -4,6 +4,8 @@
   var stream=document.getElementById('stream');
   var leave=document.getElementById('leave');
   var weather=document.getElementById('weather');
+  var door=document.getElementById('door');
+  var world=document.getElementById('world');
   if(!pipe||!tunnel||!stream) return;
 
   var RINGS=28;
@@ -29,6 +31,13 @@
     stream.appendChild(img);
     return {el:img,z:s.z};
   });
+
+  var worlds=[
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Queen%27s_Park_-_Toronto_-_2010_%28cropped-rotated%29.jpg/1280px-Queen%27s_Park_-_Toronto_-_2010_%28cropped-rotated%29.jpg',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Aldergrove_Public_School%2C_May_2018_%281%29.jpg/1280px-Aldergrove_Public_School%2C_May_2018_%281%29.jpg'
+  ];
+  var worldI=0;
+  var outside=false;
 
   var lx=0,ly=0,tx=0,ty=0;
   function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
@@ -99,12 +108,30 @@
     }
   }
 
+  function emerge(){
+    if(!world) return;
+    outside=true;
+    world.src=worlds[worldI%worlds.length];
+    pipe.classList.add('out');
+    pipe.classList.remove('gating','rush','back');
+    snapQuarks(true,false);
+    cruise=0;
+    boost=0;
+  }
+
+  function reenter(){
+    outside=false;
+    pipe.classList.remove('out');
+    cruise=docked?HOLD:CRUISE;
+  }
+
   function rushTo(target){
     if(!target||reduce){
       if(target){
         docked=target;
         cruise=HOLD;
         clearMarks();
+        pipe.classList.add('held');
       }
       return;
     }
@@ -147,8 +174,33 @@
     gate._t=window.setTimeout(function(){rushTo(target);},90);
   }
 
+  if(door){
+    door.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      if(!pipe.classList.contains('held')||outside) return;
+      worldI=0;
+      emerge();
+    });
+  }
+  if(world){
+    world.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(!outside) return;
+      worldI+=1;
+      if(worldI>=worlds.length){
+        worldI=0;
+        reenter();
+      }else{
+        emerge();
+      }
+    });
+  }
+
   pipe.addEventListener('click',function(e){
     if(e.target===leave||(leave&&leave.contains(e.target))) return;
+    if(e.target===door||e.target===world) return;
+    if(outside){reenter();return;}
     var hit=null;
     if(e.target&&e.target.classList&&e.target.classList.contains('station')){
       for(var i=0;i<stations.length;i++) if(stations[i].el===e.target) hit=stations[i];
@@ -187,7 +239,7 @@
   window.addEventListener('resize',sizeWeather);
 
   function drawWeather(){
-    if(!weather) return;
+    if(!weather||outside) return;
     var ctx=weather.getContext('2d');
     if(!ctx) return;
     var w=pipe.clientWidth,h=pipe.clientHeight,i,q,px,py,pr,streak,dir;
@@ -234,6 +286,10 @@
     ty+=(ly-ty)*0.06;
     pipe.style.setProperty('--lx',tx.toFixed(4));
     pipe.style.setProperty('--ly',ty.toFixed(4));
+    if(outside){
+      requestAnimationFrame(tick);
+      return;
+    }
     speed=cruise+boost;
     boost*=0.94;
     if(Math.abs(boost)<0.12) boost=0;
