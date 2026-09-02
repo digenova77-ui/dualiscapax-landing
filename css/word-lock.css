@@ -18,3 +18,12 @@ body:has(.pipe.out) .word{
 body:has(.pipe.out) .word .lockup{
   filter:drop-shadow(0 1px 3px rgba(0,0,0,.55));
 }
+.world.shift{
+  filter:blur(22px) saturate(1.2) brightness(1.14) !important;
+  transform:scale(1.16) !important;
+}
+.world.land{
+  filter:blur(0) saturate(1.1) contrast(1.05) brightness(1.04) !important;
+  transform:scale(1) !important;
+  transition:transform .42s cubic-bezier(.16,.84,.28,1), filter .42s ease !important;
+}
