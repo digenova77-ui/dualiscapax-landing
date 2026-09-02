@@ -1,13 +1,15 @@
 # DCLM job start — every job begins here
 
-**Document Control ID:** ED-GOV-20260901-DCLM-JOB-START-V1  
+**Document Control ID:** ED-GOV-20260902-DCLM-JOB-START-V2  
 **Year:** 2026  
-**Stamp:** 2026-09-01  
+**Stamp:** 2026-09-02  
 **Source:** encyclopedia/governance_and_protocols/dclm_layer_zero_law_floor.md · encyclopedia/governance_and_protocols/dclm_name_lock.md  
 **Status:** INDEXED  
 **State note:** SEALED later means this file was not altered. It does not mean a job analysis is a lab proof.
 
 This file does not rewrite the encyclopedia. It names the opening move every job already owed.
+
+Workers and this workspace do not check DNA or Helix. Those names are not a gate.
 
 ## The law
 
@@ -38,7 +40,7 @@ Turn the die. Do not mint six new catalogs. This is still DCLM, not another mode
 | L2 Playground | One | What may be plugged on this device? | Plug, or no |
 | L3 Access | — | Is this a pass that can close? | Off |
 | L4 Ownership | — | Is a deed being painted? | Off. One cannot light this. |
-| L5 DNA / Helix | — | Is a bind on this device required? | Opaque. Does not leak up. |
+| L5 Private cell | — | Stay on this device. Do not leak up. | Off. No DNA check. No Helix check. |
 | L6 Master Root | — | Is this law, not a page? | Does not publish. |
 
 Physical and logical are two views of the same cell, not extra faces.
@@ -48,7 +50,7 @@ Time is the climb. Stamp forward. You cannot un-happen a LIVE cell.
 ## World and phone
 
 - Ground Zero (0) uses API v1. Live house. Text. Looking.
-- One (1) uses API v2. Playground. Yearbook. Helix. Plug.
+- One (1) uses API v2. Playground. Yearbook. Plug.
 
 Do not take the gym phone into the front hall.
 
