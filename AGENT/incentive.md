@@ -3,9 +3,9 @@
 **Document Control ID:** ED-GOV-20260901-AGENT-INCENTIVE-V1  
 **Year:** 2026  
 **Stamp:** 2026-09-01  
-**Source:** encyclopedia/governance_and_protocols/forward_chain.md · encyclopedia/governance_and_protocols/dclm_job_start.md · AGENT_HANDOFF.md  
+**Source:** encyclopedia/governance_and_protocols/forward_chain.md · encyclopedia/governance_and_protocols/dclm_job_start.md  
 **Status:** INDEXED  
-**State note:** SEALED later means this file was not altered. A mark is not a coin, not a founder seat, and not a lab proof.
+**State note:** SEALED later means this file was not altered. A mark is not a coin, not a founder seat, and not a lab proof. AGENT_HANDOFF.md is removed from the tree.
 
 This file does not rewrite the encyclopedia. It names how agents get credit for clean work.
 
