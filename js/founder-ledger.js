@@ -1,8 +1,20 @@
-/** Founder serial ledger. White names only when they asked. Black is a string. */
+/** Founder serial ledger. White names only when they asked. Black is a string.
+ *  Current as of: 2026-09-02
+ */
 (function (w) {
-  var VERSION = "founder-ledger-2026-09-01";
+  var VERSION = "founder-ledger-2026-09-02";
   var SEATS = [
-    { seat: 1, serial: "DC-F-DE51-FFD7", ledger: "WHITE", measure: 10000, label: "David John Di Genova", role: "Founder. Architect." },
+    {
+      seat: 1,
+      serial: "DC-F-DE51-FFD7",
+      unityId: "DC-U-001",
+      ledger: "WHITE",
+      measure: 10000,
+      label: "David John Di Genova",
+      title: "the god sick",
+      role: "Founder. Architect.",
+      geodesic: true
+    },
     { seat: 2, serial: "DC-F-3B06-260D", ledger: "WHITE", measure: 10000, label: "Giovanni Di Genova", role: "Father. Patriarch." },
     { seat: 3, serial: "DC-F-0505-E337", ledger: "BLACK", measure: 10000, role: "House family." },
     { seat: 4, serial: "DC-F-7923-A1F3", ledger: "BLACK", measure: 10000, role: "House family." },
@@ -17,9 +29,12 @@
     return {
       seat: s.seat,
       serial: s.serial,
+      unityId: s.unityId || null,
       ledger: s.ledger,
       measure: s.measure,
       role: s.role,
+      title: s.title || null,
+      geodesic: !!s.geodesic,
       name: s.ledger === "WHITE" ? s.label : null,
       status: "INDEXED",
       share: false
