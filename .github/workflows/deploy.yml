@@ -25,6 +25,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Rebuild 9672 on this side
+        run: |
+          cat brand/9672.part0.b64 brand/9672.part1.b64 brand/9672.part2.b64 brand/9672.part3.b64 | tr -d '\n' | base64 -d > brand/9672.jpg
+          file brand/9672.jpg
+          ls -l brand/9672.jpg
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
