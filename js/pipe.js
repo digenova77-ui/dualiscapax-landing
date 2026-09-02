@@ -38,17 +38,17 @@
   });
 
   var grains=[
-    {src:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80',title:'Meet',line:'Two people. That\u2019s the start.'},
-    {src:'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1920&q=80',title:'People',line:'People you actually know.'},
-    {src:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80',title:'Work',line:'A team in the middle of it.'},
-    {src:'/brand/world-geo.svg',title:'Out',line:'The city.'},
-    {src:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80',title:'School',line:'Drop-off. Real morning.'},
-    {src:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1920&q=80',title:'Huddle',line:'Before the play.'},
-    {src:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1920&q=80',title:'One',line:'One person getting better.'},
-    {src:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80',title:'Lab',line:'Hands in the job.'},
-    {src:'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1920&q=80',title:'Street',line:'A street with people on it.'}
+    {src:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80',title:'Meet',line:'Two people. That\u2019s the start.',door:'meet'},
+    {src:'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1920&q=80',title:'People',line:'People you actually know.',door:'people'},
+    {src:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80',title:'Work',line:'A team in the middle of it.',door:'work'},
+    {src:'/brand/world-geo.svg',title:'Out',line:'The city.',door:'out'},
+    {src:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80',title:'School',line:'Drop-off. Real morning.',door:'school'},
+    {src:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1920&q=80',title:'Huddle',line:'Before the play.',door:'huddle'},
+    {src:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1920&q=80',title:'One',line:'One person getting better.',door:'one'},
+    {src:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80',title:'Lab',line:'Hands in the job.',door:'lab'},
+    {src:'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1920&q=80',title:'Street',line:'A street with people on it.',door:'street'}
   ];
-  var grainI=0;
+  var grainI=4;
   var outside=false;
   var hopping=false;
 
@@ -58,7 +58,28 @@
     if(saidLine) saidLine.textContent=g.line||'';
     if(said){
       said.hidden=!outside;
+      said.classList.toggle('on',outside);
       said.setAttribute('data-beat',String(grainI+1));
+    }
+    wireEnter();
+  }
+
+  function wireEnter(){
+    var g=grains[grainI]||{};
+    var enter=document.getElementById('enter');
+    var door=(g.door||g.title||'school').toLowerCase();
+    if(enter){
+      enter.href=door==='school'?'/school.html':'/join.html?door='+door;
+      enter.textContent='Start';
+      if(outside) enter.classList.add('on');
+      else enter.classList.remove('on');
+    }
+    if(said){
+      said.classList.toggle('on',outside);
+      said.hidden=!outside;
+    }
+    if(outside && door && history && history.replaceState){
+      try{history.replaceState(null,'','#'+door);}catch(err){}
     }
   }
 
@@ -163,6 +184,7 @@
     if(!force&&i===grainI&&outside&&world.getAttribute('src')) return;
     grainI=i;
     markGrain();
+    wireEnter();
     var go=function(){
       world.src=grains[grainI].src;
       say();
@@ -198,13 +220,18 @@
     boost=0;
     var meta=document.querySelector('meta[name="theme-color"]');
     if(meta) meta.setAttribute('content','#9ec9e8');
+    if(said){said.hidden=false;said.classList.add('on');}
+    wireEnter();
   }
 
   function reenter(){
     outside=false;
     hopping=false;
     if(world) world.classList.remove('shift','land');
-    if(said) said.hidden=true;
+    if(said){said.hidden=true;said.classList.remove('on');}
+    var enter=document.getElementById('enter');
+    if(enter) enter.classList.remove('on');
+    wireEnter();
     pipe.classList.remove('out');
     cruise=docked?HOLD:CRUISE;
     if(docked) pipe.classList.add('held');
@@ -266,7 +293,7 @@
       e.preventDefault();
       e.stopPropagation();
       if(!pipe.classList.contains('held')||outside) return;
-      grainI=3;
+      grainI=4;
       emerge();
     });
   }
@@ -422,4 +449,17 @@
       setTimeout(function(){location.replace('about:blank')},560);
     });
   }
+
+  (function bootHash(){
+    var raw=(location.hash||'').replace(/^#/,'').toLowerCase();
+    if(!raw) return;
+    for(var i=0;i<grains.length;i++){
+      var g=grains[i];
+      if((g.door||g.title||'').toLowerCase()===raw){
+        grainI=i;
+        emerge();
+        return;
+      }
+    }
+  })();
 })();

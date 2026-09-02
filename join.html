@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Start — DualisCapax</title>
+<meta name="theme-color" content="#9ec9e8"/>
+<link rel="stylesheet" href="/css/word-lock.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100dvh;font-family:system-ui,sans-serif;color:#fff;background:#102033}
+.word{position:fixed;top:1.2rem;left:max(1rem,env(safe-area-inset-left));width:clamp(160px,22vw,240px);opacity:.5;z-index:8;max-width:min(28vw,220px)}
+.word img{display:block;width:100%;height:auto}
+.pane{min-height:100dvh;display:grid;place-items:end start;padding:max(5.5rem,14vh) max(1.2rem,env(safe-area-inset-right)) max(1.6rem,env(safe-area-inset-bottom)) max(1.2rem,env(safe-area-inset-left));background:#123 center/cover no-repeat}
+.pane::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.66))}
+main.pane{position:relative}
+.card{position:relative;z-index:1;max-width:28rem}
+h1{font:600 clamp(1.6rem,5vw,2.4rem)/1.05 system-ui,sans-serif;margin:0 0 .4rem}
+p{margin:0 0 1rem;opacity:.92;line-height:1.4}
+label{display:block;margin:.55rem 0 .22rem;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;opacity:.78}
+input{width:100%;padding:.72rem .8rem;border:0;border-radius:6px;font:1rem system-ui,sans-serif}
+.row{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1rem}
+button,.back{display:inline-block;padding:.75rem 1.15rem;border:0;border-radius:6px;background:#e8c36a;color:#111;font:700 .95rem system-ui,sans-serif;text-decoration:none;cursor:pointer}
+.back{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35)}
+.ok{margin-top:.85rem}
+</style>
+</head>
+<body>
+<p class="word" id="word">
+  <img class="lockup" alt="DualisCapax" data-stem="9672" data-parts="4" data-pad="0"/>
+</p>
+<main class="pane" id="pane">
+  <form class="card" id="board">
+    <h1 id="title">Start</h1>
+    <p id="line">Start here.</p>
+    <label for="name">Your name</label>
+    <input id="name" name="name" autocomplete="name" required>
+    <label for="place" id="place-label">Place</label>
+    <input id="place" name="place" required>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" required>
+    <div class="row">
+      <button type="submit">Start</button>
+      <a class="back" id="back" href="/">Back to the hop</a>
+    </div>
+    <p class="ok" id="ok" hidden>Got it. This door is open on this device.</p>
+  </form>
+</main>
+<script src="/js/plate.js"></script>
+<script>
+(function(){
+  var DOORS={
+    meet:{title:'Meet',line:'Two people. That is the start.',place:'Who you met',src:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80'},
+    people:{title:'People',line:'People you actually know.',place:'Group or team',src:'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1920&q=80'},
+    work:{title:'Work',line:'A team in the middle of it.',place:'Workplace',src:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80'},
+    out:{title:'Out',line:'The city.',place:'City or street',src:'/brand/world-geo.svg'},
+    school:{title:'School',line:'Drop-off. Real morning.',place:'School board',src:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80'},
+    huddle:{title:'Huddle',line:'Before the play.',place:'Team',src:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1920&q=80'},
+    one:{title:'One',line:'One person getting better.',place:'What you are building',src:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1920&q=80'},
+    lab:{title:'Lab',line:'Hands in the job.',place:'Lab or shop',src:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80'},
+    street:{title:'Street',line:'A street with people on it.',place:'Street or block',src:'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1920&q=80'}
+  };
+  var q=new URLSearchParams(location.search);
+  var door=(q.get('door')||'school').toLowerCase();
+  if(!DOORS[door]) door='school';
+  var d=DOORS[door];
+  document.title=d.title+' — DualisCapax';
+  document.getElementById('title').textContent=d.title;
+  document.getElementById('line').textContent=d.line;
+  document.getElementById('place-label').textContent=d.place;
+  document.getElementById('back').href='/' + '#' + door;
+  document.getElementById('pane').style.backgroundImage='url("'+d.src+'")';
+  document.getElementById('board').addEventListener('submit',function(e){
+    e.preventDefault();
+    var row={
+      name:document.getElementById('name').value.trim(),
+      place:document.getElementById('place').value.trim(),
+      email:document.getElementById('email').value.trim(),
+      theme:door,
+      ts:Date.now()
+    };
+    try{
+      localStorage.setItem('dc.'+door+'.intake',JSON.stringify(row));
+      localStorage.setItem('dc.intake.last',JSON.stringify(row));
+    }catch(err){}
+    document.getElementById('ok').hidden=false;
+  });
+})();
+</script>
+</body>
+</html>
