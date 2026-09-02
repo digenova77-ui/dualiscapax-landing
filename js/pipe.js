@@ -8,6 +8,9 @@
   var world=document.getElementById('world');
   var dna=document.getElementById('dna');
   var grainsEl=document.getElementById('grains');
+  var said=document.getElementById('said');
+  var saidTitle=document.getElementById('said-title');
+  var saidLine=document.getElementById('said-line');
   if(!pipe||!tunnel||!stream) return;
 
   var RINGS=28;
@@ -22,7 +25,7 @@
   }
 
   var stations=[
-    {src:'/brand/world-geo.svg',z:-900},
+    {src:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80',z:-900},
     {src:'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1400&q=80',z:-1600},
     {src:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=80',z:-2200}
   ].map(function(s){
@@ -35,17 +38,29 @@
   });
 
   var grains=[
-    {src:'/brand/world-geo.svg'},
-    {src:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80'},
-    {src:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80'},
-    {src:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1920&q=80'},
-    {src:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1920&q=80'},
-    {src:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80'},
-    {src:'https://images.unsplash.com/photo-1521791136064-7986c2928956?auto=format&fit=crop&w=1920&q=80'}
+    {src:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80',title:'Meet',line:'Two people. That\u2019s the start.'},
+    {src:'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1920&q=80',title:'People',line:'People you actually know.'},
+    {src:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80',title:'Work',line:'A team in the middle of it.'},
+    {src:'/brand/world-geo.svg',title:'Out',line:'The city.'},
+    {src:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80',title:'School',line:'Drop-off. Real morning.'},
+    {src:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1920&q=80',title:'Huddle',line:'Before the play.'},
+    {src:'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1920&q=80',title:'One',line:'One person getting better.'},
+    {src:'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80',title:'Lab',line:'Hands in the job.'},
+    {src:'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1920&q=80',title:'Street',line:'A street with people on it.'}
   ];
   var grainI=0;
   var outside=false;
   var hopping=false;
+
+  function say(){
+    var g=grains[grainI]||{};
+    if(saidTitle) saidTitle.textContent=g.title||'';
+    if(saidLine) saidLine.textContent=g.line||'';
+    if(said){
+      said.hidden=!outside;
+      said.setAttribute('data-beat',String(grainI+1));
+    }
+  }
 
   if(grainsEl){
     grains.forEach(function(g,i){
@@ -53,6 +68,7 @@
       b.type='button';
       b.className='grain';
       b.style.backgroundImage='url('+g.src+')';
+      b.setAttribute('aria-label',g.title||'');
       b.addEventListener('click',function(e){
         e.preventDefault();
         e.stopPropagation();
@@ -147,7 +163,10 @@
     if(!force&&i===grainI&&outside&&world.getAttribute('src')) return;
     grainI=i;
     markGrain();
-    var go=function(){world.src=grains[grainI].src};
+    var go=function(){
+      world.src=grains[grainI].src;
+      say();
+    };
     if(reduce){
       world.classList.remove('shift','land');
       go();
@@ -185,6 +204,7 @@
     outside=false;
     hopping=false;
     if(world) world.classList.remove('shift','land');
+    if(said) said.hidden=true;
     pipe.classList.remove('out');
     cruise=docked?HOLD:CRUISE;
     if(docked) pipe.classList.add('held');
@@ -246,7 +266,7 @@
       e.preventDefault();
       e.stopPropagation();
       if(!pipe.classList.contains('held')||outside) return;
-      grainI=0;
+      grainI=3;
       emerge();
     });
   }
