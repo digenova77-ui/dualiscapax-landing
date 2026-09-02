@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>House — DualisCapax</title>
+<meta name="description" content="Have an open mind. A playground. You can leave."/>
+<meta name="theme-color" content="#07080c"/>
+<link rel="stylesheet" href="/css/word-lock.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100dvh;font-family:system-ui,sans-serif;color:#f3efe6;background:#07080c}
+.word{position:fixed;top:1.1rem;left:max(1rem,env(safe-area-inset-left));width:clamp(150px,22vw,220px);opacity:.55;z-index:8;max-width:min(28vw,220px)}
+.word img{display:block;width:100%;height:auto}
+.helix{position:fixed;top:1rem;right:max(1rem,env(safe-area-inset-right));width:clamp(44px,8vw,64px);opacity:.85;z-index:8}
+.helix img{display:block;width:100%;height:auto}
+.leave{position:fixed;top:1.15rem;right:max(5.2rem,calc(env(safe-area-inset-right) + 4.6rem));z-index:9;color:#f3efe6;text-decoration:none;font:600 .82rem system-ui,sans-serif;opacity:.7}
+main{position:relative;z-index:1;max-width:56rem;margin:0 auto;padding:5.4rem max(1.1rem,env(safe-area-inset-right)) 3rem max(1.1rem,env(safe-area-inset-left))}
+h1{font:600 clamp(1.7rem,5vw,2.5rem)/1.05 system-ui,sans-serif;margin:0 0 .35rem}
+.lede{margin:0 0 1.4rem;opacity:.88;max-width:34rem;line-height:1.45}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(15.2rem,1fr));gap:.7rem}
+.door{display:block;padding:.9rem .95rem 1rem;border:1px solid rgba(232,195,106,.28);border-radius:8px;background:rgba(243,239,230,.04);color:inherit;text-decoration:none;min-height:8.4rem}
+.door.on{border-color:#e8c36a;background:rgba(232,195,106,.1)}
+.door strong{display:block;font:600 1.05rem/1.15 system-ui,sans-serif;margin:0 0 .28rem}
+.door span{display:block;opacity:.8;font-size:.9rem;line-height:1.35}
+.door em{display:block;margin-top:.55rem;font:600 .72rem system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+.door.on em{color:#e8c36a;opacity:1}
+nav{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.4rem}
+nav a{color:#9ec9e8;text-decoration:none;font:600 .9rem system-ui,sans-serif}
+.note{margin-top:1.3rem;opacity:.62;font-size:.82rem;max-width:34rem}
+</style>
+</head>
+<body>
+<p class="word" id="word">
+  <img class="lockup" alt="DualisCapax" data-stem="9672" data-parts="4" data-pad="0"/>
+</p>
+<a class="leave" href="/leave.html">Leave</a>
+<p class="helix">
+  <img alt="" data-stem="11180" data-parts="8" data-pad="2"/>
+</p>
+<main>
+  <h1>House</h1>
+  <p class="lede" id="lede">Have an open mind. A playground. You can leave. School is the first door.</p>
+  <div class="grid" id="grid"></div>
+  <nav>
+    <a href="/#school">Back to the hop</a>
+    <a href="/school.html">School door</a>
+  </nav>
+  <p class="note">Names stay on this device. Nothing here is sent off it.</p>
+</main>
+<script src="/js/plate.js"></script>
+<script>
+(function(){
+  var DOORS=[
+    {id:'meet',title:'Meet',line:'Two people. That is the start.'},
+    {id:'people',title:'People',line:'People you actually know.'},
+    {id:'work',title:'Work',line:'A team in the middle of it.'},
+    {id:'out',title:'Out',line:'The city.'},
+    {id:'school',title:'School',line:'Drop-off. Real morning.'},
+    {id:'huddle',title:'Huddle',line:'Before the play.'},
+    {id:'one',title:'One',line:'One person getting better.'},
+    {id:'lab',title:'Lab',line:'Hands in the job.'},
+    {id:'street',title:'Street',line:'A street with people on it.'}
+  ];
+  function read(id){
+    try{return JSON.parse(localStorage.getItem('dc.'+id+'.intake')||'null');}catch(e){return null;}
+  }
+  var q=new URLSearchParams(location.search);
+  var focus=(q.get('door')||'').toLowerCase();
+  var grid=document.getElementById('grid');
+  var openCount=0;
+  DOORS.forEach(function(d){
+    var row=read(d.id);
+    var a=document.createElement('a');
+    a.className='door'+(row?' on':'');
+    a.href=d.id==='school'?'/school.html':'/join.html?door='+d.id;
+    if(row) openCount++;
+    var who=row&&row.name?row.name:'';
+    a.innerHTML='<strong>'+d.title+'</strong><span>'+d.line+'</span><em>'+(row?(who?who+' — open on this device':'Open on this device'):'Start')+'</em>';
+    grid.appendChild(a);
+  });
+  var lede=document.getElementById('lede');
+  if(focus){
+    var hit=DOORS.filter(function(d){return d.id===focus;})[0];
+    if(hit) lede.textContent=hit.title+' is the door you just used. The others stay here.';
+  }else if(openCount){
+    lede.textContent=openCount+' door'+(openCount===1?'':'s')+' open on this device. School stays first.';
+  }
+})();
+</script>
+</body>
+</html>
