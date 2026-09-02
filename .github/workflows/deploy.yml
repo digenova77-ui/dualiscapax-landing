@@ -26,16 +26,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Rebuild plates on this side
-        run: |
+        run: 
           set -e
-          cat brand/9672.part0.b64 brand/9672.part1.b64 brand/9672.part2.b64 brand/9672.part3.b64 | tr -d '\n' | base64 -d > brand/9672.jpg
-          file brand/9672.jpg
-          ls -l brand/9672.jpg
-          if [ -f brand/11180.part00.b64 ]; then
-            cat brand/11180.part00.b64 brand/11180.part01.b64 brand/11180.part02.b64 brand/11180.part03.b64 brand/11180.part04.b64 brand/11180.part05.b64 brand/11180.part06.b64 brand/11180.part07.b64 | tr -d '\n' | base64 -d > brand/11180.jpg
-            file brand/11180.jpg
-            ls -l brand/11180.jpg
-          fi
+
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
