@@ -2,12 +2,14 @@
 Updated 2 September 2026. Owner mark.
 
 ## Public lockup
-- Geodesic wire-sphere snapped to the D (inside the counter of D, or kissing the stem).
-- Word DualisCapax letter-spaced across the top. Leave stays right.
-- Files: `brand/word-geo.svg` and the live header in `index.html`.
+Owner favorite is the white DualisCapax word with the DNA-8 helix AFTER Capax and the swoosh under the last letters.
+File: `brand/logo-lock.svg`.
+Live header uses that file.
+
+## World plate (not the wordmark)
+The blue/gold dual stream pouring into the well is the pipe world, not the chrome logo.
 
 ## Do not
-- Do not put a helix or geodesic AFTER Capax. The trailing DNA/X tail stays retired.
-- Do not replace the traveler helix inside the pipe with this header geodesic.
-- Do not turn the header into a nav.
-- The circular helix emblem (`brand/emblem-helix.svg`) remains a separate plate.
+- Do not put a geodesic to the left of DualisCapax unless the owner asks again.
+- Do not restyle the helix tail into an X or a coin.
+- Do not gold-wash the wordmark until asked. Favorite is high-contrast white on black.
