@@ -33,11 +33,11 @@ body:has(.pipe.out) .word{
   color:#fff;
   pointer-events:none;
   opacity:0;
-  transform:translateY(10px);
-  transition:opacity .35s ease, transform .35s ease;
+  transform:translateY(12px) scale(.98);
+  transition:opacity .38s ease .04s, transform .38s cubic-bezier(.16,.84,.28,1);
   text-shadow:0 1px 18px rgba(0,0,0,.72);
 }
-body:has(.pipe.out) .said{
+body:has(.pipe.out) .said.on{
   opacity:1;
   transform:none;
 }
@@ -52,6 +52,8 @@ body:has(.pipe.out) .said{
   font:400 clamp(.82rem,1.7vw,1.05rem)/1.35 system-ui,sans-serif;
   opacity:.88;
 }
-.world.shift ~ .said{
+.world.shift ~ .said,
+.world.land ~ .said{
   opacity:0;
+  transform:translateY(12px) scale(.98);
 }
