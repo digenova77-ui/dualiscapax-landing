@@ -22,6 +22,7 @@
     var parity = (i % 2 === 0) ? ' even' : ' odd';
     var near = (i < 6) ? ' near' : '';
     el.className = 'ring' + parity + near;
+    el.innerHTML = '<i class="tick"></i><i class="tick t2"></i><i class="spoke"></i>';
     tunnel.appendChild(el);
     rings.push({el:el,z:-i*(DEPTH/RINGS)});
   }
@@ -219,8 +220,7 @@
     outside=false;
     hopping=false;
     if(world) world.classList.remove('shift','land');
-    if(said){said.hidden=true;said.classList.remove('on');
-    }
+    if(said){said.hidden=true;said.classList.remove('on');}
     var enter=document.getElementById('enter');
     if(enter) enter.classList.remove('on');
     wireEnter();
