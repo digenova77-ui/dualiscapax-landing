@@ -4,69 +4,80 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>School — DualisCapax</title>
-<meta name="theme-color" content="#000000"/>
-<meta name="description" content="A morning at the door. For a school board that wants to look first."/>
+<meta name="theme-color" content="#9ec9e8"/>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;background:#000;color:#fff;font:400 16px/1.45 system-ui,sans-serif}
-body{min-height:100dvh;background:#000 url("https://images.unsplash.com/photo-1588072432836-e10032774343?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat fixed}
-body::before{content:"";position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.72) 55%,rgba(0,0,0,.88));pointer-events:none}
-.word{position:fixed;top:1.2rem;left:max(1rem,env(safe-area-inset-left));width:clamp(140px,20vw,220px);opacity:.5;z-index:3}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100dvh;font-family:system-ui,sans-serif;color:#fff;background:#102033}
+.word{position:fixed;top:1.2rem;left:max(1rem,env(safe-area-inset-left));width:clamp(160px,22vw,240px);opacity:.5;z-index:8}
 .word img{display:block;width:100%;height:auto}
-.pane{position:relative;z-index:2;max-width:28rem;min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;padding:5.5rem max(1.15rem,env(safe-area-inset-right)) max(1.4rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
-h1{font:600 clamp(1.7rem,5vw,2.4rem)/1.05 system-ui,sans-serif;letter-spacing:.02em;text-shadow:0 1px 18px rgba(0,0,0,.7)}
-.line{margin:.35rem 0 1.1rem;opacity:.88;font-size:clamp(.95rem,2vw,1.1rem)}
-label{display:block;margin:.55rem 0 .28rem;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
-input,select{width:100%;padding:.7rem .75rem;border:1px solid rgba(255,255,255,.22);border-radius:10px;background:rgba(0,0,0,.45);color:#fff;font:inherit}
-button,.back{display:inline-flex;align-items:center;justify-content:center;margin-top:1rem;padding:.85rem 1.1rem;border:0;border-radius:999px;background:#fff;color:#111;font:600 .95rem/1 system-ui,sans-serif;cursor:pointer;text-decoration:none}
-.back{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);margin-left:.45rem}
-.ok{margin-top:.9rem;min-height:1.2em;opacity:.85}
+.pane{
+  min-height:100dvh;
+  display:grid;
+  place-items:end start;
+  padding:max(5.5rem,14vh) max(1.2rem,env(safe-area-inset-right)) max(1.6rem,env(safe-area-inset-bottom)) max(1.2rem,env(safe-area-inset-left));
+  background:#123 url("https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat;
+}
+.pane::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.66))}
+main.pane{position:relative}
+.card{position:relative;z-index:1;max-width:28rem}
+h1{font:600 clamp(1.6rem,5vw,2.4rem)/1.05 system-ui,sans-serif;margin:0 0 .4rem}
+p{margin:0 0 1rem;opacity:.92;line-height:1.4}
+label{display:block;margin:.55rem 0 .22rem;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;opacity:.78}
+input{
+  width:100%;
+  padding:.72rem .8rem;
+  border:0;
+  border-radius:6px;
+  font:1rem system-ui,sans-serif;
+}
+.row{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1rem}
+button,.back{
+  display:inline-block;
+  padding:.75rem 1.15rem;
+  border:0;
+  border-radius:6px;
+  background:#e8c36a;
+  color:#111;
+  font:700 .95rem system-ui,sans-serif;
+  text-decoration:none;
+  cursor:pointer;
+}
+.back{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35)}
+.ok{margin-top:.85rem}
 </style>
 </head>
 <body>
 <p class="word"><img src="/brand/logo-lock.svg" alt="DualisCapax"/></p>
 <main class="pane">
-  <h1>School</h1>
-  <p class="line">Drop-off. Real morning. This is the door a board walks through.</p>
-  <form id="board" action="#" method="post">
+  <form class="card" id="board">
+    <h1>School</h1>
+    <p>Drop-off. Real morning. Start with your board.</p>
     <label for="name">Your name</label>
-    <input id="name" name="name" autocomplete="name" required/>
-    <label for="role">Your desk</label>
-    <select id="role" name="role">
-      <option>Trustee</option>
-      <option>Director</option>
-      <option>Principal</option>
-      <option>Teacher</option>
-      <option>Parent</option>
-    </select>
+    <input id="name" name="name" autocomplete="name" required>
     <label for="boardname">School board</label>
-    <input id="boardname" name="board" autocomplete="organization" required placeholder="The board you sit on"/>
-    <label for="mail">Email</label>
-    <input id="mail" name="email" type="email" autocomplete="email" required/>
-    <button type="submit">Start</button>
-    <a class="back" href="/?beat=5">Back to the hop</a>
-    <p class="ok" id="ok"></p>
+    <input id="boardname" name="board" required>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" autocomplete="email" required>
+    <div class="row">
+      <button type="submit">Start</button>
+      <a class="back" href="/#school">Back to the hop</a>
+    </div>
+    <p class="ok" id="ok" hidden>Got it. This opens the school door.</p>
   </form>
 </main>
 <script>
-(function(){
-  var form=document.getElementById('board');
-  var ok=document.getElementById('ok');
-  if(!form) return;
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    var row={
-      v:'school-board-v1',
-      name:(document.getElementById('name')||{}).value||'',
-      role:(document.getElementById('role')||{}).value||'',
-      board:(document.getElementById('boardname')||{}).value||'',
-      email:(document.getElementById('mail')||{}).value||'',
-      ts:new Date().toISOString()
-    };
-    try{localStorage.setItem('dc.school.board',JSON.stringify(row));}catch(err){}
-    if(ok) ok.textContent='Saved on this device. We will use this as the first School template.';
-  });
-})();
+document.getElementById('board').addEventListener('submit',function(e){
+  e.preventDefault();
+  var row={
+    name:document.getElementById('name').value.trim(),
+    board:document.getElementById('boardname').value.trim(),
+    email:document.getElementById('email').value.trim(),
+    theme:'school',
+    ts:Date.now()
+  };
+  try{localStorage.setItem('dc.school.intake',JSON.stringify(row));}catch(err){}
+  document.getElementById('ok').hidden=false;
+});
 </script>
 </body>
 </html>
