@@ -1,11 +1,13 @@
 # LOGO LAW
-Updated 28 August 2026. Owner mark. Do not restyle.
+Updated 2 September 2026. Owner mark.
 
-## Public mark
-- `brand/word-dark.svg` — DualisCapax word only, white, centered.
+## Public lockup
+- Geodesic wire-sphere snapped to the D (inside the counter of D, or kissing the stem).
+- Word DualisCapax letter-spaced across the top. Leave stays right.
+- Files: `brand/word-geo.svg` and the live header in `index.html`.
 
-The trailing DNA strand / XD tail is retired. Do not put a helix after Capax.
-Do not restore the tail.
-Aliases (`brand/logo-dna-x.svg`, `brand/logo-mark-dark.svg`, `brand/wordmark.svg`) point at the same word-only file.
-
-The circular helix emblem is a separate plate. It does not sit to the right of the word.
+## Do not
+- Do not put a helix or geodesic AFTER Capax. The trailing DNA/X tail stays retired.
+- Do not replace the traveler helix inside the pipe with this header geodesic.
+- Do not turn the header into a nav.
+- The circular helix emblem (`brand/emblem-helix.svg`) remains a separate plate.
