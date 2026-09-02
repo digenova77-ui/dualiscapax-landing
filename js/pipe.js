@@ -22,7 +22,7 @@
   }
 
   var stations=[
-    {src:'https://images.unsplash.com/photo-1521791136064-7986c2928956?auto=format&fit=crop&w=1400&q=80',z:-900},
+    {src:'/brand/world-geo.svg',z:-900},
     {src:'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1400&q=80',z:-1600},
     {src:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1400&q=80',z:-2200}
   ].map(function(s){
@@ -35,7 +35,7 @@
   });
 
   var grains=[
-    {src:'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80'},
+    {src:'/brand/world-geo.svg'},
     {src:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80'},
     {src:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80'},
     {src:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1920&q=80'},
@@ -140,34 +140,38 @@
     }
   }
 
-  function hop(i){
+  function hop(i,force){
     if(!world||hopping) return;
     if(i<0) i=grains.length-1;
     if(i>=grains.length) i=0;
-    if(i===grainI&&outside) return;
+    if(!force&&i===grainI&&outside&&world.getAttribute('src')) return;
     grainI=i;
     markGrain();
     var go=function(){world.src=grains[grainI].src};
-    if(reduce||!outside){
+    if(reduce){
+      world.classList.remove('shift','land');
       go();
       return;
     }
     hopping=true;
+    world.classList.remove('land');
     world.classList.add('shift');
     window.clearTimeout(hop._t);
     hop._t=window.setTimeout(function(){
       go();
-      window.setTimeout(function(){
-        world.classList.remove('shift');
+      world.classList.remove('shift');
+      world.classList.add('land');
+      hop._t=window.setTimeout(function(){
+        world.classList.remove('land');
         hopping=false;
-      },40);
-    },240);
+      },420);
+    },280);
   }
 
   function emerge(){
     if(!world) return;
     outside=true;
-    hop(grainI);
+    hop(grainI,true);
     pipe.classList.add('out');
     pipe.classList.remove('gating','rush','back','held');
     snapQuarks(true,false);
@@ -180,7 +184,7 @@
   function reenter(){
     outside=false;
     hopping=false;
-    if(world) world.classList.remove('shift');
+    if(world) world.classList.remove('shift','land');
     pipe.classList.remove('out');
     cruise=docked?HOLD:CRUISE;
     if(docked) pipe.classList.add('held');
