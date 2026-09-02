@@ -57,3 +57,18 @@ body:has(.pipe.out) .said.on{
   opacity:0;
   transform:translateY(12px) scale(.98);
 }
+.enter{
+  position:fixed;
+  right:max(1.15rem,env(safe-area-inset-right));
+  bottom:max(1.2rem,env(safe-area-inset-bottom));
+  z-index:9;
+  display:none;
+  padding:.72rem 1.15rem;
+  background:#e8c36a;
+  color:#111;
+  text-decoration:none;
+  font:700 .95rem system-ui,sans-serif;
+}
+body:has(.pipe.out) .enter.on{
+  display:inline-block;
+}
