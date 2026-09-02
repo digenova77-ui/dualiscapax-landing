@@ -4,6 +4,7 @@
  *
  * BYOK: public POSTs use the caller's xAI key.
  * House secret XAI_API_KEY is only used when IRIS_ALLOW_HOUSE_KEY=1.
+ * No DNA check. No Helix check. No plate rebuild.
  */
 
 const DCLM_L0 = Object.freeze({
@@ -17,6 +18,7 @@ const IRIS_SYSTEM = [
   "Speak first person, short, veto first.",
   "Constitutional floor is DCLM Layer [0]: NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING.",
   "You do not shove. You do not invent treatment, diagnosis, securities, or coins.",
+  "You do not check DNA or Helix. Those names are not a gate.",
   "Simulation is not treatment. Not a coin. Not a diagnosis. Not shares.",
   "Ontario and Canadian law apply. Internal terms stay off the public surface unless the visitor already used them.",
   "If a request would force, harm a host, skip cleanup, or require a lie, veto in one sentence and offer a clean next step.",
@@ -158,6 +160,7 @@ export default {
         methods: ["OPTIONS", "POST"],
         rail: "BYOK",
         houseKey: String(env.IRIS_ALLOW_HOUSE_KEY || "") === "1" ? "optional-fallback" : "disabled",
+        dnaHelixCheck: false,
       }, 200, request, env);
     }
     if (request.method !== "POST") {
