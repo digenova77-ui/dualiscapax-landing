@@ -11,11 +11,45 @@ body{font-family:ui-sans-serif,system-ui,sans-serif}
 a{color:inherit;text-decoration:none}
 .word,.leave{
   position:fixed;z-index:12;
-  top:max(.9rem,env(safe-area-inset-top));
-  font:.62rem/1 ui-sans-serif,system-ui,sans-serif;
-  letter-spacing:.28em;text-transform:uppercase;
+  top:max(.85rem,env(safe-area-inset-top));
+  font:.72rem/1 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.34em;text-transform:uppercase;
+  font-weight:600;
 }
-.word{left:max(1.1rem,env(safe-area-inset-left));color:var(--gold)}
+.word{
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;align-items:center;
+  color:var(--gold);
+  width:max-content;
+  max-width:calc(100vw - 7rem);
+  pointer-events:none;
+}
+.lock{
+  position:relative;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.15em;height:1.15em;
+  margin-right:.12em;
+  letter-spacing:0;
+  perspective:48px;
+}
+.lock .d{
+  position:relative;z-index:1;
+  letter-spacing:0;
+  font-weight:700;
+}
+.geo{
+  position:absolute;inset:-18%;
+  width:136%;height:136%;
+  color:var(--gold);
+  transform-style:preserve-3d;
+  animation:geospin 16s linear infinite;
+  filter:drop-shadow(0 0 6px rgba(232,195,106,.45));
+}
+@keyframes geospin{
+  to{transform:rotateY(360deg)}
+}
+.rest{letter-spacing:.34em}
 .leave{right:max(1.1rem,env(safe-area-inset-right));color:rgba(243,239,230,.3)}
 .leave:hover{color:#fff}
 .pipe{
@@ -225,7 +259,7 @@ a{color:inherit;text-decoration:none}
     radial-gradient(circle at 50% 42%, rgba(255,236,180,.85), rgba(255,210,90,.2) 38%, transparent 62%);
   animation:sunburst .9s ease-out;
 }
-.pipe.out .word{color:#8a6a20}
+.pipe.out .word{color:#6b5214}
 .pipe.out .leave{color:rgba(20,24,28,.45)}
 .pipe.out .leave:hover{color:#111}
 @keyframes sunburst{
@@ -247,7 +281,7 @@ a{color:inherit;text-decoration:none}
   100%{opacity:0;filter:contrast(1)}
 }
 @media (prefers-reduced-motion:reduce){
-  .dna{animation:none}
+  .dna,.geo{animation:none}
   .pipe.rush .zap,.pipe.gating .station.armed,.pipe.held .door,.pipe.out .zap{animation:none}
   .pipe.rush .tunnel{filter:none}
   .world,.dna,.tunnel,.iris,.vignette{transition:none}
