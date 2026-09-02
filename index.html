@@ -8,41 +8,47 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#000;color:#f3efe6;height:100%;overflow:hidden}
-body{font-family:Palatino,"Iowan Old Style","Times New Roman",serif}
+body{font-family:Palatino,"Iowan Old Style","Times New Roman",serif;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.leave{position:fixed;top:max(.85rem,env(safe-area-inset-top));right:max(1rem,env(safe-area-inset-right));z-index:8;font:.62rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.26em;text-transform:uppercase;color:rgba(243,239,230,.32)}
+.leave{position:fixed;top:max(.9rem,env(safe-area-inset-top));right:max(1.1rem,env(safe-area-inset-right));z-index:9;font:.62rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:rgba(243,239,230,.3)}
 .leave:hover{color:#fff}
-.word{position:fixed;top:max(.85rem,env(safe-area-inset-top));left:max(1rem,env(safe-area-inset-left));z-index:8;font:.62rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.26em;text-transform:uppercase;color:rgba(232,195,106,.7)}
-.stage{position:relative;height:100dvh;background:#000}
-.plate{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.6s ease;filter:saturate(1.05) contrast(1.06)}
-.plate.on{opacity:1}
-.sigil{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:18vh 12vw;opacity:0;transition:opacity 1.6s ease;filter:drop-shadow(0 0 40px rgba(212,168,72,.35))}
-.sigil.on{opacity:1}
-.stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2),transparent 30%,rgba(0,0,0,.72));pointer-events:none}
-.caption{position:absolute;left:0;right:0;bottom:9vh;z-index:3;text-align:center;font-size:clamp(1.4rem,4vw,2.6rem);letter-spacing:.03em;text-shadow:0 10px 40px #000}
+.word{position:fixed;top:max(.9rem,env(safe-area-inset-top));left:max(1.1rem,env(safe-area-inset-left));z-index:9;font:.62rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,195,106,.72)}
+.stage{--lx:0;--ly:0;position:relative;height:100dvh;background:#000}
+.far{position:absolute;inset:-8%;transform:translate3d(calc(var(--lx)*-18px),calc(var(--ly)*-12px),0) scale(1.08)}
+.plate,.sigil{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.8s ease}
+.plate{object-fit:cover;filter:saturate(1.06) contrast(1.08)}
+.sigil{object-fit:contain;padding:16vh 14vw;filter:drop-shadow(0 0 42px rgba(212,168,72,.38)) drop-shadow(0 0 80px rgba(60,140,255,.16));transform:translate3d(calc(var(--lx)*22px),calc(var(--ly)*16px),0)}
+.plate.on,.sigil.on{opacity:1}
+.veil{position:absolute;inset:0;pointer-events:none;background:radial-gradient(90% 70% at 50% 42%,transparent 18%,rgba(0,0,0,.55) 100%)}
+.caption{position:absolute;left:0;right:0;bottom:9vh;z-index:4;text-align:center;font-size:clamp(1.35rem,4vw,2.5rem);letter-spacing:.04em;text-shadow:0 12px 48px #000;transform:translate3d(calc(var(--lx)*10px),0,0)}
 </style>
 </head>
 <body>
 <p class="word">DualisCapax</p>
-<a class="leave" href="/leave.html">Leave</a>
+<a class="leave" href="#">Leave</a>
 <main class="stage" id="stage">
-  <img class="sigil on" src="/brand/holo-helix.svg" alt="" data-cap="DNA">
-  <img class="plate" src="https://images.unsplash.com/photo-1521791136064-7986c2928956?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A handshake">
-  <img class="plate" src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A life">
-  <img class="plate" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A chip">
+  <div class="far">
+    <img class="sigil on" src="/brand/holo-helix.svg" alt="" data-cap="DNA">
+    <img class="plate" src="https://images.unsplash.com/photo-1521791136064-7986c2928956?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A handshake">
+    <img class="plate" src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A life">
+    <img class="plate" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=80" alt="" data-cap="A chip">
+  </div>
+  <div class="veil"></div>
   <p class="caption" id="cap">DNA</p>
 </main>
 <script>
 (function(){
-  var slides=document.querySelectorAll('.sigil, .plate');
+  var s=document.getElementById('stage');
+  var slides=s.querySelectorAll('.sigil, .plate');
   var cap=document.getElementById('cap');
-  var i=0;
-  setInterval(function(){
-    slides[i].classList.remove('on');
-    i=(i+1)%slides.length;
-    slides[i].classList.add('on');
-    cap.textContent=slides[i].getAttribute('data-cap');
-  },5200);
+  var i=0,lx=0,ly=0,tx=0,ty=0;
+  function c(n){return Math.max(-1,Math.min(1,n))}
+  function loop(){tx+=(lx-tx)*.05;ty+=(ly-ty)*.05;s.style.setProperty('--lx',tx.toFixed(4));s.style.setProperty('--ly',ty.toFixed(4));requestAnimationFrame(loop)}
+  requestAnimationFrame(loop);
+  s.addEventListener('pointermove',function(e){var r=s.getBoundingClientRect();lx=c(((e.clientX-r.left)/r.width)*2-1);ly=c(((e.clientY-r.top)/r.height)*2-1)});
+  s.addEventListener('pointerleave',function(){lx=0;ly=0});
+  document.querySelector('.leave').addEventListener('click',function(e){e.preventDefault();document.body.style.transition='opacity .6s';document.body.style.opacity='0';setTimeout(function(){location.replace('about:blank')},600)});
+  setInterval(function(){slides[i].classList.remove('on');i=(i+1)%slides.length;slides[i].classList.add('on');cap.textContent=slides[i].getAttribute('data-cap')},5600);
 })();
 </script>
 </body>
