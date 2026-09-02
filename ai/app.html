@@ -21,6 +21,8 @@ header{display:flex;align-items:center;gap:.6rem;min-height:3rem;padding:env(saf
 .brand{display:flex;align-items:center;min-width:0;text-decoration:none;color:inherit}
 .brand img{height:1.2rem;width:auto;display:block}
 .who{margin-left:.2rem;font:600 .68rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.presence{width:2.2rem;height:2.2rem;flex:0 0 2.2rem;border:1px solid var(--line);overflow:hidden;background:#000}
+.presence canvas{display:block;width:100%;height:100%}
 .tools{margin-left:auto;display:flex;gap:.35rem}
 .tools button{width:2.2rem;height:2.2rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .72rem "IBM Plex Mono",ui-monospace,monospace}
 .tools button.on{border-color:var(--blue);color:var(--blue)}
@@ -47,8 +49,12 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
   textarea{font-size:1.14rem;min-height:52px}
   form button{width:48px;height:48px}
   .tools button{width:2.4rem;height:2.4rem}
+  .presence{width:2.4rem;height:2.4rem;flex-basis:2.4rem}
   .who{font-size:.78rem}
   .chips button{font-size:.85rem;padding:.55rem .8rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .presence{display:none}
 }
 </style>
 </head>
@@ -56,6 +62,7 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
 <a class="sr" href="#input">Skip to message</a>
 <header>
   <a class="brand" href="/index.html?land=1"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who" id="who">Iris</span></a>
+  <div class="presence" id="presence" aria-hidden="true" title="Presence orb — not a person"></div>
   <div class="tools">
     <button type="button" id="hear" aria-pressed="false" aria-label="Voice off. Tap to hear Iris.">♪</button>
     <button type="button" id="cam" aria-pressed="false" aria-label="Open camera">□</button>
@@ -84,12 +91,13 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
 </div>
 <script src="/js/no-select.js"></script>
 <script src="/assets/haptic.js"></script>
-<script src="/js/api-config.js?v=31d"></script>
-<script src="/js/api-unified.js?v=31d"></script>
-<script src="dclm-look.js?v=31d"></script>
-<script src="iris-live.js?v=31d"></script>
-<script src="/js/dsap-engine.js?v=31d"></script>
-<script src="/js/iris-av.js?v=31d"></script>
+<script src="/js/api-config.js?v=31e"></script>
+<script src="/js/api-unified.js?v=31e"></script>
+<script src="dclm-look.js?v=31e"></script>
+<script src="iris-live.js?v=31e"></script>
+<script src="/js/dsap-engine.js?v=31e"></script>
+<script src="/js/iris-av.js?v=31e"></script>
+<script src="/js/iris-hologram.js?v=31e"></script>
 <script>
 (function(){
   if(navigator.serviceWorker){
@@ -102,21 +110,38 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
   var lastSpoken="";
   var vision={live:false};
   var stream=null;
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!reduce && window.IrisHolo && IrisHolo.mount){
+    IrisHolo.mount("#presence");
+    IrisHolo.setForm("orb");
+    IrisHolo.setObserver("person");
+    IrisHolo.setMood("rest");
+  }
   function hearOn(){
     var hear=document.getElementById("hear");
     return !!(hear&&hear.classList.contains("on"));
   }
   function showErr(m){ if(!m){errEl.hidden=true;errEl.textContent="";return;} errEl.hidden=false;errEl.textContent=m; }
+  function paintVoice(on){
+    if(!(window.IrisHolo)) return;
+    IrisHolo.setSpeaking(!!on);
+    IrisHolo.setEnergy(on?0.72:0.22);
+    IrisHolo.setMood(on?"intend":"rest");
+  }
   function voiceOut(text){
     if(!text||!hearOn()) return;
+    paintVoice(true);
     if(window.IrisAV&&IrisAV.unlock) IrisAV.unlock();
     if(window.IrisAV&&IrisAV.speak) IrisAV.speak(text);
     else if(window.speechSynthesis){
       var u=new SpeechSynthesisUtterance(String(text).slice(0,900));
       u.rate=1.02;
+      u.onend=function(){ paintVoice(false); };
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
+      return;
     }
+    setTimeout(function(){ paintVoice(false); }, Math.min(8000, 400+String(text).length*40));
   }
   function addBubble(who,text,href,label){
     var d=document.createElement("div");
@@ -160,6 +185,7 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
     lastSpoken=""; showErr(""); if(chips) chips.style.display="";
     if(window.speechSynthesis) window.speechSynthesis.cancel();
     if(window.DSAP&&DSAP.stop) DSAP.stop();
+    paintVoice(false);
   });
   document.getElementById("hear").addEventListener("click",function(){
     var b=document.getElementById("hear");
@@ -172,6 +198,7 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
     }else{
       if(window.speechSynthesis) window.speechSynthesis.cancel();
       if(window.DSAP&&DSAP.stop) DSAP.stop();
+      paintVoice(false);
     }
   });
   document.getElementById("cam").addEventListener("click",function(){
@@ -210,6 +237,10 @@ textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem 
       var live=!!(res&&res.live);
       btn.classList.toggle("on",live);
       btn.setAttribute("aria-pressed",live?"true":"false");
+      if(window.IrisHolo){
+        IrisHolo.setListening(live);
+        IrisHolo.setMood(live?"listen":"rest");
+      }
     }).catch(function(){ showErr("Mic blocked."); });
   });
   document.getElementById("filebtn").addEventListener("click",function(){document.getElementById("file").click();});
