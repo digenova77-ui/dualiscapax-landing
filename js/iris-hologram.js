@@ -3,7 +3,7 @@
  * Viewer chooses the clothes. Not a person. Not someone else's character.
  */
 (function (w) {
-  var VERSION = "iris-hologram-2026-09-01-h";
+  var VERSION = "iris-hologram-2026-09-01-leather";
   var canvas = null;
   var ctx = null;
   var raf = 0;
@@ -17,8 +17,11 @@
   var lookY = 0;
   var nod = 0;
   var t0 = 0;
+  var reduced = false;
 
   function mount(target) {
+    reduced = !!(w.matchMedia && w.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    if (reduced) return null;
     var host = typeof target === "string" ? document.querySelector(target) : target;
     if (!host) return null;
     canvas = host.tagName === "CANVAS" ? host : host.querySelector("canvas") || document.createElement("canvas");
@@ -37,7 +40,7 @@
     var parent = canvas.parentElement || canvas;
     var wdt = parent.clientWidth || 320;
     var hgt = parent.clientHeight || 220;
-    if (hgt < 160) hgt = Math.round(wdt * 0.5);
+    if (hgt < 36) hgt = 36;
     var dpr = Math.min(w.devicePixelRatio || 1, 2.5);
     canvas.width = Math.floor(wdt * dpr);
     canvas.height = Math.floor(hgt * dpr);
@@ -98,8 +101,8 @@
   function drawOrb(t, W, H) {
     var cx = W * (0.5 + lookX * 0.06);
     var cy = H * (0.48 + lookY * 0.05 + (nod > 0 ? Math.sin(t * 7.4) * 0.05 : 0));
-    var R = Math.min(W, H) * (0.16 + energy * 0.1) * (1 + Math.sin(t * 1.4) * 0.03);
-    var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 3.1);
+    var R = Math.min(W, H) * (0.28 + energy * 0.14) * (1 + Math.sin(t * 1.4) * 0.03);
+    var g = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 2.4);
     g.addColorStop(0, "rgba(255,244,210,0.96)");
     g.addColorStop(0.22, "rgba(255,196,90,0.8)");
     g.addColorStop(1, "rgba(0,1,8,0)");
@@ -142,7 +145,7 @@
 
   function loop(now) {
     raf = w.requestAnimationFrame(loop);
-    if (!ctx || !canvas) return;
+    if (!ctx || !canvas || reduced) return;
     if (!t0) t0 = now || performance.now();
     var t = ((now || performance.now()) - t0) / 1000;
     if (w.DCObserver && DCObserver.watcher) observer = DCObserver.watcher();
@@ -153,15 +156,21 @@
     else if (form === "sprite") drawSprite(t, W, H);
     else if (form === "field") drawField(t, W, H);
     else drawOrb(t, W, H);
-    ctx.fillStyle = "rgba(255,224,170,0.78)";
-    ctx.font = "600 " + Math.round(Math.max(10, W * 0.024)) + "px ui-monospace,monospace";
-    ctx.textAlign = "center";
-    ctx.fillText(labelFor(), W * 0.5, H * 0.9);
+    if (H > 160) {
+      ctx.fillStyle = "rgba(255,224,170,0.78)";
+      ctx.font = "600 " + Math.round(Math.max(10, W * 0.024)) + "px ui-monospace,monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(labelFor(), W * 0.5, H * 0.9);
+    }
   }
 
   function stop() {
     if (raf) w.cancelAnimationFrame(raf);
     raf = 0;
+    speaking = false;
+    listening = false;
+    energy = 0.18;
+    mood = "rest";
   }
 
   w.IrisHolo = {
