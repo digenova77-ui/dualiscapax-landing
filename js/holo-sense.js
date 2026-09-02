@@ -1,9 +1,12 @@
 /**
  * Holo sense. One energy drives depth, space, tone, tap, and mood.
+ * Pointer and tilt write the same look square. Fresh pointer wins (alpha).
  * Twig on iris-hologram. Does not replace it. Not a person.
  */
 (function (w) {
-  var VERSION = "holo-sense-2026-09-01-d";
+  var VERSION = "holo-sense-2026-09-01-fuse";
+  var FUSE_MS = 120;
+  var ALPHA_PTR = 0.75;
   var ctx = null;
   var oscA = null;
   var oscB = null;
@@ -21,6 +24,12 @@
   var raf = 0;
   var leanX = 0;
   var leanY = 0;
+  var ptrX = 0;
+  var ptrY = 0;
+  var tiltX = 0;
+  var tiltY = 0;
+  var ptrAt = 0;
+  var tiltOn = false;
   var buzz = 0;
 
   function hole(reason) {
@@ -168,8 +177,23 @@
     return energy;
   }
 
+  function clamp1(n) {
+    return Math.max(-1, Math.min(1, n));
+  }
+
+  function fuse() {
+    var fresh = (performance.now() - ptrAt) < FUSE_MS;
+    var a = fresh ? ALPHA_PTR : 0;
+    if (!tiltOn) a = fresh ? 1 : 0;
+    leanX = clamp1((1 - a) * tiltX + a * ptrX);
+    leanY = clamp1((1 - a) * tiltY + a * ptrY);
+    if (w.IrisHolo && IrisHolo.lookAt) IrisHolo.lookAt(leanX, leanY);
+    return a;
+  }
+
   function loop() {
     raf = w.requestAnimationFrame(loop);
+    fuse();
     var wellEl = document.getElementById("holo-well");
     if (!wellEl) return;
     var t = performance.now() / 1000;
@@ -185,17 +209,19 @@
   function point(e) {
     var x = (e.clientX || 0) / Math.max(1, w.innerWidth);
     var y = (e.clientY || 0) / Math.max(1, w.innerHeight);
-    leanX = (x - 0.5) * 2;
-    leanY = (y - 0.5) * 2;
-    if (w.IrisHolo && IrisHolo.lookAt) IrisHolo.lookAt(leanX, leanY);
-    setEnergy(0.22 + Math.min(0.55, Math.abs(leanX) * 0.2 + Math.abs(leanY) * 0.12));
+    ptrX = clamp1((x - 0.5) * 2);
+    ptrY = clamp1((y - 0.5) * 2);
+    ptrAt = performance.now();
+    fuse();
+    setEnergy(0.22 + Math.min(0.55, Math.abs(ptrX) * 0.2 + Math.abs(ptrY) * 0.12));
   }
 
   function tilt(e) {
     if (typeof e.gamma !== "number" || typeof e.beta !== "number") return;
-    leanX = Math.max(-1, Math.min(1, e.gamma / 28));
-    leanY = Math.max(-1, Math.min(1, (e.beta - 40) / 36));
-    if (w.IrisHolo && IrisHolo.lookAt) IrisHolo.lookAt(leanX, leanY);
+    tiltOn = true;
+    tiltX = clamp1(e.gamma / 28);
+    tiltY = clamp1((e.beta - 40) / 36);
+    fuse();
   }
 
   function mount(target) {
@@ -232,7 +258,9 @@
     setEnergy: setEnergy,
     pulse: pulse,
     tap: tap,
-    hole: hole
+    hole: hole,
+    fuseMs: FUSE_MS,
+    alphaPtr: ALPHA_PTR
   };
 
   if (document.readyState === "loading") {
