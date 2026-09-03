@@ -3,33 +3,104 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>DualisCapax</title>
-<meta name="theme-color" content="#000000"/>
-<link rel="stylesheet" href="/css/pipe.css"/>
-<link rel="stylesheet" href="/css/cards.css"/>
-<link rel="stylesheet" href="/css/word-lock.css"/>
+<title>DualisCapax — Operational Fiduciary Surface</title>
+<meta name="description" content="DualisCapax public surface. Ten-sector operational onboarding. Access closed. Earned CAD $0."/>
+<meta name="theme-color" content="#020617"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/pipe.css"/>
+<link rel="stylesheet" href="css/cards.css"/>
+<link rel="stylesheet" href="css/word-lock.css"/>
 </head>
 <body>
-<p class="word" id="word"><span class="rest">DualisCapax</span></p>
-<a class="leave" href="#" id="leave">Leave</a>
-<main class="pipe" id="pipe" data-sector="core">
-  <canvas class="weather" id="weather"></canvas>
-  <div class="tunnel" id="tunnel"></div>
-  <img class="world" id="world" alt="" />
-  <div class="stream" id="stream"></div>
-  <div class="iris" aria-hidden="true"></div>
-  <button class="door" id="door" type="button" aria-label="Door"></button>
-  <div class="grains" id="grains" hidden></div>
-  <p class="said" id="said" hidden>
-    <strong id="said-title"></strong>
-    <span id="said-line"></span>
-  </p>
-  <a class="enter" id="enter" href="/school.html">Start</a>
-  <button class="reenter" id="reenter" type="button">Back</button>
-  <div class="zap" id="zap" aria-hidden="true"></div>
-  <div class="vignette"></div>
+<header class="plate" id="plate">
+  <p class="word" id="word"><span class="rest">DualisCapax</span></p>
+  <div class="hud" id="hud" aria-label="Ledger HUD">
+    <span class="hud-item"><em>Live</em> <b id="hud-live">—</b></span>
+    <span class="hud-item"><em>Earned</em> <b id="hud-earned">CAD $0</b></span>
+    <span class="hud-item"><em>Singularity</em> <b id="hud-sing">2036-08-24</b></span>
+  </div>
+  <div class="gauge" id="gauge" title="INV-PERF fiduciary bounds 81–100%">
+    <svg viewBox="0 0 36 36" aria-hidden="true">
+      <path class="gauge-track" d="M18 2.5a15.5 15.5 0 1 1 0 31 15.5 15.5 0 0 1 0-31"/>
+      <path class="gauge-fill" id="gauge-fill" d="M18 2.5a15.5 15.5 0 1 1 0 31 15.5 15.5 0 0 1 0-31"/>
+    </svg>
+    <span id="gauge-read">81%</span>
+  </div>
+  <span class="stamp" id="stamp">SHA · storyboard-2026-09-03</span>
+</header>
+
+<main class="pipe" id="pipe" data-sector="sec-05">
+  <div class="floor" id="floor" aria-hidden="true"></div>
+  <section class="hero" id="hero">
+    <figure class="hero-visual">
+      <img id="hero-img" src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1600&q=80" alt="High-volume commercial kitchen operations"/>
+      <figcaption class="hero-cap" id="hero-cap">SEC-05 · Hospitality &amp; Food Service Logistics</figcaption>
+    </figure>
+    <div class="hero-copy">
+      <p class="kicker">Real-world operational fiduciary verification</p>
+      <h1 id="hero-title">Friction leaves the kitchen. Recipes stay sovereign.</h1>
+      <p class="lede" id="hero-lede">Tomasso's &amp; Jim's 4-step onboarding recovers CAD $214,800 / yr of operational drag at $0 upfront. Year-1 net retention floor 81%.</p>
+      <div class="hero-metrics" id="hero-metrics">
+        <div><em>Recoverable</em><b>CAD $214.8k</b></div>
+        <div><em>Net retention</em><b>81.0%</b></div>
+        <div><em>Upfront</em><b>$0.00</b></div>
+        <div><em>Access</em><b>CLOSED</b></div>
+      </div>
+      <button class="hotspot" id="hotspot" type="button">Open 4-step onboarding</button>
+    </div>
+  </section>
+
+  <section class="matrix" id="matrix" aria-label="Ten-sector operational matrix">
+    <h2>Ten-sector operational matrix</h2>
+    <p class="matrix-note">Select a sector to pivot the surface. Each card is a documentary workplace, not a generated lattice.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="ledger" id="ledger">
+    <h2>Ground-truth floor</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Parameter</th><th>Value</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>T-LAUNCH</td><td>Public surface start</td><td>2026-08-24 00:00 UTC</td><td>LOCKED</td></tr>
+        <tr><td>T-SING-BASE</td><td>Singularity if pledged = 0</td><td>2036-08-24 00:00 UTC</td><td>LOCKED</td></tr>
+        <tr><td>R-CAD-DAY</td><td>Pledge advance rate</td><td>1000 CAD / day</td><td>MODEL</td></tr>
+        <tr><td>LEDGER-EARNED</td><td>Total earned</td><td>CAD $0</td><td>CLOSED</td></tr>
+        <tr><td>LEDGER-PLEDGED</td><td>Total pledged</td><td>CAD $0</td><td>CLOSED</td></tr>
+        <tr><td>ACCESS</td><td>Document packs</td><td>closed</td><td>LOCKED</td></tr>
+        <tr><td>INV-PERF</td><td>Fiduciary bounds</td><td>81% – 100%</td><td>ACTIVE</td></tr>
+        <tr><td>INV-PII</td><td>Landauer residual bits</td><td>0</td><td>ENFORCED</td></tr>
+      </tbody>
+    </table>
+  </section>
 </main>
-<script src="/js/plate.js"></script>
-<script src="/js/pipe.js"></script>
+
+<aside class="iris-dock" id="iris-dock" aria-label="Iris AI telemetry dock">
+  <div class="iris-gauge" title="INV-PERF">
+    <span id="iris-pct">81</span><small>%</small>
+  </div>
+  <div class="iris-stream" id="iris-stream" aria-live="polite"></div>
+  <div class="iris-probe" id="iris-probe" role="group" aria-label="Sector probe"></div>
+</aside>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-x" id="modal-x" type="button" aria-label="Close">Close</button>
+    <p class="modal-kicker" id="modal-kicker">SEC-05 · 90-day binding pilot</p>
+    <h3 id="modal-title">Four-step onboarding</h3>
+    <ol class="steps" id="steps"></ol>
+    <p class="modal-foot">Access remains CLOSED. No sale on this surface. Onboard path: <a href="onboard.html">onboard.html</a></p>
+  </div>
+</div>
+
+<footer class="foot">
+  <p>Operator: David John Di Genova · DualisCapax / residual IP · ORCID 0009-0005-6291-8508</p>
+  <p>C-Suite whitelist validation pending · DCLM Layer [0] law floor attested · xAI and GitHub are platforms used, not formal partners</p>
+  <p><a href="onboard.html">Jump-start Unity Framework → onboard.html</a></p>
+</footer>
+
+<script src="js/plate.js"></script>
+<script src="js/pipe.js"></script>
 </body>
 </html>
