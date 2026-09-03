@@ -1,6 +1,6 @@
 /** DualisCapax Logic AI — veto, greet, look, then live model. Empty tank speaks as Iris, never as a brochure. */
 (function (w) {
-  var VERSION = "kernel-2026-09-01c";
+  var VERSION = "kernel-2026-09-03a";
   var EMPTY_VOICE = "We need more Fuel, boss, if you want to ride any further. Tap Bind when you are ready — I will be here in the same voice.";
   var DOWN_VOICE = "Hold up, boss. I lost the rail for a second. If it stays quiet, we need more Fuel to ride any further.";
   var FLOORS = {
@@ -107,6 +107,13 @@
     if (veto) return { grant: "VETO", voice: voice, kernel: VERSION, spoken: veto.reason + " Ask something else." };
     var g = greet(text);
     if (g) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "greet", spoken: g };
+    if (w.IrisBook && typeof w.IrisBook.lookup === "function") {
+      var book = w.IrisBook.lookup(text);
+      if (book && book.spoken) {
+        book.voice = voice;
+        return book;
+      }
+    }
     if (wantsRead(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "read", spoken: readSpoken(opt) };
     if (wantsLook(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "look", spoken: lookSpoken(opt.vision) };
     var remote = await remoteWorker(text);
