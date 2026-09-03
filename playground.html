@@ -24,7 +24,6 @@ body{background:#02040c}
 .tiny{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.42)}
 #drop{border:1px dashed rgba(158,197,255,.4);padding:1.1rem .9rem;text-align:center;margin:.5rem 0;color:rgba(245,245,245,.7)}
 #drop.on{border-color:#9ec5ff;background:rgba(158,197,255,.08)}
-#helix{display:block;width:100%;height:14rem;margin:.6rem 0 0}
 #holo-stage{height:12rem;margin:0 0 .8rem}
 </style>
 </head>
@@ -36,7 +35,6 @@ body{background:#02040c}
     <nav>
       <a href="look.html">Look</a>
       <a href="playground.html" class="on">One</a>
-      <a href="helix.html">Helix</a>
     </nav>
   </header>
   <p class="eyebrow">One · Playground · API v2</p>
@@ -44,7 +42,7 @@ body{background:#02040c}
   <h1>Plug and play. Not hope and pray.</h1>
   <p class="lede">Bring a sheet you already keep. It seats on this device, or it says no with one reason. Nothing is guessed.</p>
   <div class="panel">
-    <p class="law">One · Dual DCLM · helix</p>
+    <p class="law">One · Dual DCLM</p>
     <p class="warn">Two pipes start together. Friction finds holes. Affinity finds what already binds. They smash to one answer. Your books stay with you.</p>
     <div id="drop">Drop a CSV, TSV, JSON, or Excel file here<br/><span class="tiny">or choose one</span></div>
     <input id="file" type="file" accept=".csv,.tsv,.txt,.json,.xlsx,.xls" hidden/>
@@ -55,7 +53,6 @@ body{background:#02040c}
     <label class="tiny" for="url">Or a books link</label>
     <input class="url" id="url" type="url" placeholder="https://…" autocomplete="off"/>
     <button type="button" class="act" id="plugurl" style="width:100%">Plug the link</button>
-    <canvas id="helix" aria-hidden="true"></canvas>
     <p class="warn" id="note">Looking stays free. No leftover is invented if the sheet never named a total.</p>
   </div>
   <footer>One cannot move L3 access or L4 ownership. Isolation holds.</footer>
@@ -65,7 +62,6 @@ body{background:#02040c}
 <script src="js/api-world.js"></script>
 <script src="js/matrix-cell.js"></script>
 <script src="js/one-net.js"></script>
-<script src="js/helix-tongue.js"></script>
 <script src="js/dclm-job.js"></script>
 <script src="js/dclm-dual.js"></script>
 <script src="js/l2-plug.js"></script>
@@ -81,12 +77,8 @@ body{background:#02040c}
   var note = document.getElementById('note');
   var drop = document.getElementById('drop');
   var file = document.getElementById('file');
-  function paintHelix(){
-    if (!window.HelixTongue) return;
-    HelixTongue.mount(document.getElementById('helix'), window.DCMatrix && DCMatrix.load && DCMatrix.load());
-  }
   function paint(row){
-    if (!row) { paintHelix(); return; }
+    if (!row) { return; }
     if (row.status === 'PLUGGED') {
       note.className = 'warn ok';
       var name = (row.lease && row.lease.name) || '';
@@ -98,7 +90,6 @@ body{background:#02040c}
       note.textContent = 'REFUSED · ' + (row.reason||'NO') + ' · nothing guessed';
       if (window.HoloSense) HoloSense.pulse('rest');
     }
-    paintHelix();
   }
   function fail(e){
     note.className = 'warn bad';
@@ -124,7 +115,6 @@ body{background:#02040c}
     DCL2.clear();
     note.className = 'warn';
     note.textContent = 'Wiped on this device. Yearbook empty. Looking still free.';
-    paintHelix();
     if (window.HoloSense) HoloSense.pulse('rest');
   });
   paint(DCL2.load());
