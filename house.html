@@ -12,8 +12,6 @@
 body{min-height:100dvh;font-family:system-ui,sans-serif;color:#f3efe6;background:#07080c}
 .word{position:fixed;top:1.1rem;left:max(1rem,env(safe-area-inset-left));width:clamp(150px,22vw,220px);opacity:.55;z-index:8;max-width:min(28vw,220px)}
 .word img{display:block;width:100%;height:auto}
-.helix{position:fixed;top:1rem;right:max(1rem,env(safe-area-inset-right));width:clamp(44px,8vw,64px);opacity:.85;z-index:8}
-.helix img{display:block;width:100%;height:auto}
 .leave{position:fixed;top:1.15rem;right:max(5.2rem,calc(env(safe-area-inset-right) + 4.6rem));z-index:9;color:#f3efe6;text-decoration:none;font:600 .82rem system-ui,sans-serif;opacity:.7}
 main{position:relative;z-index:1;max-width:56rem;margin:0 auto;padding:5.4rem max(1.1rem,env(safe-area-inset-right)) 3rem max(1.1rem,env(safe-area-inset-left))}
 h1{font:600 clamp(1.7rem,5vw,2.5rem)/1.05 system-ui,sans-serif;margin:0 0 .35rem}
@@ -35,9 +33,6 @@ nav a{color:#9ec9e8;text-decoration:none;font:600 .9rem system-ui,sans-serif}
   <img class="lockup" alt="DualisCapax" data-stem="9672" data-parts="4" data-pad="0"/>
 </p>
 <a class="leave" href="/leave.html">Leave</a>
-<p class="helix">
-  <img alt="" data-stem="11180" data-parts="8" data-pad="2"/>
-</p>
 <main>
   <h1>House</h1>
   <p class="lede" id="lede">Have an open mind. A playground. You can leave. School is the first door.</p>
@@ -76,7 +71,7 @@ nav a{color:#9ec9e8;text-decoration:none;font:600 .9rem system-ui,sans-serif}
     a.href=d.id==='school'?'/school.html':'/join.html?door='+d.id;
     if(row) openCount++;
     var who=row&&row.name?row.name:'';
-    a.innerHTML='<strong>'+d.title+'</strong><span>'+d.line+'</span><em>'+(row?(who?who+' — open on this device':'Open on this device'):'Start')+'</em>';
+    a.innerHTML='<strong>'+d.title+'</strong><span>'+d.line+'</span><em>'+(row?(who?who+' \u2014 open on this device':'Open on this device'):'Start')+'</em>';
     grid.appendChild(a);
   });
   var lede=document.getElementById('lede');
