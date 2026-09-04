@@ -9,8 +9,8 @@
     { id: "one", title: "One person", line: "This device. Books stay here.", href: "playground.html" }
   ];
   var STREAMS = [
-    { id: "bus", title: "Bus", href: "research/geo/belleville/SEAL.md" },
-    { id: "care", title: "Care", href: "research/healthcare/library/ENCYCLOPEDIA-CATALOG.md" },
+    { id: "bus", title: "Bus", href: "look.html" },
+    { id: "care", title: "Care", href: "research/healthcare/locked.html" },
     { id: "sport", title: "Sport", href: "look.html" },
     { id: "office", title: "Office", href: "founding.html" },
     { id: "notes", title: "Notes", href: "field-notes.html" },
