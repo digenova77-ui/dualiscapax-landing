@@ -1,6 +1,5 @@
 /* DualisCapax bore engine — dual-pipe fly-through.
  * Friction finds holes. Affinity binds. Smash to one.
- * Hospitality (SEC-05) is a station ring, never first paint.
  */
 (function () {
   var canvas = document.getElementById("bore");
@@ -17,7 +16,7 @@
     { id: "sec-02", code: "02", name: "School boards", z: 22 },
     { id: "sec-03", code: "03", name: "Municipal / utility", z: 30 },
     { id: "sec-04", code: "04", name: "Athletic telemetry", z: 38 },
-    { id: "sec-05", code: "05", name: "Hospitality · Tomasso's", z: 46 },
+    { id: "sec-05", code: "05", name: "Food service logistics", z: 46 },
     { id: "sec-06", code: "06", name: "Industrial SCADA", z: 54 },
     { id: "sec-07", code: "07", name: "Corporate counsel", z: 62 },
     { id: "sec-08", code: "08", name: "Air-gapped defense", z: 70 },
