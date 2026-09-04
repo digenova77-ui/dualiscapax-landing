@@ -4,11 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>DualisCapax — Ground Zero</title>
-<meta name="description" content="DualisCapax public face. Look. Leave. Pick a room. Access closed. Earned CAD $0."/>
-<meta name="theme-color" content="#07080c"/>
-<link rel="stylesheet" href="css/zero.css?v=zero-20260904"/>
+<meta name="description" content="DualisCapax public face. Quarks, helix film, Iris orb. Look. Leave. Access closed. Earned CAD $0."/>
+<meta name="theme-color" content="#05060a"/>
+<link rel="stylesheet" href="css/zero-stack.css?v=stack-20260904"/>
 </head>
-<body>
+<body class="holo-on">
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
 <header class="plate" id="plate">
   <p class="word" id="word"><span class="rest">DualisCapax</span></p>
   <div class="hud" id="hud" aria-label="Ledger HUD">
@@ -16,10 +17,12 @@
     <span class="hud-item"><em>Earned</em> <b id="hud-earned">CAD $0</b></span>
     <span class="hud-item"><em>Singularity</em> <b id="hud-sing">2036-08-24</b></span>
   </div>
-  <span class="stamp" id="stamp" data-locked="1">SHA · zero-20260904</span>
+  <span class="stamp" id="stamp" data-locked="1">SHA · stack-20260904</span>
 </header>
-<main class="wrap">
+<main class="wrap site">
   <div>
+    <div id="iris-stage" class="holo-front" aria-hidden="true"></div>
+    <p id="iris-line">Sound is off. ♪ if you want the field.</p>
     <p class="kicker">Ground Zero · spoken Zero</p>
     <h1>Look. Leave if you want. Nothing is owed.</h1>
     <p class="lede">Friction finds holes. Affinity binds what already holds. They smash to one answer. Your books stay with you. A room is not the house.</p>
@@ -28,28 +31,44 @@
       <button class="act" id="act-rooms" type="button">Rooms</button>
       <button class="act" id="act-leave" type="button">Leave</button>
     </div>
-    <section class="floor" aria-label="Ground-truth floor">
-      <p>Law floor. DCLM Layer [0].</p>
-      <dl>
-        <dt>ACCESS</dt><dd>closed</dd>
-        <dt>EARNED</dt><dd>CAD $0</dd>
-        <dt>LAUNCH</dt><dd>2026-08-24 00:00 UTC</dd>
-        <dt>SINGULARITY</dt><dd>2036-08-24 if pledged = 0</dd>
-        <dt>FLOORS</dt><dd>NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</dd>
-      </dl>
-    </section>
   </div>
   <aside class="aside">
     <p>Land → desk → pose → 1 / 0 / HOLE → stay or leave.</p>
-    <p>One is the playground. Iris is a clerk. Bind is optional. Notes are named papers, not a Dualis bank.</p>
+    <p>One is the playground. Iris is a clerk. Bind is optional.</p>
     <p>Never 100.</p>
   </aside>
+  <section id="tour" aria-label="Storyboard film">
+    <div class="tour-stage"></div>
+    <div class="tour-meta">
+      <span class="tour-step"></span>
+      <strong class="tour-title"></strong>
+      <span class="tour-line"></span>
+    </div>
+    <span class="tour-progress"><i class="tour-progress-bar"></i></span>
+  </section>
+  <section class="floor" aria-label="Ground-truth floor">
+    <p>Law floor. DCLM Layer [0].</p>
+    <dl>
+      <dt>ACCESS</dt><dd>closed</dd>
+      <dt>EARNED</dt><dd>CAD $0</dd>
+      <dt>LAUNCH</dt><dd>2026-08-24 00:00 UTC</dd>
+      <dt>SINGULARITY</dt><dd>2036-08-24 if pledged = 0</dd>
+      <dt>FLOORS</dt><dd>NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</dd>
+    </dl>
+  </section>
 </main>
+<button class="hear" id="hear" type="button" aria-pressed="false">♪ off</button>
 <footer class="foot">
   <p>Operator: DualisCapax Inc. · 535 Bridge St E, Belleville, Ontario · ORCID 0009-0005-6291-8508</p>
-  <p><a href="look.html">Look</a> · <a href="rooms.html">Rooms</a> · <a href="onboard.html">Onboard</a> · <a href="playground.html">One</a> · <a href="field-notes.html">Notes</a> · <a href="faq.html">Leave</a></p>
+  <p><a href="look.html">Look</a> · <a href="rooms.html">Rooms</a> · <a href="onboard.html">Onboard</a> · <a href="playground.html">One</a> · <a href="field-notes.html">Notes</a> · <a href="ai/app.html">Iris</a> · <a href="faq.html">Leave</a></p>
 </footer>
-<script src="js/plate.js?v=zero-20260904"></script>
-<script src="js/zero.js?v=zero-20260904"></script>
+<script src="js/plate.js?v=stack-20260904"></script>
+<script src="js/theme-engine.js?v=stack-20260904"></script>
+<script src="js/iris-hologram.js?v=stack-20260904"></script>
+<script src="js/home-quarks.js?v=stack-20260904"></script>
+<script src="js/dsap-engine.js?v=stack-20260904"></script>
+<script src="js/video-engine.js?v=stack-20260904"></script>
+<script src="js/zero-stack.js?v=stack-20260904"></script>
+<script src="js/zero.js?v=stack-20260904"></script>
 </body>
 </html>
