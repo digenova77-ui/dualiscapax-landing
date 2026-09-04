@@ -3,55 +3,44 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Pipe — DualisCapax</title>
+<title>Inside — DualisCapax</title>
 <meta name="theme-color" content="#020617"/>
-<meta name="description" content="Protocol bore. Look. Onboard. Leave. Access closed. No checkout in the mouth."/>
+<meta name="description" content="Look around, get started, or go home. Nothing to buy here."/>
 <link rel="stylesheet" href="css/pipe-fly.css"/>
 <style>
-.comply{position:relative;z-index:3;max-width:42rem;margin:0 1.2rem 1.2rem;padding:1rem 0 0}
-.comply a,.comply button.door{margin-right:.4rem;margin-bottom:.4rem}
-.seats{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 1rem}
-.seats a{border:1px solid rgba(59,130,246,.28);padding:.45rem .6rem;color:#e2e8f0;font:600 .7rem/1 ui-sans-serif,system-ui;text-decoration:none;text-transform:uppercase;letter-spacing:.06em}
-.note{color:#94a3b8;font-size:.88rem;line-height:1.5;max-width:36rem}
+.comply{position:relative;z-index:3;max-width:40rem;margin:0 1.2rem 6rem;padding:1rem 0 0}
+.note{color:#94a3b8;font-size:1rem;line-height:1.5;max-width:36rem}
 </style>
 </head>
 <body class="bore">
-<a class="skip" href="#doors">Skip fly</a>
+<a class="skip" href="#doors">Skip the picture</a>
 <canvas id="bore" aria-hidden="true"></canvas>
 <header class="plate">
   <a class="word" href="index.html">DualisCapax</a>
-  <div class="hud" aria-label="Ledger">
-    <span><em>Access</em> <b>CLOSED</b></span>
-    <span><em>Earned</em> <b>CAD $0</b></span>
+  <div class="hud" aria-label="Status">
+    <span><em>Open to buy?</em> <b>No</b></span>
+    <span><em>You owe</em> <b>$0</b></span>
   </div>
-  <span class="stamp">protocol · not a till</span>
+  <span class="stamp">tap the name to go home</span>
 </header>
 <div class="overlay">
-  <p class="kicker">Protocol · smash to one</p>
-  <h1>The world is outside. This is the wire.</h1>
-  <p class="lede">Default bearing is the provincial house. Care, Fuel, and FINTRAC are not rings in this bore. Mark returns to the company.</p>
+  <p class="kicker">You are inside</p>
+  <h1>This is just the hallway.</h1>
+  <p class="lede">Pick one thing. You can always go back. Nobody is selling you anything on this screen.</p>
   <div class="doors" id="doors">
-    <a class="door inv" href="look.html">Look</a>
-    <a class="door" href="onboard.html">Onboard</a>
-    <a class="door" href="legal.html">Law</a>
-    <a class="door" href="index.html">Company</a>
+    <a class="door inv" href="look.html">Look around</a>
+    <a class="door" href="onboard.html">Get started</a>
+    <a class="door" href="index.html">Home</a>
   </div>
-  <p class="readout"><span>phase <b id="read-phase">MOUTH</b></span><span id="read-z">z 0</span><span id="read-station">— mouth</span></p>
+  <p class="readout"><span id="read-phase"> </span><span id="read-z"></span><span id="read-station"></span></p>
 </div>
 <section class="comply">
-  <p class="note">Seat altitudes only. Deeper leaves live after you exit.</p>
-  <div class="seats">
-    <a href="legal.html">Nation / law</a>
-    <a href="onboard.html">Province / desk</a>
-    <a href="rooms.html">House / rooms</a>
-    <a href="look.html">Street / look</a>
-    <a href="onboard.html">This device</a>
-  </div>
-  <p class="note">No Payment Link in the mouth. Prepaid minutes stay on their page. Jacket closed.</p>
+  <p class="note">Want rules or government pages? That is a different room.</p>
+  <p><a class="door" href="legal.html">Rules</a></p>
 </section>
 <div class="iris-dock">
-  <div class="iris-gauge" aria-hidden="true"><span>81</span></div>
-  <p class="iris-stream" id="iris-stream">access CLOSED · earned 0</p>
+  <div class="iris-gauge" aria-hidden="true"><span></span></div>
+  <p class="iris-stream" id="iris-stream">You can leave anytime.</p>
   <div class="iris-probe" id="iris-probe"></div>
 </div>
 <div id="ports" hidden></div>
