@@ -3,15 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>DualisCapax — Operational Surface</title>
-<meta name="description" content="DualisCapax public surface. Ten desks. Same rank. Access closed. Earned CAD $0."/>
-<meta name="theme-color" content="#020617"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/pipe.css?v=matrix-20260904c"/>
-<link rel="stylesheet" href="css/cards.css?v=matrix-20260904c"/>
-<link rel="stylesheet" href="css/word-lock.css?v=matrix-20260904c"/>
+<title>DualisCapax — Ground Zero</title>
+<meta name="description" content="DualisCapax public face. Look. Leave. Pick a room. Access closed. Earned CAD $0."/>
+<meta name="theme-color" content="#07080c"/>
+<link rel="stylesheet" href="css/zero.css?v=zero-20260904"/>
 </head>
 <body>
 <header class="plate" id="plate">
@@ -21,86 +16,40 @@
     <span class="hud-item"><em>Earned</em> <b id="hud-earned">CAD $0</b></span>
     <span class="hud-item"><em>Singularity</em> <b id="hud-sing">2036-08-24</b></span>
   </div>
-  <div class="gauge" id="gauge" title="INV-PERF fiduciary bounds 81–100%">
-    <svg viewBox="0 0 36 36" aria-hidden="true">
-      <path class="gauge-track" d="M18 2.5a15.5 15.5 0 1 1 0 31 15.5 15.5 0 0 1 0-31"/>
-      <path class="gauge-fill" id="gauge-fill" d="M18 2.5a15.5 15.5 0 1 1 0 31 15.5 15.5 0 0 1 0-31"/>
-    </svg>
-    <span id="gauge-read">81%</span>
-  </div>
-  <span class="stamp" id="stamp" data-locked="1">SHA · matrix-20260904c</span>
+  <span class="stamp" id="stamp" data-locked="1">SHA · zero-20260904</span>
 </header>
-
-<main class="pipe" id="pipe" data-sector="">
-  <div class="floor" id="floor" aria-hidden="true"></div>
-  <section class="hero" id="hero">
-    <figure class="hero-visual">
-      <img id="hero-img" src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=1600&q=80" alt="Industrial operations floor and instrumentation"/>
-      <figcaption class="hero-cap" id="hero-cap">Ten desks · same rank</figcaption>
-    </figure>
-    <div class="hero-copy">
-      <p class="kicker">Documentary matrix</p>
-      <h1 id="hero-title">Pick a desk. Same walk for every room.</h1>
-      <p class="lede" id="hero-lede">Friction finds holes. Affinity binds what already holds. They smash to one answer. Your books stay with you. Look. Leave if you want. Nothing is owed.</p>
-      <div class="hero-metrics" id="hero-metrics">
-        <div><em>Desks</em><b>10</b></div>
-        <div><em>Net retention</em><b>81.0%</b></div>
-        <div><em>Upfront</em><b>$0.00</b></div>
-        <div><em>Access</em><b>CLOSED</b></div>
-      </div>
-      <button class="hotspot" id="hotspot" type="button">Open 4-step onboarding</button>
+<main class="wrap">
+  <div>
+    <p class="kicker">Ground Zero · spoken Zero</p>
+    <h1>Look. Leave if you want. Nothing is owed.</h1>
+    <p class="lede">Friction finds holes. Affinity binds what already holds. They smash to one answer. Your books stay with you. A room is not the house.</p>
+    <div class="acts">
+      <button class="act gold" id="act-look" type="button">Look</button>
+      <button class="act" id="act-rooms" type="button">Rooms</button>
+      <button class="act" id="act-leave" type="button">Leave</button>
     </div>
-  </section>
-
-  <section class="matrix" id="matrix" aria-label="Ten-desk operational matrix">
-    <h2>Ten desks</h2>
-    <p class="matrix-note">Each card is a workplace still. Click a desk to pivot the surface. Onboard is the goal of every seat.</p>
-    <div class="cards" id="cards"></div>
-  </section>
-
-  <section class="ledger" id="ledger">
-    <h2>Ground-truth floor</h2>
-    <table>
-      <thead><tr><th>ID</th><th>Parameter</th><th>Value</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td>T-LAUNCH</td><td>Public surface start</td><td>2026-08-24 00:00 UTC</td><td>LOCKED</td></tr>
-        <tr><td>T-SING-BASE</td><td>Singularity if pledged = 0</td><td>2036-08-24 00:00 UTC</td><td>LOCKED</td></tr>
-        <tr><td>R-CAD-DAY</td><td>Pledge advance rate</td><td>1000 CAD / day</td><td>MODEL</td></tr>
-        <tr><td>LEDGER-EARNED</td><td>Total earned</td><td>CAD $0</td><td>CLOSED</td></tr>
-        <tr><td>LEDGER-PLEDGED</td><td>Total pledged</td><td>CAD $0</td><td>CLOSED</td></tr>
-        <tr><td>ACCESS</td><td>Document packs</td><td>closed</td><td>LOCKED</td></tr>
-        <tr><td>INV-PERF</td><td>Fiduciary bounds</td><td>81% – 100%</td><td>ACTIVE</td></tr>
-        <tr><td>INV-PII</td><td>Landauer residual bits</td><td>0</td><td>ENFORCED</td></tr>
-      </tbody>
-    </table>
-  </section>
+    <section class="floor" aria-label="Ground-truth floor">
+      <p>Law floor. DCLM Layer [0].</p>
+      <dl>
+        <dt>ACCESS</dt><dd>closed</dd>
+        <dt>EARNED</dt><dd>CAD $0</dd>
+        <dt>LAUNCH</dt><dd>2026-08-24 00:00 UTC</dd>
+        <dt>SINGULARITY</dt><dd>2036-08-24 if pledged = 0</dd>
+        <dt>FLOORS</dt><dd>NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</dd>
+      </dl>
+    </section>
+  </div>
+  <aside class="aside">
+    <p>Land → desk → pose → 1 / 0 / HOLE → stay or leave.</p>
+    <p>One is the playground. Iris is a clerk. Bind is optional. Notes are named papers, not a Dualis bank.</p>
+    <p>Never 100.</p>
+  </aside>
 </main>
-
-<aside class="iris-dock" id="iris-dock" aria-label="Iris AI telemetry dock">
-  <div class="iris-gauge" title="INV-PERF">
-    <span id="iris-pct">81</span><small>%</small>
-  </div>
-  <div class="iris-stream" id="iris-stream" aria-live="polite"></div>
-  <div class="iris-probe" id="iris-probe" role="group" aria-label="Desk probe"></div>
-</aside>
-
-<div class="modal" id="modal" hidden>
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <button class="modal-x" id="modal-x" type="button" aria-label="Close">Close</button>
-    <p class="modal-kicker" id="modal-kicker">90-day binding pilot</p>
-    <h3 id="modal-title">Four-step onboarding</h3>
-    <ol class="steps" id="steps"></ol>
-    <p class="modal-foot">Access remains CLOSED. No sale on this surface. Onboard path: <a href="onboard.html">onboard.html</a></p>
-  </div>
-</div>
-
 <footer class="foot">
   <p>Operator: DualisCapax Inc. · 535 Bridge St E, Belleville, Ontario · ORCID 0009-0005-6291-8508</p>
-  <p>Access CLOSED · Earned CAD $0 · DCLM Layer [0] NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</p>
-  <p><a href="onboard.html">Onboard</a> · <a href="playground.html">Look</a> · <a href="faq.html">Leave</a></p>
+  <p><a href="look.html">Look</a> · <a href="rooms.html">Rooms</a> · <a href="onboard.html">Onboard</a> · <a href="playground.html">One</a> · <a href="field-notes.html">Notes</a> · <a href="faq.html">Leave</a></p>
 </footer>
-
-<script src="js/plate.js?v=matrix-20260904c"></script>
-<script src="js/pipe.js?v=matrix-20260904c"></script>
+<script src="js/plate.js?v=zero-20260904"></script>
+<script src="js/zero.js?v=zero-20260904"></script>
 </body>
 </html>
