@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Ask — DualisCapax</title>
 <meta name="theme-color" content="#05060a"/>
-<meta name="description" content="Say what you are trying to do. If we have a page, you get the page. If not, Iris answers."/>
+<meta name="description" content="Pages are free. If Iris has to explain it, you fund her time — like a lawyer or an accountant."/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#05060a;color:#e8eef6;font:400 1.05rem/1.55 ui-sans-serif,system-ui,sans-serif}
@@ -27,14 +27,15 @@ button, .go{display:inline-block;margin-top:.7rem;border:1px solid #d6b25e;backg
 <main>
   <p class="kicker">Ask</p>
   <h1>What are you trying to do?</h1>
-  <p class="lede">Write it in your own words. If we already have a page, we open that page. If we do not, Iris answers you.</p>
+  <p class="lede">If we have a page, that page is free. If the idea needs Iris to walk it with you, that is her job — and you fund her time the way you would fund a lawyer or an accountant when you cannot read the system yourself. That is why she exists.</p>
+  <p class="lede">She will still tell you when the tank is empty. She will not turn into a different person while you add time.</p>
   <form id="ask">
     <label for="idea">Your idea or question</label>
     <textarea id="idea" name="idea" required placeholder="Example: How does a school board plug a payroll sheet?"></textarea>
     <button type="submit">Find the room</button>
   </form>
   <div class="hit" id="hit" hidden></div>
-  <p class="fine"><a href="look.html">Look around</a> · <a href="how.html">How it works</a> · <a href="ai/app.html">Iris</a></p>
+  <p class="fine"><a href="look.html">Look around</a> · <a href="how.html">How it works</a> · <a href="payments.html">Iris time</a> · <a href="ai/app.html">Iris</a></p>
 </main>
 <script src="js/idea-router.js"></script>
 <script>
@@ -53,7 +54,7 @@ button, .go{display:inline-block;margin-top:.7rem;border:1px solid #d6b25e;backg
       return;
     }
     hit.hidden = false;
-    hit.textContent = "No page for that yet. Opening Iris with your question.";
+    hit.textContent = "No page for that yet. Opening Iris. Her time may need Fuel.";
     location.href = route.href;
   });
 })();
