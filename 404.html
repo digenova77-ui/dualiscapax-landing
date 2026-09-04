@@ -1,62 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Target not acquired — DualisCapax</title>
-  <meta name="robots" content="noindex,nofollow" />
-  <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/theme.css" />
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Not found</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="site">
-    <header>
-      <a href="/?land=1" class="mark">DualisCapax</a>
-      <nav>
-        <a href="/for-people">For you</a>
-        <a href="/access">Access</a>
-        <a href="/research/">Rooms</a>
-      </nav>
-    </header>
-    <p class="eyebrow">404</p>
-    <h1>Target not acquired.</h1>
-    <p>Uh-oh. We didn’t find that one.</p>
-    <p>The tree can run as deep as the miss. We do not pre-build a hundred thousand rooms. A miss names the next grain. We close backward from here.</p>
-    <p>Still building out. More to come.</p>
-    <div class="hud">
-      <p>Asked for <span class="strong" id="miss">this path</span>.</p>
-      <p id="depth" style="margin-top:.6rem"></p>
-    </div>
-    <section>
-      <div class="label">Walk back</div>
-      <div id="crumbs"></div>
-      <a class="door" href="/?land=1">Landing</a>
-      <a class="door" href="/for-people">For you</a>
-      <a class="door" href="/access">Access</a>
-      <a class="door" href="/research/">Rooms</a>
-    </section>
-    <footer>DualisCapax · Miss names the grain · Close backward</footer>
-  </div>
-  <script>
-    (function () {
-      var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
-      var miss = document.getElementById("miss");
-      if (miss) miss.textContent = path + (location.search || "");
-      var parts = path.split("/").filter(Boolean);
-      var depth = document.getElementById("depth");
-      if (depth) depth.textContent = parts.length ? (parts.length + " deep. Not minted until the grain closes.") : "Root miss.";
-      var box = document.getElementById("crumbs");
-      if (!box) return;
-      var acc = "";
-      var html = "<p><a class=\"door\" href=\"/?land=1\">/</a></p>";
-      for (var i = 0; i < parts.length; i++) {
-        acc += "/" + parts[i];
-        var last = i === parts.length - 1;
-        html += "<p>" + (last ? "<span class=\"strong\">" + acc + " — not acquired</span>" : "<a class=\"door\" href=\"" + acc + "\">" + acc + "</a>") + "</p>";
-      }
-      box.innerHTML = html;
-    })();
-  </script>
-</body>
-</html>
+<header><div class="brand">DUALISCAPAX</div><nav><a href="index.html">Gateway</a><a href="pay.html">Pay</a></nav></header>
+<main><h1>Not found</h1><p class="lead">That path is not this origin. Gateway or Pay.</p></main>
+</body></html>
