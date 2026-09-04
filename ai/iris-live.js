@@ -1,6 +1,6 @@
 /** Iris live bridge — veto/greet/look first, then depth worker. Empty tank keeps her voice. */
 (function (w) {
-  var VERSION = "iris-live-2026-09-01c";
+  var VERSION = "iris-live-2026-09-04-ask";
   var DEFAULT_BASE = "https://dualiscapax-depth.digenova77.workers.dev";
   var EMPTY_VOICE = (w.DCLMLook && w.DCLMLook.EMPTY_VOICE) || "We need more Fuel, boss, if you want to ride any further. Tap Bind when you are ready — I will be here in the same voice.";
 
@@ -93,6 +93,25 @@
       label: "Add Fuel"
     };
   }
+
+  function consumeAsk() {
+    try {
+      var q = new URLSearchParams(location.search).get("q") || new URLSearchParams(location.search).get("ask");
+      if (!q) return;
+      function fire() {
+        var input = document.getElementById("input");
+        var form = document.getElementById("form");
+        if (!input || !form) return false;
+        input.value = q;
+        form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+        return true;
+      }
+      if (!fire()) {
+        w.addEventListener("load", function () { setTimeout(fire, 300); });
+      }
+    } catch (e) {}
+  }
+  consumeAsk();
 
   w.IrisLive = { version: VERSION, run: run, apiBase: apiBase };
 })(window);
