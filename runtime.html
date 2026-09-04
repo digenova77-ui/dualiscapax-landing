@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Your room — DualisCapax</title>
+<meta name="theme-color" content="#05060a"/>
+<meta name="description" content="Your desk, lock, receipts, and Fuel on this device. Not an investment screen."/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#05060a;color:#e8eef6;font:400 1.02rem/1.5 ui-sans-serif,system-ui,sans-serif}
+a{color:#8eb4c8;text-decoration:none}
+.mark{position:fixed;top:1rem;left:1.1rem;z-index:5;font:700 .78rem/1 ui-sans-serif,system-ui;letter-spacing:.16em;text-transform:uppercase;color:#e8eef6}
+main{max-width:40rem;margin:0 auto;padding:4.6rem 1.15rem 3rem}
+.kicker{font:600 .7rem/1.3 ui-sans-serif,system-ui;letter-spacing:.1em;text-transform:uppercase;color:#8eb4c8}
+h1{font-size:clamp(1.45rem,5vw,2rem);margin:.35rem 0 .8rem}
+.board{display:grid;grid-template-columns:180px 1fr;gap:1.1rem;align-items:center;margin:1rem 0 1.2rem}
+@media(max-width:640px){.board{grid-template-columns:1fr;justify-items:center}}
+#gauge{width:180px;height:180px;display:block}
+.facts p{margin:.25rem 0;color:rgba(232,238,246,.8)}
+.lamps{display:grid;gap:.35rem;margin:1rem 0}
+.lamp{display:flex;justify-content:space-between;border:1px solid rgba(142,180,200,.22);padding:.55rem .7rem;font-size:.92rem}
+.lamp.on{border-color:rgba(142,180,200,.55)}
+.lamp b{font-weight:600}
+.hint{color:rgba(232,238,246,.5);font-size:.92rem;margin:1rem 0}
+.acts{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1rem}
+.acts a{border:1px solid rgba(142,180,200,.4);padding:.65rem .85rem;color:#e8eef6;font:700 .72rem/1 ui-sans-serif,system-ui;letter-spacing:.06em;text-transform:uppercase}
+.hash{font:500 .68rem/1.4 ui-monospace,Menlo,monospace;word-break:break-all;color:#8eb4c8;margin-top:.4rem}
+</style>
+</head>
+<body>
+<a class="mark" href="index.html">DualisCapax</a>
+<main>
+  <p class="kicker">Your room · this device</p>
+  <h1 id="title">Looking</h1>
+  <div class="board">
+    <canvas id="gauge" width="180" height="180" aria-label="Jackets on this device"></canvas>
+    <div class="facts">
+      <p id="seat">Desk: visitor</p>
+      <p id="state">State: look</p>
+      <p>Open to buy? No</p>
+      <p>You owe Dualis: $0</p>
+      <p id="fuel">Iris time on this device: 0</p>
+      <p id="audits">Receipts on this device: 0</p>
+      <p id="window">Ninety-day look: not open</p>
+    </div>
+  </div>
+  <div class="lamps" id="lamps"></div>
+  <p class="hint">The ring is jackets on this phone (name, domain, lock, treasury, receipt) — not a return. Money here is leftover you already spent, if your own books show it. Iris is in-house. A real lawyer checks the world.</p>
+  <p class="hash" id="hash"></p>
+  <div class="acts">
+    <a href="onboard.html">Get started</a>
+    <a href="audit.html">Audit now</a>
+    <a href="ask.html">Ask Iris</a>
+    <a href="how.html">How it works</a>
+    <a href="look.html">Look around</a>
+  </div>
+</main>
+<script src="js/contract-bind.js"></script>
+<script src="js/audit-crypto.js"></script>
+<script src="js/runtime-env.js"></script>
+<script>
+(function () {
+  var snap = DCRuntime.snapshot();
+  DCRuntime.paintGauge(document.getElementById("gauge"), snap);
+  document.getElementById("title").textContent = snap.bound ? ("Locked · " + snap.seat) : ("Looking · " + snap.seat);
+  document.getElementById("seat").textContent = "Desk: " + snap.seat;
+  document.getElementById("state").textContent = "State: " + snap.state;
+  document.getElementById("fuel").textContent = "Iris time on this device: " + snap.fuel;
+  document.getElementById("audits").textContent = "Receipts on this device: " + snap.audits;
+  document.getElementById("window").textContent = snap.window;
+  var lamps = document.getElementById("lamps");
+  snap.lamps.forEach(function (L) {
+    var d = document.createElement("div");
+    d.className = "lamp" + (L.ok ? " on" : "");
+    d.innerHTML = "<span>" + L.id + " · " + L.name + "</span><b>" + (L.ok ? "on" : "hole") + "</b>";
+    lamps.appendChild(d);
+  });
+  if (snap.terms) document.getElementById("hash").textContent = "terms " + snap.terms;
+  else if (snap.tip) document.getElementById("hash").textContent = "last receipt " + snap.tip;
+})();
+</script>
+</body>
+</html>
