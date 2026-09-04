@@ -4,20 +4,20 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>DualisCapax</title>
-<meta name="description" content="DualisCapax. Look. Leave. Access closed. Earned CAD $0. Not a bank, court, clinic, or border."/>
+<meta name="description" content="DualisCapax. Look around, get started, or leave. You owe nothing."/>
 <meta name="theme-color" content="#05060a"/>
-<link rel="stylesheet" href="css/zero-stack.css?v=compliant-20260904"/>
+<link rel="stylesheet" href="css/zero-stack.css?v=plain-20260904"/>
 <style>
 .veil{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.5rem;background:#05060a;color:#e8eef6}
 .veil[hidden]{display:none}
 .veil .iris{width:3.2rem;height:3.2rem;border:2px solid #8eb4c8;border-radius:50%;margin:0 auto .9rem;position:relative}
 .veil .iris:after{content:"";position:absolute;inset:.55rem;border:1px solid rgba(142,180,200,.45);border-radius:50%}
 .veil .name{font:700 .95rem/1 ui-sans-serif,system-ui;letter-spacing:.22em;text-transform:uppercase}
-.veil .line{margin:.7rem 0 1.4rem;color:rgba(232,238,246,.55);font-size:.88rem;letter-spacing:.08em}
+.veil .line{margin:.7rem 0 1.4rem;color:rgba(232,238,246,.62);font-size:1.05rem;max-width:22rem;line-height:1.45}
 .veil .acts{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
-.veil a,.veil button{border:1px solid rgba(142,180,200,.45);background:transparent;color:#e8eef6;padding:.65rem 1rem;font:700 .72rem/1 ui-sans-serif,system-ui;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:pointer}
+.veil a,.veil button{border:1px solid rgba(142,180,200,.45);background:transparent;color:#e8eef6;padding:.75rem 1.05rem;font:700 .8rem/1 ui-sans-serif,system-ui;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;cursor:pointer}
 .veil a.gold,.veil button.gold{border-color:#d6b25e;color:#d6b25e}
-.veil .law{margin-top:1.4rem;max-width:28rem;font-size:.82rem;line-height:1.5;color:rgba(232,238,246,.5)}
+.veil .law{margin-top:1.4rem;max-width:26rem;font-size:.95rem;line-height:1.5;color:rgba(232,238,246,.5)}
 body.veiled .wrap,body.veiled .plate,body.veiled .hear,body.veiled .foot{visibility:hidden}
 </style>
 </head>
@@ -25,44 +25,42 @@ body.veiled .wrap,body.veiled .plate,body.veiled .hear,body.veiled .foot{visibil
 <div id="veil" class="veil">
   <div class="iris" aria-hidden="true"></div>
   <p class="name">DualisCapax</p>
-  <p class="line">capable of two</p>
+  <p class="line">A place to look. You can leave. You do not owe us money to stand here.</p>
   <div class="acts">
-    <a class="gold" href="look.html">Look</a>
-    <button class="gold" id="veil-enter" type="button">Enter the pipe</button>
-    <a href="onboard.html">Onboard</a>
+    <a class="gold" href="look.html">Look around</a>
+    <button class="gold" id="veil-enter" type="button">Go inside</button>
+    <a href="onboard.html">Get started</a>
   </div>
-  <p class="law">Access CLOSED. Earned CAD $0. Not the bank, the court, the clinic, or the border. Leave is legal.</p>
+  <p class="law">We are not your bank. We are not your doctor. Tap the name later if you get lost — it brings you home.</p>
 </div>
 <canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
 <header class="plate" id="plate">
   <p class="word" id="word"><a href="index.html" style="color:inherit;text-decoration:none"><span class="rest">DualisCapax</span></a></p>
-  <div class="hud" id="hud" aria-label="Ledger HUD">
-    <span class="hud-item"><em>Access</em> <b>CLOSED</b></span>
-    <span class="hud-item"><em>Earned</em> <b id="hud-earned">CAD $0</b></span>
-    <span class="hud-item"><em>Singularity</em> <b id="hud-sing">2036-08-24</b></span>
+  <div class="hud" id="hud" aria-label="Status">
+    <span class="hud-item"><em>Open to buy?</em> <b>No</b></span>
+    <span class="hud-item"><em>You owe</em> <b id="hud-earned">$0</b></span>
   </div>
-  <span class="stamp" id="stamp" data-locked="1">SHA · compliant-20260904</span>
+  <span class="stamp" id="stamp" data-locked="1">home</span>
 </header>
 <main class="wrap site">
   <div>
     <div id="iris-stage" class="holo-front" aria-hidden="true"></div>
-    <p id="iris-line">Sound is off. ♪ if you want the field.</p>
-    <p class="kicker">Ground Zero · spoken Zero</p>
-    <h1>Look. Leave if you want. Nothing is owed.</h1>
-    <p class="lede">Friction finds holes. Affinity binds what already holds. They smash to one answer. Your books stay with you. Dualis does not take the file and does not file FINTRAC for you.</p>
+    <p id="iris-line">Sound is off unless you turn it on.</p>
+    <p class="kicker">Home</p>
+    <h1>Look around. Leave if you want.</h1>
+    <p class="lede">Bring your own papers if you want help seeing holes in them. We do not keep the file. We do not run the government.</p>
     <div class="acts">
-      <a class="act gold" href="look.html">Look</a>
-      <a class="act" href="pipe.html">Pipe</a>
-      <a class="act" href="onboard.html">Onboard</a>
-      <a class="act" href="legal.html">Law</a>
+      <a class="act gold" href="look.html">Look around</a>
+      <a class="act" href="pipe.html">Go inside</a>
+      <a class="act" href="onboard.html">Get started</a>
+      <a class="act" href="legal.html">Rules</a>
     </div>
   </div>
   <aside class="aside">
-    <p>Land → desk → pose → 1 / 0 / HOLE → stay or leave.</p>
-    <p>One is the playground. Iris is a clerk. Bind is optional. A card is not a contract.</p>
-    <p>Never 100.</p>
+    <p>Three steps if you stay: pick a desk, look at your own numbers, stay or leave.</p>
+    <p>Talking to Iris is optional. Paying is optional and not on this door.</p>
   </aside>
-  <section id="tour" aria-label="Storyboard film">
+  <section id="tour" aria-label="Short film">
     <div class="tour-stage"></div>
     <div class="tour-meta">
       <span class="tour-step"></span>
@@ -71,22 +69,13 @@ body.veiled .wrap,body.veiled .plate,body.veiled .hear,body.veiled .foot{visibil
     </div>
     <span class="tour-progress"><i class="tour-progress-bar"></i></span>
   </section>
-  <section class="floor" aria-label="Ground-truth floor">
-    <p>Law floor. DCLM Layer [0].</p>
-    <dl>
-      <dt>ACCESS</dt><dd>closed</dd>
-      <dt>EARNED</dt><dd>CAD $0</dd>
-      <dt>SALES JACKET</dt><dd>closed until operator + IP lock</dd>
-      <dt>FLOORS</dt><dd>NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</dd>
-    </dl>
-  </section>
 </main>
-<button class="hear" id="hear" type="button" aria-pressed="false">♪ off</button>
+<button class="hear" id="hear" type="button" aria-pressed="false">Sound off</button>
 <footer class="foot">
-  <p>Operator: DualisCapax Inc. · 535 Bridge St E, Belleville, Ontario · ORCID 0009-0005-6291-8508</p>
-  <p><a href="look.html">Look</a> · <a href="pipe.html">Pipe</a> · <a href="onboard.html">Onboard</a> · <a href="legal.html">Law</a> · <a href="rooms.html">Rooms</a> · <a href="playground.html">One</a> · <a href="faq.html">Leave</a></p>
+  <p>DualisCapax Inc. · Belleville, Ontario</p>
+  <p><a href="look.html">Look around</a> · <a href="pipe.html">Go inside</a> · <a href="onboard.html">Get started</a> · <a href="legal.html">Rules</a> · <a href="faq.html">Leave</a></p>
 </footer>
-<script src="js/compliant-veil.js?v=compliant-20260904"></script>
+<script src="js/compliant-veil.js?v=plain-20260904"></script>
 <script src="js/plate.js?v=stack-20260904"></script>
 <script src="js/theme-engine.js?v=stack-20260904"></script>
 <script src="js/iris-hologram.js?v=stack-20260904"></script>
