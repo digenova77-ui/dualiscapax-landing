@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>DualisCapax — Hospitality case (archived lander)</title>
+<meta name="description" content="Archived hospitality sector surface. Root lander is the dual pipe."/>
+<meta name="theme-color" content="#020617"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/pipe.css?v=2193ed8"/>
+<link rel="stylesheet" href="css/cards.css?v=2193ed8"/>
+<link rel="stylesheet" href="css/word-lock.css?v=2193ed8"/>
+</head>
+<body>
+<header class="plate" id="plate">
+  <p class="word" id="word"><span class="rest">DualisCapax</span></p>
+  <div class="hud" id="hud" aria-label="Ledger HUD">
+    <span class="hud-item"><em>Live</em> <b id="hud-live">—</b></span>
+    <span class="hud-item"><em>Earned</em> <b id="hud-earned">CAD $0</b></span>
+    <span class="hud-item"><em>Singularity</em> <b id="hud-sing">2036-08-24</b></span>
+  </div>
+  <div class="gauge" id="gauge" title="INV-PERF fiduciary bounds 81–100%">
+    <svg viewBox="0 0 36 36" aria-hidden="true">
+      <path class="gauge-track" d="M18 2.5a15.5 15.5 0 1 1 0 31 15.5 15.5 0 0 1 0-31"/>
+      <path class="gauge-fill" id="gauge-fill" d="M18 2.5a15.5 15.5 0 1 1 0 31 15.5 15.5 0 0 1 0-31"/>
+    </svg>
+    <span id="gauge-read">81%</span>
+  </div>
+  <span class="stamp" id="stamp">SHA · hospitality-archive</span>
+</header>
+<p style="position:relative;z-index:2;padding:4.5rem 1.2rem .4rem;font-family:Inter,sans-serif;font-size:.78rem">Archived sector lander. Public door is the <a href="./">3D dual pipe</a>.</p>
+<main class="pipe" id="pipe" data-sector="sec-05">
+  <div class="floor" id="floor" aria-hidden="true"></div>
+  <section class="hero" id="hero">
+    <figure class="hero-visual">
+      <img id="hero-img" src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1600&q=80" alt="High-volume commercial kitchen operations"/>
+      <figcaption class="hero-cap" id="hero-cap">SEC-05 · Hospitality & Food Service Logistics</figcaption>
+    </figure>
+    <div class="hero-copy">
+      <p class="kicker">Sector case · not the public door</p>
+      <h1 id="hero-title">Friction leaves the kitchen. Recipes stay sovereign.</h1>
+      <p class="lede" id="hero-lede">Tomasso's & Jim's 4-step onboarding recovers CAD $214,800 / yr of operational drag at $0 upfront. Year-1 net retention floor 81%.</p>
+      <div class="hero-metrics" id="hero-metrics">
+        <div><em>Recoverable</em><b>CAD $214.8k</b></div>
+        <div><em>Net retention</em><b>81.0%</b></div>
+        <div><em>Upfront</em><b>$0.00</b></div>
+        <div><em>Access</em><b>CLOSED</b></div>
+      </div>
+      <button class="hotspot" id="hotspot" type="button">Open 4-step onboarding</button>
+    </div>
+  </section>
+  <section class="matrix" id="matrix" aria-label="Ten-sector operational matrix">
+    <h2>Ten-sector operational matrix</h2>
+    <p class="matrix-note">Select a sector to pivot the surface.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+</main>
+<aside class="iris-dock" id="iris-dock" aria-label="Iris AI telemetry dock">
+  <div class="iris-gauge" title="INV-PERF"><span id="iris-pct">81</span><small>%</small></div>
+  <div class="iris-stream" id="iris-stream" aria-live="polite"></div>
+  <div class="iris-probe" id="iris-probe" role="group" aria-label="Sector probe"></div>
+</aside>
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-x" id="modal-x" type="button" aria-label="Close">Close</button>
+    <p class="modal-kicker" id="modal-kicker">SEC-05 · 90-day binding pilot</p>
+    <h3 id="modal-title">Four-step onboarding</h3>
+    <ol class="steps" id="steps"></ol>
+    <p class="modal-foot">Access remains CLOSED. <a href="onboard.html">onboard.html</a></p>
+  </div>
+</div>
+<footer class="foot"><p><a href="./">Return to dual pipe</a> · <a href="onboard.html">Onboard</a></p></footer>
+<script src="js/plate.js?v=2193ed8"></script>
+<script src="js/pipe.js?v=2193ed8"></script>
+</body>
+</html>
