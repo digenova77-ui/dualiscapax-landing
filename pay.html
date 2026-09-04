@@ -1,14 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Redirect · Payments</title>
-<meta http-equiv="refresh" content="0;url=payments.html"/>
-<link rel="canonical" href="payments.html"/>
-<script>location.replace('payments.html'+location.search+location.hash);</script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay — DualisCapax</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<p><a href="payments.html">Continue to Payments</a></p>
+<header>
+  <div class="brand">DUALISCAPAX <span class="orb"></span></div>
+  <nav>
+    <a href="index.html">Gateway</a>
+    <a href="pay.html">Pay</a>
+    <a href="books.html">Books</a>
+    <a href="protocol.html">Protocol</a>
+    <a href="id.html">ID</a>
+    <a href="index-mesh.html">Index</a>
+  </nav>
+</header>
+<main>
+  <h1>Pay</h1>
+  <p class="lead">Stripe live. Charges so far: none. Ask-only bill. Not a token. Not a share. After pay you return here to fuel or onboard.</p>
+  <div class="grid two pay">
+    <div class="card">
+      <h2>Fuel</h2>
+      <p>Prepaid Iris time. Unused stays with you.</p>
+      <a class="btn" href="https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05">Fuel 40</a>
+      <a class="btn" href="https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02">Fuel 120</a>
+      <a class="btn" href="https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01">Fuel 320</a>
+    </div>
+    <div class="card">
+      <h2>Seats</h2>
+      <p>12-month rooms. Not medical advice. Not a P.Eng. stamp.</p>
+      <a class="btn" href="https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04">Leaf</a>
+      <a class="btn" href="https://buy.stripe.com/00w5kF41NbU55ahaslffy03">Branch</a>
+      <a class="btn" href="https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00">Library</a>
+    </div>
+  </div>
+</main>
+<footer>Statement descriptor DUALISCAPAX · CAD · Interac-class ACSS on Stripe where offered.</footer>
 </body>
 </html>

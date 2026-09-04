@@ -1,0 +1,33 @@
+:root{
+  --iris:#8eb4c8;--pipe:#0b0d10;--metal:#1a1e24;--glass:rgba(18,22,28,.62);
+  --text:#e8eef2;--mute:#9aa8b3;--warn:#c45c4a;
+}
+*{box-sizing:border-box}html,body{margin:0;background:var(--pipe);color:var(--text);
+  font-family:Figtree,system-ui,sans-serif;min-height:100%}
+body{background:radial-gradient(1200px 600px at 50% -10%,#1c2830 0%,var(--pipe) 55%)}
+a{color:var(--iris);text-decoration:none}a:hover{text-decoration:underline}
+header{position:sticky;top:0;z-index:4;display:flex;flex-wrap:wrap;gap:.6rem 1rem;
+  align-items:center;justify-content:space-between;padding:.8rem 1.2rem;
+  background:var(--glass);backdrop-filter:blur(16px) saturate(1.1);border-bottom:1px solid #2a333c}
+.brand{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:.04em}
+nav{display:flex;flex-wrap:wrap;gap:.8rem;font-size:.85rem}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid #3a4650;padding:.2rem .45rem;border-radius:999px;color:var(--mute)}
+.chip.warn{border-color:var(--warn);color:#e7b4ac}
+main{max-width:52rem;margin:0 auto;padding:2.2rem 1.2rem 4rem}
+h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15}
+.lead{color:var(--mute);font-size:1.05rem}
+.orb{width:2.2rem;height:2.2rem;border-radius:50%;border:2px solid var(--iris);
+  box-shadow:0 0 16px #8eb4c866;display:inline-block;vertical-align:middle}
+.grid{display:grid;gap:1rem;margin-top:1.6rem}
+@media(min-width:720px){.grid.two{grid-template-columns:1fr 1fr}}
+.card{background:var(--metal);border:1px solid #2c3640;border-radius:12px;padding:1rem 1.1rem}
+.card h2{margin:.1rem 0 .4rem;font-size:1.05rem}
+.pay a.btn,.btn{display:inline-block;margin:.25rem .25rem 0 0;padding:.55rem .8rem;
+  border:1px solid var(--iris);border-radius:8px;color:var(--pipe);background:var(--iris);
+  font-weight:600;text-decoration:none}
+.pay a.btn.ghost{background:transparent;color:var(--iris)}
+footer{max-width:52rem;margin:0 auto;padding:0 1.2rem 2rem;color:var(--mute);font-size:.8rem}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(prefers-reduced-transparency:reduce){header{backdrop-filter:none;background:#12161c}}
