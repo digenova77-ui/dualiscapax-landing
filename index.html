@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>DualisCapax — Operational Fiduciary Surface</title>
-<meta name="description" content="DualisCapax public surface. Ten-sector operational onboarding. Access closed. Earned CAD $0."/>
+<title>DualisCapax — Dual Pipe</title>
+<meta name="description" content="DualisCapax public surface. Two pipes start together. Access closed. Earned CAD $0."/>
 <meta name="theme-color" content="#020617"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/pipe.css?v=2193ed8"/>
-<link rel="stylesheet" href="css/cards.css?v=2193ed8"/>
-<link rel="stylesheet" href="css/word-lock.css?v=2193ed8"/>
+<link rel="stylesheet" href="css/pipe-fly.css?v=bore-20260904"/>
 </head>
-<body>
+<body class="bore">
+<a class="skip" href="#matrix">Skip pipe · desks</a>
 <header class="plate" id="plate">
   <p class="word" id="word"><span class="rest">DualisCapax</span></p>
   <div class="hud" id="hud" aria-label="Ledger HUD">
@@ -28,34 +27,35 @@
     </svg>
     <span id="gauge-read">81%</span>
   </div>
-  <span class="stamp" id="stamp">SHA · 2193ed8</span>
+  <span class="stamp" id="stamp" data-locked="1">SHA · bore-20260904</span>
 </header>
 
-<main class="pipe" id="pipe" data-sector="sec-05">
-  <div class="floor" id="floor" aria-hidden="true"></div>
-  <section class="hero" id="hero">
-    <figure class="hero-visual">
-      <img id="hero-img" src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1600&q=80" alt="High-volume commercial kitchen operations"/>
-      <figcaption class="hero-cap" id="hero-cap">SEC-05 · Hospitality &amp; Food Service Logistics</figcaption>
-    </figure>
-    <div class="hero-copy">
-      <p class="kicker">Real-world operational fiduciary verification</p>
-      <h1 id="hero-title">Friction leaves the kitchen. Recipes stay sovereign.</h1>
-      <p class="lede" id="hero-lede">Tomasso's &amp; Jim's 4-step onboarding recovers CAD $214,800 / yr of operational drag at $0 upfront. Year-1 net retention floor 81%.</p>
-      <div class="hero-metrics" id="hero-metrics">
-        <div><em>Recoverable</em><b>CAD $214.8k</b></div>
-        <div><em>Net retention</em><b>81.0%</b></div>
-        <div><em>Upfront</em><b>$0.00</b></div>
-        <div><em>Access</em><b>CLOSED</b></div>
-      </div>
-      <button class="hotspot" id="hotspot" type="button">Open 4-step onboarding</button>
-    </div>
-  </section>
+<canvas id="bore" aria-label="Dual-pipe fly-through. Two barrels merge to one."></canvas>
 
-  <section class="matrix" id="matrix" aria-label="Ten-sector operational matrix">
-    <h2>Ten-sector operational matrix</h2>
-    <p class="matrix-note">Select a sector to pivot the surface. Each card is a documentary workplace, not a generated lattice.</p>
-    <div class="cards" id="cards"></div>
+<section class="overlay" aria-label="Pipe mouth">
+  <p class="kicker">Dual DCLM · helix</p>
+  <h1>Two pipes start together.</h1>
+  <p class="lede">Friction finds holes. Affinity binds what already holds. They smash to one answer. Your books stay with you. Look. Leave if you want. Nothing is owed.</p>
+  <div class="doors">
+    <button class="door inv" id="door-look" type="button">Look · playground</button>
+    <button class="door" id="door-desks" type="button">Pick a desk</button>
+    <a class="door" href="faq.html">Leave · FAQ</a>
+    <a class="door" href="hospitality.html">Hospitality case</a>
+  </div>
+  <div class="readout">
+    <span>Phase <b id="read-phase">MOUTH</b></span>
+    <span id="read-z">z 0.0</span>
+    <span>Station <b id="read-station">— mouth</b></span>
+    <span>Access <b>CLOSED</b></span>
+    <span>Earned <b>CAD $0</b></span>
+  </div>
+</section>
+
+<main>
+  <section class="matrix" id="matrix" aria-label="Ten-sector ports">
+    <h2>Ports on the run</h2>
+    <p class="matrix-note">Desks sit on the barrel as rings. Hospitality is port 05. It is not the door.</p>
+    <div class="ports" id="ports"></div>
   </section>
 
   <section class="ledger" id="ledger">
@@ -81,26 +81,16 @@
     <span id="iris-pct">81</span><small>%</small>
   </div>
   <div class="iris-stream" id="iris-stream" aria-live="polite"></div>
-  <div class="iris-probe" id="iris-probe" role="group" aria-label="Sector probe"></div>
+  <div class="iris-probe" id="iris-probe" role="group" aria-label="Station probe"></div>
 </aside>
 
-<div class="modal" id="modal" hidden>
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <button class="modal-x" id="modal-x" type="button" aria-label="Close">Close</button>
-    <p class="modal-kicker" id="modal-kicker">SEC-05 · 90-day binding pilot</p>
-    <h3 id="modal-title">Four-step onboarding</h3>
-    <ol class="steps" id="steps"></ol>
-    <p class="modal-foot">Access remains CLOSED. No sale on this surface. Onboard path: <a href="onboard.html">onboard.html</a></p>
-  </div>
-</div>
-
 <footer class="foot">
-  <p>Operator: David John Di Genova · DualisCapax / residual IP · ORCID 0009-0005-6291-8508</p>
-  <p>C-Suite whitelist validation pending · DCLM Layer [0] law floor attested · xAI and GitHub are platforms used, not formal partners</p>
-  <p><a href="onboard.html">Jump-start Unity Framework → onboard.html</a></p>
+  <p>Operator: DualisCapax Inc. · 535 Bridge St E, Belleville, Ontario · ORCID 0009-0005-6291-8508</p>
+  <p>Access CLOSED · Earned CAD $0 · DCLM Layer [0] NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</p>
+  <p><a href="onboard.html">Onboard</a> · <a href="playground.html">Playground</a> · <a href="hospitality.html">Hospitality lander (archived)</a></p>
 </footer>
 
-<script src="js/plate.js?v=2193ed8"></script>
-<script src="js/pipe.js?v=2193ed8"></script>
+<script src="js/plate.js?v=bore-20260904"></script>
+<script src="js/pipe-fly.js?v=bore-20260904"></script>
 </body>
 </html>
