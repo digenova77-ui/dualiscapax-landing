@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Answer</title>
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
+  <a href="story.html">Storyboard</a>
+</header>
+<main>
+  <p class="chips"><span class="chip">Divert</span><span class="chip warn">Not a git file per question</span></p>
+  <h1 id="q">Question</h1>
+  <div class="card"><p id="a">No answer in this browser yet. Ask Iris first.</p></div>
+  <p><a class="btn" href="ai/app.html">Ask again</a> <a class="btn ghost" href="story.html">Back to default path</a></p>
+</main>
+<script>
+(function(){
+  var q="", a="";
+  try{ q=sessionStorage.getItem("dc.ask")||""; a=sessionStorage.getItem("dc.answer")||""; }catch(e){}
+  if(q) document.getElementById("q").textContent=q;
+  if(a) document.getElementById("a").textContent=a;
+  document.title = (q||"Answer").slice(0,60);
+})();
+</script>
+</body>
+</html>
