@@ -1,33 +1,65 @@
 :root{
-  --iris:#8eb4c8;--pipe:#0b0d10;--metal:#1a1e24;--glass:rgba(18,22,28,.62);
-  --text:#e8eef2;--mute:#9aa8b3;--warn:#c45c4a;
+  --iris:#8eb4c8;--bg:#04060c;--pipe:#04060c;--metal:rgba(18,24,32,.62);
+  --glass:rgba(18,24,32,.55);--line:rgba(200,220,230,.16);
+  --text:#e8eef2;--mute:#8b99a4;--warn:#c9a227;
 }
-*{box-sizing:border-box}html,body{margin:0;background:var(--pipe);color:var(--text);
-  font-family:Figtree,system-ui,sans-serif;min-height:100%}
-body{background:radial-gradient(1200px 600px at 50% -10%,#1c2830 0%,var(--pipe) 55%)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Figtree,system-ui,sans-serif;min-height:100%}
+body{
+  background:
+    radial-gradient(ellipse at 50% 28%, rgba(142,180,200,.08), transparent 42%),
+    radial-gradient(circle at 50% 32%, transparent 0 4.2rem, rgba(200,220,230,.05) 4.3rem 4.5rem, transparent 4.6rem),
+    radial-gradient(circle at 50% 32%, transparent 0 7.2rem, rgba(200,220,230,.05) 7.3rem 7.5rem, transparent 7.6rem),
+    radial-gradient(circle at 50% 32%, transparent 0 10.4rem, rgba(200,220,230,.04) 10.5rem 10.7rem, transparent 10.8rem),
+    radial-gradient(circle at 50% 32%, transparent 0 13.8rem, rgba(200,220,230,.03) 13.9rem 14.1rem, transparent 14.2rem),
+    var(--bg);
+  background-attachment:fixed;
+}
 a{color:var(--iris);text-decoration:none}a:hover{text-decoration:underline}
-header{position:sticky;top:0;z-index:4;display:flex;flex-wrap:wrap;gap:.6rem 1rem;
-  align-items:center;justify-content:space-between;padding:.8rem 1.2rem;
-  background:var(--glass);backdrop-filter:blur(16px) saturate(1.1);border-bottom:1px solid #2a333c}
-.brand{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:.04em}
+header{
+  position:sticky;top:0;z-index:4;display:flex;flex-wrap:wrap;gap:.6rem 1rem;
+  align-items:center;justify-content:space-between;padding:.75rem 1.1rem;
+  background:var(--glass);backdrop-filter:blur(18px) saturate(1.1);border-bottom:1px solid var(--line);
+}
+.brand{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:.18em;font-size:.82rem}
 nav{display:flex;flex-wrap:wrap;gap:.8rem;font-size:.85rem}
-.chips{display:flex;flex-wrap:wrap;gap:.35rem}
-.chip{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
-  border:1px solid #3a4650;padding:.2rem .45rem;border-radius:999px;color:var(--mute)}
-.chip.warn{border-color:var(--warn);color:#e7b4ac}
-main{max-width:52rem;margin:0 auto;padding:2.2rem 1.2rem 4rem}
-h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15}
-.lead{color:var(--mute);font-size:1.05rem}
-.orb{width:2.2rem;height:2.2rem;border-radius:50%;border:2px solid var(--iris);
-  box-shadow:0 0 16px #8eb4c866;display:inline-block;vertical-align:middle}
-.grid{display:grid;gap:1rem;margin-top:1.6rem}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center}
+.chip{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--line);padding:.22rem .55rem;border-radius:999px;color:var(--mute);background:rgba(4,6,12,.35)}
+.chip.warn{border-color:rgba(201,162,39,.45);color:#e6d3a2}
+.chip .dot{display:inline-block;width:.45rem;height:.45rem;border-radius:50%;background:var(--iris);margin-right:.25rem;vertical-align:middle}
+main{max-width:44rem;margin:0 auto;padding:2.4rem 1.2rem 4rem;text-align:center}
+h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(2rem,7vw,3.2rem);line-height:1.05;margin:.4rem 0}
+.lead{color:var(--mute);font-size:1.02rem;max-width:36rem;margin:.4rem auto 0}
+.orb{width:2.1rem;height:2.1rem;border-radius:50%;border:2px solid var(--iris);
+  box-shadow:0 0 18px #8eb4c866;display:inline-block;vertical-align:middle;margin-left:.35rem}
+.iris-core{
+  width:4.2rem;height:4.2rem;border-radius:50%;margin:1.2rem auto .6rem;
+  background:radial-gradient(circle at 50% 50%, #c5dde8 0 18%, #8eb4c8 28%, #1a3a46 55%, #04060c 72%);
+  box-shadow:0 0 40px #8eb4c855, inset 0 0 12px #04060c;
+}
+.grid{display:grid;gap:.85rem;margin-top:1.6rem;text-align:left}
 @media(min-width:720px){.grid.two{grid-template-columns:1fr 1fr}}
-.card{background:var(--metal);border:1px solid #2c3640;border-radius:12px;padding:1rem 1.1rem}
-.card h2{margin:.1rem 0 .4rem;font-size:1.05rem}
-.pay a.btn,.btn{display:inline-block;margin:.25rem .25rem 0 0;padding:.55rem .8rem;
-  border:1px solid var(--iris);border-radius:8px;color:var(--pipe);background:var(--iris);
-  font-weight:600;text-decoration:none}
-.pay a.btn.ghost{background:transparent;color:var(--iris)}
-footer{max-width:52rem;margin:0 auto;padding:0 1.2rem 2rem;color:var(--mute);font-size:.8rem}
+.card{
+  background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:1rem 1.15rem;
+  backdrop-filter:blur(18px);
+}
+.card h2{margin:.1rem 0 .35rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--iris);font-weight:600}
+.card p{margin:0;color:var(--mute);font-size:.92rem}
+.btn, .pay a.btn{
+  display:inline-block;margin:.35rem .2rem 0 0;padding:.55rem 1rem;
+  border:1px solid var(--iris);border-radius:999px;color:#061018;background:var(--iris);
+  font-weight:600;text-decoration:none;font-size:.9rem;
+}
+.btn.ghost, .pay a.btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+label{display:block;margin:.7rem 0 .2rem;font-size:.72rem;color:var(--mute);letter-spacing:.08em;text-transform:uppercase;text-align:left}
+input,select{
+  width:100%;background:#0a0e14;color:var(--text);border:1px solid #3a4650;
+  border-radius:10px;padding:.55rem .7rem;font:inherit;text-align:left;
+}
+.check{display:flex;gap:.6rem;align-items:flex-start;margin:1rem 0;font-size:.88rem;color:var(--mute);text-align:left}
+.check input{width:auto;margin-top:.2rem}
+#log{white-space:pre-wrap;font-size:.78rem;color:var(--mute);text-align:left}
+footer{max-width:44rem;margin:0 auto;padding:0 1.2rem 2.2rem;color:var(--mute);font-size:.75rem;text-align:center}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-@media(prefers-reduced-transparency:reduce){header{backdrop-filter:none;background:#12161c}}
+@media(prefers-reduced-transparency:reduce){header,.card{backdrop-filter:none;background:#12161c}}
