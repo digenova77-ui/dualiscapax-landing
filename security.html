@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Security — DualisCapax</title>
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
+  <nav><a href="hub.html">Hub</a><a href="pay.html">Pay</a></nav>
+</header>
+<main>
+  <h1>How money and identity stay gated</h1>
+  <p class="lead">The internet sees a serial. Stripe hears a signed post. Dualis does not keep cards. This page is the rule, not a secret.</p>
+
+  <div class="card">
+    <h2>Public plate</h2>
+    <p>16-digit serial only. Hatch stays on the desk. No health number. No licence number. No passphrase.</p>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>Stripe path</h2>
+    <p>Browser → Payment Link → Stripe → signed POST → fulfill worker.</p>
+    <p class="lead">https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/</p>
+    <p>Events: checkout.session.completed · checkout.session.async_payment_succeeded</p>
+    <p>GitHub Pages does not receive the post and does not hold the webhook secret.</p>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>Signature</h2>
+    <p>HMAC-SHA256 of t + "." + raw body. Five-minute window. Reject one way if anything fails.</p>
+    <p>Compare is constant-time: XOR every byte, then test the accumulator. No early return on the first mismatch.</p>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>Side channels we refuse</h2>
+    <p>Different error text for bad header vs bad HMAC. Parse-then-stringify before hash. Secrets in git. Card photos in chat. Treating localStorage “I paid” as money. KV off means replay is only blocked by the time window — bind FULFILL_KV.</p>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>Passes</h2>
+    <p>Look is free. A grind pass spends only if the work can finish. No published expiry date. $350 pack has no button.</p>
+    <p><a class="btn" href="pricing.html">Pricing</a> <a class="btn ghost" href="pay.html">Pay</a></p>
+  </div>
+</main>
+</body>
+</html>
