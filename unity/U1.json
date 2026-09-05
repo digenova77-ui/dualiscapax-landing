@@ -1,0 +1,30 @@
+{
+  "schema": "unity.id.v1",
+  "human": "U1",
+  "public": "DC1-H1-0001",
+  "check": "7K",
+  "seat": "operator_first",
+  "seed": 1,
+  "serial": 1,
+  "can_hatch": true,
+  "look": {
+    "name": "David John Di Genova",
+    "kind": "person",
+    "municipality": "Belleville",
+    "region": "Ontario",
+    "country": "CA",
+    "org": "DualisCapax Inc.",
+    "ontario_corp": "1001718450 Ontario Inc."
+  },
+  "unity_verification": "OPERATOR_SEAT",
+  "kyc": {
+    "performed_by_dualis": false,
+    "standard_applied": "FINTRAC individual data set, self-declared",
+    "status": "SELF_DECLARED",
+    "pending": "firm chair",
+    "fields_asked": ["legal name", "town", "occupation", "ID type", "not a PEP declaration"],
+    "fields_not_stored_here": ["SIN", "driver licence number", "passport number", "full civic address", "date of birth", "ID image"]
+  },
+  "law": ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"],
+  "at": "2026-09-04T21:43:00-04:00"
+}
