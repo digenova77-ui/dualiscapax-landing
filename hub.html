@@ -7,93 +7,48 @@
 <meta name="theme-color" content="#04060c">
 <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
 <style>
-:root{color-scheme:dark;--bg:#04060c;--iris:#8eb4c8;--iris-dim:rgba(142,180,200,.35);--text:#e8eef2;--mute:#8b99a4;--line:rgba(200,220,230,.14);--glass:rgba(10,16,24,.55)}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-body{overflow-x:hidden}
-.stage{position:fixed;inset:0;pointer-events:none;background:
-  radial-gradient(circle at 50% 28%, rgba(142,180,200,.16), transparent 42%),
-  radial-gradient(circle at 50% 120%, rgba(4,6,12,.9), var(--bg) 55%)}
-.ring{position:absolute;left:50%;top:22%;width:min(70vw,22rem);aspect-ratio:1;border-radius:50%;border:1px solid var(--iris-dim);transform:translate(-50%,-50%);animation:breathe 8s ease-in-out infinite}
-.ring:nth-child(2){width:min(52vw,16rem);animation-delay:-2s;opacity:.7}
-.ring:nth-child(3){width:min(34vw,10rem);animation-delay:-4s;opacity:.45}
-.pupil{position:absolute;left:50%;top:22%;width:2.2rem;height:2.2rem;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 30%, #d7eef6, var(--iris) 45%, #1a2a33);box-shadow:0 0 24px var(--iris-dim)}
-@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.04)}}
-@media (prefers-reduced-motion:reduce){.ring,.pupil{animation:none}}
-header{position:relative;z-index:2;display:flex;align-items:center;gap:.5rem;padding:calc(.7rem + env(safe-area-inset-top)) .9rem .5rem}
-.brand{letter-spacing:.2em;font-size:.72rem;color:inherit;text-decoration:none;margin-inline-end:auto}
+:root{color-scheme:dark;--bg:#04060c;--iris:#8eb4c8;--text:#e8eef2;--mute:#8b99a4;--line:rgba(200,220,230,.14);--glass:rgba(10,16,24,.55)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,sans-serif}
+.stage{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 28%,rgba(142,180,200,.16),transparent 42%)}
+header{position:relative;z-index:2;display:flex;gap:.5rem;padding:calc(.7rem + env(safe-area-inset-top)) .9rem}
+.brand{margin-inline-end:auto;letter-spacing:.2em;font-size:.72rem;color:inherit;text-decoration:none}
 .chip{border:1px solid var(--iris);color:var(--iris);border-radius:999px;padding:.2rem .6rem;font-size:.72rem;text-decoration:none}
-main{position:relative;z-index:2;padding:8.5rem .9rem 2rem;max-width:40rem;margin:0 auto}
-h1{font-family:Georgia,"Times New Roman",serif;font-weight:600;font-size:clamp(1.6rem,6vw,2.4rem);margin:0 0 .5rem;letter-spacing:-.02em}
-.lead{color:var(--mute);margin:0 0 1rem}
-#q{width:100%;padding:.75rem 1rem;border-radius:999px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(16px);color:var(--text);font:inherit;outline:none}
-#q:focus{border-color:var(--iris);box-shadow:0 0 0 3px var(--iris-dim)}
+main{position:relative;z-index:2;padding:2rem .9rem;max-width:40rem;margin:0 auto}
+h1{font-family:Georgia,serif;font-size:clamp(1.5rem,6vw,2.2rem)}
+.lead{color:var(--mute)}
+#q{width:100%;padding:.75rem 1rem;border-radius:999px;border:1px solid var(--line);background:var(--glass);color:inherit;font:inherit}
 .row{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0}
-.btn{appearance:none;border:0;background:var(--iris);color:#061018;font:700 .86rem/1 inherit;padding:.55rem .95rem;border-radius:999px;text-decoration:none;display:inline-block;cursor:pointer}
+.btn{appearance:none;border:0;background:var(--iris);color:#061018;font:700 .86rem inherit;padding:.55rem .95rem;border-radius:999px;text-decoration:none;display:inline-block;cursor:pointer}
 .ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
-.ghost[aria-pressed="true"]{border-color:var(--iris);color:var(--iris)}
 </style>
 </head>
 <body>
-<div class="stage" aria-hidden="true"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="pupil"></div></div>
+<div class="stage"></div>
 <header>
   <a class="brand" href="hub.html">ASK</a>
-  <a class="chip" href="law.html">Law</a>
+  <a class="chip" href="ai/iris.html">Iris</a>
+  <a class="chip" href="pay.html">Pay</a>
 </header>
 <main>
   <h1>What are you trying to find out?</h1>
-  <p class="lead">Same door for every person. Look is free. Grind is engine time.</p>
-  <input id="q" autocomplete="off" placeholder="Ask in plain words">
-  <div class="row" id="uses"></div>
-  <p><button class="btn" type="button" id="go">Ask</button> <a class="btn ghost" href="law.html">Law</a> <a class="btn ghost" href="pay.html">Pay</a></p>
+  <p class="lead">Look is free. Packs and rooms are on Pay. Iris is the usable chat.</p>
+  <p><input id="q" placeholder="Ask in plain words"></p>
+  <p><button class="btn" type="button" id="go">Ask Iris</button> <a class="btn ghost" href="pay.html">Everything you can pay</a></p>
+  <div class="row">
+    <a class="btn ghost" href="story.html">Story</a>
+    <a class="btn ghost" href="compute.html">Engine</a>
+    <a class="btn ghost" href="law.html">Law</a>
+  </div>
 </main>
 <script>
 (function(){
-  function tick(){
-    try{ if(navigator.vibrate) navigator.vibrate(12); }catch(e){}
-    try{
-      var C=window.AudioContext||window.webkitAudioContext; if(!C) return;
-      var c=new C(); var o=c.createOscillator(); var g=c.createGain();
-      o.type="sine"; o.frequency.value=528; g.gain.value=0.03;
-      o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime+0.07);
-    }catch(e){}
-  }
-  var USES=[
-    {id:"look",label:"Looking",href:"ai/app.html"},
-    {id:"cost",label:"Residual cost",href:"pricing.html"},
-    {id:"money",label:"Company money",href:"pay.html"},
-    {id:"eng",label:"Engineering",href:"compute.html"},
-    {id:"med",label:"Medical research",href:"study.html"},
-    {id:"play",label:"Play",href:"life.html"}
-  ];
-  var picked=null;
-  try{ picked=localStorage.getItem("dc.purpose"); }catch(e){}
-  var box=document.getElementById("uses");
-  USES.forEach(function(u){
-    var b=document.createElement("button");
-    b.type="button"; b.className="btn ghost"; b.textContent=u.label;
-    b.setAttribute("aria-pressed", picked===u.id?"true":"false");
-    b.onclick=function(){
-      picked=u.id;
-      try{ localStorage.setItem("dc.purpose", u.id); }catch(e){}
-      [].forEach.call(box.querySelectorAll("button"), function(x){ x.setAttribute("aria-pressed","false"); });
-      b.setAttribute("aria-pressed","true"); tick();
-    };
-    box.appendChild(b);
-  });
   function go(){
-    tick();
-    var t=(document.getElementById("q").value||"").trim();
+    var t=document.getElementById("q").value.trim();
     try{ sessionStorage.setItem("dc.ask", t); }catch(e){}
-    var dest="ai/app.html";
-    if(picked==="cost") dest="pricing.html";
-    if(picked==="money") dest="pay.html";
-    if(picked==="eng") dest="compute.html";
-    if(picked==="med") dest="study.html";
-    if(picked==="play") dest="life.html";
-    location.href=dest;
+    location.href="ai/iris.html";
   }
   document.getElementById("go").onclick=go;
-  document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") go(); });
+  document.getElementById("q").addEventListener("keydown",function(e){ if(e.key==="Enter") go(); });
 })();
 </script>
 </body>
