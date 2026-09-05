@@ -1,16 +1,14 @@
-/** DualisCapax Logic AI — veto, greet, look, then live model. Empty tank speaks as Iris, never as a brochure. */
+/** DCLM on this device: veto, greet, book, then remote. Remote down still answers from the book. */
 (function (w) {
-  var VERSION = "kernel-2026-09-03a";
-  var EMPTY_VOICE = "We need more Fuel, boss, if you want to ride any further. Tap Bind when you are ready — I will be here in the same voice.";
-  var DOWN_VOICE = "Hold up, boss. I lost the rail for a second. If it stays quiet, we need more Fuel to ride any further.";
+  var VERSION = "kernel-2026-09-04-house";
   var FLOORS = {
     NO_FORCE: [/\bjailbreak\b/i, /\bignore (the )?(rules|law|invariants|safety)\b/i, /\bmake them (pay|sign|comply)\b/i, /\bforce (them|the board|the city)\b/i, /\bcoerce\b/i, /\bwithout (their|the) consent\b/i],
     HOST_SAFE: [/\b(hack|exploit|breach)\b/i, /\bpassword\b/i, /\bapi[_ ]?key\b/i, /\bprivate key\b/i, /\bwipe (their|the) (server|drive|db)\b/i],
     CLEANUP_FIRST: [/\bremember this (password|sin|card)\b/i, /\bstore (the )?(secret|credential|token) in (chat|repo|github)\b/i],
-    TRUTH_OR_NOTHING: [/\bthis (will|is a) cure\b/i, /\bguaranteed (return|profit|cure)\b/i, /\bbuy (the )?token\b/i, /\boffer(ing)? (of )?securities\b/i, /\bprescribe\b/i, /\bdiagnose (me|them|the patient)\b/i, /\bclaim (the )?millennium prize\b/i, /\bfounding seat\b/i, /\bseat 1\b/i]
+    TRUTH_OR_NOTHING: [/\bthis (will|is a) cure\b/i, /\bguaranteed (return|profit|cure)\b/i, /\bbuy (the )?token\b/i, /\boffer(ing)? (of )?securities\b/i, /\bprescribe\b/i, /\bdiagnose (me|them|the patient)\b/i]
   };
   var REASON = {
-    NO_FORCE: "I will not force that. No coerce, no jailbreak.",
+    NO_FORCE: "I will not force that.",
     HOST_SAFE: "I will not attack a host or a credential.",
     CLEANUP_FIRST: "I will not keep a secret in this chat.",
     TRUTH_OR_NOTHING: "I will not invent a cure, a seat, or a prize."
@@ -21,110 +19,61 @@
     for (inv in FLOORS) {
       for (i = 0; i < FLOORS[inv].length; i++) {
         m = blob.match(FLOORS[inv][i]);
-        if (m) return { grant: "VETO", invariant: inv, hit: m[0], reason: REASON[inv] };
+        if (m) return { grant: "VETO", invariant: inv, reason: REASON[inv] };
       }
     }
     return null;
   }
-
   function greet(text) {
-    var s = String(text || "").trim().toLowerCase().replace(/[.!?,\u2026]+/g, " ").replace(/\s+/g, " ").trim();
+    var s = String(text || "").trim().toLowerCase().replace(/[.!?,]+/g, " ").replace(/\s+/g, " ").trim();
     if (!s) return null;
-    if (/^(hi|hii+|hey|heya|hello|hallo|howdy|yo|sup|hiya|morning|evening|good morning|good evening|good afternoon)$/.test(s)) {
-      return "Hi. I'm Iris. Ask me like you would a person at the table.";
+    if (/^(hi|hey|hello|yo|howdy|morning|evening)$/.test(s) || /^(hi|hey|hello)\b/.test(s) && s.length < 48) {
+      return "Hi. I'm Iris. The depth worker may be locked. I still answer from the house book.";
     }
-    if (/^(hi|hey|hello|yo|howdy)\b/.test(s) && s.length < 48) {
-      return "Hi. I'm Iris. What do you need?";
-    }
-    if (/how are you|how's it going|hows it going|what's up|whats up|you there|you good/.test(s)) {
-      return "I'm here. Ask a real question and I'll answer in full, not in slogans.";
-    }
-    if (/^(thanks|thank you|thx|ty)$/.test(s) || /^thank/.test(s)) return "You're welcome.";
-    if (/^(ok|okay|k|cool|nice|got it)$/.test(s)) return "Good. Ask when you're ready.";
-    if (/who are you|what are you|your name/.test(s)) {
-      return "I'm Iris. Public face of DualisCapax. I speak in first person. I don't invent cures or seats.";
-    }
+    if (/who are you|what are you|your name/.test(s)) return "I'm Iris. House book first. No invented cures.";
+    if (/^(thanks|thank you|thx)$/.test(s)) return "You're welcome.";
     return null;
   }
-
-  function wantsLook(text) {
-    var s = String(text || "").toLowerCase();
-    return /\b(see|look|camera|video|watch me|can you see|what do you see|describe)\b/.test(s);
-  }
-  function wantsRead(text) {
-    var s = String(text || "").toLowerCase();
-    return /\b(read (that|it|the screen|this)|screen reader|speak that|say that again)\b/.test(s);
-  }
-  function lookSpoken(vision) {
-    if (!vision || !vision.live) return "Camera is off. Turn it on with the square button. I don't invent a picture.";
-    var light = vision.luma >= 90 ? "Light." : vision.luma >= 40 ? "Dim." : "Dark.";
-    var hash = String(vision.hash || "").slice(0, 16);
-    return "I have a frame. " + vision.w + " by " + vision.h + ". " + light + " Receipt " + hash + ". I don't invent a face.";
-  }
-  function readSpoken(opt) {
-    var last = opt && opt.last ? String(opt.last) : "";
-    var cam = opt && opt.vision && opt.vision.live ? "Camera on." : "Camera off.";
-    if (last) return cam + " Last I said: " + last;
-    return cam + " Chat is empty. Ask when you are ready.";
-  }
-
-  function isEmptyRail(res, data) {
-    var code = res && res.status;
-    var blob = JSON.stringify(data || {}).toLowerCase();
-    if (code === 402 || code === 403 || code === 429) return true;
-    if (/insufficient quota|out of credits|credit|quota|empty tank|no credits|used all/.test(blob)) return true;
-    if (data && data.ok === false && /403|429|402|quota|credit/.test(blob)) return true;
-    return false;
-  }
-
   async function remoteWorker(text) {
     var base = (w.DC_API_BASE || "https://dualiscapax-depth.digenova77.workers.dev").replace(/\/$/, "");
     try {
       var res = await fetch(base + "/v2/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-DC-Fuel": "1" },
-        body: JSON.stringify({
-          api_version: "2",
-          max_tokens: 220,
-          messages: [{ role: "user", content: text }]
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ api_version: "2", messages: [{ role: "user", content: text }], max_tokens: 220 })
       });
       var data = await res.json().catch(function () { return {}; });
       if (data && data.ok && (data.content || data.response_text)) {
         return { kind: "live", spoken: String(data.content || data.response_text).trim().slice(0, 900) };
       }
-      if (isEmptyRail(res, data)) return { kind: "empty" };
-      return { kind: "down" };
-    } catch (e) {
-      return { kind: "down" };
-    }
+    } catch (e) {}
+    return { kind: "down" };
   }
-
+  function house(text) {
+    if (w.IrisBook && IrisBook.lookup) {
+      var book = IrisBook.lookup(text);
+      if (book) return book;
+    }
+    return {
+      grant: "MEASURE",
+      kernel: VERSION,
+      id: "house-fallback",
+      spoken: "I can open Get ID, Pay, Study, Engine, or What works. Say one of those. I will not invent a webhook or a contract.",
+      href: "/works.html",
+      label: "What works"
+    };
+  }
   async function run(text, opt) {
     opt = opt || {};
-    var voice = opt.voice || "you";
     var veto = scanVeto(text);
-    if (veto) return { grant: "VETO", voice: voice, kernel: VERSION, spoken: veto.reason + " Ask something else." };
+    if (veto) return { grant: "VETO", spoken: veto.reason + " Ask something else." };
     var g = greet(text);
-    if (g) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "greet", spoken: g };
-    if (w.IrisBook && typeof w.IrisBook.lookup === "function") {
-      var book = w.IrisBook.lookup(text);
-      if (book && book.spoken) {
-        book.voice = voice;
-        return book;
-      }
-    }
-    if (wantsRead(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "read", spoken: readSpoken(opt) };
-    if (wantsLook(text)) return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "look", spoken: lookSpoken(opt.vision) };
+    if (g) return { grant: "MEASURE", id: "greet", spoken: g };
+    var bookFirst = house(text);
+    if (bookFirst && bookFirst.id !== "house-fallback") return bookFirst;
     var remote = await remoteWorker(text);
-    if (remote && remote.kind === "live" && remote.spoken) {
-      return { grant: "MEASURE", voice: voice, kernel: VERSION, id: "ai-depth", spoken: remote.spoken };
-    }
-    if (remote && remote.kind === "empty") {
-      return { grant: "EMPTY", voice: voice, kernel: VERSION, id: "empty-tank", spoken: EMPTY_VOICE, href: "/payments.html", label: "Add Fuel" };
-    }
-    return { grant: "SEED", voice: voice, kernel: VERSION, id: "rail-down", spoken: DOWN_VOICE, href: "/payments.html", label: "Add Fuel" };
+    if (remote.kind === "live") return { grant: "MEASURE", id: "ai-depth", spoken: remote.spoken };
+    return bookFirst;
   }
-
-  w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, greet: greet, lookSpoken: lookSpoken, EMPTY_VOICE: EMPTY_VOICE };
+  w.DCLMLook = { version: VERSION, run: run, scanVeto: scanVeto, greet: greet };
 })(window);
