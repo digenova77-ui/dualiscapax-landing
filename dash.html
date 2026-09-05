@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — DualisCapax</title>
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="dash.html" style="text-decoration:none;color:inherit">DUALISCAPAX</a>
+  <nav><a href="dash.html">Dashboard</a><a href="pay.html">Pay</a><a href="ai/app.html">Iris</a></nav>
+</header>
+<main>
+  <p class="chips"><span class="chip" id="idchip">U1</span><span class="chip warn">Look only on this page</span></p>
+  <h1>Operator desk</h1>
+  <p class="lead">Unity member one is bound. Get ID is off the front door. Access layers below are what you allow. Nothing here stores a health card number.</p>
+
+  <div class="card">
+    <h2>Unity ID</h2>
+    <p style="font-size:2rem;margin:.2rem 0">U1</p>
+    <p>David John Di Genova · Belleville · operator first</p>
+    <p class="lead">Public handle lives in your downloaded <code>unity-U1.json</code>. Dualis does not keep a second secret copy on this page.</p>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h2>Access you allow</h2>
+    <p class="lead">Turn on only what a desk may ask for. Off means that desk may not ask.</p>
+    <label class="check"><input type="checkbox" id="l_look" checked disabled> Look — name, town, member number. Always on.</label>
+    <label class="check"><input type="checkbox" id="l_pay"> Pay — Stripe engine time may be tied to this device.</label>
+    <label class="check"><input type="checkbox" id="l_engine"> Engine — this device may spend prepaid passes.</label>
+    <label class="check"><input type="checkbox" id="l_health"> Healthcare — a clinic desk may request an Ontario health-card check. The number is shown only to that desk, never written on this website, never pasted in chat.</label>
+    <label class="check"><input type="checkbox" id="l_school"> Schools — a board desk may request a work email check. No student file.</label>
+    <button class="btn" type="button" id="save">Save layers on this device</button>
+    <p id="out" class="lead"></p>
+  </div>
+
+  <div class="row" style="margin-top:1rem">
+    <a class="btn" href="pay.html">Pay</a>
+    <a class="btn ghost" href="compute.html">Engine</a>
+    <a class="btn ghost" href="ai/app.html">Iris</a>
+    <a class="btn ghost" href="member.html">ID file again</a>
+  </div>
+</main>
+<script>
+(function(){
+  var keys=["l_pay","l_engine","l_health","l_school"];
+  keys.forEach(function(k){
+    try{ if(localStorage.getItem("dc.layer."+k)==="1") document.getElementById(k).checked=true; }catch(e){}
+  });
+  document.getElementById("save").onclick=function(){
+    keys.forEach(function(k){
+      try{ localStorage.setItem("dc.layer."+k, document.getElementById(k).checked?"1":"0"); }catch(e){}
+    });
+    document.getElementById("out").textContent="Saved on this phone. Dualis still does not hold a health card.";
+  };
+})();
+</script>
+</body>
+</html>

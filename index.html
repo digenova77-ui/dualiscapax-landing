@@ -9,13 +9,10 @@
 <style>
 :root{color-scheme:dark;--bg:#04060c;--iris:#8eb4c8;--text:#e8eef2;--mute:#8b99a4;--line:rgba(200,220,230,.16);--glass:rgba(18,24,32,.6);--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans",sans-serif;--serif:Georgia,serif}
 *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
-canvas{position:fixed;inset:0;width:100%;height:100%}
 header{position:fixed;inset-block-start:0;inset-inline:0;z-index:20;display:flex;align-items:center;gap:.5rem;padding:calc(.45rem + env(safe-area-inset-top,0px)) .75rem .45rem;background:var(--glass);backdrop-filter:blur(16px);border-block-end:1px solid var(--line)}
 .brand{letter-spacing:.16em;font-size:.68rem;margin-inline-end:auto;color:inherit;text-decoration:none}
-#q{flex:1;min-width:7rem;max-width:28rem;background:#0a0e14;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:.4rem .8rem;font:inherit}
-.wrap{position:relative;z-index:5;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:5rem .9rem 5.2rem;text-align:center}
-.dot{width:3rem;height:3rem;border-radius:50%;margin:.4rem auto;background:radial-gradient(circle at 50% 50%,#d7ebf2 0 18%,#8eb4c8 38%,#12303a 70%,#04060c 82%);box-shadow:0 0 28px #8eb4c866}
-.dot.on{transform:scale(1.08)}
+.chip{border:1px solid var(--iris);color:var(--iris);border-radius:999px;padding:.2rem .55rem;font-size:.72rem}
+.wrap{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:5rem .9rem 5.2rem;text-align:center}
 h1{font-family:var(--serif);font-size:clamp(1.7rem,6vw,2.8rem);margin:.2rem 0;font-weight:600}
 .lead{color:var(--mute);max-width:34rem}
 .stack{width:min(94vw,36rem);display:flex;flex-direction:column;gap:.5rem;margin-top:1rem;text-align:start}
@@ -24,86 +21,34 @@ h1{font-family:var(--serif);font-size:clamp(1.7rem,6vw,2.8rem);margin:.2rem 0;fo
 .row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.45rem}
 a.btn,button.btn{display:inline-block;padding:.48rem .85rem;border-radius:999px;background:var(--iris);color:#061018;text-decoration:none;border:0;font-weight:700;font-size:.84rem}
 .ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
-.modal{position:fixed;inset:0;z-index:30;background:rgba(4,6,12,.72);display:none;align-items:center;justify-content:center;padding:1rem}
-.modal.on{display:flex}.box{width:min(92vw,28rem);background:#0c1016;border:1px solid var(--line);border-radius:16px;padding:1rem}
 .dock{position:fixed;inset-inline:0;inset-block-end:0;z-index:20;display:flex;justify-content:center;gap:.3rem;flex-wrap:wrap;padding:.4rem .5rem calc(.5rem + env(safe-area-inset-bottom,0px));background:var(--glass)}
-@media(max-width:900px){canvas{transform:translateY(-8%)}}
 </style>
 </head>
 <body>
-<canvas id="gl"></canvas>
 <header>
-  <a class="brand" href="index.html">DUALISCAPAX</a>
-  <input id="q" placeholder="Search: get an ID, pay, engine">
+  <a class="brand" href="dash.html">DUALISCAPAX</a>
+  <span class="chip">U1</span>
 </header>
 <div class="wrap">
-  <div class="dot" id="dot"></div>
-  <h1>One front door</h1>
-  <p class="lead">Looking around is free. A Unity ID is free. Engine time is what you buy if you want the computer to grind.</p>
+  <h1>U1 is bound</h1>
+  <p class="lead">David John Di Genova. Operator desk is the dashboard. Get ID is no longer the front door.</p>
   <div class="stack">
     <div class="card">
-      <h2>Get an ID</h2>
-      <p>Your Unity member number. No charge. Not a government card.</p>
-      <div class="row"><a class="btn" href="member.html">Get Unity ID</a></div>
+      <h2>Unity</h2>
+      <p>Member U1 · look packet on this device · health card is not stored here</p>
+      <div class="row"><a class="btn" href="dash.html">Open dashboard</a></div>
     </div>
     <div class="card">
       <h2>Engine time</h2>
-      <p>Prepaid passes. If a pass cannot finish, it is not spent.</p>
-      <div class="row">
-        <button class="btn" type="button" id="openPay">Buy engine time</button>
-        <a class="btn ghost" href="ai/app.html">Iris</a>
-      </div>
+      <p>Prepaid passes. Separate from the ID.</p>
+      <div class="row"><a class="btn ghost" href="pay.html">Pay</a><a class="btn ghost" href="ai/app.html">Iris</a></div>
     </div>
   </div>
 </div>
-<div class="modal" id="paybox">
-  <div class="box">
-    <h2 style="color:var(--iris);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase">Engine time</h2>
-    <p class="lead">Canadian dollars on Stripe.</p>
-    <p><a class="btn" href="https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05">$20 · 40 passes</a></p>
-    <p><a class="btn" href="https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02">$50 · 120 passes</a></p>
-    <p><a class="btn" href="https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01">$120 · 320 passes</a></p>
-    <p><a class="btn ghost" href="pay.html">Full price page</a> <button class="btn ghost" type="button" id="closePay">Close</button></p>
-  </div>
-</div>
 <nav class="dock">
-  <a class="btn ghost" href="member.html">Get ID</a>
+  <a class="btn ghost" href="dash.html">Desk</a>
   <a class="btn ghost" href="pay.html">Pay</a>
   <a class="btn ghost" href="ai/app.html">Iris</a>
 </nav>
-<script>
-(function(){
-  var q=document.getElementById("q"), dot=document.getElementById("dot");
-  q.addEventListener("focus", function(){ dot.classList.add("on"); });
-  q.addEventListener("blur", function(){ dot.classList.remove("on"); });
-  function send(s){
-    s=(s||"").toLowerCase();
-    if(/id|member|unity|join/.test(s)) location.href="member.html";
-    else if(/pay|engine|fuel|stripe|pass/.test(s)) document.getElementById("paybox").classList.add("on");
-    else if(/iris|ask/.test(s)) location.href="ai/app.html";
-    else if(/study|medical/.test(s)) location.href="study.html";
-    else alert("Try: get an ID, pay, Iris.");
-  }
-  q.addEventListener("keydown", function(e){ if(e.key==="Enter") send(q.value); });
-  document.getElementById("openPay").onclick=function(){ document.getElementById("paybox").classList.add("on"); };
-  document.getElementById("closePay").onclick=function(){ document.getElementById("paybox").classList.remove("on"); };
-  var c=document.getElementById("gl");
-  function size(){ var d=Math.min(2,devicePixelRatio||1); c.width=innerWidth*d; c.height=innerHeight*d; }
-  addEventListener("resize",size); size();
-  var gl=c.getContext("webgl2",{alpha:false,antialias:false,powerPreference:"low-power"});
-  if(gl && !matchMedia("(prefers-reduced-motion: reduce)").matches){
-    var vs=gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vs,"#version 300 es\nvoid main(){float x=float((gl_VertexID<<1)&2);float y=float(gl_VertexID&2);gl_Position=vec4(x*2.0-1.0,y*2.0-1.0,0,1);}"); gl.compileShader(vs);
-    var fs=gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fs,"#version 300 es\nprecision highp float;out vec4 o;uniform vec2 r;uniform float t;void main(){vec2 p=(gl_FragCoord.xy-0.5*r)/min(r.x,r.y);p.y+=0.1;float d=length(p);float rings=abs(sin((d*16.0-t*0.3)*3.14159));vec3 col=vec3(0.016,0.024,0.047);col+=vec3(0.56,0.71,0.78)*rings*0.11*smoothstep(0.9,0.04,d);col+=vec3(0.75,0.88,0.93)*smoothstep(0.08,0.02,d);o=vec4(col,1.0);}"); gl.compileShader(fs);
-    var p=gl.createProgram(); gl.attachShader(p,vs); gl.attachShader(p,fs); gl.linkProgram(p);
-    if(gl.getProgramParameter(p,gl.LINK_STATUS)){
-      gl.useProgram(p);
-      var R=gl.getUniformLocation(p,"r"), T=gl.getUniformLocation(p,"t");
-      (function loop(n){ gl.uniform2f(R,c.width,c.height); gl.uniform1f(T,n*0.001); gl.drawArrays(gl.TRIANGLES,0,3); requestAnimationFrame(loop); })(0);
-    }
-  }
-})();
-</script>
 </body>
 </html>
