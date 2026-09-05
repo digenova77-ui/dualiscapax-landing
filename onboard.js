@@ -65,7 +65,7 @@
       },
       passphrase_sha256: state.phrase_sha256,
       passkey: state.passkey,
-      eth: { address: /^0x[0-9a-fA-F]{40}$/.test(eth) ? eth : null, signature: state.eth_sig, contract: "not_deployed_from_this_page" },
+      eth: { address: /^0x[0-9a-fA-F]{40}$/.test(eth) ? eth : null, signature: state.eth_sig, contract: "not_deployed_from_this_pack" },
       llp: { name: firm || null, role: firm ? $("firmRole").value : null, status: firm ? "declared" : "NEED_FIRM" },
       declaration: { checked: !!($("attest") && $("attest").checked) },
       grant: { class0_look: true, model_seat_cad: 0, model_seat_days: 90, fuel: 0 },
@@ -75,19 +75,26 @@
 
   function download(name, text, type) {
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([text], { type: type || "application/json" }));
+    a.href = URL.createObjectURL(new Blob([text], { type: type || "text/html" }));
     a.download = name;
+    document.body.appendChild(a);
     a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
   }
 
-  function emit(p) {
+  function goLive(p) {
     const pack = buildPack(p);
-    const seat = pack.seat;
-    download("unity-deploy-pack.json", JSON.stringify(pack, null, 2), "application/json");
-    download("unity-deploy-pack.html", packHtml(pack), "text/html");
-    download("dualis-90-day-seat.html", agreementHtml(seat), "text/html");
-    download("dualis-runtime.html", runtimeHtml(p, seat), "text/html");
+    try { localStorage.setItem("dc.unity.id", JSON.stringify(p)); } catch (e) {}
+    try { localStorage.setItem("dc.unity.pack", JSON.stringify(pack)); } catch (e) {}
+    download("dualis-start.html", startHtml(p, pack), "text/html");
     return pack;
+  }
+
+  function done(pack) {
+    var end = (pack.seat && pack.seat.end || "").slice(0, 10);
+    $("log").innerHTML =
+      "Seat is live on this phone or computer. CAD $0 through " + end +
+      ". <a href=\"runtime.html\">Start modeling now</a>. A file named dualis-start.html also went to Downloads so you can work with the website closed.";
   }
 
   $("seal").onclick = function () {
@@ -95,11 +102,7 @@
     if (!validEmail($("email").value)) { $("log").textContent = "Need an email."; return; }
     if (!($("muni").value || "").trim()) { $("log").textContent = "Need a town."; return; }
     if (!($("name").value || "").trim()) { $("log").textContent = "Need a name."; return; }
-    const p = packet();
-    try { localStorage.setItem("dc.unity.id", JSON.stringify(p)); } catch (e) {}
-    const pack = emit(p);
-    $("log").textContent = "Four files downloaded. Modeling seat CAD $0 until " + pack.seat.end.slice(0, 10) + ". Open dualis-runtime.html.";
-    setTimeout(function () { location.href = "runtime.html"; }, 900);
+    done(goLive(packet()));
   };
 
   $("mail").onclick = function () {
@@ -107,12 +110,14 @@
     if (!validEmail(p.look.email)) { $("log").textContent = "Email first."; return; }
     location.href =
       "mailto:" + p.look.email +
-      "?subject=" + encodeURIComponent("Your Dualis files " + p.at.slice(0, 10)) +
-      "&body=" + encodeURIComponent("Four files should already be in Downloads: pack, letter, runtime. Dualis did not send this mail from a server.");
+      "?subject=" + encodeURIComponent("Dualis start file") +
+      "&body=" + encodeURIComponent("Open dualis-start.html from Downloads, or open runtime.html on the site. Dualis did not send this from a server.");
   };
 
   $("dl").onclick = function () {
-    emit(packet());
-    $("log").textContent = "Files downloaded. Seal when you are ready to start the 90 days.";
+    if (!($("name").value || "").trim() || !($("muni").value || "").trim()) {
+      $("log").textContent = "Name and town first."; return;
+    }
+    done(goLive(packet()));
   };
 })();
