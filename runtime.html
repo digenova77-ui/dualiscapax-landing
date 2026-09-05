@@ -9,20 +9,39 @@
 <body>
 <header>
   <div class="brand">DUALISCAPAX <span class="orb"></span></div>
-  <nav><a href="index.html">Gateway</a><a href="onboard.html">Onboard</a><a href="runtime.html">Runtime</a><a href="pay.html">Pay</a></nav>
+  <nav>
+    <a href="index.html">Gateway</a>
+    <a href="onboard.html">Onboard</a>
+    <a href="runtime.html">Runtime</a>
+    <a href="pay.html">Pay</a>
+  </nav>
 </header>
 <main>
-  <h1>Runtime seed</h1>
-  <p class="lead">Unity runs on the host you pick. Dualis does not host the OS. The packet from Onboard is the seed. Same chairs on phone, desktop, kiosk, or a later 3GL shell.</p>
-  <ol>
-    <li>Seal a Unity ID on Onboard.</li>
-    <li>Download <code>unity-id-runtime-seed.json</code>.</li>
-    <li>Keep passphrase and passkey on that device family.</li>
-    <li>Pay Fuel if you need Iris depth. Class 0 Look stays free.</li>
-    <li>LLP sits when books need a chair. Empty is NEED FIRM.</li>
-  </ol>
-  <p>No WebGPU claim on this page. Pipe CSS is the glass. Ethereum contract deploy is not this origin.</p>
-  <a class="btn" href="onboard.html">Bind</a>
+  <h1>Runtime</h1>
+  <p class="lead">Reads the Unity packet this browser sealed. Dualis does not host the OS. Open a downloaded pack on any other device.</p>
+  <div class="card" id="box"><p class="lead">No packet in this browser. Seal on Onboard.</p></div>
+  <p style="margin-top:1rem"><a class="btn" href="onboard.html">Onboard</a> <a class="btn ghost" href="pay.html">Pay</a></p>
 </main>
+<script>
+(function () {
+  var box = document.getElementById("box");
+  var raw = null;
+  try { raw = localStorage.getItem("dc.unity.id"); } catch (e) {}
+  if (!raw) return;
+  var p;
+  try { p = JSON.parse(raw); } catch (e) { box.innerHTML = "<p>Packet unreadable.</p>"; return; }
+  var look = p.look || {};
+  var eth = (p.eth && p.eth.address) || "none";
+  var firm = (p.llp && p.llp.status) || "NEED_FIRM";
+  box.innerHTML =
+    "<p><strong>" + (look.name || "unnamed") + "</strong> · " + (look.kind || "") + "</p>" +
+    "<p>" + (look.municipality || "no municipality") + " · " + (look.email || "no email") + "</p>" +
+    "<p>ETH " + eth + "</p>" +
+    "<p>Firm chair " + firm + "</p>" +
+    "<p>Phrase hash " + (p.passphrase_sha256 ? "present" : "missing") +
+    " · Passkey " + (p.passkey ? "present" : "missing") + "</p>" +
+    "<p class=\"lead\">Grant still class 0 until Fuel or a seat is paid.</p>";
+})();
+</script>
 </body>
 </html>
