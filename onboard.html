@@ -2,19 +2,96 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Onboard — DualisCapax</title>
+<title>Onboard — Unity ID — DualisCapax</title>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+label{display:block;margin:.7rem 0 .2rem;font-size:.8rem;color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+input,select,textarea{width:100%;background:#0e1216;color:var(--text);border:1px solid #3a4650;border-radius:8px;padding:.55rem .7rem;font:inherit}
+textarea{min-height:4.5rem}
+#log{white-space:pre-wrap;font-size:.8rem;color:var(--mute)}
+.ok{color:#8eb4c8}
+</style>
 </head>
 <body>
 <header>
   <div class="brand">DUALISCAPAX <span class="orb"></span></div>
-  <nav><a href="index.html">Gateway</a><a href="pay.html">Pay</a><a href="id.html">ID</a></nav>
+  <nav>
+    <a href="index.html">Gateway</a>
+    <a href="onboard.html">Onboard</a>
+    <a href="id.html">ID</a>
+    <a href="pay.html">Pay</a>
+    <a href="runtime.html">Runtime</a>
+  </nav>
 </header>
 <main>
-  <h1>Seat path</h1>
-  <p class="lead">If Stripe just settled a Leaf / Branch / Library pack, the next step is your Unity ID factor — mailbox you control, official chair, you complete it. Dualis does not complete it for you.</p>
-  <a class="btn" href="id.html">ID</a>
+  <p class="chips">
+    <span class="chip">Look free</span>
+    <span class="chip warn">Need firm</span>
+    <span class="chip">Passkey on device</span>
+    <span class="chip">No PHI posted</span>
+  </p>
+  <h1>Bind a Unity ID</h1>
+  <p class="lead">Five chairs on one plate. Passphrase and passkey stay on this device. Dualis does not complete factors for you. Not a coin. Not a share. LLP is a chair, empty until a firm sits.</p>
+
+  <div class="card">
+    <h2>1 Look</h2>
+    <label>Display name (public trit)</label>
+    <input id="name" autocomplete="nickname" placeholder="How the plate is addressed">
+    <label>Kind</label>
+    <select id="kind">
+      <option>person</option><option>shop</option><option>corp</option>
+      <option>school</option><option>government</option><option>lawyer</option>
+      <option>llp</option><option>auditor</option>
+    </select>
+    <label>Home municipality (your bind, not Dualis)</label>
+    <input id="muni" placeholder="e.g. Belleville, Ontario">
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h2>2 Passphrase</h2>
+    <p class="lead">Hashed here with SHA-256. Raw phrase is not stored and not sent.</p>
+    <label>Passphrase</label>
+    <input id="phrase" type="password" autocomplete="new-password">
+    <button class="btn" type="button" id="hashPhrase">Hash</button>
+    <p id="phraseOut" class="lead"></p>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h2>3 Passkey / biometric</h2>
+    <p class="lead">WebAuthn on this device (Face ID, Windows Hello, security key). Dualis does not keep a biometric image.</p>
+    <button class="btn" type="button" id="makeKey">Create passkey</button>
+    <p id="keyOut" class="lead"></p>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h2>4 Ethereum bind</h2>
+    <p class="lead">You paste an address you control. Dualis does not deploy a vault from this page. Optional personal_sign if a wallet is injected.</p>
+    <label>Address 0x…</label>
+    <input id="eth" spellcheck="false" placeholder="0x">
+    <button class="btn ghost" type="button" id="signEth">Sign bind message</button>
+    <p id="ethOut" class="lead"></p>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h2>5 LLP / firm chair</h2>
+    <p class="lead">Third-party LLP is baked as a chair, not as Dualis counsel. Empty = NEED FIRM.</p>
+    <label>Firm legal name</label>
+    <input id="firm" placeholder="Leave blank if none">
+    <label>Role</label>
+    <select id="firmRole"><option value="">none</option><option>llp</option><option>auditor</option><option>counsel</option></select>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h2>Seal packet</h2>
+    <button class="btn" type="button" id="seal">Write Unity ID packet</button>
+    <button class="btn ghost" type="button" id="dl">Download runtime seed</button>
+    <p class="lead">Pay Fuel or a seat after the packet exists. Grant is not this page.</p>
+    <a class="btn ghost" href="pay.html">Pay CAD</a>
+    <pre id="log"></pre>
+  </div>
 </main>
+<footer>Packet lives in this browser until you download it. 1001718450 Ontario Inc. · not complete-as-seal.</footer>
+<script src="onboard.js"></script>
 </body>
 </html>
