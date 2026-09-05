@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Engine — DualisCapax</title>
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html" style="text-decoration:none;color:inherit">DUALISCAPAX</a>
+  <nav><a href="pay.html">Pay</a><a href="compute.html">Engine</a></nav>
+</header>
+<main>
+  <h1>Engine on this device</h1>
+  <p class="lead">One pass tries to invert a 2×2. If the invert fails, no pass is spent. This is not a hospital solver and not a chain contract.</p>
+  <p>Passes on this device: <strong id="bal">0</strong></p>
+  <p><button class="btn ghost" type="button" id="mark">I paid — add 40 passes</button> <a class="btn ghost" href="pay.html">Go pay first</a></p>
+  <label>a11</label><input id="a" value="1">
+  <label>a12</label><input id="b" value="0">
+  <label>a21</label><input id="c" value="0">
+  <label>a22</label><input id="d" value="1">
+  <p><button class="btn" type="button" id="run">Run one pass</button></p>
+  <pre id="out"></pre>
+</main>
+<script>
+(function(){
+  function bal(){ try{ return parseInt(localStorage.getItem("dc.fuel")||"0",10)||0; }catch(e){ return 0; } }
+  function set(n){ try{ localStorage.setItem("dc.fuel", String(n)); }catch(e){} document.getElementById("bal").textContent=String(n); }
+  set(bal());
+  document.getElementById("mark").onclick=function(){ set(bal()+40); };
+  document.getElementById("run").onclick=function(){
+    var a=+document.getElementById("a").value, b=+document.getElementById("b").value;
+    var c=+document.getElementById("c").value, d=+document.getElementById("d").value;
+    var det=a*d-b*c;
+    if(!isFinite(det) || Math.abs(det)<1e-12){
+      document.getElementById("out").textContent="Could not invert. No pass spent.";
+      return;
+    }
+    var n=bal();
+    if(n<1){ document.getElementById("out").textContent="No passes on this device. Pay, then tap I paid."; return; }
+    set(n-1);
+    var inv=[d/det,-b/det,-c/det,a/det];
+    document.getElementById("out").textContent="Inverted. Pass spent. Remaining "+ (n-1) +"\n"+inv.join(", ");
+  };
+})();
+</script>
+</body>
+</html>
