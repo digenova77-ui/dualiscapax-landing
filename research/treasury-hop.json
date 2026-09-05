@@ -1,0 +1,27 @@
+{
+  "schema": "dualis.treasury.hop.v1",
+  "visitor_checkout": {
+    "rail": "stripe_cad_payment_link",
+    "status": "live",
+    "currency": "CAD",
+    "note": "Visitor does not send crypto on the lander."
+  },
+  "after_grant": {
+    "fuel_or_seat": "Dualis book",
+    "house_proceeds": "operator or licensed processor",
+    "dualis_is_exchange": false
+  },
+  "sinks": [
+    {"id": "BTC", "role": "hold", "target_weight": 0.5, "receive": "UNPUBLISHED"},
+    {"id": "ETH", "role": "hold", "target_weight": 0.5, "receive": "UNPUBLISHED"},
+    {"id": "USDC", "role": "transit_park", "target_weight": 0, "receive": "UNPUBLISHED"}
+  ],
+  "dust": {
+    "fail_invert_if": "(network_fee + spread) / notional > 0.02 OR notional_cad < 200",
+    "then": "park USDC",
+    "visitor_charged_for_hop": false
+  },
+  "licensed_desk": {"banxa": "WAIT_KYB", "moonpay": "WAIT_KYB"},
+  "env_when_bound": ["TREASURY_BTC", "TREASURY_ETH", "TREASURY_USDC"],
+  "never_in_git": ["keys", "seeds", "receive strings until owner pastes"]
+}
