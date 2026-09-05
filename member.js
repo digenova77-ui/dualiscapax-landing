@@ -1,12 +1,18 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var state = { phrase_sha256: null, passkey: null };
+  var ALIAS = [
+    "admin@dualiscapax.ai",
+    "ceo@dualiscapax.ai",
+    "digenova77@gmail.com",
+    "daviddigenova@gmail.com",
+    "zarkmuckerbarn@gmail.com"
+  ];
 
   async function sha256hex(text) {
     var hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
     return Array.from(new Uint8Array(hash)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
   }
-  function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || ""); }
 
   $("hashPhrase").onclick = async function () {
     var p = $("phrase").value;
@@ -40,13 +46,20 @@
     var muni = ($("muni").value || "").trim();
     var email = ($("email").value || "").trim().toLowerCase();
     if (name.toLowerCase().indexOf("david") === -1 || name.toLowerCase().indexOf("genova") === -1) {
-      $("log").textContent = "Number one is reserved for David John Di Genova. Change the name only if that is you."; return;
+      $("log").textContent = "Number one is reserved for David John Di Genova."; return;
     }
     if (!muni) { $("log").textContent = "Need a town."; return; }
-    if (!validEmail(email)) { $("log").textContent = "Need an email."; return; }
 
     var unity = window.UnityID ? UnityID.mintU1() : { human: "U1", public: "DC1-H1-0001", serial: 1 };
-    var look = { name: name, kind: "person", municipality: muni, email: email, region: "Ontario", country: "CA" };
+    var look = {
+      name: name,
+      kind: "person",
+      municipality: muni,
+      email: email,
+      emails: ALIAS.slice(),
+      region: "Ontario",
+      country: "CA"
+    };
     var iris = "iris:id:pub_" + (await sha256hex(JSON.stringify({ look: look, human: "U1" }))).slice(0, 20);
     var packet = {
       schema: "unity.id.v1",
@@ -64,18 +77,17 @@
       grant: null,
       seat_90_day: false,
       fuel: 0,
-      law: ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"],
+      law: ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"]
     };
     try { localStorage.setItem("dc.unity.id", JSON.stringify(packet)); } catch (e) {}
-    var blob = new Blob([JSON.stringify(packet, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(packet, null, 2)], { type: "application/json" }));
     a.download = "unity-U1.json";
     a.click();
     $("done").hidden = false;
     $("human").textContent = unity.human;
     $("pub").textContent = unity.public + (unity.check ? " · " + unity.check : "");
     $("iris").textContent = iris;
-    $("log").textContent = "U1 is on this device. File: unity-U1.json. No money moved.";
+    $("log").textContent = "U1 bound to " + email + ". Aliases stored. File: unity-U1.json.";
   };
 })();

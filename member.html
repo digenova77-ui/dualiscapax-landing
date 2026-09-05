@@ -19,15 +19,22 @@
 <main>
   <p class="chips"><span class="chip">No charge</span><span class="chip">Number one</span><span class="chip warn">Not a government ID</span></p>
   <h1>Join as a Unity member</h1>
-  <p class="lead">This is an identity bind. Not a sale. Not a ninety-day shop seat. Not Fuel. You get Unity number one on this device and a file you can keep.</p>
+  <p class="lead">This is an identity bind. Not a sale. Pick which of your addresses sits on U1. The others stay listed as aliases.</p>
 
   <div class="card" style="margin-top:1rem">
     <label>Legal name</label>
     <input id="name" value="David John Di Genova" autocomplete="name">
     <label>Town</label>
     <input id="muni" value="Belleville" autocomplete="address-level2">
-    <label>Email</label>
-    <input id="email" type="email" autocomplete="email">
+    <label>Primary email for this bind</label>
+    <select id="email">
+      <option value="admin@dualiscapax.ai">admin@dualiscapax.ai</option>
+      <option value="ceo@dualiscapax.ai">ceo@dualiscapax.ai</option>
+      <option value="digenova77@gmail.com">digenova77@gmail.com</option>
+      <option value="daviddigenova@gmail.com">daviddigenova@gmail.com</option>
+      <option value="zarkmuckerbarn@gmail.com">zarkmuckerbarn@gmail.com</option>
+    </select>
+    <p class="lead">Also on file as aliases: the other four.</p>
     <label>Secret phrase (optional)</label>
     <input id="phrase" type="password" autocomplete="new-password">
     <button class="btn ghost" type="button" id="hashPhrase">Fingerprint the phrase</button>
@@ -44,7 +51,7 @@
     <p id="human" style="font-size:2rem;margin:.2rem 0">U1</p>
     <p id="pub" class="lead"></p>
     <p id="iris" class="lead"></p>
-    <p class="lead">L5 stays unpublished. This public handle is the face. Old look packets still work.</p>
+    <p class="lead">L5 stays unpublished. This public handle is the face.</p>
   </div>
 </main>
 <script src="unity-id.js"></script>
