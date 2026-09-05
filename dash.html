@@ -2,42 +2,41 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard — DualisCapax</title>
+<title>Desk — Unity</title>
 <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
-  <a class="brand" href="dash.html" style="text-decoration:none;color:inherit">DUALISCAPAX</a>
-  <nav><a href="dash.html">Dashboard</a><a href="pay.html">Pay</a><a href="ai/app.html">Iris</a></nav>
+  <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">UNITY</a>
+  <nav><a href="hub.html">Hub</a><a href="dash.html">Desk</a></nav>
 </header>
 <main>
-  <p class="chips"><span class="chip">U1</span><span class="chip warn">Public = Unity ID only</span></p>
-  <h1>Operator desk</h1>
-  <p class="lead">The internet sees U1. Everything else is denied unless the other party is on the whitelist. Dualis does not publish cards.</p>
+  <p class="chips"><span class="chip">8610-0144-7001-0001</span><span class="chip warn">Public = serial only</span></p>
+  <h1>Bonds</h1>
+  <p class="lead">The plate shows a 16-digit serial. The hatch to seat one stays on this desk. Cards stay with you.</p>
 
   <div class="card">
-    <h2>Public (whitelist of one fact)</h2>
-    <p style="font-size:2rem;margin:.2rem 0">U1</p>
-    <p>David John Di Genova · Belleville · Unity member</p>
+    <h2>Public</h2>
+    <p style="font-size:1.4rem;letter-spacing:.06em">8610-0144-7001-0001</p>
+    <p class="lead">Hatch (holder only): U1 · seed 1 · DC1-H1-0001. Do not put that hatch on a billboard.</p>
   </div>
 
   <div class="card" style="margin-top:1rem">
-    <h2>Whitelist — parties that may ask you for a card</h2>
-    <p class="lead">Off = blacklisted. They get U1 only.</p>
-    <label class="check"><input type="checkbox" id="w_mto"> MTO / ServiceOntario — civil licence check, you present the card</label>
-    <label class="check"><input type="checkbox" id="w_hospital"> Hospital onboard</label>
-    <label class="check"><input type="checkbox" id="w_md"> Physician onboard</label>
-    <label class="check"><input type="checkbox" id="w_rx"> Pharmacy onboard</label>
-    <button class="btn" type="button" id="save">Save whitelist on this device</button>
+    <h2>Whitelist — may ask you for a card</h2>
+    <label class="check"><input type="checkbox" id="w_mto"> MTO / ServiceOntario</label>
+    <label class="check"><input type="checkbox" id="w_hospital"> Hospital</label>
+    <label class="check"><input type="checkbox" id="w_md"> Physician</label>
+    <label class="check"><input type="checkbox" id="w_rx"> Pharmacy</label>
+    <button class="btn" type="button" id="save">Save on this device</button>
     <p id="out" class="lead"></p>
   </div>
-
   <div class="card" style="margin-top:1rem">
     <h2>Blacklist (default)</h2>
-    <p>Internet visitors · this chat · GitHub · schools · shops · anyone not named above. They see U1. They do not get a card query.</p>
+    <p>Internet sees the serial. Not the hatch. Not a card.</p>
   </div>
 </main>
+<script src="unity-serial.js"></script>
 <script>
 (function(){
   var keys=["w_mto","w_hospital","w_md","w_rx"];
@@ -48,7 +47,7 @@
     keys.forEach(function(k){
       try{ localStorage.setItem("dc.allow."+k, document.getElementById(k).checked?"1":"0"); }catch(e){}
     });
-    document.getElementById("out").textContent="Whitelist saved on this phone. Public plate is still U1 only.";
+    document.getElementById("out").textContent="Saved on this phone.";
   };
 })();
 </script>
