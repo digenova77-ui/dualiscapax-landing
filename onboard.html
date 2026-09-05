@@ -8,9 +8,9 @@
 <style>
 label{display:block;margin:.7rem 0 .2rem;font-size:.8rem;color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
 input,select,textarea{width:100%;background:#0e1216;color:var(--text);border:1px solid #3a4650;border-radius:8px;padding:.55rem .7rem;font:inherit}
-textarea{min-height:4.5rem}
 #log{white-space:pre-wrap;font-size:.8rem;color:var(--mute)}
-.ok{color:#8eb4c8}
+.check{display:flex;gap:.6rem;align-items:flex-start;margin:1rem 0;font-size:.9rem;color:var(--mute)}
+.check input{width:auto;margin-top:.2rem}
 </style>
 </head>
 <body>
@@ -19,79 +19,69 @@ textarea{min-height:4.5rem}
   <nav>
     <a href="index.html">Gateway</a>
     <a href="onboard.html">Onboard</a>
-    <a href="id.html">ID</a>
     <a href="pay.html">Pay</a>
     <a href="runtime.html">Runtime</a>
   </nav>
 </header>
 <main>
   <p class="chips">
-    <span class="chip">Look free</span>
+    <span class="chip">Live bind</span>
     <span class="chip warn">Need firm</span>
-    <span class="chip">Passkey on device</span>
-    <span class="chip">No PHI posted</span>
+    <span class="chip">No government API</span>
   </p>
-  <h1>Bind a Unity ID</h1>
-  <p class="lead">Five chairs on one plate. Passphrase and passkey stay on this device. Dualis does not complete factors for you. Not a coin. Not a share. LLP is a chair, empty until a firm sits.</p>
+  <h1>Real-world bind</h1>
+  <p class="lead">Email you can receive. Municipality you claim. Passphrase and passkey on this device. Optional 0x you control. CAD Fuel on Stripe is the only paid grant tonight. Dualis does not call MTO, CRA, or a bar society from this page.</p>
 
   <div class="card">
-    <h2>1 Look</h2>
-    <label>Display name (public trit)</label>
-    <input id="name" autocomplete="nickname" placeholder="How the plate is addressed">
+    <h2>Who</h2>
+    <label>Legal or operating name</label>
+    <input id="name" autocomplete="name">
     <label>Kind</label>
     <select id="kind">
       <option>person</option><option>shop</option><option>corp</option>
       <option>school</option><option>government</option><option>lawyer</option>
       <option>llp</option><option>auditor</option>
     </select>
-    <label>Home municipality (your bind, not Dualis)</label>
-    <input id="muni" placeholder="e.g. Belleville, Ontario">
+    <label>Email you can open (attest)</label>
+    <input id="email" type="email" autocomplete="email" placeholder="you@domain">
+    <label>Municipality / region you claim</label>
+    <input id="muni" placeholder="City, Province">
+    <label>Public institution domain if any (school board, ministry)</label>
+    <input id="org" placeholder="e.g. hpedsb.on.ca — format only">
   </div>
 
   <div class="card" style="margin-top:1rem">
-    <h2>2 Passphrase</h2>
-    <p class="lead">Hashed here with SHA-256. Raw phrase is not stored and not sent.</p>
-    <label>Passphrase</label>
+    <h2>Device factors</h2>
+    <label>Passphrase (hashed here, raw cleared)</label>
     <input id="phrase" type="password" autocomplete="new-password">
-    <button class="btn" type="button" id="hashPhrase">Hash</button>
+    <button class="btn" type="button" id="hashPhrase">Hash passphrase</button>
     <p id="phraseOut" class="lead"></p>
-  </div>
-
-  <div class="card" style="margin-top:1rem">
-    <h2>3 Passkey / biometric</h2>
-    <p class="lead">WebAuthn on this device (Face ID, Windows Hello, security key). Dualis does not keep a biometric image.</p>
-    <button class="btn" type="button" id="makeKey">Create passkey</button>
+    <button class="btn ghost" type="button" id="makeKey">Create passkey</button>
     <p id="keyOut" class="lead"></p>
   </div>
 
   <div class="card" style="margin-top:1rem">
-    <h2>4 Ethereum bind</h2>
-    <p class="lead">You paste an address you control. Dualis does not deploy a vault from this page. Optional personal_sign if a wallet is injected.</p>
-    <label>Address 0x…</label>
+    <h2>Optional chain + firm</h2>
+    <label>Ethereum address you control</label>
     <input id="eth" spellcheck="false" placeholder="0x">
-    <button class="btn ghost" type="button" id="signEth">Sign bind message</button>
+    <button class="btn ghost" type="button" id="signEth">Sign bind</button>
     <p id="ethOut" class="lead"></p>
-  </div>
-
-  <div class="card" style="margin-top:1rem">
-    <h2>5 LLP / firm chair</h2>
-    <p class="lead">Third-party LLP is baked as a chair, not as Dualis counsel. Empty = NEED FIRM.</p>
-    <label>Firm legal name</label>
-    <input id="firm" placeholder="Leave blank if none">
-    <label>Role</label>
+    <label>Third-party LLP / counsel</label>
+    <input id="firm" placeholder="Empty = NEED FIRM">
     <select id="firmRole"><option value="">none</option><option>llp</option><option>auditor</option><option>counsel</option></select>
   </div>
 
   <div class="card" style="margin-top:1rem">
-    <h2>Seal packet</h2>
-    <button class="btn" type="button" id="seal">Write Unity ID packet</button>
-    <button class="btn ghost" type="button" id="dl">Download runtime seed</button>
-    <p class="lead">Pay Fuel or a seat after the packet exists. Grant is not this page.</p>
-    <a class="btn ghost" href="pay.html">Pay CAD</a>
+    <h2>Declaration</h2>
+    <label class="check"><input id="attest" type="checkbox"> I declare these chairs are mine or my entity’s. I understand this is not a government credential and Dualis is the meter, not the issuer of licences.</label>
+    <button class="btn" type="button" id="seal">Seal Unity ID</button>
+    <button class="btn ghost" type="button" id="mail">Mail me the hash</button>
+    <button class="btn ghost" type="button" id="dl">Download seed</button>
+    <a class="btn" href="https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05">Pay Fuel 40 CAD $20</a>
     <pre id="log"></pre>
   </div>
 </main>
-<footer>Packet lives in this browser until you download it. 1001718450 Ontario Inc. · not complete-as-seal.</footer>
+<footer>Packet on this device. 1001718450 Ontario Inc.</footer>
 <script src="onboard.js"></script>
 </body>
 </html>
