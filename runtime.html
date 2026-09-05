@@ -3,44 +3,53 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Runtime — DualisCapax</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="brand/seal.svg">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
-  <div class="brand">DUALISCAPAX <span class="orb"></span></div>
+  <a class="brand" href="index.html" style="text-decoration:none;color:inherit">DUALISCAPAX</a>
   <nav>
-    <a href="index.html">Gateway</a>
-    <a href="onboard.html">Onboard</a>
+    <a href="onboard.html">Sign in</a>
     <a href="runtime.html">Runtime</a>
     <a href="pay.html">Pay</a>
   </nav>
 </header>
 <main>
-  <h1>Runtime</h1>
-  <p class="lead">Reads the Unity packet this browser sealed. Dualis does not host the OS. Open a downloaded pack on any other device.</p>
-  <div class="card" id="box"><p class="lead">No packet in this browser. Seal on Onboard.</p></div>
-  <p style="margin-top:1rem"><a class="btn" href="onboard.html">Onboard</a> <a class="btn ghost" href="pay.html">Pay</a></p>
+  <h1>Your workbench</h1>
+  <p class="lead">This page reads the file this browser sealed. The download named dualis-runtime.html is the same workbench you can open with no website at all.</p>
+  <div class="card" id="box"><p class="lead">No file in this browser yet. Sign in first.</p></div>
+  <label for="notes">Model here</label>
+  <textarea id="notes" style="width:100%;min-height:12rem;background:#0a0e14;color:#e8eef2;border:1px solid #3a4650;border-radius:8px;padding:.6rem" placeholder="What you run. What leaks money or time. No patient names."></textarea>
+  <p><button class="btn" type="button" id="save">Save on this device</button> <span id="out" class="lead"></span></p>
+  <p style="margin-top:1rem"><a class="btn ghost" href="onboard.html">Sign in</a> <a class="btn ghost" href="pay.html">Paid rooms after 90 days</a></p>
 </main>
 <script>
 (function () {
   var box = document.getElementById("box");
   var raw = null;
   try { raw = localStorage.getItem("dc.unity.id"); } catch (e) {}
-  if (!raw) return;
-  var p;
-  try { p = JSON.parse(raw); } catch (e) { box.innerHTML = "<p>Packet unreadable.</p>"; return; }
-  var look = p.look || {};
-  var eth = (p.eth && p.eth.address) || "none";
-  var firm = (p.llp && p.llp.status) || "NEED_FIRM";
-  box.innerHTML =
-    "<p><strong>" + (look.name || "unnamed") + "</strong> · " + (look.kind || "") + "</p>" +
-    "<p>" + (look.municipality || "no municipality") + " · " + (look.email || "no email") + "</p>" +
-    "<p>ETH " + eth + "</p>" +
-    "<p>Firm chair " + firm + "</p>" +
-    "<p>Phrase hash " + (p.passphrase_sha256 ? "present" : "missing") +
-    " · Passkey " + (p.passkey ? "present" : "missing") + "</p>" +
-    "<p class=\"lead\">Grant still class 0 until Fuel or a seat is paid.</p>";
+  if (raw) {
+    try {
+      var p = JSON.parse(raw);
+      var look = p.look || {};
+      var start = p.at || "";
+      var end = "";
+      try { var d = new Date(start); d.setUTCDate(d.getUTCDate() + 90); end = d.toISOString().slice(0,10); } catch (e) {}
+      box.innerHTML =
+        "<p><strong>" + (look.name || "unnamed") + "</strong> · " + (look.kind || "") + "</p>" +
+        "<p>" + (look.municipality || "no town") + " · " + (look.email || "") + "</p>" +
+        "<p>CAD $0 modeling seat through " + end + ".</p>" +
+        "<p>Firm on file: " + ((p.llp && p.llp.status) || "none yet") + ".</p>";
+    } catch (e) { box.innerHTML = "<p>File unreadable.</p>"; }
+  }
+  var t = document.getElementById("notes");
+  try { t.value = localStorage.getItem("dc.model.notes") || ""; } catch (e) {}
+  document.getElementById("save").onclick = function () {
+    try { localStorage.setItem("dc.model.notes", t.value); document.getElementById("out").textContent = "Saved on this device."; }
+    catch (e) { document.getElementById("out").textContent = "Could not save."; }
+  };
 })();
 </script>
 </body>
