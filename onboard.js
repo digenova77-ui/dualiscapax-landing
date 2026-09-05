@@ -8,6 +8,23 @@
   }
   function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || ""); }
 
+  function unityFor(kind) {
+    if (!window.UnityID) return null;
+    var root = UnityID.mintU1();
+    var seed = 1;
+    if (kind === "shop") seed = 2;
+    if (kind === "school") seed = 3;
+    if (kind === "llp" || kind === "auditor" || kind === "lawyer" || kind === "corp") seed = 4;
+    var name = ($("name").value || "").trim().toLowerCase();
+    if (name.indexOf("david") === 0 && name.indexOf("genova") !== -1 && kind === "person") return root;
+    var n = 1;
+    try {
+      n = (parseInt(localStorage.getItem("dc.unity.hatch.n") || "0", 10) || 0) + 1;
+      localStorage.setItem("dc.unity.hatch.n", String(n));
+    } catch (e) {}
+    return UnityID.hatch(root, seed, n);
+  }
+
   $("hashPhrase").onclick = async function () {
     const p = $("phrase").value;
     if (!p || p.length < 8) { $("phraseOut").textContent = "Use at least eight characters."; return; }
@@ -51,13 +68,14 @@
     const firm = ($("firm").value || "").trim();
     const email = ($("email").value || "").trim().toLowerCase();
     const org = ($("org").value || "").trim().toLowerCase();
-    return {
+    const kind = $("kind").value;
+    const p = {
       schema: "unity.id.v1",
       at: new Date().toISOString(),
       host: location.host,
       look: {
         name: $("name").value || "",
-        kind: $("kind").value,
+        kind: kind,
         municipality: $("muni").value || "",
         email: validEmail(email) ? email : null,
         org_domain: org || null,
@@ -71,6 +89,9 @@
       grant: { class0_look: true, model_seat_cad: 0, model_seat_days: 90, fuel: 0 },
       law: ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"],
     };
+    var u = unityFor(kind);
+    if (u) p.unity = u;
+    return p;
   }
 
   function download(name, text, type) {
@@ -92,9 +113,11 @@
 
   function done(pack) {
     var end = (pack.seat && pack.seat.end || "").slice(0, 10);
+    var u = pack.unity_id && pack.unity_id.unity;
+    var tag = u ? (u.human + " · " + u.public) : "number attaches later";
     $("log").innerHTML =
-      "Seat is live on this phone or computer. CAD $0 through " + end +
-      ". <a href=\"runtime.html\">Start modeling now</a>. A file named dualis-start.html also went to Downloads so you can work with the website closed.";
+      "Unity " + tag + ". Seat CAD $0 through " + end +
+      ". <a href=\"runtime.html\">Start modeling now</a> · <a href=\"unity.html\">Unity ID</a>";
   }
 
   $("seal").onclick = function () {
