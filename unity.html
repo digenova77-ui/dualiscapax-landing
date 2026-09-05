@@ -1,30 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Unity surface — DualisCapax</title>
-  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
-  <meta name="theme-color" content="#050505" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="theme.css" />
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unity ID — DualisCapax</title>
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
-<body class="watch">
-  <div class="site">
-    <header>
-      <a href="index.html?land=1" class="mark">DualisCapax</a>
-      <nav>
-        <a href="journey.html">Journey</a>
-        <a href="unity.html" class="on">Unity</a>
-        <a href="access.html">Access</a>
-      </nav>
-    </header>
-    <p class="eyebrow">Live only</p>
-    <h1>Time does not stop.</h1>
-    <p>The rail keeps moving. A still is leftover. A film is leftover stacked. Neither is the invert.</p>
+<body>
+<header>
+  <a class="brand" href="index.html" style="text-decoration:none;color:inherit">DUALISCAPAX</a>
+  <nav>
+    <a href="unity.html">Unity ID</a>
+    <a href="onboard.html">Sign in</a>
+    <a href="runtime.html">Runtime</a>
+  </nav>
+</header>
+<main>
+  <p class="chips"><span class="chip">U1 live</span><span class="chip warn">U0 not verified</span><span class="chip warn">Dualis is not your ID office</span></p>
+  <h1>Unity ID</h1>
+  <p class="lead">You are first. Founder zero is reserved and has not passed verification. That does not block you. Hatches hang off you, not off him.</p>
+  <div class="grid two">
+    <div class="card">
+      <h2>U1</h2>
+      <p id="u1">DC1-H1-0001</p>
+      <p>David John Di Genova · Belleville · operator seat · may hatch</p>
+    </div>
+    <div class="card">
+      <h2>U0</h2>
+      <p>DC0-Z0-0000</p>
+      <p>Founder seat. Unity verification: not passed. Cannot hatch.</p>
+    </div>
   </div>
-  <script src="assets/watch.js"></script>
-  <script src="assets/hud.js"></script>
-  <script src="assets/dualis-runtime.js"></script>
+  <div class="card" style="margin-top:1rem;text-align:left">
+    <h2>Same checklist a firm would use — applied to U1 first</h2>
+    <p>Dualis does not stamp this. A lawyer or reporting firm does. Fill what you want kept on this device. Do not type a SIN or a licence number into this box.</p>
+    <label>Legal name</label><input id="kName" value="David John Di Genova">
+    <label>Town</label><input id="kTown" value="Belleville">
+    <label>Occupation</label><input id="kJob" value="Operator, DualisCapax Inc.">
+    <label>ID type (no number)</label>
+    <select id="kId"><option>Ontario photo card / licence (number not stored)</option><option>Passport (number not stored)</option><option>Other government photo ID</option></select>
+    <label class="check"><input id="kPep" type="checkbox"> I am not a politically exposed person for this declaration.</label>
+    <label class="check"><input id="kTrue" type="checkbox"> This is me. Dualis did not run a government check.</label>
+    <button class="btn" type="button" id="sealKyc">Save declaration on this device</button>
+    <p id="kOut" class="lead"></p>
+  </div>
+  <p class="lead" style="margin-top:1rem"><a href="onboard.html">Bind a hatch</a> · <a href="unity/SCHEME.md">Numbering</a></p>
+</main>
+<script src="unity-id.js"></script>
+<script>
+(function(){
+  var u = window.UnityID && UnityID.mintU1();
+  if (u) document.getElementById("u1").textContent = u.public + " · " + u.check;
+  document.getElementById("sealKyc").onclick = function(){
+    if (!document.getElementById("kTrue").checked) {
+      document.getElementById("kOut").textContent = "Check that this is you."; return;
+    }
+    var d = {
+      schema: "unity.kyc.self.v1",
+      unity: u,
+      legal_name: document.getElementById("kName").value,
+      town: document.getElementById("kTown").value,
+      occupation: document.getElementById("kJob").value,
+      id_type: document.getElementById("kId").value,
+      pep_declared_false: document.getElementById("kPep").checked,
+      performed_by_dualis: false,
+      status: "SELF_DECLARED",
+      at: new Date().toISOString()
+    };
+    try { localStorage.setItem("dc.unity.kyc", JSON.stringify(d)); } catch (e) {}
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(d,null,2)], {type:"application/json"}));
+    a.download = "unity-U1-kyc-self.json"; a.click();
+    document.getElementById("kOut").textContent = "Saved on this device. Hand the file to a firm. Dualis did not verify it.";
+  };
+})();
+</script>
 </body>
 </html>
