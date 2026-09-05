@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Share — gate</title>
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
+  <nav><a href="dash.html">Desk</a></nav>
+</header>
+<main>
+  <h1>What you share is the gate.</h1>
+  <p class="lead">Information uses the same law as cards. Default deny. You turn on a desk. The internet still only sees the serial.</p>
+  <div class="card">
+    <h2>Always public</h2>
+    <p>The serial. Rooms we can explain. Look pages. Law.</p>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>You may open</h2>
+    <label class="check"><input type="checkbox" id="s_cost"> Residual cost work may be shown to a paid desk</label>
+    <label class="check"><input type="checkbox" id="s_eng"> Engineering grind may be shown to a paid desk</label>
+    <label class="check"><input type="checkbox" id="s_med"> Medical *look* (journal only) may be shown to hospital / physician / pharmacy</label>
+    <label class="check"><input type="checkbox" id="s_money"> Company money pages may be shown to a bookkeeper you name later</label>
+    <button class="btn" type="button" id="save">Save on this device</button>
+    <p id="out" class="lead"></p>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>Always closed</h2>
+    <p>Health number. Licence number. Student file. Webhook secret. Anyone not on your list — waitlist, not a leak.</p>
+  </div>
+</main>
+<script>
+(function(){
+  var keys=["s_cost","s_eng","s_med","s_money"];
+  keys.forEach(function(k){
+    try{ if(localStorage.getItem("dc.share."+k)==="1") document.getElementById(k).checked=true; }catch(e){}
+  });
+  document.getElementById("save").onclick=function(){
+    keys.forEach(function(k){
+      try{ localStorage.setItem("dc.share."+k, document.getElementById(k).checked?"1":"0"); }catch(e){}
+    });
+    document.getElementById("out").textContent="Saved on this phone. Public plate unchanged.";
+  };
+})();
+</script>
+</body>
+</html>
