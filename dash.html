@@ -14,41 +14,47 @@
 <main>
   <p class="chips"><span class="chip">U1</span><span class="chip" id="ledger">LEDGER: LOOK</span></p>
   <h1>Operator desk</h1>
-  <p class="lead">Health proof is not for Dualis, not for this chat, and not for a random desk. Only a hospital, a physician, or a pharmacy onboard — when that chair is live.</p>
+  <p class="lead">Public look is name and U1 only. Licence and health card stay dark, gated on this ID. They do not go on the website.</p>
 
   <div class="card">
     <h2>Unity ID</h2>
     <p style="font-size:2rem;margin:.2rem 0">U1</p>
-    <p>David John Di Genova · Belleville</p>
+    <p>David John Di Genova · Belleville · look packet</p>
   </div>
 
   <div class="card" style="margin-top:1rem">
-    <h2>Dark ledger</h2>
+    <h2>Dark gates</h2>
     <p id="darkline">Off.</p>
-    <p class="lead">Allowed chairs if dark is on: hospital · physician · pharmacy. No one else.</p>
   </div>
 
   <div class="card" style="margin-top:1rem">
     <h2>Access you allow</h2>
-    <label class="check"><input type="checkbox" id="l_look" checked disabled> Look — public name and U1 only.</label>
+    <label class="check"><input type="checkbox" id="l_look" checked disabled> Look — public: name, town, U1.</label>
     <label class="check"><input type="checkbox" id="l_pay"> Pay</label>
     <label class="check"><input type="checkbox" id="l_engine"> Engine</label>
-    <label class="check"><input type="checkbox" id="l_health"> Healthcare dark — hospital, physician, pharmacy only. Card stays with you.</label>
-    <label class="check"><input type="checkbox" id="l_school"> Schools — work email only. No health card.</label>
+    <label class="check"><input type="checkbox" id="l_civil"> Civil licence — dark. Gated on U1. Not published. You hold the card.</label>
+    <label class="check"><input type="checkbox" id="l_health"> Healthcare — dark. Hospital, physician, pharmacy only. You hold the card.</label>
+    <label class="check"><input type="checkbox" id="l_school"> Schools — work email only. No cards.</label>
     <button class="btn" type="button" id="save">Save on this device</button>
     <p id="out" class="lead"></p>
   </div>
 </main>
 <script>
 (function(){
-  var keys=["l_pay","l_engine","l_health","l_school"];
+  var keys=["l_pay","l_engine","l_civil","l_health","l_school"];
   function paint(){
-    var dark=false;
-    try{ dark=localStorage.getItem("dc.layer.l_health")==="1"; }catch(e){}
-    document.getElementById("ledger").textContent=dark?"DARK · HOSPITAL / MD / PHARMACY":"LEDGER: LOOK";
-    document.getElementById("darkline").textContent=dark
-      ?"On. Only a hospital, physician, or pharmacy chair may request the card. Dualis does not hold it."
-      :"Off. No healthcare chair may ask.";
+    var civil=false, health=false;
+    try{
+      civil=localStorage.getItem("dc.layer.l_civil")==="1";
+      health=localStorage.getItem("dc.layer.l_health")==="1";
+    }catch(e){}
+    var bits=[];
+    if(civil) bits.push("CIVIL DARK");
+    if(health) bits.push("HEALTH DARK");
+    document.getElementById("ledger").textContent=bits.length?bits.join(" · "):"LEDGER: LOOK";
+    document.getElementById("darkline").textContent=bits.length
+      ?"Gated on U1. Cards stay with you. Dualis does not publish numbers."
+      :"No dark gates on.";
   }
   keys.forEach(function(k){
     try{ if(localStorage.getItem("dc.layer."+k)==="1") document.getElementById(k).checked=true; }catch(e){}
@@ -59,7 +65,7 @@
       try{ localStorage.setItem("dc.layer."+k, document.getElementById(k).checked?"1":"0"); }catch(e){}
     });
     paint();
-    document.getElementById("out").textContent="Saved on this phone.";
+    document.getElementById("out").textContent="Saved on this phone only.";
   };
 })();
 </script>
