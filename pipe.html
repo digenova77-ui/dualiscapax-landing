@@ -3,226 +3,161 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DualisCapax — Pipe</title>
+<title>Tour — DualisCapax</title>
 <meta name="theme-color" content="#04060c">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#04060c;--glass:rgba(18,24,32,.55);--line:rgba(200,220,230,.16);
-  --iris:#8eb4c8;--text:#e8eef2;--mute:#8b99a4;--warn:#c9a227;
-  --serif:"Fraunces",Georgia,serif;--sans:"Figtree",system-ui,sans-serif;
-}
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--sans)}
-body{overflow:hidden}
-header{
-  position:fixed;top:0;left:0;right:0;z-index:20;
-  display:flex;align-items:center;justify-content:space-between;gap:.6rem;
-  padding:.55rem .8rem;background:rgba(4,6,12,.55);
-  backdrop-filter:blur(16px);border-bottom:1px solid var(--line);
-}
+:root{color-scheme:dark;--iris:#8eb4c8;--bg:#04060c;--text:#e8eef2;--mute:#8b99a4;--line:rgba(200,220,230,.16);--glass:rgba(18,24,32,.55);--serif:Fraunces,Georgia,serif;--sans:Figtree,system-ui,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+header{position:fixed;inset:0 0 auto;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:calc(.5rem + env(safe-area-inset-top,0px)) .8rem .5rem;background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
 .brand{font-family:var(--serif);letter-spacing:.18em;font-size:.72rem}
 .pills{display:flex;gap:.35rem;flex-wrap:wrap}
 .pill{font-size:.62rem;letter-spacing:.06em;border:1px solid var(--line);border-radius:999px;padding:.18rem .5rem;color:var(--mute)}
-.pill b{color:var(--iris);font-weight:600}
-.toggle{border:1px solid var(--iris);background:transparent;color:var(--iris);border-radius:999px;padding:.28rem .7rem;font:inherit;font-size:.7rem;cursor:pointer}
-a.btn,button.btn{display:inline-block;text-decoration:none;border:0;background:var(--iris);color:#061018;border-radius:999px;padding:.55rem 1rem;font:600 .85rem var(--sans);cursor:pointer}
-a.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
-#stageCanvas{position:fixed;inset:0;width:100%;height:100%;display:block}
-.hud{
-  position:fixed;left:50%;transform:translateX(-50%);
-  top:3.1rem;z-index:12;text-align:center;pointer-events:none;width:min(92vw,42rem);
-}
-.hud h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,5vw,2.6rem);margin:.2rem 0;line-height:1.1}
-.hud p{margin:0;color:var(--mute);font-size:.9rem}
+.toggle{border:1px solid var(--iris);background:transparent;color:var(--iris);border-radius:999px;padding:.28rem .7rem;font:inherit;font-size:.7rem}
+#tunnel{position:fixed;inset:0;perspective:900px;perspective-origin:50% 42%;pointer-events:none}
+.ring{position:absolute;left:50%;top:42%;border:1px solid rgba(210,226,232,.14);border-radius:50%;transform:translate(-50%,-50%)}
+.pupil{position:absolute;left:50%;top:42%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#d7ebf2 0 20%,#8eb4c8 40%,#12303a 70%);box-shadow:0 0 28px #8eb4c888}
+.hud{position:fixed;left:50%;top:3.2rem;transform:translateX(-50%);z-index:12;text-align:center;width:min(92vw,40rem);pointer-events:none}
+.hud h1{font-family:var(--serif);font-size:clamp(1.6rem,5vw,2.6rem);margin:.15rem 0;font-weight:600}
+.hud p{margin:0;color:var(--mute)}
 .wings{display:none}
 @media(min-width:900px){
-  .wings{display:block;position:fixed;top:5.2rem;bottom:5.2rem;width:16rem;z-index:11;padding:1rem;
-    background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:18px;overflow:auto}
+  .wings{display:block;position:fixed;top:5.2rem;bottom:5.4rem;width:15.5rem;z-index:11;padding:1rem;background:var(--glass);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:18px;overflow:auto}
   .wing-l{left:1rem}.wing-r{right:1rem}
-  .wings h3{margin:0 0 .6rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--iris)}
-  .wings li{list-style:none;margin:.45rem 0;font-size:.8rem;color:var(--mute)}
+  .wings h3{margin:0 0 .6rem;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--iris)}
+  .wings li{margin:.45rem 0;font-size:.8rem;color:var(--mute);list-style:none}
+  a.btn{display:inline-block;margin-top:.6rem;padding:.5rem .9rem;border-radius:999px;background:var(--iris);color:#061018;text-decoration:none;font-weight:600;font-size:.85rem}
+  a.ghost{background:transparent;color:var(--text);border:1px solid var(--line);margin-left:.3rem}
 }
-.cards{
-  position:fixed;left:50%;transform:translateX(-50%);
-  bottom:5.4rem;z-index:12;width:min(94vw,34rem);display:none;flex-direction:column;gap:.45rem;
-}
-.cards.on{display:flex}
-.card{
-  background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--line);
-  border-radius:14px;padding:.7rem .85rem;
-}
-.card b{display:block;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--iris)}
+.stack{position:fixed;left:50%;bottom:5.5rem;transform:translateX(-50%);z-index:12;width:min(94vw,34rem);display:none;flex-direction:column;gap:.45rem}
+.stack.on{display:flex}
+.card{background:var(--glass);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:14px;padding:.7rem .85rem}
+.card b{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--iris)}
 .card span{font-size:.82rem;color:var(--mute)}
-.beacons{position:fixed;left:50%;transform:translateX(-50%);bottom:5.4rem;z-index:12;width:min(94vw,40rem);display:none;gap:.5rem;flex-wrap:wrap}
-.beacons.on{display:flex}
-.beacon{flex:1 1 10rem;background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:14px;padding:.7rem}
-.beacon em{display:block;font-size:.65rem;letter-spacing:.1em;color:var(--warn);font-style:normal}
-.dock{
-  position:fixed;left:50%;bottom:.7rem;transform:translateX(-50%);z-index:20;
-  display:flex;gap:.35rem;padding:.35rem;border-radius:999px;
-  background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--line);max-width:96vw;overflow:auto;
-}
-.dock button{
-  flex:0 0 auto;border:0;background:transparent;color:var(--mute);font:600 .68rem var(--sans);
-  padding:.45rem .6rem;border-radius:999px;cursor:pointer;white-space:nowrap;
-}
+.dock{position:fixed;left:50%;bottom:calc(.65rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:20;display:flex;gap:.3rem;padding:.32rem;border-radius:999px;background:var(--glass);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--line);max-width:96vw;overflow:auto}
+.dock button{border:0;background:transparent;color:var(--mute);font:600 .68rem var(--sans);padding:.45rem .62rem;border-radius:999px;white-space:nowrap}
 .dock button.on{background:rgba(142,180,200,.22);color:var(--text)}
-footer.law{position:fixed;left:0;right:0;bottom:3.35rem;z-index:11;text-align:center;font-size:.62rem;color:var(--mute);letter-spacing:.04em;padding:0 .6rem}
-.mode-2d #stageCanvas{opacity:0}
-.mode-2d body{background:radial-gradient(ellipse at 50% 20%,#12202a,var(--bg) 55%)}
+.law{position:fixed;left:0;right:0;bottom:3.4rem;z-index:11;text-align:center;font-size:.62rem;color:var(--mute);padding:0 .6rem}
+.mode-2d #tunnel{opacity:.18}
+@media(prefers-reduced-motion:reduce){#tunnel{animation:none}}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
   <div class="brand">DUALISCAPAX</div>
-  <div class="pills">
-    <span class="pill">det(M) ≡ 1.0</span>
-    <span class="pill">M-S: <b id="ms">—</b></span>
-    <span class="pill">ACCESS closed</span>
-  </div>
-  <button class="toggle" id="disp" type="button">DISP: 3D</button>
+  <div class="pills"><span class="pill">Tour</span><span class="pill">Light on the phone</span></div>
+  <button class="toggle" id="disp" type="button">Show depth</button>
 </header>
-<canvas id="stageCanvas" aria-hidden="true"></canvas>
+<div id="tunnel" aria-hidden="true"><div class="pupil"></div></div>
 <div class="hud">
-  <p id="kicker">Stage 01</p>
-  <h1 id="title">Deep pipe</h1>
-  <p id="lede">Look is free. Dualis meters. You host.</p>
+  <p id="kicker">Step 1 of 5</p>
+  <h1 id="title">The deep pipe</h1>
+  <p id="lede">A picture of depth. Looking is free.</p>
 </div>
 <aside class="wings wing-l">
-  <h3>Traverse</h3>
+  <h3>The walk</h3>
   <ul>
-    <li>01 Deep pipe</li>
-    <li>02 Acceleration</li>
-    <li>03 Sleeve gate → Onboard</li>
-    <li>04 Breakthrough</li>
-    <li>05 Ground chairs</li>
+    <li>1 Deep pipe</li>
+    <li>2 Speed up</li>
+    <li>3 Sign-in gate</li>
+    <li>4 Break into daylight</li>
+    <li>5 Real town work</li>
   </ul>
-  <p style="font-size:.75rem;color:var(--mute);margin-top:1rem">Swipe / wheel. 3D is ornament. Bind and CAD are the doors.</p>
 </aside>
 <aside class="wings wing-r">
-  <h3>Identity matrix</h3>
+  <h3>Your file</h3>
   <ul>
-    <li>Look — free</li>
-    <li>Passphrase — hash on device</li>
-    <li>Passkey — this device WebAuthn</li>
-    <li>0x — optional lookup</li>
-    <li>LLP — chair, empty until named</li>
+    <li>Who you are</li>
+    <li>A secret phrase</li>
+    <li>A key on this device</li>
+    <li>A wallet if you want one</li>
+    <li>A lawyer if you have one</li>
   </ul>
-  <p style="margin-top:1rem"><a class="btn" href="onboard.html">Open bind</a></p>
-  <p style="margin-top:.5rem"><a class="btn ghost" href="pay.html">Pay CAD</a></p>
+  <a class="btn" href="onboard.html">Set up my place</a>
+  <a class="btn ghost" href="pay.html">See prices</a>
 </aside>
-<div class="cards" id="gate">
-  <div class="card"><b>Look</b><span>Free hall. No card.</span></div>
-  <div class="card"><b>Passphrase</b><span>SHA-256 on this device. Never a contract password.</span></div>
-  <div class="card"><b>Passkey</b><span>WebAuthn on this host. Account-abstraction sleeve is later.</span></div>
-  <div class="card"><b>Ethereum / equal-crypto</b><span>Optional 0x lookup. Checkout is not open.</span></div>
-  <div class="card"><b>LLP / registry</b><span>Chair only. NEED FIRM until a firm sits.</span></div>
-  <p style="text-align:center;margin:.4rem 0 0"><a class="btn" href="onboard.html">Seal on Onboard</a></p>
+<div class="stack" id="gate">
+  <div class="card"><b>Who you are</b><span>Person, shop, school, or firm.</span></div>
+  <div class="card"><b>Secret phrase</b><span>A fingerprint stays on this device.</span></div>
+  <div class="card"><b>Device key</b><span>Your phone holds the lock.</span></div>
+  <div class="card"><b>Wallet</b><span>Optional. Not how you pay.</span></div>
+  <div class="card"><b>Lawyer</b><span>Blank is honest if you have none yet.</span></div>
+  <p style="text-align:center;margin:.3rem 0 0"><a class="btn" href="onboard.html" style="background:#8eb4c8;color:#061018;padding:.5rem 1rem;border-radius:999px;text-decoration:none;font-weight:600">Open the real form</a></p>
 </div>
-<div class="beacons" id="beacons">
-  <div class="beacon"><em>CASE CHAIR</em><b>Hospitality</b><span>Local shop nodes. Zero Dualis rake claimed. Not a live POS contract.</span></div>
-  <div class="beacon"><em>CASE CHAIR</em><b>Public education</b><span>Board / bus chairs indexed. Not a ministry API.</span></div>
-  <div class="beacon"><em>CASE CHAIR</em><b>Regional care</b><span>Sim IP only. No PHI. No diagnosis. No savings curve sold as settled.</span></div>
+<div class="stack" id="ground">
+  <div class="card"><b>Shops</b><span>They keep their till. Not a live deal on this page.</span></div>
+  <div class="card"><b>Schools</b><span>A work email can back a name. No student files.</span></div>
+  <div class="card"><b>Clinics</b><span>Study tools. No diagnosis.</span></div>
+  <p style="text-align:center"><a href="world.html" style="color:#8eb4c8">Go from country to town</a></p>
 </div>
-<nav class="dock" id="dock" aria-label="Stages"></nav>
-<footer class="law">NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING · We do not claim cures, we claim paths to truth. We provide the plan. Not the law. · 0.00% token float</footer>
+<nav class="dock" id="dock"></nav>
+<p class="law">We do not force you. We do not cook your phone. We do not keep what we do not need. We do not claim cures.</p>
 <script>
 (function(){
   var STAGES=[
-    {id:1,kicker:"Stage 01",title:"Deep pipe",lede:"Concentric depth. Volume language is display, not a live symplectic proof."},
-    {id:2,kicker:"Stage 02",title:"Acceleration",lede:"Iris ring at center. Cognitive core is copy until Fuel is paid."},
-    {id:3,kicker:"Stage 03",title:"Sleeve gate",lede:"Five chairs. Bind happens on Onboard — this stage does not invent KYC."},
-    {id:4,kicker:"Stage 04",title:"Breakthrough",lede:"Surface egress as motion. Terrain is illustration."},
-    {id:5,kicker:"Stage 05",title:"Ground chairs",lede:"Indexed kinds of node. Not live hospital, board, or POS contracts."}
+    {t:"The deep pipe",k:"Step 1 of 5",d:"A picture of depth. Looking is free."},
+    {t:"Picking up speed",k:"Step 2 of 5",d:"The rings tighten. Still just a picture."},
+    {t:"The sign-in gate",k:"Step 3 of 5",d:"Five steps. The real form is one tap away."},
+    {t:"Into daylight",k:"Step 4 of 5",d:"The picture opens toward ordinary ground."},
+    {t:"Real town work",k:"Step 5 of 5",d:"Shops, schools, clinics — kinds of work, not signed deals."}
   ];
-  var i=0, mode3d=true, parts=[], t0=performance.now();
-  var cv=document.getElementById("stageCanvas");
-  var ctx=cv.getContext("2d",{alpha:false});
-  var kicker=document.getElementById("kicker");
-  var title=document.getElementById("title");
-  var lede=document.getElementById("lede");
-  var gate=document.getElementById("gate");
-  var beacons=document.getElementById("beacons");
-  var msEl=document.getElementById("ms");
+  var i=0, deep=true, tunnel=document.getElementById("tunnel");
+  for(var n=1;n<=16;n++){
+    var r=document.createElement("div");
+    r.className="ring";
+    var s=40+n*28;
+    r.style.width=s+"px";r.style.height=s+"px";
+    r.dataset.n=n;
+    tunnel.appendChild(r);
+  }
   var dock=document.getElementById("dock");
   STAGES.forEach(function(s,n){
     var b=document.createElement("button");
-    b.type="button";
-    b.textContent="0"+s.id+" "+s.title.split(" ")[0];
-    b.onclick=function(){go(n)};
-    dock.appendChild(b);
+    b.type="button";b.textContent=(n+1)+" "+s.t.split(" ")[0];
+    b.onclick=function(){go(n)};dock.appendChild(b);
   });
-  function resize(){
-    var d=Math.min(devicePixelRatio||1,2);
-    cv.width=innerWidth*d; cv.height=innerHeight*d;
-    cv.style.width=innerWidth+"px"; cv.style.height=innerHeight+"px";
-    ctx.setTransform(d,0,0,d,0,0);
-  }
-  function seed(){
-    parts=[];
-    var n=Math.min(80, 48+Math.floor(innerWidth/80));
-    for(var k=0;k<n;k++) parts.push({a:Math.random()*Math.PI*2,r:40+Math.random()*220,s:0.002+Math.random()*0.01});
-  }
   function go(n){
-    i=(n+STAGES.length)%STAGES.length;
-    var s=STAGES[i];
-    kicker.textContent=s.kicker;
-    title.textContent=s.title;
-    lede.textContent=s.lede;
-    gate.classList.toggle("on", i===2);
-    beacons.classList.toggle("on", i===4);
+    i=(n+5)%5;
+    document.getElementById("title").textContent=STAGES[i].t;
+    document.getElementById("kicker").textContent=STAGES[i].k;
+    document.getElementById("lede").textContent=STAGES[i].d;
+    document.getElementById("gate").classList.toggle("on",i===2);
+    document.getElementById("ground").classList.toggle("on",i===4);
     Array.prototype.forEach.call(dock.children,function(b,ix){b.classList.toggle("on",ix===i)});
     if(navigator.vibrate) try{navigator.vibrate(8)}catch(e){}
   }
   document.getElementById("disp").onclick=function(){
-    mode3d=!mode3d;
-    document.body.classList.toggle("mode-2d",!mode3d);
-    this.textContent=mode3d?"DISP: 3D":"DISP: 2D";
+    deep=!deep;document.body.classList.toggle("mode-2d",!deep);
+    this.textContent=deep?"Show depth":"Flat view";
   };
   var y0=null;
-  addEventListener("wheel",function(e){ if(Math.abs(e.deltaY)>20) go(i+(e.deltaY>0?1:-1)); },{passive:true});
-  addEventListener("touchstart",function(e){ y0=e.touches[0].clientY; },{passive:true});
+  addEventListener("wheel",function(e){if(Math.abs(e.deltaY)>24) go(i+(e.deltaY>0?1:-1))},{passive:true});
+  addEventListener("touchstart",function(e){y0=e.touches[0].clientY},{passive:true});
   addEventListener("touchend",function(e){
-    if(y0==null) return;
-    var dy=(e.changedTouches[0].clientY-y0);
-    if(Math.abs(dy)>48) go(i+(dy<0?1:-1));
-    y0=null;
+    if(y0==null)return;
+    var dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dy)>48) go(i+(dy<0?1:-1));y0=null;
   },{passive:true});
   addEventListener("keydown",function(e){
     if(e.key==="ArrowDown"||e.key===" ") go(i+1);
     if(e.key==="ArrowUp") go(i-1);
   });
+  var t0=performance.now();
   function frame(now){
-    var dt=now-t0; t0=now;
-    msEl.textContent=Math.min(4.2, dt).toFixed(3)+"ms";
-    if(mode3d){
-      var w=innerWidth,h=innerHeight,cx=w/2,cy=h*0.42;
-      ctx.fillStyle="#04060c"; ctx.fillRect(0,0,w,h);
-      var depth=1+i*0.35;
-      for(var k=1;k<=18;k++){
-        var rad=(28+k*18)*(1+0.04*Math.sin(now*0.001+k+i));
-        ctx.beginPath();
-        ctx.arc(cx,cy,rad*depth*0.55,0,Math.PI*2);
-        ctx.strokeStyle="rgba(200,220,230,"+(0.04+0.02*(k%3))+")";
-        ctx.lineWidth=1;
-        ctx.stroke();
+    var t=(now-t0)/1000;
+    if(deep && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+      var rings=tunnel.querySelectorAll(".ring");
+      for(var k=0;k<rings.length;k++){
+        var n=k+1;
+        var z=-n*28 + (i*90) + Math.sin(t*0.6+n)*6;
+        var sc=1+(i*0.04);
+        rings[k].style.transform="translate(-50%,-50%) translateZ("+z+"px) scale("+sc+")";
+        rings[k].style.opacity=String(0.18+0.04*(n%3));
       }
-      ctx.beginPath();
-      ctx.arc(cx,cy,10+2*Math.sin(now*0.003),0,Math.PI*2);
-      ctx.fillStyle="#8eb4c8";
-      ctx.fill();
-      parts.forEach(function(p){
-        p.a+=p.s*(1+i*0.15);
-        var x=cx+Math.cos(p.a)*p.r*(0.7+i*0.08);
-        var y=cy+Math.sin(p.a)*p.r*0.42;
-        ctx.fillStyle="rgba(142,180,200,.45)";
-        ctx.fillRect(x,y,1.5,1.5);
-      });
     }
     requestAnimationFrame(frame);
   }
-  addEventListener("resize",function(){resize();seed()});
-  resize(); seed(); go(0); requestAnimationFrame(frame);
+  go(0);requestAnimationFrame(frame);
 })();
 </script>
 </body>
