@@ -1,153 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Model — DualisCapax</title>
-<meta name="description" content="Free information: Open, Prove, Depth, Seal. Dual capacity. Fusion Meter. Adaptive AI.">
-<style>
-  :root{--bg:#000;--fg:#fff;--muted:#8a8a8a;--border:#1c1c1c;--accent:#1e90ff;--gold:#d4a017;--surface:#0a0a0a}
-  @media(prefers-color-scheme:light){:root{--bg:#fafafa;--fg:#0a0a0a;--muted:#555;--border:#e5e5e5;--accent:#1565c0;--gold:#b8860b;--surface:#f0f0f0}}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;line-height:1.55;min-height:100vh}
-  nav{border-bottom:1px solid var(--border);padding:.9rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
-  .brand{font-weight:700;letter-spacing:.1em;text-decoration:none;color:var(--fg);font-size:.9rem}
-  .links{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none;font-size:.78rem}
-  .links a{color:var(--muted);text-decoration:none}
-  .links a:hover{color:var(--fg)}
-  main{max-width:40rem;margin:0 auto;padding:2.25rem 1.25rem 4rem}
-  h1{font-size:1.35rem;letter-spacing:.06em;margin-bottom:.4rem}
-  .lead{color:var(--muted);font-size:.95rem;margin-bottom:1.25rem}
-  #tour-root{margin-bottom:1.75rem}
-  .tour-stage{
-    border:1px solid var(--border);border-radius:8px;overflow:hidden;background:#050505;
-    opacity:0;transform:translateY(6px);transition:opacity .7s ease,transform .7s ease;
-    position:relative;
-  }
-  .tour-stage.is-in{opacity:1;transform:none}
-  .tour-logo{
-    position:absolute;top:.65rem;left:.75rem;z-index:2;
-    height:22px;width:auto;opacity:.92;pointer-events:none;
-  }
-  .tour-stage video, .tour-stage canvas.dc-video-engine{
-    display:block;width:100%;aspect-ratio:16/9;background:#0a0a0a;object-fit:cover;
-  }
-  .tour-meta{padding:.85rem 1rem 1rem;border-top:1px solid var(--border)}
-  .tour-step{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem}
-  .tour-title{font-size:1.05rem;letter-spacing:.04em;margin-bottom:.35rem;color:var(--fg)}
-  .tour-line{font-size:.85rem;color:var(--muted);margin-bottom:.85rem}
-  .tour-nav{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
-  .tour-nav button{
-    background:transparent;border:1px solid var(--border);color:var(--fg);
-    padding:.45rem .9rem;font-size:.75rem;letter-spacing:.06em;border-radius:3px;cursor:pointer;
-  }
-  .tour-nav button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-  .tour-nav button.active{border-color:var(--gold);color:var(--gold)}
-  .voice-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:.25rem}
-  .ops{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.75rem}
-  @media(max-width:520px){.ops{grid-template-columns:1fr}}
-  .op{border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;background:var(--surface)}
-  .op strong{display:block;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
-  .op p{font-size:.85rem;color:var(--muted)}
-  h2{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1.75rem 0 .75rem;border-bottom:1px solid var(--border);padding-bottom:.4rem}
-  p{font-size:.9rem;color:var(--muted);margin-bottom:.65rem}
-  p strong{color:var(--fg)}
-  details{border:1px solid var(--border);border-radius:6px;margin-bottom:.55rem;background:var(--surface)}
-  summary{padding:.85rem 1rem;cursor:pointer;font-size:.9rem;color:var(--fg);list-style:none}
-  summary::-webkit-details-marker{display:none}
-  summary::before{content:"+";display:inline-block;width:1rem;color:var(--gold);font-weight:700}
-  details[open] summary::before{content:"–"}
-  .deep{padding:0 1rem 1rem;font-size:.85rem;color:var(--muted)}
-  .note{font-size:.74rem;border-left:2px solid var(--border);padding-left:.75rem;margin-top:1.5rem;color:var(--muted)}
-  footer{border-top:1px solid var(--border);padding:1.25rem;text-align:center;font-size:.7rem;color:var(--muted)}
-  a.inline{color:var(--accent)}
-  @media(prefers-reduced-motion:reduce){
-    .tour-stage{transition:none;opacity:1;transform:none}
-  }
-</style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Model now</title>
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <nav>
-    <a class="brand" href="index.html">DUALISCAPAX</a>
-    <ul class="links">
-      <li><a href="research/">Research</a></li>
-      <li><a href="ai/">AI</a></li>
-      <li><a href="model.html">Model</a></li>
-      <li><a href="engine.html">Engine</a></li>
-      <li><a href="manifesto.html">Manifesto</a></li>
-    </ul>
-  </nav>
-  <main>
-    <h1>Model</h1>
-    <p class="lead">Storyboard video engine. <strong style="color:var(--fg)">Next</strong> advances each beat. Plays mp4 when present; otherwise residual field. Narrator optional.</p>
+<header>
+  <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
+  <a href="pay.html">Pay</a>
+</header>
+<main>
+  <h1>Start modeling now.</h1>
+  <p class="lead">Look is $0. You can open Compute and Study today. A 90-day look is not a chain contract. Money in is Stripe CAD. Spine forbids a live 135 yield pot and a minted token.</p>
 
-    <div id="tour-root">
-      <div class="tour-stage is-in">
-        <img class="tour-logo logo-on-dark" src="logo-dark.svg" alt="DualisCapax">
-        <video playsinline muted loop preload="metadata" aria-label="Section commercial"></video>
-        <div class="tour-meta">
-          <div class="tour-step">1 / 8</div>
-          <div class="tour-title">Open</div>
-          <p class="tour-line">Research free. Full clinical surface.</p>
-          <div class="tour-nav">
-            <button type="button" data-tour-prev>Back</button>
-            <button type="button" class="primary" data-tour-next>Next</button>
-            <span class="voice-label">Narrator</span>
-            <button type="button" data-voice="female">Female</button>
-            <button type="button" data-voice="male">Male</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ops">
-      <div class="op"><strong>Open</strong><p>Research and learning free. Full clinical surface on journals.</p></div>
-      <div class="op"><strong>Prove</strong><p>Money and identity at the boundary before Adaptive depth.</p></div>
-      <div class="op"><strong>Depth</strong><p>Adaptive AI and sandbox sim. Paid with Fusion Meter.</p></div>
-      <div class="op"><strong>Seal</strong><p>IP and production math stay on the black ledger.</p></div>
-    </div>
-
-    <p class="note">Informational only. Ontario and Canadian law apply. <a class="inline" href="engine.html">XR residual engine</a> · <a class="inline" href="manifesto.html">Manifesto</a></p>
-  </main>
-  <footer>DualisCapax · Video Engine v1 · storyboard</footer>
-  <script src="js/tour-voice.js"></script>
-  <script src="js/video-engine.js"></script>
-  <script src="js/model-tour-boot.js"></script>
-  <script>
-    (function () {
-      var root = document.getElementById('tour-root');
-      if (!root || !window.DCTourVoice) return;
-      var voiceBtns = root.querySelectorAll('[data-voice]');
-      function sync() {
-        var g = window.DCTourVoice.getGender();
-        voiceBtns.forEach(function (b) {
-          b.classList.toggle('active', b.getAttribute('data-voice') === g);
-        });
-      }
-      voiceBtns.forEach(function (b) {
-        b.addEventListener('click', function () {
-          window.DCTourVoice.setGender(b.getAttribute('data-voice'));
-          sync();
-          if (window.DCVideoEngine) {
-            var s = window.DCVideoEngine.steps()[window.DCVideoEngine.i];
-            if (s) window.DCTourVoice.speak(s.line, { gender: window.DCTourVoice.getGender() });
-          }
-        });
-      });
-      sync();
-      var prevOnStep = null;
-      document.addEventListener('DOMContentLoaded', function () {
-        setTimeout(function () {
-          if (!window.DCVideoEngine) return;
-          var eng = window.DCVideoEngine;
-          var orig = eng.onStep;
-          eng.onStep = function (s, i) {
-            if (orig) orig(s, i);
-            if (window.DCTourVoice) window.DCTourVoice.speak(s.line, { gender: window.DCTourVoice.getGender() });
-          };
-        }, 50);
-      });
-    })();
-  </script>
+  <div class="card">
+    <h2>Now — $0 look (90 days of reading)</h2>
+    <p>Hub, Iris look, Study, Law, encyclopedia pages. No student file. No diagnosis. No on-chain seat.</p>
+    <p><a class="btn" href="ai/iris.html">Iris</a> <a class="btn ghost" href="compute.html">Compute</a> <a class="btn ghost" href="study.html">Study</a></p>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>Now — paid (live Stripe)</h2>
+    <p>Grind: $20 / 40 passes · $50 / 120 · $120 / 320</p>
+    <p>Rooms 12 mo: $49 · $149 · $499</p>
+    <p><a class="btn" href="pay.html">Pay</a></p>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <h2>Not live — do not sell</h2>
+    <p>Smart-contract address — none published.</p>
+    <p>FET_RETURN 135 yield pot — dead on the spine.</p>
+    <p>10-year agreement — not a Stripe SKU. Paper after U1 / counsel. Not this page.</p>
+    <p>$350 pack — no button.</p>
+  </div>
+</main>
 </body>
 </html>
