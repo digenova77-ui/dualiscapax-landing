@@ -9,44 +9,61 @@
 <body>
 <header>
   <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
-  <a class="chip" href="security.html">Security</a>
+  <a class="chip" href="dash.html">Purpose</a>
 </header>
 <main>
   <h1 id="askline">What are you trying to find out?</h1>
-  <p class="lead">Looking is free. Deeper Iris grind is engine time. Cards never go on this plate.</p>
+  <p class="lead">Same door for every person on earth. Tell us the use. We do not guess it from a board name or a card.</p>
   <p>
     <input id="q" style="width:100%;max-width:36rem;padding:.6rem .8rem;border-radius:999px;border:1px solid rgba(200,220,230,.2);background:#0a0e14;color:#e8eef2;font:inherit" placeholder="Ask in plain words">
   </p>
-  <p><button class="btn" type="button" id="go">Ask (look is free)</button> <a class="btn ghost" href="pay.html">Buy deeper time</a></p>
-  <p class="lead" id="next">Next: How deep does this question need to go?</p>
-  <div class="row" style="margin-top:1.2rem">
-    <a class="btn ghost" href="pricing.html">Pricing</a>
-    <a class="btn ghost" href="security.html">Security</a>
-    <a class="btn ghost" href="works.html">What works</a>
-    <a class="btn ghost" href="life.html">Life</a>
-    <a class="btn ghost" href="dash.html">Bonds</a>
-    <a class="btn ghost" href="compute.html">Engine</a>
-    <a class="btn ghost" href="study.html">Study</a>
-  </div>
+  <p class="lead">This question is for:</p>
+  <p class="row" id="uses"></p>
+  <p><button class="btn" type="button" id="go">Ask</button> <a class="btn ghost" href="pay.html">Grind costs engine time</a></p>
+  <p class="lead" id="next"></p>
 </main>
 <script>
 (function(){
+  var USES=[
+    {id:"look", label:"Just looking", href:"hub.html"},
+    {id:"cost", label:"Residual cost", href:"pricing.html"},
+    {id:"money", label:"Company money", href:"pay.html"},
+    {id:"eng", label:"Engineering", href:"compute.html"},
+    {id:"med", label:"Medical research", href:"study.html"},
+    {id:"play", label:"Play / sport", href:"life.html"}
+  ];
+  var box=document.getElementById("uses");
+  var picked=null;
+  try{ picked=localStorage.getItem("dc.purpose"); }catch(e){}
+  USES.forEach(function(u){
+    var b=document.createElement("button");
+    b.type="button"; b.className="btn ghost"; b.textContent=u.label;
+    if(picked===u.id) b.style.borderColor="#8eb4c8";
+    b.onclick=function(){
+      picked=u.id;
+      try{ localStorage.setItem("dc.purpose", u.id); }catch(e){}
+      location.href=u.href;
+    };
+    box.appendChild(b);
+  });
   var NEXT=[
     "What are you trying to find out?",
-    "How deep does this question need to go?",
-    "Is this a look, or do you need Iris to grind?",
-    "Who is allowed to ask you for more than your name?"
+    "Is this cost, engineering, medical research, money, or play?",
+    "How deep does this need to go?"
   ];
   var i=Math.floor(Date.now()/60000)%NEXT.length;
   document.getElementById("askline").textContent=NEXT[i];
   document.getElementById("next").textContent="Next: "+NEXT[(i+1)%NEXT.length];
-  function send(){
+  document.getElementById("go").onclick=function(){
     var t=(document.getElementById("q").value||"").trim();
-    try{ sessionStorage.setItem("dc.ask", t||NEXT[i]); }catch(e){}
-    location.href="ai/app.html";
-  }
-  document.getElementById("go").onclick=send;
-  document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") send(); });
+    try{ sessionStorage.setItem("dc.ask", t); }catch(e){}
+    var dest="ai/app.html";
+    if(picked==="cost") dest="pricing.html";
+    if(picked==="money") dest="pay.html";
+    if(picked==="eng") dest="compute.html";
+    if(picked==="med") dest="study.html";
+    location.href=dest;
+  };
 })();
 </script>
 </body>
