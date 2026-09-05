@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Municipality — DualisCapax</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="brand">DUALISCAPAX <span class="orb"></span></div>
+  <nav>
+    <a href="on.html">Ontario</a>
+    <a href="municipality.html">Municipality</a>
+    <a href="organs.html">Organs</a>
+    <a href="onboard.html">Onboard</a>
+  </nav>
+</header>
+<main>
+  <p class="chips"><span class="chip">Local</span><span class="chip warn">From your packet</span></p>
+  <h1 id="place">Municipality</h1>
+  <p class="lead" id="lede">This hall is the city on your Unity ID. If none is sealed, declare it. Dualis does not pick Belleville or anywhere else for you.</p>
+  <div class="grid two">
+    <div class="card"><h2>Organs here</h2><p>Hospitality, education, care, mobility, decks — chairs, not live contracts.</p><a class="btn" href="organs.html">Organs</a></div>
+    <div class="card"><h2>Bind</h2><p>Seal municipality on the device.</p><a class="btn ghost" href="onboard.html">Onboard</a></div>
+  </div>
+</main>
+<script>
+try {
+  var raw = localStorage.getItem("dc.unity.id");
+  if (raw) {
+    var p = JSON.parse(raw);
+    var m = (p.muni || p.municipality || "").trim();
+    if (m) {
+      document.getElementById("place").textContent = m;
+      document.getElementById("lede").textContent = "Packet municipality. Not assigned by Dualis.";
+    }
+  }
+} catch (e) {}
+</script>
+</body>
+</html>
