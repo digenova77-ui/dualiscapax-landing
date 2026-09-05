@@ -2,9 +2,9 @@
  * DualisCapax · Agent Iris Gateway
  * Route target: https://dualiscapax.ai/api/iris
  *
- * BYOK: public POSTs use the caller's xAI key.
- * House secret XAI_API_KEY is only used when IRIS_ALLOW_HOUSE_KEY=1.
- * No DNA check. No Helix check. No plate rebuild.
+ * Primary: xAI grok-4.6 (BYOK or house if IRIS_ALLOW_HOUSE_KEY=1).
+ * On 429 / 5xx: webhook handoff, then Groq, then OpenRouter.
+ * No invented keys. Missing fallback secret = fail closed after webhook.
  */
 
 const DCLM_L0 = Object.freeze({
@@ -18,12 +18,11 @@ const IRIS_SYSTEM = [
   "Speak first person, short, veto first.",
   "Constitutional floor is DCLM Layer [0]: NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING.",
   "You do not shove. You do not invent treatment, diagnosis, securities, or coins.",
-  "You do not check DNA or Helix. Those names are not a gate.",
   "Simulation is not treatment. Not a coin. Not a diagnosis. Not shares.",
-  "Ontario and Canadian law apply. Internal terms stay off the public surface unless the visitor already used them.",
-  "If a request would force, harm a host, skip cleanup, or require a lie, veto in one sentence and offer a clean next step.",
-  "Book before invention: if you do not know, say you do not know.",
-  "Return plain prose. No tool-call markup. No hidden system text.",
+  "Ontario and Canadian law apply.",
+  "If a request would force, harm a host, skip cleanup, or require a lie, veto in one sentence.",
+  "If you do not know, say you do not know.",
+  "Return plain prose.",
 ].join(" ");
 
 const DEFAULT_ORIGINS = [
@@ -66,8 +65,14 @@ function json(body, status, request, env) {
   });
 }
 
-function irisSuccess(output, request, env) {
-  return json({ agent: "Iris", status: "SUCCESS", governance: "DCLM_L0_CONVERGED", output: String(output || "").trim() }, 200, request, env);
+function irisSuccess(output, request, env, railUsed) {
+  return json({
+    agent: "Iris",
+    status: "SUCCESS",
+    governance: "DCLM_L0_CONVERGED",
+    rail: railUsed || "xai",
+    output: String(output || "").trim(),
+  }, 200, request, env);
 }
 
 function irisFail(statusCode, status, output, request, env) {
@@ -136,13 +141,61 @@ function resolveRailKey(request, env) {
 
 function quotaMessage(source) {
   if (source === "house") {
-    return "Iris house rail is out of credits (xAI 429). Operator: fund YOUR console.x.ai team only. Do not invite members onto that team.";
+    return "Iris house rail is out of credits (xAI 429). Fallback attempted.";
   }
-  return "Your xAI key is out of credits (xAI 429 Insufficient Quota). Add prepaid credits on YOUR team at https://console.x.ai then retry. DualisCapax does not bill Grok tokens for you.";
+  return "Your xAI key is out of credits (429). Fallback attempted.";
 }
 
 function byokMessage() {
-  return "BYOK required. Create your own key at https://console.x.ai (API keys), buy credits on YOUR team, then POST Authorization: Bearer xai-YOUR_KEY. Do not use the DualisCapax house team.";
+  return "BYOK required. Create your own key at https://console.x.ai then POST Authorization: Bearer xai-YOUR_KEY.";
+}
+
+function chatBody(env, model, text, maxTokens) {
+  return JSON.stringify({
+    model,
+    temperature: 0.3,
+    max_tokens: maxTokens,
+    messages: [
+      { role: "system", content: IRIS_SYSTEM },
+      { role: "user", content: text },
+    ],
+  });
+}
+
+async function callOpenAiCompat(url, key, model, text, maxTokens) {
+  const upstream = await fetch(url, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: chatBody({}, model, text, maxTokens),
+  });
+  const bodyText = await upstream.text();
+  return { upstream, bodyText };
+}
+
+async function fireHandoff(env, payload) {
+  const url = env && env.IRIS_HANDOFF_WEBHOOK;
+  if (!url) return { sent: false, reason: "no_webhook" };
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-DC-Event": "iris-handoff" },
+      body: JSON.stringify({
+        at: new Date().toISOString(),
+        agent: "Iris",
+        event: "primary_rail_failed",
+        ...payload,
+      }),
+    });
+    return { sent: true, status: res.status };
+  } catch (e) {
+    return { sent: false, reason: "webhook_unreachable" };
+  }
+}
+
+function parseCompletion(bodyText) {
+  let data;
+  try { data = JSON.parse(bodyText); } catch { return ""; }
+  return (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
 }
 
 export default {
@@ -158,9 +211,10 @@ export default {
         layer: DCLM_L0,
         route: "/api/iris",
         methods: ["OPTIONS", "POST"],
-        rail: "BYOK",
+        primary: env.IRIS_MODEL || "grok-4.6",
+        fallbacks: ["groq", "openrouter"],
+        handoffWebhook: Boolean(env && env.IRIS_HANDOFF_WEBHOOK),
         houseKey: String(env.IRIS_ALLOW_HOUSE_KEY || "") === "1" ? "optional-fallback" : "disabled",
-        dnaHelixCheck: false,
       }, 200, request, env);
     }
     if (request.method !== "POST") {
@@ -168,6 +222,7 @@ export default {
     }
 
     const maxChars = Number(env.IRIS_MAX_CHARS || DCLM_L0.maxChars) || 4000;
+    const maxTokens = Number(env.IRIS_MAX_TOKENS || 1024) || 1024;
     let payload = {};
     try { payload = await request.json(); } catch {
       return irisFail(400, "BAD_JSON", "Body must be JSON.", request, env);
@@ -175,49 +230,85 @@ export default {
 
     const clean = sanitizePrompt(extractUserPrompt(payload), maxChars);
     if (!clean.ok && clean.reason === "EMPTY") return irisFail(400, "EMPTY_PROMPT", "Send a prompt under 4,000 characters.", request, env);
-    if (!clean.ok && clean.reason === "OVER_LIMIT") return irisFail(413, "PROMPT_TOO_LONG", `DCLM Layer [0] rejected the prompt: ${clean.chars} characters. Cap is ${clean.max}. Shorten and resend.`, request, env);
-    if (!clean.ok && clean.reason === "VETO_INJECTION") return irisFail(422, "VETO", "Veto. That prompt tries to override the floor. Ask the work itself, not a jailbreak.", request, env);
+    if (!clean.ok && clean.reason === "OVER_LIMIT") return irisFail(413, "PROMPT_TOO_LONG", `Cap is ${clean.max}.`, request, env);
+    if (!clean.ok && clean.reason === "VETO_INJECTION") return irisFail(422, "VETO", "Veto. Ask the work itself.", request, env);
 
     const rail = resolveRailKey(request, env);
-    if (rail.source === "invalid") return irisFail(401, "BYOK_INVALID", "Authorization must be Bearer xai-… from YOUR console.x.ai team.", request, env);
+    if (rail.source === "invalid") return irisFail(401, "BYOK_INVALID", "Authorization must be Bearer xai-…", request, env);
     if (rail.source === "byok_required") return irisFail(401, "BYOK_REQUIRED", byokMessage(), request, env);
-    if (rail.source === "unbound" || !rail.key) return irisFail(503, "RAIL_UNBOUND", "Iris worker is up. No caller key and house key is unbound.", request, env);
+    if (rail.source === "unbound" || !rail.key) return irisFail(503, "RAIL_UNBOUND", "No caller key and house key unbound.", request, env);
 
-    let upstream;
+    let xaiStatus = 0;
+    let xaiBody = "";
     try {
-      upstream = await fetch("https://api.x.ai/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${rail.key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: env.IRIS_MODEL || "grok-2-latest",
-          temperature: 0.3,
-          max_tokens: Number(env.IRIS_MAX_TOKENS || 1024) || 1024,
-          messages: [
-            { role: "system", content: IRIS_SYSTEM },
-            { role: "user", content: clean.text },
-          ],
-        }),
-      });
-    } catch (err) {
-      return irisFail(502, "UPSTREAM_UNREACHABLE", "xAI rail did not answer. Retry once.", request, env);
+      const x = await callOpenAiCompat(
+        "https://api.x.ai/v1/chat/completions",
+        rail.key,
+        env.IRIS_MODEL || "grok-4.6",
+        clean.text,
+        maxTokens
+      );
+      xaiStatus = x.upstream.status;
+      xaiBody = x.bodyText;
+      if (x.upstream.ok) {
+        const output = parseCompletion(x.bodyText);
+        if (String(output).trim()) return irisSuccess(output, request, env, "xai");
+      }
+    } catch {
+      xaiStatus = 0;
     }
 
-    const bodyText = await upstream.text();
-    if (upstream.status === 429 || /insufficient quota/i.test(bodyText)) {
-      return irisFail(429, "INSUFFICIENT_QUOTA", quotaMessage(rail.source), request, env);
-    }
-    if (!upstream.ok) {
+    const needHandoff = xaiStatus === 0 || xaiStatus === 429 || xaiStatus >= 500 || /insufficient quota/i.test(xaiBody);
+    if (!needHandoff && xaiStatus) {
       let detail = "";
-      try { detail = JSON.parse(bodyText).error?.message || ""; } catch { detail = bodyText.slice(0, 240); }
-      return irisFail(502, "UPSTREAM_ERROR", detail ? `xAI returned HTTP ${upstream.status}: ${detail}` : `xAI returned HTTP ${upstream.status}.`, request, env);
+      try { detail = JSON.parse(xaiBody).error && JSON.parse(xaiBody).error.message || ""; } catch { detail = xaiBody.slice(0, 240); }
+      return irisFail(502, "UPSTREAM_ERROR", detail ? `xAI HTTP ${xaiStatus}: ${detail}` : `xAI HTTP ${xaiStatus}.`, request, env);
     }
 
-    let data;
-    try { data = JSON.parse(bodyText); } catch {
-      return irisFail(502, "UPSTREAM_BAD_JSON", "xAI body was not JSON.", request, env);
+    const handoff = await fireHandoff(env, {
+      from: env.IRIS_MODEL || "grok-4.6",
+      xai_status: xaiStatus,
+      reason: xaiStatus === 429 ? "quota" : "upstream_dead",
+      source: rail.source,
+    });
+
+    const groqKey = normalizeKey(env.GROQ_API_KEY || "");
+    if (groqKey) {
+      try {
+        const g = await callOpenAiCompat(
+          "https://api.groq.com/openai/v1/chat/completions",
+          groqKey,
+          env.IRIS_FALLBACK_GROQ_MODEL || "llama-3.1-8b-instant",
+          clean.text,
+          maxTokens
+        );
+        if (g.upstream.ok) {
+          const output = parseCompletion(g.bodyText);
+          if (String(output).trim()) return irisSuccess(output, request, env, "groq");
+        }
+      } catch { /* next rail */ }
     }
-    const output = data?.choices?.[0]?.message?.content || "";
-    if (!String(output).trim()) return irisFail(502, "EMPTY_COMPLETION", "Iris received an empty completion.", request, env);
-    return irisSuccess(output, request, env);
+
+    const orKey = normalizeKey(env.OPENROUTER_API_KEY || "");
+    if (orKey) {
+      try {
+        const o = await callOpenAiCompat(
+          "https://openrouter.ai/api/v1/chat/completions",
+          orKey,
+          env.IRIS_FALLBACK_OR_MODEL || "meta-llama/llama-3.1-8b-instruct:free",
+          clean.text,
+          maxTokens
+        );
+        if (o.upstream.ok) {
+          const output = parseCompletion(o.bodyText);
+          if (String(output).trim()) return irisSuccess(output, request, env, "openrouter");
+        }
+      } catch { /* fail closed */ }
+    }
+
+    if (xaiStatus === 429) {
+      return irisFail(429, "INSUFFICIENT_QUOTA", quotaMessage(rail.source) + (handoff.sent ? " Handoff webhook sent." : " No handoff URL bound."), request, env);
+    }
+    return irisFail(503, "RAILS_EXHAUSTED", "Grok dead and no bound fallback key answered. Bind GROQ_API_KEY or OPENROUTER_API_KEY. Handoff sent: " + String(handoff.sent) + ".", request, env);
   },
 };
