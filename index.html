@@ -34,12 +34,12 @@ a.btn,button.btn{display:inline-block;padding:.48rem .85rem;border-radius:999px;
 <canvas id="gl"></canvas>
 <header>
   <a class="brand" href="index.html">DUALISCAPAX</a>
-  <input id="q" placeholder="Search: get an ID, engine time, shops, schools">
+  <input id="q" placeholder="Search: get an ID, pay, engine">
 </header>
 <div class="wrap">
   <div class="dot" id="dot"></div>
   <h1>One front door</h1>
-  <p class="lead">Every kind of work. Looking around is free. A Unity ID is free. Engine time is what you buy if you want the computer to grind.</p>
+  <p class="lead">Looking around is free. A Unity ID is free. Engine time is what you buy if you want the computer to grind.</p>
   <div class="stack">
     <div class="card">
       <h2>Get an ID</h2>
@@ -47,20 +47,11 @@ a.btn,button.btn{display:inline-block;padding:.48rem .85rem;border-radius:999px;
       <div class="row"><a class="btn" href="member.html">Get Unity ID</a></div>
     </div>
     <div class="card">
-      <h2>Lost money</h2>
-      <p>Delivery apps take a cut. Empty bus runs burn diesel. Those are ordinary losses. The pages below are examples, not signed deals.</p>
-      <div class="row">
-        <a class="btn ghost" href="hospitality.html">Shops</a>
-        <a class="btn ghost" href="education.html">Schools</a>
-        <a class="btn ghost" href="care.html">Clinics</a>
-      </div>
-    </div>
-    <div class="card">
       <h2>Engine time</h2>
-      <p>Prepaid passes for the engine. If a pass cannot finish, it is not spent. You do not hold a coin.</p>
+      <p>Prepaid passes. If a pass cannot finish, it is not spent.</p>
       <div class="row">
         <button class="btn" type="button" id="openPay">Buy engine time</button>
-        <a class="btn ghost" href="tour.html">Tour</a>
+        <a class="btn ghost" href="ai/app.html">Iris</a>
       </div>
     </div>
   </div>
@@ -68,19 +59,17 @@ a.btn,button.btn{display:inline-block;padding:.48rem .85rem;border-radius:999px;
 <div class="modal" id="paybox">
   <div class="box">
     <h2 style="color:var(--iris);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase">Engine time</h2>
-    <p class="lead">Canadian dollars on Stripe. After we are paid, Dualis moves its own money.</p>
+    <p class="lead">Canadian dollars on Stripe.</p>
     <p><a class="btn" href="https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05">$20 · 40 passes</a></p>
     <p><a class="btn" href="https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02">$50 · 120 passes</a></p>
     <p><a class="btn" href="https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01">$120 · 320 passes</a></p>
-    <p class="lead">$350 pack has no live checkout yet.</p>
     <p><a class="btn ghost" href="pay.html">Full price page</a> <button class="btn ghost" type="button" id="closePay">Close</button></p>
   </div>
 </div>
 <nav class="dock">
   <a class="btn ghost" href="member.html">Get ID</a>
-  <a class="btn ghost" href="tour.html">Tour</a>
   <a class="btn ghost" href="pay.html">Pay</a>
-  <a class="btn ghost" href="world.html">Town</a>
+  <a class="btn ghost" href="ai/app.html">Iris</a>
 </nav>
 <script>
 (function(){
@@ -91,19 +80,13 @@ a.btn,button.btn{display:inline-block;padding:.48rem .85rem;border-radius:999px;
     s=(s||"").toLowerCase();
     if(/id|member|unity|join/.test(s)) location.href="member.html";
     else if(/pay|engine|fuel|stripe|pass/.test(s)) document.getElementById("paybox").classList.add("on");
-    else if(/shop|pizza|baker|restaurant|till/.test(s)) location.href="hospitality.html";
-    else if(/school|bus|educ/.test(s)) location.href="education.html";
-    else if(/clinic|hospital|care|health/.test(s)) location.href="care.html";
-    else if(/tour|pipe|walk/.test(s)) location.href="tour.html";
-    else if(/town|world|canada|ontario/.test(s)) location.href="world.html";
-    else if(/proof|math|deep/.test(s)) location.href="proof.html";
-    else if(/treasury|crypto|wallet/.test(s)) location.href="treasury.html";
-    else alert("Try: get an ID, engine time, shops, schools, clinics, tour.");
+    else if(/iris|ask/.test(s)) location.href="ai/app.html";
+    else if(/study|medical/.test(s)) location.href="study.html";
+    else alert("Try: get an ID, pay, Iris.");
   }
   q.addEventListener("keydown", function(e){ if(e.key==="Enter") send(q.value); });
   document.getElementById("openPay").onclick=function(){ document.getElementById("paybox").classList.add("on"); };
   document.getElementById("closePay").onclick=function(){ document.getElementById("paybox").classList.remove("on"); };
-
   var c=document.getElementById("gl");
   function size(){ var d=Math.min(2,devicePixelRatio||1); c.width=innerWidth*d; c.height=innerHeight*d; }
   addEventListener("resize",size); size();
