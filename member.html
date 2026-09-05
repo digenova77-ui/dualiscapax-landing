@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unity member — DualisCapax</title>
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html" style="text-decoration:none;color:inherit">DUALISCAPAX</a>
+  <nav>
+    <a href="member.html">Member</a>
+    <a href="unity.html">Unity ID</a>
+    <a href="onboard.html">Shop seat</a>
+  </nav>
+</header>
+<main>
+  <p class="chips"><span class="chip">No charge</span><span class="chip">Number one</span><span class="chip warn">Not a government ID</span></p>
+  <h1>Join as a Unity member</h1>
+  <p class="lead">This is an identity bind. Not a sale. Not a ninety-day shop seat. Not Fuel. You get Unity number one on this device and a file you can keep.</p>
+
+  <div class="card" style="margin-top:1rem">
+    <label>Legal name</label>
+    <input id="name" value="David John Di Genova" autocomplete="name">
+    <label>Town</label>
+    <input id="muni" value="Belleville" autocomplete="address-level2">
+    <label>Email</label>
+    <input id="email" type="email" autocomplete="email">
+    <label>Secret phrase (optional)</label>
+    <input id="phrase" type="password" autocomplete="new-password">
+    <button class="btn ghost" type="button" id="hashPhrase">Fingerprint the phrase</button>
+    <p id="phraseOut" class="lead"></p>
+    <button class="btn ghost" type="button" id="makeKey">Passkey on this device</button>
+    <p id="keyOut" class="lead"></p>
+    <label class="check"><input id="attest" type="checkbox"> I am David John Di Genova. I take Unity member number one. Founder zero is reserved and not verified. Dualis did not run a government check.</label>
+    <button class="btn" type="button" id="seal">Issue my Unity ID</button>
+    <pre id="log"></pre>
+  </div>
+
+  <div class="card" id="done" hidden style="margin-top:1rem">
+    <h2>Issued</h2>
+    <p id="human" style="font-size:2rem;margin:.2rem 0">U1</p>
+    <p id="pub" class="lead"></p>
+    <p id="iris" class="lead"></p>
+    <p class="lead">L5 stays unpublished. This public handle is the face. Old look packets still work.</p>
+  </div>
+</main>
+<script src="unity-id.js"></script>
+<script src="member.js"></script>
+</body>
+</html>
