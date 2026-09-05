@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Instrument — DualisCapax</title>
+<meta name="theme-color" content="#04060c">
+<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+<style>
+:root{color-scheme:dark;--bg:#04060c;--iris:#8eb4c8;--text:#e8eef2;--mute:#8b99a4;--line:rgba(200,220,230,.16);--glass:rgba(18,24,32,.58);--red:#c45c4a;--green:#6f9e7a;--serif:Georgia,serif;--sans:system-ui,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+#domPipe{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 38%,rgba(142,180,200,.1),transparent 46%),repeating-radial-gradient(circle at 50% 38%,transparent 0,transparent 28px,rgba(210,226,232,.06) 29px,transparent 32px)}
+header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:calc(.45rem + env(safe-area-inset-top,0px)) .8rem .45rem;background:var(--glass);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.brand{letter-spacing:.16em;font-size:.7rem}.hud{font-size:.62rem;color:var(--mute)}
+.hud b{color:var(--iris);font-weight:600}
+.stage{position:fixed;left:50%;top:3.1rem;transform:translateX(-50%);z-index:12;width:min(94vw,42rem);text-align:center;pointer-events:none}
+.stage h1{font-family:var(--serif);font-size:clamp(1.5rem,5.4vw,2.5rem);margin:.2rem 0;font-weight:600}
+.stage p{margin:0;color:var(--mute)}
+.panels{position:fixed;left:50%;bottom:4.6rem;transform:translateX(-50%);z-index:13;width:min(96vw,36rem);max-height:42dvh;overflow:auto;display:none;flex-direction:column;gap:.5rem;padding-bottom:.2rem}
+.panels.on{display:flex}.card{pointer-events:auto;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:14px;padding:.75rem .9rem}
+.card h2{margin:0 0 .3rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--iris)}
+.red{color:#e7b4ac}.green{color:#b7d4bc}
+input[type=range]{width:100%}
+.row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.45rem}
+a.btn,button.btn{pointer-events:auto;display:inline-block;padding:.48rem .8rem;border-radius:999px;background:var(--iris);color:#061018;text-decoration:none;border:0;font-weight:700;font-size:.82rem}
+.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.dock{position:fixed;left:50%;bottom:calc(.5rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:21;display:flex;gap:.25rem;padding:.28rem;border-radius:999px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--line);max-width:96vw;overflow:auto}
+.dock button{border:0;background:transparent;color:var(--mute);font:600 .66rem var(--sans);padding:.4rem .55rem;border-radius:999px;white-space:nowrap}
+.dock button.on{background:rgba(142,180,200,.22);color:var(--text)}
+.law{position:fixed;left:0;right:0;bottom:3.15rem;z-index:11;text-align:center;font-size:.6rem;color:var(--mute)}
+@media(max-width:900px){canvas,#domPipe{transform:translateY(-8%)}}
+@media(prefers-reduced-motion:reduce){canvas{display:none!important}}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="domPipe" hidden></div>
+<header>
+  <div class="brand">DUALISCAPAX</div>
+  <div class="hud">Look <b>free</b> · Fuel metered · <span id="tier">CSS</span></div>
+  <button class="btn ghost" type="button" id="disp">Flat</button>
+</header>
+<div class="stage">
+  <p id="kicker">Stage 01 · Look</p>
+  <h1 id="title">One plate</h1>
+  <p id="lede">Every chair. Looking is free. Compute waits for Fuel.</p>
+</div>
+<section class="panels" id="gate">
+  <div class="card"><h2>Who</h2><p>Person, shop, school, or firm. Same door.</p></div>
+  <div class="card"><h2>Phrase + passkey</h2><p>Fingerprint on this device. We do not keep the phrase.</p></div>
+  <div class="card"><h2>Wallet + lawyer</h2><p>Optional. Blank lawyer is honest.</p></div>
+  <div class="row"><a class="btn" href="onboard.html">Set up and start</a><a class="btn ghost" href="pay.html">Buy Fuel</a></div>
+</section>
+<section class="panels" id="ground">
+  <div class="card"><h2>Panel 1 · Plate</h2><p>Your kitchen. Your orders. We do not take the till.</p></div>
+  <div class="card"><h2>Panel 2 · Bleed (example)</h2><p class="red">A delivery app can keep a fifth of a shop’s tickets. That number is a case, not a signed audit of a named store.</p></div>
+  <div class="card"><h2>Panel 3 · Align</h2><p>Drag. This slider is a picture of less waste. It is not a live oven.</p><input id="slide" type="range" min="0" max="100" value="18"><p id="fix">Waste picture: 18</p></div>
+  <div class="card"><h2>Panel 4 · Keep</h2><p class="green">Turnkey track: $0 to start. If we save nothing, you owe nothing. Year one we ask 19% of verified savings. Year five we ask 0%. Fuel on this site is Stripe CAD today.</p>
+    <div class="row"><a class="btn" href="onboard.html">$0 for 90 days</a><a class="btn ghost" href="hospitality.html">Shop chair</a><a class="btn ghost" href="education.html">School chair</a></div>
+  </div>
+</section>
+<nav class="dock" id="dock"></nav>
+<p class="law">We do not force you. We do not cook your phone. We do not keep what we do not need. We do not claim cures. Seats on this instrument stay closed. Fuel is the live hop.</p>
+<script>
+(function(){
+  var STAGES=[
+    {t:"One plate",k:"Stage 01 · Look",d:"Every chair. A quiet pipe. No starfield. Looking is free."},
+    {t:"Pick up speed",k:"Stage 02 · Measure",d:"Rings tighten. Still free. Nothing is billed for a look."},
+    {t:"The gate",k:"Stage 03 · Sign in",d:"Five chairs. Seal and you get a workbench the same day."},
+    {t:"Daylight",k:"Stage 04 · Break",d:"The picture opens toward ordinary ground."},
+    {t:"Ground",k:"Stage 05 · Town",d:"Shops, schools, clinics. Chairs first. Deals when they sign."}
+  ];
+  var i=0, deep=true, reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var dock=document.getElementById("dock");
+  STAGES.forEach(function(s,n){
+    var b=document.createElement("button"); b.type="button"; b.textContent=(n+1)+" "+s.t.split(" ")[0];
+    b.onclick=function(){go(n)}; dock.appendChild(b);
+  });
+  function speak(t){
+    if(!window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(t); u.rate=0.95; u.pitch=0.9;
+    speechSynthesis.speak(u);
+  }
+  function go(n){
+    i=(n+5)%5;
+    document.getElementById("title").textContent=STAGES[i].t;
+    document.getElementById("kicker").textContent=STAGES[i].k;
+    document.getElementById("lede").textContent=STAGES[i].d;
+    document.getElementById("gate").classList.toggle("on", i===2);
+    document.getElementById("ground").classList.toggle("on", i===4);
+    Array.prototype.forEach.call(dock.children,function(b,ix){b.classList.toggle("on",ix===i)});
+    if(navigator.vibrate) try{navigator.vibrate(i===4?[12,40,12]:8)}catch(e){}
+    speak(STAGES[i].t+". "+STAGES[i].d);
+  }
+  document.getElementById("disp").onclick=function(){
+    deep=!deep; document.body.classList.toggle("flat",!deep);
+    this.textContent=deep?"Flat":"Depth";
+  };
+  document.getElementById("slide").oninput=function(){
+    document.getElementById("fix").textContent="Waste picture: "+this.value+". Not a live oven.";
+  };
+  var y0=null;
+  addEventListener("wheel",function(e){if(Math.abs(e.deltaY)>28) go(i+(e.deltaY>0?1:-1))},{passive:true});
+  addEventListener("touchstart",function(e){y0=e.touches[0].clientY},{passive:true});
+  addEventListener("touchend",function(e){if(y0==null)return; var dy=e.changedTouches[0].clientY-y0; if(Math.abs(dy)>48) go(i+(dy<0?1:-1)); y0=null;},{passive:true});
+  addEventListener("keydown",function(e){ if(e.key==="ArrowDown"||e.key===" ") go(i+1); if(e.key==="ArrowUp") go(i-1); });
+
+  var canvas=document.getElementById("gl"), tierEl=document.getElementById("tier"), dom=document.getElementById("domPipe");
+  var gl=null, mode="dom";
+  function size(){ var d=Math.min(2,devicePixelRatio||1); canvas.width=innerWidth*d; canvas.height=innerHeight*d; if(gl) gl.viewport(0,0,canvas.width,canvas.height); }
+  addEventListener("resize",size); size();
+
+  function tryGL2(){
+    gl=canvas.getContext("webgl2",{alpha:false,antialias:false,powerPreference:"low-power"});
+    if(!gl) return false;
+    var vs=gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vs,"#version 300 es\nvoid main(){float x=float((gl_VertexID<<1)&2);float y=float(gl_VertexID&2);gl_Position=vec4(x*2.0-1.0,y*2.0-1.0,0,1);}");
+    gl.compileShader(vs);
+    var fs=gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs,"#version 300 es\nprecision highp float;out vec4 o;uniform vec2 r;uniform float t;uniform float s;\nvoid main(){vec2 p=(gl_FragCoord.xy-0.5*r)/min(r.x,r.y);p.y+=0.08;float d=length(p);float rings=abs(sin((d*18.0-t*0.35-s)*3.14159));float iris=smoothstep(0.09,0.02,d);vec3 col=vec3(0.016,0.024,0.047);col+=vec3(0.55,0.70,0.78)*smoothstep(0.55,0.0,d)*0.22;col+=vec3(0.56,0.71,0.78)*rings*0.12*smoothstep(0.85,0.05,d);col+=vec3(0.75,0.88,0.93)*iris;o=vec4(col,1.0);}");
+    gl.compileShader(fs);
+    if(!gl.getShaderParameter(fs,gl.COMPILE_STATUS)) return false;
+    var prog=gl.createProgram(); gl.attachShader(prog,vs); gl.attachShader(prog,fs); gl.linkProgram(prog);
+    if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) return false;
+    gl.useProgram(prog);
+    var locR=gl.getUniformLocation(prog,"r"), locT=gl.getUniformLocation(prog,"t"), locS=gl.getUniformLocation(prog,"s");
+    mode="webgl2";
+    function loop(now){
+      if(deep && !reduced){ gl.uniform2f(locR,canvas.width,canvas.height); gl.uniform1f(locT,now*0.001); gl.uniform1f(locS,i); gl.drawArrays(gl.TRIANGLES,0,3); }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop); return true;
+  }
+  function tryCanvas(){
+    var ctx=canvas.getContext("2d"); if(!ctx) return false; mode="canvas2d";
+    function loop(now){
+      var w=canvas.width,h=canvas.height,cx=w*0.5,cy=h*(innerWidth<900?0.36:0.42);
+      ctx.fillStyle="#04060c"; ctx.fillRect(0,0,w,h);
+      if(deep && !reduced){
+        var n=innerWidth<900?16:24;
+        for(var k=1;k<=n;k++){
+          ctx.beginPath();
+          ctx.arc(cx,cy,(28+k*18+Math.sin(now*0.001+k)*4)*(1+i*0.02),0,6.283);
+          ctx.strokeStyle="rgba(210,226,232,"+(0.06+0.03*(k%3))+")"; ctx.lineWidth=1; ctx.stroke();
+        }
+        var g=ctx.createRadialGradient(cx,cy,2,cx,cy,28);
+        g.addColorStop(0,"#d7ebf2"); g.addColorStop(1,"#04060c");
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,18,0,6.283); ctx.fill();
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop); return true;
+  }
+  if(!reduced && tryGL2()) {}
+  else if(!reduced && tryCanvas()) {}
+  else { canvas.hidden=true; dom.hidden=false; mode="dom"; }
+  tierEl.textContent=mode.toUpperCase();
+  go(0);
+})();
+</script>
+</body>
+</html>
