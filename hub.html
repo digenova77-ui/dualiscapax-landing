@@ -2,35 +2,52 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Unity hub</title>
+<title>Ask — Unity</title>
 <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
-  <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">UNITY HUB</a>
-  <span class="chip">8610-0144-7001-0001</span>
+  <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
+  <a class="chip" href="dash.html">Desk</a>
 </header>
 <main>
-  <p class="chips"><span class="chip">Messenger</span><span class="chip warn">Public serial only</span></p>
-  <h1>8610-0144-7001-0001</h1>
-  <p class="lead">Plate number. Dualis carries rooms. Cards stay with the holder.</p>
-  <div class="card">
-    <h2>Person</h2>
-    <div class="row"><a class="btn" href="life.html">Life</a><a class="btn ghost" href="dash.html">Bonds</a></div>
-  </div>
-  <div class="card" style="margin-top:1rem">
-    <h2>Open gateways</h2>
-    <div class="row">
-      <a class="btn" href="ai/app.html">Iris</a>
-      <a class="btn" href="pay.html">Pay</a>
-      <a class="btn ghost" href="compute.html">Engine</a>
-      <a class="btn ghost" href="study.html">Study</a>
-      <a class="btn ghost" href="encyclopedia.html">Encyclopedia</a>
-      <a class="btn ghost" href="dclm-gateway.html">Law</a>
-      <a class="btn ghost" href="works.html">What works</a>
-    </div>
+  <h1 id="askline">What are you trying to find out?</h1>
+  <p class="lead">You drive. Type a real question. Dualis only carries it to Iris or to a room that already exists.</p>
+  <p>
+    <input id="q" style="width:100%;max-width:36rem;padding:.6rem .8rem;border-radius:999px;border:1px solid rgba(200,220,230,.2);background:#0a0e14;color:#e8eef2;font:inherit" placeholder="Ask in plain words">
+  </p>
+  <p><button class="btn" type="button" id="go">Ask Iris</button></p>
+  <p class="lead" id="next">Next: If only one desk on earth may see your card, which desk is it?</p>
+  <div class="row" style="margin-top:1.2rem">
+    <a class="btn ghost" href="pay.html">Pay</a>
+    <a class="btn ghost" href="compute.html">Engine</a>
+    <a class="btn ghost" href="study.html">Study</a>
+    <a class="btn ghost" href="life.html">Life</a>
+    <a class="btn ghost" href="works.html">What works</a>
   </div>
 </main>
+<script>
+(function(){
+  var NEXT=[
+    "What are you trying to find out?",
+    "Who is allowed to ask you for more than your name?",
+    "If a pass cannot finish, should it still cost you?",
+    "What belongs on a public plate, and what stays in your pocket?",
+    "Are you looking, or do you need the engine to grind?",
+    "If Dualis disappeared tomorrow, what would you still need this ID to mean?"
+  ];
+  var i=Math.floor(Date.now()/60000)%NEXT.length;
+  document.getElementById("askline").textContent=NEXT[i];
+  document.getElementById("next").textContent="Next: "+NEXT[(i+1)%NEXT.length];
+  function send(){
+    var t=(document.getElementById("q").value||"").trim();
+    try{ sessionStorage.setItem("dc.ask", t||NEXT[i]); }catch(e){}
+    location.href="ai/app.html";
+  }
+  document.getElementById("go").onclick=send;
+  document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") send(); });
+})();
+</script>
 </body>
 </html>
