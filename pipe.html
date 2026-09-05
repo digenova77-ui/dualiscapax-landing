@@ -6,5 +6,656 @@
 <title>DualisCapax — Dual Pipe</title>
 <meta name="theme-color" content="#04060c">
 <meta name="description" content="DualisCapax dual-pipe. Choose scale. Residual dual-path. Access closed.">
+<style>
+/* DualisCapax dual-pipe lander — Current as of: 2026-09-05
+   Locked: ACCESS closed, Earned CAD $0, thin ice-blue HUD, text-only CTA.
+   Architecture: flying dual-pipe → Hub scale choice (Global | National | State/Provincial | Social | Individual).
+   Geometry: symplectic det(M)≡1 visualised as constant dual-bore cross-section.
+*/
+:root {
+  color-scheme: dark;
+  --bg: #04060c;
+  --iris: #8eb4c8;
+  --iris-deep: #4e7a8c;
+  --text: #e8eef2;
+  --mute: #8b99a4;
+  --line: rgba(200, 220, 230, 0.14);
+  --glass: rgba(10, 16, 24, 0.62);
+  --friction: #6a9bb0;
+  --affinity: #a8c4d4;
+  --warn: #c9a227;
+  --pad: clamp(0.75rem, 2.5vw, 1.35rem);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --hud-h: 2.6rem;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+}
+button, a { font: inherit; color: inherit; }
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--iris); outline-offset: 3px; }
+
+/* ——— Thin ice-blue HUD (locked) ——— */
+#hud {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  height: calc(var(--hud-h) + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) var(--pad) 0;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: color-mix(in oklab, var(--glass) 88%, transparent);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--iris);
+}
+#hud .brand {
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--text);
+  margin-right: auto;
+}
+#hud .metric { white-space: nowrap; }
+#hud .metric b { color: var(--text); font-weight: 600; }
+#hud .rail {
+  width: 2.2rem;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--friction), var(--affinity));
+  opacity: 0.7;
+}
+
+/* ——— 3D dual-pipe stage ——— */
+#stage {
+  position: fixed;
+  inset: 0;
+  perspective: 900px;
+  perspective-origin: 50% 42%;
+  overflow: hidden;
+  touch-action: none;
+}
+#space {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 40%, rgba(142,180,200,0.09), transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(80,120,140,0.04), transparent 40%),
+    var(--bg);
+  pointer-events: none;
+}
+#stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(200,220,230,0.35), transparent),
+    radial-gradient(1px 1px at 30% 70%, rgba(200,220,230,0.25), transparent),
+    radial-gradient(1px 1px at 70% 30%, rgba(200,220,230,0.3), transparent),
+    radial-gradient(1px 1px at 85% 60%, rgba(200,220,230,0.2), transparent),
+    radial-gradient(1.5px 1.5px at 50% 50%, rgba(180,210,220,0.4), transparent),
+    radial-gradient(1px 1px at 15% 45%, rgba(200,220,230,0.22), transparent),
+    radial-gradient(1px 1px at 60% 85%, rgba(200,220,230,0.28), transparent),
+    radial-gradient(1px 1px at 90% 15%, rgba(200,220,230,0.2), transparent);
+  animation: drift 120s linear infinite;
+  opacity: 0.85;
+  pointer-events: none;
+}
+@keyframes drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-8%); }
+}
+
+#pipe-world {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%) rotateX(8deg);
+  transition: transform 0.9s var(--ease);
+}
+#pipe-world.bank-left { transform: translate(-50%, -50%) rotateX(8deg) rotateY(12deg); }
+#pipe-world.bank-right { transform: translate(-50%, -50%) rotateX(8deg) rotateY(-12deg); }
+
+/* Dual bore — constant cross-section = visual det(M)≡1 */
+.bore {
+  position: absolute;
+  left: -50%;
+  top: -50%;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.bore-segment {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border-radius: 50%;
+  border: 1.5px solid;
+  opacity: 0.22;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.bore.friction .bore-segment {
+  border-color: var(--friction);
+  box-shadow: 0 0 18px rgba(106,155,176,0.15);
+}
+.bore.affinity .bore-segment {
+  border-color: var(--affinity);
+  box-shadow: 0 0 18px rgba(168,196,212,0.12);
+  width: 90px;
+  height: 90px;
+  margin: -45px 0 0 -45px;
+}
+
+/* Residual floor glow — never reaches zero */
+#residual-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140px;
+  height: 140px;
+  margin: -70px 0 0 -70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(142,180,200,0.12) 0%, transparent 70%);
+  transform: translateZ(0);
+  pointer-events: none;
+  animation: residualPulse 6s var(--ease) infinite;
+}
+@keyframes residualPulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.04); }
+}
+
+/* ——— Content layers ——— */
+#ui {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  padding-top: calc(var(--hud-h) + env(safe-area-inset-top, 0px));
+}
+#ui > * { pointer-events: auto; }
+
+#entry, #hub, #station {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem var(--pad) 5rem;
+  text-align: center;
+  max-width: 36rem;
+  margin: 0 auto;
+  width: 100%;
+}
+#entry.active, #hub.active, #station.active { display: flex; }
+
+h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  font-size: clamp(1.55rem, 5.5vw, 2.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+}
+.lead {
+  color: var(--mute);
+  font-size: 0.98rem;
+  max-width: 28rem;
+  margin: 0 auto 1.4rem;
+  line-height: 1.45;
+}
+.card {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.9rem 1.1rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: left;
+  width: 100%;
+  max-width: 22rem;
+}
+.card h2 {
+  margin: 0 0 0.3rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--iris);
+  font-weight: 600;
+}
+.card p { margin: 0; color: var(--mute); font-size: 0.88rem; }
+
+.btn {
+  display: inline-block;
+  margin: 0.35rem 0.25rem 0 0;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--iris);
+  background: var(--iris);
+  color: #061018;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn:hover { filter: brightness(1.06); text-decoration: none; }
+.btn.ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line);
+}
+
+/* Scale choice grid */
+.scales {
+  display: grid;
+  gap: 0.55rem;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0.5rem 0 1rem;
+}
+.scale-btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  color: var(--text);
+  border-radius: 0.85rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  backdrop-filter: blur(12px);
+}
+.scale-btn:hover, .scale-btn:focus-visible {
+  border-color: var(--iris);
+  background: color-mix(in oklab, var(--iris) 12%, var(--glass));
+}
+.scale-btn .name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: block;
+}
+.scale-btn .desc {
+  font-size: 0.78rem;
+  color: var(--mute);
+  margin-top: 0.15rem;
+  display: block;
+}
+
+/* Bottom text-only CTA (locked — no pill) */
+#cta {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 40;
+  padding: 0.7rem var(--pad) calc(0.9rem + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--mute);
+  background: linear-gradient(transparent, var(--bg) 40%);
+  pointer-events: none;
+}
+#cta a {
+  color: var(--iris);
+  pointer-events: auto;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--iris) 40%, transparent);
+}
+#cta a:hover { border-bottom-color: var(--iris); }
+
+/* Station content after scale choice */
+#station .scale-tag {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--iris);
+  margin-bottom: 0.4rem;
+}
+.hatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+.hatch {
+  font-size: 0.78rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--mute);
+  background: transparent;
+  cursor: pointer;
+}
+.hatch:hover { border-color: var(--iris); color: var(--text); }
+
+/* Symplectic diagnostic (subtle) */
+#symplectic {
+  position: fixed;
+  bottom: calc(2.8rem + env(safe-area-inset-bottom, 0px));
+  right: var(--pad);
+  z-index: 30;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--mute);
+  opacity: 0.55;
+  pointer-events: none;
+  text-align: right;
+  line-height: 1.35;
+}
+#symplectic b { color: var(--iris); font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) {
+  #stars { animation: none; }
+  #residual-glow { animation: none; }
+  #pipe-world { transition: none; }
+}
+@media (max-width: 480px) {
+  .bore-segment { width: 90px; height: 90px; margin: -45px 0 0 -45px; }
+  .bore.affinity .bore-segment { width: 68px; height: 68px; margin: -34px 0 0 -34px; }
+}
+</style>
 </head>
+<body>
+  <!-- Thin ice-blue HUD — locked metrics -->
+  <header id="hud" role="banner">
+    <span class="brand">DUALISCAPAX</span>
+    <span class="metric">Live <b id="live-dot">●</b></span>
+    <span class="metric">Earned <b>CAD $0</b></span>
+    <span class="metric">Singularity <b id="sing-date">2036-08-24</b></span>
+    <span class="rail" title="Dual rail: friction ∥ affinity" aria-hidden="true"></span>
+  </header>
+
+  <!-- 3D dual-pipe flying through space -->
+  <div id="stage" aria-hidden="true">
+    <div id="space"></div>
+    <div id="stars"></div>
+    <div id="pipe-world">
+      <div id="residual-glow"></div>
+      <div class="bore friction" id="bore-f"></div>
+      <div class="bore affinity" id="bore-a"></div>
+    </div>
+  </div>
+
+  <!-- UI layers -->
+  <div id="ui">
+    <!-- S-00 Entry -->
+    <section id="entry" class="active" aria-label="Entry">
+      <h1>One residual.<br>Every scale.</h1>
+      <p class="lead">
+        Dual-path. Friction finds the hole. Affinity finds what already binds.
+        You choose the altitude. Nothing is pre-selected.
+      </p>
+      <button type="button" class="btn" id="enter-pipe">Enter the pipe</button>
+      <a class="btn ghost" href="#hub" id="skip-to-hub">Go to Hub</a>
+    </section>
+
+    <!-- Hub — scale choice (no default sector) -->
+    <section id="hub" aria-label="Hub — choose scale">
+      <h1>Choose your scale</h1>
+      <p class="lead">
+        Information is drawn from the level you pick.
+        Global · National · State/Provincial · Social · Individual.
+      </p>
+      <div class="scales" role="listbox" aria-label="Scale of analysis">
+        <button type="button" class="scale-btn" data-scale="global" role="option">
+          <span class="name">Global</span>
+          <span class="desc">Mesh, multi-sovereign residual, cross-border patterns</span>
+        </button>
+        <button type="button" class="scale-btn" data-scale="national" role="option">
+          <span class="name">National</span>
+          <span class="desc">Country-level rails, federal residual, 13 / 50 aggregates</span>
+        </button>
+        <button type="button" class="scale-btn" data-scale="state" role="option">
+          <span class="name">State / Provincial</span>
+          <span class="desc">Ontario-scale, state boards, regional residual</span>
+        </button>
+        <button type="button" class="scale-btn" data-scale="social" role="option">
+          <span class="name">Social</span>
+          <span class="desc">Family, community, organisation residual</span>
+        </button>
+        <button type="button" class="scale-btn" data-scale="individual" role="option">
+          <span class="name">Individual</span>
+          <span class="desc">Household, single decision, personal friction</span>
+        </button>
+      </div>
+      <button type="button" class="btn ghost" id="back-entry">Back to entry</button>
+    </section>
+
+    <!-- Station — content relative to chosen scale -->
+    <section id="station" aria-label="Scale station">
+      <div class="scale-tag" id="station-tag">—</div>
+      <h1 id="station-title">—</h1>
+      <p class="lead" id="station-lead">—</p>
+      <div class="card" id="station-card">
+        <h2>Residual at this scale</h2>
+        <p id="station-body">—</p>
+      </div>
+      <div class="hatches" id="hatches" aria-label="Optional deeper hatches"></div>
+      <p style="margin-top:1.25rem">
+        <button type="button" class="btn ghost" id="change-scale">Change scale</button>
+      </p>
+    </section>
+  </div>
+
+  <!-- Text-only CTA — locked, no pill -->
+  <div id="cta">
+    Jump-start Unity Framework → <a href="https://dualiscapax.ai/onboard.html">onboard.html</a>
+  </div>
+
+  <!-- Symplectic diagnostic (subtle, engineering truth) -->
+  <div id="symplectic" aria-hidden="true">
+    det(M) ≡ <b>1.000000000000</b><br>
+    R<sub>eff</sub> ≤ <b>4.18e-13</b> · watchdog &lt; <b>4.20 ms</b>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ——— Locked clock / ledger (handoff) ——— */
+  const T_LAUNCH = Date.UTC(2026, 7, 24, 0, 0, 0);       // 2026-08-24
+  const T_SING_BASE = Date.UTC(2036, 7, 24, 0, 0, 0);    // 2036-08-24
+  const R_CAD_DAY = 1000;
+  const R_FLOOR_DAYS = 30;
+
+  /* Scale content — drawn from chosen level only */
+  const SCALE = {
+    global: {
+      tag: "Scale · Global",
+      title: "Global residual",
+      lead: "Cross-border patterns. Mesh. Multi-sovereign accounting.",
+      body: "At global scale the dual-path looks for residual that does not respect national borders: supply-chain friction, energy balancing, shared infrastructure drag. Sector hatches appear only after this choice. Nothing is pre-loaded.",
+      hatches: ["Mesh", "Encyclopedia index", "Cross-border logistics"]
+    },
+    national: {
+      tag: "Scale · National",
+      title: "National residual",
+      lead: "Country-level rails. Federal and pan-provincial aggregates.",
+      body: "Canada (13) and USA (50) level residual. National payment rails, statutory reporting, and country-scale operational drag. Deeper provincial or state detail stays behind a further choice.",
+      hatches: ["Canada (13)", "USA (50)", "National rails"]
+    },
+    state: {
+      tag: "Scale · State / Provincial",
+      title: "State & provincial residual",
+      lead: "Ontario-scale, state boards, regional systems.",
+      body: "School boards, hospital networks, municipal clusters, and provincial infrastructure. Residual is measured in the units that actually appear on regional balance sheets.",
+      hatches: ["School boards", "Hospital networks", "Municipalities"]
+    },
+    social: {
+      tag: "Scale · Social",
+      title: "Social residual",
+      lead: "Family, community, organisation.",
+      body: "Group decision support, shared logistics, community-scale friction. No individual or national numbers are forced here; the display stays at social grain.",
+      hatches: ["Community logistics", "Organisation residual"]
+    },
+    individual: {
+      tag: "Scale · Individual",
+      title: "Individual residual",
+      lead: "Household and single-decision friction.",
+      body: "Route choice, daily operational drag, personal decision support. Private by default. Zero data tracking on the look surface.",
+      hatches: ["Route", "Daily friction", "Decision support"]
+    }
+  };
+
+  /* DOM */
+  const entry = document.getElementById("entry");
+  const hub = document.getElementById("hub");
+  const station = document.getElementById("station");
+  const pipeWorld = document.getElementById("pipe-world");
+  const boreF = document.getElementById("bore-f");
+  const boreA = document.getElementById("bore-a");
+
+  let depth = 0;           // travel along pipe
+  let currentScale = null;
+  let dragging = false;
+  let lastY = 0;
+
+  /* Build dual-bore segments (constant cross-section = det(M)≡1) */
+  function buildBore(container, count, zStep, scale) {
+    container.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+      const seg = document.createElement("div");
+      seg.className = "bore-segment";
+      const z = (i - count / 2) * zStep;
+      const s = scale || 1;
+      seg.style.transform = `translateZ(${z}px) scale(${s})`;
+      container.appendChild(seg);
+    }
+  }
+  buildBore(boreF, 24, 70, 1);
+  buildBore(boreA, 24, 70, 0.92);
+
+  /* Travel */
+  function setDepth(d) {
+    depth = d;
+    const z = -depth * 1.1;
+    boreF.style.transform = `translateZ(${z}px)`;
+    boreA.style.transform = `translateZ(${z}px)`;
+  }
+
+  /* Screen management */
+  function show(id) {
+    entry.classList.toggle("active", id === "entry");
+    hub.classList.toggle("active", id === "hub");
+    station.classList.toggle("active", id === "station");
+  }
+
+  function goHub() {
+    show("hub");
+    pipeWorld.classList.remove("bank-left", "bank-right");
+    setDepth(180);
+  }
+
+  function goEntry() {
+    show("entry");
+    currentScale = null;
+    setDepth(0);
+    pipeWorld.classList.remove("bank-left", "bank-right");
+  }
+
+  function chooseScale(key) {
+    const s = SCALE[key];
+    if (!s) return;
+    currentScale = key;
+    document.getElementById("station-tag").textContent = s.tag;
+    document.getElementById("station-title").textContent = s.title;
+    document.getElementById("station-lead").textContent = s.lead;
+    document.getElementById("station-body").textContent = s.body;
+    const hatches = document.getElementById("hatches");
+    hatches.innerHTML = "";
+    s.hatches.forEach(function (label) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "hatch";
+      b.textContent = label;
+      b.addEventListener("click", function () {
+        /* Hatch is a look only — no navigation to closed access surfaces */
+        b.style.borderColor = "var(--iris)";
+        b.style.color = "var(--text)";
+      });
+      hatches.appendChild(b);
+    });
+    show("station");
+    setDepth(320);
+    pipeWorld.classList.add(key === "global" || key === "national" ? "bank-left" : "bank-right");
+  }
+
+  /* Events */
+  document.getElementById("enter-pipe").addEventListener("click", goHub);
+  document.getElementById("skip-to-hub").addEventListener("click", function (e) {
+    e.preventDefault();
+    goHub();
+  });
+  document.getElementById("back-entry").addEventListener("click", goEntry);
+  document.getElementById("change-scale").addEventListener("click", goHub);
+
+  document.querySelectorAll(".scale-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      chooseScale(btn.getAttribute("data-scale"));
+    });
+  });
+
+  /* Drag / scroll to travel the pipe */
+  const stage = document.getElementById("stage");
+  stage.addEventListener("pointerdown", function (e) {
+    dragging = true;
+    lastY = e.clientY;
+    stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener("pointermove", function (e) {
+    if (!dragging) return;
+    const dy = e.clientY - lastY;
+    lastY = e.clientY;
+    setDepth(Math.max(0, Math.min(400, depth - dy * 0.9)));
+  });
+  stage.addEventListener("pointerup", function () { dragging = false; });
+  stage.addEventListener("pointercancel", function () { dragging = false; });
+
+  stage.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    setDepth(Math.max(0, Math.min(400, depth + e.deltaY * 0.35)));
+  }, { passive: false });
+
+  /* Singularity display (honest, pledge = 0 while closed) */
+  function updateSingularity() {
+    const el = document.getElementById("sing-date");
+    if (!el) return;
+    const now = Date.now();
+    const floor = now + R_FLOOR_DAYS * 86400000;
+    /* While closed and pledged = 0, base date stands; floor only as UI guard */
+    const target = Math.max(T_SING_BASE, floor);
+    const d = new Date(target);
+    el.textContent = d.toISOString().slice(0, 10);
+  }
+  updateSingularity();
+
+  /* Live pulse */
+  setInterval(function () {
+    const dot = document.getElementById("live-dot");
+    if (dot) dot.style.opacity = dot.style.opacity === "0.35" ? "1" : "0.35";
+  }, 1200);
+
+  /* Initial depth */
+  setDepth(0);
+})();
+</script>
+</body>
 </html>
