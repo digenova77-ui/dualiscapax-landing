@@ -9,28 +9,26 @@
 <body>
 <header>
   <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
-  <a class="chip" href="dash.html">Purpose</a>
+  <a class="chip" href="law.html">Law</a>
 </header>
 <main>
   <h1 id="askline">What are you trying to find out?</h1>
-  <p class="lead">Same door for every person on earth. Tell us the use. We do not guess it from a board name or a card.</p>
+  <p class="lead">Same door for every person. Declare a use. Look is free. Grind is engine time. Veto: no fake cure, no guaranteed profit, no jailbreak.</p>
   <p>
     <input id="q" style="width:100%;max-width:36rem;padding:.6rem .8rem;border-radius:999px;border:1px solid rgba(200,220,230,.2);background:#0a0e14;color:#e8eef2;font:inherit" placeholder="Ask in plain words">
   </p>
-  <p class="lead">This question is for:</p>
   <p class="row" id="uses"></p>
-  <p><button class="btn" type="button" id="go">Ask</button> <a class="btn ghost" href="pay.html">Grind costs engine time</a></p>
-  <p class="lead" id="next"></p>
+  <p><button class="btn" type="button" id="go">Ask</button> <a class="btn ghost" href="law.html">Law</a> <a class="btn ghost" href="pay.html">Pay</a></p>
 </main>
 <script>
 (function(){
   var USES=[
-    {id:"look", label:"Just looking", href:"hub.html"},
+    {id:"look", label:"Looking", href:"ai/app.html"},
     {id:"cost", label:"Residual cost", href:"pricing.html"},
     {id:"money", label:"Company money", href:"pay.html"},
     {id:"eng", label:"Engineering", href:"compute.html"},
     {id:"med", label:"Medical research", href:"study.html"},
-    {id:"play", label:"Play / sport", href:"life.html"}
+    {id:"play", label:"Play", href:"life.html"}
   ];
   var box=document.getElementById("uses");
   var picked=null;
@@ -42,18 +40,9 @@
     b.onclick=function(){
       picked=u.id;
       try{ localStorage.setItem("dc.purpose", u.id); }catch(e){}
-      location.href=u.href;
     };
     box.appendChild(b);
   });
-  var NEXT=[
-    "What are you trying to find out?",
-    "Is this cost, engineering, medical research, money, or play?",
-    "How deep does this need to go?"
-  ];
-  var i=Math.floor(Date.now()/60000)%NEXT.length;
-  document.getElementById("askline").textContent=NEXT[i];
-  document.getElementById("next").textContent="Next: "+NEXT[(i+1)%NEXT.length];
   document.getElementById("go").onclick=function(){
     var t=(document.getElementById("q").value||"").trim();
     try{ sessionStorage.setItem("dc.ask", t); }catch(e){}
@@ -62,6 +51,7 @@
     if(picked==="money") dest="pay.html";
     if(picked==="eng") dest="compute.html";
     if(picked==="med") dest="study.html";
+    if(picked==="play") dest="life.html";
     location.href=dest;
   };
 })();
