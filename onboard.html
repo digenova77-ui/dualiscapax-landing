@@ -2,28 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Onboard — Unity ID — DualisCapax</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<title>Onboard — DualisCapax</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<style>
-label{display:block;margin:.7rem 0 .2rem;font-size:.8rem;color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
-input,select{width:100%;background:#0e1216;color:var(--text);border:1px solid #3a4650;border-radius:8px;padding:.55rem .7rem;font:inherit}
-#log{white-space:pre-wrap;font-size:.8rem;color:var(--mute)}
-.check{display:flex;gap:.6rem;align-items:flex-start;margin:1rem 0;font-size:.9rem;color:var(--mute)}
-.check input{width:auto;margin-top:.2rem}
-</style>
 </head>
 <body>
 <header>
-  <div class="brand">DUALISCAPAX <span class="orb"></span></div>
-  <nav><a href="index.html">Gateway</a><a href="onboard.html">Onboard</a><a href="pay.html">Pay</a><a href="runtime.html">Runtime</a></nav>
+  <div class="brand">DUALISCAPAX</div>
+  <nav>
+    <a href="index.html">Plate</a>
+    <a href="onboard.html">Onboard</a>
+    <a href="pay.html">Pay</a>
+  </nav>
 </header>
 <main>
-  <p class="chips"><span class="chip">Deploy pack</span><span class="chip warn">KYC unbound</span><span class="chip warn">Need firm</span></p>
-  <h1>Real-world bind</h1>
-  <p class="lead">Seal downloads a protocol pack: Unity ID, runtime seed, Etherscan lookup if you declared 0x, KYC chair empty, auditor chair, books as hashes only. Passwords never go in a contract. Dualis does not perform KYC.</p>
-  <div class="card">
-    <h2>Who</h2>
+  <p class="chips"><span class="chip">Sleeve gate</span><span class="chip warn">KYC unbound</span></p>
+  <h1>Onboard gate</h1>
+  <p class="lead">Five chairs. Seal downloads the pack. Passwords never go on a chain.</p>
+
+  <div class="card" style="margin-top:1rem">
+    <h2>Look</h2>
+    <p>Free hall. No card.</p>
     <label>Name</label><input id="name" autocomplete="name">
     <label>Kind</label>
     <select id="kind"><option>person</option><option>shop</option><option>corp</option><option>school</option><option>government</option><option>lawyer</option><option>llp</option><option>auditor</option></select>
@@ -31,25 +30,40 @@ input,select{width:100%;background:#0e1216;color:var(--text);border:1px solid #3
     <label>Municipality</label><input id="muni">
     <label>Org domain</label><input id="org" placeholder="format vs email only">
   </div>
-  <div class="card" style="margin-top:1rem">
-    <h2>Device</h2>
+
+  <div class="card" style="margin-top:.7rem">
+    <h2>Passphrase</h2>
+    <p>SHA-256 on this device.</p>
     <label>Passphrase</label><input id="phrase" type="password" autocomplete="new-password">
     <button class="btn" type="button" id="hashPhrase">Hash</button>
     <p id="phraseOut" class="lead"></p>
+  </div>
+
+  <div class="card" style="margin-top:.7rem">
+    <h2>Passkey</h2>
+    <p>WebAuthn on this host. Account abstraction is later.</p>
     <button class="btn ghost" type="button" id="makeKey">Passkey</button>
     <p id="keyOut" class="lead"></p>
   </div>
-  <div class="card" style="margin-top:1rem">
-    <h2>Chain + firm</h2>
+
+  <div class="card" style="margin-top:.7rem">
+    <h2>Ethereum</h2>
+    <p>Optional 0x lookup. Not checkout.</p>
     <label>0x</label><input id="eth" spellcheck="false">
     <button class="btn ghost" type="button" id="signEth">Sign</button>
     <p id="ethOut" class="lead"></p>
+  </div>
+
+  <div class="card" style="margin-top:.7rem">
+    <h2>LLP</h2>
+    <p>Chair only until a firm sits.</p>
     <label>LLP / auditor</label><input id="firm">
     <select id="firmRole"><option value="">none</option><option>llp</option><option>auditor</option><option>counsel</option></select>
   </div>
-  <div class="card" style="margin-top:1rem">
-    <label class="check"><input id="attest" type="checkbox"> I declare these chairs. Dualis is the meter. This pack does not KYC me and does not write secrets on-chain.</label>
-    <button class="btn" type="button" id="seal">Seal + download pack</button>
+
+  <div class="card" style="margin-top:.7rem">
+    <label class="check"><input id="attest" type="checkbox"> I declare these chairs. Dualis is the meter.</label>
+    <button class="btn" type="button" id="seal">Seal on Onboard</button>
     <button class="btn ghost" type="button" id="mail">Mail reminder</button>
     <button class="btn ghost" type="button" id="dl">Download pack only</button>
     <a class="btn" href="https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05">Fuel 40</a>
