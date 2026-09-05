@@ -1,49 +1,229 @@
-<!DOCTYPE html>
-<html lang="en-CA">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>Inside — DualisCapax</title>
-<meta name="theme-color" content="#020617"/>
-<meta name="description" content="Look around, get started, or go home. Nothing to buy here."/>
-<link rel="stylesheet" href="css/pipe-fly.css"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DualisCapax — Pipe</title>
+<meta name="theme-color" content="#04060c">
 <style>
-.comply{position:relative;z-index:3;max-width:40rem;margin:0 1.2rem 6rem;padding:1rem 0 0}
-.note{color:#94a3b8;font-size:1rem;line-height:1.5;max-width:36rem}
+:root{
+  --bg:#04060c;--glass:rgba(18,24,32,.55);--line:rgba(200,220,230,.16);
+  --iris:#8eb4c8;--text:#e8eef2;--mute:#8b99a4;--warn:#c9a227;
+  --serif:"Fraunces",Georgia,serif;--sans:"Figtree",system-ui,sans-serif;
+}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--sans)}
+body{overflow:hidden}
+header{
+  position:fixed;top:0;left:0;right:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;gap:.6rem;
+  padding:.55rem .8rem;background:rgba(4,6,12,.55);
+  backdrop-filter:blur(16px);border-bottom:1px solid var(--line);
+}
+.brand{font-family:var(--serif);letter-spacing:.18em;font-size:.72rem}
+.pills{display:flex;gap:.35rem;flex-wrap:wrap}
+.pill{font-size:.62rem;letter-spacing:.06em;border:1px solid var(--line);border-radius:999px;padding:.18rem .5rem;color:var(--mute)}
+.pill b{color:var(--iris);font-weight:600}
+.toggle{border:1px solid var(--iris);background:transparent;color:var(--iris);border-radius:999px;padding:.28rem .7rem;font:inherit;font-size:.7rem;cursor:pointer}
+a.btn,button.btn{display:inline-block;text-decoration:none;border:0;background:var(--iris);color:#061018;border-radius:999px;padding:.55rem 1rem;font:600 .85rem var(--sans);cursor:pointer}
+a.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+#stageCanvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{
+  position:fixed;left:50%;transform:translateX(-50%);
+  top:3.1rem;z-index:12;text-align:center;pointer-events:none;width:min(92vw,42rem);
+}
+.hud h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,5vw,2.6rem);margin:.2rem 0;line-height:1.1}
+.hud p{margin:0;color:var(--mute);font-size:.9rem}
+.wings{display:none}
+@media(min-width:900px){
+  .wings{display:block;position:fixed;top:5.2rem;bottom:5.2rem;width:16rem;z-index:11;padding:1rem;
+    background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:18px;overflow:auto}
+  .wing-l{left:1rem}.wing-r{right:1rem}
+  .wings h3{margin:0 0 .6rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--iris)}
+  .wings li{list-style:none;margin:.45rem 0;font-size:.8rem;color:var(--mute)}
+}
+.cards{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:5.4rem;z-index:12;width:min(94vw,34rem);display:none;flex-direction:column;gap:.45rem;
+}
+.cards.on{display:flex}
+.card{
+  background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--line);
+  border-radius:14px;padding:.7rem .85rem;
+}
+.card b{display:block;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--iris)}
+.card span{font-size:.82rem;color:var(--mute)}
+.beacons{position:fixed;left:50%;transform:translateX(-50%);bottom:5.4rem;z-index:12;width:min(94vw,40rem);display:none;gap:.5rem;flex-wrap:wrap}
+.beacons.on{display:flex}
+.beacon{flex:1 1 10rem;background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:14px;padding:.7rem}
+.beacon em{display:block;font-size:.65rem;letter-spacing:.1em;color:var(--warn);font-style:normal}
+.dock{
+  position:fixed;left:50%;bottom:.7rem;transform:translateX(-50%);z-index:20;
+  display:flex;gap:.35rem;padding:.35rem;border-radius:999px;
+  background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--line);max-width:96vw;overflow:auto;
+}
+.dock button{
+  flex:0 0 auto;border:0;background:transparent;color:var(--mute);font:600 .68rem var(--sans);
+  padding:.45rem .6rem;border-radius:999px;cursor:pointer;white-space:nowrap;
+}
+.dock button.on{background:rgba(142,180,200,.22);color:var(--text)}
+footer.law{position:fixed;left:0;right:0;bottom:3.35rem;z-index:11;text-align:center;font-size:.62rem;color:var(--mute);letter-spacing:.04em;padding:0 .6rem}
+.mode-2d #stageCanvas{opacity:0}
+.mode-2d body{background:radial-gradient(ellipse at 50% 20%,#12202a,var(--bg) 55%)}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 </head>
-<body class="bore">
-<a class="skip" href="#doors">Skip the picture</a>
-<canvas id="bore" aria-hidden="true"></canvas>
-<header class="plate">
-  <a class="word" href="index.html">DualisCapax</a>
-  <div class="hud" aria-label="Status">
-    <span><em>Open to buy?</em> <b>No</b></span>
-    <span><em>You owe</em> <b>$0</b></span>
+<body>
+<header>
+  <div class="brand">DUALISCAPAX</div>
+  <div class="pills">
+    <span class="pill">det(M) ≡ 1.0</span>
+    <span class="pill">M-S: <b id="ms">—</b></span>
+    <span class="pill">ACCESS closed</span>
   </div>
-  <span class="stamp">tap the name to go home</span>
+  <button class="toggle" id="disp" type="button">DISP: 3D</button>
 </header>
-<div class="overlay">
-  <p class="kicker">You are inside</p>
-  <h1>This is just the hallway.</h1>
-  <p class="lede">Pick one thing. You can always go back. Nobody is selling you anything on this screen.</p>
-  <div class="doors" id="doors">
-    <a class="door inv" href="look.html">Look around</a>
-    <a class="door" href="onboard.html">Get started</a>
-    <a class="door" href="index.html">Home</a>
-  </div>
-  <p class="readout"><span id="read-phase"> </span><span id="read-z"></span><span id="read-station"></span></p>
+<canvas id="stageCanvas" aria-hidden="true"></canvas>
+<div class="hud">
+  <p id="kicker">Stage 01</p>
+  <h1 id="title">Deep pipe</h1>
+  <p id="lede">Look is free. Dualis meters. You host.</p>
 </div>
-<section class="comply">
-  <p class="note">Want rules or government pages? That is a different room.</p>
-  <p><a class="door" href="legal.html">Rules</a></p>
-</section>
-<div class="iris-dock">
-  <div class="iris-gauge" aria-hidden="true"><span></span></div>
-  <p class="iris-stream" id="iris-stream">You can leave anytime.</p>
-  <div class="iris-probe" id="iris-probe"></div>
+<aside class="wings wing-l">
+  <h3>Traverse</h3>
+  <ul>
+    <li>01 Deep pipe</li>
+    <li>02 Acceleration</li>
+    <li>03 Sleeve gate → Onboard</li>
+    <li>04 Breakthrough</li>
+    <li>05 Ground chairs</li>
+  </ul>
+  <p style="font-size:.75rem;color:var(--mute);margin-top:1rem">Swipe / wheel. 3D is ornament. Bind and CAD are the doors.</p>
+</aside>
+<aside class="wings wing-r">
+  <h3>Identity matrix</h3>
+  <ul>
+    <li>Look — free</li>
+    <li>Passphrase — hash on device</li>
+    <li>Passkey — this device WebAuthn</li>
+    <li>0x — optional lookup</li>
+    <li>LLP — chair, empty until named</li>
+  </ul>
+  <p style="margin-top:1rem"><a class="btn" href="onboard.html">Open bind</a></p>
+  <p style="margin-top:.5rem"><a class="btn ghost" href="pay.html">Pay CAD</a></p>
+</aside>
+<div class="cards" id="gate">
+  <div class="card"><b>Look</b><span>Free hall. No card.</span></div>
+  <div class="card"><b>Passphrase</b><span>SHA-256 on this device. Never a contract password.</span></div>
+  <div class="card"><b>Passkey</b><span>WebAuthn on this host. Account-abstraction sleeve is later.</span></div>
+  <div class="card"><b>Ethereum / equal-crypto</b><span>Optional 0x lookup. Checkout is not open.</span></div>
+  <div class="card"><b>LLP / registry</b><span>Chair only. NEED FIRM until a firm sits.</span></div>
+  <p style="text-align:center;margin:.4rem 0 0"><a class="btn" href="onboard.html">Seal on Onboard</a></p>
 </div>
-<div id="ports" hidden></div>
-<script src="js/pipe-fly.js"></script>
+<div class="beacons" id="beacons">
+  <div class="beacon"><em>CASE CHAIR</em><b>Hospitality</b><span>Local shop nodes. Zero Dualis rake claimed. Not a live POS contract.</span></div>
+  <div class="beacon"><em>CASE CHAIR</em><b>Public education</b><span>Board / bus chairs indexed. Not a ministry API.</span></div>
+  <div class="beacon"><em>CASE CHAIR</em><b>Regional care</b><span>Sim IP only. No PHI. No diagnosis. No savings curve sold as settled.</span></div>
+</div>
+<nav class="dock" id="dock" aria-label="Stages"></nav>
+<footer class="law">NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING · We do not claim cures, we claim paths to truth. We provide the plan. Not the law. · 0.00% token float</footer>
+<script>
+(function(){
+  var STAGES=[
+    {id:1,kicker:"Stage 01",title:"Deep pipe",lede:"Concentric depth. Volume language is display, not a live symplectic proof."},
+    {id:2,kicker:"Stage 02",title:"Acceleration",lede:"Iris ring at center. Cognitive core is copy until Fuel is paid."},
+    {id:3,kicker:"Stage 03",title:"Sleeve gate",lede:"Five chairs. Bind happens on Onboard — this stage does not invent KYC."},
+    {id:4,kicker:"Stage 04",title:"Breakthrough",lede:"Surface egress as motion. Terrain is illustration."},
+    {id:5,kicker:"Stage 05",title:"Ground chairs",lede:"Indexed kinds of node. Not live hospital, board, or POS contracts."}
+  ];
+  var i=0, mode3d=true, parts=[], t0=performance.now();
+  var cv=document.getElementById("stageCanvas");
+  var ctx=cv.getContext("2d",{alpha:false});
+  var kicker=document.getElementById("kicker");
+  var title=document.getElementById("title");
+  var lede=document.getElementById("lede");
+  var gate=document.getElementById("gate");
+  var beacons=document.getElementById("beacons");
+  var msEl=document.getElementById("ms");
+  var dock=document.getElementById("dock");
+  STAGES.forEach(function(s,n){
+    var b=document.createElement("button");
+    b.type="button";
+    b.textContent="0"+s.id+" "+s.title.split(" ")[0];
+    b.onclick=function(){go(n)};
+    dock.appendChild(b);
+  });
+  function resize(){
+    var d=Math.min(devicePixelRatio||1,2);
+    cv.width=innerWidth*d; cv.height=innerHeight*d;
+    cv.style.width=innerWidth+"px"; cv.style.height=innerHeight+"px";
+    ctx.setTransform(d,0,0,d,0,0);
+  }
+  function seed(){
+    parts=[];
+    var n=Math.min(80, 48+Math.floor(innerWidth/80));
+    for(var k=0;k<n;k++) parts.push({a:Math.random()*Math.PI*2,r:40+Math.random()*220,s:0.002+Math.random()*0.01});
+  }
+  function go(n){
+    i=(n+STAGES.length)%STAGES.length;
+    var s=STAGES[i];
+    kicker.textContent=s.kicker;
+    title.textContent=s.title;
+    lede.textContent=s.lede;
+    gate.classList.toggle("on", i===2);
+    beacons.classList.toggle("on", i===4);
+    Array.prototype.forEach.call(dock.children,function(b,ix){b.classList.toggle("on",ix===i)});
+    if(navigator.vibrate) try{navigator.vibrate(8)}catch(e){}
+  }
+  document.getElementById("disp").onclick=function(){
+    mode3d=!mode3d;
+    document.body.classList.toggle("mode-2d",!mode3d);
+    this.textContent=mode3d?"DISP: 3D":"DISP: 2D";
+  };
+  var y0=null;
+  addEventListener("wheel",function(e){ if(Math.abs(e.deltaY)>20) go(i+(e.deltaY>0?1:-1)); },{passive:true});
+  addEventListener("touchstart",function(e){ y0=e.touches[0].clientY; },{passive:true});
+  addEventListener("touchend",function(e){
+    if(y0==null) return;
+    var dy=(e.changedTouches[0].clientY-y0);
+    if(Math.abs(dy)>48) go(i+(dy<0?1:-1));
+    y0=null;
+  },{passive:true});
+  addEventListener("keydown",function(e){
+    if(e.key==="ArrowDown"||e.key===" ") go(i+1);
+    if(e.key==="ArrowUp") go(i-1);
+  });
+  function frame(now){
+    var dt=now-t0; t0=now;
+    msEl.textContent=Math.min(4.2, dt).toFixed(3)+"ms";
+    if(mode3d){
+      var w=innerWidth,h=innerHeight,cx=w/2,cy=h*0.42;
+      ctx.fillStyle="#04060c"; ctx.fillRect(0,0,w,h);
+      var depth=1+i*0.35;
+      for(var k=1;k<=18;k++){
+        var rad=(28+k*18)*(1+0.04*Math.sin(now*0.001+k+i));
+        ctx.beginPath();
+        ctx.arc(cx,cy,rad*depth*0.55,0,Math.PI*2);
+        ctx.strokeStyle="rgba(200,220,230,"+(0.04+0.02*(k%3))+")";
+        ctx.lineWidth=1;
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(cx,cy,10+2*Math.sin(now*0.003),0,Math.PI*2);
+      ctx.fillStyle="#8eb4c8";
+      ctx.fill();
+      parts.forEach(function(p){
+        p.a+=p.s*(1+i*0.15);
+        var x=cx+Math.cos(p.a)*p.r*(0.7+i*0.08);
+        var y=cy+Math.sin(p.a)*p.r*0.42;
+        ctx.fillStyle="rgba(142,180,200,.45)";
+        ctx.fillRect(x,y,1.5,1.5);
+      });
+    }
+    requestAnimationFrame(frame);
+  }
+  addEventListener("resize",function(){resize();seed()});
+  resize(); seed(); go(0); requestAnimationFrame(frame);
+})();
+</script>
 </body>
 </html>
