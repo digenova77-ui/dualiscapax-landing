@@ -9,24 +9,24 @@
 <body>
 <header>
   <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
-  <a class="chip" href="pay.html">Engine time</a>
+  <a class="chip" href="security.html">Security</a>
 </header>
 <main>
   <h1 id="askline">What are you trying to find out?</h1>
-  <p class="lead">Looking is free. The first questions are free. When you need Iris to grind — longer, deeper, on your problem — you buy engine time. The deeper the work, the more passes she spends.</p>
+  <p class="lead">Looking is free. Deeper Iris grind is engine time. Cards never go on this plate.</p>
   <p>
     <input id="q" style="width:100%;max-width:36rem;padding:.6rem .8rem;border-radius:999px;border:1px solid rgba(200,220,230,.2);background:#0a0e14;color:#e8eef2;font:inherit" placeholder="Ask in plain words">
   </p>
   <p><button class="btn" type="button" id="go">Ask (look is free)</button> <a class="btn ghost" href="pay.html">Buy deeper time</a></p>
   <p class="lead" id="next">Next: How deep does this question need to go?</p>
-
-  <div class="card" style="margin-top:1.2rem">
-    <h2>How it is paid</h2>
-    <p>Look / name / plate — $0.</p>
-    <p>Iris look-up (book, encyclopedia, public search) — $0.</p>
-    <p>Iris grind (a real pass on your problem) — engine time.</p>
-    <p>$20 · 40 passes · $50 · 120 passes · $120 · 320 passes</p>
-    <p class="lead">If a pass cannot finish, it is not spent.</p>
+  <div class="row" style="margin-top:1.2rem">
+    <a class="btn ghost" href="pricing.html">Pricing</a>
+    <a class="btn ghost" href="security.html">Security</a>
+    <a class="btn ghost" href="works.html">What works</a>
+    <a class="btn ghost" href="life.html">Life</a>
+    <a class="btn ghost" href="dash.html">Bonds</a>
+    <a class="btn ghost" href="compute.html">Engine</a>
+    <a class="btn ghost" href="study.html">Study</a>
   </div>
 </main>
 <script>
@@ -35,7 +35,6 @@
     "What are you trying to find out?",
     "How deep does this question need to go?",
     "Is this a look, or do you need Iris to grind?",
-    "What would a finished answer be worth to you in engine time?",
     "Who is allowed to ask you for more than your name?"
   ];
   var i=Math.floor(Date.now()/60000)%NEXT.length;
