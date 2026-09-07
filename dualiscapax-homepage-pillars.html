@@ -1,1 +1,61 @@
-<placeholder>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DualisCapax</title>
+<meta name="theme-color" content="#05070c">
+<style>
+:root{--bg:#05070c;--card:#0c111b;--line:rgba(255,255,255,.08);--paper:#f2f4f8;--mute:#8b93a7;--gold:#e0b44b;--mint:#3ee0a0;--cyan:#3ad3e6;--violet:#b08cff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--paper);font-family:ui-sans-serif,system-ui,sans-serif;min-height:100%}
+body{padding:env(safe-area-inset-top) 0 calc(88px + env(safe-area-inset-bottom))}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 12px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:36px;height:36px}
+.brand h1{font-size:15px;letter-spacing:.12em;font-weight:800;line-height:1.05}
+.brand p{color:var(--mint);font-size:9px;letter-spacing:.16em;font-weight:700;margin-top:3px}
+.onboard{border:1px solid var(--mint);color:var(--mint);background:rgba(62,224,160,.06);border-radius:999px;padding:8px 12px;font-size:12px;font-weight:700;text-decoration:none;box-shadow:0 0 18px rgba(62,224,160,.18)}
+main{padding:14px;display:flex;flex-direction:column;gap:12px}
+.pillar{position:relative;display:grid;grid-template-columns:1fr 86px;align-items:center;background:linear-gradient(180deg,#101722,var(--card));border:1px solid var(--line);border-radius:16px;padding:16px 10px 16px 16px;min-height:118px;overflow:hidden}
+.pillar::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:4px;background:var(--accent)}
+.kicker{font-size:11px;letter-spacing:.18em;font-weight:700;color:var(--accent);margin-bottom:6px}
+.pillar h2{font-size:22px;line-height:1.12;font-weight:650;font-family:ui-serif,Georgia,serif}
+.meta{margin-top:8px;color:var(--mute);font-size:13.5px}
+.geo{width:86px;height:86px;perspective:220px;perspective-origin:50% 46%}
+.rig{width:86px;height:86px;position:relative;transform-style:preserve-3d;transform:rotateX(18deg);animation:yaw 10s linear infinite}
+.shell{position:absolute;inset:8px;transform-style:preserve-3d}
+.shell svg{width:100%;height:100%;display:block;overflow:visible}
+.shell-outer{animation:pitch 14s linear infinite}
+.shell-inner{inset:20px;animation:counter 7.5s linear infinite;opacity:.85}
+.shell-cross{inset:8px;transform:rotateY(90deg);opacity:.42;animation:pitch 14s linear infinite reverse}
+.core{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);transform:translateZ(12px);animation:pulse 2.8s ease-in-out infinite}
+.p1{--accent:var(--gold)}.p2{--accent:var(--mint)}.p3{--accent:var(--cyan)}.p4{--accent:var(--violet)}
+.p2 .rig{animation-duration:12s;animation-direction:reverse}
+.p3 .rig{animation-duration:8.5s}
+.p4 .rig{animation-duration:13s;animation-direction:reverse}
+@keyframes yaw{from{transform:rotateX(18deg) rotateY(0)}to{transform:rotateX(18deg) rotateY(360deg)}}
+@keyframes pitch{from{transform:rotateX(0) rotateZ(0)}to{transform:rotateX(360deg) rotateZ(18deg)}}
+@keyframes counter{from{transform:rotateY(0) rotateX(0) scale(.72)}to{transform:rotateY(-360deg) rotateX(360deg) scale(.72)}}
+@keyframes pulse{0%,100%{opacity:.55;transform:translateZ(12px) scale(1)}50%{opacity:1;transform:translateZ(16px) scale(1.18)}}
+@media (prefers-reduced-motion:reduce){.rig,.shell-outer,.shell-inner,.shell-cross,.core{animation:none!important}.rig{transform:rotateX(18deg) rotateY(-28deg)}}
+.foot{text-align:center;padding:18px 16px 6px}
+.foot em{display:block;color:#9aa3b8;font-style:italic;font-size:14px;margin-bottom:8px}
+.foot strong{display:block;letter-spacing:.28em;font-size:13px;font-weight:800}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;height:calc(72px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:#070a10;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);align-items:center}
+nav.tabs a{color:#8b93a7;text-decoration:none;text-align:center;font-size:11px;font-weight:600}
+nav.tabs a.active{color:var(--mint)}
+nav.tabs .ico{display:block;font-size:18px;margin-bottom:2px}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand"><svg class="brand-mark" viewBox="0 0 64 64" fill="none"><polygon points="32,4 58,18 58,46 32,60 6,46 6,18" stroke="#3ee0a0" stroke-width="2"/><polygon points="32,16 48,24 48,40 32,48 16,40 16,24" stroke="#3ee0a0" stroke-width="1.4"/><circle cx="32" cy="32" r="3" fill="#3ee0a0"/></svg><div><h1>DUALISCAPAX</h1><p>UNITY PLAYGROUND ARCHITECTURE</p></div></div><a class="onboard" href="/onboard.html">$0 Onboarding</a></header>
+<main>
+<article class="pillar p1"><div><div class="kicker">01 // FIDUCIARY</div><h2>Residual Law Finance</h2><div class="meta">$0 Upfront · 81%–100% Retained</div></div><div class="geo" aria-hidden="true"><div class="rig"><div class="shell shell-outer"><svg viewBox="0 0 100 100"><g stroke="#e0b44b" stroke-width="1.15" fill="none"><polygon points="50,8 82,26 82,74 50,92 18,74 18,26"/><polygon points="50,8 82,74 18,74"/><polygon points="50,92 82,26 18,26"/><line x1="18" y1="26" x2="82" y2="26"/><line x1="18" y1="74" x2="82" y2="74"/><polygon points="50,26 68,50 50,74 32,50"/></g></svg></div><div class="shell shell-cross"><svg viewBox="0 0 100 100"><g stroke="#e0b44b" stroke-width="1" fill="none"><polygon points="50,10 80,30 80,70 50,90 20,70 20,30"/><line x1="50" y1="10" x2="50" y2="90"/><line x1="20" y1="30" x2="80" y2="70"/><line x1="80" y1="30" x2="20" y2="70"/></g></svg></div><div class="shell shell-inner"><svg viewBox="0 0 100 100"><g stroke="#e0b44b" stroke-width="1.3" fill="none"><polygon points="50,18 76,34 76,66 50,82 24,66 24,34"/><line x1="50" y1="18" x2="50" y2="82"/><line x1="24" y1="34" x2="76" y2="66"/></g></svg></div><i class="core"></i></div></div></article>
+<article class="pillar p2"><div><div class="kicker">02 // INFRASTRUCTURE</div><h2>Edge Computing</h2><div class="meta">&lt;4.20ms Real-Time SCADA</div></div><div class="geo" aria-hidden="true"><div class="rig"><div class="shell shell-outer"><svg viewBox="0 0 100 100"><g stroke="#3ee0a0" stroke-width="1.15" fill="none"><polygon points="50,6 90,28 74,78 26,78 10,28"/><polygon points="50,6 74,78 10,28"/><polygon points="90,28 26,78 50,6"/><line x1="10" y1="28" x2="90" y2="28"/></g></svg></div><div class="shell shell-cross"><svg viewBox="0 0 100 100"><g stroke="#3ee0a0" stroke-width="1" fill="none"><polygon points="50,10 84,32 70,78 30,78 16,32"/><line x1="50" y1="10" x2="50" y2="78"/><line x1="16" y1="32" x2="70" y2="78"/></g></svg></div><div class="shell shell-inner"><svg viewBox="0 0 100 100"><g stroke="#3ee0a0" stroke-width="1.3" fill="none"><polygon points="50,20 74,36 66,70 34,70 26,36"/><line x1="50" y1="20" x2="50" y2="70"/></g></svg></div><i class="core"></i></div></div></article>
+<article class="pillar p3"><div><div class="kicker">03 // AUTONOMOUS AI</div><h2>Adaptive Intellect (Agent Iris)</h2><div class="meta">Sovereign Operational Conductor</div></div><div class="geo" aria-hidden="true"><div class="rig"><div class="shell shell-outer"><svg viewBox="0 0 100 100"><g stroke="#3ad3e6" stroke-width="1.15" fill="none"><polygon points="50,8 85,28 85,72 50,92 15,72 15,28"/><line x1="50" y1="8" x2="50" y2="92"/><line x1="15" y1="28" x2="85" y2="72"/><line x1="85" y1="28" x2="15" y2="72"/><polygon points="50,28 68,50 50,72 32,50"/></g></svg></div><div class="shell shell-cross"><svg viewBox="0 0 100 100"><g stroke="#3ad3e6" stroke-width="1" fill="none"><polygon points="50,8 85,28 85,72 50,92 15,72 15,28"/><line x1="15" y1="28" x2="85" y2="28"/><line x1="15" y1="72" x2="85" y2="72"/></g></svg></div><div class="shell shell-inner"><svg viewBox="0 0 100 100"><g stroke="#3ad3e6" stroke-width="1.3" fill="none"><polygon points="50,22 70,36 70,64 50,78 30,64 30,36"/><polygon points="50,36 62,50 50,64 38,50"/></g></svg></div><i class="core"></i></div></div></article>
+<article class="pillar p4"><div><div class="kicker">04 // MATHEMATICS</div><h2>Scientific Research</h2><div class="meta">Irreversible Geometry · eFuse</div></div><div class="geo" aria-hidden="true"><div class="rig"><div class="shell shell-outer"><svg viewBox="0 0 100 100"><g stroke="#b08cff" stroke-width="1.15" fill="none"><polygon points="50,7 88,30 73,78 27,78 12,30"/><polygon points="50,22 72,38 64,64 36,64 28,38"/><line x1="50" y1="7" x2="50" y2="78"/><line x1="12" y1="30" x2="88" y2="30"/></g></svg></div><div class="shell shell-cross"><svg viewBox="0 0 100 100"><g stroke="#b08cff" stroke-width="1" fill="none"><polygon points="50,8 86,32 70,80 30,80 14,32"/><line x1="14" y1="32" x2="86" y2="32"/><line x1="50" y1="8" x2="50" y2="80"/></g></svg></div><div class="shell shell-inner"><svg viewBox="0 0 100 100"><g stroke="#b08cff" stroke-width="1.3" fill="none"><polygon points="50,24 72,38 64,68 36,68 28,38"/><line x1="50" y1="24" x2="50" y2="68"/></g></svg></div><i class="core"></i></div></div></article>
+</main>
+<div class="foot"><em>Haters welcome. No tribes preferred.</em><strong>TRUTH PREVAILS.</strong></div>
+<nav class="tabs"><a class="active" href="/"><span class="ico">⌂</span>Home</a><a href="/pillars.html"><span class="ico">⚡</span>Pillars</a><a href="/sectors.html"><span class="ico">🏛</span>Sectors</a><a href="/audit.html"><span class="ico">📜</span>Audit</a><a href="/ai/app.html"><span class="ico">💬</span>Agent Iris</a></nav>
+</body></html>
