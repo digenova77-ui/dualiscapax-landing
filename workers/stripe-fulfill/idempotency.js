@@ -1,7 +1,4 @@
-/** Identity jacket helpers.
- *  Idempotency key = Stripe event.id (evt_…). session.id is secondary.
- *  Stripe webhooks do not send an Idempotency-Key header.
- */
+/** Identity jacket helpers. Key = Stripe event.id; session.id is secondary. */
 
 const TTL = 60 * 60 * 24 * 400;
 
@@ -37,12 +34,23 @@ function entitlementInsert(db, row, now) {
     );
 }
 
+function fuelInsert(db, row, now) {
+  return db
+    .prepare(
+      "INSERT INTO fuel_credits (session_id, event_id, email, units, sku, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6) ON CONFLICT(session_id) DO NOTHING"
+    )
+    .bind(row.session_id, row.event_id, row.email || "unbound@local", row.units, row.sku || null, now);
+}
+
+function metaChanges(result) {
+  return result && result.meta && typeof result.meta.changes === "number" ? result.meta.changes : 0;
+}
+
 export async function claimD1(db, row) {
   if (!db || !row || !row.event_id) return { used: false };
   const now = row.created_at || Math.floor(Date.now() / 1000);
   const ins = await eventInsert(db, row, now).run();
-  const changes = ins && ins.meta && typeof ins.meta.changes === "number" ? ins.meta.changes : 0;
-  if (changes === 0) {
+  if (metaChanges(ins) === 0) {
     const existing = row.session_id
       ? await db.prepare("SELECT * FROM entitlements WHERE session_id = ?1").bind(row.session_id).first()
       : null;
@@ -57,23 +65,27 @@ export async function putEntitlementD1(db, row) {
   await entitlementInsert(db, row, now).run();
 }
 
-function metaChanges(result) {
-  return result && result.meta && typeof result.meta.changes === "number" ? result.meta.changes : 0;
+export async function fuelBalanceD1(db, email) {
+  if (!db || !email) return 0;
+  const row = await db.prepare("SELECT COALESCE(SUM(units), 0) AS units FROM fuel_credits WHERE email = ?1").bind(email).first();
+  if (!row || row.units == null) return 0;
+  return Number(row.units) || 0;
 }
 
-/** One TX: claim evt_ + write entitlement.
- *  Replay if events.changes===0 (same evt_) OR entitlements.changes===0 (same cs_).
- */
-export async function claimGrantD1(db, eventRow, entRow) {
+export async function claimGrantD1(db, eventRow, entRow, fuelRow) {
   if (!db || !eventRow || !eventRow.event_id) return { used: false };
   const now = eventRow.created_at || Math.floor(Date.now() / 1000);
   const stmts = [eventInsert(db, eventRow, now)];
   const hasEnt = Boolean(entRow && entRow.session_id);
+  const hasFuel = Boolean(fuelRow && fuelRow.session_id && fuelRow.units);
   if (hasEnt) stmts.push(entitlementInsert(db, entRow, now));
+  if (hasFuel) stmts.push(fuelInsert(db, fuelRow, now));
   const results = await db.batch(stmts);
   const ev = metaChanges(results && results[0]);
-  const en = hasEnt ? metaChanges(results && results[1]) : 0;
-  const replay = ev === 0 || (hasEnt && en === 0);
+  let idx = 1;
+  const en = hasEnt ? metaChanges(results && results[idx++]) : 1;
+  const fu = hasFuel ? metaChanges(results && results[idx++]) : 1;
+  const replay = ev === 0 || en === 0 || fu === 0;
   if (replay) {
     const sid = (entRow && entRow.session_id) || eventRow.session_id;
     const existing = sid
@@ -82,10 +94,12 @@ export async function claimGrantD1(db, eventRow, entRow) {
     return {
       used: true,
       idempotent: true,
+      reason: ev === 0 ? "event_replay" : en === 0 ? "session_replay" : "fuel_replay",
       entitlement: existing || null,
       store: "d1",
       event_changes: ev,
-      entitlement_changes: hasEnt ? en : null
+      entitlement_changes: hasEnt ? en : null,
+      fuel_changes: hasFuel ? fu : null
     };
   }
   return {
@@ -93,7 +107,8 @@ export async function claimGrantD1(db, eventRow, entRow) {
     idempotent: false,
     store: "d1",
     event_changes: ev,
-    entitlement_changes: hasEnt ? en : null
+    entitlement_changes: hasEnt ? en : null,
+    fuel_changes: hasFuel ? fu : null
   };
 }
 
