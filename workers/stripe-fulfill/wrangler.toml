@@ -2,8 +2,16 @@ name = "dualiscapax-stripe-fulfill-v2"
 main = "worker.js"
 compatibility_date = "2026-08-30"
 
-# Optional KV for event/session idempotency + fuel balances.
+# Optional KV for event/session idempotency cache. Not Fuel source of truth when D1 is bound.
 # Bind in Cloudflare dashboard as FULFILL_KV if not already attached.
 # [[kv_namespaces]]
 # binding = "FULFILL_KV"
 # id = "replace-in-dashboard-not-git"
+
+# Optional D1 for events + entitlements + fuel_credits.
+# Bind in dashboard as DB (aliases FULFILL_DB / FULFILLMENTS also accepted in worker.js).
+# Apply schema.sql after bind. Do not commit a live database_id.
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "dualiscapax-fulfillments"
+# database_id = "replace-in-dashboard-not-git"
