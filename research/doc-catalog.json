@@ -1,0 +1,41 @@
+{
+  "jacket": "doc.pane.v1",
+  "current_as_of": "2026-09-08",
+  "open": false,
+  "list_currency": "CAD",
+  "source_of_truth": "research/payment-links.json",
+  "rule": "Look titles and Look sheets only. No sealed simulation packs. Depth bodies stay off git.",
+  "speech": {
+    "medical": "Simulation is not treatment. Not a diagnosis. Not a cure. Not shares.",
+    "engineering": "Simulation is not a stamped design. Not a code certificate. Not a P.Eng. seal. Not shares."
+  },
+  "layers": {
+    "look": { "cad": 0, "status": "open", "sku": "look" },
+    "measure": { "cad": 0, "status": "open", "sku": "basic" },
+    "leaf": { "cad": 49, "status": "closed", "sku": "leaf", "unit": "12-Month Pass" },
+    "branch": { "cad": 299, "status": "closed", "sku": "branch", "unit": "12-Month Pass" },
+    "trunk": { "cad": 499, "status": "closed", "sku": "trunk", "unit": "12-Month Pass" },
+    "library": { "cad": 1499, "status": "closed", "sku": "library", "unit": "Perpetual" }
+  },
+  "doors": {
+    "medical": "/research/healthcare/locked.html",
+    "engineering": "/research/engineering/locked.html"
+  },
+  "documents": [
+    {"id":"MED-LOOK-ELEVATED-SEAL","class":"medical","layer":"look","control_id":"ED-SPEC-20260903-MED-ELEVATED-SEAL-V1","title":"Elevated sealed medical simulation specification","blurb":"Look sheet. Depth pack is not in this pane.","look_body":"LOOK SHEET \u2014 not the sealed specification.\n\nControl ID: ED-SPEC-20260903-MED-ELEVATED-SEAL-V1\nClass: Medical simulation\nLayer: Look (CAD $0)\n\nWhat this is\nA public index card for a closed-loop medical simulation specification held off this surface.\n\nWhat this is not\nNot the sealed body. Not a protocol you can run. Not a diagnosis. Not a treatment plan. Not a cure claim.\n\nDeeper: Leaf CAD $49 · Branch CAD $299 · Trunk CAD $499 · Library CAD $1,499 medical vault only.\nSales flag: CLOSED. Door: .org / .gov / .gc.ca or SEAL-1.\n\nHard speech\nSimulation is not treatment. Ontario and Canadian law apply."},
+    {"id":"MED-LOOK-CLOSED-LOOP-ENGINE","class":"medical","layer":"look","control_id":"ED-ENG-20260830-MED-SIM-V1","title":"Closed-loop medical simulation engine","blurb":"Look sheet. Runtime JSON stays off git.","look_body":"LOOK SHEET \u2014 not the engine source.\n\nControl ID: ED-ENG-20260830-MED-SIM-V1\nLooking is free. Running depth is not on this floor.\nNot executable code. Not a clinic device. Not medical advice."},
+    {"id":"MED-LOOK-FUSED-MASTER","class":"medical","layer":"look","control_id":"ED-MED-20260820-00-FUSED-MEDICAL-BIOPHARMA-SIMULATION-MASTER","title":"Fused medical / biopharma simulation master","blurb":"Look sheet for the fused master index.","look_body":"LOOK SHEET \u2014 not the fused master body.\nNamed master index only. Not a drug label. Not a trial protocol. Not a prescription."},
+    {"id":"MED-LOOK-3D-TREATMENT-PROCESS","class":"medical","layer":"look","control_id":"ED-SIM-20260825-3D-TREATMENT-PROCESS-V1","title":"3D treatment-process simulation specification","blurb":"Look sheet. Process geometry language only.","look_body":"LOOK SHEET \u2014 not the 3D process pack.\nIt names that a process can be modelled. It does not walk a clinician through a procedure.\nNot a how-to for treatment. Not a device manual."},
+    {"id":"MED-LOOK-ALS-SEAL","class":"medical","layer":"look","control_id":"encyclopedia/medical_biophysical/master_pan_pathology_als_seal_standard_compendium","title":"ALS seal-standard compendium (Look)","blurb":"Look sheet for the ALS seal-standard catalog entry.","look_body":"LOOK SHEET \u2014 not the ALS seal compendium body.\nLeaf when open: CAD $49 · SKU-017.\nNot a care plan. Not a patient handout."},
+    {"id":"MED-LOOK-PHARM-BENCHMARK","class":"medical","layer":"look","control_id":"encyclopedia/medical_biophysical/dclm_universal_medical_rd_and_systems_pharmacology_gold_standard_benchmark","title":"Systems pharmacology benchmark (Look)","blurb":"Look sheet for the pharmacology benchmark entry.","look_body":"LOOK SHEET \u2014 not the benchmark tables.\nNames the ruler. Depth would show the tables.\nNot a formulary. Not a dosing sheet."},
+    {"id":"MED-LOOK-MASTER-COMPENDIUM","class":"medical","layer":"look","control_id":"ED-MED-20260830-MASTER-V1","title":"Master closed-loop medical compendium (Look)","blurb":"Look sheet for the master medical compendium.","look_body":"LOOK SHEET \u2014 not the master library body.\nLibrary when open: CAD $1,499 · SKU-029 · medical vault only.\nNot all Dualis IP. Not Crown. Sales CLOSED. No live $1,499 link yet."},
+    {"id":"MED-LEAF-ONE-INDICATION","class":"medical","layer":"leaf","control_id":"SKU-017","title":"Single-indication medical monograph","blurb":"One gated room. 12 months. Body off this surface.","look_body":""},
+    {"id":"MED-BRANCH-CLADE","class":"medical","layer":"branch","control_id":"SKU-018","title":"Medical clade branch pack (10–20 indications)","blurb":"One field. 12 months. No live CAD $299 link yet.","look_body":""},
+    {"id":"MED-LIBRARY-VAULT","class":"medical","layer":"library","control_id":"SKU-029","title":"Medical master library","blurb":"Medical vault only. Perpetual. Does not open engineering.","look_body":""},
+    {"id":"ENG-LOOK-THERMO","class":"engineering","layer":"look","control_id":"research/engineering/thermodynamic-residual.html","title":"Thermodynamic residual (public)","blurb":"Public residual language already on the engineering floor.","href":"/research/engineering/thermodynamic-residual.html","look_body":"LOOK SHEET \u2014 public residual language.\nPublic floor: /research/engineering/thermodynamic-residual.html\nLooking is free. Plant-scale invert sheets are depth.\nNot a stamped drawing. Not a P.Eng. seal.\nLeaf $49 · Branch $299 · Trunk $499 · Library $1,499 engineering vault only.\nDoor: .edu / .org / .gov / .gc.ca / plant domain / SEAL-1."},
+    {"id":"ENG-LOOK-FEEDBACK","class":"engineering","layer":"look","control_id":"ED-SPEC-20260903-MED-ENG-FEEDBACK-V1","title":"Medical–engineering continuous feedback specification (Look)","blurb":"Look sheet. Cross-class body is Crown.","look_body":"LOOK SHEET \u2014 not the joint feedback body.\nThe name can live on both indexes. The body is not a Library unlock across classes.\nCross-class depth is Crown / wet-ink."},
+    {"id":"ENG-LEAF-SHEET","class":"engineering","layer":"leaf","control_id":"SKU-017","title":"One residual sheet pack","blurb":"One gated engineering room. 12 months.","look_body":""},
+    {"id":"ENG-BRANCH-FIELD","class":"engineering","layer":"branch","control_id":"SKU-018","title":"Engineering field branch (thermo or energy)","blurb":"One field. 12 months. No live CAD $299 link yet.","look_body":""},
+    {"id":"ENG-LIBRARY-VAULT","class":"engineering","layer":"library","control_id":"SKU-029","title":"Engineering master library","blurb":"Engineering vault only. Does not open medical.","look_body":""}
+  ]
+}
