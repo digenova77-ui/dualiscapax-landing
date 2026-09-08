@@ -1,0 +1,30 @@
+name = "dualiscapax-origin-join"
+main = "worker.js"
+compatibility_date = "2026-09-08"
+workers_dev = true
+
+# Path-exact. Do not add dualiscapax.ai/*
+[[routes]]
+pattern = "dualiscapax.ai/why.html"
+zone_name = "dualiscapax.ai"
+[[routes]]
+pattern = "dualiscapax.ai/story.html"
+zone_name = "dualiscapax.ai"
+[[routes]]
+pattern = "dualiscapax.ai/research/docs.html"
+zone_name = "dualiscapax.ai"
+[[routes]]
+pattern = "dualiscapax.ai/research/doc-pane.html"
+zone_name = "dualiscapax.ai"
+[[routes]]
+pattern = "dualiscapax.ai/research/doc-catalog.json"
+zone_name = "dualiscapax.ai"
+[[routes]]
+pattern = "dualiscapax.ai/js/doc-pane.js"
+zone_name = "dualiscapax.ai"
+[[routes]]
+pattern = "dualiscapax.ai/js/apex-hook.js"
+zone_name = "dualiscapax.ai"
+[[routes]]
+pattern = "dualiscapax.ai/css/doc-pane.css"
+zone_name = "dualiscapax.ai"
