@@ -8,7 +8,7 @@
   "current_as_of": "2026-09-01",
   "opened_by_operator": null,
   "closed_by_operator": "2026-09-01T13:52:00-04:00",
-  "gateway_law": "Access sales CLOSED until IP protection is in place. Prices from V8 120-tier matrix only. Dual-rail: fiat CAD Stripe Payment Link when open || equal-CAD crypto. No exchange product. No sk_ keys. Do not invent buy.stripe.com URLs. Library is the $1,499 master compendium. Super-Trunk is the $499 domain-class pack.",
+  "gateway_law": "Access sales CLOSED until IP protection is in place. Prices from V8 120-tier matrix only. Dual-rail: fiat CAD Stripe Payment Link when open || equal-CAD crypto. No exchange product. No sk_ keys. Do not invent buy.stripe.com URLs. $1,499 is atlas/index (SKU-029), not a sealed body dump. $499 is Super-Trunk (SKU-019).",
   "settlement_rail": "fiat_to_crypto",
   "ip_gate": {
     "doc": "research/IP-GATE.md",
@@ -63,24 +63,24 @@
       "branch": null,
       "trunk": "https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00",
       "library": null,
-      "note": "Live URLs kept only where CAD amount still matches V8. Branch $149 URL retired (now $299). Old library $499 URL remapped to Super-Trunk. Master library $1,499 has no link yet."
+      "note": "Live URLs kept only where CAD amount still matches V8. Branch $149 URL retired (now $299). Old $499 library URL remapped to Super-Trunk. Atlas $1,499 has no link yet."
     }
   },
   "access_layers": {
     "L0_LOOK": { "who": "anyone", "invoke": "read public residual prose", "cad": 0, "status": "open" },
     "L1_MEASURE": { "who": "anyone", "invoke": "measure + crypto audit receipt", "cad": 0, "status": "open" },
     "L2_EDU_LEAF": { "who": "prepaid seat", "invoke": "30-day educational indication overview", "cad": 19, "sku": "SKU-016", "status": "closed" },
-    "L2_LEAF": { "who": "prepaid seat", "invoke": "one gated room, 12 mo, one indication", "cad": 49, "sku": "SKU-017", "status": "closed" },
-    "L3_BRANCH": { "who": "prepaid seat", "invoke": "subsystem clade 10-20 indications, 12 mo", "cad": 299, "sku": "SKU-018", "status": "closed" },
+    "L2_LEAF": { "who": "prepaid seat", "invoke": "one gated room, 12 mo", "cad": 49, "sku": "SKU-017", "status": "closed" },
+    "L3_BRANCH": { "who": "prepaid seat", "invoke": "subsystem clade, 12 mo", "cad": 299, "sku": "SKU-018", "status": "closed" },
     "L4_TRUNK": { "who": "prepaid seat", "invoke": "one super-trunk domain class, 12 mo", "cad": 499, "sku": "SKU-019", "status": "closed" },
-    "L4_LIBRARY": { "who": "prepaid seat", "invoke": "full multi-kingdom master library, perpetual", "cad": 1499, "sku": "SKU-029", "status": "closed" },
+    "L4_LIBRARY": { "who": "prepaid seat", "invoke": "atlas / index, perpetual — not sealed bodies", "cad": 1499, "sku": "SKU-029", "status": "closed" },
     "L5_FUEL_10": { "who": "prepaid fuel", "invoke": "10 Fuel depth run", "cad": 5, "sku": "SKU-001", "status": "closed" },
     "L5_FUEL_40": { "who": "prepaid fuel", "invoke": "40 Fuel depth run", "cad": 20, "sku": "SKU-002", "status": "closed" },
     "L5_FUEL_120": { "who": "prepaid fuel", "invoke": "120 Fuel depth run", "cad": 50, "sku": "SKU-003", "status": "closed" },
     "L5_FUEL_320": { "who": "prepaid fuel", "invoke": "320 Fuel depth run", "cad": 120, "sku": "SKU-004", "status": "closed" },
     "L5_FUEL_1000": { "who": "prepaid fuel", "invoke": "1,000 Fuel depth run", "cad": 350, "sku": "SKU-005", "status": "closed" },
     "FOUNDING": { "who": "verified founding seat", "invoke": "plaque + residual order memory", "cad": "TBD · closed", "status": "priced_closed" },
-    "CROWN": { "who": "owner wet-ink only", "invoke": "cross-class vault, CRA, government", "cad": null, "status": "never_agent" },
+    "CROWN": { "who": "owner wet-ink only", "invoke": "owner-only cross-class, CRA, government", "cad": null, "status": "never_agent" },
     "WAIT_GRANT": { "who": "owner yes/no", "invoke": "OAuth / token for a named realm", "cad": 0, "status": "slot" }
   },
   "skus": {
@@ -92,17 +92,17 @@
     "depth_l": { "sku": "SKU-004", "name": "Fuel 320", "cad": 120, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "unit": "320 Runs", "live_url": "https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01" },
     "fuel_1000": { "sku": "SKU-005", "name": "Fuel 1,000", "cad": 350, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "unit": "1,000 Runs", "live_url": null },
     "edu_leaf": { "sku": "SKU-016", "name": "Educational indication leaf", "cad": 19, "crypto_equal_cad": true, "status": "closed", "ip": "overview_30d", "tab": "seats", "unit": "30-Day Pass", "live_url": null },
-    "leaf": { "sku": "SKU-017", "name": "Single target indication leaf (ALS standard)", "cad": 49, "crypto_equal_cad": true, "status": "closed", "ip": "one_room", "tab": "seats", "unit": "12-Month Pass", "live_url": "https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04" },
-    "branch": { "sku": "SKU-018", "name": "Subsystem clade branch pack (10-20 indications)", "cad": 299, "crypto_equal_cad": true, "status": "closed", "ip": "one_field", "tab": "seats", "unit": "12-Month Pass", "live_url": null, "notes": "Was CAD $149 in v2 jacket. V8 price CAD $299. Old $149 Stripe URL retired." },
-    "trunk": { "sku": "SKU-019", "name": "Super-Trunk domain pack", "cad": 499, "crypto_equal_cad": true, "status": "closed", "ip": "domain_class_toolkit", "tab": "seats", "unit": "12-Month Pass", "live_url": "https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00", "notes": "Former v2 library $499 slot remapped to Super-Trunk. Not the $1,499 master library." },
-    "library": { "sku": "SKU-029", "name": "Full multi-kingdom master library (2,000+)", "cad": 1499, "crypto_equal_cad": true, "status": "closed", "ip": "multi_kingdom", "tab": "seats", "unit": "Perpetual", "live_url": null, "notes": "Was CAD $499 in v2 jacket. V8 master library is CAD $1,499. No live link until operator creates a $1,499 Payment Link." },
+    "leaf": { "sku": "SKU-017", "name": "Single-room leaf", "cad": 49, "crypto_equal_cad": true, "status": "closed", "ip": "one_room", "tab": "seats", "unit": "12-Month Pass", "live_url": "https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04" },
+    "branch": { "sku": "SKU-018", "name": "Subsystem clade branch pack", "cad": 299, "crypto_equal_cad": true, "status": "closed", "ip": "one_field", "tab": "seats", "unit": "12-Month Pass", "live_url": null, "notes": "V8 list CAD $299. CAD $149 is legacy test-link only." },
+    "trunk": { "sku": "SKU-019", "name": "Super-Trunk domain pack", "cad": 499, "crypto_equal_cad": true, "status": "closed", "ip": "domain_class_toolkit", "tab": "seats", "unit": "12-Month Pass", "live_url": "https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00", "notes": "Live $499 link is Super-Trunk. Not atlas." },
+    "library": { "sku": "SKU-029", "name": "Atlas / index", "cad": 1499, "crypto_equal_cad": true, "status": "closed", "ip": "atlas_index", "tab": "seats", "unit": "Perpetual", "live_url": null, "notes": "CAD $1,499 atlas/index. Not a sealed-body dump. No live link until operator creates a $1,499 Payment Link." },
     "hockey_game": { "sku": "SKU-081", "name": "Hockey matchup monograph", "cad": 19, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "tab": "alacarte" },
     "hockey_season": { "sku": "SKU-083", "name": "Youth team season pacing pass", "cad": 149, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "tab": "alacarte" },
     "golf_round": { "sku": "SKU-079", "name": "Golf single-round pass", "cad": 9.99, "crypto_equal_cad": true, "status": "priced_closed", "hub": "golf", "tab": "alacarte" },
     "golf_season": { "sku": "SKU-080", "name": "Golf full-season kinematic pass", "cad": 149, "crypto_equal_cad": true, "status": "priced_closed", "hub": "golf", "tab": "alacarte" },
     "med_mono": { "sku": "SKU-017", "name": "Medical monograph", "cad": 49, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "tab": "alacarte" },
     "med_lab": { "sku": "SKU-018", "name": "Medical clade branch", "cad": 299, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "tab": "alacarte" },
-    "med_compendium": { "sku": "SKU-029", "name": "Medical master library", "cad": 1499, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "tab": "alacarte" },
+    "med_compendium": { "sku": "SKU-029", "name": "Medical atlas / index", "cad": 1499, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "tab": "alacarte" },
     "kitchen_mo": { "sku": "SKU-036", "name": "Kitchen 5-vector thermal pack", "cad": 79, "crypto_equal_cad": true, "status": "priced_closed", "hub": "kitchen", "tab": "alacarte" },
     "kitchen_fleet": { "sku": "SKU-037", "name": "Restaurant fleet 10 units", "cad": 349, "crypto_equal_cad": true, "status": "priced_closed", "hub": "kitchen", "tab": "alacarte" },
     "kitchen_year": { "sku": "SKU-038", "name": "Franchise kitchen mesh 50 units", "cad": 1299, "crypto_equal_cad": true, "status": "priced_closed", "hub": "kitchen", "tab": "alacarte" }
@@ -110,7 +110,7 @@
   "alacarte_hubs": {
     "hockey": { "headline": "Stop 3rd-period fatigue collapses.", "cta": "Generate tonight's gameplan", "primary": "hockey_game" },
     "golf": { "headline": "The caddie that knows the physics of every yard.", "cta": "Start 18-hole caddie pass", "primary": "golf_round" },
-    "medical": { "headline": "180-day biophysical simulation monographs on demand.", "cta": "Download research monograph", "primary": "med_mono" },
+    "medical": { "headline": "Depth rooms stay gated. This layer is Look + seat when open.", "cta": "Read the medical gate", "primary": "med_mono" },
     "kitchen": { "headline": "Cut kitchen energy and food waste.", "cta": "Optimize kitchen operations", "primary": "kitchen_mo" }
   },
   "system_costs": {
@@ -134,6 +134,6 @@
     "Stripe Payment Link for Fuel 10 CAD $5",
     "Stripe Payment Link for Fuel 1,000 CAD $350",
     "Stripe Payment Link for Branch CAD $299",
-    "Stripe Payment Link for Master Library CAD $1,499"
+    "Stripe Payment Link for Atlas CAD $1,499"
   ]
 }
