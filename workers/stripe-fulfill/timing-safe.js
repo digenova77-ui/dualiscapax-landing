@@ -1,4 +1,5 @@
 /** Constant-time compare. No early return on first mismatch. */
+
 export function timingSafeEqualBytes(a, b) {
   if (!(a instanceof Uint8Array) || !(b instanceof Uint8Array)) return false;
   if (a.length !== b.length || a.length === 0) return false;
@@ -24,4 +25,11 @@ export function timingSafeEqualHex(a, b) {
   var right = hexToBytes(String(b || "").toLowerCase());
   if (!left || !right) return false;
   return timingSafeEqualBytes(left, right);
+}
+
+/** UTF-8 byte compare. Empty or non-strings fail closed. Length mismatch fails before the loop. */
+export function timingSafeEqualString(a, b) {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  var enc = new TextEncoder();
+  return timingSafeEqualBytes(enc.encode(a), enc.encode(b));
 }
