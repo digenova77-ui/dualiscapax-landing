@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Document pane — DualisCapax</title>
+<meta name="theme-color" content="#04060c"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/doc-pane.css"/>
+</head>
+<body class="dc-view">
+<div class="dc-view-inner" id="root"><p class="eyebrow">Loading catalog</p></div>
+<script src="/js/doc-pane.js"></script>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  if (q.get("embed") === "1") document.documentElement.classList.add("embed");
+  var wantId = q.get("id");
+  var wantClass = q.get("class");
+  function money(n) { if (!n) return "CAD $0"; return "CAD $" + Number(n).toLocaleString("en-CA"); }
+  function chips(doc, meta) {
+    var cls = doc && doc.class === "engineering" ? "eng" : "med";
+    var st = meta.status === "open" ? "on" : "closed";
+    return '<div class="dc-chiprow"><span class="dc-chip ' + cls + '">' + (doc.class || "") + '</span><span class="dc-chip">' + (doc.layer || "look") + '</span><span class="dc-chip ' + st + '">' + (meta.status || "closed") + '</span><span class="dc-chip">' + money(meta.cad) + '</span></div>';
+  }
+  function renderList(cat, cls) {
+    var list = DC_DOCS.docsFor(cat, cls);
+    var title = cls === "engineering" ? "Engineering documents" : cls === "medical" ? "Medical simulation documents" : "Documents";
+    var speech = cls === "engineering" ? cat.speech.engineering : cls === "medical" ? cat.speech.medical : "";
+    var rows = list.map(function (d) {
+      var m = DC_DOCS.layerMeta(cat, d.layer);
+      return '<button type="button" class="dc-row" data-id="' + d.id + '"><div><b>' + d.title + '</b><span>' + (d.blurb || d.control_id) + '</span></div><div class="cad">' + d.layer.toUpperCase() + '<br/>' + money(m.cad) + '<br/>' + m.status + '</div></button>';
+    }).join("");
+    document.getElementById("root").innerHTML = '<p class="eyebrow">04 / 02 · half window · Look floor</p><h1>' + title + '</h1><p class="lede">Titles and Look sheets only. Sealed bodies are not on this surface. Checkout is closed.</p>' + chips({ class: cls || "medical", layer: "look" }, { status: cat.open ? "open" : "closed", cad: 0 }) + '<div class="dc-list">' + rows + '</div><p class="dc-note">' + speech + ' Access sales CLOSED. Crypto audit is not a license.</p><div class="dc-actions"><button type="button" class="dc-btn dc-view-close" id="close">Close</button></div>';
+    document.getElementById("root").querySelectorAll("[data-id]").forEach(function (btn) {
+      btn.addEventListener("click", function () { location.search = "id=" + encodeURIComponent(btn.getAttribute("data-id")) + (q.get("embed") ? "&embed=1" : ""); });
+    });
+    var c = document.getElementById("close");
+    if (c) c.addEventListener("click", function () { window.close(); });
+  }
+  function renderDoc(cat, doc) {
+    var meta = DC_DOCS.layerMeta(cat, doc.layer);
+    var speech = doc.class === "engineering" ? cat.speech.engineering : cat.speech.medical;
+    var door = cat.doors[doc.class] || "/research/";
+    var isLook = doc.layer === "look" || doc.layer === "measure";
+    var body = isLook && doc.look_body ? doc.look_body : "DEPTH BODY IS NOT ON THIS SURFACE.\n\nLayer: " + doc.layer + "\nPrice: " + money(meta.cad) + " · " + (meta.unit || "") + "\nStatus: " + meta.status + "\nSKU: " + (meta.sku || "") + "\n\nThis pane will show the full document when a seat is open and a grant exists. Until then the door holds.\n\nLook / Measure remain free. A crypto audit receipt does not unlock IP.\nMedical library does not open engineering.";
+    var actions = '<div class="dc-actions"><button type="button" class="dc-btn" id="back">Back to list</button>';
+    if (!isLook) actions += '<a class="dc-btn primary" href="' + door + '">Open the ' + doc.class + ' door</a>';
+    if (doc.href && isLook) actions += '<a class="dc-btn primary" href="' + doc.href + '">Public floor page</a>';
+    actions += '<button type="button" class="dc-btn dc-view-close" id="close">Close window</button></div>';
+    document.title = doc.title + " — DualisCapax";
+    document.getElementById("root").innerHTML = '<p class="eyebrow">' + doc.control_id + '</p><h1>' + doc.title + '</h1><p class="lede">' + (doc.blurb || "") + '</p>' + chips(doc, meta) + '<div class="dc-body">' + body.replace(/</g, "<") + '</div>' + actions + '<p class="dc-note">' + speech + '</p>';
+    document.getElementById("back").addEventListener("click", function () { location.search = "class=" + encodeURIComponent(doc.class) + (q.get("embed") ? "&embed=1" : ""); });
+    var c = document.getElementById("close");
+    if (c) c.addEventListener("click", function () { window.close(); });
+  }
+  DC_DOCS.load().then(function (cat) {
+    if (wantId) { var doc = DC_DOCS.findDoc(cat, wantId); if (doc) return renderDoc(cat, doc); }
+    renderList(cat, wantClass || null);
+  }).catch(function (err) {
+    document.getElementById("root").innerHTML = '<h1>Catalog missing</h1><p class="lede">' + String(err) + '</p>';
+  });
+})();
+</script>
+</body>
+</html>
