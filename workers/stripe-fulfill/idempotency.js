@@ -1,7 +1,4 @@
-/** Identity jacket helpers.
- *  Idempotency key = Stripe event.id (evt_…). session.id is secondary.
- *  Stripe webhooks do not send an Idempotency-Key header.
- */
+/** Identity jacket helpers. Key = Stripe event.id; session.id is secondary. */
 
 const TTL = 60 * 60 * 24 * 400;
 
@@ -37,12 +34,15 @@ function entitlementInsert(db, row, now) {
     );
 }
 
+function changesOf(res) {
+  return res && res.meta && typeof res.meta.changes === "number" ? res.meta.changes : 0;
+}
+
 export async function claimD1(db, row) {
   if (!db || !row || !row.event_id) return { used: false };
   const now = row.created_at || Math.floor(Date.now() / 1000);
   const ins = await eventInsert(db, row, now).run();
-  const changes = ins && ins.meta && typeof ins.meta.changes === "number" ? ins.meta.changes : 0;
-  if (changes === 0) {
+  if (changesOf(ins) === 0) {
     const existing = row.session_id
       ? await db.prepare("SELECT * FROM entitlements WHERE session_id = ?1").bind(row.session_id).first()
       : null;
@@ -57,20 +57,26 @@ export async function putEntitlementD1(db, row) {
   await entitlementInsert(db, row, now).run();
 }
 
-/** One TX: claim evt_ + write entitlement. Replay is still changes===0 on events. */
+/** One TX. Replay if evt_ already stored OR session already granted. */
 export async function claimGrantD1(db, eventRow, entRow) {
   if (!db || !eventRow || !eventRow.event_id) return { used: false };
   const now = eventRow.created_at || Math.floor(Date.now() / 1000);
   const stmts = [eventInsert(db, eventRow, now)];
   if (entRow && entRow.session_id) stmts.push(entitlementInsert(db, entRow, now));
   const results = await db.batch(stmts);
-  const first = results && results[0];
-  const changes = first && first.meta && typeof first.meta.changes === "number" ? first.meta.changes : 0;
-  if (changes === 0) {
+  const eventChanges = changesOf(results && results[0]);
+  const entChanges = stmts.length > 1 ? changesOf(results && results[1]) : 1;
+  if (eventChanges === 0 || entChanges === 0) {
     const existing = eventRow.session_id
       ? await db.prepare("SELECT * FROM entitlements WHERE session_id = ?1").bind(eventRow.session_id).first()
       : null;
-    return { used: true, idempotent: true, entitlement: existing || null, store: "d1" };
+    return {
+      used: true,
+      idempotent: true,
+      reason: eventChanges === 0 ? "event_replay" : "session_replay",
+      entitlement: existing || null,
+      store: "d1"
+    };
   }
   return { used: true, idempotent: false, store: "d1" };
 }
