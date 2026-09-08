@@ -3,6 +3,7 @@
 -- events = accepted Stripe webhook (append-only)
 -- entitlements = write-once grant (ON CONFLICT session_id DO NOTHING)
 -- fuel_credits = write-once Fuel units (ON CONFLICT session_id DO NOTHING)
+-- Balance = SUM(units) WHERE email = ?  — no running-total UPDATE
 
 CREATE TABLE IF NOT EXISTS events (
   event_id     TEXT PRIMARY KEY,
@@ -38,3 +39,4 @@ CREATE INDEX IF NOT EXISTS idx_token_id ON entitlements(token_id);
 CREATE INDEX IF NOT EXISTS idx_email ON entitlements(email);
 CREATE INDEX IF NOT EXISTS idx_sku ON entitlements(sku);
 CREATE INDEX IF NOT EXISTS idx_fuel_email ON fuel_credits(email);
+CREATE INDEX IF NOT EXISTS idx_fuel_event ON fuel_credits(event_id);
