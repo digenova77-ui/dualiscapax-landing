@@ -1,11 +1,11 @@
 /**
  * DualisCapax Stripe fulfill worker
  * Jacket: access.dual.v8
- * HMAC → merchSuperRefine → claim event.id → persist
+ * HMAC → merchSuperRefine → claimGrantD1 (evt_ + cs_) → persist
  */
 
 import { merchSuperRefine, merchIssuesToFulfill } from "./merch-refine.js";
-import { claimD1, putEntitlementD1, claimKv, finalizeKv, idempotencyKey } from "./idempotency.js";
+import { claimGrantD1, claimKv, finalizeKv, idempotencyKey } from "./idempotency.js";
 
 const JACKET = "access.dual.v8";
 
@@ -125,7 +125,21 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
   if (!database && !kv) return { ok: false, reason: "store_unbound", jacket: "identity", persist: false };
 
   if (database) {
-    const claimed = await claimD1(database, { event_id: eventId, event_type: eventType || "checkout", session_id: sessionId });
+    const claimed = await claimGrantD1(
+      database,
+      { event_id: eventId, event_type: eventType || "checkout", session_id: sessionId },
+      {
+        session_id: sessionId,
+        event_id: eventId,
+        token_id: eventId,
+        email: email || "unbound@local",
+        tier: grant.iris_tier_unlock || sku,
+        sku,
+        amount_cad_cents: amountTotal,
+        currency: currency || "cad",
+        status: "granted"
+      }
+    );
     if (claimed.used && claimed.idempotent) {
       return { ok: true, idempotent: true, jacket: "identity", store: "d1", record: claimed.entitlement || null };
     }
@@ -157,20 +171,6 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
         ? { action: "credit_fuel", units: grant.units, iris_tier: grant.iris_tier_unlock || null }
         : { action: "open_seat", term_months: grant.term_months, perpetual: Boolean(grant.perpetual), ip: grant.ip, note: "Identity gate still applies for medical/engineering depth rooms" }
   };
-
-  if (database) {
-    await putEntitlementD1(database, {
-      session_id: sessionId,
-      event_id: eventId,
-      token_id: eventId,
-      email: email || "unbound@local",
-      tier: grant.iris_tier_unlock || sku,
-      sku,
-      amount_cad_cents: amountTotal,
-      currency: currency || "cad",
-      status: "granted"
-    });
-  }
 
   if (kv && id) {
     if (email && grant.kind === "fuel") {

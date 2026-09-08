@@ -1,4 +1,7 @@
-/** Identity jacket helpers. Key = Stripe event.id; session.id is secondary. */
+/** Identity jacket helpers.
+ *  Idempotency key = Stripe event.id (evt_…). session.id is secondary.
+ *  Stripe webhooks do not send an Idempotency-Key header.
+ */
 
 const TTL = 60 * 60 * 24 * 400;
 
@@ -34,15 +37,12 @@ function entitlementInsert(db, row, now) {
     );
 }
 
-function changesOf(res) {
-  return res && res.meta && typeof res.meta.changes === "number" ? res.meta.changes : 0;
-}
-
 export async function claimD1(db, row) {
   if (!db || !row || !row.event_id) return { used: false };
   const now = row.created_at || Math.floor(Date.now() / 1000);
   const ins = await eventInsert(db, row, now).run();
-  if (changesOf(ins) === 0) {
+  const changes = ins && ins.meta && typeof ins.meta.changes === "number" ? ins.meta.changes : 0;
+  if (changes === 0) {
     const existing = row.session_id
       ? await db.prepare("SELECT * FROM entitlements WHERE session_id = ?1").bind(row.session_id).first()
       : null;
@@ -57,28 +57,44 @@ export async function putEntitlementD1(db, row) {
   await entitlementInsert(db, row, now).run();
 }
 
-/** One TX. Replay if evt_ already stored OR session already granted. */
+function metaChanges(result) {
+  return result && result.meta && typeof result.meta.changes === "number" ? result.meta.changes : 0;
+}
+
+/** One TX: claim evt_ + write entitlement.
+ *  Replay if events.changes===0 (same evt_) OR entitlements.changes===0 (same cs_).
+ */
 export async function claimGrantD1(db, eventRow, entRow) {
   if (!db || !eventRow || !eventRow.event_id) return { used: false };
   const now = eventRow.created_at || Math.floor(Date.now() / 1000);
   const stmts = [eventInsert(db, eventRow, now)];
-  if (entRow && entRow.session_id) stmts.push(entitlementInsert(db, entRow, now));
+  const hasEnt = Boolean(entRow && entRow.session_id);
+  if (hasEnt) stmts.push(entitlementInsert(db, entRow, now));
   const results = await db.batch(stmts);
-  const eventChanges = changesOf(results && results[0]);
-  const entChanges = stmts.length > 1 ? changesOf(results && results[1]) : 1;
-  if (eventChanges === 0 || entChanges === 0) {
-    const existing = eventRow.session_id
-      ? await db.prepare("SELECT * FROM entitlements WHERE session_id = ?1").bind(eventRow.session_id).first()
+  const ev = metaChanges(results && results[0]);
+  const en = hasEnt ? metaChanges(results && results[1]) : 0;
+  const replay = ev === 0 || (hasEnt && en === 0);
+  if (replay) {
+    const sid = (entRow && entRow.session_id) || eventRow.session_id;
+    const existing = sid
+      ? await db.prepare("SELECT * FROM entitlements WHERE session_id = ?1").bind(sid).first()
       : null;
     return {
       used: true,
       idempotent: true,
-      reason: eventChanges === 0 ? "event_replay" : "session_replay",
       entitlement: existing || null,
-      store: "d1"
+      store: "d1",
+      event_changes: ev,
+      entitlement_changes: hasEnt ? en : null
     };
   }
-  return { used: true, idempotent: false, store: "d1" };
+  return {
+    used: true,
+    idempotent: false,
+    store: "d1",
+    event_changes: ev,
+    entitlement_changes: hasEnt ? en : null
+  };
 }
 
 export async function claimKv(kv, key, record) {
