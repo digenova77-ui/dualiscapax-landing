@@ -1,17 +1,11 @@
 /**
  * DualisCapax Stripe fulfill worker
  * Jacket: access.dual.v8
- *
- * Triple jacket — all three must pass or the purchase is NOT granted:
- *   1. Cryptographic jacket  — Stripe-Signature HMAC-SHA256 + 5-min window
- *   2. Identity jacket       — event.id + session.id idempotency (no double credit)
- *   3. Merchandise jacket    — allowlisted SKU AND amount_total in that SKU's CAD cents
- *
- * Secrets (never in git): STRIPE_WEBHOOK_SECRET
- * Optional bindings: FULFILL_KV, PAYMENT_LINK_SKU_JSON
+ * HMAC → merchSuperRefine → claim event.id → persist
  */
 
 import { merchSuperRefine, merchIssuesToFulfill } from "./merch-refine.js";
+import { claimD1, putEntitlementD1, claimKv, finalizeKv, idempotencyKey } from "./idempotency.js";
 
 const JACKET = "access.dual.v8";
 
@@ -23,9 +17,9 @@ const SKU_GRANT = {
   fuel_1000: { kind: "fuel", units: 1000, cad: 350, allowed_cents: [35000], label: "1,000 Fuel", delivers: "fuel_credit", iris_tier_unlock: "ULTIMATE", sku_code: "SKU-005" },
   edu_leaf: { kind: "seat", term_months: 1, ip: "overview_30d", cad: 19, allowed_cents: [1900], label: "Educational indication leaf — 30 day", delivers: "seat_access", sku_code: "SKU-016" },
   leaf: { kind: "seat", term_months: 12, ip: "one_room", cad: 49, allowed_cents: [4900], label: "Leaf — one gated room, 12 mo", delivers: "seat_access", sku_code: "SKU-017" },
-  branch: { kind: "seat", term_months: 12, ip: "one_field", cad: 299, allowed_cents: [29900, 14900], label: "Branch — subsystem clade, 12 mo", delivers: "seat_access", sku_code: "SKU-018", notes: "V8 list price CAD $299. CAD $149 is legacy test-link only." },
-  trunk: { kind: "seat", term_months: 12, ip: "domain_class_toolkit", cad: 499, allowed_cents: [49900], label: "Super-Trunk — one domain class, 12 mo", delivers: "seat_access", sku_code: "SKU-019", notes: "Live $499 Payment Link is Super-Trunk. Not the $1,499 atlas." },
-  library: { kind: "seat", term_months: 0, perpetual: true, ip: "atlas_index", cad: 1499, allowed_cents: [149900], label: "Atlas / index — not ALS, not MS, not the vault", delivers: "seat_access", sku_code: "SKU-029", notes: "Do not grant library for CAD $499. That amount is trunk." }
+  branch: { kind: "seat", term_months: 12, ip: "one_field", cad: 299, allowed_cents: [29900, 14900], label: "Branch — subsystem clade, 12 mo", delivers: "seat_access", sku_code: "SKU-018" },
+  trunk: { kind: "seat", term_months: 12, ip: "domain_class_toolkit", cad: 499, allowed_cents: [49900], label: "Super-Trunk — one domain class, 12 mo", delivers: "seat_access", sku_code: "SKU-019" },
+  library: { kind: "seat", term_months: 0, perpetual: true, ip: "atlas_index", cad: 1499, allowed_cents: [149900], label: "Atlas / index — not ALS, not MS, not the vault", delivers: "seat_access", sku_code: "SKU-029" }
 };
 
 const AMOUNT_CAD_CENTS_TO_SKU = {
@@ -37,6 +31,10 @@ const ALLOWED_EVENTS = {
   "checkout.session.completed": true,
   "checkout.session.async_payment_succeeded": true
 };
+
+function db(env) {
+  return (env && (env.DB || env.FULFILL_DB || env.FULFILLMENTS)) || null;
+}
 
 function timingSafeEqualHex(a, b) {
   if (typeof a !== "string" || typeof b !== "string") return false;
@@ -109,12 +107,7 @@ function skuFromSession(session, env) {
 
 function merchandiseJacket(session, resolved) {
   const result = merchSuperRefine(
-    {
-      sku: resolved && resolved.sku,
-      cents: session && session.amount_total,
-      currency: session && session.currency,
-      via: resolved && resolved.via
-    },
+    { sku: resolved && resolved.sku, cents: session && session.amount_total, currency: session && session.currency, via: resolved && resolved.via },
     SKU_GRANT
   );
   const out = merchIssuesToFulfill(result);
@@ -122,15 +115,34 @@ function merchandiseJacket(session, resolved) {
   return out;
 }
 
-async function grantAccess(env, { eventId, sessionId, sku, email, amountTotal, currency, via }) {
+async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amountTotal, currency, via }) {
   const grant = sku ? SKU_GRANT[sku] : null;
-  if (!grant) {
-    return { ok: false, reason: "unknown_sku", sku, via, amount_total: amountTotal, jacket: JACKET };
+  if (!grant) return { ok: false, reason: "unknown_sku", sku, via, amount_total: amountTotal, jacket: JACKET };
+  if (!eventId) return { ok: false, reason: "missing_event_id", jacket: "identity" };
+
+  const database = db(env);
+  const kv = env && env.FULFILL_KV;
+  if (!database && !kv) return { ok: false, reason: "store_unbound", jacket: "identity", persist: false };
+
+  if (database) {
+    const claimed = await claimD1(database, { event_id: eventId, event_type: eventType || "checkout", session_id: sessionId });
+    if (claimed.used && claimed.idempotent) {
+      return { ok: true, idempotent: true, jacket: "identity", store: "d1", record: claimed.entitlement || null };
+    }
   }
+
+  const id = idempotencyKey(eventId, sessionId);
+  if (kv && id) {
+    const kvClaim = await claimKv(kv, id.key, { event_id: eventId, session_id: sessionId, sku, status: "pending" });
+    if (kvClaim.used && kvClaim.idempotent) {
+      return { ok: true, idempotent: true, jacket: "identity", store: "kv", record: kvClaim.record };
+    }
+  }
+
   const record = {
     at: new Date().toISOString(),
     jacket: JACKET,
-    event_id: eventId || null,
+    event_id: eventId,
     session_id: sessionId,
     sku,
     via,
@@ -145,26 +157,36 @@ async function grantAccess(env, { eventId, sessionId, sku, email, amountTotal, c
         ? { action: "credit_fuel", units: grant.units, iris_tier: grant.iris_tier_unlock || null }
         : { action: "open_seat", term_months: grant.term_months, perpetual: Boolean(grant.perpetual), ip: grant.ip, note: "Identity gate still applies for medical/engineering depth rooms" }
   };
-  if (env && env.FULFILL_KV) {
-    if (eventId) {
-      const seenEvent = await env.FULFILL_KV.get("event:" + eventId);
-      if (seenEvent) return { ok: true, idempotent: true, jacket: "identity", record: JSON.parse(seenEvent) };
-    }
-    const existing = await env.FULFILL_KV.get("session:" + sessionId);
-    if (existing) return { ok: true, idempotent: true, jacket: "identity", record: JSON.parse(existing) };
-    await env.FULFILL_KV.put("session:" + sessionId, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 400 });
-    if (eventId) await env.FULFILL_KV.put("event:" + eventId, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 400 });
+
+  if (database) {
+    await putEntitlementD1(database, {
+      session_id: sessionId,
+      event_id: eventId,
+      token_id: eventId,
+      email: email || "unbound@local",
+      tier: grant.iris_tier_unlock || sku,
+      sku,
+      amount_cad_cents: amountTotal,
+      currency: currency || "cad",
+      status: "granted"
+    });
+  }
+
+  if (kv && id) {
     if (email && grant.kind === "fuel") {
       const ek = "fuel:" + email.toLowerCase();
-      const prev = Number((await env.FULFILL_KV.get(ek)) || 0);
-      await env.FULFILL_KV.put(ek, String(prev + grant.units), { expirationTtl: 60 * 60 * 24 * 400 });
+      const prev = Number((await kv.get(ek)) || 0);
+      await kv.put(ek, String(prev + grant.units), { expirationTtl: 60 * 60 * 24 * 400 });
       record.fuel_balance_after = prev + grant.units;
     }
     if (email && grant.kind === "seat") {
-      await env.FULFILL_KV.put("seat:" + email.toLowerCase() + ":" + sku, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 400 });
+      await kv.put("seat:" + email.toLowerCase() + ":" + sku, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 400 });
     }
+    await finalizeKv(kv, id.key, record);
+    await finalizeKv(kv, "session:" + sessionId, record);
   }
-  return { ok: true, idempotent: false, jacket: JACKET, record };
+
+  return { ok: true, idempotent: false, jacket: JACKET, store: database ? "d1" : "kv", record };
 }
 
 function json(obj, status) {
@@ -180,7 +202,7 @@ export default {
       const url = new URL(request.url);
       const path = url.pathname.replace(/\/$/, "") || "/";
       if (path === "/skus") {
-        return json({ service: "dualiscapax-stripe-fulfill", jacket: JACKET, skus: SKU_GRANT, amount_fallback_cad_cents: AMOUNT_CAD_CENTS_TO_SKU, rule: "metadata.sku preferred. amount_total must match that sku. $499 = trunk, not atlas." });
+        return json({ service: "dualiscapax-stripe-fulfill", jacket: JACKET, skus: SKU_GRANT, amount_fallback_cad_cents: AMOUNT_CAD_CENTS_TO_SKU, rule: "metadata.sku preferred. $499 = trunk, not atlas." });
       }
       return json({
         service: "dualiscapax-stripe-fulfill",
@@ -190,7 +212,8 @@ export default {
         skus: Object.keys(SKU_GRANT),
         jackets: ["cryptographic", "identity", "merchandise"],
         has_webhook_secret: Boolean(env && env.STRIPE_WEBHOOK_SECRET),
-        has_kv: Boolean(env && env.FULFILL_KV)
+        has_kv: Boolean(env && env.FULFILL_KV),
+        has_d1: Boolean(db(env))
       });
     }
     if (request.method === "OPTIONS") {
@@ -211,6 +234,7 @@ export default {
       return json({ received: true, ignored: type, fulfill: { ok: false, reason: "payment_failed" } });
     }
     if (!ALLOWED_EVENTS[type]) return json({ received: true, ignored: type });
+    if (!event.id) return json({ received: true, fulfill: { ok: false, reason: "missing_event_id" } }, 400);
 
     const session = event.data && event.data.object;
     if (!session || !session.id) return new Response("no session", { status: 400 });
@@ -240,6 +264,7 @@ export default {
 
     const result = await grantAccess(env, {
       eventId: event.id,
+      eventType: type,
       sessionId: session.id,
       sku: merch.sku,
       via: merch.via,
