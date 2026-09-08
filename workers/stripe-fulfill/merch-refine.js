@@ -1,68 +1,55 @@
-/**
- * Dualis merchandise superRefine (vanilla).
- * Same shape as Zod .superRefine ctx.addIssue list.
- * Call AFTER HMAC and skuFromSession flatten. Do not parse unsigned bodies.
- *
- * Zod equivalent (not bundled):
- *   Resolved.superRefine((g, ctx) => { … ctx.addIssue({ message: code, path }) })
+/** Vanilla superRefine for the merchandise jacket.
+ *  Same shape as Zod ctx.addIssue — no zod package.
+ *  HMAC and D1 stay outside this function.
  */
 
 export function merchSuperRefine(g, skuGrant) {
   const reasons = [];
-  if (!g || typeof g !== "object") {
-    return { ok: false, reasons: [{ code: "unresolved_sku", path: ["sku"] }] };
-  }
-
-  const currency = g.currency == null ? "cad" : String(g.currency).toLowerCase();
-  if (currency !== "cad") {
-    reasons.push({ code: "currency_not_cad", path: ["currency"], currency: g.currency });
-  }
-
-  const sku = g.sku;
+  const sku = g && g.sku;
+  const cents = g && g.cents;
+  const currency = g && g.currency != null ? String(g.currency).toLowerCase() : "cad";
   const spec = sku && skuGrant ? skuGrant[sku] : null;
+
+  if (currency !== "cad") {
+    reasons.push({ code: "currency_not_cad", path: ["currency"], currency: currency });
+  }
+
   if (!spec) {
     reasons.push({
       code: sku ? "unknown_sku" : "unresolved_sku",
       path: ["sku"],
-      claimed: sku || null,
+      sku: sku || null,
+      via: (g && g.via) || null,
     });
-    return { ok: false, reasons: reasons, sku: null };
+    return { ok: false, reasons: reasons };
   }
 
-  const cents = g.cents;
   const allowed = spec.allowed_cents || [];
   if (typeof cents !== "number" || allowed.indexOf(cents) === -1) {
+    var via = (g && g.via) || "";
+    var code = "amount_sku_mismatch";
+    if (via === "metadata" || via === "metadata_amount_mismatch") code = "metadata_amount_mismatch";
+    if (via === "payment_link_map" || via === "payment_link_amount_mismatch") code = "payment_link_amount_mismatch";
     reasons.push({
-      code: "amount_sku_mismatch",
+      code: code,
       path: ["cents"],
       sku: sku,
-      amount_total: cents,
+      cents: cents,
       expected_cents: allowed,
     });
   }
 
-  if (reasons.length) return { ok: false, reasons: reasons, sku: sku };
-  return { ok: true, reasons: [], sku: sku, via: g.via || null };
+  return { ok: reasons.length === 0, reasons: reasons, sku: sku, spec: spec };
 }
 
-export function merchFromSession(session, resolved, skuGrant) {
-  const g = {
-    sku: resolved && resolved.sku,
-    cents: session && session.amount_total,
-    currency: session && session.currency,
-    via: resolved && resolved.via,
+export function merchIssuesToFulfill(result) {
+  if (!result || result.ok) return { ok: true, sku: result && result.sku };
+  const first = (result.reasons && result.reasons[0]) || { code: "unresolved_sku" };
+  return {
+    ok: false,
+    reason: first.code,
+    reasons: result.reasons,
+    claimed: first.sku,
+    expected_cents: first.expected_cents,
   };
-  const out = merchSuperRefine(g, skuGrant);
-  if (!out.ok) {
-    return {
-      ok: false,
-      reason: out.reasons[0] && out.reasons[0].code,
-      reasons: out.reasons,
-      claimed: resolved && (resolved.claimed || resolved.sku),
-      amount_total: session && session.amount_total,
-      currency: session && session.currency,
-      expected_cents: out.reasons[0] && out.reasons[0].expected_cents,
-    };
-  }
-  return { ok: true, sku: out.sku, via: g.via, reasons: [] };
 }
