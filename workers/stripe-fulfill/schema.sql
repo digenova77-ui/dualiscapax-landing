@@ -2,6 +2,7 @@
 -- Database: dualiscapax-fulfillments
 -- events = accepted Stripe webhook (append-only)
 -- entitlements = write-once grant (ON CONFLICT session_id DO NOTHING)
+-- fuel_credits = write-once Fuel units (ON CONFLICT session_id DO NOTHING)
 
 CREATE TABLE IF NOT EXISTS events (
   event_id     TEXT PRIMARY KEY,
@@ -23,7 +24,17 @@ CREATE TABLE IF NOT EXISTS entitlements (
   created_at       INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS fuel_credits (
+  session_id TEXT PRIMARY KEY,
+  event_id   TEXT NOT NULL,
+  email      TEXT NOT NULL,
+  units      INTEGER NOT NULL,
+  sku        TEXT,
+  created_at INTEGER NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id);
 CREATE INDEX IF NOT EXISTS idx_token_id ON entitlements(token_id);
 CREATE INDEX IF NOT EXISTS idx_email ON entitlements(email);
 CREATE INDEX IF NOT EXISTS idx_sku ON entitlements(sku);
+CREATE INDEX IF NOT EXISTS idx_fuel_email ON fuel_credits(email);
