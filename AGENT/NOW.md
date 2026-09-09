@@ -1,6 +1,6 @@
 # NOW — scan script for any AI agency
 
-Stamp: 2026-09-09T17:08Z
+Stamp: 2026-09-09T17:22Z
 Repo: digenova77-ui/dualiscapax-landing  branch main
 Seat: David. Vault: CHECKOUT_OPEN must stay false.
 If you did not deploy it, it is not live.
@@ -25,10 +25,9 @@ If a file fights AUTONOMY + AUDIT, those two win.
 # Hall files exist
 test -f hall/index.html && test -f hall/narrator-land.js && test -f hall/cuts-v1.json
 
-# Gate hole (should become five more files)
+# Gate carpenter files (landed b5ea2ad)
 ls workers/dualis-gate/
-# EXPECT today: README.md dualis-bc.js
-# MISSING: stripe-hmac-verify.js timing-safe-equal.js d1-idempotency.js schema.sql wrangler.toml
+# EXPECT: README.md dualis-bc.js stripe-hmac-verify.js timing-safe-equal.js d1-idempotency.js schema.sql wrangler.toml
 
 # Foreman exists, not bound
 test -f workers/agency-foreman/index.js
@@ -46,10 +45,11 @@ Ring: `.github/workflows/residual-ring.yml` hashes hall/* and curls `/hall/` noo
 
 ## 3. Live vs paper (this stamp)
 
-LIVE: hall/ files, residual-ring, Pages, secret-scan, this AGENT bundle.
-PAPER: dualis-gate imports, D1, /u, HMAC preview, UnityFan, queue, PWA, chain.
+LIVE: hall/ files, residual-ring, Pages, secret-scan, this AGENT bundle, dualis-gate carpenter files (b5ea2ad).
+PAPER: dualis-gate preview deploy, D1 dualis-unity bind, /u live, HMAC five greens, UnityFan, queue, PWA, chain.
 RED: workers-live (iris-gateway). Do not hang new work on it.
 CLOSED: /pay/intent. Do not flip CHECKOUT_OPEN.
+OPEN HOLE: apex /hall/ still reroutes (Cloudflare bind). Seat order 1. Separate splice.
 
 ## 4. Colors (do not swap)
 
@@ -60,7 +60,9 @@ CLOSED: /pay/intent. Do not flip CHECKOUT_OPEN.
 Name the floor. One splice. Hash it. Do not redesign the hall.
 Do not dump merch, fuel, $1499, ALS.
 Do not invent Dualis-L1 or bind /*.
-Necessity now: gate carpenter files listed in §2.
-Then Replay tester on preview. Then still not the vault.
+Necessity now: Replay tester on preview.
+Seat must: `npx wrangler d1 create dualis-unity` then dashboard bind DB; `npx wrangler secret put STRIPE_IDENTITY_SECRET` and `STRIPE_WEBHOOK_SECRET` (test `whsec_`); `npx wrangler deploy` from workers/dualis-gate. Never routes /*.
+Then HMAC TEST: bad sig = 400 zero rows. Good `evt_` = one row. Same `evt_` again = 200 duplicate.
+Then still not the vault.
 
 Truth prevails. Leftover first.
