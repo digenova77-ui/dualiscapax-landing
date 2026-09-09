@@ -1,5 +1,5 @@
 {
-  "document_control_id": "ED-SPEC-20260909-JURAL-V1",
+  "document_control_id": "ED-SPEC-20260909-JURAL-V2",
   "operator": {
     "code": "OPERATOR",
     "name": "DualisCapax Inc.",
@@ -8,8 +8,22 @@
     "seat": "535 Bridge St E, Belleville, Ontario, Canada K8N 1R7",
     "line": "Operator house. This line does not follow the audience picker."
   },
-  "default": "CA-ON",
+  "default": "WORLD",
   "jurisdictions": {
+    "WORLD": {
+      "code": "WORLD",
+      "name": "World",
+      "status": "undeclared",
+      "audience_line": "No provincial default. Name the desk.",
+      "href": "world.html"
+    },
+    "NP": {
+      "code": "NP",
+      "name": "Nepal",
+      "status": "stub",
+      "audience_line": "Nepal law applies at this desk. Shelf unpublished.",
+      "href": "np.html"
+    },
     "CA-ON": {
       "code": "CA-ON",
       "name": "Ontario",
@@ -49,9 +63,9 @@
     "CA-AB": {
       "code": "CA-AB",
       "name": "Alberta",
-      "status": "stub",
+      "status": "landing",
       "audience_line": "Alberta and Canadian law apply at this desk. Statute cards unpublished.",
-      "href": "ca.html"
+      "href": "ab.html"
     },
     "CA-BC": {
       "code": "CA-BC",
