@@ -1,0 +1,39 @@
+name: jurisdiction-watch
+
+on:
+  push:
+    paths:
+      - "data/jurisdiction-spine.json"
+      - "js/jurisdiction-adapter.js"
+      - "why.html"
+      - "qc.html"
+      - "ca.html"
+      - "on.html"
+      - "scripts/jural-watch.mjs"
+      - ".github/workflows/jurisdiction-watch.yml"
+  pull_request:
+    paths:
+      - "data/jurisdiction-spine.json"
+      - "js/jurisdiction-adapter.js"
+      - "why.html"
+      - "qc.html"
+      - "ca.html"
+      - "on.html"
+      - "scripts/jural-watch.mjs"
+      - ".github/workflows/jurisdiction-watch.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  jural:
+    name: Audience statute matches picker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run jural watcher
+        run: node scripts/jural-watch.mjs
