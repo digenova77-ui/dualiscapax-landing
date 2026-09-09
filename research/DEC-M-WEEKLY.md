@@ -1,118 +1,92 @@
-# DEC-M weekly grant instrumentation
+# DEC-M weekly grant instrument
 
-**Status:** spec. DEC-M is a V9 proposal jacket, not a live SKU.
-**Checkout:** `open: false`. This file does not paint DEC-M on the lander and does not add Payment Links.
+**Status:** instrument only. DEC-M is a V9 proposal SKU, not live.
+**Checkout:** `open: false`.
+**Not this file:** lander tile, Payment Link, sealed bodies, a fitted ε.
 **Date:** 2026-09-08
-**Companions:** `research/PRICING-V9-PROPOSAL.md`, `workers/stripe-fulfill/schema.sql`, `workers/stripe-fulfill/grant-week.sql`
 
-Purpose: when (and only when) a Decision-month grant exists, log a weekly row so own-price and Heavy cross-price can be computed later without pooling Leaf into DEC-M.
-
----
-
-## What is a DEC-M grant
-
-A row in `entitlements` whose `sku` is the Decision-month jacket (`SKU-DEC-M` when sealed; do not mint the code in `payment-links.json` from this file).
-
-Required grant key: `(email, sku, class)` write-once. Medical cannot count as engineering. Fuel is a separate `fuel_credits` row. Ticket mix is not stored on the grant; it is operator-coded on the week row.
-
-Until `open: true` and a DEC-M Stripe amount exists, every weekly query returns zeros. That is correct. Do not seed fake grants.
+Companion: `research/PRICING-V9-PROPOSAL.md`, `workers/stripe-fulfill/schema.sql`, `workers/stripe-fulfill/weekly-dec-m.sql`.
 
 ---
 
-## Week grain
+## Purpose
 
-- Week starts Monday 00:00 UTC.
-- `week_start` = unix seconds of that midnight.
-- One row per `(week_start, sku, class)`.
-- Never pool classes. Never pool DEC-M with SKU-017.
+When (if) DEC-M grants exist, measure own-price and cross-price vs SuperGrok Heavy from **the same weekly grain**:
+
+- \(N\) = new DEC-M entitlements that week (write-once `session_id`)
+- \(u\) = Fuel `SUM(units)` on those emails that week
+- \(P_H\) = Heavy list USD, annotated off-ledger
+
+Until grants exist, every rollup is a zero row. That is correct. Do not invent \(N\).
 
 ---
 
-## Columns on `grant_week`
+## SKU filter (do not widen)
 
-| Column | Source | Why |
+Count as DEC-M only when `entitlements.sku` is one of:
+
+- `DEC-M`
+- `dec-m`
+- `sku.decision.month`
+- `sku.decision.month.<class>`
+
+Do **not** include Leaf / Branch / Trunk / Atlas / F1–F5 / Crown.
+Do **not** treat Iris Look sessions as grants.
+
+Class: parse from `sku.decision.month.<class>` when present. Else `UNRESOLVED`.
+Do not infer class from email domain. Do not pool medical with engineering.
+
+---
+
+## Weekly grain
+
+Week = Monday 00:00 UTC → next Monday, from `created_at` (unix seconds).
+
+```sql
+strftime('%Y-%W', created_at, 'unixepoch')
+```
+
+Use ISO week in the view (`weekly-dec-m.sql`). One row per `(week, class)`.
+
+---
+
+## Columns to store / print
+
+| Column | Source | Rule |
 |---|---|---|
-| `week_start` | calendar | arc / log-log needs time |
-| `sku` | entitlements.sku | own-price is per jacket |
-| `class` | entitlements.class (additive; today missing) | isolation |
-| `n_new` | COUNT grants created in week | headcount N |
-| `n_alive` | COUNT grants not canceled and not expired at week end | survival |
-| `n_canceled` | COUNT canceled_at in week | hazard |
-| `fuel_units` | SUM(fuel_credits.units) for those emails in week | intensity u |
-| `cad_list_cents` | locked list that week | P_i |
-| `cad_paid_cents` | SUM amount actually captured | discounts |
-| `heavy_usd_cents` | operator stamp, not scraped by the worker | P_H |
-| `heavy_pool_tight` | 0/1 operator stamp | effective Heavy price |
-| `tickets_bucket` | operator count | speech-failure tag |
-| `tickets_door` | operator count | format tag |
-| `tickets_desk` | operator count | refusal tag |
-| `tickets_vault` | operator count | ALS/vault-seeking |
+| `week` | `created_at` | UTC ISO week |
+| `sku` | `entitlements.sku` | DEC-M family only |
+| `class` | sku suffix or `UNRESOLVED` | never pooled |
+| `n_grants` | `COUNT(*)` entitlements | write-once; replays are not new |
+| `n_emails` | `COUNT(DISTINCT email)` | intensity vs headcount |
+| `cad_list_cents` | locked jacket when V9 seals | not scraped from chat |
+| `cad_paid_cents` | `SUM(amount_cad_cents)` | actual paid |
+| `fuel_units` | `SUM(fuel_credits.units)` for those emails that week | complements, not the grant |
+| `n_cancel` | 0 until a cancel table exists | do not fake churn |
+| `heavy_usd` | operator annotation | not in D1 |
+| `ticket_mix` | operator annotation | `bucket` \| `door` \| `desk` \| `vault` |
 
-`heavy_*` and `tickets_*` are **not** Stripe fields. A Worker must not invent them. Operator pastes them when reviewing the week.
+`heavy_usd` and `ticket_mix` stay **off D1**. Write them in the weekly operator note, not in `entitlements`.
 
 ---
 
-## Queries (live tables today)
+## How to read a week
 
-Today `entitlements` has email, sku, tier, amount, status — **no `class`, no `canceled_at`**. Additive columns are in `grant-week.sql`. Until those exist, N can still be sketched:
+- \(N=0\) → no ε. Stop.
+- Heavy promo week ∧ DEC-M \(N\) up ∧ tickets=`bucket` → treat as \(\varepsilon_{DEC,H}>0\) (speech failed).
+- Fuel units up, DEC-M \(N\) flat → overflow compute, not a desk.
+- Medical week and engineering week moving together on a Heavy promo → gate leak.
 
-```sql
--- New grants this week by sku (class missing → do not call this DEC-M isolation)
-SELECT sku,
-       COUNT(*) AS n_new
-FROM entitlements
-WHERE sku IN ('SKU-DEC-M', 'dec_m', 'decision_month')
-  AND created_at >= ? AND created_at < ?
-GROUP BY sku;
-```
-
-Fuel intensity for the same emails:
-
-```sql
-SELECT e.sku,
-       SUM(f.units) AS fuel_units
-FROM entitlements e
-JOIN fuel_credits f ON f.email = e.email
-WHERE e.sku IN ('SKU-DEC-M', 'dec_m', 'decision_month')
-  AND f.created_at >= ? AND f.created_at < ?
-GROUP BY e.sku;
-```
-
-Idempotency stays `ON CONFLICT (session_id) DO NOTHING`. A replay must not create a second week increment.
+Do not compute ε_arc while either adjacent week has \(N=0\).
 
 ---
 
-## Metrics the week row must support
+## What this instrument will not do
 
-Own-price arc, only if `cad_list` actually changed:
+- Flip checkout.
+- Insert demo grants.
+- Paint DEC-M on the five cards.
+- Store Heavy's price in D1 as if it were a Dualis SKU.
+- ALTER `entitlements` in a way that breaks `claimGrantD1`.
 
-```
-ε_arc = ((Q2-Q1)/(Q1+Q2)) / ((P2-P1)/(P1+P2))
-Q = n_new   or   n_alive   — pick one and do not switch mid-series
-```
-
-Heavy cross-price, Dualis P frozen:
-
-```
-ε_DEC,H = ((Q2-Q1)/(Q1+Q2)) / ((P_H2-P_H1)/(P_H1+P_H2))
-```
-
-Flag (not an automatic ε):
-
-- Heavy promo week AND n_new up AND tickets_bucket > tickets_desk → treat as substitute speech failure.
-
-Zeros are legal. Invented grants are not.
-
----
-
-## What this instrumentation will not do
-
-- Flip `open: true`.
-- Add DEC-M to `payment-links.json`.
-- Paint a Decision tile on the five cards.
-- Let Iris mint a DEC-M grant.
-- Store ticket text that names a patient, a student, or a sealed body.
-- Pool medical and engineering into one week row.
-- Scrape Heavy from inside the fulfill Worker.
-
-House reading: instrument the week so that when DEC-M exists, ε_DEC,H is computable. Until then the rollup is an empty table, which is the true measurement.
+House reading: weekly DEC-M is a view over write-once grants plus Fuel SUM. Empty is the current true row. V8 stays painted. V9 stays a proposal until operator lock.
