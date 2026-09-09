@@ -1,0 +1,40 @@
+name: dualis-gate-replay
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "workers/dualis-gate/**"
+      - ".github/workflows/dualis-gate-replay.yml"
+  pull_request:
+    paths:
+      - "workers/dualis-gate/**"
+      - ".github/workflows/dualis-gate-replay.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    name: Replay tester (checkout closed)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Assert checkout stays closed
+        run: |
+          set -euo pipefail
+          grep -q 'CHECKOUT_OPEN = "false"' workers/dualis-gate/wrangler.toml
+          if grep -R -n -E 'routes\s*=\s*\[.*\/\*' workers/dualis-gate/; then
+            echo "FORBID: dualis-gate binds /*"
+            exit 1
+          fi
+          if grep -R -n -E 'whsec_|sk_live_|rk_live_|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY' workers/dualis-gate/; then
+            echo "FORBID: secret material in dualis-gate"
+            exit 1
+          fi
+      - name: Run Replay tester
+        run: node workers/dualis-gate/replay-test.mjs
