@@ -1,0 +1,16 @@
+name = "dualis-gate"
+main = "dualis-bc.js"
+compatibility_date = "2026-08-30"
+
+# Isolate only. Never bind this worker to /*.
+# Dashboard routes if previewed: /u/* /hooks/* /pay/*
+
+[vars]
+CHECKOUT_OPEN = "false"
+
+# Create with: npx wrangler d1 create dualis-unity
+# Then put database_id in the dashboard bind, not in git.
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "dualis-unity"
+# database_id = "replace-in-dashboard-not-git"
