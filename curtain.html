@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Curtain — Unity ID · DualisCapax</title>
+<meta name="description" content="Look is free. A $0 Unity ID opens depth. KYC later. No Ontario default."/>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="theme.css"/>
+<style>
+  :root{--ink:#e8e8e4;--dim:#8a8a84;--bg:#050505}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",sans-serif}
+  .site{max-width:42rem;margin:0 auto;padding:1.4rem 1.1rem 3rem}
+  header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.2rem}
+  .mark{color:inherit;text-decoration:none;letter-spacing:.14em;text-transform:uppercase;font-size:.72rem}
+  nav a{color:var(--dim);margin-left:.8rem;text-decoration:none;font-size:.8rem}
+  h1{font-size:1.7rem;margin:.2rem 0 .5rem}
+  .lede{color:var(--dim);line-height:1.5}
+  .why-beat{border-left:4px solid var(--beat);padding-left:14px;margin:1.15rem 0}
+  .f-num{font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--beat);margin:0 0 .3rem}
+  .why-line{color:var(--beat);font-weight:600;margin:0 0 .4rem}
+  .b1{--beat:#ffb830}.b2{--beat:#3b82f6}.b3{--beat:#00e5ff}.b4{--beat:#c084fc}.b5{--beat:#00ffaa}
+  label{display:block;font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;margin:0.7rem 0 .25rem}
+  input,select{width:100%;box-sizing:border-box;background:#111;color:#eee;border:1px solid #333;padding:.45rem .55rem;font:inherit}
+  .row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+  button,.btn{background:#111;color:#eee;border:1px solid #555;padding:.45rem .7rem;cursor:pointer;font:inherit;text-decoration:none}
+  button.primary{border-color:#00ffaa;color:#00ffaa}
+  .oauth{opacity:.55}
+  .hint{font-size:.78rem;color:var(--dim);margin-top:.6rem}
+  .idline{font-family:"IBM Plex Mono",monospace;font-size:.72rem;word-break:break-all}
+  footer{margin-top:2rem;font-size:.75rem;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="site">
+  <header>
+    <a class="mark" href="why.html">DualisCapax</a>
+    <nav>
+      <a href="why.html">Look</a>
+      <a href="world.html">World</a>
+      <a href="ca.html">Canada</a>
+    </nav>
+  </header>
+  <p class="f-num" style="color:#00ffaa">Curtain · Unity session</p>
+  <h1>Look is free. Depth needs a name on this device.</h1>
+  <p class="lede">A Unity ID is $0. It is not a government stamp. KYC can wait. Google, Microsoft, and Meta can wait. The desk you declare is the law that paints — not Belleville, unless that is actually your desk.</p>
+  <article class="why-beat b1"><p class="f-num">01 // FIDUCIARY</p><p class="why-line">No fee to stand here.</p><p>The leftover stays the story. This curtain does not sell a seat.</p></article>
+  <article class="why-beat b2"><p class="f-num">02 // INFRASTRUCTURE</p><p class="why-line">The ID lives on this device first.</p><p>Nothing here mints a Cloudflare secret or opens checkout.</p></article>
+  <article class="why-beat b3"><p class="f-num">03 // IRIS</p><p class="why-line">Talk stays look until you say stop.</p><p>Depth rooms ask for the ID. The five cards do not.</p></article>
+  <article class="why-beat b4"><p class="f-num">04 // LOOK</p><p class="why-line">Encyclopedia titles stay readable.</p><p>Bodies and doc panes wait for the session. Simulation is not treatment.</p></article>
+  <article class="why-beat b5"><p class="f-num">05 // DESK</p><p class="why-line">You name the place. We do not assume Ontario.</p><p>Nepal lands Nepal. Alberta lands Alberta. Undeclared lands World.</p></article>
+  <form id="mint-form">
+    <label for="uName">What we may call you</label>
+    <input id="uName" autocomplete="name" placeholder="A name you use"/>
+    <label for="uCountry">Country</label>
+    <input id="uCountry" placeholder="Nepal · Canada · …"/>
+    <label for="uRegion">Province / state / zone</label>
+    <input id="uRegion" placeholder="Bagmati · Alberta · …"/>
+    <label for="uJx">Desk jurisdiction</label>
+    <select id="uJx">
+      <option value="WORLD">World — undeclared (default)</option>
+      <option value="NP">Nepal</option>
+      <option value="CA-AB">Alberta, Canada</option>
+      <option value="CA-BC">British Columbia, Canada</option>
+      <option value="CA-QC">Québec, Canada</option>
+      <option value="CA-ON">Ontario, Canada — only if that is your desk</option>
+    </select>
+    <p class="hint" id="hint-line"></p>
+    <div class="row">
+      <button class="primary" type="submit">Mint Unity ID · $0</button>
+      <a class="btn" href="why.html">Stay on look</a>
+    </div>
+  </form>
+  <p class="hint">Link later — not live until Seat puts client IDs in the worker. Do not paste secrets into this page.</p>
+  <div class="row">
+    <button class="oauth" type="button" disabled title="PAPER — Seat client id required">Google (later)</button>
+    <button class="oauth" type="button" disabled title="PAPER — Seat client id required">Microsoft (later)</button>
+    <button class="oauth" type="button" disabled title="PAPER — Seat client id required">Meta (later)</button>
+  </div>
+  <p class="idline" id="id-line"></p>
+  <footer data-jx-house="operator">Operator house stays DualisCapax Inc., OBCA #100089211, Belleville, Ontario. That is the publisher, not your landing.</footer>
+</div>
+<script src="js/unity-session.js"></script>
+<script src="js/jurisdiction-adapter.js"></script>
+<script>
+(function () {
+  var hint = window.DC_UNITY && DC_UNITY.hint();
+  var hintLine = document.getElementById("hint-line");
+  if (hint && hintLine) {
+    hintLine.textContent = "Device hint only: " + (hint.tz || "unknown zone") +
+      (hint.jx && hint.jx !== "WORLD" ? " · suggested desk " + hint.jx : " · no Ontario auto-land");
+  }
+  if (hint && hint.jx && hint.jx !== "WORLD" && hint.jx !== "CA-ON") {
+    document.getElementById("uJx").value = hint.jx;
+    if (hint.country) document.getElementById("uCountry").value = hint.country;
+    if (hint.place) document.getElementById("uRegion").value = hint.place;
+  }
+  var existing = DC_UNITY.read();
+  if (existing && existing.unity_id) {
+    document.getElementById("id-line").textContent = "Already on this device: " + existing.unity_id + " · " + existing.jx;
+  }
+  document.getElementById("mint-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var s = DC_UNITY.mint({
+      name: document.getElementById("uName").value.trim(),
+      country: document.getElementById("uCountry").value.trim(),
+      region: document.getElementById("uRegion").value.trim(),
+      place: document.getElementById("uRegion").value.trim(),
+      jx: document.getElementById("uJx").value
+    });
+    var next = "";
+    try { next = new URLSearchParams(location.search).get("next") || ""; } catch (err) {}
+    location.href = next || DC_UNITY.landPath(s);
+  });
+})();
+</script>
+</body>
+</html>
