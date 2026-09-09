@@ -2,43 +2,57 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DUALISCAPAX</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DUALISCAPAX — Unity Playground</title>
+<meta name="theme-color" content="#04060c">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#04060c;--gold:#ffb830;--cobalt:#3b82f6;--cyan:#00e5ff;--violet:#c084fc;--mint:#00ffaa;--mute:#8b93a7;--line:rgba(255,255,255,.08)}
+:root{--bg:#04060c;--paper:#f4f6fb;--mute:#8b93a7;--gold:#ffb830;--cobalt:#3b82f6;--cyan:#00e5ff;--violet:#c084fc;--mint:#00ffaa;--line:rgba(255,255,255,.1)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:#f4f6fb;font-family:IBM Plex Sans,system-ui;padding:28px 16px 120px}
-.hall{max-width:560px;margin:0 auto}
-.word{text-align:center;letter-spacing:.42em;font-weight:700;font-family:IBM Plex Mono,monospace}
-.sub{text-align:center;color:var(--mint);letter-spacing:.2em;font-size:10px;margin:8px 0 22px;font-family:IBM Plex Mono,monospace}
-.card{margin:12px 0;padding:16px;border:1px solid var(--line);border-radius:16px;background:#0a1220;border-left:4px solid var(--id)}
-.kicker{font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--id);letter-spacing:.14em}
+html,body{min-height:100%;background:var(--bg);color:var(--paper);font-family:"IBM Plex Sans",system-ui,sans-serif}
+body{padding:24px 16px calc(128px + env(safe-area-inset-bottom));background:
+  radial-gradient(800px 400px at 50% -10%,rgba(0,229,255,.08),transparent 60%),
+  radial-gradient(600px 300px at 80% 120%,rgba(192,132,252,.06),transparent 50%),
+  var(--bg)}
+body::before{content:"";pointer-events:none;position:fixed;inset:0;opacity:.12;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hall{position:relative;z-index:1;max-width:560px;margin:0 auto}
+[data-land].is-waiting{opacity:0;transform:translateY(16px)}
+[data-land].is-landed{opacity:1;transform:none;transition:opacity .7s ease,transform .7s ease}
+@media (prefers-reduced-motion:reduce){[data-land]{opacity:1;transform:none;transition:none}}
+.brand{text-align:center;margin-bottom:20px}
+.word{font-family:"IBM Plex Mono",monospace;letter-spacing:.42em;font-weight:700;font-size:18px;padding-left:.42em}
+.sub{color:var(--mint);letter-spacing:.22em;font-size:10px;font-weight:600;margin-top:8px;font-family:"IBM Plex Mono",monospace}
+.card{display:grid;grid-template-columns:1fr 48px;align-items:center;gap:8px;margin:12px 0;padding:16px 14px 16px 18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(16,25,42,.95),rgba(10,18,32,.95));position:relative;min-height:96px}
+.card::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:4px;background:var(--id)}
+.kicker{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--id);margin-bottom:4px}
+h2{font-size:20px;font-weight:600}
+.meta{margin-top:6px;color:var(--mute);font-size:13px}
+.geo{width:40px;height:40px;justify-self:end}
 .p1{--id:var(--gold)}.p2{--id:var(--cobalt)}.p3{--id:var(--cyan)}.p4{--id:var(--violet)}.p5{--id:var(--mint)}
-.meta{color:var(--mute);font-size:13px;margin-top:6px}
-.credo{text-align:center;margin-top:22px;color:var(--mute);font-size:13px}
-.dock{position:fixed;left:0;right:0;bottom:0;padding:12px;background:linear-gradient(transparent,#04060c 30%);text-align:center}
-#dc-caption{color:#c9d4e5;font-size:14px;min-height:2.4em}
-button{font-family:IBM Plex Mono,monospace;margin:4px;padding:10px 16px;border-radius:8px;cursor:pointer}
+.credo{text-align:center;margin-top:22px;font-family:"IBM Plex Mono",monospace}
+.credo .q{color:var(--mute);font-size:13px;line-height:1.45;margin-bottom:8px}
+.credo .t{letter-spacing:.28em;font-size:12px;font-weight:700}
+.more{text-align:center;margin-top:16px}.more a{color:var(--cyan);font-size:12px;font-family:"IBM Plex Mono",monospace;text-decoration:none}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:2;padding:12px 16px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#04060c 28%);text-align:center}
+#dc-caption{min-height:2.4em;color:#c9d4e5;font-size:14px;line-height:1.35}
+#dc-narrate,#dc-skip{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:700;padding:10px 16px;border-radius:8px;cursor:pointer;margin:4px}
 #dc-narrate{border:1px solid var(--mint);background:rgba(0,255,170,.08);color:var(--mint)}
 #dc-skip{border:1px solid var(--line);background:transparent;color:var(--mute)}
-a{color:#00e5ff}
 </style>
 </head>
 <body>
 <div class="hall">
-<div class="word" data-land="brand">DUALISCAPAX</div>
-<div class="sub">FIVE ROOMS · ONE GATE</div>
-<article class="card p1" data-land="card-01"><div class="kicker">01 // FIDUCIARY</div><h2>Residual Law Finance</h2><div class="meta">People already paid. The leftover is the story.</div></article>
-<article class="card p2" data-land="card-02"><div class="kicker">02 // INFRASTRUCTURE</div><h2>Edge Computing</h2><div class="meta">Measure where the heat is.</div></article>
-<article class="card p3" data-land="card-03"><div class="kicker">03 // AUTONOMOUS AI</div><h2>Agent Iris</h2><div class="meta">A conductor, not a costume. You can tell her no.</div></article>
-<article class="card p4" data-land="card-04"><div class="kicker">04 // INTELLECTUAL PROPERTY</div><h2>Scientific Research</h2><div class="meta">Look is free. The method is the company.</div></article>
-<article class="card p5" data-land="card-05"><div class="kicker">05 // SOVEREIGN ONBOARDING</div><h2>Unity Framework</h2><div class="meta">Stand. Do not buy a costume to enter.</div></article>
-<div class="credo" data-land="credo">Look is $0. Sales closed until Bind-continue.<br><strong style="color:#f4f6fb;letter-spacing:.28em">TRUTH PREVAILS</strong>
-<p><a href="rails.html">Treasury rails</a></p></div>
+<header class="brand" data-land="brand"><div class="word">DUALISCAPAX</div><div class="sub">FIVE ROOMS · ONE GATE</div></header>
+<article class="card p1" data-land="card-01"><div><div class="kicker">01 // FIDUCIARY</div><h2>Residual Law Finance</h2><div class="meta">People already paid. The leftover is the story.</div></div><svg class="geo" viewBox="0 0 40 40" fill="none"><polygon points="20,3 35,12 35,28 20,37 5,28 5,12" stroke="#ffb830" stroke-width="1.2"/><circle cx="20" cy="20" r="1.8" fill="#ffb830"/></svg></article>
+<article class="card p2" data-land="card-02"><div><div class="kicker">02 // INFRASTRUCTURE</div><h2>Edge Computing</h2><div class="meta">Measure where the heat is. Look the catalog.</div></div><svg class="geo" viewBox="0 0 40 40" fill="none"><polygon points="20,3 36,14 30,34 10,34 4,14" stroke="#3b82f6" stroke-width="1.2"/><line x1="20" y1="3" x2="20" y2="34" stroke="#3b82f6" stroke-width="1"/></svg></article>
+<article class="card p3" data-land="card-03"><div><div class="kicker">03 // AUTONOMOUS AI</div><h2>Agent Iris</h2><div class="meta">A conductor, not a costume. You can tell her no.</div></div><svg class="geo" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="#00e5ff" stroke-width="1.2"/><circle cx="20" cy="20" r="2" fill="#00e5ff"/></svg></article>
+<article class="card p4" data-land="card-04"><div><div class="kicker">04 // INTELLECTUAL PROPERTY</div><h2>Scientific Research</h2><div class="meta">Look is free. The method is the company.</div></div><svg class="geo" viewBox="0 0 40 40" fill="none"><rect x="8" y="8" width="24" height="24" stroke="#c084fc" stroke-width="1.2"/><path d="M14 20h12M20 14v12" stroke="#c084fc" stroke-width="1"/></svg></article>
+<article class="card p5" data-land="card-05"><div><div class="kicker">05 // SOVEREIGN ONBOARDING</div><h2>Unity Framework</h2><div class="meta">Stand. Do not buy a costume to enter.</div></div><svg class="geo" viewBox="0 0 40 40" fill="none"><polygon points="20,4 36,32 4,32" stroke="#00ffaa" stroke-width="1.2"/></svg></article>
+<div class="credo" data-land="credo"><div class="q">No tribes. Harm, leftover theft, and costume stay off the playground.<br>Look is $0. Sales stay closed until Bind-continue.</div><div class="t">TRUTH PREVAILS</div></div>
+<nav class="more"><a href="rails.html">Treasury rails</a></nav>
 </div>
 <div class="dock">
-<div id="dc-caption">Iris walks with you. Start or skip.</div>
+<div id="dc-caption">A personal tour. Iris walks with you.</div>
 <button type="button" id="dc-narrate">START THE TOUR</button>
 <button type="button" id="dc-skip">SKIP</button>
 </div>
