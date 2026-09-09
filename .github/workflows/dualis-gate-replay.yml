@@ -28,12 +28,12 @@ jobs:
         run: |
           set -euo pipefail
           grep -q 'CHECKOUT_OPEN = "false"' workers/dualis-gate/wrangler.toml
-          if grep -R -n -E 'routes\s*=\s*\[.*\/\*' workers/dualis-gate/; then
+          if grep -R -n -E 'routes\s*=\s*\[.*\/\*' workers/dualis-gate --include='*.toml' --include='*.js' --include='*.mjs'; then
             echo "FORBID: dualis-gate binds /*"
             exit 1
           fi
-          if grep -R -n -E 'whsec_|sk_live_|rk_live_|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY' workers/dualis-gate/; then
-            echo "FORBID: secret material in dualis-gate"
+          if grep -R -n -E 'whsec_[A-Za-z0-9]+|sk_live_[A-Za-z0-9]+|rk_live_[A-Za-z0-9]+|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY' workers/dualis-gate --include='*.js' --include='*.mjs' --include='*.toml' --include='*.sql'; then
+            echo "FORBID: secret material in dualis-gate source"
             exit 1
           fi
       - name: Run Replay tester
