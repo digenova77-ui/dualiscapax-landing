@@ -1,0 +1,31 @@
+{
+  "schema": "cuts.v1",
+  "narrator": "iris",
+  "title": "Iris walks the hall",
+  "policy": {
+    "autoplay": "gesture",
+    "captions": true,
+    "reducedMotion": "skip-to-end",
+    "voice": "recorded-human",
+    "ttsFallback": false,
+    "pace": "user",
+    "skipAlways": true
+  },
+  "direction": "Iris. Walk the hall. On pick, take the path without hesitation. Never read the card face.",
+  "beats": [
+    {"id":"brand","land":["brand"],"voice":"I'm Iris. This is the first time we walk this hall together. I only know what you choose to show me. That can deepen. It never has to.","audio":"vo/brand.wav","ms":8000},
+    {"id":"01","land":["card-01"],"voice":"This is why money you already paid can come home as leftover that is actually yours. When you're ready, take it. I know the door.","audio":"vo/01.wav","ms":7000},
+    {"id":"02","land":["card-02"],"voice":"This is the leak in a place you actually stand. If you pick it, we go to the address. I won't sell you a dashboard.","audio":"vo/02.wav","ms":6500},
+    {"id":"03","land":["card-03"],"voice":"This one is me, on the table. You ask. I conduct. You can tell me no.","audio":"vo/03.wav","ms":5500},
+    {"id":"04","land":["card-04"],"voice":"You may look without buying. If you want depth, I take you to a door with a price you can hear.","audio":"vo/04.wav","ms":6000},
+    {"id":"05","land":["card-05"],"voice":"Stand. No costume to enter. If you pick it, we make one name so you stop living as ten logins.","audio":"vo/05.wav","ms":6500},
+    {"id":"credo","land":["credo"],"voice":"That's the hall. Stay with me or point at a room. I'll take you there.","audio":"vo/credo.wav","ms":4500}
+  ],
+  "picks": [
+    {"id":"card-01","path":"look-fiduciary","voice":"Good. Look first — leftover after you already paid. Nothing sealed until you say so.","voiceBound":"Good, {you}. Look first — leftover after you already paid. Nothing sealed until you say so.","audio":"vo/pick-01.wav"},
+    {"id":"card-02","path":"look-infra","voice":"Good. We go to the heat. I have the address.","voiceBound":"Good, {you}. We go to the heat. I have the address.","audio":"vo/pick-02.wav"},
+    {"id":"card-03","path":"look-iris","voice":"I'm here. Ask about what you own. If I start performing, tell me to stop.","audio":"vo/pick-03.wav"},
+    {"id":"card-04","path":"look-research","voice":"Look is open. The vault is not. I'll say the price as a sentence before anything deeper opens.","audio":"vo/pick-04.wav"},
+    {"id":"card-05","path":"onboard-unity","voice":"Stand here. One name. You can walk away after. That is the path.","voiceBound":"{you} — that name already exists. We collapse aliases into it. You can still walk away.","voiceKyc":"{you} is verified. Same door. No second costume.","audio":"vo/pick-05.wav"}
+  ]
+}
