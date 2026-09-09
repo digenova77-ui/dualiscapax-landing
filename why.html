@@ -16,6 +16,10 @@
   .why-beat .why-line{color:var(--beat);font-weight:600;margin:0 0 .6rem}
   .why-beat p{white-space:pre-wrap;margin:0}
   .b1{--beat:#ffb830}.b2{--beat:#3b82f6}.b3{--beat:#00e5ff}.b4{--beat:#c084fc}.b5{--beat:#00ffaa}
+  .jx-foot{margin-top:1rem;display:flex;gap:.7rem;align-items:center;flex-wrap:wrap}
+  .jx-foot label{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:#8aa}
+  .jx-foot select{background:#050505;color:#e8f1ff;border:1px solid #334;padding:.35rem .5rem}
+  .jx-house{margin-top:.6rem;font-size:.8rem;color:#8aa}
 </style>
 </head>
 <body>
@@ -42,7 +46,21 @@
     <article class="why-beat b2"><p class="f-num">02 // INFRASTRUCTURE</p><h2>Edge Computing</h2><p class="why-line">Measure where the heat is. Not in a slide.</p><p>Waste has an address. Edge puts the clock next to that address. Under 4.20 ms is the watchdog so a measure cannot hide in lag. Not a P.Eng. stamp. Dualis does not buy the hardware.</p></article>
     <article class="why-beat b3"><p class="f-num">03 // AUTONOMOUS AI</p><h2>Agent Iris</h2><p class="why-line">A conductor, not a costume.</p><p>First talk is look. If she answers in riddles, tell her to stop. She is not the 4.20 ms loop. She does not sell a cure. She does not sell a share.</p></article>
     <article class="why-beat b4"><p class="f-num">04 // INTELLECTUAL PROPERTY</p><h2>Scientific Research</h2><p class="why-line">Look is free. The method is the company.</p><p>The public floor names the work. ALS is not $49. MS is not $1,499. An atlas is an index. Simulation is not treatment. Depth stays closed until the door and the price are the same sentence.</p></article>
-    <article class="why-beat b5"><p class="f-num">05 // SOVEREIGN ONBOARDING</p><h2>Unity Framework</h2><p class="why-line">Stand in the room. Do not buy a costume to enter.</p><p>Playground access is $0 because looking is the right. A desk is not a contract. Walk away whenever you want. Ontario and Canadian law apply. Truth prevails.</p></article>
+    <article class="why-beat b5"><p class="f-num">05 // SOVEREIGN ONBOARDING</p><h2>Unity Framework</h2><p class="why-line">Stand in the room. Do not buy a costume to enter.</p><p>Playground access is $0 because looking is the right. A desk is not a contract. Walk away whenever you want. <span data-jx="audience_line">Ontario and Canadian law apply at this desk.</span> Truth prevails.</p>
+      <div class="jx-foot">
+        <label for="jx-pick">Desk jurisdiction</label>
+        <select id="jx-pick" data-jx-pick>
+          <option value="CA-ON">Ontario</option>
+          <option value="CA-QC">Québec</option>
+          <option value="CA-AB">Alberta (stub)</option>
+          <option value="CA-BC">British Columbia (stub)</option>
+        </select>
+        <a href="ca.html">Canada map</a>
+        <a href="qc.html">Québec desk</a>
+        <a href="on.html">Ontario desk</a>
+      </div>
+      <p class="jx-house" data-jx-house="line">Operator house. This line does not follow the audience picker.</p>
+    </article>
   </section>
   <section>
     <h2>Where the data lives</h2>
@@ -58,5 +76,6 @@
   <footer>DualisCapax · Truth Prevails · No tribes preferred</footer>
 </div>
 <script src="js/no-select.js"></script>
+<script src="js/jurisdiction-adapter.js"></script>
 </body>
 </html>
