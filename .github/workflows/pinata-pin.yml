@@ -1,0 +1,33 @@
+name: pinata-pin
+on:
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Pin full public tree (not just lander)"
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  pin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: dry-run listing
+        run: node scripts/pin-pinata.mjs
+      - name: pin if JWT present
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+        run: |
+          if [ -z "$PINATA_JWT" ]; then
+            echo "PINATA_JWT empty. Seat pastes Actions secret. Not a code hole."
+            exit 0
+          fi
+          if [ "${{ inputs.full }}" = "true" ]; then
+            node scripts/pin-pinata.mjs --pin --full
+          else
+            node scripts/pin-pinata.mjs --pin
+          fi
