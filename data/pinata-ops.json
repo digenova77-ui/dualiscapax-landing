@@ -1,28 +1,11 @@
 {
   "schema": "dualis.pinata.ops.v1",
-  "at": "2026-09-10T02:40:00Z",
+  "at": "2026-09-10T02:45:00Z",
   "apex_origin": "github-pages",
+  "chosen": "pages-live-pinata-spare",
   "rung": 0,
-  "rungs": {
-    "0_paper": true,
-    "1_pinned": false,
-    "2_branded_subdomain": false,
-    "3_dnslink": false,
-    "4_apex_cutover": false
-  },
-  "blockers": [
-    "PINATA_JWT Seat-paste",
-    "dedicated gateway (HTML blocked on public gateway)",
-    "CNAME ipfs.dualiscapax.ai not created",
-    "_dnslink TXT not created"
-  ],
-  "wrap_prefix": "dualiscapax/",
+  "wrap_prefix": "",
   "script": "scripts/pin-pinata.mjs",
   "workflow": ".github/workflows/pinata-pin.yml",
-  "do_not": [
-    "move @ A records off Pages without written Seat cutover",
-    "put JWT in git",
-    "open checkout",
-    "pin workers or env"
-  ]
+  "blockers": ["PINATA_JWT in GitHub Actions secrets"]
 }
