@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Pin DualisCapax L1 public face to Pinata.
+ * Chosen setup: Pages stays live. Pinata is the spare copy.
+ * Files sit at CID root (no dualiscapax/ prefix).
  * JWT from env only. Dry-run unless --pin.
- * Does not edit DNS. Does not open checkout.
  */
 import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
@@ -20,7 +20,7 @@ const SKIP_NAME = new Set([".env", ".DS_Store", "wrangler.toml"]);
 const LANDER_ROOT = new Set([
   "index.html", "why.html", "story.html", "curtain.html", "world.html",
   "ca.html", "on.html", "qc.html", "ab.html", "np.html",
-  "encyclopedia.html", "look.html", "onboard.html", "unity.html",
+  "encyclopedia.html", "look.html", "onboard.html", "unity.html", "hub.html",
   "404.html", "theme.css", "styles.css", "CNAME", "_headers"
 ]);
 const LANDER_DIR = new Set(["js", "css", "data", "hall", "assets", "brand"]);
@@ -54,10 +54,12 @@ const receipt = {
   at: new Date().toISOString(),
   mode: FULL ? "full" : "lander",
   file_count: list.length,
+  wrap_prefix: "",
   files: list.map((f) => f.rel),
   pinned: false,
   cid: null,
-  note: "HTML on gateway.pinata.cloud is blocked. Dedicated gateway + custom domain required. Apex stays Pages until Seat."
+  origin: "github-pages",
+  note: "Live site is Pages. This CID is the spare copy at tree root."
 };
 
 if (!PIN) {
@@ -73,14 +75,14 @@ if (!PIN) {
 
 const jwt = process.env.PINATA_JWT || "";
 if (!jwt || jwt.length < 20) {
-  console.error("PINATA_JWT missing. Seat pastes Actions secret or shell env. Not git.");
+  console.error("PINATA_JWT missing.");
   process.exit(2);
 }
 
 const fd = new FormData();
 for (const f of list) {
   const bytes = readFileSync(f.abs);
-  fd.append("file", new File([bytes], "dualiscapax/" + f.rel));
+  fd.append("file", new File([bytes], f.rel));
 }
 fd.append("pinataMetadata", JSON.stringify({
   name: "DualisCapax-L1-" + new Date().toISOString().slice(0, 10),
@@ -106,6 +108,4 @@ receipt.pin_size = body.PinSize || null;
 receipt.timestamp = body.Timestamp || null;
 writeFileSync(join(ROOT, "data", "pinata-last.json"), JSON.stringify(receipt, null, 2));
 console.log(JSON.stringify({ ok: true, cid: receipt.cid, files: list.length, size: receipt.pin_size }, null, 2));
-console.log("Dedicated gateway path: /ipfs/" + receipt.cid + "/dualiscapax/why.html");
-console.log("DNSLink later: TXT _dnslink.dualiscapax.ai  dnslink=/ipfs/" + receipt.cid);
-console.log("Do not move apex A records off GitHub Pages until Seat says so.");
+console.log("/ipfs/" + receipt.cid + "/why.html");
