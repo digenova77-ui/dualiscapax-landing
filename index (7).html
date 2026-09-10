@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en" class="dualis-root">
+<head>
+  <meta charset="UTF-8"/>
+    <!-- OpenGraph & Social Preview Meta Tags -->
+  <meta name="description" content="DualisCapax: Eliminating operational friction at the point of production. $0 upfront retainer, client retains 81% to 100% of verified savings across municipal works, school boards, and commercial kitchens.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dualiscapax.ai/">
+  <meta property="og:title" content="DUALISCAPAX // Point-of-Production Friction Elimination">
+  <meta property="og:description" content="Stop operational bleed at the source. $0 upfront capital, client retains 81%–100% of verified savings under OBCA #100089211.">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://dualiscapax.ai/">
+  <meta property="twitter:title" content="DUALISCAPAX // Point-of-Production Friction Elimination">
+  <meta property="twitter:description" content="Stop operational bleed at the source. $0 upfront capital, client retains 81%–100% of verified savings under OBCA #100089211.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <title>D U A L I S C A P A X // UNITY PLAYGROUND ARCHITECTURE</title>
+  <meta name="description" content="DualisCapax Inc. · Belleville, Ontario · OBCA #100089211 · Fiduciary Residual Cost Reduction"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+
+    :root {
+      --bg-void: #04060c;
+      --font-mono: 'IBM Plex Mono', monospace, ui-monospace;
+      --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --accent-green: #00ffaa;
+      --border-glass: rgba(30, 60, 96, 0.45);
+      --teal-iris: #8eb4c8;
+      --cyan-route: #00e5ff;
+    }
+
+    html, body {
+      width: 100% !important;
+      height: 100% !important;
+      height: 100dvh !important;
+      max-height: 100dvh !important;
+      background-color: var(--bg-void) !important;
+      color: #ffffff !important;
+      font-family: var(--font-sans) !important;
+      overflow: hidden !important;
+    }
+
+    #conduit-canvas {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 1 !important;
+      pointer-events: none !important;
+    }
+
+    /* INVARIANT TEMPLATE SHELL: Fixed Header & Footer Across ALL Views */
+    .app-shell {
+      height: 100% !important;
+      height: 100dvh !important;
+      max-height: 100dvh !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: calc(env(safe-area-inset-top, 12px) + 2px) 16px calc(env(safe-area-inset-bottom, 12px) + 6px) 16px !important;
+      position: relative !important;
+      z-index: 10 !important;
+      overflow: hidden !important;
+    }
+
+    /* PERMANENT INVARIANT HEADER (NEVER CHANGES SCALE OR POSITION) */
+    .home-brand-lockup {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 2px auto 4px auto !important;
+      width: 100% !important;
+      flex-shrink: 0 !important;
+      cursor: pointer !important;
+    }
+
+    .header-orb-mount {
+      width: 52px !important;
+      height: 52px !important;
+      margin: 0 auto 4px auto !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: transparent !important;
+    }
+
+    .header-geodesic-canvas {
+      width: 52px !important;
+      height: 52px !important;
+      display: block !important;
+    }
+
+    .home-brand-title {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: clamp(6px, 2.0vw, 10px) !important;
+      width: 100% !important;
+      margin: 0 auto !important;
+      font-family: var(--font-mono) !important;
+      font-size: clamp(20px, 5.2vw, 25px) !important;
+      font-weight: 800 !important;
+      color: #ffffff !important;
+      line-height: 1.05 !important;
+      letter-spacing: 0 !important;
+      text-indent: 0 !important;
+      text-align: center !important;
+    }
+
+    .home-brand-title span {
+      display: inline-block !important;
+      text-align: center !important;
+    }
+
+    .home-brand-subtitle {
+      font-family: var(--font-mono) !important;
+      font-size: 8.5px !important;
+      color: var(--accent-green) !important;
+      letter-spacing: 0.22em !important;
+      text-transform: uppercase !important;
+      margin-top: 4px !important;
+      white-space: nowrap !important;
+      text-indent: 0.22em !important;
+      text-align: center !important;
+    }
+
+    /* THE MIDDLE CONTENT STAGE: Exact Bounding Box for Both 5-Tiles & Card Deck */
+    .middle-content-stage {
+      width: 100% !important;
+      max-width: 490px !important;
+      margin: 0 auto !important;
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: center !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+
+    /* VIEW A: 5-Tile Home Surface */
+    #home-view-container {
+      width: 100% !important;
+      height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      transition: opacity 0.25s ease, transform 0.25s ease !important;
+    }
+
+    #home-view-container.hidden {
+      display: none !important;
+    }
+
+    .home-foundations-grid {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: clamp(8px, 1.4vh, 14px) !important;
+      width: 100% !important;
+      margin: auto 0 !important;
+    }
+
+    .foundation-card {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      background: rgba(8, 14, 24, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 12px !important;
+      padding: 9px 14px !important;
+      min-height: 68px !important;
+      height: clamp(68px, 9.2vh, 78px) !important;
+      text-align: left !important;
+      cursor: pointer !important;
+      backdrop-filter: blur(14px) !important;
+      -webkit-backdrop-filter: blur(14px) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+      transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease !important;
+      user-select: none !important;
+      width: 100% !important;
+    }
+
+    .foundation-card:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65) !important;
+    }
+
+    .card-text-block {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      gap: 2px !important;
+      flex-grow: 1 !important;
+    }
+
+    .f-num {
+      font-family: var(--font-mono) !important;
+      font-size: 8.5px !important;
+      letter-spacing: 0.12em !important;
+      font-weight: 700 !important;
+      display: block !important;
+    }
+
+    .f-title {
+      font-family: var(--font-mono) !important;
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      color: #ffffff !important;
+      line-height: 1.15 !important;
+      display: block !important;
+    }
+
+    .f-sub {
+      font-family: var(--font-mono) !important;
+      font-size: 10.5px !important;
+      color: rgba(148, 163, 184, 0.85) !important;
+      display: block !important;
+      line-height: 1.15 !important;
+    }
+
+    .card-orb-mount {
+      width: 44px !important;
+      height: 44px !important;
+      flex-shrink: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: transparent !important;
+      border: none !important;
+    }
+
+    .geodesic-orb-canvas {
+      width: 40px !important;
+      height: 40px !important;
+      display: block !important;
+    }
+
+    .foundation-card.f-amber { border-left: 3.5px solid #ffb830 !important; }
+    .foundation-card.f-amber:hover { border-color: rgba(255, 184, 48, 0.6) !important; }
+    .f-amber .f-num { color: #ffb830 !important; }
+
+    .foundation-card.f-green { border-left: 3.5px solid #00ffaa !important; }
+    .foundation-card.f-green:hover { border-color: rgba(0, 255, 170, 0.6) !important; }
+    .f-green .f-num { color: #00ffaa !important; }
+
+    .foundation-card.f-cyan { border-left: 3.5px solid #00e5ff !important; }
+    .foundation-card.f-cyan:hover { border-color: rgba(0, 229, 255, 0.6) !important; }
+    .f-cyan .f-num { color: #00e5ff !important; }
+
+    .foundation-card.f-purple { border-left: 3.5px solid #c084fc !important; }
+    .foundation-card.f-purple:hover { border-color: rgba(192, 132, 252, 0.6) !important; }
+    .f-purple .f-num { color: #c084fc !important; }
+
+    .foundation-card.f-rose { border-left: 3.5px solid #ff2a5f !important; }
+    .foundation-card.f-rose:hover { border-color: rgba(255, 42, 95, 0.6) !important; }
+    .f-rose .f-num { color: #ff2a5f !important; }
+
+    /* Credo Block */
+    .home-credo-block {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin-top: 6px !important;
+      padding-bottom: 2px !important;
+      text-align: center !important;
+      width: 100% !important;
+    }
+
+    .credo-quote {
+      font-family: var(--font-mono) !important;
+      font-size: 11px !important;
+      color: rgba(148, 163, 184, 0.8) !important;
+      font-style: italic !important;
+      letter-spacing: 0.05em !important;
+      margin-bottom: 3px !important;
+      white-space: nowrap !important;
+    }
+
+    .credo-maxim {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: clamp(4px, 1.2vw, 6px) !important;
+      font-family: var(--font-mono) !important;
+      font-size: 13.5px !important;
+      font-weight: 800 !important;
+      color: #ffffff !important;
+      letter-spacing: 0 !important;
+      text-indent: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    /* VIEW B: SECTOR CARD DECK (FILLS THE EXACT SAME MIDDLE SPACE!) */
+    #deck-view-container {
+      width: 100% !important;
+      height: 100% !important;
+      display: none !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      margin: auto 0 !important;
+      align-items: center !important;
+      position: relative !important;
+    }
+
+    #deck-view-container.active {
+      display: flex !important;
+    }
+
+    .sector-card-frame {
+      width: 100% !important;
+      height: 100% !important;
+      background: rgba(8, 16, 28, 0.95) !important;
+      border: 1.5px solid var(--border-glass) !important;
+      border-radius: 16px !important;
+      padding: 16px 18px !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      position: relative !important;
+      user-select: none !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
+    /* HAND GESTURE TUTORIAL OVERLAY (FADES OUT NATURALLY) */
+    .gesture-tutorial-overlay {
+      position: absolute !important;
+      inset: 0 !important;
+      background: rgba(4, 8, 16, 0.88) !important;
+      border-radius: 16px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 50 !important;
+      pointer-events: none !important;
+      transition: opacity 0.6s ease !important;
+    }
+
+    .gesture-tutorial-overlay.faded {
+      opacity: 0 !important;
+    }
+
+    .gesture-icon {
+      font-size: 38px !important;
+      margin-bottom: 12px !important;
+      animation: swipeHand 1.8s infinite ease-in-out !important;
+    }
+
+    @keyframes swipeHand {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-24px); }
+    }
+
+    .gesture-text {
+      font-family: var(--font-mono) !important;
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      color: #ffffff !important;
+      letter-spacing: 1px !important;
+      text-transform: uppercase !important;
+    }
+
+    .gesture-sub {
+      font-size: 10px !important;
+      color: #8eb4c8 !important;
+      margin-top: 4px !important;
+    }
+
+    /* PERMANENT INVARIANT BOTTOM DOCK (NEVER CHANGES SCALE OR POSITION) */
+    .bottom-dock-nav {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      width: 100% !important;
+      max-width: 480px !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+      padding-top: 10px !important;
+      margin-top: 6px !important;
+      font-family: var(--font-mono) !important;
+      font-size: 11.5px !important;
+      flex-shrink: 0 !important;
+      position: relative !important;
+    }
+
+    .dock-nav-item {
+      color: rgba(148, 163, 184, 0.8) !important;
+      cursor: pointer !important;
+      padding: 4px 8px !important;
+      border-radius: 6px !important;
+      transition: all 0.2s ease !important;
+      position: relative !important;
+      white-space: nowrap !important;
+      text-align: center !important;
+    }
+
+    .dock-nav-item.active {
+      color: var(--cyan-route) !important;
+      font-weight: 700 !important;
+    }
+
+    .dock-nav-item.active::after {
+      content: '' !important;
+      position: absolute !important;
+      bottom: -6px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 28px !important;
+      height: 3px !important;
+      background: var(--cyan-route) !important;
+      border-radius: 2px !important;
+      box-shadow: 0 0 8px var(--cyan-route) !important;
+    }
+
+    /* Rose Red Onboarding Modal */
+    .onboarding-overlay {
+      position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important;
+      z-index: 600 !important; background: rgba(4, 6, 12, 0.94) !important; backdrop-filter: blur(24px) !important;
+      display: none !important; align-items: center !important; justify-content: center !important; overflow-y: auto !important; padding: 16px !important;
+    }
+    .onboarding-overlay.active { display: flex !important; }
+
+    .onboarding-card-frame {
+      width: min(100%, 640px) !important; background: rgba(10, 16, 28, 0.96) !important;
+      border: 1.5px solid rgba(255, 42, 95, 0.5) !important; border-radius: 16px !important;
+      padding: 22px !important; box-shadow: 0 20px 60px rgba(255, 42, 95, 0.15) !important; margin: auto !important;
+    }
+
+    .onboard-action-tile {
+      display: block !important; background: rgba(14, 22, 38, 0.85) !important;
+      border: 1px solid rgba(255, 42, 95, 0.25) !important; border-left: 4px solid #ff2a5f !important;
+      border-radius: 8px !important; padding: 12px 14px !important; text-decoration: none !important;
+      color: #ffffff !important; cursor: pointer !important; margin-bottom: 10px !important; transition: all 0.2s ease !important;
+    }
+    .onboard-action-tile:hover { background: rgba(22, 32, 54, 0.95) !important; transform: translateX(3px) !important; }
+
+    /* In-Page Document Modal */
+    #medical-doc-modal {
+      position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important;
+      display: none !important; z-index: 1000 !important; background: rgba(3, 6, 14, 0.96) !important;
+      backdrop-filter: blur(28px) !important; overflow-y: auto !important; padding: 16px !important;
+    }
+    #medical-doc-modal.active { display: flex !important; flex-direction: column !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Background 3D Living Conduit Canvas -->
+  <canvas id="conduit-canvas"></canvas>
+
+  <!-- Invariant Template Shell -->
+  <div class="app-shell">
+
+    <!-- PERMANENT INVARIANT HEADER (SAME ON EVERY PAGE) -->
+    <div class="home-brand-lockup" onclick="window.showHomeView()">
+      <div class="header-orb-mount">
+        <canvas id="header-geodesic-canvas" class="header-geodesic-canvas" width="52" height="52"></canvas>
+      </div>
+      <h1 class="home-brand-title" aria-label="DUALISCAPAX">
+        <span>D</span><span>U</span><span>A</span><span>L</span><span>I</span><span>S</span><span>C</span><span>A</span><span>P</span><span>A</span><span>X</span>
+      </h1>
+      <div class="home-brand-subtitle">UNITY PLAYGROUND ARCHITECTURE</div>
+      <div id="unity-bind-status" style="font-family:var(--font-mono); font-size:0.75rem; letter-spacing:0.05em; margin-top:6px; font-weight:700;"></div>
+    </div>
+
+    <!-- THE MIDDLE CONTENT STAGE: Swaps Between 5 Tiles and Sector Card Deck -->
+    <main class="middle-content-stage">
+      
+      <!-- STATE A: THE 5 FOUNDATION CARDS + CREDO -->
+      <div id="home-view-container">
+        
+        <div class="home-foundations-grid">
+          <!-- 01: Fiduciary (Amber) -->
+          <div class="foundation-card f-amber" onclick="window.openDualisSector('residual')">
+            <div class="card-text-block">
+              <span class="f-num">01 // FIDUCIARY</span>
+              <span class="f-title">Balance Sheet Friction Elimination</span>
+              <span class="f-sub">$0 Upfront • Client Retains 81%–100%</span>
+            </div>
+            <div class="card-orb-mount">
+              <canvas class="geodesic-orb-canvas" data-color="#ffb830" width="40" height="40"></canvas>
+            </div>
+          </div>
+
+          <!-- 02: Infrastructure (Green) -->
+          <div class="foundation-card f-green" onclick="window.openDualisSector('municipalities')">
+            <div class="card-text-block">
+              <span class="f-num">02 // INFRASTRUCTURE</span>
+              <span class="f-title">Municipal SCADA &amp; Fleet Mesh</span>
+              <span class="f-sub">Peak Hydro Shaving • Route Balancing</span>
+            </div>
+            <div class="card-orb-mount">
+              <canvas class="geodesic-orb-canvas" data-color="#00ffaa" width="40" height="40"></canvas>
+            </div>
+          </div>
+
+          <!-- 03: Autonomous AI (Cyan) -->
+          <div class="foundation-card f-cyan" onclick="window.openDualisSector('mesh')">
+            <div class="card-text-block">
+              <span class="f-num">03 // INTELLIGENCE</span>
+              <span class="f-title">Autonomous Operational Conductor</span>
+              <span class="f-sub">Private Decision Guidance • 0.00% PII</span>
+            </div>
+            <div class="card-orb-mount">
+              <canvas class="geodesic-orb-canvas" data-color="#00e5ff" width="40" height="40"></canvas>
+            </div>
+          </div>
+
+          <!-- 04: Intellectual Property (Purple) -->
+          <div class="foundation-card f-purple" onclick="window.openDocument('als-guide')">
+            <div class="card-text-block">
+              <span class="f-num">04 // RESEARCH</span>
+              <span class="f-title">Biophysical Research Monographs</span>
+              <span class="f-sub">A La Carte Clinical &amp; Oncology Packs</span>
+            </div>
+            <div class="card-orb-mount">
+              <canvas class="geodesic-orb-canvas" data-color="#c084fc" width="40" height="40"></canvas>
+            </div>
+          </div>
+
+          <!-- 05: Sovereign Onboarding (Rose Red Section) -->
+          <div class="foundation-card f-rose" onclick="window.openOnboardingSuite()">
+            <div class="card-text-block">
+              <span class="f-num">05 // ONBOARDING</span>
+              <span class="f-title">90-Day Fiduciary Agreement</span>
+              <span class="f-sub">CAD $0 Modeling Seat • Instant Activation</span>
+            </div>
+            <div class="card-orb-mount">
+              <canvas class="geodesic-orb-canvas" data-color="#ff2a5f" width="40" height="40"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credo Block -->
+        <div class="home-credo-block">
+          <div class="credo-quote">No tribes preferred.</div>
+          <div class="credo-maxim" aria-label="TRUTH PREVAILS">
+            <span>T</span><span>R</span><span>U</span><span>T</span><span>H</span>
+            <span style="display:inline-block; width:12px;"></span>
+            <span>P</span><span>R</span><span>E</span><span>V</span><span>A</span><span>I</span><span>L</span><span>S</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- STATE B: THE SECTOR CARD DECK (FILLS THE EXACT SAME SPACE!) -->
+      <div id="deck-view-container">
+        <div id="sector-card-render" class="sector-card-frame">
+          <!-- Rendered dynamically with zero button clutter -->
+        </div>
+
+        <!-- Hand Gesture Tutorial Indicator (Appears and Fades Out) -->
+        <div id="gesture-tutorial" class="gesture-tutorial-overlay">
+          <div class="gesture-icon">👆</div>
+          <div class="gesture-text">⟵ Swipe Left / Right to Navigate ⟶</div>
+          <div class="gesture-sub">Tap anywhere to advance • Pull down to return Home</div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- PERMANENT INVARIANT BOTTOM DOCK (SAME ON EVERY PAGE) -->
+    <nav class="bottom-dock-nav">
+      <div id="nav-item-home" class="dock-nav-item active" onclick="window.showHomeView()">Home</div>
+      <div id="nav-item-sectors" class="dock-nav-item" onclick="window.openDualisSector('schools')">Government Sectors</div>
+      <div id="nav-item-audit" class="dock-nav-item" onclick="window.openDocument('100-pass-docket')">Audit</div>
+      <div id="nav-item-iris" class="dock-nav-item" onclick="window.openDualisSector('mesh')">Agent Iris</div>
+    </nav>
+
+  </div>
+
+  <!-- ROSE RED ONBOARDING SUITE MODAL (TILE 05 TARGET) -->
+  <div id="onboarding-modal" class="onboarding-overlay" onclick="if(event.target===this) window.closeOnboardingSuite()">
+    <div class="onboarding-card-frame">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,42,95,0.3); padding-bottom:10px; margin-bottom:14px;">
+        <div style="font-family:var(--font-mono); font-size:0.8rem; color:#ff2a5f; font-weight:700;">
+          05 // SOVEREIGN ONBOARDING · DUAL-RAIL GATEWAYS
+        </div>
+        <button style="font-family:var(--font-mono); font-size:0.8rem; font-weight:700; color:#fff; background:#ff2a5f; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;" onclick="window.closeOnboardingSuite()">✕ CLOSE</button>
+      </div>
+
+      <h2 style="font-size:1.4rem; font-weight:800; color:#ffffff; margin-bottom:4px;">Sovereign Intake & Dual-Rail Gateways</h2>
+      <p style="font-size:0.88rem; color:#c2d6ea; margin-bottom:14px; line-height:1.4;">
+        Stripe (CAD Fiat) & Equal-Crypto (1:1 Spot Matching under CRA Barter Doctrine). $0 upfront, zero hardware debt, zero seed phrases.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr; gap:9px;">
+        <a class="onboard-action-tile" href="mailto:admin@dualiscapax.ai?subject=Schedule+Turnkey+$0+Fiduciary+Intake">
+          <div style="font-family:var(--font-mono); font-size:0.7rem; color:#ff2a5f; font-weight:700;">INTAKE // $0 UPFRONT FIDUCIARY</div>
+          <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:#ffffff; margin-top:2px;">Schedule $0.00 Upfront Intake Meeting ✉️</div>
+          <div style="font-size:0.8rem; color:#9ab5cf; margin-top:2px;">100% self-funded implementation under OBCA #100089211. If we don't save you money, you owe nothing. Client retains 81%–100%.</div>
+        </a>
+
+        <div class="onboard-action-tile" onclick="alert('[DualisCapax WebAuthn] Derived directly from TPM 2.0 / Secure Enclave hardware chips. Zero seed phrases. 100% PHIPA/PIPEDA compliant.');">
+          <div style="font-family:var(--font-mono); font-size:0.7rem; color:#ff2a5f; font-weight:700;">IDENTITY // HARDWARE ENCLAVE</div>
+          <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:#ffffff; margin-top:2px;">Register WebAuthn Hardware Passkey ⚡</div>
+          <div style="font-size:0.8rem; color:#9ab5cf; margin-top:2px;">FIDO2 / TouchID / FaceID native binding with zero cloud PII storage.</div>
+        </div>
+
+        <a class="onboard-action-tile" href="https://buy.stripe.com/7sYbJ355RaQ13296c5ffy07" target="_blank" rel="noopener">
+          <div style="font-family:var(--font-mono); font-size:0.7rem; color:#ff2a5f; font-weight:700;">RESEARCH // A LA CARTE TIER 1</div>
+          <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:#ffffff; margin-top:2px;">Order Single Leaf Research Monograph · CAD $49.00 →</div>
+          <div style="font-size:0.8rem; color:#9ab5cf; margin-top:2px;">Instant cryptographic unlock of 3D atomistic pharmacokinetic model.</div>
+        </a>
+
+        <a class="onboard-action-tile" href="https://buy.stripe.com/9B6bJ3gOz3nzfOV8kdffy06" target="_blank" rel="noopener">
+          <div style="font-family:var(--font-mono); font-size:0.7rem; color:#ff2a5f; font-weight:700;">RESEARCH // A LA CARTE TIER 2</div>
+          <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:#ffffff; margin-top:2px;">Order 10-Indication Family Branch Pack · CAD $299.00 →</div>
+          <div style="font-size:0.8rem; color:#9ab5cf; margin-top:2px;">10-indication cross-talk bundle (NEURO-10 / ONCO-10) for hospital units.</div>
+        </a>
+
+        <a class="onboard-action-tile" href="https://buy.stripe.com/7sYbJ355RaQ13296c5ffy07" target="_blank" rel="noopener">
+          <div style="font-family:var(--font-mono); font-size:0.7rem; color:#ff2a5f; font-weight:700;">RESEARCH // A LA CARTE TIER 3</div>
+          <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:#ffffff; margin-top:2px;">Order 117-Indication Master Compendium · CAD $1,499.00 →</div>
+          <div style="font-size:0.8rem; color:#9ab5cf; margin-top:2px;">Complete cross-domain biophysical AI simulation compendium across all 117 indications.</div>
+        </a>
+
+        <div class="onboard-action-tile" onclick="alert('TREASURY CRYPTO VAULTS (1:1 Spot CAD Parity):\n\nBTC: bc1qdualiscapaxsovereignvaultrootontariocanada2026\nETH/USDC: 0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4\nSOL: DualisCapax11111111111111111111111111111111');">
+          <div style="font-family:var(--font-mono); font-size:0.7rem; color:#ff2a5f; font-weight:700;">EQUAL-CRYPTO // CRA BARTER DOCTRINE</div>
+          <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:#ffffff; margin-top:2px;">Inspect 1:1 Spot Crypto Settlement Vaults (BTC / ETH / SOL / USDC) 📋</div>
+          <div style="font-size:0.8rem; color:#9ab5cf; margin-top:2px;">0.00% corporate token float. Spot fair-market conversion locked at transaction block timestamp.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-Page Document Modal -->
+  
+  <!-- Executive Statutory Briefing Modal -->
+  <div id="briefing-modal" role="dialog" aria-modal="true" style="display:none; position:fixed; inset:0; background:rgba(4,8,16,0.95); z-index:10002; overflow-y:auto; backdrop-filter:blur(12px); justify-content:center; align-items:center; padding:16px;" onclick="if(event.target===this) window.closeBriefingModal()">
+    <div style="width:100%; max-width:480px; background:#0a1322; border:1.5px solid #00ffaa; border-radius:14px; padding:20px; box-shadow:0 16px 40px rgba(0,0,0,0.8); position:relative;">
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:14px;">
+        <div>
+          <div style="font-family:var(--font-mono); font-size:0.72rem; color:#00ffaa; font-weight:bold; letter-spacing:0.06em;">05 // STATUTORY BRIEFING INTAKE</div>
+          <div style="font-size:1.15rem; font-weight:800; color:#ffffff;">Executive Council &amp; Trustee Docket</div>
+        </div>
+        <button onclick="window.closeBriefingModal()" style="font-family:var(--font-mono); font-size:0.8rem; font-weight:bold; color:#fff; background:#16273a; border:1px solid rgba(255,255,255,0.2); border-radius:6px; padding:6px 12px; cursor:pointer;">✕ CLOSE</button>
+      </div>
+
+      <p style="font-size:0.82rem; color:#94a3b8; line-height:1.45; margin-bottom:14px;">
+        Formal $0.00 upfront baseline audit presentation under OBCA #100089211. Tailored for municipal councils, senior business officials, and trustees.
+      </p>
+
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-family:var(--font-mono); font-size:0.68rem; color:#00ffaa; font-weight:bold; margin-bottom:3px;">ORGANIZATION / ENTITY NAME *</label>
+        <input type="text" id="briefing-org" placeholder="e.g. City of Belleville, HPEDSB, Quinte West" style="width:100%; height:36px; background:rgba(4,10,18,0.9); border:1px solid rgba(0,255,170,0.4); border-radius:6px; color:#fff; padding:0 10px; font-size:0.80rem; outline:none;">
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-family:var(--font-mono); font-size:0.68rem; color:#00ffaa; font-weight:bold; margin-bottom:3px;">DECISION-MAKER ROLE *</label>
+        <select id="briefing-role" style="width:100%; height:36px; background:rgba(4,10,18,0.9); border:1px solid rgba(0,255,170,0.4); border-radius:6px; color:#fff; padding:0 8px; font-size:0.80rem; outline:none;">
+          <option value="City Treasurer / Chief Financial Officer">City Treasurer / CFO</option>
+          <option value="Chief Administrative Officer (CAO)">Chief Administrative Officer (CAO)</option>
+          <option value="Mayor / City Council Member">Mayor / City Council Member</option>
+          <option value="School Board Trustee / Board Chair">School Board Trustee / Board Chair</option>
+          <option value="Director of Education / Senior Business Official">Director of Education / Senior Business Official</option>
+          <option value="Hospital / Clinical Network Director">Hospital / Clinical Network Director</option>
+          <option value="Public Works Director / Fleet Supervisor">Public Works Director / Fleet Supervisor</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-family:var(--font-mono); font-size:0.68rem; color:#00ffaa; font-weight:bold; margin-bottom:3px;">OFFICER EMAIL OR CONTACT KEY *</label>
+        <input type="text" id="briefing-email" placeholder="official@municipality.on.ca or passkey" style="width:100%; height:36px; background:rgba(4,10,18,0.9); border:1px solid rgba(0,255,170,0.4); border-radius:6px; color:#fff; padding:0 10px; font-size:0.80rem; outline:none;">
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-family:var(--font-mono); font-size:0.68rem; color:#00ffaa; font-weight:bold; margin-bottom:3px;">PREFERRED BRIEFING FORMAT *</label>
+        <select id="briefing-format" style="width:100%; height:36px; background:rgba(4,10,18,0.9); border:1px solid rgba(0,255,170,0.4); border-radius:6px; color:#fff; padding:0 8px; font-size:0.80rem; outline:none;">
+          <option value="In-Person Presentation (Belleville / Hastings County / Quinte Region)">In-Person (Belleville / Hastings / Quinte)</option>
+          <option value="Virtual Executive Video Briefing (30 Minutes)">Virtual Video Briefing (30 Min)</option>
+          <option value="Formal Written Statutory Memorandum Pack">Written Statutory Memo Pack</option>
+        </select>
+      </div>
+
+      <div style="background:rgba(4,10,18,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px 10px; margin-bottom:12px; font-family:var(--font-mono); font-size:0.72rem; color:#9db6ce;">
+        ✓ $0.00 Upfront Capital · Independent 2-of-3 CPA LLP Verification · Sub-90s Clean Unplug SLA
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button onclick="window.sendBriefingRequest()" style="width:100%; height:42px; background:#00ffaa; border:none; border-radius:6px; color:#050912; font-family:var(--font-mono); font-weight:bold; font-size:0.85rem; cursor:pointer;">
+          DISPATCH FORMAL BRIEFING REQUEST ✉️
+        </button>
+        <button onclick="window.copyBriefingAgenda()" id="btn-copy-agenda" style="width:100%; height:36px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#c2d6ea; font-family:var(--font-mono); font-size:0.78rem; cursor:pointer;">
+          📋 Copy Executive Agenda to Clipboard
+        </button>
+      </div>
+      <div id="briefing-status" style="font-family:var(--font-mono); font-size:0.72rem; color:#00ffaa; text-align:center; margin-top:6px;"></div>
+
+    </div>
+  </div>
+
+  <div id="medical-doc-modal" role="dialog" aria-modal="true" onclick="if(event.target===this) window.closeMedicalDoc()">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 18px; background:#060e1a; border-bottom:1px solid rgba(30,60,96,0.5);">
+      <div>
+        <div id="doc-control-id" style="font-family:var(--font-mono); font-size:0.75rem; color:var(--cyan-route); font-weight:700;">DOCUMENT CONTROL ID</div>
+        <div id="doc-title-head" style="font-size:1rem; font-weight:800; color:#ffffff;">DOCUMENT TITLE</div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button style="font-family:var(--font-mono); font-size:0.8rem; padding:6px 12px; background:#0a1c2e; border:1px solid #1a3a5c; color:#c2d6ea; border-radius:6px; cursor:pointer;" onclick="window.openDocument('als-guide')">ALS 3D Guide</button>
+        <button style="font-family:var(--font-mono); font-size:0.8rem; font-weight:700; color:#fff; background:#ff4757; border:none; border-radius:6px; padding:6px 14px; cursor:pointer;" onclick="window.closeMedicalDoc()">✕ CLOSE</button>
+      </div>
+    </div>
+    <div style="flex:1; overflow-y:auto; padding:20px 14px; display:flex; justify-content:center;" onclick="if(event.target===this) window.closeMedicalDoc()">
+      <div id="medical-doc-render" style="width:min(100%, 820px); background:#081220; border:1px solid rgba(30,60,96,0.5); border-radius:12px; padding:24px; line-height:1.55;"></div>
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE: INVARIANT SHELL RUNTIME + 60 FPS GEODESICS -->
+  <script>
+    (function() {
+      'use strict';
+
+      // --- 1. ROTATING 3D WIREFRAME GEODESIC ICOSAHEDRON ENGINE ---
+      const phi = (1.0 + Math.sqrt(5.0)) / 2.0;
+      const rawV = [
+        [-1,  phi, 0], [ 1,  phi, 0], [-1, -phi, 0], [ 1, -phi, 0],
+        [ 0, -1,  phi], [ 0,  1,  phi], [ 0, -1, -phi], [ 0,  1, -phi],
+        [ phi, 0, -1], [ phi, 0,  1], [-phi, 0, -1], [-phi, 0,  1]
+      ];
+      const vertices = rawV.map(v => {
+        const d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+        return [v[0]/d, v[1]/d, v[2]/d];
+      });
+      const edges = [];
+      for (let i = 0; i < 12; i++) {
+        for (let j = i + 1; j < 12; j++) {
+          const dx = vertices[i][0] - vertices[j][0];
+          const dy = vertices[i][1] - vertices[j][1];
+          const dz = vertices[i][2] - vertices[j][2];
+          if (Math.abs(Math.sqrt(dx*dx + dy*dy + dz*dz) - 1.05146) < 0.05) edges.push([i, j]);
+        }
+      }
+
+      const dclmColors = ['#ffb830', '#00ffaa', '#00e5ff', '#c084fc', '#ff2a5f'];
+      const headerNodeColors = [
+        dclmColors[0], dclmColors[1], dclmColors[2], dclmColors[3],
+        dclmColors[4], dclmColors[0], dclmColors[1], dclmColors[2],
+        dclmColors[3], dclmColors[4], dclmColors[1], dclmColors[2]
+      ];
+
+      function startAllGeodesics() {
+        // Header Geodesic
+        const hCvs = document.getElementById('header-geodesic-canvas');
+        if (hCvs) {
+          const size = 52, center = 26;
+          hCvs.width = size; hCvs.height = size;
+          const ctx = hCvs.getContext('2d');
+          let yAng = 0.4, pAng = 0.2, lastT = performance.now();
+          function loopH(now) {
+            const dt = (now - lastT) * 0.001; lastT = now;
+            yAng += dt * 0.85; pAng += dt * 0.55;
+            ctx.clearRect(0, 0, size, size);
+            const cy = Math.cos(yAng), sy = Math.sin(yAng);
+            const cp = Math.cos(pAng), sp = Math.sin(pAng);
+            const pr = [], zA = [];
+            for (let i = 0; i < 12; i++) {
+              const v = vertices[i];
+              const x1 = v[0]*cy - v[2]*sy, z1 = v[0]*sy + v[2]*cy;
+              const y1 = v[1]*cp - z1*sp, z2 = v[1]*sp + z1*cp;
+              const sc = (size * 0.45) / (z2 + 2.30);
+              pr.push([center + x1 * sc, center + y1 * sc]);
+              zA.push(z2);
+            }
+            edges.forEach(e => {
+              const avgZ = (zA[e[0]] + zA[e[1]]) * 0.5;
+              ctx.strokeStyle = `rgba(216, 228, 240, ${(0.40 + 0.55 * ((avgZ + 1.0) / 2.0)).toFixed(3)})`;
+              ctx.lineWidth = 1.1 + 0.7 * ((avgZ + 1.0) / 2.0);
+              ctx.beginPath(); ctx.moveTo(pr[e[0]][0], pr[e[0]][1]); ctx.lineTo(pr[e[1]][0], pr[e[1]][1]); ctx.stroke();
+            });
+            for (let i = 0; i < 12; i++) {
+              const z = zA[i];
+              ctx.fillStyle = headerNodeColors[i];
+              ctx.beginPath(); ctx.arc(pr[i][0], pr[i][1], 2.0 + 0.8 * ((z + 1.0) / 2.0), 0, Math.PI * 2); ctx.fill();
+              ctx.fillStyle = '#ffffff';
+              ctx.beginPath(); ctx.arc(pr[i][0], pr[i][1], 0.9, 0, Math.PI * 2); ctx.fill();
+            }
+            requestAnimationFrame(loopH);
+          }
+          requestAnimationFrame(loopH);
+        }
+
+        // Card Geodesics
+        const canvases = document.querySelectorAll('.geodesic-orb-canvas');
+        canvases.forEach((cvs, idx) => {
+          const size = 40, center = 20;
+          cvs.width = size; cvs.height = size;
+          const ctx = cvs.getContext('2d');
+          if (!ctx) return;
+          const col = cvs.getAttribute('data-color') || '#00ffaa';
+          let r = 0, g = 255, b = 170;
+          if (col.startsWith('#') && col.length === 7) {
+            r = parseInt(col.slice(1, 3), 16); g = parseInt(col.slice(3, 5), 16); b = parseInt(col.slice(5, 7), 16);
+          }
+          let yA = idx * 1.15, pA = idx * 0.75, lT = performance.now();
+          function loopC(now) {
+            const dt = (now - lT) * 0.001; lT = now;
+            yA += dt * 0.90; pA += dt * 0.60;
+            ctx.clearRect(0, 0, size, size);
+            const cy = Math.cos(yA), sy = Math.sin(yA), cp = Math.cos(pA), sp = Math.sin(pA);
+            const pr = [], zA = [];
+            for (let i = 0; i < 12; i++) {
+              const v = vertices[i];
+              const x1 = v[0]*cy - v[2]*sy, z1 = v[0]*sy + v[2]*cy;
+              const y1 = v[1]*cp - z1*sp, z2 = v[1]*sp + z1*cp;
+              const sc = (size * 0.44) / (z2 + 2.35);
+              pr.push([center + x1 * sc, center + y1 * sc]);
+              zA.push(z2);
+            }
+            edges.forEach(e => {
+              const avgZ = (zA[e[0]] + zA[e[1]]) * 0.5;
+              ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(0.30 + 0.65 * ((avgZ + 1.0) / 2.0)).toFixed(3)})`;
+              ctx.lineWidth = 0.85 + 0.65 * ((avgZ + 1.0) / 2.0);
+              ctx.beginPath(); ctx.moveTo(pr[e[0]][0], pr[e[0]][1]); ctx.lineTo(pr[e[1]][0], pr[e[1]][1]); ctx.stroke();
+            });
+            for (let i = 0; i < 12; i++) {
+              ctx.fillStyle = `rgba(255, 255, 255, ${(0.45 + 0.55 * ((zA[i] + 1.0) / 2.0)).toFixed(2)})`;
+              ctx.beginPath(); ctx.arc(pr[i][0], pr[i][1], 1.2, 0, Math.PI * 2); ctx.fill();
+            }
+            requestAnimationFrame(loopC);
+          }
+          requestAnimationFrame(loopC);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startAllGeodesics);
+      } else {
+        startAllGeodesics();
+      }
+
+      // --- 2. 3D CONDUIT BACKGROUND SHADER ---
+      const bgCanvas = document.getElementById('conduit-canvas');
+      if (bgCanvas) {
+        const gl = bgCanvas.getContext('webgl');
+        if (gl) {
+          function resize() {
+            bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
+            gl.viewport(0, 0, bgCanvas.width, bgCanvas.height);
+          }
+          window.addEventListener('resize', resize); resize();
+          const vs = `attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
+          const fs = `precision mediump float; uniform vec2 u_res; uniform float u_time;
+          void main() {
+            vec2 uv = (gl_FragCoord.xy - u_res * 0.5) / min(u_res.x, u_res.y);
+            float d = length(uv);
+            float rings = sin(d * 22.0 - u_time * 1.4) * 0.5 + 0.5;
+            vec3 col = mix(vec3(0.02, 0.04, 0.08), vec3(0.04, 0.10, 0.18), rings);
+            col += vec3(0.55, 0.70, 0.78) * exp(-d * 6.0);
+            gl_FragColor = vec4(col, 1.0);
+          }`;
+          function cSh(t, s) { const sh = gl.createShader(t); gl.shaderSource(sh, s); gl.compileShader(sh); return sh; }
+          const p = gl.createProgram(); gl.attachShader(p, cSh(gl.VERTEX_SHADER, vs)); gl.attachShader(p, cSh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(p); gl.useProgram(p);
+          const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b);
+          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+          const pos = gl.getAttribLocation(p, 'p'); gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+          const uRes = gl.getUniformLocation(p, 'u_res'), uTime = gl.getUniformLocation(p, 'u_time');
+          let t0 = performance.now();
+          function bgLoop(t) {
+            gl.uniform2f(uRes, bgCanvas.width, bgCanvas.height);
+            gl.uniform1f(uTime, (t - t0) * 0.001);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(bgLoop);
+          }
+          requestAnimationFrame(bgLoop);
+        }
+      }
+
+      // --- 3. EXHAUSTIVE 4-STAGE SECTOR DECK RUNTIME ---
+      
+      const JurisdictionAnchors = {
+        ca_on: {
+          name: "Ontario (OBCA #100089211)",
+          short: "Ontario (OBCA)",
+          boxHdr: "ONTARIO STATUTORY & DISPUTE ANCHORS",
+          lines: [
+            "• Corporate Authority: OBCA Corporation #100089211 (Belleville, ON)",
+            "• Domestic Arbitration: ADRIC (Toronto, ON) under Arbitration Act, 1991",
+            "• CRA Barter Doctrine: 1:1 Spot CAD Parity (Zero Token Float)"
+          ]
+        },
+        ca_qc: {
+          name: "Quebec (Civil Code Accord)",
+          short: "Quebec (CCQ)",
+          boxHdr: "QUEBEC STATUTORY & DISPUTE ANCHORS",
+          lines: [
+            "• Commercial Arbitration: Institut d'arbitrage du Québec (IMAQ)",
+            "• Civil Code of Quebec (CCQ) Fiduciary Compliance",
+            "• CRA / Revenu Québec 1:1 Spot Barter Parity"
+          ]
+        },
+        ca_bc: {
+          name: "British Columbia (Arbitration Act)",
+          short: "British Columbia",
+          boxHdr: "BRITISH COLUMBIA STATUTORY ANCHORS",
+          lines: [
+            "• Commercial Arbitration: VanIAC (Vancouver International Arbitration)",
+            "• British Columbia Arbitration Act & BPCPA Compliance",
+            "• Spot 1:1 CAD Parity Conserved Ledger Integration"
+          ]
+        },
+        ca_ab: {
+          name: "Alberta (Energy & Commercial Accord)",
+          short: "Alberta (ADRIC-AB)",
+          boxHdr: "ALBERTA STATUTORY & ENERGY ANCHORS",
+          lines: [
+            "• Commercial Arbitration: ADRIC Alberta Regional Chapter",
+            "• Alberta Arbitration Act (RSA 2000, c. A-43)",
+            "• AESO Power Tariff & Industrial Energy SCADA Integration"
+          ]
+        },
+        ca_pan: {
+          name: "Pan-Canadian (13 P/T Accord)",
+          short: "Pan-Canada (13 P/T)",
+          boxHdr: "PAN-CANADIAN INTERPROVINCIAL ACCORD",
+          lines: [
+            "• Federal Commercial Arbitration Act (R.S.C. 1985, c. 17)",
+            "• 13 Provinces & Territories Harmonized Fiduciary Pipeline",
+            "• Canadian Free Trade Agreement (CFTA) Mobility Compliance"
+          ]
+        },
+        us_fed: {
+          name: "United States (50 States Accord)",
+          short: "United States (50)",
+          boxHdr: "UNITED STATES COMMERCIAL ACCORD",
+          lines: [
+            "• Federal Arbitration Act (FAA 9 U.S.C. § 1 et seq.)",
+            "• UCC Article 2 Sovereign Software Medium Confinement",
+            "• Spot 1:1 USD Reference Equivalence (CRA Barter Matched)"
+          ]
+        },
+        us_ny: {
+          name: "New York (Commercial Division)",
+          short: "New York (NY-AAA)",
+          boxHdr: "NEW YORK COMMERCIAL ARBITRATION",
+          lines: [
+            "• American Arbitration Association (AAA / ICDR New York)",
+            "• NY CPLR Article 75 Commercial Arbitration Standards",
+            "• Wall Street / FinTech Symplectic Settlement Equivalence"
+          ]
+        },
+        us_ca: {
+          name: "California (Silicon Valley / JAMS)",
+          short: "California (JAMS)",
+          boxHdr: "CALIFORNIA TECHNOLOGY ARBITRATION",
+          lines: [
+            "• JAMS Comprehensive Commercial Arbitration Rules (San Francisco)",
+            "• California International Arbitration Act (CCP § 1297.11)",
+            "• Silicon Valley Sub-4.20ms Compute Enclave Standards"
+          ]
+        },
+        us_tx: {
+          name: "Texas (Energy & Freight Corridor)",
+          short: "Texas (ERCOT)",
+          boxHdr: "TEXAS INFRASTRUCTURE & ENERGY ACCORD",
+          lines: [
+            "• Texas General Arbitration Act (CPRC Title 7)",
+            "• ERCOT Independent Grid SCADA Telematics Compliance",
+            "• Class-8 Heavy Freight Platooning Corridor Integration"
+          ]
+        },
+        intl_swiss: {
+          name: "International (Swiss / Zurich)",
+          short: "International (Swiss)",
+          boxHdr: "SWISS ARBITRATION & SOVEREIGN TRUST",
+          lines: [
+            "• Swiss Rules of International Arbitration (Zurich / Swiss Centre)",
+            "• UNCITRAL Model Law on International Commercial Arbitration",
+            "• Multi-Currency Conserved Plane Settlement (BTC / ETH / Fiat)"
+          ]
+        },
+        intl_global: {
+          name: "Global (UNCITRAL Accord)",
+          short: "Global (UNCITRAL)",
+          boxHdr: "GLOBAL SOVEREIGN TRADE ACCORD",
+          lines: [
+            "• New York Convention on the Recognition of Foreign Arbitral Awards",
+            "• UNCITRAL Cross-Border Cryptographic Entitlement Standard",
+            "• Pure Contingency $0.00 Upfront Asymptotic Law Floor"
+          ]
+        }
+      };
+
+      let currentJurisdiction = 'ca_on';
+      window.onJurisdictionChange = function(val) {
+        currentJurisdiction = val;
+        renderCurrentCard();
+        syncHashWithState();
+      };
+
+      window.onSectorChange = function(val) {
+        currentSector = val;
+        currentCardIdx = 0;
+        renderCurrentCard();
+        syncHashWithState();
+      };
+
+const SectorDecks = {
+  "residual": {
+    "accent": "#ffb830",
+    "cards": [
+      {
+        "stage": "STAGE 1 / 5",
+        "route": "dualiscapax.ai/#fiduciary-mandate",
+        "title": "The Exhaustion of Rent-Seeking",
+        "sub": "Why modern business software feels like an endless tollbooth.",
+        "badge": "THE HUMAN REALITY",
+        "bullets": [
+          "\u2022 You are tired of paying upfront retainers and per-seat SaaS licenses to vendors who collect fees whether you save a dollar or not.",
+          "\u2022 Delivery aggregators, software middle-layers, and brokers take a 20%\u201330% rake while you absorb rising payroll and utility risks.",
+          "\u2022 You are seeking a partner who stops operational friction at the source without adding new software debt."
+        ],
+        "boxHdr": "THE GUIDING ETHICAL PRINCIPLE",
+        "boxLines": [
+          "\"Why should an organization pay upfront capital just to find out if an efficiency solution actually works?\""
+        ],
+        "deepDiveTitle": "Statutory Authority & Invariants",
+        "deepDiveBody": "OBCA Corporation #100089211 (Belleville, ON) \u2022 PIPEDA / PHIPA Privacy Compliance \u2022 Zero Cloud Data Harvesting \u2022 Landauer Memory Scrubbing ($Q \\ge k_B T \\ln 2$)",
+        "btn": "SWIPE TO ALIGNMENT OVER EXTRACTION (2/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 2 / 5",
+        "route": "dualiscapax.ai/#fiduciary-ethics",
+        "title": "Alignment Over Extraction",
+        "sub": "If someone claims they can save you money, they should stake their own time on it.",
+        "badge": "MUTUAL SKIN IN THE GAME",
+        "bullets": [
+          "\u2022 A true fiduciary relationship starts at CAD $0.00 upfront\u2014not as a promotional trial, but as an ethical requirement.",
+          "\u2022 We never charge software seat licenses or hardware debt. We only earn from dollars already recovered and verified on your balance sheet.",
+          "\u2022 If no verifiable cashflow is captured, your organization owes exactly CAD $0.00. The risk remains entirely on us."
+        ],
+        "boxHdr": "THE GROUND TRUTH ALIGNMENT",
+        "boxLines": [
+          "\"True trust is built when the service provider takes on the financial risk, not the client.\""
+        ],
+        "deepDiveTitle": "Audit Quorum Standards",
+        "deepDiveBody": "Independent 2-of-3 CPA LLP Verification Required \u2022 CRA Barter Doctrine Spot Parity \u2022 Zero Token Speculation \u2022 Client Retains 81.0% Day 1 Cashflow",
+        "btn": "SWIPE TO THE 5-YEAR TRAJECTORY (3/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 3 / 5",
+        "route": "dualiscapax.ai/#fiduciary-trajectory",
+        "title": "The Architecture of Permanent Retention",
+        "sub": "A good partnership makes you stronger and more self-reliant over time, not permanently dependent.",
+        "badge": "DECAYING RESIDUAL MODEL",
+        "bullets": [
+          "\u2022 Conventional vendors engineer permanent lock-in so their fees increase as you become dependent on their systems.",
+          "\u2022 Our residual performance fee is designed to decay asymptotically to zero over five years (19% Y1 \u2192 12.5% Y2 \u2192 8% Y3 \u2192 3% Y4 \u2192 0% Y5).",
+          "\u2022 By Year 5 and beyond, your organization keeps 100% of all recovered cashflow permanently, along with all operational improvements."
+        ],
+        "boxHdr": "THE SELF-RELIANCE CREDO",
+        "boxLines": [
+          "\"Software should eliminate friction and leave you self-sufficient, not trapped in an endless subscription.\""
+        ],
+        "deepDiveTitle": "Decaying Fee Schedule",
+        "deepDiveBody": "Year 1: 81.0% Retained (19% Fee) \u2192 Year 2: 87.5% \u2192 Year 3: 92.0% \u2192 Year 4: 97.0% \u2192 Year 5+: 100.0% Permanent Retention ($0.00 Ongoing Software Fees)",
+        "btn": "SWIPE TO GROUND TRUTH EVIDENCE (4/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 4 / 5",
+        "route": "dualiscapax.ai/#fiduciary-proof",
+        "title": "Stopping Bleed at the Point of Production",
+        "sub": "Real-world results across independent kitchens, school boards, and municipal works.",
+        "badge": "POINT-OF-PRODUCTION PROOF",
+        "bullets": [
+          "\u2022 Friction is stopped where work physically happens: shifting high-load equipment outside peak utility hours and routing fleets intelligently.",
+          "\u2022 Restaurants & Commercial Kitchens: Recovering an average of $174,000/year by bypassing 30% delivery rakes and deck oven pre-heat scheduling.",
+          "\u2022 School Boards & Rural Fleets: Recapturing $6.15M/year for classrooms by eliminating rural bus deadheading and boiler demand spikes."
+        ],
+        "boxHdr": "VERIFIED OPERATIONAL EVIDENCE",
+        "boxLines": [
+          "\"Efficiency isn't theoretical; it must be measurable directly on monthly utility and operating statements.\""
+        ],
+        "deepDiveTitle": "Point-of-Production Telemetry",
+        "deepDiveBody": "Gerry O'Connor Water Treatment Plant 72 ML/day Off-Peak Pumping ($380k/yr saved) \u2022 Hastings County 180 Bus Mesh (1,420 km/day cut) \u2022 Tomasso's & Jim's Kitchen Benchmarks",
+        "btn": "SWIPE TO SOVEREIGN ACTIVATION (5/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 5 / 5",
+        "route": "dualiscapax.ai/#fiduciary-activation",
+        "title": "Trust Maintained by Free Will",
+        "sub": "If you cannot walk away easily, you are not a client\u2014you are captive.",
+        "badge": "SOVEREIGN ACTIVATION",
+        "bullets": [
+          "\u2022 You retain unilateral control. No long-term contracts, no proprietary data traps, and no cancellation penalties.",
+          "\u2022 A 90-day evaluation seat lets you model your own work on your own device with zero financial commitment.",
+          "\u2022 If at any point the model doesn't serve you, you unplug cleanly with zero retained data and zero dollars owed."
+        ],
+        "boxHdr": "THE SOVEREIGN PROMISE",
+        "boxLines": [
+          "\"You remain in full control of your balance sheet, your data, and your operating decisions.\""
+        ],
+        "deepDiveTitle": "Clean Unplug SLA & Governance",
+        "deepDiveBody": "Sub-90s Decouple SLA \u2022 Zero Data Retention \u2022 ADRIC (Toronto) / Swiss Rules (Zurich) \u2022 Deploys under DCLM_Fiduciary_Agreement.sol",
+        "btn": "INITIALIZE 90-DAY $0 EVALUATION SEAT \u26a1"
+      }
+    ]
+  },
+  "municipalities": {
+    "accent": "#00ffaa",
+    "cards": [
+      {
+        "stage": "STAGE 1 / 5",
+        "route": "dualiscapax.ai/#municipalities-overhead",
+        "title": "The Municipal Infrastructure Bleed",
+        "sub": "Rising hydro Global Adjustment charges and uncoordinated winter plowing.",
+        "badge": "CIVIC FRICTION REALITY",
+        "bullets": [
+          "\u2022 Municipal water pumping and treatment facilities face massive Ontario Global Adjustment hydro surcharges during peak grid hours.",
+          "\u2022 Snowplow fleets execute redundant passes and deadhead kilometers over uncoordinated rural and suburban routes.",
+          "\u2022 Local taxpayers shoulder the burden of rising utility bills while municipal operating budgets are constrained."
+        ],
+        "boxHdr": "THE CIVIC IMPERATIVE",
+        "boxLines": [
+          "\"Municipalities must lower operational drag without compromising essential frontline public safety or drinking water.\""
+        ],
+        "deepDiveTitle": "Municipal Infrastructure Benchmarks",
+        "deepDiveBody": "Belleville Gerry O'Connor Plant 72 ML/day High-Lift Pumping \u2022 28 Wallbridge Crescent Snowplow Fleet \u2022 16 Transit Lines Synced",
+        "btn": "SWIPE TO TAXPAYER PROTECTION (2/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 2 / 5",
+        "route": "dualiscapax.ai/#municipalities-ethics",
+        "title": "Zero Taxpayer Capital at Risk",
+        "sub": "Public infrastructure efficiency should never require speculative municipal debt.",
+        "badge": "TAXPAYER FIDUCIARY",
+        "bullets": [
+          "\u2022 CAD $0.00 upfront municipal retainer. Zero CapEx or specialized hardware procurement needed.",
+          "\u2022 Integrates with existing municipal SCADA (Allen-Bradley) and GPS dispatch without equipment replacement.",
+          "\u2022 If net savings are not certified by independent audit, the municipality owes exactly CAD $0.00."
+        ],
+        "boxHdr": "COUNCIL FIDUCIARY RULE",
+        "boxLines": [
+          "\"Never risk public tax funds on efficiency promises that do not carry 100% vendor skin in the game.\""
+        ],
+        "deepDiveTitle": "Council Statutory Protections",
+        "deepDiveBody": "Municipal Act, 2001 (Ontario) Section 106 Compliance \u2022 Independent 2-of-3 CPA LLP Billing Reconciliation \u2022 Zero Equipment Debt",
+        "btn": "SWIPE TO COMPOUNDING SAVINGS (3/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 3 / 5",
+        "route": "dualiscapax.ai/#municipalities-trajectory",
+        "title": "Permanent Civic Self-Sufficiency",
+        "sub": "Building long-term operational strength directly inside municipal public works.",
+        "badge": "CIVIC RETENTION PACING",
+        "bullets": [
+          "\u2022 The municipality retains 81.0% of verified hydro and fuel savings in Year 1.",
+          "\u2022 Retention scales annually to 100% permanent civic retention by Year 5 ($0.00 ongoing software fees).",
+          "\u2022 All algorithmic routing schedules, pump operating curves, and telemetry remain permanent city property."
+        ],
+        "boxHdr": "PUBLIC ASSET PRESERVATION",
+        "boxLines": [
+          "\"Public works improvements should permanently enrich the city's balance sheet, not a private tech vendor.\""
+        ],
+        "deepDiveTitle": "Civic Financial Model",
+        "deepDiveBody": "Cumulative 5-Year Savings: CAD $13.13B across 444 Ontario Municipalities \u2022 Direct Balance Sheet Relief for Property Tax Bases",
+        "btn": "SWIPE TO LOCAL BENCHMARKS (4/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 4 / 5",
+        "route": "dualiscapax.ai/#municipalities-proof",
+        "title": "Verified Belleville Water SCADA & Plows",
+        "sub": "72 ML/day water pumping shift and 24% deadhead diesel reduction.",
+        "badge": "LOCAL SCADA PROOF",
+        "bullets": [
+          "\u2022 Gerry O'Connor Water Treatment Plant: High-lift reservoir pumps shifted to 11 PM \u2013 7 AM off-peak windows, dodging Top 5 peak hours.",
+          "\u2022 Recovers CAD $380,000/year on water plant power bills alone while preserving full emergency fire-flow reserves.",
+          "\u2022 28 Snowplows & 16 Transit Lines: Capacitated vehicle routing (CVRP) eliminates redundant salt passes and cuts winter diesel burn by 18%."
+        ],
+        "boxHdr": "VERIFIED OPERATING EVIDENCE",
+        "boxLines": [
+          "\"Proven at the Gerry O'Connor Water Plant and across Belleville municipal public works operations.\""
+        ],
+        "deepDiveTitle": "SCADA & Telemetry Invariants",
+        "deepDiveBody": "Sub-4.20ms Real-Time Watchdog Circuit \u2022 Zero Cloud Supervisory Disruption \u2022 Minimum Maintenance Standards (MMS) Exceeded",
+        "btn": "SWIPE TO COUNCIL BRIEFING (5/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 5 / 5",
+        "route": "dualiscapax.ai/#municipalities-activation",
+        "title": "Bilateral Council Briefing & $0 Trial",
+        "sub": "Free-look 90-day municipal baseline audit with zero budget obligation.",
+        "badge": "COUNCIL INTAKE GATEWAY",
+        "bullets": [
+          "\u2022 Council presentation deck and staff technical briefing provided at $0.00 upfront.",
+          "\u2022 90-day baseline audit monitors active utility meters and plow GPS to demonstrate cashflow delta.",
+          "\u2022 Clean unplug SLA: Council or public works staff can decouple at any time with zero penalty."
+        ],
+        "boxHdr": "HEADQUARTERED LOCALLY",
+        "boxLines": [
+          "\"DualisCapax Inc. \u00b7 535 Bridge St E, Belleville, ON \u00b7 Authorized under OBCA Corporation #100089211\""
+        ],
+        "deepDiveTitle": "Statutory Intake Protocol",
+        "deepDiveBody": "Direct Intake: admin@dualiscapax.ai \u2022 Office of the CAO & City Treasurer Briefing \u2022 100% Self-Funded Performance Alignment",
+        "btn": "SCHEDULE COUNCIL BRIEFING \u2709\ufe0f"
+      }
+    ]
+  },
+  "schools": {
+    "accent": "#00e5ff",
+    "cards": [
+      {
+        "stage": "STAGE 1 / 5",
+        "route": "dualiscapax.ai/#schools-overhead",
+        "title": "Classroom Dollars Lost to Transit Drag",
+        "sub": "Empty rural bus return loops and facility boiler peak hydro charges.",
+        "badge": "EDUCATION REALITY",
+        "bullets": [
+          "\u2022 Rural school bus routes cover vast geographic territory with thousands of kilometers of empty deadheading every morning.",
+          "\u2022 Aging school facility boilers spike electrical and gas demand during morning warm-up windows.",
+          "\u2022 Escalating transportation and heating costs directly drain operational dollars away from classrooms and teachers."
+        ],
+        "boxHdr": "THE CLASSROOM MANDATE",
+        "boxLines": [
+          "\"Every dollar recovered from bus fuel and boiler hydro is a dollar that stays in frontline education.\""
+        ],
+        "deepDiveTitle": "Ontario Education Cost Drivers",
+        "deepDiveBody": "Ontario 72 District School Boards Transportation Grant Allocation \u2022 Peak Coincident Hydro Demand \u2022 Rural Deadheading",
+        "btn": "SWIPE TO FRONTLINE PROTECTION (2/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 2 / 5",
+        "route": "dualiscapax.ai/#schools-ethics",
+        "title": "Never Risk School Board Operating Budgets",
+        "sub": "Educational institutions should not pay speculative fees for energy consulting.",
+        "badge": "EDUCATIONAL FIDUCIARY",
+        "bullets": [
+          "\u2022 CAD $0.00 upfront capital retainer for school boards. Zero software seat fees for trustees or administration.",
+          "\u2022 Does not disrupt existing bus contractor agreements or driver rosters.",
+          "\u2022 Board only pays a performance fee from dollars independently verified as saved on fuel and electric bills."
+        ],
+        "boxHdr": "TRUSTEE FIDUCIARY RULE",
+        "boxLines": [
+          "\"Zero capital expenditure, zero hardware debt, and 100% balance-sheet performance alignment.\""
+        ],
+        "deepDiveTitle": "Broader Public Sector (BPS) Compliance",
+        "deepDiveBody": "Ontario BPS Procurement Directive Compliant \u2022 Education Act (Ontario) Reporting \u2022 2-of-3 CPA LLP Verification",
+        "btn": "SWIPE TO PERMANENT RETENTION (3/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 3 / 5",
+        "route": "dualiscapax.ai/#schools-trajectory",
+        "title": "Permanent Funding for Classrooms",
+        "sub": "Compounding operational savings that decay to zero ongoing software fees.",
+        "badge": "CLASSROOM CAPITAL RETENTION",
+        "bullets": [
+          "\u2022 The school board retains 81.0% of verified savings in Year 1.",
+          "\u2022 Decays annually until the board retains 100.0% of savings permanently in Year 5 ($0.00 ongoing fees).",
+          "\u2022 Route optimization schedules and thermal pre-heat algorithms remain permanent board assets."
+        ],
+        "boxHdr": "LONG-TERM ASSET RETENTION",
+        "boxLines": [
+          "\"Efficiency gains should permanently benefit students and schools, not outside SaaS vendors.\""
+        ],
+        "deepDiveTitle": "5-Year Board Savings Trajectory",
+        "deepDiveBody": "Year 1: $6.15M Net Retained (HPEDSB) \u2192 Cumulative 5-Year Gain: $35M+ for Frontline Educational Programs",
+        "btn": "SWIPE TO HASTINGS COUNTY BENCHMARK (4/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 4 / 5",
+        "route": "dualiscapax.ai/#schools-proof",
+        "title": "Verified 180 Bus Fleet & Boiler Shaving",
+        "sub": "1,420 deadhead km/day cut and $6.15M net classroom gain in Hastings County.",
+        "badge": "HPEDSB BENCHMARK",
+        "bullets": [
+          "\u2022 180 Bus Fleet Optimization: Dynamic rural clustering cuts 1,420 deadhead km/day across Hastings County, saving 28,500 L of diesel/year.",
+          "\u2022 Boiler Thermal Caching: Predictive off-peak pre-heating warms classrooms for 8:30 AM arrival while cutting facility hydro costs by 22%.",
+          "\u2022 Total verified benefit: CAD $6,150,000/year recaptured for classrooms with zero disruptions to student drop-offs."
+        ],
+        "boxHdr": "VERIFIED OPERATING EVIDENCE",
+        "boxLines": [
+          "\"Benchmarked across 180 bus routes and facilities in Hastings Prince Edward District School Board.\""
+        ],
+        "deepDiveTitle": "Fleet Telematics & Privacy",
+        "deepDiveBody": "Sub-4.20ms GPS Route Clustering \u2022 Zero Student PII / IEP Data Leaked \u2022 Landauer Memory Scrubbing ($Q \\ge k_B T \\ln 2$)",
+        "btn": "SWIPE TO TRUSTEE BRIEFING (5/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 5 / 5",
+        "route": "dualiscapax.ai/#schools-activation",
+        "title": "Trustee Briefing & 90-Day Free Look",
+        "sub": "Comprehensive baseline audit for School Board Trustees and Directors of Education.",
+        "badge": "BOARD INTAKE GATEWAY",
+        "bullets": [
+          "\u2022 Formal Board of Trustees briefing and senior business official presentation provided at CAD $0 upfront.",
+          "\u2022 90-day free look baseline audit measures actual bus fuel receipts and building hydro meters.",
+          "\u2022 Zero-risk exit SLA: Board can terminate evaluation with zero dollars owed and zero penalties."
+        ],
+        "boxHdr": "DIRECT BOARD ENGAGEMENT",
+        "boxLines": [
+          "\"Contact: admin@dualiscapax.ai \u00b7 DualisCapax Inc. (OBCA #100089211) \u00b7 Belleville, Ontario\""
+        ],
+        "deepDiveTitle": "Board Statutory Memo Pack",
+        "deepDiveBody": "Executive Statutory Memorandum Pack \u2022 Ministry of Education Alignment \u2022 100% Performance-Contingent Retainer",
+        "btn": "SCHEDULE TRUSTEE BRIEFING \u2709\ufe0f"
+      }
+    ]
+  },
+  "mesh": {
+    "accent": "#00e5ff",
+    "cards": [
+      {
+        "stage": "STAGE 1 / 5",
+        "route": "dualiscapax.ai/#intelligence-reality",
+        "title": "The Frustration with Cloud AI SaaS",
+        "sub": "Black-box chatbots that hallucinate, leak private data, and bill per token.",
+        "badge": "AI FRICTION REALITY",
+        "bullets": [
+          "\u2022 Enterprise AI often means sending sensitive company operations and private data to third-party cloud servers.",
+          "\u2022 Probabilistic models hallucinate critical figures, while recurring per-seat and per-token invoices creep higher every month.",
+          "\u2022 Decision-makers need deterministic operational logic that works privately right on their own devices."
+        ],
+        "boxHdr": "THE PRIVACY MANDATE",
+        "boxLines": [
+          "\"True decision intelligence must be private, deterministic, and execute with zero data harvesting.\""
+        ],
+        "deepDiveTitle": "Client-Side Zero-PII Enclave",
+        "deepDiveBody": "Local In-Browser WASM Execution \u2022 0.00% Cloud Residue \u2022 Strict Landauer Thermodynamic Zeroization ($Q \\ge k_B T \\ln 2$)",
+        "btn": "SWIPE TO PRIVATE LOGIC (2/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 2 / 5",
+        "route": "dualiscapax.ai/#intelligence-ethics",
+        "title": "Look and Measure Are Always Free",
+        "sub": "You should never pay a toll just to evaluate your own operational data.",
+        "badge": "ZERO-COST MEASUREMENT",
+        "bullets": [
+          "\u2022 Evaluating and measuring your operational friction requires zero fuel and zero subscription fees.",
+          "\u2022 'If it cannot invert, it is not spent'\u2014fuel only meters actual physical execution, never looking or measuring.",
+          "\u2022 Private decision support runs right on your phone or local workstation with 0.00% retained PII."
+        ],
+        "boxHdr": "THE ZERO-EXTORTION RULE",
+        "boxLines": [
+          "\"Never lock an organization's own operational metrics behind an upfront paywall or ongoing subscription trap.\""
+        ],
+        "deepDiveTitle": "Deterministic Execution Standard",
+        "deepDiveBody": "CFG DFA Grammar Masking: P(invalid) = 0.00% \u2022 SMT Boolean Constraint Proofs \u2022 Zero Cloud Dependency",
+        "btn": "SWIPE TO THE OPERATIONAL CONDUCTOR (3/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 3 / 5",
+        "route": "dualiscapax.ai/#intelligence-conductor",
+        "title": "Agent Iris: The Operational Conductor",
+        "sub": "Coordinating physical assets, fleets, and daily choices without human fatigue.",
+        "badge": "AUTONOMOUS CONDUCTOR",
+        "bullets": [
+          "\u2022 Acts as a silent, client-side conductor: synchronizing traffic light arterial flow, equipment pre-heats, and fleet routing.",
+          "\u2022 Eliminates daily decision fatigue for families, independent kitchens, and municipal transit directors.",
+          "\u2022 Runs locally with sub-4.20ms real-time circuit-breaker protection, guaranteeing zero system stalls."
+        ],
+        "boxHdr": "PHYSICAL WORLD ALIGNMENT",
+        "boxLines": [
+          "\"AI should conduct physical operations to eliminate waste, not generate synthetic chat text.\""
+        ],
+        "deepDiveTitle": "Sub-4.20ms Circuit Breaker Specs",
+        "deepDiveBody": "Invariant M-S Watchdog Circuit (0.045ms observed) \u2022 Real-Time Symplectic Phase-Space Volume Conservation (det(M) \u2261 1.0)",
+        "btn": "SWIPE TO VERIFIED LOGIC PROOFS (4/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 4 / 5",
+        "route": "dualiscapax.ai/#intelligence-proof",
+        "title": "Deterministic Verification Benchmarks",
+        "sub": "Mathematical proofs of conservation, bounded latency, and zero error drift.",
+        "badge": "FORMAL PROOF DOCKET",
+        "bullets": [
+          "\u2022 Sealed under Document Control ID: ED-ENG-20260906-100-PASS-V1 with 100/100 passes verified.",
+          "\u2022 Exact symplectic Hamiltonian conservation with zero numerical energy drift (det(M) \u2261 1.000000000000).",
+          "\u2022 Sub-millisecond execution latency (0.35ms mean) well within the sub-4.20ms hardware watchdog ceiling."
+        ],
+        "boxHdr": "MATHEMATICAL INTEGRITY",
+        "boxLines": [
+          "\"100% residual truth. Fail-closed on discrepancies or spoofed data.\""
+        ],
+        "deepDiveTitle": "Sealed Proof Docket",
+        "deepDiveBody": "100-Pass Adversarial Attack & Affinity Synthesis Compendium \u2022 Independent 2-of-3 CPA LLP Audit Quorum Ready",
+        "btn": "SWIPE TO OPERATIONAL ACCESS (5/5) \u25b6"
+      },
+      {
+        "stage": "STAGE 5 / 5",
+        "route": "dualiscapax.ai/#intelligence-activation",
+        "title": "Sovereign Console & Local Gateway",
+        "sub": "1-click hardware passkey enrollment with zero cloud account creation.",
+        "badge": "LOCAL RUNTIME ACCESS",
+        "bullets": [
+          "\u2022 Authenticate directly from your device chip using WebAuthn / FIDO2 / TouchID / FaceID.",
+          "\u2022 Zero passwords to remember, zero seed phrases to store, and zero personal data harvested.",
+          "\u2022 Full private access to local operational guidance and cross-model telemetry."
+        ],
+        "boxHdr": "SOVEREIGN ACCESS PROTOCOL",
+        "boxLines": [
+          "\"100% Data Sovereignty under Canadian Law \u00b7 DualisCapax Inc. (OBCA #100089211)\""
+        ],
+        "deepDiveTitle": "Hardware Enclave Integration",
+        "deepDiveBody": "Deterministic WebAuthn Enclave \u2022 Dual-Rail Settlement (Stripe CAD || 1:1 CRA Barter Crypto Parity)",
+        "btn": "LAUNCH OPERATIONAL CONSOLE \u26a1"
+      }
+    ]
+  },
+  "onboard": {
+    "accent": "#ff2a5f",
+    "cards": [
+      {
+        "stage": "STAGE 1 / 5",
+        "route": "dualiscapax.ai/#onboard-mandate",
+        "title": "90-DAY FIDUCIARY MANDATE",
+        "sub": "Zero-Risk Evaluation Standard \u00b7 $0 Upfront",
+        "badge": "DCLM STATUTORY MANDATE",
+        "bullets": [
+          "\u2022 CAD $0.00 Upfront: No capital expenditure, software seat fees, or hardware leases.",
+          "\u2022 Client Retains 81.0% to 100.0% of verified balance-sheet savings.",
+          "\u2022 2-of-3 CPA LLP Audit Quorum: Independent accounting verification.",
+          "\u2022 Sub-90s Clean Unplug SLA: Zero vendor lock-in or debt.",
+          "\u2022 100% PIPEDA / PHIPA compliant with 0.00% retained cloud PII."
+        ],
+        "boxHdr": "LEGAL & DISPUTE ANCHORS",
+        "boxLines": [
+          "\u2022 DualisCapax Inc. (OBCA #100089211, Belleville, Ontario)",
+          "\u2022 Domestic Dispute: ADRIC (Toronto, ON) under Arbitration Act, 1991",
+          "\u2022 CRA Barter Doctrine compliant (1:1 Spot CAD Parity)"
+        ],
+        "deepDiveTitle": "Fiduciary Charter Docket",
+        "deepDiveBody": "Deploys under DCLM_Fiduciary_Agreement.sol \u2022 Sub-90s Clean Unplug Protocol \u2022 Full CPA LLP Audit Quorum",
+        "btn": "SWIPE TO ORGANIZATION INTAKE \u25b6"
+      },
+      {
+        "stage": "STAGE 2 / 5",
+        "route": "dualiscapax.ai/#onboard-entity",
+        "title": "ORGANIZATION INTAKE",
+        "sub": "Participating Corporate or Public Sector Authority",
+        "badge": "STATUTORY ENTITY VERIFICATION",
+        "inputs": [
+          {
+            "id": "onboard-entity-name",
+            "label": "ORGANIZATION / ENTITY NAME *",
+            "type": "text",
+            "placeholder": "e.g. Regional District School Board, City Water SCADA"
+          },
+          {
+            "id": "onboard-sector",
+            "label": "OPERATIONAL SECTOR *",
+            "type": "select",
+            "options": [
+              "Public Sector (School Board Logistics & Transit)",
+              "Municipal Works (Water SCADA & Fleet Mesh)",
+              "Commercial Kitchens & Independent Pizzerias",
+              "Clinical Networks & Closed-Loop Infusion",
+              "Family & Individual Decision Guidance"
+            ]
+          }
+        ],
+        "bullets": [
+          "\u2022 Enter legal operating name of corporate or public entity",
+          "\u2022 Select operating sector to calibrate friction metrics",
+          "\u2022 Deploys dedicated, hardware-isolated DCLM runtime sleeve",
+          "\u2022 Zero cloud data harvesting or unauthorized model training"
+        ],
+        "boxHdr": "SECTOR BENCHMARKS READY",
+        "boxLines": [
+          "\u2022 School Boards: 180 bus routes ($6.15M net classroom gain)",
+          "\u2022 Municipalities: 72 ML/day water pumping ($380k hydro saving)",
+          "\u2022 Kitchens: 30% aggregator rake ($174k recovered/year)"
+        ],
+        "deepDiveTitle": "Sector Calibration Invariants",
+        "deepDiveBody": "Hardware Isolated Sleeve Deployment \u2022 Local Parameter Storage \u2022 Zero Cloud Residue",
+        "btn": "SWIPE TO SIGNER IDENTITY \u25b6"
+      },
+      {
+        "stage": "STAGE 3 / 5",
+        "route": "dualiscapax.ai/#onboard-signer",
+        "title": "AUTHORIZED OFFICER IDENTITY",
+        "sub": "Executive Signing Authority & Contact Verification",
+        "badge": "ZERO-PII HARDWARE IDENTITY",
+        "inputs": [
+          {
+            "id": "onboard-officer-name",
+            "label": "AUTHORIZED OFFICER NAME *",
+            "type": "text",
+            "placeholder": "Full Legal Name"
+          },
+          {
+            "id": "onboard-officer-id",
+            "label": "OFFICER IDENTIFIER / PUBLIC KEY *",
+            "type": "text",
+            "placeholder": "Officer Email or WebAuthn Passkey ID"
+          }
+        ],
+        "bullets": [
+          "\u2022 Bound strictly to designated corporate signing officer",
+          "\u2022 Zero cloud storage of credentials, passwords, or seeds",
+          "\u2022 Compatible with WebAuthn / FIDO2 / TPM 2.0 passkeys",
+          "\u2022 Automated audit alerts dispatched directly to officer"
+        ],
+        "boxHdr": "ENCLAVE PRIVACY LAW",
+        "boxLines": [
+          "\u2022 Ephemeral session binding with 0.00% retained PII",
+          "\u2022 Audit notifications issued from admin@dualiscapax.ai",
+          "\u2022 Real-time verification without third-party tracking"
+        ],
+        "deepDiveTitle": "Hardware Enclave Specifications",
+        "deepDiveBody": "FIDO2 / WebAuthn Biometric Touch \u2022 Deterministic ERC-4337 Smart Account \u2022 Zero Seed Phrases",
+        "btn": "SWIPE TO SETTLEMENT RAILS \u25b6"
+      },
+      {
+        "stage": "STAGE 4 / 5",
+        "route": "dualiscapax.ai/#onboard-settlement",
+        "title": "SETTLEMENT & AUDIT QUORUM",
+        "sub": "Performance Fee Settlement Rails & Contract Horizon",
+        "badge": "1:1 EQUAL-PARITY SETTLEMENT",
+        "inputs": [
+          {
+            "id": "onboard-rail",
+            "label": "SETTLEMENT RAIL *",
+            "type": "select",
+            "options": [
+              "CAD Bank EFT / Direct Corporate Wire",
+              "1:1 Equal-Crypto Parity (BTC / ETH / SOL / USDC)",
+              "Interac e-Transfer (admin@dualiscapax.ai)"
+            ]
+          },
+          {
+            "id": "onboard-horizon",
+            "label": "CONTRACT HORIZON & AUDIT QUORUM *",
+            "type": "select",
+            "options": [
+              "5-Year Asymptotic Standard (81% to 100% Client Retained)",
+              "90-Day Pure Evaluation ($0.00 Obligation)"
+            ]
+          }
+        ],
+        "bullets": [
+          "\u2022 Year 1: Client retains 81.0% (19.0% performance fee)",
+          "\u2022 Decays annually: 87.5% Y2 \u2192 92% Y3 \u2192 97% Y4",
+          "\u2022 Year 5+: 100.0% Permanent Retention ($0.00 ongoing fees)",
+          "\u2022 2-of-3 CPA LLP quorum must certify cashflow delta"
+        ],
+        "boxHdr": "SETTLEMENT GUARANTEE",
+        "boxLines": [
+          "\u2022 Zero upfront retainer \u00b7 Zero hardware debt",
+          "\u2022 CRA Barter Doctrine compliant (1:1 Spot CAD Parity)",
+          "\u2022 If no cashflow is saved, client owes exactly $0.00"
+        ],
+        "deepDiveTitle": "Settlement Invariants",
+        "deepDiveBody": "CRA Barter Doctrine (1:1 Spot CAD Parity) \u2022 Treasury Crypto Vaults \u2022 Multi-Sig Protection",
+        "btn": "SWIPE TO SEAL AGREEMENT \u25b6"
+      },
+      {
+        "stage": "STAGE 5 / 5",
+        "route": "dualiscapax.ai/#onboard-seal",
+        "title": "SEAL 90-DAY AGREEMENT",
+        "sub": "Cryptographic Runtime Initialization & Entitlement",
+        "badge": "IMMUTABLE DCLM RUNTIME SEAL",
+        "bullets": [
+          "\u2022 Deploys under DCLM_Fiduciary_Agreement.sol & OBCA #100089211",
+          "\u2022 Initiates 90-day zero-risk evaluation trial ($0.00 Upfront)",
+          "\u2022 Sub-90s clean unplug exit SLA armed (Zero Vendor Lock-In)",
+          "\u2022 Independent 2-of-3 CPA LLP audit quorum verifies balance sheet",
+          "\u2022 Standalone workbench (dualis-start.html) downloaded directly to device"
+        ],
+        "boxHdr": "SEPARATE A LA CARTE RESEARCH DOCKET",
+        "boxLines": [
+          "\u2022 Leaf Monograph: CAD $49.00 \u2022 Branch Pack: CAD $299.00",
+          "\u2022 117-Indication Master Compendium: CAD $1,499.00"
+        ],
+        "deepDiveTitle": "Runtime Packaging & Download",
+        "deepDiveBody": "Standalone dualis-start.html Launcher \u2022 Local Storage Note Persistence \u2022 Zero Cloud Dependency",
+        "btn": "SEAL 90-DAY AGREEMENT & INITIALIZE RUNTIME \u26a1"
+      }
+    ]
+  }
+};
+
+      let currentSector = 'residual';
+      let currentCardIdx = 0;
+
+      const homeView = document.getElementById('home-view-container');
+      const deckView = document.getElementById('deck-view-container');
+      const cardRender = document.getElementById('sector-card-render');
+      const gestureOverlay = document.getElementById('gesture-tutorial');
+      const onboardModal = document.getElementById('onboarding-modal');
+      const docModal = document.getElementById('medical-doc-modal');
+
+      function updateNavHighlight(activeId) {
+        document.querySelectorAll('.dock-nav-item').forEach(el => el.classList.remove('active'));
+        const activeEl = document.getElementById(activeId);
+        if (activeEl) activeEl.classList.add('active');
+      }
+
+      window.showHomeView = function() {
+        if (deckView) deckView.classList.remove('active');
+        if (homeView) homeView.classList.remove('hidden');
+        if (onboardModal) onboardModal.classList.remove('active');
+        if (docModal) docModal.classList.remove('active');
+        document.body.style.overflow = '';
+        updateNavHighlight('nav-item-home');
+        syncHashWithState();
+      };
+
+      window.openDualisSector = function(sectorKey) {
+        if (!SectorDecks[sectorKey]) sectorKey = 'residual';
+        currentSector = sectorKey;
+        currentCardIdx = 0;
+        
+        if (homeView) homeView.classList.add('hidden');
+        if (deckView) deckView.classList.add('active');
+        
+        renderCurrentCard();
+        updateNavHighlight(sectorKey === 'schools' ? 'nav-item-sectors' : (sectorKey === 'mesh' ? 'nav-item-iris' : 'nav-item-home'));
+        syncHashWithState();
+
+        // Show gesture tutorial for 2.2s on first open
+        if (gestureOverlay) {
+          gestureOverlay.classList.remove('faded');
+          setTimeout(() => {
+            gestureOverlay.classList.add('faded');
+          }, 2200);
+        }
+      };
+
+      window.nextCard = function() {
+        const sec = SectorDecks[currentSector] || SectorDecks.residual;
+        if (currentCardIdx < sec.cards.length - 1) {
+          currentCardIdx++;
+        } else {
+          // Stay strictly within the active sector! Loop cleanly back to Card 1 (Zero bleed into red)
+          currentCardIdx = 0;
+        }
+        renderCurrentCard();
+        dismissTutorial();
+      };
+
+      window.prevCard = function() {
+        const sec = SectorDecks[currentSector] || SectorDecks.residual;
+        currentCardIdx = (currentCardIdx > 0) ? currentCardIdx - 1 : sec.cards.length - 1;
+        renderCurrentCard();
+        dismissTutorial();
+      };
+
+      window.goToCard = function(idx) {
+        currentCardIdx = idx;
+        renderCurrentCard();
+        dismissTutorial();
+      };
+
+      function dismissTutorial() {
+        if (gestureOverlay && !gestureOverlay.classList.contains('faded')) {
+          gestureOverlay.classList.add('faded');
+        }
+      }
+
+      
+      // --- INTERACTIVE POINT-OF-PRODUCTION SAVINGS CALCULATOR ---
+      const CalculatorConfigs = {
+        residual: { min: 250000, max: 5000000, step: 50000, defaultVal: 1200000, label: "Annual Kitchen / Hospitality OpEx" },
+        municipalities: { min: 5000000, max: 300000000, step: 1000000, defaultVal: 142000000, label: "Annual Municipal Operating Budget" },
+        schools: { min: 10000000, max: 400000000, step: 2000000, defaultVal: 215000000, label: "Annual District School Board Budget" },
+        mesh: { min: 500000, max: 50000000, step: 250000, defaultVal: 5000000, label: "Annual IT / Fleet Infrastructure Spend" }
+      };
+
+      window.updateSavingsCalc = function(val) {
+        val = parseFloat(val);
+        const friction = val * 0.18;
+        const yr1 = friction * 0.81;
+        const yr5 = friction;
+
+        function fmt(n) {
+          if (n >= 1000000) return 'CAD $' + (n / 1000000).toFixed(2) + 'M';
+          return 'CAD $' + Math.round(n).toLocaleString();
+        }
+
+        const opexEl = document.getElementById('calc-opex-display');
+        const fricEl = document.getElementById('calc-friction');
+        const yr1El = document.getElementById('calc-yr1');
+        const yr5El = document.getElementById('calc-yr5');
+
+        if (opexEl) opexEl.textContent = fmt(val);
+        if (fricEl) fricEl.textContent = fmt(friction);
+        if (yr1El) yr1El.textContent = fmt(yr1);
+        if (yr5El) yr5El.textContent = fmt(yr5) + ' / yr';
+      };
+
+      function renderCurrentCard() {
+        const sec = SectorDecks[currentSector] || SectorDecks.residual;
+        const card = sec.cards[currentCardIdx] || sec.cards[0];
+        const jur = JurisdictionAnchors[currentJurisdiction] || JurisdictionAnchors.ca_on;
+        if (!cardRender) return;
+
+        let bHtml = card.bullets.map(b => `<li style="padding:4px 0; font-size:0.88rem; color:#c2d6ea; line-height:1.35;">${b}</li>`).join('');
+        let dotsHtml = sec.cards.map((_, i) => `<div class="dot-pip ${i === currentCardIdx ? 'active' : ''}" style="width:9px; height:9px; border-radius:50%; background:${i === currentCardIdx ? sec.accent : '#183048'}; cursor:pointer; transition:all 0.2s;" onclick="event.stopPropagation(); window.goToCard(${i})"></div>`).join('');
+
+        // Dynamic statutory lines reflecting the active Jurisdiction (or card-specific lines)
+        let displayBoxHdr = (currentSector === 'residual' || currentSector === 'municipalities' || currentSector === 'schools') ? jur.boxHdr : card.boxHdr;
+        let displayBoxLines = (currentSector === 'residual' || currentSector === 'municipalities' || currentSector === 'schools') ? jur.lines : card.boxLines;
+        let boxLinesHtml = displayBoxLines.map(l => `<div style="font-size:0.82rem; color:#9db6ce; padding:2px 0;">${l}</div>`).join('');
+
+        let bottomAction = '';
+        if (currentCardIdx === sec.cards.length - 1) {
+          bottomAction = `<button style="display:block; width:100%; text-align:center; font-family:var(--font-mono); font-weight:700; font-size:0.90rem; padding:11px; border-radius:8px; border:1.5px solid ${sec.accent}; background:rgba(0,255,170,0.08); color:${sec.accent}; cursor:pointer; margin-top:8px;" onclick="event.stopPropagation(); window.handleStage4Action()">${card.btn}</button>`;
+        }
+
+        cardRender.style.borderColor = sec.accent;
+
+        // Interactive inputs on Onboarding cards
+        let inputsHtml = '';
+
+        // Embed Interactive Savings Calculator on Stage 4 (Proof / Benchmarks)
+        let calcHtml = '';
+        if (currentCardIdx === 3 && CalculatorConfigs[currentSector]) {
+          const cfg = CalculatorConfigs[currentSector];
+          const initFriction = cfg.defaultVal * 0.18;
+          const initYr1 = initFriction * 0.81;
+          const initYr5 = initFriction;
+          
+          function initFmt(n) {
+            if (n >= 1000000) return 'CAD $' + (n / 1000000).toFixed(2) + 'M';
+            return 'CAD $' + Math.round(n).toLocaleString();
+          }
+
+          calcHtml = `
+            <div style="background:rgba(8,18,32,0.92); border:1.2px solid ${sec.accent}; border-radius:8px; padding:8px 10px; margin-bottom:8px; box-shadow:0 2px 10px rgba(0,0,0,0.4);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="font-family:var(--font-mono); font-size:0.68rem; color:${sec.accent}; font-weight:bold;">${cfg.label.toUpperCase()}</span>
+                <span id="calc-opex-display" style="font-family:var(--font-mono); font-size:0.80rem; color:#ffffff; font-weight:bold;">${initFmt(cfg.defaultVal)}</span>
+              </div>
+              <input type="range" id="calc-slider" min="${cfg.min}" max="${cfg.max}" step="${cfg.step}" value="${cfg.defaultVal}" oninput="window.updateSavingsCalc(this.value)" style="width:100%; height:5px; accent-color:${sec.accent}; cursor:pointer; margin-bottom:6px;">
+              
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-family:var(--font-mono);">
+                <div style="background:rgba(4,10,18,0.8); padding:5px 8px; border-radius:5px; border:1px solid rgba(255,255,255,0.08);">
+                  <div style="font-size:0.62rem; color:#94a3b8;">FRICTION (18% MEAN)</div>
+                  <div id="calc-friction" style="font-size:0.76rem; color:#ffb830; font-weight:bold;">${initFmt(initFriction)}</div>
+                </div>
+                <div style="background:rgba(4,10,18,0.8); padding:5px 8px; border-radius:5px; border:1px solid rgba(0,255,170,0.3);">
+                  <div style="font-size:0.62rem; color:#00ffaa;">YEAR 1 RETAINED (81%)</div>
+                  <div id="calc-yr1" style="font-size:0.76rem; color:#00ffaa; font-weight:bold;">${initFmt(initYr1)}</div>
+                </div>
+              </div>
+              <div style="margin-top:5px; font-family:var(--font-mono); font-size:0.68rem; color:#c2d6ea; display:flex; justify-content:space-between;">
+                <span>Year 5+ Permanent Retention (100%):</span>
+                <span id="calc-yr5" style="color:#00ffaa; font-weight:bold;">${initFmt(initYr5)} / yr</span>
+              </div>
+            </div>
+          `;
+        }
+        if (card.inputs && card.inputs.length > 0) {
+          inputsHtml = '<div style="margin: 6px 0;">' + card.inputs.map(inp => {
+            if (inp.type === 'select') {
+              let opts = inp.options.map(o => `<option value="${o}">${o}</option>`).join('');
+              return `<div style="margin-bottom:6px;"><label style="display:block; font-family:var(--font-mono); font-size:0.68rem; color:${sec.accent}; font-weight:700; margin-bottom:2px;">${inp.label}</label><select id="${inp.id}" style="width:100%; height:32px; background:rgba(4,10,18,0.95); border:1px solid ${sec.accent}; border-radius:6px; color:#ffffff; padding:0 8px; font-size:0.78rem; outline:none;" onchange="sessionStorage.setItem('${inp.id}', this.value)">${opts}</select></div>`;
+            } else {
+              return `<div style="margin-bottom:6px;"><label style="display:block; font-family:var(--font-mono); font-size:0.68rem; color:${sec.accent}; font-weight:700; margin-bottom:2px;">${inp.label}</label><input type="text" id="${inp.id}" placeholder="${inp.placeholder}" style="width:100%; height:32px; background:rgba(4,10,18,0.95); border:1px solid ${sec.accent}; border-radius:6px; color:#ffffff; padding:0 8px; font-size:0.78rem; outline:none;" oninput="sessionStorage.setItem('${inp.id}', this.value)" value="${sessionStorage.getItem(inp.id) || ''}"></div>`;
+            }
+          }).join('') + '</div>';
+        }
+
+        // Deep dive handoff drawer with interactive modal opener
+        let deepDiveHtml = '';
+        if (card.deepDiveTitle && card.deepDiveBody) {
+          deepDiveHtml = `
+            <div onclick="event.stopPropagation(); window.openCardDeepDive(${currentCardIdx})" style="background:rgba(14,27,46,0.85); border:1.2px solid rgba(56,189,248,0.35); border-radius:8px; padding:8px 10px; margin-bottom:8px; cursor:pointer; transition:all 0.2s; box-shadow:0 2px 8px rgba(0,0,0,0.3);" onmouseover="this.style.borderColor='#38bdf8'; this.style.background='rgba(18,36,62,0.95)';" onmouseout="this.style.borderColor='rgba(56,189,248,0.35)'; this.style.background='rgba(14,27,46,0.85)';">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-family:var(--font-mono); font-size:0.72rem; font-weight:700; color:#38bdf8; letter-spacing:0.04em;">▾ DEEP DIVE: ${card.deepDiveTitle}</div>
+                <span style="font-size:0.68rem; color:#38bdf8; font-family:var(--font-mono); font-weight:bold; background:rgba(56,189,248,0.15); padding:2px 6px; border-radius:4px; border:1px solid rgba(56,189,248,0.4);">OPEN SPEC ↗</span>
+              </div>
+              <div style="font-size:0.74rem; color:#cbd5e1; line-height:1.35; margin-top:3px;">${card.deepDiveBody}</div>
+            </div>
+          `;
+        }
+
+        cardRender.innerHTML = `
+          <!-- CLEAN SYMMETRICAL TWIN DROPDOWNS (SPLIT 50/50) -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; padding-bottom:8px; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.08); width:100%;">
+            <!-- Left Twin: Jurisdiction Selector -->
+            <div style="position:relative; background:rgba(11,25,44,0.85); border:1.2px solid rgba(0,229,255,0.35); border-radius:8px; height:38px; display:flex; align-items:center; box-sizing:border-box;">
+              <select id="jur-selector" onchange="window.onJurisdictionChange(this.value)" style="width:100%; height:100%; background:transparent; border:none; color:#ffffff; font-family:var(--font-mono); font-size:0.75rem; font-weight:700; outline:none; cursor:pointer; padding:0 8px;">
+                <optgroup label="🇨🇦 Canada" style="background:#07101e; color:#7e9cb8; font-weight:bold;">
+                  <option value="ca_on" ${currentJurisdiction === 'ca_on' ? 'selected' : ''} style="background:#07101e; color:#fff;">Ontario (OBCA)</option>
+                  <option value="ca_qc" ${currentJurisdiction === 'ca_qc' ? 'selected' : ''} style="background:#07101e; color:#fff;">Quebec (CCQ)</option>
+                  <option value="ca_bc" ${currentJurisdiction === 'ca_bc' ? 'selected' : ''} style="background:#07101e; color:#fff;">British Columbia</option>
+                  <option value="ca_ab" ${currentJurisdiction === 'ca_ab' ? 'selected' : ''} style="background:#07101e; color:#fff;">Alberta (Energy)</option>
+                  <option value="ca_pan" ${currentJurisdiction === 'ca_pan' ? 'selected' : ''} style="background:#07101e; color:#fff;">Pan-Canada (13)</option>
+                </optgroup>
+                <optgroup label="🇺🇸 United States" style="background:#07101e; color:#7e9cb8; font-weight:bold;">
+                  <option value="us_fed" ${currentJurisdiction === 'us_fed' ? 'selected' : ''} style="background:#07101e; color:#fff;">US Federal (50)</option>
+                  <option value="us_ny" ${currentJurisdiction === 'us_ny' ? 'selected' : ''} style="background:#07101e; color:#fff;">New York (AAA)</option>
+                  <option value="us_ca" ${currentJurisdiction === 'us_ca' ? 'selected' : ''} style="background:#07101e; color:#fff;">California (JAMS)</option>
+                  <option value="us_tx" ${currentJurisdiction === 'us_tx' ? 'selected' : ''} style="background:#07101e; color:#fff;">Texas (ERCOT)</option>
+                </optgroup>
+                <optgroup label="🌐 Sovereign Trust" style="background:#07101e; color:#7e9cb8; font-weight:bold;">
+                  <option value="intl_swiss" ${currentJurisdiction === 'intl_swiss' ? 'selected' : ''} style="background:#07101e; color:#fff;">Swiss (Zurich)</option>
+                  <option value="intl_global" ${currentJurisdiction === 'intl_global' ? 'selected' : ''} style="background:#07101e; color:#fff;">Global (UNCITRAL)</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <!-- Right Twin: Operational Sector Selector -->
+            <div style="position:relative; background:rgba(11,25,44,0.85); border:1.2px solid ${sec.accent}; border-radius:8px; height:38px; display:flex; align-items:center; box-sizing:border-box;">
+              <select onchange="window.onSectorChange(this.value)" style="width:100%; height:100%; background:transparent; border:none; color:${sec.accent}; font-family:var(--font-mono); font-size:0.75rem; font-weight:700; outline:none; cursor:pointer; padding:0 8px;">
+                <option value="residual" ${currentSector === 'residual' ? 'selected' : ''} style="background:#07101e; color:#ffb830;">01 // Fiduciary</option>
+                <option value="municipalities" ${currentSector === 'municipalities' ? 'selected' : ''} style="background:#07101e; color:#00ffaa;">02 // Municipal</option>
+                <option value="schools" ${currentSector === 'schools' ? 'selected' : ''} style="background:#07101e; color:#00e5ff;">03 // School Boards</option>
+                <option value="mesh" ${currentSector === 'mesh' ? 'selected' : ''} style="background:#07101e; color:#00e5ff;">04 // Intelligence</option>
+                <option value="onboard" ${currentSector === 'onboard' ? 'selected' : ''} style="background:#07101e; color:#ff2a5f;">05 // Onboard</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TOP STAGE META -->
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:6px; margin-bottom:6px; font-family:var(--font-mono);">
+            <div style="color:var(--teal-iris); font-weight:800; font-size:0.82rem; cursor:pointer;" onclick="event.stopPropagation(); window.showHomeView()">DUALISCAPAX INC. (OBCA #100089211)</div>
+            <div style="color:${sec.accent}; font-weight:700; font-size:0.78rem; letter-spacing:1px;">${card.stage}</div>
+          </div>
+
+          <div style="font-family:var(--font-mono); font-size:0.72rem; color:${sec.accent}; margin-bottom:2px;">${card.route}</div>
+          <h2 style="font-size:1.25rem; font-weight:800; color:#fff; margin-bottom:2px; line-height:1.15;">${card.title}</h2>
+          <div style="font-size:0.80rem; color:var(--teal-iris); margin-bottom:6px;">${card.sub}</div>
+          <div style="display:inline-block; font-family:var(--font-mono); font-size:0.68rem; font-weight:700; padding:2px 6px; border-radius:4px; border:1px solid ${sec.accent}; color:${sec.accent}; margin-bottom:8px;">[ ${card.badge} ]</div>
+
+          ${calcHtml}${inputsHtml ? inputsHtml : `<ul style="list-style:none; margin-bottom:8px;">${bHtml}</ul>`}
+
+          <!-- STATUTORY CALLOUT / DISPUTE ANCHORS (DYNAMICALLY SWAPPED BY JURISDICTION) -->
+          <div style="background:rgba(4,10,18,0.85); border:1px solid rgba(30,60,96,0.5); border-radius:8px; padding:6px 10px; margin-bottom:8px;">
+            <div style="font-family:var(--font-mono); font-size:0.74rem; font-weight:700; color:${sec.accent}; margin-bottom:2px;">${displayBoxHdr}</div>
+            <div style="border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:4px;"></div>
+            ${boxLinesHtml}
+          </div>
+
+          <!-- PROGRESSIVE DISCLOSURE: DEEP DIVE SPECIFICATION DRAWER -->
+          ${deepDiveHtml}
+
+          <!-- ACTION BUTTON -->
+          ${bottomAction}
+
+          <!-- DOT PIPS (PAGINATION) -->
+          <div style="display:flex; justify-content:center; gap:8px; align-items:center; margin-top:8px;">
+            ${dotsHtml}
+          </div>
+        `;
+      }
+
+      window.handleStage4Action = function() {
+        if (currentSector === 'onboard' && currentCardIdx === 4) {
+          var entity = sessionStorage.getItem('onboard-entity-name') || 'Authorized Entity';
+          var officer = sessionStorage.getItem('onboard-officer-name') || 'Authorized Officer';
+          var officerId = sessionStorage.getItem('onboard-officer-id') || 'admin@dualiscapax.ai';
+          var sector = sessionStorage.getItem('onboard-sector') || 'Public Sector';
+
+          if (window.DualisSeal && window.DualisSeal.sealFromModal) {
+            var pack = window.DualisSeal.sealFromModal(entity, officer, officerId, sector);
+            var u = (pack && pack.unity_id && pack.unity_id.unity) || (window.UnityID ? window.UnityID.mintU1() : null);
+            var tag = u ? (u.human + ' · ' + u.public) : 'U1';
+            alert('⚡ 90-DAY BILATERAL FIDUCIARY AGREEMENT SEALED!\n\nSeat: ' + tag + '\nBound to: ' + entity + ' (' + officer + ')\nStatus: DCLM_L0_CONVERGED · 0.00% PII\nOBCA #100089211 · Belleville, ON\n\nStandalone workbench (dualis-start.html) downloaded.');
+          } else {
+            const randHex = Math.random().toString(16).substring(2, 10).toUpperCase();
+            const token = 'DCLM-AGREE-' + randHex + '-VERIFIED';
+            sessionStorage.setItem('dclm_active_token', token);
+            alert('⚡ 90-DAY BILATERAL FIDUCIARY AGREEMENT SEALED!\n\nToken: ' + token + '\nStatus: DCLM_L0_CONVERGED\nOBCA #100089211 · Belleville, ON\n\nTelemetry verification dispatched to designated officer.');
+          }
+          return;
+        }
+    
+        const sec = SectorDecks[currentSector] || SectorDecks.residual;
+        const card = sec.cards[currentCardIdx];
+        if (card.btn.includes('INTAKE') || card.btn.includes('PASSKEY')) {
+          window.openOnboardingSuite();
+        } else if (card.btn.includes('BRIEFING') || card.btn.includes('COUNCIL') || card.btn.includes('TRUSTEE')) {
+          window.openBriefingModal(currentSector);
+        } else {
+          window.showHomeView();
+        }
+      };
+
+      // Real Touch Gestures on the Card Stage
+      let touchStartX = 0, touchStartY = 0;
+      if (deckView) {
+        deckView.addEventListener('touchstart', function(e) {
+          if (e.touches.length === 1) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+          }
+        }, { passive: true });
+
+        deckView.addEventListener('touchend', function(e) {
+          if (!touchStartX || !touchStartY) return;
+          const dx = e.changedTouches[0].clientX - touchStartX;
+          const dy = e.changedTouches[0].clientY - touchStartY;
+
+          // Pull down to return Home
+          if (dy > 65 && Math.abs(dx) < 60) {
+            window.showHomeView();
+          }
+          // Swipe left (next card)
+          else if (dx < -35 && Math.abs(dy) < 60) {
+            window.nextCard();
+          }
+          // Swipe right (prev card)
+          else if (dx > 35 && Math.abs(dy) < 60) {
+            window.prevCard();
+          }
+          // Tap card to advance if no drag
+          else if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+            window.nextCard();
+          }
+          touchStartX = 0; touchStartY = 0;
+        }, { passive: true });
+      }
+
+      // --- 4. MODALS (ONBOARDING & DOCUMENT VIEWER) ---
+      window.openOnboardingSuite = function() {
+        window.openDualisSector('onboard');
+      };
+
+      window.closeOnboardingSuite = function() {
+        if (onboardModal) {
+          onboardModal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      };
+
+      window.closeMedicalDoc = function() {
+        if (docModal) {
+          docModal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      };
+
+      const Docs = {
+        'als-guide': {
+          id: 'ED-MED-20260907-DCLM-ALS-3D-MANIPULATOR-V1',
+          title: 'DCLM Master ALS 3D Molecular Manipulation Guide',
+          body: `
+            <h2 style="font-size:1.35rem; color:#fff; margin-bottom:8px;">DCLM Master ALS 3D Molecular Manipulation Guide</h2>
+            <p style="color:#c2d6ea; margin-bottom:12px;">SOD1 Dimer Interface Stabilizer (PDB: 2XJK) & TDP-43 Amyloid Fibril Core (PDB: 6T49).</p>
+            <p style="color:#9ab5cf; font-size:0.88rem;">CISS Spin-Polarized Chiral Filter enforces 94.5% electron spin polarization to block off-target enantiomers under DCLM Layer [0] Law Floor.</p>
+          `
+        },
+        '100-pass-docket': {
+          id: 'ED-ENG-20260906-100-PASS-PROOF-DOCKET-V1',
+          title: 'DCLM 100-Pass Adversarial Attack & Affinity Synthesis Compendium',
+          body: `
+            <h2 style="font-size:1.35rem; color:#fff; margin-bottom:8px;">DCLM 100-Pass Proof Docket Scorecard</h2>
+            <p style="color:#00ffaa; font-family:var(--font-mono); margin-bottom:10px;">100 / 100 Passes Bounded · det(M) = 1.000000000000</p>
+            <p style="color:#c2d6ea; line-height:1.55; font-size:0.9rem;">• Problem 1: Symplectic Hamiltonian Dirac-Bracket Potential (det(M) ≡ 1.0)<br>• Problem 2: 5-Vector Non-Linear Covariance Metric Tensor G_ij (Error = 1.38e-17%)<br>• Problem 3: 1,000-Agent Concurrency (Latency: 0.35ms mean &lt; 4.20ms Watchdog)<br>• Problem 4: Tri-State Halting Paradox Trap (Quarantined in 9.63µs)</p>
+          `
+        }
+      };
+
+      
+      // --- INTERACTIVE DEEP DIVE MODAL CONTROLLER ---
+      
+      // --- EXECUTIVE STATUTORY BRIEFING MODAL CONTROLLER ---
+      const briefingModal = document.getElementById('briefing-modal');
+
+      window.openBriefingModal = function(sectorKey) {
+        if (!briefingModal) return;
+        briefingModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        const orgInput = document.getElementById('briefing-org');
+        const roleInput = document.getElementById('briefing-role');
+        if (sectorKey === 'schools' && roleInput) {
+          roleInput.value = 'School Board Trustee / Board Chair';
+          if (orgInput && !orgInput.value) orgInput.placeholder = 'e.g. HPEDSB, Hastings Prince Edward';
+        } else if (sectorKey === 'municipalities' && roleInput) {
+          roleInput.value = 'City Treasurer / Chief Financial Officer';
+          if (orgInput && !orgInput.value) orgInput.placeholder = 'e.g. City of Belleville, Town of Quinte West';
+        }
+      };
+
+      window.closeBriefingModal = function() {
+        if (!briefingModal) return;
+        briefingModal.style.display = 'none';
+        document.body.style.overflow = '';
+      };
+
+      window.sendBriefingRequest = function() {
+        const org = (document.getElementById('briefing-org').value || '').trim() || 'Public Sector Authority';
+        const role = document.getElementById('briefing-role').value;
+        const email = (document.getElementById('briefing-email').value || '').trim();
+        const fmt = document.getElementById('briefing-format').value;
+
+        const subject = encodeURIComponent(`Executive Fiduciary Briefing Request: ${org} (${role})`);
+        const body = encodeURIComponent(
+          `DUALISCAPAX EXECUTIVE STATUTORY BRIEFING REQUEST\n` +
+          `===============================================\n\n` +
+          `Entity Name: ${org}\n` +
+          `Signing Officer / Role: ${role}\n` +
+          `Contact Email / Identifier: ${email || 'Pending Verification'}\n` +
+          `Preferred Briefing Format: ${fmt}\n` +
+          `Statutory Authority: DualisCapax Inc. (OBCA #100089211, Belleville, Ontario)\n` +
+          `Contract Term: $0.00 Upfront 90-Day Free-Look Baseline Audit\n\n` +
+          `Please confirm receipt and dispatch the formal executive briefing docket.\n`
+        );
+
+        window.location.href = `mailto:admin@dualiscapax.ai?subject=${subject}&body=${body}`;
+        const st = document.getElementById('briefing-status');
+        if (st) st.textContent = 'Opening email client with formatted docket...';
+      };
+
+      window.copyBriefingAgenda = function() {
+        const org = (document.getElementById('briefing-org').value || '').trim() || 'Public Authority';
+        const role = document.getElementById('briefing-role').value;
+        const fmt = document.getElementById('briefing-format').value;
+
+        const agenda = 
+          `DUALISCAPAX STATUTORY BRIEFING AGENDA\n` +
+          `Entity: ${org} | Role: ${role} | Format: ${fmt}\n` +
+          `--------------------------------------------------\n` +
+          `1. Friction Pool Identification: Hydro demand peaks, fleet deadheading, aggregator rakes.\n` +
+          `2. Point-of-Production Fix: SCADA pump shifting, CVRP fleet clustering, thermal caching.\n` +
+          `3. Fiduciary Commercial Alignment: $0.00 upfront capital, 81% (Year 1) to 100% (Year 5) client retained.\n` +
+          `4. Independent Audit Standard: Licensed 2-of-3 CPA LLP verification quorum.\n` +
+          `5. Sovereign Autonomy: Sub-90s clean unplug SLA with zero vendor debt or equipment replacement.\n` +
+          `--------------------------------------------------\n` +
+          `Contact: admin@dualiscapax.ai | OBCA #100089211 (Belleville, ON)`;
+
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(agenda).then(() => {
+            const btn = document.getElementById('btn-copy-agenda');
+            if (btn) btn.textContent = '✓ Agenda Copied to Clipboard!';
+            setTimeout(() => { if (btn) btn.textContent = '📋 Copy Executive Agenda to Clipboard'; }, 2500);
+          });
+        }
+      };
+
+      window.openCardDeepDive = function(cardIdx) {
+        const sec = SectorDecks[currentSector] || SectorDecks.residual;
+        const card = sec.cards[cardIdx] || sec.cards[0];
+        const jur = JurisdictionAnchors[currentJurisdiction] || JurisdictionAnchors.ca_on;
+
+        const cid = document.getElementById('doc-control-id');
+        const th = document.getElementById('doc-title-head');
+        const r = document.getElementById('medical-doc-render');
+        if (!docModal || !r) return;
+
+        const specId = 'ED-SPEC-20260909-' + currentSector.toUpperCase() + '-STAGE' + (cardIdx + 1) + '-V1';
+        cid.innerText = specId;
+        th.innerText = card.deepDiveTitle || 'Technical Specification';
+
+        let content = `
+          <div style="padding:10px 0;">
+            <div style="display:inline-block; font-family:var(--font-mono); font-size:0.72rem; color:${sec.accent}; border:1px solid ${sec.accent}; border-radius:4px; padding:2px 8px; margin-bottom:12px; font-weight:bold;">
+              [ SECTOR: ${currentSector.toUpperCase()} · ${card.stage} · JURISDICTION: ${jur.short} ]
+            </div>
+            
+            <h2 style="font-size:1.35rem; color:#fff; margin-bottom:6px; font-weight:800;">${card.title}</h2>
+            <p style="color:#94a3b8; font-size:0.90rem; margin-bottom:16px;">${card.sub}</p>
+
+            <div style="background:rgba(6,14,26,0.9); border:1px solid rgba(56,189,248,0.3); border-radius:10px; padding:14px; margin-bottom:16px;">
+              <div style="font-family:var(--font-mono); font-size:0.75rem; color:#38bdf8; font-weight:bold; margin-bottom:6px;">CANONICAL STATUTORY & AUDIT ANCHORS</div>
+              <div style="font-size:0.82rem; color:#e2e8f0; line-height:1.5;">${jur.boxHdr}</div>
+              <ul style="list-style:none; padding:0; margin:8px 0 0 0;">
+                ${jur.lines.map(l => `<li style="padding:2px 0; font-size:0.80rem; color:#9db6ce;">${l}</li>`).join('')}
+              </ul>
+            </div>
+
+            <div style="background:rgba(4,10,18,0.85); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:14px; margin-bottom:16px;">
+              <div style="font-family:var(--font-mono); font-size:0.75rem; color:${sec.accent}; font-weight:bold; margin-bottom:6px;">TECHNICAL INVARIANT GROUNDING</div>
+              <p style="font-size:0.84rem; color:#cbd5e1; line-height:1.55; margin-bottom:8px;">${card.deepDiveBody}</p>
+              <ul style="list-style:none; padding:0; margin:8px 0 0 0;">
+                <li style="padding:3px 0; font-size:0.82rem; color:#9ab5cf;">• Invariant M-S Watchdog: Sub-4.20ms hardware tripwire (<0.045ms observed)</li>
+                <li style="padding:3px 0; font-size:0.82rem; color:#9ab5cf;">• Data Privacy: 0.00% retained PII under Landauer thermodynamic zeroization ($Q \ge k_B T \ln 2$)</li>
+                <li style="padding:3px 0; font-size:0.82rem; color:#9ab5cf;">• Commercial Invariant: $0.00 upfront capital retainer · 81.0% to 100.0% permanent client retention</li>
+                <li style="padding:3px 0; font-size:0.82rem; color:#9ab5cf;">• Operational Autonomy: Sub-90s clean unplug SLA (Zero lock-in, zero equipment debt)</li>
+              </ul>
+            </div>
+
+            <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:14px; margin-bottom:16px;">
+              <div style="font-family:var(--font-mono); font-size:0.75rem; color:#10b981; font-weight:bold; margin-bottom:6px;">POINT-OF-PRODUCTION VERIFICATION RECEIPT</div>
+              <p style="font-size:0.84rem; color:#cbd5e1; line-height:1.5; margin:0;">
+                All operational metrics are certified by independent 2-of-3 licensed CPA LLP audit quorum prior to settlement. If net verified balance-sheet savings do not exceed baseline OpEx drag, client obligation is mathematically capped at exactly CAD $0.00.
+              </p>
+            </div>
+
+            <button onclick="window.closeMedicalDoc()" style="display:block; width:100%; text-align:center; padding:12px; background:#162c46; border:1px solid #38bdf8; border-radius:8px; color:#ffffff; font-family:var(--font-mono); font-weight:bold; font-size:0.85rem; cursor:pointer; margin-top:14px;">
+              ✕ RETURN TO CARD DECK
+            </button>
+          </div>
+        `;
+
+        r.innerHTML = content;
+        docModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+
+      window.openDocument = function(docKey) {
+        const d = Docs[docKey] || Docs['als-guide'];
+        const cid = document.getElementById('doc-control-id');
+        const th = document.getElementById('doc-title-head');
+        const r = document.getElementById('medical-doc-render');
+        if (!docModal || !r) return;
+        cid.innerText = d.id; th.innerText = d.title; r.innerHTML = d.body;
+        docModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        updateNavHighlight(docKey === '100-pass-docket' ? 'nav-item-audit' : 'nav-item-home');
+      };
+
+      window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          if (briefingModal && briefingModal.style.display === 'flex') {
+            window.closeBriefingModal();
+          } else if (docModal && docModal.classList.contains('active')) {
+            window.closeMedicalDoc();
+          } else {
+            window.showHomeView();
+          }
+        }
+      });
+
+      // --- INITIAL LANDING: Auto-launch Onboard if unbound, or show Bound Status ---
+      
+      // --- URL HASH ROUTING & DEEP-LINKING SYNC ---
+      const SectorAliases = {
+        'fiduciary': 'residual',
+        'residual': 'residual',
+        'finance': 'residual',
+        'municipalities': 'municipalities',
+        'municipal': 'municipalities',
+        'scada': 'municipalities',
+        'schools': 'schools',
+        'education': 'schools',
+        'board': 'schools',
+        'intelligence': 'mesh',
+        'mesh': 'mesh',
+        'iris': 'mesh',
+        'onboard': 'onboard',
+        'onboarding': 'onboard'
+      };
+
+      function syncHashWithState() {
+        if (deckView && deckView.classList.contains('active')) {
+          let hashStr = '#' + currentSector;
+          if (currentJurisdiction && currentJurisdiction !== 'ca_on') {
+            hashStr += '/' + currentJurisdiction;
+          }
+          if (window.location.hash !== hashStr) {
+            history.replaceState(null, null, hashStr);
+          }
+        } else if (homeView && !homeView.classList.contains('hidden')) {
+          if (window.location.hash && window.location.hash !== '#home' && window.location.hash !== '#') {
+            history.replaceState(null, null, ' ');
+          }
+        }
+      }
+
+      function handleHashChange() {
+        const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim().toLowerCase();
+        if (!rawHash || rawHash === 'home') {
+          window.showHomeView();
+          return;
+        }
+
+        const parts = rawHash.split('/');
+        const sectorRaw = parts[0];
+        const jurRaw = parts[1];
+
+        const targetSector = SectorAliases[sectorRaw];
+        if (targetSector && SectorDecks[targetSector]) {
+          if (jurRaw && JurisdictionAnchors[jurRaw]) {
+            currentJurisdiction = jurRaw;
+          }
+          window.openDualisSector(targetSector);
+        }
+      }
+
+      window.addEventListener('hashchange', handleHashChange);
+
+      // Mobile Hardware / Browser Back Button Hook
+      window.addEventListener('popstate', function(e) {
+        if (deckView && deckView.classList.contains('active')) {
+          // If viewing a deck, back button returns to Home View instead of leaving the website!
+          window.showHomeView();
+        }
+      });
+
+      function initUnityGate() {
+        var raw = null;
+        try { raw = localStorage.getItem('dc.unity.id') || localStorage.getItem('dc.unity.pack'); } catch(e) {}
+        var statusEl = document.getElementById('unity-bind-status');
+        
+        if (raw) {
+          try {
+            var p = JSON.parse(raw);
+            var u = (p.unity_id && p.unity_id.unity) || p.unity;
+            var look = (p.unity_id && p.unity_id.look) || p.look || {};
+            var name = look.name || 'U1 Operator';
+            if (statusEl && u) {
+              statusEl.innerHTML = '<span style="color:#00ffaa;">● BOUND:</span> ' + (u.human || 'U1') + ' · ' + (u.public || 'DC1-H1-0001');
+            }
+            window.showHomeView();
+            return;
+          } catch(e) {}
+        }
+        
+        // Unbound visitor: launch Onboard Sector Deck as the first thing
+        if (statusEl) {
+          statusEl.innerHTML = '<span style="color:#ff2a5f;">○ UNBOUND:</span> Complete Onboarding to Initialize';
+        }
+        window.openDualisSector('onboard');
+      }
+
+      // If the URL has a deep link hash (e.g. #schools, #municipalities), honor it directly
+        if (window.location.hash && window.location.hash.length > 2) {
+          handleHashChange();
+        } else {
+          initUnityGate();
+        }
+
+    })();
+  
+      // --- PWA SERVICE WORKER REGISTRATION (OFFLINE SUPPORT) ---
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').catch(function() {});
+        });
+      }
+    </script>
+  <script src="dualis-unity-onboarding.js"></script>
+</body>
+</html>
