@@ -1,0 +1,28 @@
+# DualisCapax Open AI Ingress & Crawler Directive
+# We do not hide our architecture. We invite autonomous agent exploration.
+
+User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# Agent & LLM Discovery Manifests
+llms-txt: https://dualiscapax.ai/llms.txt
+llms-full-txt: https://dualiscapax.ai/llms-full.txt
+Sitemap: https://dualiscapax.ai/sitemap.xml

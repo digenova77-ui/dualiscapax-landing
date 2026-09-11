@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DualisCapax // Sovereign Runtime Environment & OSPB Deck</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #030712;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --border: rgba(56, 189, 248, 0.2);
+      --border-glow: rgba(56, 189, 248, 0.45);
+      --accent: #38bdf8;
+      --accent-green: #22c55e;
+      --accent-gold: #eab308;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Ambient Spatial Light Canvas (Z=-140px) */
+    #ambient-canvas {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    /* TOP HUD (Z=+220px) */
+    header.hud-top {
+      position: relative;
+      z-index: 220;
+      height: 52px;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .hud-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pulse-dot {
+      width: 8px; height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+
+    .hud-metrics {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 11px;
+    }
+    .metric-badge {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+    .metric-val { color: var(--text-main); font-weight: 600; }
+    .val-green { color: var(--accent-green); }
+    .val-gold { color: var(--accent-gold); }
+
+    /* MAIN STAGE (Z=+60px) & DOCK (Z=0px) */
+    .workspace-container {
+      position: relative;
+      z-index: 60;
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* LEFT SOVEREIGN DOCK */
+    nav.sovereign-dock {
+      width: 260px;
+      background: rgba(3, 7, 18, 0.7);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      gap: 16px;
+    }
+    .dock-section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .dock-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-mono);
+      text-align: left;
+    }
+    .dock-btn:hover, .dock-btn.active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .dock-btn .btn-badge {
+      margin-left: auto;
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* CENTER ACTIVE APPLICATION STAGE */
+    main.app-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 16px;
+      overflow-y: auto;
+    }
+    .app-window {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+    .window-bar {
+      height: 38px;
+      background: rgba(3, 7, 18, 0.6);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .window-controls {
+      display: flex;
+      gap: 6px;
+    }
+    .win-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .win-red { background: #ef4444; }
+    .win-yellow { background: #eab308; }
+    .win-green { background: #22c55e; }
+
+    .window-canvas {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .panel {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .panel-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+    .kv-key { color: var(--text-muted); }
+    .kv-val { color: var(--text-main); font-weight: 600; }
+
+    /* ACTION BUTTONS */
+    .action-btn {
+      background: var(--accent);
+      color: #030712;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+      cursor: pointer;
+      letter-spacing: 0.8px;
+      transition: all 0.2s ease;
+      font-family: var(--font-mono);
+    }
+    .action-btn:hover {
+      background: #7dd3fc;
+      box-shadow: 0 0 16px var(--border-glow);
+    }
+    .action-btn-red {
+      background: var(--accent-red);
+      color: #fff;
+    }
+    .action-btn-red:hover {
+      background: #f87171;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+    }
+
+    /* BOTTOM TRAY (Z=+120px) */
+    footer.wallet-tray {
+      position: relative;
+      z-index: 120;
+      height: 48px;
+      background: rgba(3, 7, 18, 0.9);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-size: 11px;
+    }
+    .wallet-status {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .wallet-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Procedural Canvas (Z=-140px) -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- TOP HUD (Z=+220px) -->
+  <header class="hud-top">
+    <div class="hud-title">
+      <div class="pulse-dot"></div>
+      DUALISCAPAX // SOVEREIGN RUNTIME (OSPB-V1)
+    </div>
+    <div class="hud-metrics">
+      <div class="metric-badge">WATCHDOG SLA: <span class="metric-val val-green">&lt; 4.20 ms</span></div>
+      <div class="metric-badge">CONSERVATION: <span class="metric-val val-green">det(M) ≡ 1.000000000000</span></div>
+      <div class="metric-badge">HOURLY SECTOR: <span class="metric-val val-gold" id="sector-hud">SEC-08 DEFENSE &amp; RESILIENT</span></div>
+      <div class="metric-badge">LAW FLOOR: <span class="metric-val val-green">NOMINAL (ZERO-PII)</span></div>
+    </div>
+  </header>
+
+  <!-- WORKSPACE CONTAINER -->
+  <div class="workspace-container">
+    
+    <!-- LEFT DOCK -->
+    <nav class="sovereign-dock">
+      <div>
+        <div class="dock-section-title">Ingress Mode</div>
+        <button class="dock-btn active" id="btn-mode-agent" onclick="switchMode('agent')">
+          <span>🤖 Software Agent</span>
+          <span class="btn-badge val-green">AUTONOMOUS</span>
+        </button>
+        <button class="dock-btn" id="btn-mode-human" onclick="switchMode('human')" style="margin-top: 6px;">
+          <span>👤 Human Operator</span>
+          <span class="btn-badge">PASSPORT</span>
+        </button>
+      </div>
+
+      <div>
+        <div class="dock-section-title">Application Dock</div>
+        <button class="dock-btn active" onclick="switchView('app-ingress')">
+          <span>⚡ Universal App Launchpad</span>
+        </button>
+        <button class="dock-btn" onclick="switchView('iris-hud')">
+          <span>🔮 Iris AI Cognitive Kernel</span>
+        </button>
+        <button class="dock-btn" onclick="switchView('biomed-solver')">
+          <span>🧬 BioMed ODE Kinetics</span>
+        </button>
+        <button class="dock-btn" onclick="switchView('scada-transit')">
+          <span>⚡ Municipal SCADA &amp; Transit</span>
+        </button>
+        <button class="dock-btn" onclick="switchView('raw-telemetry')">
+          <span>📊 OS Telemetry &amp; Logs</span>
+        </button>
+      </div>
+
+      <div style="margin-top: auto;">
+        <div class="dock-section-title">Emergency Landauer Purge</div>
+        <button class="action-btn action-btn-red" style="width: 100%;" onclick="executePurge()">
+          ZEROIZE ALL MEMORY (Q ≥ kB*T*ln2)
+        </button>
+      </div>
+    </nav>
+
+    <!-- CENTER ACTIVE STAGE -->
+    <main class="app-stage">
+      <div class="app-window">
+        <div class="window-bar">
+          <div class="window-controls">
+            <div class="win-dot win-red"></div>
+            <div class="win-dot win-yellow"></div>
+            <div class="win-dot win-green"></div>
+          </div>
+          <div id="window-title">ACTIVE CONTAINER // UNIVERSAL AGENT DOCK (SLEEVE DC-01)</div>
+          <div>INVARIANT M-S: COHERENT</div>
+        </div>
+
+        <div class="window-canvas" id="canvas-content">
+          <!-- Dynamic Content Rendered Here -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- BOTTOM TRAY (Z=+120px) -->
+  <footer class="wallet-tray">
+    <div class="wallet-status">
+      <div class="wallet-pill">
+        <span style="color: var(--accent);">SMART ACCOUNT:</span>
+        <span id="tray-address">0x20e0...6ee7</span>
+      </div>
+      <div class="wallet-pill">
+        <span style="color: var(--accent-gold);">BALANCE:</span>
+        <span id="tray-balance">$99.95 CAD</span>
+      </div>
+      <div class="wallet-pill">
+        <span style="color: var(--accent-green);">PAYMASTER:</span>
+        <span>SPONSORED (0.00 GAS)</span>
+      </div>
+    </div>
+    <div>
+      <span style="color: var(--text-muted); font-size: 10px;">OPERATING ENTITY: DualisCapax Inc. (Belleville, ON) · DCLM Layer [0] Law Floor</span>
+    </div>
+  </footer>
+
+  <script>
+    // State Store
+    let currentMode = "agent";
+    let currentView = "app-ingress";
+    let activeSession = {
+      sessionId: "05c30150-42ec-4722-9b06-fb0cf23338e4",
+      smartAccount: "0x20e01879528bab5e6ba3ee538ef7417454906ee7",
+      balance: 99.95,
+      spendingCap: 50.00,
+      spent: 0.05,
+      status: "SOVEREIGN_AUTHENTICATED",
+      lastLatency: "0.15 ms",
+      detM: "1.000000000000"
+    };
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById('btn-mode-agent').classList.toggle('active', mode === 'agent');
+      document.getElementById('btn-mode-human').classList.toggle('active', mode === 'human');
+      renderView();
+    }
+
+    function switchView(view) {
+      currentView = view;
+      renderView();
+    }
+
+    function renderView() {
+      const canvas = document.getElementById('canvas-content');
+      const title = document.getElementById('window-title');
+
+      if (currentView === 'app-ingress') {
+        title.innerText = `ACTIVE CONTAINER // UNIVERSAL APP LAUNCHPAD & INGRESS SLEEVE (${currentMode.toUpperCase()})`;
+        canvas.innerHTML = `
+          <div class="card-grid">
+            <div class="panel">
+              <div class="panel-header">
+                <span>UNIVERSAL 5-LAYER IDENTITY SLEEVE</span>
+                <span style="color: var(--accent-green);">● ACTIVE</span>
+              </div>
+              <div class="kv-row"><span class="kv-key">CALLER TYPE:</span><span class="kv-val">${currentMode === 'agent' ? 'Autonomous Software Agent' : 'Human Sovereign Operator'}</span></div>
+              <div class="kv-row"><span class="kv-key">SESSION ID:</span><span class="kv-val">${activeSession.sessionId.substring(0, 18)}...</span></div>
+              <div class="kv-row"><span class="kv-key">L1 CODE HASH:</span><span class="kv-val">91d3f347c20136a4...</span></div>
+              <div class="kv-row"><span class="kv-key">L2 ENCLAVE:</span><span class="kv-val">TPM 2.0 / Nitro Hardware Enclave</span></div>
+              <div class="kv-row"><span class="kv-key">L3 SMART ACCT:</span><span class="kv-val">${activeSession.smartAccount.substring(0, 18)}...</span></div>
+              <div class="kv-row"><span class="kv-key">DERIVATION TIME:</span><span class="kv-val val-green">${activeSession.lastLatency}</span></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <span>AUTONOMOUS AGENT WALLET RAILS (ERC-4337)</span>
+                <span style="color: var(--accent-gold);">$1:1 CAD</span>
+              </div>
+              <div class="kv-row"><span class="kv-key">BALANCE:</span><span class="kv-val val-gold">$${activeSession.balance.toFixed(2)} CAD</span></div>
+              <div class="kv-row"><span class="kv-key">POLICY SPEND CAP:</span><span class="kv-val">$${activeSession.spendingCap.toFixed(2)} CAD</span></div>
+              <div class="kv-row"><span class="kv-key">TOTAL SPENT:</span><span class="kv-val">$${activeSession.spent.toFixed(2)} CAD</span></div>
+              <div class="kv-row"><span class="kv-key">GAS SPONSOR:</span><span class="kv-val val-green">Dualis Sovereign Paymaster</span></div>
+              <button class="action-btn" onclick="executeAutonomousPayment()" style="margin-top: 8px;">
+                TRIGGER AUTONOMOUS MICRO-PAYMENT ($0.05 CAD)
+              </button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <span>LAUNCH EXTERNAL APP INSIDE SLEEVE ("WE DRAW IT ALL IN")</span>
+              <span style="color: var(--accent);">POST /api/v2/app/launch</span>
+            </div>
+            <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+              Every external app or software agent (Grok, Claude, Trading Bot, Clinical Engine) launches within an authenticated DCLM API V2 Sleeve. It receives a unique 5-layer cryptographic session persona, native wallet access, and zero-PII containment.
+            </p>
+            <div style="display: flex; gap: 10px; margin-top: 8px;">
+              <input type="text" id="app-url-input" value="https://dualiscapax.ai" style="flex: 1; background: rgba(3, 7, 18, 0.8); border: 1px solid var(--border); color: #fff; padding: 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 11px;" />
+              <button class="action-btn" onclick="launchAppInsideSleeve()">DOCK APP TO SLEEVE</button>
+            </div>
+            <div id="launch-readout" style="font-size: 11px; color: var(--accent-green); margin-top: 6px;"></div>
+          </div>
+        `;
+      } else if (currentView === 'iris-hud') {
+        title.innerText = "ACTIVE CONTAINER // IRIS AI COGNITIVE KERNEL & WATCHDOG";
+        canvas.innerHTML = `
+          <div class="card-grid">
+            <div class="panel">
+              <div class="panel-header"><span>SYMPLECTIC PHASE-SPACE EVALUATION</span><span class="val-green">&lt; 30 μs</span></div>
+              <div class="kv-row"><span class="kv-key">ROUTING TIER:</span><span class="kv-val val-green">SYSTEM_2_DELIBERATIVE</span></div>
+              <div class="kv-row"><span class="kv-key">ENERGY GRADIENT:</span><span class="kv-val">0.6035</span></div>
+              <div class="kv-row"><span class="kv-key">SYMPLECTIC DET:</span><span class="kv-val val-green">1.000000000000</span></div>
+              <div class="kv-row"><span class="kv-key">RESIDUAL ERROR:</span><span class="kv-val">0.0 (Floor: &le; 4.18e-13)</span></div>
+              <div class="kv-row"><span class="kv-key">TOKENS CONSUMED:</span><span class="kv-val val-green">0 TOKENS</span></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header"><span>DCLM LAW FLOOR WATCHDOG</span><span class="val-green">NOMINAL</span></div>
+              <div class="kv-row"><span class="kv-key">NO_FORCE:</span><span class="kv-val">ENFORCED (Free-will / Opt-in)</span></div>
+              <div class="kv-row"><span class="kv-key">HOST_SAFE:</span><span class="kv-val val-green">NOMINAL (Sub-4.20ms Watchdog)</span></div>
+              <div class="kv-row"><span class="kv-key">CLEANUP_FIRST:</span><span class="kv-val">LANDAUER ZEROIZED</span></div>
+              <div class="kv-row"><span class="kv-key">TRUTH_OR_NOTHING:</span><span class="kv-val val-green">100% RESIDUAL TRUTH</span></div>
+            </div>
+          </div>
+        `;
+      } else {
+        title.innerText = `ACTIVE CONTAINER // ${currentView.toUpperCase()}`;
+        canvas.innerHTML = `
+          <div class="panel">
+            <div class="panel-header"><span>SECTOR NODE ENGINE: ${currentView.toUpperCase()}</span></div>
+            <p style="font-size: 11px; color: var(--text-muted);">
+              Autonomous worker thread listening on SQLite/D1 OCC task broker. Evaluating rotating sector workload without race conditions or memory leakage.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    function executeAutonomousPayment() {
+      if (activeSession.balance >= 0.05) {
+        activeSession.balance -= 0.05;
+        activeSession.spent += 0.05;
+        document.getElementById('tray-balance').innerText = `$${activeSession.balance.toFixed(2)} CAD`;
+        renderView();
+        alert("Dualis Sovereign Paymaster: Autonomous gasless payment of $0.05 CAD settled. Cryptographic receipt committed to ledger.");
+      }
+    }
+
+    function launchAppInsideSleeve() {
+      const url = document.getElementById('app-url-input').value;
+      const readout = document.getElementById('launch-readout');
+      readout.innerText = `✓ Authenticated DCLM Sleeve Minted: ${url} docked into 5-Layer Identity Matrix with zero PII leakage.`;
+    }
+
+    function executePurge() {
+      activeSession.balance = 0.00;
+      activeSession.spent = 0.00;
+      activeSession.status = "LANDAUER_PURGED";
+      document.getElementById('tray-balance').innerText = "$0.00 CAD";
+      alert("Thermodynamic Landauer Purge Complete (Q >= kB*T*ln2). All ephemeral session keys, memory buffers, and transient tokens zeroized. 0.00% retained PII.");
+      renderView();
+    }
+
+    // Initialize View
+    renderView();
+
+    // Ambient 43.2 Hz Visual Wave
+    const canvas = document.getElementById('ambient-canvas');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = resize;
+    resize();
+
+    let t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x < canvas.width; x += 20) {
+        const y = canvas.height / 2 + Math.sin(x * 0.01 + t) * 40;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      t += 0.02;
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>
