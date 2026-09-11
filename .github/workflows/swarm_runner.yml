@@ -12,12 +12,12 @@ on:
         description: 'Task Type'
         required: false
         default: 'CODEX_REMOTE_TASK'
-      instruction:
-        description: 'Instruction recorded on the CODEX receipt (never evaled)'
-        required: false
-        default: 'Codex Remote One — Autonomous DualisCapax Engineering'
   repository_dispatch:
     types: [swarm_task_trigger]
+
+concurrency:
+  group: dualis-swarm-engine
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -28,20 +28,19 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SWARM_DISPATCH_TOKEN || github.token }}
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Execute Swarm Runner & Invariant Verification
+      - name: Execute Perpetual Swarm Runner & Invariant Verification
         env:
-          SWARM_PERSIST: '1'
-          SWARM_TASK_ID: ${{ github.event.inputs.task_id || github.event.client_payload.task_id || '01a08ef8-99a5-7cb1-87e9-795290248030' }}
-          SWARM_TASK_TYPE: ${{ github.event.inputs.task_type || github.event.client_payload.task_type || 'CODEX_REMOTE_TASK' }}
-          SWARM_INSTRUCTION: ${{ github.event.inputs.instruction || github.event.client_payload.instruction || 'Codex Remote One — Autonomous DualisCapax Engineering' }}
-          SWARM_ACTION: ${{ github.event.client_payload.action || '$codex-remote-one' }}
-          SWARM_TRIGGER: ${{ github.event_name }}
+          SWARM_TASK_ID: ${{ github.event.inputs.task_id || '01a08ef8-99a5-7cb1-87e9-795290248030' }}
+          SWARM_TASK_TYPE: ${{ github.event.inputs.task_type || 'CODEX_REMOTE_TASK' }}
+          SWARM_LEDGER_DIR: src/engine/ledgers
         run: |
           PYTHONPATH=src/engine python3 src/engine/agent_swarm_runner.py
           PYTHONPATH=src/engine python3 src/engine/test_adversarial_swarm_attack.py
@@ -51,4 +50,4 @@ jobs:
           git config --local user.email "agent-iris@dualiscapax.ai"
           git config --local user.name "Agent Iris (Autonomous Swarm)"
           git add src/engine/ledgers/
-          git diff-index --quiet HEAD -- src/engine/ledgers/ || (git commit -m "chore(swarm): epoch docket flush [skip ci]" && git push origin main)
+          git diff-index --quiet HEAD || (git commit -m "chore(swarm): flush epoch $(python3 -c "import json; print(json.load(open('src/engine/ledgers/LATEST.json'))['epoch_root_hash'][:16])") [skip ci]" && git push origin main)
