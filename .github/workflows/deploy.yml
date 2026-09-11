@@ -1,38 +1,28 @@
 name: Deploy DualisCapax Landing to GitHub Pages
 
+# RETIRED 2026-09-11.
+# GitHub is the information repository. Production publish is manual Cloudflare zip.
+# This workflow stays in tree so old badges do not 404. It does not upload Pages.
+
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      confirm_retirement:
+        description: "Type RETIRED — this workflow does not publish"
+        required: true
+        default: "RETIRED"
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  retired:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Refuse GitHub Pages publish
+        run: |
+          echo "GitHub Pages deploy rail is retired."
+          echo "Use scripts/pack_hierarchical_flat_zip.py --lander"
+          echo "then upload dist/cloudflare/lander-*.zip in Cloudflare Pages."
+          echo "Docs: docs/ops/ENVIRONMENT.md"
+          exit 0
