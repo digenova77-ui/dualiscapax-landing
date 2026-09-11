@@ -1,0 +1,43 @@
+name: DualisCapax Autonomous Swarm Runner & Epoch Flush
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      task_id:
+        description: 'Specific Task ID to ingest and execute'
+        required: false
+        default: '01a08ef8-99a5-7cb1-87e9-795290248030'
+      task_type:
+        description: 'Task Type'
+        required: false
+        default: 'CODEX_REMOTE_TASK'
+  repository_dispatch:
+    types: [swarm_task_trigger]
+
+permissions:
+  contents: write
+
+jobs:
+  run-swarm-epoch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Execute Swarm Runner & Invariant Verification
+        run: |
+          PYTHONPATH=src/engine python3 src/engine/agent_swarm_runner.py
+          PYTHONPATH=src/engine python3 src/engine/test_adversarial_swarm_attack.py
+
+      - name: Commit Epoch Ledger Docket
+        run: |
+          git config --local user.email "agent-iris@dualiscapax.ai"
+          git config --local user.name "Agent Iris (Autonomous Swarm)"
+          git add -A
+          git diff-index --quiet HEAD || (git commit -m "chore(swarm): epoch docket flush [skip ci]" && git push origin main)
