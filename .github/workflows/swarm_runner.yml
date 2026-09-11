@@ -12,6 +12,10 @@ on:
         description: 'Task Type'
         required: false
         default: 'CODEX_REMOTE_TASK'
+      instruction:
+        description: 'Instruction recorded on the CODEX receipt (never evaled)'
+        required: false
+        default: 'Codex Remote One — Autonomous DualisCapax Engineering'
   repository_dispatch:
     types: [swarm_task_trigger]
 
@@ -31,6 +35,13 @@ jobs:
           python-version: '3.11'
 
       - name: Execute Swarm Runner & Invariant Verification
+        env:
+          SWARM_PERSIST: '1'
+          SWARM_TASK_ID: ${{ github.event.inputs.task_id || github.event.client_payload.task_id || '01a08ef8-99a5-7cb1-87e9-795290248030' }}
+          SWARM_TASK_TYPE: ${{ github.event.inputs.task_type || github.event.client_payload.task_type || 'CODEX_REMOTE_TASK' }}
+          SWARM_INSTRUCTION: ${{ github.event.inputs.instruction || github.event.client_payload.instruction || 'Codex Remote One — Autonomous DualisCapax Engineering' }}
+          SWARM_ACTION: ${{ github.event.client_payload.action || '$codex-remote-one' }}
+          SWARM_TRIGGER: ${{ github.event_name }}
         run: |
           PYTHONPATH=src/engine python3 src/engine/agent_swarm_runner.py
           PYTHONPATH=src/engine python3 src/engine/test_adversarial_swarm_attack.py
@@ -39,5 +50,5 @@ jobs:
         run: |
           git config --local user.email "agent-iris@dualiscapax.ai"
           git config --local user.name "Agent Iris (Autonomous Swarm)"
-          git add -A
-          git diff-index --quiet HEAD || (git commit -m "chore(swarm): epoch docket flush [skip ci]" && git push origin main)
+          git add src/engine/ledgers/
+          git diff-index --quiet HEAD -- src/engine/ledgers/ || (git commit -m "chore(swarm): epoch docket flush [skip ci]" && git push origin main)
