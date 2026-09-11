@@ -1,0 +1,120 @@
+{
+  "timestamp_utc": "2026-09-11T07:17:42Z",
+  "agent_root_hash": "c7dca3bd118ab57970c5b304dd3de457e733d7c912ccdaee00563dd1f681ebb9",
+  "target": "STUB",
+  "live_actuators": false,
+  "agents": [
+    {
+      "agent": "SEC-01-hockey",
+      "status": "SIMULATION_OK",
+      "error": null,
+      "target": "STUB",
+      "live_actuator": false,
+      "latency_ms": 3.605,
+      "payload": {
+        "pcr_after_bench": 0.776,
+        "seconds_to_80": 107.6,
+        "flag": "PARTIAL_PCR_REFILL",
+        "tape": false,
+        "receipt": "0e7cc5c5d3bc130a88b1c3571e930a32fdebd008ea9c4c8cfa86949abb0210f5"
+      }
+    },
+    {
+      "agent": "SEC-02-04-municipal",
+      "status": "SIMULATION_OK",
+      "error": null,
+      "target": "STUB",
+      "live_actuator": false,
+      "latency_ms": 0.985,
+      "payload": {
+        "total_model_cad": 431774.67,
+        "receipt": "5d35baba2f6e0cb315ea24c52c3cd728685e3982f6ad8087f2260f4ea9f3e48d",
+        "signed_board_book": false
+      }
+    },
+    {
+      "agent": "SEC-05-hospitality",
+      "status": "SIMULATION_OK",
+      "error": null,
+      "target": "STUB",
+      "live_actuator": false,
+      "latency_ms": 0.756,
+      "payload": {
+        "friction_cad": 42553.15,
+        "year1_client_keep_cad": 34468.05,
+        "signed_msa": false,
+        "receipt": "3164864132f3df96faef52c66070603b9e59c337ce7eecf0c4478ee0db2a9fb8"
+      }
+    },
+    {
+      "agent": "SEC-09-anchor-encode",
+      "status": "SIMULATION_OK",
+      "error": null,
+      "target": "STUB",
+      "live_actuator": false,
+      "latency_ms": 1.009,
+      "payload": {
+        "epoch_root_hash": "2d1204c905df0efdfbdf539ef2c50c1bd500359975982b00142f7c51755bf82a",
+        "btc_status": "DETERMINISTIC_ENCODED",
+        "evm_status": "ABI_PACKED",
+        "sol_status": "SLOT_BIND_READY",
+        "broadcast": false
+      }
+    },
+    {
+      "agent": "SEC-09-t2-draft",
+      "status": "SIMULATION_OK",
+      "error": null,
+      "target": "STUB",
+      "live_actuator": false,
+      "latency_ms": 0.05,
+      "payload": {
+        "present": true,
+        "cra_send": false,
+        "keys": [
+          "jurisdiction",
+          "entity_type",
+          "gifi_schedule_125",
+          "schedule_t661_sred_pool_cad",
+          "form_gst34_input_tax_credits_cad",
+          "estimated_combined_tax_cad",
+          "crown_wet_ink_master_gate",
+          "transaction_count",
+          "reconciliation_status"
+        ]
+      }
+    },
+    {
+      "agent": "SEC-09-paper-trading",
+      "status": "SIMULATION_OK",
+      "error": null,
+      "target": "STUB",
+      "live_actuator": false,
+      "latency_ms": 0.834,
+      "payload": {
+        "paper_only": true,
+        "live_order": false,
+        "venue": "STUB",
+        "actions": [
+          "BUY",
+          "HOLD"
+        ],
+        "cash_cad": 9000.0
+      }
+    },
+    {
+      "agent": "UNITY-mesh-stub",
+      "status": "SIMULATION_OK",
+      "error": null,
+      "target": "STUB",
+      "live_actuator": false,
+      "latency_ms": 0.009,
+      "payload": {
+        "orchestrator_present": true,
+        "live_vendor_calls": false,
+        "target": "STUB",
+        "note": "role cards only unless vendor keys exist"
+      }
+    }
+  ]
+}
