@@ -1,0 +1,54 @@
+name: DualisCapax Swarm Bot Fleet
+on:
+  schedule:
+    - cron: '15 * * * *'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Destination (blank = STUB)'
+        required: false
+        default: 'STUB'
+
+concurrency:
+  group: dualis-bot-fleet
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fleet:
+    runs-on: ubuntu-latest
+    env:
+      DUALIS_TARGET: ${{ github.event.inputs.target || 'STUB' }}
+      DUALIS_LIVE_ACTUATORS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SWARM_DISPATCH_TOKEN || github.token }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Bot — perpetual swarm + adversarial
+        env:
+          SWARM_TASK_TYPE: CODEX_REMOTE_TASK
+          SWARM_LEDGER_DIR: src/engine/ledgers
+        run: |
+          PYTHONPATH=src/engine python3 src/engine/agent_swarm_runner.py
+          PYTHONPATH=src/engine python3 src/engine/test_adversarial_swarm_attack.py
+      - name: Bot — sector agents (hockey/muni/hospitality/anchor)
+        env:
+          SWARM_AGENT_DIR: src/engine/ledgers/agents
+        run: PYTHONPATH=src/engine python3 src/engine/sector_autonomy_agents.py
+      - name: Bot — tax clerks (CRA send stays NO)
+        run: PYTHONPATH=src/engine python3 src/engine/tax/tax_swarm_runner.py
+      - name: Bot — paper trading (no venue)
+        run: PYTHONPATH=src/engine python3 src/engine/trading/trading_manifold_engine.py
+      - name: Bot — unity mesh stub (no vendor required)
+        run: PYTHONPATH=src/engine python3 src/engine/unity/unity_mesh_orchestrator.py "STUB target=${DUALIS_TARGET}"
+      - name: Commit bot receipts
+        run: |
+          git config --local user.email "agent-iris@dualiscapax.ai"
+          git config --local user.name "Agent Iris (Bot Fleet)"
+          git add src/engine/ledgers/ src/engine/tax/T2_DRAFT_RETURN.json || true
+          git diff-index --quiet HEAD || (git commit -m "chore(bots): fleet tick target=${DUALIS_TARGET} [skip ci]" && git push origin HEAD)
