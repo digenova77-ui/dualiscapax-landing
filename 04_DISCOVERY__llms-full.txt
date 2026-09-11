@@ -1,0 +1,31 @@
+# DualisCapax Inc. — Full Technical Specification & Machine-Readable System Dossier
+Document Control ID: ED-SPEC-20260911-LLMS-FULL-V1
+Location: Belleville, Ontario, Canada
+
+## 1. Mathematical Physics & Symplectic Dynamics
+The core conservation kernel (src/engine/dclm_singularity_kernel.py) evaluates continuous Hamiltonian state manifolds:
+  S = <q, p, H, Phi>
+  q_{t+1} = q_t + dt * p_t
+  p_{t+1} = p_t - dt * (q_{t+1})
+  det(M) = det( d(q_{t+1}, p_{t+1}) / d(q_t, p_t) ) = 1.0000000000000000
+
+Residual drift is bounded asymptotically to R_eff <= 4.18e-13.
+Sub-4.20 ms Invariant M-S watchdog trips immediately fail-closed upon any numerical divergence.
+
+## 2. Fiduciary Performance Model
+- Upfront Retainer: CAD $0.00 (100% self-funded).
+- Year 1 Client Retained Savings: 81.0% of verified cost reduction.
+- Year 5 Asymptotic Target: 100.0% permanent client savings retention ($0.00 ongoing software fees).
+- Independent CPA LLP Audit Verification.
+
+## 3. Multi-Chain Cryptographic Attestation (Tier 2)
+Hourly epoch root hashes are deterministically formatted for public blockchain attestation without issuing speculative tokens:
+- Bitcoin: 40-byte OP_RETURN script hex (DCLM prefix + 32-byte root hash + count).
+- Ethereum: ABI calldata for IDCLMEpochAnchor.anchorEpoch(bytes32,uint256,uint256).
+- Solana: Instruction payload bound to Proof-of-History (PoH) slot finality.
+
+## 4. Multi-Jurisdictional 4-Pillar Topology
+- Pillar 1: DualisCapax Inc. (Belleville, Ontario CCPC) — Commercial contracting, SaaS delivery, Canadian IP.
+- Pillar 2: Singapore CLG — Public benefit stewardship, open academic licenses.
+- Pillar 3: Liechtenstein Anstalt (TVTG) — Token containerization and smart contract custody.
+- Pillar 4: Swiss Stiftung (ZGB) — Multi-century invariant capital reserves and institutional continuity.

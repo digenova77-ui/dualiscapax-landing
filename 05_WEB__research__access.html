@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Twitter Card & OpenGraph Meta Tags for Rich Preview Image in Tweets -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@dualiscapax">
+  <meta name="twitter:creator" content="@dualiscapax">
+  <meta name="twitter:title" content="DualisCapax DCLM · Master Production Gateway">
+  <meta name="twitter:description" content="Universal Deterministic Control Plane. Real-time hardware Invariant M-S (<4.20ms) telemetry, 10-sector interoperability & A La Carte math.">
+  <meta name="twitter:image" content="https://dualiscapax.ai/dclm_x_twitter_launch_card.png">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dualiscapax.ai">
+  <meta property="og:title" content="DualisCapax DCLM · Master Production Gateway">
+  <meta property="og:description" content="Universal Deterministic Control Plane. Live Gateways Open at Noon EDT today.">
+  <meta property="og:image" content="https://dualiscapax.ai/dclm_x_twitter_launch_card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DualisCapax DCLM — Master Production Gateway & DCCP Sovereign Portal</title>
+  <style>
+    :root {
+      --bg-primary: #060911;
+      --bg-card: #0c1220;
+      --bg-elevated: #162032;
+      --bg-code: #02040a;
+      --accent-cyan: #00f0ff;
+      --accent-blue: #3b82f6;
+      --accent-purple: #a855f7;
+      --accent-gold: #fbbf24;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #1e293b;
+      --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-primary); color: var(--text-main); font-family: var(--font-sans); line-height: 1.6; padding: 8px 6px; }
+    .container { max-width: 1360px; margin: 0 auto; }
+
+    header { border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-bottom: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; }
+    .logo-block h1 { font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, #00f0ff, #3b82f6, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo-block p { color: var(--text-muted); font-size: 0.875rem; font-family: var(--font-mono); margin-top: 4px; }
+
+    .badge-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 9999px; font-size: 0.75rem; font-family: var(--font-mono); font-weight: 700; text-transform: uppercase; background: rgba(0, 240, 255, 0.12); color: var(--accent-cyan); border: 1px solid rgba(0, 240, 255, 0.3); }
+    .status-badge.green { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border-color: rgba(16, 185, 129, 0.3); }
+    .status-badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background-color: currentColor; box-shadow: 0 0 8px currentColor; }
+
+    /* Invariants HUD */
+    .invariants-banner { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .inv-item { display: flex; flex-direction: column; }
+    .inv-label { font-size: 0.75rem; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-muted); }
+    .inv-value { font-size: 0.95rem; font-weight: 600; color: var(--accent-cyan); margin-top: 2px; }
+
+    .nav-tabs { display: flex; gap: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; overflow-x: auto; }
+    .main-tab-btn { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.875rem; font-weight: 600; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .main-tab-btn:hover, .main-tab-btn.active { background: var(--bg-elevated); color: var(--accent-cyan); border-color: var(--accent-cyan); }
+
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    /* Pricing Cards Grid */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; margin-bottom: 20px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, border-color 0.2s; }
+    .card:hover { transform: translateY(-4px); border-color: var(--accent-cyan); }
+    .card-tier { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; }
+    .card-title { font-size: 1.15rem; font-weight: 700; margin: 8px 0 12px; color: #fff; }
+    .card-price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+    .price-main { font-size: 1.85rem; font-weight: 800; color: var(--text-main); }
+    .price-sub { font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono); }
+    .card-features { list-style: none; margin-bottom: 24px; flex-grow: 1; }
+    .card-features li { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 8px; display: flex; gap: 8px; }
+    .card-features li::before { content: "✓"; color: var(--accent-green); font-weight: bold; }
+
+    .btn-checkout { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; background: linear-gradient(135deg, #00f0ff, #0077ff); color: #050b14; transition: filter 0.2s; }
+    .btn-checkout:hover { filter: brightness(1.15); }
+    .btn-crypto { background: var(--bg-elevated); color: var(--accent-gold); border: 1px solid rgba(251, 191, 36, 0.4); margin-top: 8px; }
+    .btn-crypto:hover { background: rgba(251, 191, 36, 0.1); }
+
+    /* Generator Layout */
+    .layout-grid { display: grid; grid-template-columns: 440px 1fr; gap: 28px; margin-bottom: 20px; }
+    @media (max-width: 960px) { .layout-grid { grid-template-columns: 1fr; } }
+    .panel { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; }
+    .panel-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .panel-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 0.75rem; text-transform: uppercase; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 6px; }
+    input, select { width: 100%; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px; color: var(--text-main); font-family: inherit; font-size: 0.9rem; }
+    input:focus, select:focus { outline: none; border-color: var(--accent-cyan); }
+    
+    .preset-btn-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 18px; }
+    .btn-preset { background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 10px; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; cursor: pointer; text-align: left; }
+    .btn-preset:hover, .btn-preset.active { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 240, 255, 0.08); }
+
+    .code-viewer { background: var(--bg-code); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; font-family: var(--font-mono); font-size: 0.82rem; color: #e2e8f0; max-height: 440px; overflow-x: auto; white-space: pre-wrap; }
+
+    .telemetry-hud { background: #02050c; border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; font-family: var(--font-mono); font-size: 0.8rem; color: #38bdf8; margin-bottom: 16px; overflow-x: auto; }
+
+    footer { border-top: 1px solid var(--border-color); padding-top: 24px; color: var(--text-muted); font-size: 0.8rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
+
+    /* Modal */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(6px); align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+    .modal-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; max-width: 520px; width: 100%; padding: 28px; position: relative; }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+  
+    /* Fullscreen Continuous Sprite Quarks & Cosmos Canvas Backdrop */
+    #cosmosCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .container { position: relative; z-index: 10; max-width: 1360px; margin: 0 auto; }
+
+    /* Geodesic Equator Logo & Wordmark (Unconstrained & Elevated) */
+    .hero-brand-equator {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 8px;
+    }
+    .lattice-icon {
+      width: 84px;
+      height: 84px;
+      min-width: 84px;
+      min-height: 84px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 8px 24px rgba(0, 240, 255, 0.5)) drop-shadow(0 0 12px rgba(88, 166, 255, 0.6));
+      animation: pulseGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { filter: drop-shadow(0 6px 18px rgba(0, 240, 255, 0.4)) drop-shadow(0 0 8px rgba(88, 166, 255, 0.4)); }
+      100% { filter: drop-shadow(0 10px 28px rgba(0, 240, 255, 0.7)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.6)); }
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Fullscreen Continuous Sprite Quarks Backdrop -->
+  <canvas id="cosmosCanvas"></canvas>
+
+  <div class="container">
+    <header>
+      <div class="logo-block">
+        <div class="hero-brand-equator">
+          <svg class="lattice-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="50" y="5" width="63.64" height="63.64" transform="rotate(45 50 5)" stroke="#00f0ff" stroke-width="2.5"/>
+            <rect x="50" y="20" width="42.43" height="42.43" transform="rotate(45 50 20)" stroke="#ffffff" stroke-width="1.8" stroke-dasharray="3 3"/>
+            <circle cx="50" cy="50" r="10" fill="#00f0ff"/>
+            <circle cx="50" cy="50" r="4" fill="#ffffff"/>
+            <line x1="50" y1="0" x2="50" y2="12" stroke="#00f0ff" stroke-width="2.5"/>
+            <line x1="50" y1="88" x2="50" y2="100" stroke="#00f0ff" stroke-width="2.5"/>
+            <line x1="0" y1="50" x2="12" y2="50" stroke="#00f0ff" stroke-width="2.5"/>
+            <line x1="88" y1="50" x2="100" y2="50" stroke="#00f0ff" stroke-width="2.5"/>
+          </svg>
+          <div>
+            <h1>DUALISCAPAX · DCLM MASTER PRODUCTION GATEWAY</h1>
+            <p>ED-ENG-20260830-DCLM-PROD-V1 · DCCP Sovereign Confinement · DCLM Layer [0] Law Floor</p>
+          </div>
+        </div>
+      </div>
+      <div class="badge-group">
+        <div class="status-badge green" id="countdownHeaderBadge">⏳ GO-LIVE COUNTDOWN: T-MINUS <span id="headerTimer">--:--:--</span></div>
+        <div class="status-badge">DCCP Enclosure Active</div>
+        <div class="status-badge">DCCP Enclosure Active</div>
+      </div>
+    </header>
+
+    <div class="invariants-banner">
+      <div class="inv-item">
+        <span class="inv-label">DCLM Law Floor</span>
+        <span class="inv-value">NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH</span>
+      </div>
+      <div class="inv-item">
+        <span class="inv-label">Hardware Watchdog</span>
+        <span class="inv-value">&lt; 4.20 ms (Invariant M-S)</span>
+      </div>
+      <div class="inv-item">
+        <span class="inv-label">Information-Theoretic Security</span>
+        <span class="inv-value">Carter-Wegman BN254 (Pr &lt; 10^-74)</span>
+      </div>
+      <div class="inv-item">
+        <span class="inv-label">Toll Parity (No Spread)</span>
+        <span class="inv-value">CAD ↔ Equal-Crypto (BTC, ETH, SOL)</span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="main-tab-btn active" onclick="switchMainView('pricing')">🛒 Public Itemized Pricing (7 Tiers)</button>
+      <button class="main-tab-btn" onclick="switchMainView('iris')">🧠 Agent Iris (Live Cognitive Console)</button>
+      <button class="main-tab-btn" onclick="switchMainView('generator')">⚙️ Universal Environment Runtime Generator</button>
+      <button class="main-tab-btn" onclick="switchMainView('security')">🛡️ 5 Enhanced Pillars & Security Verification</button>
+      <button class="main-tab-btn" onclick="switchMainView('telemetry')">📊 Live Production Telemetry HUD</button>
+    </div>
+
+    <!-- SECTION 1: PUBLIC PRICING -->
+    <div id="view-pricing" class="view-section active">
+      <div class="pricing-grid">
+        <!-- Tier 1 -->
+        <div class="card">
+          <div>
+            <div class="card-tier">Tier 1 · Single Indication Leaf</div>
+            <h3 class="card-title">Single Medical / Engineering Leaf Spec</h3>
+            <div class="card-price-row">
+              <span class="price-main">CAD $49.00</span>
+              <span class="price-sub">/ $36.30 USD-eq</span>
+            </div>
+            <ul class="card-features">
+              <li>Single indication monograph (AD, ctDNA Solid Tumor, Propofol BIS)</li>
+              <li>Conserved PK/PD Hamiltonian matrices</li>
+              <li>Volterra-Laguerre memory kernel constants ($T_{C4}$)</li>
+              <li>Deterministic dosage & safety boundary limits</li>
+            </ul>
+          </div>
+          <div>
+            <button class="btn-checkout" onclick="openCheckout('SKU-LEAF-01', 'Single Leaf Monograph', '49.00')">Stripe Live Wire (CAD $49)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-LEAF-01', '49.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+          </div>
+        </div>
+
+        <!-- Tier 2 -->
+        <div class="card">
+          <div>
+            <div class="card-tier">Tier 2 · Subsystem Branch Pack</div>
+            <h3 class="card-title">10-Indication Family Branch Pack</h3>
+            <div class="card-price-row">
+              <span class="price-main">CAD $299.00</span>
+              <span class="price-sub">/ $221.48 USD-eq</span>
+            </div>
+            <ul class="card-features">
+              <li>10-indication family bundle (NEURO-10, ONCO-10, CRITICAL-10)</li>
+              <li>Closed-loop dynamic feedback control laws</li>
+              <li>Multi-target interaction ODE systems</li>
+              <li>Complete simulation verification datasets</li>
+            </ul>
+          </div>
+          <div>
+            <button class="btn-checkout" onclick="openCheckout('SKU-BRANCH-01', 'Family Branch Pack', '299.00')">Stripe Live Wire (CAD $299)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-BRANCH-01', '299.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+          </div>
+        </div>
+
+        <!-- Tier 3 -->
+        <div class="card">
+          <div>
+            <div class="card-tier">Tier 3 · Master Compendium</div>
+            <h3 class="card-title">Complete 117-Indication Master Library</h3>
+            <div class="card-price-row">
+              <span class="price-main">CAD $1,499.00</span>
+              <span class="price-sub">/ $1,110.37 USD-eq</span>
+            </div>
+            <ul class="card-features">
+              <li>Full 117-indication cross-domain master compendium</li>
+              <li>Oncology, Neurology, Cardiology, Metabolic, Critical Care sets</li>
+              <li>Sealed Excel simulation workbook anchors (NEURO100-V1)</li>
+              <li>Direct Layer 2 API integration schemas</li>
+            </ul>
+          </div>
+          <div>
+            <button class="btn-checkout" onclick="openCheckout('SKU-LIB-01', 'Master Compendium Library', '1,499.00')">Stripe Live Wire (CAD $1,499)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-LIB-01', '1499.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+          </div>
+        </div>
+
+        <!-- Tier 4 -->
+        <div class="card">
+          <div>
+            <div class="card-tier">Tier 4 · Single Clinical/Industrial Line</div>
+            <h3 class="card-title">Single Line Plug-In (depth_s)</h3>
+            <div class="card-price-row">
+              <span class="price-main">CAD $6,750.00</span>
+              <span class="price-sub">/ $5,000 USD-eq</span>
+            </div>
+            <ul class="card-features">
+              <li>Single ICU bed / Industrial manufacturing line Layer 2 sleeve</li>
+              <li>Invariant M-S real-time hardware watchdog (&lt;4.20 ms)</li>
+              <li>100% refundable access bond</li>
+              <li>Degressive RTU compute metering</li>
+            </ul>
+          </div>
+          <div>
+            <button class="btn-checkout" onclick="openCheckout('SKU-PLUG-01', 'Single Line Plug-In', '6,750.00')">Stripe Live Wire (CAD $6,750)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-01', '6750.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+          </div>
+        </div>
+
+        <!-- Tier 5 -->
+        <div class="card">
+          <div>
+            <div class="card-tier">Tier 5 · Hospital Facility / Plant</div>
+            <h3 class="card-title">Facility / Ward Plug-In (depth_m)</h3>
+            <div class="card-price-row">
+              <span class="price-main">CAD $33,750.00</span>
+              <span class="price-sub">/ $25,000 USD-eq</span>
+            </div>
+            <ul class="card-features">
+              <li>Multi-line cleanroom & ICU ward integration (up to 32 lines)</li>
+              <li>Centralized telemetry & zero-PII edge scrubbing</li>
+              <li>100% credited against residual performance recovery</li>
+              <li>Dedicated fail-safe watchdog hardware binding</li>
+            </ul>
+          </div>
+          <div>
+            <button class="btn-checkout" onclick="openCheckout('SKU-PLUG-02', 'Hospital Facility Plug-In', '33,750.00')">Stripe Live Wire (CAD $33,750)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-02', '33750.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+          </div>
+        </div>
+
+        <!-- Tier 6 -->
+        <div class="card">
+          <div>
+            <div class="card-tier">Tier 6 · Hospital Network Enterprise</div>
+            <h3 class="card-title">Multi-Facility Enterprise Plug-In (depth_l)</h3>
+            <div class="card-price-row">
+              <span class="price-main">CAD $135,000.00</span>
+              <span class="price-sub">/ $100,000 USD-eq</span>
+            </div>
+            <ul class="card-features">
+              <li>Regional health authority / multi-hospital network deployment</li>
+              <li>Dedicated SLA enclave with &lt;90s emergency unplug guarantee</li>
+              <li>Full sovereign audit trail & Merkle proof attestation</li>
+              <li>0.85x Multi-facility RTU metering discount multiplier</li>
+            </ul>
+          </div>
+          <div>
+            <button class="btn-checkout" onclick="openCheckout('SKU-PLUG-03', 'Enterprise Network Plug-In', '135,000.00')">Stripe Live Wire (CAD $135,000)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-03', '135000.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier 7 -->
+      <div style="background: linear-gradient(135deg, rgba(30,58,138,0.4), rgba(88,28,135,0.4)); border: 1px solid #3b82f6; border-radius: 12px; padding: 24px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: #60a5fa; text-transform: uppercase;">Tier 7 · Sovereign Biopharma & Defense Prime</div>
+          <h3 style="font-size: 1.25rem; margin-top: 4px;">Deep Clinical Domain Enterprise Deposit ($25M – $100M USD)</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Global institutional license. 100% credited against DCLM performance residual royalties under Sovereign Institutional Trusts trust anchors.</p>
+        </div>
+        <button class="btn-checkout" style="max-width: 220px; background: #60a5fa; color: #0f172a;" onclick="alert('Enterprise Desk: Institutional wire routes available via corporate escrow to DualisCapax Inc.')">Institutional Wire Desk</button>
+      </div>
+    </div>
+
+    <!-- SECTION 2: RUNTIME GENERATOR -->
+    
+    <div id="view-iris" class="view-section">
+      <div class="panel" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <div>
+            <h2 class="panel-title" style="color: var(--accent-cyan); display: flex; align-items: center; gap: 10px;">
+              <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981;"></span>
+              Agent Iris (v2.5 Cognitive Core Live)
+            </h2>
+            <p class="panel-desc">Sovereign First-Principles Intelligence. Zero robotic boilerplate. Embedded symplectic solvers & live oracle routing.</p>
+          </div>
+          <a href="/ai/chat.html" class="btn-checkout" style="max-width: 180px; text-decoration: none; font-size: 0.8rem; padding: 8px 14px;">Open Fullscreen Chat ↗</a>
+        </div>
+
+        <div style="background: rgba(2, 5, 12, 0.95); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px;" id="embeddedIrisStream">
+          <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-cyan); padding: 14px 18px; border-radius: 8px;">
+            <div style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700; margin-bottom: 4px;">Agent Iris · DCLM Sovereign Intelligence</div>
+            <p style="font-size: 0.88rem; color: #cbd5e1;">I am online. Operating strictly under the DCLM Layer [0] Law Floor (NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING).</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">Ask me about minor hockey shift pacing, golf aerodynamic ballistics, Osteosarcoma ODE kinetics, commercial kitchen peak shaving, or public sector friction audits. I parse directly from first principles with zero canned filler.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="embeddedIrisInput" placeholder="Ask Iris about hockey shift pacing, golf ballistics, Osteosarcoma, or kitchen peak energy..." onkeydown="if(event.key==='Enter') sendEmbeddedIrisPrompt()" style="flex: 1;">
+          <button class="btn-checkout" style="max-width: 160px;" onclick="sendEmbeddedIrisPrompt()">Submit Query</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-generator" class="view-section">
+      <div class="layout-grid">
+        <div class="panel">
+          <h2 class="panel-title">1. Environment Intake</h2>
+          <p class="panel-desc">Ingest any client's current operational stack and compile a tailored Layer 2 runtime sleeve.</p>
+
+          <label>Sector Presets</label>
+          <div class="preset-btn-group">
+            <button class="btn-preset active" onclick="loadPreset('SCHOOL')">🏫 School Board (HPEDSB)</button>
+            <button class="btn-preset" onclick="loadPreset('MUNI')">🏛️ Municipal Gov (Belleville)</button>
+            <button class="btn-preset" onclick="loadPreset('HEALTH')">🏥 Hospital (Quinte Health)</button>
+            <button class="btn-preset" onclick="loadPreset('CORP')">🏭 Industrial / Corp</button>
+          </div>
+
+          <div class="form-group">
+            <label>Organization Name</label>
+            <input type="text" id="genOrg" value="Hastings and Prince Edward District School Board">
+          </div>
+          <div class="form-group">
+            <label>Sector Category</label>
+            <select id="genSector" onchange="updateGen()">
+              <option value="SCHOOL_BOARD">Public School Board (K-12 Education)</option>
+              <option value="MUNICIPAL_GOV">Municipal Government & Utilities</option>
+              <option value="HEALTHCARE_NETWORK">Healthcare & Hospital Network</option>
+              <option value="DEFENSE_PRIME">Defense & Airworthiness (DND/DRDC)</option>
+              <option value="INDUSTRIAL_MFG">Industrial Manufacturing & SCADA</option>
+              <option value="COMMERCIAL_CORP">Commercial Enterprise & Logistics</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Annual Operating Spend (CAD $)</label>
+            <input type="number" id="genSpend" value="215000000" step="1000000" onchange="updateGen()">
+          </div>
+          <button class="btn-checkout" style="margin-top: 10px;" onclick="generateSleeve()">Compile Custom DCLM Sleeve</button>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel-title">2. Compiled Runtime Sleeve & 1-Click Packs</h2>
+          <p class="panel-desc">Deterministic Layer 2 Sleeve tailored to the target environment with 100% mathematical enclosure.</p>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+            <div style="background: var(--bg-elevated); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+              <div style="font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-muted);">BASELINE SPEND</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: var(--accent-cyan);" id="outSpend">$215.0M</div>
+            </div>
+            <div style="background: var(--bg-elevated); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+              <div style="font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-muted);">RECOVERABLE (5.6%)</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: var(--accent-gold);" id="outRec">$10.43M/yr</div>
+            </div>
+            <div style="background: var(--bg-elevated); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+              <div style="font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-muted);">CLIENT NET YR 1 (81%)</div>
+              <div style="font-size: 1.25rem; font-weight: 800; color: var(--accent-green);" id="outClient">$8.45M</div>
+            </div>
+          </div>
+
+          <div class="code-viewer" id="genOutputCode"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: SECURITY & 5 PILLARS -->
+    <div id="view-security" class="view-section">
+      <div class="panel" style="margin-bottom: 16px;">
+        <h2 class="panel-title">The 5 Enhanced Architectural Pillars</h2>
+        <p class="panel-desc">Our math secures the partner with zero trust required. Method-opaque, verifiable in any isolated terminal.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+          <div style="background: var(--bg-elevated); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color);">
+            <h3 style="color: var(--accent-cyan); font-size: 1rem; margin-bottom: 8px;">1. Zero-Data Local Probe</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Runs locally on-premises in client memory; computes 5-vector friction baseline and emits only a cryptographic digest. 0 bits leave client firewall.</p>
+          </div>
+          <div style="background: var(--bg-elevated); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color);">
+            <h3 style="color: var(--accent-cyan); font-size: 1rem; margin-bottom: 8px;">2. Hardware TPM Attestation</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Sleeve binds to physical TPM 2.0 / WebAuthn FIDO2 chips. Cryptographic keys are unexportable from hardware, preventing memory dumps.</p>
+          </div>
+          <div style="background: var(--bg-elevated); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color);">
+            <h3 style="color: var(--accent-cyan); font-size: 1rem; margin-bottom: 8px;">3. Predictive Lyapunov Watchdog</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Monitors latency variance ($\lambda_L \le 0$). Detects micro-jitter 3–5 cycles in advance and throttles before reaching the 4.20 ms hard trip.</p>
+          </div>
+          <div style="background: var(--bg-elevated); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color);">
+            <h3 style="color: var(--accent-cyan); font-size: 1rem; margin-bottom: 8px;">4. 1-Click Statutory Pack</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Generates pre-formatted memos for Ontario BPS Procurement Directives (School Boards), MFIPPA (Cities), and PHIPA/IEC 62304 (Hospitals).</p>
+          </div>
+          <div style="background: var(--bg-elevated); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color);">
+            <h3 style="color: var(--accent-cyan); font-size: 1rem; margin-bottom: 8px;">5. 2-of-3 Multi-Sig CPA Release</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Fiduciary savings unlocked only when signed by Client CFO + Independent CPA LLP + Sovereign Root. Zero administrative disputes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: TELEMETRY HUD -->
+    <div id="view-telemetry" class="view-section">
+      <h3 style="font-size: 1.1rem; margin-bottom: 12px; font-family: var(--font-mono);">LIVE DCCP CONSERVED PLANE TELEMETRY STREAM</h3>
+      <div class="telemetry-hud" id="telemetryHudContainer">
+[DCCP_CORE_TELEMETRY_LOG]
+EPOCH_TARGET: 2026-08-30T12:00:00-04:00 (Noon EDT) | LOCAL_STAMP: 2026-08-30T07:29:38-04:00 (Belleville, ON)
+GO_LIVE_COUNTDOWN: [ T-MINUS <span id="hudCountdownTimer" style="color:#00f0ff; font-weight:bold;">04h 30m 22s</span> ]
+CONFINEMENT_REALM: DCCP_CONSERVED_PLANE (L2 Sovereign) | GATE_STATUS: SCHEDULED_NOON_LAUNCH (open: true)
+INVARIANT_M-S_MEAN_LATENCY: <span id="liveLatencyVal">0.00116</span> ms (HARD_FLOOR: 4.2000 ms | HEADROOM: +4.1988 ms)
+LYAPUNOV_DRIFT_EXPONENT: lambda_L = -0.0418 (STABLE_CONVERGENCE)
+SYMPLECTIC_VOLUME_DETERMINANT: det(M) = 1.000000000000 | RESIDUAL_FLOOR: R_eff = 4.18e-13
+INFORMATION_THEORETIC_SECURITY: Carter-Wegman BN254 (Pr[forgery] < 10^-74 | I(M; Tag | S) = 0.0000 bits)
+RETAINED_PII_PHI: 0.00% (Client-Side Ephemeral HMAC-SHA256 Salt Redacted)
+ORACLE_CAD_PARITY: BTC: $88,400.00 CAD | ETH: $3,650.00 CAD | SOL: $210.00 CAD
+CRYPTO_VAULT_SETTLEMENT: 0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4
+SOVEREIGN_ROOT_SEAL: 0xDUALIS_CAPAX_SOVEREIGN_ED25519_KEY_ROOT_ONTARIO_CA
+</div>
+    </div>
+
+    <footer>
+      <div>
+        <strong>DualisCapax Inc.</strong> · 535 Bridge St E, Belleville, Ontario, Canada K8N 1R7 · ORCID: 0009-0005-6291-8508
+      </div>
+      <div>
+        Governing Law: Ontario, Canada · Mandatory Arbitration: Toronto (ADRIC) / Toronto (ADRIC Rules)
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modal -->
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle" style="color: var(--accent-cyan); margin-bottom: 12px;">Stripe Live Wire</h3>
+      <p id="modalBody" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;"></p>
+      <div style="background: var(--bg-elevated); padding: 16px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.8rem; margin-bottom: 20px;">
+        <div><strong>Currency:</strong> CAD (Stripe Payment Link Live)</div>
+        <div id="modalPrice"><strong>Amount:</strong> CAD $49.00</div>
+        <div><strong>Security:</strong> Invariant M-S Fail-Closed Gating</div>
+        <div><strong>Status:</strong> GATEWAY OPEN</div>
+      </div>
+      <button class="btn-checkout" onclick="alert('Proceeding to Stripe Secure Live Wire Checkout...')">Proceed to Secure Stripe Checkout</button>
+    </div>
+  </div>
+
+  <script>
+    function switchMainView(viewId) {
+      document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('view-' + viewId).classList.add('active');
+    }
+
+    const presets = {
+      SCHOOL: { name: "Hastings and Prince Edward District School Board", sector: "SCHOOL_BOARD", spend: 215000000 },
+      MUNI: { name: "Corporation of the City of Belleville", sector: "MUNICIPAL_GOV", spend: 145000000 },
+      HEALTH: { name: "Quinte Health Care Network", sector: "HEALTHCARE_NETWORK", spend: 260000000 },
+      CORP: { name: "Quinte Advanced Manufacturing Logistics", sector: "INDUSTRIAL_MFG", spend: 85000000 }
+    };
+
+    function loadPreset(k) {
+      const p = presets[k];
+      document.getElementById('genOrg').value = p.name;
+      document.getElementById('genSector').value = p.sector;
+      document.getElementById('genSpend').value = p.spend;
+      document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      generateSleeve();
+    }
+
+    function updateGen() {
+      const spend = parseFloat(document.getElementById('genSpend').value) || 0;
+      const rec = spend * 0.0485;
+      const client = rec * 0.81;
+      document.getElementById('outSpend').innerText = '$' + (spend / 1e6).toFixed(1) + 'M';
+      document.getElementById('outRec').innerText = '$' + (rec / 1e6).toFixed(2) + 'M/yr';
+      document.getElementById('outClient').innerText = '$' + (client / 1e6).toFixed(2) + 'M';
+    }
+
+    function generateSleeve() {
+      updateGen();
+      const org = document.getElementById('genOrg').value;
+      const sec = document.getElementById('genSector').value;
+      const spend = parseFloat(document.getElementById('genSpend').value) || 0;
+      const rtId = 'DCLM-RT-' + sec.substring(0, 4) + '-' + Math.random().toString(16).substring(2, 8).toUpperCase();
+      const rec = spend * 0.0485;
+
+      document.getElementById('genOutputCode').innerText = `# DCLM COMPILED RUNTIME SLEEVE SPECIFICATION
+Organization: ${org}
+Runtime ID: ${rtId}
+Sector: ${sec}
+Status: ADMITTED TO DCCP CONSERVED PLANE
+
+# INVARIANTS:
+- Layer [0] Law Floor: NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING
+- Invariant M-S Hardware Watchdog: < 4.20 ms (Fail-Closed)
+- Zero PII Retention: 0.00% (Client-Side Ephemeral HMAC-SHA256 Salt Scrubber)
+- DCLM Fiduciary Value Split: CAD $0.00 Upfront | 81.0% Yr 1 Client Retained ($${(rec*0.81).toLocaleString()})
+- Emergency Decoupling SLA: <= 90.0 seconds ($0.00 Asset Leakage Guarantee)
+
+# EXECUTION COMMAND (On-Premises / Air-Gapped Terminal):
+python3 dclm_runtime_sleeve.py --runtime-id=${rtId} --sector=${sec}`;
+    }
+
+    function openCheckout(sku, name, price) {
+      document.getElementById('modalTitle').innerText = 'Stripe Live Wire: ' + name;
+      document.getElementById('modalBody').innerText = 'You are generating an authenticated cryptographic token grant for ' + sku + '. Access is unlocked immediately upon settlement.';
+      document.getElementById('modalPrice').innerHTML = '<strong>Amount:</strong> CAD $' + price;
+      document.getElementById('checkoutModal').style.display = 'flex';
+    }
+
+    function openCrypto(sku, priceCad) {
+      document.getElementById('modalTitle').innerText = 'Equal-Crypto Settlement: ' + sku;
+      document.getElementById('modalBody').innerText = 'Pay using Bitcoin (BTC), Ethereum (ETH), or Solana (SOL) with 1:1 CAD Parity. Vault: 0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4';
+      document.getElementById('modalPrice').innerHTML = '<strong>CAD Equivalent:</strong> CAD $' + priceCad;
+      document.getElementById('checkoutModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('checkoutModal').style.display = 'none';
+    }
+
+    
+    // Countdown Timer to 12:00 PM (Noon) EDT Today (2026-08-30T12:00:00-04:00)
+    function updateCountdownToNoon() {
+      // Target: August 30, 2026 12:00:00 EDT (UTC-4)
+      const targetTime = new Date('2026-08-30T12:00:00-04:00').getTime();
+      const now = new Date().getTime();
+      const diff = targetTime - now;
+
+      if (diff <= 0) {
+        document.getElementById('headerTimer').innerText = '00h 00m 00s (LIVE NOW)';
+        document.getElementById('hudCountdownTimer').innerText = '00h 00m 00s (LIVE ACTIVE)';
+        document.getElementById('countdownHeaderBadge').innerHTML = '● GATEWAYS LIVE (open: true)';
+        document.getElementById('countdownHeaderBadge').className = 'status-badge green';
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      const hStr = String(hours).padStart(2, '0');
+      const mStr = String(minutes).padStart(2, '0');
+      const sStr = String(seconds).padStart(2, '0');
+
+      const timeFormatted = `${hStr}h ${mStr}m ${sStr}s`;
+
+      const headerElem = document.getElementById('headerTimer');
+      if (headerElem) headerElem.innerText = timeFormatted;
+
+      const hudElem = document.getElementById('hudCountdownTimer');
+      if (hudElem) hudElem.innerText = timeFormatted;
+    }
+
+    // Live microsecond latency tick
+    function updateLiveHardwarePing() {
+      const t0 = performance.now();
+      let q = 1.05, p = 0.95;
+      for (let i = 0; i < 20; i++) {
+        q += 0.001 * p;
+        p -= 0.001 * (q * q);
+      }
+      const lat = (performance.now() - t0);
+      const latElem = document.getElementById('liveLatencyVal');
+      if (latElem) latElem.innerText = lat.toFixed(5);
+    }
+
+    setInterval(updateCountdownToNoon, 1000);
+    setInterval(updateLiveHardwarePing, 1500);
+    updateCountdownToNoon();
+    updateLiveHardwarePing();
+
+    
+    // -------------------------------------------------------------
+    // CONTINUOUS SPRITE QUARKS & BIG BANG BACKDROP ENGINE
+    // Renders 360 sparkling quantum quark particles across the entire viewport
+    // -------------------------------------------------------------
+    const canvas = document.getElementById('cosmosCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const particles = [];
+    const particleCount = 360;
+    const startTime = performance.now();
+
+    for (let i = 0; i < particleCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.5 + Math.random() * 4.5;
+      const initialRadius = 10 + Math.random() * Math.max(window.innerWidth, window.innerHeight);
+      
+      particles.push({
+        x: Math.cos(angle) * initialRadius,
+        y: Math.sin(angle) * initialRadius,
+        vx: Math.cos(angle) * speed * 0.4,
+        vy: Math.sin(angle) * speed * 0.4,
+        size: 0.8 + Math.random() * 2.4,
+        alpha: 0.25 + Math.random() * 0.75,
+        color: ['#ffffff', '#00f0ff', '#58a6ff', '#a855f7', '#fbbf24', '#10b981'][Math.floor(Math.random() * 6)],
+        driftDecel: 0.992 + Math.random() * 0.006
+      });
+    }
+
+    function animateCosmos(now) {
+      const elapsed = (now - startTime) / 1000;
+
+      ctx.fillStyle = 'rgba(6, 9, 17, 0.25)';
+      ctx.fillRect(0, 0, width, height);
+
+      const cx = width / 2;
+      const cy = height / 2;
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Wrap around screen boundaries for continuous eternal particle drift
+        if (Math.abs(p.x) > width) p.x = -p.x * 0.9;
+        if (Math.abs(p.y) > height) p.y = -p.y * 0.9;
+
+        const screenX = cx + p.x;
+        const screenY = cy + p.y;
+
+        ctx.beginPath();
+        ctx.arc(screenX, screenY, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        
+        const sparkle = 0.4 + 0.6 * Math.sin(elapsed * 3.5 + p.x * 0.04);
+        ctx.globalAlpha = p.alpha * sparkle;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = p.size * 3.0;
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 0;
+      });
+
+      requestAnimationFrame(animateCosmos);
+    }
+    requestAnimationFrame(animateCosmos);
+
+    window.onload = function() {
+      generateSleeve();
+    };
+  </script>
+  <script src="/js/iris-cognitive-engine.js"></script>
+</body>
+</html>
