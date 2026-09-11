@@ -1,0 +1,407 @@
+{
+  "timestamp_utc": "2026-09-11T17:27:20Z",
+  "epoch_root_hash": "98c9c4a5f9e98cf8612994d6865a08985efc313697c979b523f2f09d1ee1d3c8",
+  "completed_count": 50,
+  "tasks": [
+    {
+      "task_id": "01a08ef8-99a5-7cb1-87e9-795290248030",
+      "task_type": "CODEX_REMOTE_TASK",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "ab6627fcb8ad4073aea01d109f0b89dcbf175dc3d39b2e46014aa3e4cdb811f7",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"01a08ef8-99a5-7cb1-87e9-795290248030\", \"agent\": \"Iris-Core\", \"status\": \"EXECUTED_CONSERVED\", \"latency_us\": 4.36, \"detail\": {\"instruction\": \"Autonomous Execution: CODEX_REMOTE_TASK\", \"target_repo\": \"digenova77-ui/dualiscapax-landing\", \"law_floor_verified\": true, \"zero_pii_enforced\": true}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0001",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "e2a6291e629047d2bfe69ce9ba608f061735d64438f986c06cfb4d085e3ef4ac",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0001\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 1.88, \"detail\": {\"target\": \"SEC-08-subsystem-1\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0002",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "09a39687ce9c506222093f985ec65247297bfc3d1ab4daad8ae9dfddeb6b702a",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0002\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 2.02, \"detail\": {\"target\": \"SEC-08-subsystem-2\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0003",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "baf927ff88bfa2d67431fcf2516b80276e5ca338582aaafc06c422bbde1f53ae",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0003\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.63, \"detail\": {\"target\": \"SEC-08-subsystem-3\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0004",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "1f038f621450426937cc42effba566672c82718a30823e76ca8fb44a43554780",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0004\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.29, \"detail\": {\"target\": \"SEC-08-subsystem-4\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0005",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "bb383dc78ab073321ede418f1a4da52606bf841dc76afdbb7a01fcdc9c9ae619",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0005\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.67, \"detail\": {\"target\": \"SEC-08-subsystem-5\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0006",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "ce5fcb6fe9847e7922d4f764e3478fbcf0558e860c78f716a2f9ede65d358e2c",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0006\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.23, \"detail\": {\"target\": \"SEC-08-subsystem-6\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0007",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "46c41f7db54ca9c9768d8e24b02f4540781f4b1127c073dd952139fc5deab515",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0007\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.38, \"detail\": {\"target\": \"SEC-08-subsystem-7\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0008",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "dc181709aeb092353b2da00a8579f9611cb05ff68bef547be6dc6dd1d987ab0e",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0008\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.24, \"detail\": {\"target\": \"SEC-08-subsystem-8\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0009",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "e0f38261ac7b7525513d4b8ae26bf46f295868c1f6c2287365ac3ccd0e5cebd2",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0009\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.2, \"detail\": {\"target\": \"SEC-08-subsystem-9\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0010",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "61d37fdcc9102ec4a16d262fa3ee3086bc610789e4c558364ed50ed132ebc25a",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0010\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.08, \"detail\": {\"target\": \"SEC-08-subsystem-10\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0011",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "46d826c2fa3d118223c1be4f3acec34219159e820d5eca4c0f92e690484bf866",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0011\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.06, \"detail\": {\"target\": \"SEC-08-subsystem-11\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0012",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "23dd771282ff6c04658c9af6a045925e10e6c781ce122e3fd09a323c7823d54e",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0012\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.09, \"detail\": {\"target\": \"SEC-08-subsystem-12\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0013",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "08239f8072e75c01715fcd7b637476f5bf2bce326d7017def8903928ee97cb16",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0013\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.15, \"detail\": {\"target\": \"SEC-08-subsystem-13\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0014",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "46912a982948919e6aa1fdbbc96f7aea7932ef207dec4ff32818b4ededf66b29",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0014\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.14, \"detail\": {\"target\": \"SEC-08-subsystem-14\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0015",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "f826cfef2ec8a10d1c7543d41e67e370ab0bdfe20dd04e257be78c5f9eb2f1f7",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0015\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.12, \"detail\": {\"target\": \"SEC-08-subsystem-15\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0016",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "b4972eb0f3b526a2e952b79b7a97da388e3d659c59c763429e7211ab7e550ffa",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0016\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.01, \"detail\": {\"target\": \"SEC-08-subsystem-16\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0017",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "13d226ecff19cafd421fc337a86b02408cbf5a551ebc3b596874e82e328ba046",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0017\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.01, \"detail\": {\"target\": \"SEC-08-subsystem-17\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0018",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "e906b14742c4140984bbcd4ce43f02480ac273fd80946fc72325ec581204975c",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0018\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.96, \"detail\": {\"target\": \"SEC-08-subsystem-18\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0019",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "02415fae1ce65362b6a87bfeacb19544165dbcd2ba900f5ff49056bed509ff73",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0019\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.03, \"detail\": {\"target\": \"SEC-08-subsystem-19\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0020",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "364d0375830ee1b59f9a47df3f98c100864dea63714fe248e1823a17e3539bc6",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0020\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.97, \"detail\": {\"target\": \"SEC-08-subsystem-20\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0021",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "13b97e39eae4069e60ea979dd089151750c884c6b7b0b3118a6b54cb6a01ab6b",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0021\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.13, \"detail\": {\"target\": \"SEC-08-subsystem-21\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0022",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "8b91f4c53548cf9d99228fba3ce4c2b388d0b3f617241762974fa21a7ab68f25",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0022\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.02, \"detail\": {\"target\": \"SEC-08-subsystem-22\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0023",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "d387b0dc56efc84f09c1c7e31da64fd36b10b6bb6c706fdd0d642e4c0574197f",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0023\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.09, \"detail\": {\"target\": \"SEC-08-subsystem-23\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0024",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "dc41954e1619024d3a1ab500be9a7138094382abc3c64e25099f79e5fecbcba6",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0024\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.89, \"detail\": {\"target\": \"SEC-08-subsystem-24\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0025",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "fdc1e0ede02faeac63a789b205d32d039b6c2defa7c244b9b9aee0620824ef17",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0025\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.0, \"detail\": {\"target\": \"SEC-08-subsystem-25\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0026",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "0c7ca747c3ac3d5f9e94ef79008fd308a4db050c399df78b3b94f689f594e45d",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0026\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.85, \"detail\": {\"target\": \"SEC-08-subsystem-26\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0027",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "7eb55aa77bed3a202cb637217f844b9eb1997bc2e37a01f5810d692c7c50caba",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0027\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.98, \"detail\": {\"target\": \"SEC-08-subsystem-27\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0028",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "c926a365934b2f9f6d4b943f1b1c0153df517794a25c9c886b426ed57071903c",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0028\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.88, \"detail\": {\"target\": \"SEC-08-subsystem-28\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0029",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "a90e7fa74aa6a294f14a7d8cc6f59884707172c6768202b4eb8f670d247ca931",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0029\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.03, \"detail\": {\"target\": \"SEC-08-subsystem-29\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0030",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "bd6cca44a7dd7d5f45a8352406f7f76b7f6276194b793ce9fdf54d83a8328a08",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0030\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.12, \"detail\": {\"target\": \"SEC-08-subsystem-30\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0031",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "aeb8e1f8c2067c073e9d73201da38c32234055c68d5d736a34e11d67e0b0cb6c",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0031\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.1, \"detail\": {\"target\": \"SEC-08-subsystem-31\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0032",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "f1678e68cf605a5ddd1a9b6b4a4469096f0d7e0718905a420303ffcadb7f183c",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0032\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.96, \"detail\": {\"target\": \"SEC-08-subsystem-32\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0033",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "82075c64796e341c9e3b2f72a944bff8ae6824f79debc908bf50ce4695707161",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0033\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.22, \"detail\": {\"target\": \"SEC-08-subsystem-33\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0034",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "b41b1a66d0fa2736c364bf33077eadd3b98af4b5f2a081f67d5d164ee0ef2bd0",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0034\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.9, \"detail\": {\"target\": \"SEC-08-subsystem-34\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0035",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "bc937832bd7360ef68a466f4b2da8c73d5f406819e51b5fdccfe1f7e907a04f3",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0035\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.15, \"detail\": {\"target\": \"SEC-08-subsystem-35\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0036",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "dae97246c77ef0a44d82bccd0c2bfe380df43407a98c2529276ba5e01d49cc67",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0036\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.85, \"detail\": {\"target\": \"SEC-08-subsystem-36\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0037",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "a655ad63ea73f125328615353ec3a60e848cfef1967ef99d5b73a0329c47865e",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0037\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.23, \"detail\": {\"target\": \"SEC-08-subsystem-37\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0038",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "0e38d945d3e3c5d6a3e156a985e1498c8280cd1e1e2ec4f1da0677ea0ed3ea96",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0038\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.94, \"detail\": {\"target\": \"SEC-08-subsystem-38\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0039",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "fda64526bf85d68f2eb5fb7584c91a44493414a9a694133001bd4807b6a1a61c",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0039\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.19, \"detail\": {\"target\": \"SEC-08-subsystem-39\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0040",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "ee85f6e05d7a8d1bb094711b4ee5a08cc2b231e259a074c61fbff1abd515a21c",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0040\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.04, \"detail\": {\"target\": \"SEC-08-subsystem-40\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0041",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "b24c62056b4f68b10f2aeac46ff6e5fa5a23add903ce22a1a4fe9d077ef6ae3f",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0041\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.01, \"detail\": {\"target\": \"SEC-08-subsystem-41\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0042",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "5650c140233b28c4873b48cfe9cfeee30a029a0946b76c31421a71248c4930d0",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0042\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.91, \"detail\": {\"target\": \"SEC-08-subsystem-42\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0043",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "b0a2f99a185cd6acf61e1986aebea9470db6469eb38fb2b0cba445d57c77af01",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0043\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.01, \"detail\": {\"target\": \"SEC-08-subsystem-43\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0044",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "f1497470c8b16a3ce087c88ed433d918bb40b0608d8d06fc74cdfc7eee02d412",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0044\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.05, \"detail\": {\"target\": \"SEC-08-subsystem-44\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0045",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "b75c8ab68aa4903c48cf87b55dcd0cfc507bce9fc7ab5c584ef6aeb2cccd10a6",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0045\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.01, \"detail\": {\"target\": \"SEC-08-subsystem-45\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0046",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "c9087e30cdf5e47c67fca1a92e4b4798a2fa59de436b7f3654957ea41d50ab0d",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0046\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.06, \"detail\": {\"target\": \"SEC-08-subsystem-46\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0047",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "e496d79d94527c236171d2ba8b5bb7df58e60716ba84a0fe52b1b1654fb059a5",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0047\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.88, \"detail\": {\"target\": \"SEC-08-subsystem-47\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0048",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "33379eb12398ed7a126a11a90e8f9a13d947e77525dcfef36dcadfc0c11c2bdb",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0048\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.06, \"detail\": {\"target\": \"SEC-08-subsystem-48\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0049",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "ad79f79df669c762db1f2f0dd790088fde36bb65a83616017788074665487e0e",
+      "completed_at": 1789147640,
+      "result": "{\"task_id\": \"SEC-08-TASK-0049\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.1, \"detail\": {\"target\": \"SEC-08-subsystem-49\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    }
+  ]
+}
