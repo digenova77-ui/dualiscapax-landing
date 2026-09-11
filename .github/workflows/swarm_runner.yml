@@ -45,9 +45,15 @@ jobs:
           PYTHONPATH=src/engine python3 src/engine/agent_swarm_runner.py
           PYTHONPATH=src/engine python3 src/engine/test_adversarial_swarm_attack.py
 
+      - name: Wake Landed Sector Agents (simulation only)
+        env:
+          SWARM_AGENT_DIR: src/engine/ledgers/agents
+        run: |
+          PYTHONPATH=src/engine python3 src/engine/sector_autonomy_agents.py
+
       - name: Commit Epoch Ledger Docket
         run: |
           git config --local user.email "agent-iris@dualiscapax.ai"
           git config --local user.name "Agent Iris (Autonomous Swarm)"
           git add src/engine/ledgers/
-          git diff-index --quiet HEAD || (git commit -m "chore(swarm): flush epoch $(python3 -c "import json; print(json.load(open('src/engine/ledgers/LATEST.json'))['epoch_root_hash'][:16])") [skip ci]" && git push origin main)
+          git diff-index --quiet HEAD || (git commit -m "chore(swarm): flush epoch + sector agents [skip ci]" && git push origin main)
