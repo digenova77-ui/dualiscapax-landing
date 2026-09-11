@@ -1,23 +1,8 @@
 {
-  "action": "$codex-remote-one",
-  "completed_at": 1789108305,
-  "engine_tree": {
-    "_bundle": "fb59f109b70383faa854c0722dfd1096172d275cd466b4705907a46d036c7fa7",
-    "agent_swarm_runner.py": "750aaaa1065d98de394fa1dc6e848696b4c6412ba9d41952294c9836814a9e94",
-    "dclm_singularity_kernel.py": "684ea8196f2eb014c5e9fc79c7792d1aab0723d301d295d44422a2d2ec2d2d93",
-    "test.py": "540e60c7beaf334250eb5ed472b76fbe348903dbe7fbf1a5deb385621fe6f653",
-    "test_adversarial_swarm_attack.py": "4a7e0ecd477c31b0eec80b8e0a2fd7d61572c89f4d5425fb7fe3dade3ec38c37"
-  },
-  "instruction": "Codex Remote One \u2014 Autonomous DualisCapax Engineering",
-  "law_floor": {
-    "allowlisted_types_only": true,
-    "no_eval_instruction": true,
-    "no_shell_instruction": true,
-    "zero_pii": true
-  },
-  "receipt_hash": "98feec4554f24b970f4d441e8a5445a6d07e51072c82a788d27f0ec7b8bbf7b2",
-  "target_repo": "digenova77-ui/dualiscapax-landing",
   "task_id": "01a08ef8-99a5-7cb1-87e9-795290248030",
   "task_type": "CODEX_REMOTE_TASK",
-  "trigger": "workflow_dispatch"
+  "claimed_by": "Iris-Core",
+  "receipt_hash": "e2bbe49bad98c398ea544b33f57e203d72dcfd10e0aadd0ca131fffaede49a54",
+  "completed_at": 1789111060,
+  "result": "{\"task_id\": \"01a08ef8-99a5-7cb1-87e9-795290248030\", \"agent\": \"Iris-Core\", \"status\": \"EXECUTED_CONSERVED\", \"latency_us\": 5.2, \"detail\": {\"instruction\": \"Autonomous Execution: CODEX_REMOTE_TASK\", \"target_repo\": \"digenova77-ui/dualiscapax-landing\", \"law_floor_verified\": true, \"zero_pii_enforced\": true}}"
 }
