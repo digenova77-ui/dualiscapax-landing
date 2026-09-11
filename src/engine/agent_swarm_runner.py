@@ -8,21 +8,30 @@ Invariants: NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING
 """
 
 import os
-import sys
 import time
 import json
 import sqlite3
 import hashlib
 import threading
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 from dclm_singularity_kernel import SovereignConservationKernel
+
+ENGINE_DIR = os.path.dirname(os.path.abspath(__file__))
+LEDGER_DIR = os.path.join(ENGINE_DIR, "ledgers")
+DEFAULT_TASK_ID = "01a08ef8-99a5-7cb1-87e9-795290248030"
+DEFAULT_TASK_TYPE = "CODEX_REMOTE_TASK"
+ALLOWLISTED_TYPES = frozenset({
+    "CODEX_REMOTE_TASK",
+    "DCLM_CONSERVATION_CHECK",
+    "MONOGRAPH_INTEGRITY_AUDIT",
+})
 
 DB_SCHEMA = """
 CREATE TABLE IF NOT EXISTS active_tasks_d1 (
     task_id TEXT PRIMARY KEY,
     task_type TEXT NOT NULL,
     payload TEXT NOT NULL,
-    status TEXT NOT NULL, -- PENDING, IN_PROGRESS, COMPLETED, FAILED
+    status TEXT NOT NULL,
     claimed_by TEXT,
     lock_timestamp INTEGER,
     heartbeat_timestamp INTEGER,
@@ -34,6 +43,121 @@ CREATE TABLE IF NOT EXISTS active_tasks_d1 (
 );
 CREATE INDEX IF NOT EXISTS idx_tasks_status ON active_tasks_d1(status);
 """
+
+
+def ingest_from_env() -> Dict[str, str]:
+    """Gap 1: workflow_dispatch / repository_dispatch / cron inputs become the seed task."""
+    task_type = os.environ.get("SWARM_TASK_TYPE", DEFAULT_TASK_TYPE).strip() or DEFAULT_TASK_TYPE
+    if task_type not in ALLOWLISTED_TYPES:
+        task_type = DEFAULT_TASK_TYPE
+    return {
+        "task_id": os.environ.get("SWARM_TASK_ID", DEFAULT_TASK_ID).strip() or DEFAULT_TASK_ID,
+        "task_type": task_type,
+        "instruction": os.environ.get(
+            "SWARM_INSTRUCTION",
+            "Codex Remote One — Autonomous DualisCapax Engineering",
+        ),
+        "trigger": os.environ.get("SWARM_TRIGGER", "local"),
+        "action": os.environ.get("SWARM_ACTION", "$codex-remote-one"),
+        "repo": os.environ.get("SWARM_REPO", "digenova77-ui/dualiscapax-landing"),
+        "run_id": os.environ.get("GITHUB_RUN_ID", ""),
+        "sha": os.environ.get("GITHUB_SHA", ""),
+    }
+
+
+def hash_engine_tree(root: Optional[str] = None) -> Dict[str, str]:
+    root = root or ENGINE_DIR
+    files = {}
+    for name in sorted(os.listdir(root)):
+        path = os.path.join(root, name)
+        if os.path.isfile(path) and name.endswith(".py"):
+            with open(path, "rb") as handle:
+                files[name] = hashlib.sha256(handle.read()).hexdigest()
+    bundle = json.dumps(files, sort_keys=True).encode()
+    files["_bundle"] = hashlib.sha256(bundle).hexdigest()
+    return files
+
+
+def persist_epoch(epoch: Dict[str, Any], ingest: Dict[str, str], dest_dir: Optional[str] = None) -> Dict[str, str]:
+    """Gap 2: epoch docket becomes files the Actions commit step can push."""
+    dest_dir = dest_dir or LEDGER_DIR
+    epochs_dir = os.path.join(dest_dir, "epochs")
+    receipts_dir = os.path.join(dest_dir, "receipts")
+    os.makedirs(epochs_dir, exist_ok=True)
+    os.makedirs(receipts_dir, exist_ok=True)
+
+    stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    record = {
+        "stamp": stamp,
+        "ingest": ingest,
+        "epoch_root_hash": epoch["epoch_root_hash"],
+        "completed_count": epoch["completed_count"],
+        "tasks": epoch["tasks"],
+        "engine_tree": hash_engine_tree(),
+    }
+    epoch_path = os.path.join(epochs_dir, f"epoch-{stamp}.json")
+    latest_path = os.path.join(dest_dir, "LATEST.json")
+    docket_path = os.path.join(dest_dir, "docket.jsonl")
+    with open(epoch_path, "w", encoding="utf-8") as handle:
+        json.dump(record, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+    with open(latest_path, "w", encoding="utf-8") as handle:
+        json.dump(record, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+    summary = {
+        "stamp": stamp,
+        "epoch_root_hash": epoch["epoch_root_hash"],
+        "completed_count": epoch["completed_count"],
+        "task_id": ingest.get("task_id"),
+        "task_type": ingest.get("task_type"),
+        "trigger": ingest.get("trigger"),
+        "run_id": ingest.get("run_id"),
+        "sha": ingest.get("sha"),
+    }
+    with open(docket_path, "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(summary, sort_keys=True) + "\n")
+    return {"epoch_path": epoch_path, "latest_path": latest_path, "docket_path": docket_path}
+
+
+def execute_codex_remote(task_id: str, payload: Dict[str, Any], dest_dir: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Gap 3: CODEX_REMOTE_TASK leaves a hashed receipt on disk.
+
+    The instruction string is recorded, never eval'd or shelled.
+    Allowed action is engine-tree hash + receipt write.
+    """
+    dest_dir = dest_dir or LEDGER_DIR
+    receipts_dir = os.path.join(dest_dir, "receipts")
+    os.makedirs(receipts_dir, exist_ok=True)
+    tree = hash_engine_tree()
+    receipt = {
+        "task_id": task_id,
+        "task_type": "CODEX_REMOTE_TASK",
+        "instruction": payload.get("instruction", ""),
+        "action": payload.get("action", "$codex-remote-one"),
+        "target_repo": payload.get("repo", "digenova77-ui/dualiscapax-landing"),
+        "trigger": payload.get("trigger", "local"),
+        "engine_tree": tree,
+        "law_floor": {
+            "no_eval_instruction": True,
+            "no_shell_instruction": True,
+            "zero_pii": True,
+            "allowlisted_types_only": True,
+        },
+        "completed_at": int(time.time()),
+    }
+    receipt["receipt_hash"] = hashlib.sha256(
+        json.dumps(receipt, sort_keys=True).encode()
+    ).hexdigest()
+    safe_id = "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in task_id)[:120]
+    path = os.path.join(receipts_dir, f"{safe_id}.json")
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(receipt, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+    receipt["receipt_path"] = path
+    receipt["executed"] = os.path.isfile(path) and bool(tree.get("_bundle"))
+    return receipt
+
 
 class SwarmTaskBroker:
     """Fast-plane SQLite/D1 in-memory or file-backed OCC task broker."""
@@ -141,11 +265,18 @@ class SwarmTaskBroker:
 
 
 class AutonomousWorkerAgent(threading.Thread):
-    def __init__(self, agent_name: str, broker: SwarmTaskBroker, kernel: SovereignConservationKernel):
+    def __init__(
+        self,
+        agent_name: str,
+        broker: SwarmTaskBroker,
+        kernel: SovereignConservationKernel,
+        ledger_dir: Optional[str] = None,
+    ):
         super().__init__(name=agent_name)
         self.agent_name = agent_name
         self.broker = broker
         self.kernel = kernel
+        self.ledger_dir = ledger_dir or LEDGER_DIR
         self.running = True
         self.processed_count = 0
 
@@ -158,10 +289,8 @@ class AutonomousWorkerAgent(threading.Thread):
 
             result = self.execute_task(task)
             receipt_hash = hashlib.sha256(
-                f"{task['task_id']}::{self.agent_name}::{json.dumps(result)}".encode()
+                f"{task['task_id']}::{self.agent_name}::{json.dumps(result, sort_keys=True, default=str)}".encode()
             ).hexdigest()
-
-            del task
 
             self.broker.complete_task(result["task_id"], self.agent_name, result, receipt_hash)
             self.processed_count += 1
@@ -180,20 +309,19 @@ class AutonomousWorkerAgent(threading.Thread):
             detail = k_res
 
         elif task_type == "MONOGRAPH_INTEGRITY_AUDIT":
+            tree = hash_engine_tree()
             monograph = payload.get("monograph", "master_index")
             status = "VERIFIED"
-            detail = {"monograph": monograph, "status": "SHA256_ANCHORED", "drift": 0.0}
+            detail = {
+                "monograph": monograph,
+                "status": "SHA256_ANCHORED",
+                "drift": 0.0,
+                "engine_bundle": tree.get("_bundle"),
+            }
 
         elif task_type == "CODEX_REMOTE_TASK":
-            instruction = payload.get("instruction", "")
-            target_repo = payload.get("repo", "digenova77-ui/dualiscapax-landing")
-            status = "EXECUTED_CONSERVED"
-            detail = {
-                "instruction": instruction,
-                "target_repo": target_repo,
-                "law_floor_verified": True,
-                "zero_pii_enforced": True
-            }
+            detail = execute_codex_remote(task_id, payload, dest_dir=self.ledger_dir)
+            status = "EXECUTED_CONSERVED" if detail.get("executed") else "FAILED"
         else:
             status = "PROCESSED"
             detail = {"echo": payload}
@@ -209,66 +337,81 @@ class AutonomousWorkerAgent(threading.Thread):
         }
 
 
-def run_autonomous_swarm_simulation(num_tasks: int = 50) -> Dict[str, Any]:
+def run_autonomous_swarm_simulation(
+    num_tasks: int = 50,
+    persist: Optional[bool] = None,
+    ledger_dir: Optional[str] = None,
+) -> Dict[str, Any]:
+    ingest = ingest_from_env()
+    if persist is None:
+        persist = os.environ.get("SWARM_PERSIST", "0") == "1"
+    ledger_dir = ledger_dir or LEDGER_DIR
+
     broker = SwarmTaskBroker(":memory:")
     kernel = SovereignConservationKernel()
 
-    # Seed the specific task from the user's directive
     broker.insert_task(
-        task_id="01a08ef8-99a5-7cb1-87e9-795290248030",
-        task_type="CODEX_REMOTE_TASK",
+        task_id=ingest["task_id"],
+        task_type=ingest["task_type"],
         payload={
-            "instruction": "Codex Remote One — Autonomous DualisCapax Engineering",
-            "repo": "digenova77-ui/dualiscapax-landing",
-            "action": "$codex-remote-one"
+            "instruction": ingest["instruction"],
+            "repo": ingest["repo"],
+            "action": ingest["action"],
+            "trigger": ingest["trigger"],
+            "run_id": ingest["run_id"],
+            "sha": ingest["sha"],
         }
     )
 
-    # Seed synthetic verification tasks
     for i in range(1, num_tasks):
         t_id = f"DCLM-TASK-{i:04d}"
         t_type = "DCLM_CONSERVATION_CHECK" if i % 2 == 0 else "MONOGRAPH_INTEGRITY_AUDIT"
-        broker.insert_task(t_id, t_type, {"q": 1.0 + i*0.01, "p": 0.5 - i*0.005, "monograph": f"module_{i}"})
+        broker.insert_task(t_id, t_type, {"q": 1.0 + i * 0.01, "p": 0.5 - i * 0.005, "monograph": f"module_{i}"})
 
-    # Spin up worker collective
     workers = [
-        AutonomousWorkerAgent("Iris-Core", broker, kernel),
-        AutonomousWorkerAgent("Iris-BioMed", broker, kernel),
-        AutonomousWorkerAgent("Iris-Treasury", broker, kernel)
+        AutonomousWorkerAgent("Iris-Core", broker, kernel, ledger_dir=ledger_dir),
+        AutonomousWorkerAgent("Iris-BioMed", broker, kernel, ledger_dir=ledger_dir),
+        AutonomousWorkerAgent("Iris-Treasury", broker, kernel, ledger_dir=ledger_dir),
     ]
 
     t_start = time.perf_counter()
     for w in workers:
         w.start()
 
-    while True:
+    deadline = t_start + 30
+    while time.perf_counter() < deadline:
         stats = broker.get_stats()
         if stats.get("COMPLETED", 0) >= num_tasks:
             break
         time.sleep(0.01)
 
-    t_total = time.perf_counter() - t_start
-
     for w in workers:
         w.running = False
-        w.join()
+        w.join(timeout=2)
 
+    t_total = time.perf_counter() - t_start
     epoch = broker.flush_epoch_docket()
+    paths = persist_epoch(epoch, ingest, dest_dir=ledger_dir) if persist else {}
 
     return {
         "total_tasks": num_tasks,
         "elapsed_seconds": round(t_total, 4),
-        "throughput_tasks_per_sec": round(num_tasks / t_total, 2),
+        "throughput_tasks_per_sec": round(num_tasks / max(t_total, 1e-9), 2),
         "workers": {w.agent_name: w.processed_count for w in workers},
         "epoch_root_hash": epoch["epoch_root_hash"],
-        "user_task_status": [t for t in epoch["tasks"] if t["task_id"] == "01a08ef8-99a5-7cb1-87e9-795290248030"]
+        "ingest": ingest,
+        "persist_paths": paths,
+        "user_task_status": [t for t in epoch["tasks"] if t["task_id"] == ingest["task_id"]],
     }
+
 
 if __name__ == "__main__":
     result = run_autonomous_swarm_simulation(50)
     print("=== DUALISCAPAX AUTONOMOUS SWARM EXECUTION REPORT ===")
+    print(f"Ingest:                {result['ingest']}")
     print(f"Total Tasks Processed: {result['total_tasks']}")
     print(f"Elapsed Time:          {result['elapsed_seconds']} s ({result['throughput_tasks_per_sec']} tasks/sec)")
     print(f"Worker Distribution:   {result['workers']}")
     print(f"Epoch Docket Root:     0x{result['epoch_root_hash'][:32]}...")
+    print(f"Persist Paths:         {result['persist_paths']}")
     print(f"User Task Execution:   {result['user_task_status']}")
