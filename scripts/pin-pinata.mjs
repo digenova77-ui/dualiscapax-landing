@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Chosen setup: Pages stays live. Pinata is the spare copy.
+ * Pinata is the spare copy. Cloudflare is live. GitHub is the library.
  * Files sit at CID root (no dualiscapax/ prefix).
  * JWT from env only. Dry-run unless --pin.
  */
@@ -13,7 +13,7 @@ const PIN = process.argv.includes("--pin");
 const FULL = process.argv.includes("--full");
 const ENDPOINT = "https://api.pinata.cloud/pinning/pinFileToIPFS";
 
-const SKIP_DIR = new Set([".git", ".github", "node_modules", "workers", "artifacts", ".tmp"]);
+const SKIP_DIR = new Set([".git", ".github", "node_modules", "workers", "artifacts", ".tmp", "dist"]);
 const SKIP_FILE = /\.(env|pem|key)$/i;
 const SKIP_NAME = new Set([".env", ".DS_Store", "wrangler.toml"]);
 
@@ -58,8 +58,8 @@ const receipt = {
   files: list.map((f) => f.rel),
   pinned: false,
   cid: null,
-  origin: "github-pages",
-  note: "Live site is Pages. This CID is the spare copy at tree root."
+  origin: "cloudflare-manual",
+  note: "Live site is Cloudflare (manual zip). This CID is the spare copy at tree root. GitHub is documentation only."
 };
 
 if (!PIN) {
