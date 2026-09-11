@@ -1,0 +1,42 @@
+name: DualisCapax Autonomous 4-Model Unity Mesh
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      task_prompt:
+        description: 'Task Prompt for 4-Model Deliberation'
+        required: true
+        default: 'Autonomous Multi-Model Feature Implementation'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  deliberate-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run 4-Model Autonomous Assembly Line
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          PYTHONPATH=src/engine python3 src/engine/unity/unity_mesh_orchestrator.py "${{ github.event.inputs.task_prompt || github.event.issue.title }}"
+
+      - name: Commit Consensus Docket
+        run: |
+          git config --local user.email "unity-mesh@dualiscapax.ai"
+          git config --local user.name "Unity 4-Model Consensus Engine"
+          git add src/engine/ledgers/consensus/
+          git diff-index --quiet HEAD || (git commit -m "chore(unity): 4-model consensus verified [skip ci]" && git push origin main)
