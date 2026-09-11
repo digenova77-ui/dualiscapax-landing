@@ -15,7 +15,7 @@ import sys
 import time
 import hashlib
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
@@ -26,6 +26,8 @@ sys.path.insert(0, os.path.join(ROOT, "crypto"))
 sys.path.insert(0, os.path.join(ROOT, "tax"))
 sys.path.insert(0, os.path.join(ROOT, "trading"))
 sys.path.insert(0, os.path.join(ROOT, "unity"))
+
+TARGET = os.environ.get("DUALIS_TARGET", "STUB")
 
 
 def _safe(name: str, fn) -> Dict[str, Any]:
@@ -42,6 +44,7 @@ def _safe(name: str, fn) -> Dict[str, Any]:
         "agent": name,
         "status": status,
         "error": err,
+        "target": TARGET,
         "live_actuator": False,
         "latency_ms": round((time.perf_counter() - t0) * 1000.0, 3),
         "payload": payload,
@@ -122,7 +125,7 @@ def _anchor() -> Dict[str, Any]:
 def _tax() -> Dict[str, Any]:
     path = os.path.join(ROOT, "tax", "T2_DRAFT_RETURN.json")
     if not os.path.isfile(path):
-        return {"present": False}
+        return {"present": False, "cra_send": False}
     with open(path) as f:
         doc = json.load(f)
     return {
@@ -133,25 +136,25 @@ def _tax() -> Dict[str, Any]:
 
 
 def _trading() -> Dict[str, Any]:
-    try:
-        from trading_manifold_engine import TradingManifoldEngine
-        eng = TradingManifoldEngine()
-        if hasattr(eng, "run_paper"):
-            out = eng.run_paper()
-        elif hasattr(eng, "evaluate"):
-            out = eng.evaluate()
-        else:
-            out = {"class": type(eng).__name__, "paper_only": True}
-        return {"paper_only": True, "live_order": False, "out_type": type(out).__name__}
-    except Exception as exc:
-        return {"paper_only": True, "live_order": False, "note": str(exc)[:160]}
+    from trading_manifold_engine import SymplecticTradingEngine
+    eng = SymplecticTradingEngine(initial_cash_cad=10000.0)
+    a = eng.evaluate_market_tick("SHOP.TO", "EQUITY_CANADIAN", 112.50, momentum_p=-0.08)
+    b = eng.evaluate_market_tick("BTC-CAD", "CRYPTOCURRENCY", 84500.00, momentum_p=-0.12)
+    return {
+        "paper_only": True,
+        "live_order": False,
+        "venue": TARGET,
+        "actions": [a.get("action"), b.get("action")],
+        "cash_cad": b.get("cash_balance_cad"),
+    }
 
 
 def _unity() -> Dict[str, Any]:
     return {
         "orchestrator_present": os.path.isfile(os.path.join(ROOT, "unity", "unity_mesh_orchestrator.py")),
         "live_vendor_calls": False,
-        "note": "unity_mesh.yml stays issue/dispatch; this tick does not spend API keys",
+        "target": TARGET,
+        "note": "role cards only unless vendor keys exist",
     }
 
 
@@ -171,6 +174,7 @@ def run_epoch(out_dir: str) -> Dict[str, Any]:
     docket = {
         "timestamp_utc": now,
         "agent_root_hash": root,
+        "target": TARGET,
         "live_actuators": False,
         "agents": agents,
     }
@@ -188,7 +192,7 @@ def main() -> None:
     out = os.environ.get("SWARM_AGENT_DIR", os.path.join(ROOT, "ledgers", "agents"))
     docket = run_epoch(out)
     print("=== DUALISCAPAX SECTOR AUTONOMY AGENTS ===")
-    print(f"root={docket['agent_root_hash'][:16]} live_actuators={docket['live_actuators']}")
+    print(f"root={docket['agent_root_hash'][:16]} target={TARGET} live_actuators={docket['live_actuators']}")
     for a in docket["agents"]:
         print(f"  {a['agent']}: {a['status']}")
 
