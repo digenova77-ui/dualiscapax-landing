@@ -1,0 +1,12 @@
+{
+  "schema": "dualis.inventory.effects.v1",
+  "complete": false,
+  "paths": [
+    {"effect": "payment", "path": "Stripe webhook", "boundary": "UNRESOLVED-not-wired-to-kernel"},
+    {"effect": "entitlement", "path": "Stripe vs DCFuel.grant", "boundary": "EntitlementMediator policy; lander JS UNRESOLVED"},
+    {"effect": "deployment", "path": "Cloudflare manual zip", "boundary": "ops policy"},
+    {"effect": "pinata pin", "path": "scripts/pin-pinata.mjs", "boundary": "JWT"},
+    {"effect": "swarm ledger", "path": "Actions swarm_runner", "boundary": "git commit"},
+    {"effect": "factory promotion", "path": "FactoryPort.promote", "boundary": "kernel-gated in this packet"}
+  ]
+}

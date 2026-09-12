@@ -1,0 +1,6 @@
+{
+  "$id": "dualis.endzone.v1",
+  "claim_states": ["CLAIMED", "OBSERVED", "MEASURED", "REPRODUCED", "INDEPENDENTLY_VERIFIED", "ADVERSARIALLY_SURVIVED", "PROVENANCE_COMPLETE", "AUTHORIZED", "PROMOTABLE", "UNRESOLVED", "QUARANTINED", "CONTRADICTED", "RETIRED", "EXPIRED", "BLOCKED"],
+  "effect_outcomes": ["EXECUTED", "FAILED", "INDETERMINATE"],
+  "required_evidence_bind": ["claim_id", "artifact_hash", "scope", "source", "actor", "executor", "observer", "independent_verifier", "independence_relationship", "timestamp", "version", "provenance", "gate_id"]
+}
