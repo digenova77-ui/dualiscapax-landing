@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "dualis.bridge.v1",
+  "title": "DualisCapax bridge record",
+  "description": "A proposed path from known state to target state. Not foundation. Promotion requires Seat plus a surviving test receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "bridge_id",
+    "necessity",
+    "known_state",
+    "target_state",
+    "boundary",
+    "proposed_mechanism",
+    "assumptions",
+    "discriminating_experiment",
+    "evidence_status",
+    "authority_status",
+    "foundation"
+  ],
+  "properties": {
+    "schema": { "const": "dualis.bridge.v1" },
+    "bridge_id": { "type": "string", "minLength": 1 },
+    "necessity": { "type": "string" },
+    "necessity_id": { "type": "string" },
+    "known_state": { "type": "string" },
+    "target_state": { "type": "string" },
+    "boundary": {
+      "type": "object",
+      "required": ["id", "class"],
+      "properties": {
+        "id": { "type": "string" },
+        "class": {
+          "type": "string",
+          "enum": [
+            "PHYSICALLY_FORBIDDEN",
+            "PHYSICALLY_PERMITTED",
+            "MATERIALLY_INFEASIBLE",
+            "TECHNOLOGICALLY_IMMATURE",
+            "COMPUTATIONALLY_UNRESOLVED",
+            "MATHEMATICALLY_UNRESOLVED",
+            "MEASUREMENT_LIMITED",
+            "EVIDENCE_LIMITED",
+            "INTERFACE_LIMITED",
+            "KNOWLEDGE_LIMITED",
+            "UNRESOLVED"
+          ]
+        },
+        "evidence": { "type": "string" }
+      }
+    },
+    "proposed_mechanism": { "type": "string" },
+    "physical_constraints": { "type": "array", "items": { "type": "string" } },
+    "material_requirements": { "type": "array", "items": { "type": "string" } },
+    "assumptions": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "mathematical_model": { "type": "string" },
+    "math_status": {
+      "type": "string",
+      "enum": ["M0", "M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"]
+    },
+    "expected_behavior": { "type": "string" },
+    "failure_conditions": { "type": "array", "items": { "type": "string" } },
+    "discriminating_experiment": { "type": "string" },
+    "measurement_plan": { "type": "string" },
+    "baseline": { "type": "string" },
+    "alternative_explanations": { "type": "array", "items": { "type": "string" } },
+    "search_domain": { "type": "string" },
+    "evidence_status": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "HYPOTHESIS",
+        "DERIVED",
+        "REPRODUCED",
+        "EXPERIMENTALLY_SUPPORTED",
+        "INDEPENDENTLY_VERIFIED",
+        "FORMALLY_ESTABLISHED",
+        "REFUTED",
+        "SUPERSEDED",
+        "UNRESOLVED",
+        "NOT_FOUND_WITHIN_SEARCH_DOMAIN",
+        "INSUFFICIENT_SEARCH"
+      ]
+    },
+    "authority_status": {
+      "type": "string",
+      "enum": ["HYPOTHESIS", "TESTED", "SURVIVED", "REJECTED", "SEAT_PROMOTED"]
+    },
+    "foundation": { "type": "boolean" },
+    "test_receipt": { "type": ["string", "null"] },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "next_step": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "foundation": { "const": true } } },
+      "then": {
+        "required": ["test_receipt"],
+        "properties": {
+          "authority_status": { "const": "SEAT_PROMOTED" },
+          "test_receipt": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  ]
+}
