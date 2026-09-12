@@ -1,0 +1,15 @@
+{
+  "schema": "dualis.bridge.v1",
+  "bridge_id": "ENDZONE-STATE-AUTHORITY-KERNEL",
+  "necessity": "Unauthorized epistemic or effect transitions must be hard.",
+  "known_state": "Law in documents. No enforcement kernel in tree.",
+  "target_state": "One apply() door. PROMOTABLE derived. Projections cannot authorize.",
+  "boundary": {"id": "BND-ENDZONE-ENFORCEMENT", "class": "INTERFACE_LIMITED", "evidence": "truth_kernel absent; workers not wired"},
+  "proposed_mechanism": "StateAuthorityKernel + bound evidence + effect boundary + entitlement mediator",
+  "assumptions": ["Single-process store", "Same agent wrote the tests"],
+  "discriminating_experiment": "tests/test_endzone_kernel.py plus independent re-run",
+  "evidence_status": "HYPOTHESIS",
+  "authority_status": "HYPOTHESIS",
+  "foundation": false,
+  "test_receipt": null
+}

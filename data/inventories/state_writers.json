@@ -1,0 +1,12 @@
+{
+  "schema": "dualis.inventory.writers.v1",
+  "complete": false,
+  "note": "Unknown remainder means the audit is not complete.",
+  "writers": [
+    {"writer": "StateAuthorityKernel.apply", "file": "src/engine/dclm/kernel.py", "governed": true, "storage": "ClaimStore"},
+    {"writer": "SovereignConservationKernel", "file": "src/engine/dclm_singularity_kernel.py", "governed": false, "surface": "PROJECTION"},
+    {"writer": "DCFuel.grant", "file": "UNRESOLVED-lander-js", "governed": false, "surface": "LOCAL_STORAGE"},
+    {"writer": "stripe-fulfill", "file": "workers/stripe-fulfill/worker.js", "governed": false, "surface": "AUTHORITATIVE_CANDIDATE"},
+    {"writer": "swarm ledger", "file": "src/engine/agent_swarm_runner.py", "governed": false, "surface": "LEDGER"}
+  ]
+}
