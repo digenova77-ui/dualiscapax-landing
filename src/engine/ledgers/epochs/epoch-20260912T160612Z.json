@@ -1,0 +1,407 @@
+{
+  "timestamp_utc": "2026-09-12T16:06:12Z",
+  "epoch_root_hash": "a2e655bba60814b31c0d0edcd0bd1421b08616c0614fe1f36889004ab4791324",
+  "completed_count": 50,
+  "tasks": [
+    {
+      "task_id": "01a08ef8-99a5-7cb1-87e9-795290248030",
+      "task_type": "CODEX_REMOTE_TASK",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "e6ef4673f0d5547a2c15b7a65fd335d3ce80261c58ebc18074ae7aa055013cda",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"01a08ef8-99a5-7cb1-87e9-795290248030\", \"agent\": \"Iris-Core\", \"status\": \"EXECUTED_CONSERVED\", \"latency_us\": 3.49, \"detail\": {\"instruction\": \"Autonomous Execution: CODEX_REMOTE_TASK\", \"target_repo\": \"digenova77-ui/dualiscapax-landing\", \"law_floor_verified\": true, \"zero_pii_enforced\": true}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0001",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "b529cb08e084cad97f360ee192b9087eb8329dab63c51c312f715a9b7a42fd79",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0001\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 1.76, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-07-subsystem-1\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0002",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "e117da11f89080ddf7b7ecf63e1c54a012a265e9e0d262a0460ce630a07193d7",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0002\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 1.29, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-07-subsystem-2\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0003",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "6a8e812fd5919a98aefbcf53d5fc61e34fd147fa9ec621b39a6b0ee68c2f0da8",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0003\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.98, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-07-subsystem-3\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0004",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "0c2d7967c217fd6f7c0f423efd14bc5743f39bc158e4b9cb609a89053ef0131a",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0004\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 14.22, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-07-subsystem-4\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0005",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "8728dbae8090670e06f808195d60ec883bbfa836c6148a4b37fb2952f71b7513",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0005\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.81, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-07-subsystem-5\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0006",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "3785e88532af4913232981780714f4f4bd3b194ca331388524ec26250dd26f23",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0006\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.82, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-07-subsystem-6\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0007",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "2ebc568559ce9692cac30255010e3bc26e69bc19ea17a5734e9fca2f7f4d346c",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0007\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 1.05, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-07-subsystem-7\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0008",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "430653aa011906a0677df8f18991c385eeada71fbb9235dabb30db006784850c",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0008\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.7, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-07-subsystem-8\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0009",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "2c7bf3d1867e489d8026c4017a9fa79311e5f63cbbe7ed6eec61b24057c7059f",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0009\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.68, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-07-subsystem-9\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0010",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "2cc92c1dac623f53504f072f2589f1539591aa8a2b487329b5df25a9148133a2",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0010\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.63, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.0, \"p\": 0.5, \"target\": \"SEC-07-subsystem-10\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0011",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "4a43cf116c30a2debc770304c4b65bb6359255460a567f2ae3f5663550b58249",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0011\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.64, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-07-subsystem-11\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0012",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "96e7b186cecd9a498fab75911cc653943e81143f051d172cc9a94c5324ee1593",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0012\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.66, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-07-subsystem-12\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0013",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "213760f3073c5f646e9d0987391945a0b208fcb3102d18e8cddc662a429b139b",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0013\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.57, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-07-subsystem-13\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0014",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "dc4c5731b948f8acc949c31cc82a24f5323f820561657c424483a64e2c389eca",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0014\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.65, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-07-subsystem-14\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0015",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "19ec0551146ff6f3b5f02c5a88423b3e0b32f18efc63be4e0289f638f4ed8438",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0015\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.64, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-07-subsystem-15\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0016",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "bf5cce47718b2fb41ede51ccdd62cfdf6e986fb40e2c5eec6436479afc211728",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0016\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.63, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-07-subsystem-16\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0017",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "302ed1f97a460a356fa9e71e669cffa4ad093f0d90892c18253b94c9b70f756a",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0017\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.6, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-07-subsystem-17\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0018",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "b37d8bcc5b6320a3413c517738f69f052bcac4f9f7c3767f9b8c6e7ea1af8fad",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0018\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.53, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-07-subsystem-18\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0019",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "65520197ef94e77564896237ea57b3c119f1b979105fe1d7bee83c47e8b43e44",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0019\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 1.5, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-07-subsystem-19\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0020",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "c411330ba5b45fc5c1d0c4f247d995cffd8627230463c5f6dac58cc700fe5879",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0020\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.6, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.0, \"p\": 0.5, \"target\": \"SEC-07-subsystem-20\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0021",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "44f85ce0cb50ee09b5e04c338aede5b93c5e72d1e42c0c47e96d037bf3f2256f",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0021\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.98, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-07-subsystem-21\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0022",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "a5634f4b6d1cd7024d5ac2273d66101b4f80ff6de0952db146e84a68c0effa0c",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0022\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.8, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-07-subsystem-22\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0023",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "06376c559052fb78bd6d9d7d47d122228ed6f09a3ef4494eba5cfa60f898b2bb",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0023\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.7, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-07-subsystem-23\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0024",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "cdbbedacf4c7a280a4706b327d7fdf02e66dbdcdf38312c76e2e9ad18e24f19e",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0024\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.66, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-07-subsystem-24\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0025",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "e63c807f41c0c67025be9fbbe7cf7b7bf73ad1c7ca780c3c803a7c6cb75a4d50",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0025\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.67, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-07-subsystem-25\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0026",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "fb7eae5ba7affd01bc3573f6bc2671d2267a46f0f6c30f106768bcf35e97fcfe",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0026\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.65, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-07-subsystem-26\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0027",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "7d8be9ca9bced72a3195fcc56bf36d0d874d5e84cd7e788812aff207bc3cdf5b",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0027\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.65, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-07-subsystem-27\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0028",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "f4e49161ace2ae4fc608f028bad4d67d7820cfe1f98d173e14e31e75846c77b2",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0028\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.64, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-07-subsystem-28\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0029",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "234188d24836aa4ac5d76010441c0a7e1877b1d61ac07e200c8eeb43b3c0b5f3",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0029\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.66, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-07-subsystem-29\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0030",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "239e3b78638bb5a1dcd817b8ae393f69523a74a5e8c2795641c7d9ec70f7d456",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0030\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.99, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.0, \"p\": 0.5, \"target\": \"SEC-07-subsystem-30\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0031",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "d4784d002992e068db54d7ea6993af11ea9dbb4ecc4f7e0f95e4f238ad091493",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0031\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.56, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-07-subsystem-31\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0032",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "45b7af87096ca1b5ffe8ec97ebee6568e22384b1515e14cf7f435e7c852f15ba",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0032\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.65, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-07-subsystem-32\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0033",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "dc42fe3c2b1aa281bf7ad5146c84648ae61aab209603e0e5f2e7a693f9fa5f7e",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0033\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.51, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-07-subsystem-33\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0034",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "9a306167a2b8ac786491292bbf23a0b4fd79bf1312878646312665bf66bad0b9",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0034\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.51, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-07-subsystem-34\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0035",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "d3ba9ff19636b11b9f6d9c683b3a99b03d4e5d4c18b81b202dbeab8bebf65856",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0035\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.45, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-07-subsystem-35\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0036",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "4027412ffa10d5438415a78cf8a64e2da69038f5d83a28c400a765995695fb68",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0036\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.48, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-07-subsystem-36\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0037",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "750dd69603adfe0156ef9d293e8b194587ff6cb82cbe8d9216843499f45a041c",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0037\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.42, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-07-subsystem-37\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0038",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "be88a965932db853dda9522db95becd7d82b352ee74dce7733b44955de348405",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0038\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.45, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-07-subsystem-38\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0039",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "4066c055d22f5a67174d2251126ccea1ad7b4398cc72373849d82effe89c7e58",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0039\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.49, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-07-subsystem-39\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0040",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "2833797067a6b9ed499ae8ff0ac8efca9eca982465ce48d4bf7bc71e4c9a34ee",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0040\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.49, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.0, \"p\": 0.5, \"target\": \"SEC-07-subsystem-40\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0041",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "3ff6c12aa0473a5f6634ce0f0a33ffd79acb6dc62807a24b5eef74423905d9c6",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0041\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.48, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-07-subsystem-41\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0042",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "13ec339ae41550c0a3bed0a61466b2edac31f87a32485c2f52f685c8f78fe470",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0042\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.41, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-07-subsystem-42\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0043",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "b524800d7ed7d3777231913680ede0e88c507735eafb20feb23f7719c5cbf177",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0043\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.4, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-07-subsystem-43\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0044",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "5daeea67ca2b8f2405dc9dfcc664af2bfaf616bcbc474af2d1657521c576da43",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0044\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.45, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-07-subsystem-44\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0045",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "9d333f6543cb7317a306ef4c551d8b11fcddae7ef4b5de1bbf3858329b3d0704",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0045\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.45, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-07-subsystem-45\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0046",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "4ea689cd467e4d64753534ba6af8bfe55c7c11199c3b1277c3fe505305ecd850",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0046\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.45, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-07-subsystem-46\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0047",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "db4b1cd71cb19b151d392f5c13150af95bb7f1bf7729df0ccc088fbcd61fbbcc",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0047\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.43, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-07-subsystem-47\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0048",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "dc71c46fdb4572cab1e8ae975f98ea59d9cc9e860781ca037e6bc0dfd610ba48",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0048\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.42, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-07-subsystem-48\"}}}"
+    },
+    {
+      "task_id": "SEC-07-TASK-0049",
+      "task_type": "TELECOM_SNR_EVALUATE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "313fe3a5bb17cf7d75af4b316067cddef75a6d8e0f943bd50e49b5ec94f1ffae",
+      "completed_at": 1789229172,
+      "result": "{\"task_id\": \"SEC-07-TASK-0049\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.46, \"detail\": {\"echo\": {\"sector\": \"Telecom & Signal Entropy\", \"domain\": \"Spectral noise reduction\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-07-subsystem-49\"}}}"
+    }
+  ]
+}
