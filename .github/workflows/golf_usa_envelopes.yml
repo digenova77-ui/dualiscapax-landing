@@ -1,0 +1,47 @@
+name: golf-usa-envelopes
+
+# Purposeful harvest — OpenGolfAPI course envelopes → research/golf/usa
+# Course-first / never invent. Golfer seat later.
+
+on:
+  schedule:
+    # Every 30 minutes — real I/O, not stub ledger spam
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Courses to harvest this run'
+        required: false
+        default: '3'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: golf-usa-envelopes
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Harvest OpenGolf envelopes
+        env:
+          GOLF_HARVEST_BATCH: ${{ github.event.inputs.batch || '3' }}
+        run: python3 scripts/harvest_golf_usa_envelopes.py
+      - name: Commit packs
+        run: |
+          git config user.email "golf-harvest@dualiscapax.ai"
+          git config user.name "Dualis Golf Harvest"
+          git add research/golf/usa/
+          if git diff --cached --quiet; then
+            echo "No pack changes."
+            exit 0
+          fi
+          git commit -m "chore(golf): harvest USA course envelopes [skip ci]"
+          git push origin HEAD
