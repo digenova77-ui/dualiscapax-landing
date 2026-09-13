@@ -4009,19 +4009,30 @@ html.ice-tape-land-lock body {
   flex-direction: column;
   background: #000;
 }
+/* Portrait: NEVER fake-rotate. Invoke upright first; user rotates phone for playground.
+   Early rotate(90deg) + real landscape = berserk. Orientation.lock only after landscape. */
 @media (orientation: portrait) {
-  /* Force landscape chrome on portrait phones — portrait box is unwatchable */
-  .ice-tape-land.active .ice-tape-land-inner {
-    width: 100vh;
-    height: 100vw;
-    top: 50%;
-    left: 50%;
-    right: auto;
-    bottom: auto;
-    transform: translate(-50%, -50%) rotate(90deg);
-    transform-origin: center center;
+  .ice-tape-land.active .ice-tape-lb-hint {
+    display: block;
   }
 }
+.ice-tape-lb-hint {
+  display: none;
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  text-align: center;
+}
+.ice-tape-lb-invite {
+  margin: 0.75rem 0 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: rgba(3, 7, 18, 0.65);
+  text-align: center;
+}
+.ice-tape-lb-invite .ice-tape-lb-title { margin-top: 0.25rem; }
+.ice-tape-lb-invite .ice-btn { margin-top: 0.35rem; }
 .ice-tape-sb {
   flex: 0 0 auto;
   background: linear-gradient(180deg, rgba(3,7,18,0.96), rgba(3,7,18,0.82));
