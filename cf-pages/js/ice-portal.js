@@ -1868,7 +1868,6 @@
           (s.address
             ? '<a class="ice-btn ghost" target="_blank" rel="noopener" href="' + esc(mapsStay) + '">Directions →</a>'
             : "") +
-          '<button type="button" class="ice-btn ghost" data-stay-add-link>Add link</button>' +
         "</div>";
     } else {
       actions =
@@ -1884,8 +1883,9 @@
     }
     var addMore = opts.showAddMore
       ? ('<div class="ice-go-stay-more">' +
-          '<button type="button" class="ice-btn ghost" data-stay-add-link>Add another stay</button>' +
+          '<button type="button" class="ice-btn ghost" data-stay-add-link>Add stay</button>' +
           '<div id="stayAddPanel" hidden>' +
+            '<p class="ice-note" style="margin:0.35rem 0 0.55rem;">A stay is just a reservation link + dates — shows on Go when it’s next, and on Cal by day. Not the same as the hockey “trip” above.</p>' +
             '<div class="ice-field"><label for="stayUrlNew">Reservation link</label>' +
               '<input id="stayUrlNew" data-stay-url-new value="" placeholder="https://www.airbnb.com/trips/…" inputmode="url" autocomplete="off"></div>' +
             '<div class="ice-field"><label for="stayInNew">Check-in (YYYY-MM-DD)</label>' +
@@ -1915,7 +1915,7 @@
   function renderStayEmpty() {
     return '<div class="ice-go-stay ice-go-stay-empty">' +
       '<div class="ice-go-stay-k">Stay</div>' +
-      '<p class="ice-soft" style="margin:0.35rem 0 0.55rem;">Paste your own Airbnb / hotel reservation link — nothing is preloaded. Only the next upcoming stay shows here; others wait on Cal.</p>' +
+      '<p class="ice-soft" style="margin:0.35rem 0 0.55rem;">Paste an Airbnb / hotel link + dates. That’s a stay (lodging) — not the hockey trip above. Next stay shows here; others sit on Cal by date.</p>' +
       '<div class="ice-field"><label for="stayUrlNew">Reservation link</label>' +
         '<input id="stayUrlNew" data-stay-url-new value="" placeholder="https://www.airbnb.com/trips/…" inputmode="url" autocomplete="off"></div>' +
       '<div class="ice-field"><label for="stayInNew">Check-in (YYYY-MM-DD)</label>' +
