@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 'Destination (default golf-usa-envelopes)'
+        description: 'Destination (blank = STUB)'
         required: false
-        default: 'golf-usa-envelopes'
+        default: 'STUB'
 
 concurrency:
   group: dualis-bot-fleet
@@ -44,7 +44,7 @@ jobs:
         run: PYTHONPATH=src/engine python3 src/engine/tax/tax_swarm_runner.py
       - name: Bot — paper trading (no venue)
         run: PYTHONPATH=src/engine python3 src/engine/trading/trading_manifold_engine.py
-      - name: Bot — unity mesh (uses Actions secrets when present)
+      - name: Bot — unity mesh (secrets wired; body still stub until harvester lands)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
