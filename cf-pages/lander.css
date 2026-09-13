@@ -4387,6 +4387,19 @@ html.ice-tape-land-lock body {
 #stayAddPanel { margin-top: 0.45rem; }
 
 
+
+/* Dualis session hole — clearly Dualis face, not bare LiveBarn */
+.ice-tape-lb-hole .ice-tape-lb-kicker { letter-spacing: 0.12em; color: #38bdf8; }
+.ice-tape-land.active .ice-tape-lb-hole {
+  max-width: 32rem;
+  padding: 1.25rem 1.4rem 1.5rem;
+  border: 1px solid rgba(56,189,248,0.35);
+  border-radius: 16px;
+  background: rgba(3,7,18,0.72);
+  box-shadow: 0 0 0 1px rgba(14,165,233,0.12), 0 12px 40px rgba(0,0,0,0.45);
+}
+.ice-tape-lb-invite .ice-btn { min-height: 2.75rem; font-weight: 800; }
+
 /* LiveBarn playground hole — Dualis chrome; stream is paired window (CSP deny iframe) */
 .ice-tape-land-video.is-lb-shell {
   display: flex;

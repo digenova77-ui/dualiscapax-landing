@@ -2212,8 +2212,13 @@
     goStage("tape", true);
     setTimeout(function () {
       if (liveBarnBlocksIframe(u)) {
-        /* Portrait-first: upright Tape invite stays; paired window for their login.
-           Do NOT arm landscape shell / orientation.lock yet — that was going landscape too early. */
+        /* Dualis face FIRST (session chrome + scoreboard), then paired LiveBarn tab.
+           Bare LB launch alone feels like “just their site” — not Dualis. */
+        var shellLb = document.getElementById("tapeLandShell");
+        if (shellLb) {
+          shellLb.classList.add("active");
+          document.documentElement.classList.add("ice-tape-land-lock");
+        }
         applyTapeLiveEvents();
         openTapeWindow(u, label || "dualis_livebarn");
         return;
@@ -2508,18 +2513,18 @@
       var lbInvite = isLb
         ? ('<div class="ice-tape-lb-invite" id="tapeLbInvite">' +
             '<p class="ice-tape-lb-kicker">Dualis session</p>' +
-            '<p class="ice-tape-lb-title">LiveBarn · your login</p>' +
-            '<p class="ice-tape-lb-copy">One button. Opens their LiveBarn in a new tab — Dualis scoreboard stays here. Rotate later for playground chrome if you want it.</p>' +
-            '<a class="ice-btn" id="btnTapeLbWindow" href="' + esc(frameSrc) + '" target="_blank" rel="noopener noreferrer">Open LiveBarn →</a>' +
-            '<p class="ice-note ice-tape-lb-note">Phone-friendly link (not a popup). No early rotate.</p>' +
+            '<p class="ice-tape-lb-title">Our ice · their stream</p>' +
+            '<p class="ice-tape-lb-copy">Tap once: Dualis playground (scoreboard + chrome) stays on this phone. LiveBarn opens in a second tab for login/stream — formatted Dualis face, not a bare LiveBarn launch.</p>' +
+            '<button type="button" class="ice-btn" id="btnTapeLbSession" data-lb-url="' + esc(frameSrc) + '">Start Dualis session →</button>' +
+            '<p class="ice-note ice-tape-lb-note">They block iframes — we craft the session around their tab. Switch back here for the Dualis face.</p>' +
           '</div>')
         : "";
       var landHole = isLb
         ? ('<div class="ice-tape-lb-hole" id="tapeLbHole">' +
-            '<p class="ice-tape-lb-kicker">Dualis playground</p>' +
-            '<p class="ice-tape-lb-title">LiveBarn stream window</p>' +
-            '<p class="ice-tape-lb-copy">Scoreboard stays here. Stream is in their tab — same hole, their login.</p>' +
-            '<a class="ice-btn" id="btnTapeLbWindowLand" href="' + esc(frameSrc) + '" target="_blank" rel="noopener noreferrer">Open LiveBarn →</a>' +
+            '<p class="ice-tape-lb-kicker">Dualis playground · live</p>' +
+            '<p class="ice-tape-lb-title">Session face</p>' +
+            '<p class="ice-tape-lb-copy">This is Dualis — scoreboard, ice chrome, seat. LiveBarn is the paired stream tab (their login). Flip back here anytime.</p>' +
+            '<button type="button" class="ice-btn" id="btnTapeLbWindowLand" data-lb-url="' + esc(frameSrc) + '">Open / focus LiveBarn tab →</button>' +
           '</div>')
         : ('<iframe class="ice-tape-frame land" title="' + esc(frameTitle) + '" src="' + esc(frameSrc) + '" allow="autoplay; fullscreen; picture-in-picture; clipboard-read; clipboard-write" referrerpolicy="no-referrer-when-downgrade"></iframe>');
       stageInner =
@@ -2532,14 +2537,14 @@
             '</div>' +
             '<div class="ice-tape-land-bar">' +
               '<button type="button" class="ice-btn ghost" id="btnTapeLandClose">← Ice</button>' +
-              '<span class="ice-tape-land-label">' + esc(isLb ? "LiveBarn · Dualis session" : "Team cam") + "</span>" +
-              '<a class="ice-btn ghost" id="btnTapeOpenByo" target="_blank" rel="noopener" href="' + esc(frameSrc) + '">Break out →</a>' +
+              '<span class="ice-tape-land-label">' + esc(isLb ? "Dualis session · LiveBarn paired" : "Team cam") + "</span>" +
+              '<button type="button" class="ice-btn ghost" id="btnTapeLbRefocus" data-lb-url="' + esc(frameSrc) + '">LiveBarn tab →</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
         '<div class="ice-tape-stage is-byo is-land-armed">' +
           (isLb
-            ? '<button type="button" class="ice-btn ghost" id="btnTapeLandOpen">Dualis playground (landscape) →</button>'
+            ? '<button type="button" class="ice-btn" id="btnTapeLbSession2" data-lb-url="' + esc(frameSrc) + '">Start Dualis session →</button>'
             : '<button type="button" class="ice-btn" id="btnTapeLandOpen">Watch in playground →</button>') +
           (knownNote ? '<p class="ice-note">' + knownNote + "</p>" : "") +
         '</div>';
@@ -3819,26 +3824,17 @@
       function armTapeLand() {
         var shell = document.getElementById("tapeLandShell");
         if (!shell) return;
-        if (!tapeIsLandscape() && liveBarnBlocksIframe(frameSrc || byo || LB_SIGNIN)) {
-          /* Portrait: keep invite clickable — ask rotate, do not fake 90° or lock yet */
-          var inv = document.getElementById("tapeLbInvite");
-          if (inv) {
-            var tip = inv.querySelector(".ice-tape-rotate-tip");
-            if (!tip) {
-              tip = document.createElement("p");
-              tip.className = "ice-note ice-tape-rotate-tip";
-              tip.textContent = "Rotate your phone to landscape, then tap Enter playground.";
-              inv.appendChild(tip);
-            }
-          } else if (typeof alert === "function") {
-            alert("Rotate to landscape, then tap Enter playground.");
-          }
-          return;
-        }
+        /* Dualis session face works in portrait too — no fake 90°. Lock only if already landscape. */
         shell.classList.add("active");
         document.documentElement.classList.add("ice-tape-land-lock");
         tryLockTapeLandscape();
         applyTapeLiveEvents();
+      }
+      function startDualisLiveBarnSession(url) {
+        var u = String(url || frameSrc || byo || LB_SIGNIN || "").trim() || LB_SIGNIN;
+        setTapePipe("livebarn");
+        armTapeLand();
+        openTapeWindow(u, "dualis_livebarn");
       }
       function disarmTapeLand() {
         var shell = document.getElementById("tapeLandShell");
@@ -3850,9 +3846,19 @@
       var landOpen = $("btnTapeLandOpen");
       if (landOpen) landOpen.addEventListener("click", function () {
         armTapeLand();
-        /* LB stream stays in paired window — opened from invite, not forced here */
       });
-      /* LB CTAs are <a target=_blank> — no JS open needed. Keep ids for analytics/hooks. */
+      function wireLbSession(btnId) {
+        var btn = $(btnId);
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          var u = btn.getAttribute("data-lb-url") || frameSrc || byo || LB_SIGNIN;
+          startDualisLiveBarnSession(u);
+        });
+      }
+      wireLbSession("btnTapeLbSession");
+      wireLbSession("btnTapeLbSession2");
+      wireLbSession("btnTapeLbWindowLand");
+      wireLbSession("btnTapeLbRefocus");
       /* If user rotates to landscape while on Tape LB, offer lock only then — never early */
       if (!window._tapeOrientWired) {
         window._tapeOrientWired = true;
