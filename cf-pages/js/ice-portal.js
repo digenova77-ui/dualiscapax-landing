@@ -2018,15 +2018,18 @@
   function openTapeWindow(url, title) {
     var u = String(url || "");
     if (!u) return;
-    var w = 980, h = 720;
-    var left = Math.max(0, Math.round((screen.width - w) / 2));
-    var top = Math.max(0, Math.round((screen.height - h) / 2));
+    /* Landscape pair — Dualis keeps chrome/scoreboard; this window is their session hole */
+    var w = Math.min(1100, Math.max(880, Math.round((screen.availWidth || screen.width) * 0.72)));
+    var h = Math.min(720, Math.max(560, Math.round(w * 9 / 16)));
+    var left = Math.max(0, Math.round(((screen.availWidth || screen.width) - w) / 2));
+    var top = Math.max(0, Math.round(((screen.availHeight || screen.height) - h) / 2));
     var feat = "popup=yes,noopener,noreferrer,width=" + w + ",height=" + h + ",left=" + left + ",top=" + top + ",scrollbars=yes,resizable=yes";
     var win = window.open(u, title || "dualis_tape", feat);
     if (!win) {
-      /* popup blocked — same-tab fallback keeps Dualis honest */
+      /* popup blocked — same-tab fallback; Dualis session still owns the ice chrome behind */
       location.href = u;
     }
+    return win;
   }
 
 
@@ -2105,7 +2108,11 @@
 
   var LB_SIGNIN = "https://watch.livebarn.com/en/signin";
 
-  /** LiveBarn refuses iframe (CSP frame-ancestors none). Dualis chrome + scoreboard stay; stream is a paired window. */
+  /**
+   * LiveBarn epiphany: Dualis IS the session. Families already have LB (~most of the roster).
+   * We don't need their API — we craft the playground; their login/stream opens in a paired window.
+   * CSP iframe deny is fine — the product is our chrome + scoreboard around their session, not embedding LB.
+   */
   function liveBarnBlocksIframe(u) {
     return isLiveBarnUrl(u) || String(u || "") === LB_SIGNIN || getTapePipe() === "livebarn";
   }
@@ -2395,9 +2402,9 @@
     var frameSrc = pipe === "livebarn" ? (playUrl || byo || LB_SIGNIN) : (playUrl || byo);
     var frameTitle = pipe === "livebarn" ? "LiveBarn playground" : "Team stream";
     var knownNote = "";
-    if (fromTs && isLiveBarnUrl(byo)) knownNote = "LiveBarn link from TeamSnap event Notes — opens that hole, not the lobby.";
+    if (fromTs && isLiveBarnUrl(byo)) knownNote = "LiveBarn from TeamSnap Notes — Dualis session opens that hole in the paired window.";
     else if (fromTs) knownNote = "Stream URL from TeamSnap event Notes.";
-    else if (byo && isLiveBarnUrl(byo)) knownNote = "Saved LiveBarn stream — Dualis chrome + scoreboard here; stream in paired window (they block iframes).";
+    else if (byo && isLiveBarnUrl(byo)) knownNote = "Saved LiveBarn hole — Dualis session + scoreboard here; their stream in the paired window.";
 
     var stageInner = "";
     if (byoOn && frameSrc) {
@@ -2409,17 +2416,17 @@
             '<div class="ice-tape-land-video' + (pipe === "livebarn" || isLiveBarnUrl(frameSrc) ? " is-lb-shell" : "") + '">' +
               (pipe === "livebarn" || isLiveBarnUrl(frameSrc)
                 ? ('<div class="ice-tape-lb-hole" id="tapeLbHole">' +
-                    '<p class="ice-tape-lb-kicker">Dualis playground</p>' +
-                    '<p class="ice-tape-lb-title">LiveBarn stream window</p>' +
-                    '<p class="ice-tape-lb-copy">Their site blocks in-frame play. Scoreboard stays here. Stream opens in a paired window — same hole, their login.</p>' +
+                    '<p class="ice-tape-lb-kicker">Dualis session</p>' +
+                    '<p class="ice-tape-lb-title">LiveBarn · your login</p>' +
+                    '<p class="ice-tape-lb-copy">We are the session. Scoreboard and ice chrome stay here. LiveBarn opens in a paired window shaped for this playground — their stream, our stage.</p>' +
                     '<button type="button" class="ice-btn" id="btnTapeLbWindow">Open LiveBarn window →</button>' +
-                    '<p class="ice-note ice-tape-lb-note">Partner allowlist later can drop the stream into this hole. Team cam URLs that allow framing still play here.</p>' +
+                    '<p class="ice-note ice-tape-lb-note">No LiveBarn API. Families who already subscribe just sign in there. Team cam URLs that allow framing still play in-hole.</p>' +
                   '</div>')
                 : ('<iframe class="ice-tape-frame land" title="' + esc(frameTitle) + '" src="' + esc(frameSrc) + '" allow="autoplay; fullscreen; picture-in-picture; clipboard-read; clipboard-write" referrerpolicy="no-referrer-when-downgrade"></iframe>')) +
             '</div>' +
             '<div class="ice-tape-land-bar">' +
               '<button type="button" class="ice-btn ghost" id="btnTapeLandClose">← Ice</button>' +
-              '<span class="ice-tape-land-label">' + esc(pipe === "livebarn" || isLiveBarnUrl(frameSrc) ? "LiveBarn · Dualis chrome" : "Team cam") + "</span>" +
+              '<span class="ice-tape-land-label">' + esc(pipe === "livebarn" || isLiveBarnUrl(frameSrc) ? "LiveBarn · Dualis session" : "Team cam") + "</span>" +
               '<a class="ice-btn ghost" id="btnTapeOpenByo" target="_blank" rel="noopener" href="' + esc(frameSrc) + '">Break out →</a>' +
             '</div>' +
           '</div>' +
@@ -2442,7 +2449,7 @@
     var sources =
       '<div class="ice-tape-sources">' +
         /* Bound ≠ selected — never paint LB/Hudl as active; only Team when in-pane */
-        srcCard("livebarn", "LB", "LiveBarn", (byo && isLiveBarnUrl(byo)) ? "Known stream · playground" : (lbOn ? "Bound · playground" : "Their login · then stream if known"), "") +
+        srcCard("livebarn", "LB", "LiveBarn", (byo && isLiveBarnUrl(byo)) ? "Known hole · Dualis session" : (lbOn ? "Bound · Dualis session" : "Your login · paired window"), "") +
         srcCard("hudl", "HD", "Hudl", hdOn ? "Bound · opens their window" : "Coach clips · their login", "") +
         srcCard("byo", "CAM", "Team", byo ? "URL saved · in-pane when allowed" : "Falcon / arena Wi‑Fi URL", byoOn ? "on" : "") +
       "</div>";

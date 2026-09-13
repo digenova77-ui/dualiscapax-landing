@@ -4385,6 +4385,14 @@ html.ice-tape-land-lock body {
   color: #38bdf8;
   font-family: var(--font-mono);
 }
+.ice-tape-lb-hole::before {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  margin: 0 auto 0.65rem;
+  background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+}
 .ice-tape-lb-title {
   margin: 0.35rem 0 0.45rem;
   font-size: 1.15rem;
