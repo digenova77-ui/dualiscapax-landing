@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>À La Carte Passes — DualisCapax</title>
+  <meta name="theme-color" content="#0B0E14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="lander.css">
+</head>
+<body id="top">
+  <header class="top-nav">
+    <a href="index.html" class="brand-group">
+      <svg class="brand-icon" viewBox="0 0 40 40" fill="none">
+        <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
+        <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
+      </svg>
+      <span class="brand-name">Dualiscapax</span>
+    </a>
+    <a href="onboard.html" class="nav-btn-solid" style="text-decoration:none;">Start $0 Simulation</a>
+  </header>
+  <div style="padding:0.65rem 1.25rem; border-bottom:1px solid var(--border-subtle); display:flex; flex-wrap:wrap; gap:0.65rem; align-items:center; background:rgba(11,14,20,0.9);">
+    <a class="subpage-back" href="index.html">← Lander</a>
+      <a href="index.html#ask-iris" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Ask Iris</a>
+      <a href="research.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Research</a>
+      <a href="fuel.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Fuel</a>
+      <a href="sectors.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Sectors</a>
+      <a href="alacarte.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">À La Carte</a>
+      <a href="sandbox.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Sandbox</a>
+      <a href="purity.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Purity</a>
+      <a href="physics.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Physics</a>
+      <a href="unity.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Unity</a>
+      <a href="measure.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Measure</a>
+      <a href="onboard.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Onboard</a>
+  </div>
+  <main class="subpage-main page-wrapper">
+    <section id="sector-alacarte" class="pillar-section border-cyan">
+      <div class="badge-pill badge-cyan">DCLM À La Carte // One shell · many packs</div>
+      <h2 class="section-headline">Pay for the bout you need. Built on what DCLM can model.</h2>
+      <p class="section-body">
+        Hockey is the live template. Golf and other major sports plug into the <strong>same DCLM sport shell</strong>
+        when their meters land — classify the tweak, paste tape/wearable numbers (or priors), print clocks + receipt.
+        Look/Measure free. Jacket CLOSED. <strong>100% private. Zero personal data tracking.</strong>
+      </p>
+      <p style="margin-top:0.75rem;display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+        <a class="nav-btn-solid" href="ice.html?pack=hockey#seat" style="text-decoration:none;font-size:0.85rem;padding:0.55rem 1rem;">Enter ice portal →</a>
+        <a href="sport.html?pack=hockey" style="color:var(--accent-cyan);text-decoration:none;font-size:0.8rem;font-family:var(--font-mono);">Sport shell · measure</a>
+      </p>
+
+      <!-- Category Filter Tabs -->
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin:1.25rem 0 1rem;">
+        <button type="button" class="action-pill" style="border-color:var(--accent-cyan); color:var(--text-primary);" onclick="filterAlacarte('sports', this)">🏒 Athletics & Sports</button>
+        <button type="button" class="action-pill" onclick="filterAlacarte('smb', this)">🛠️ Small Business & Trades</button>
+        <button type="button" class="action-pill" onclick="filterAlacarte('family', this)">🏡 Family Logistics</button>
+      </div>
+
+      <!-- À La Carte Cards Grid -->
+      <div id="alacarteGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.85rem;">
+        <!-- Card 1: Hockey -->
+        <div class="alacarte-item sports" style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:12px; padding:1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--accent-cyan); font-weight:700;">ATHLETICS // HOCKEY</div>
+            <h4 style="font-size:1.05rem; font-weight:800; margin:0.3rem 0;">Minor Hockey Shift Pacing</h4>
+            <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.45; margin-bottom:0.75rem;">
+              Optimizes 42–45s anaerobic ceiling line rotations, 3rd period fatigue recovery, and opponent matchups.
+            </p>
+          </div>
+          <div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--accent-mint); margin-bottom:0.5rem;">CAD $49 · Leaf · coming soon</div>
+            <button class="nav-btn-solid" style="width:100%; padding:0.5rem; font-size:0.8rem;" onclick="location.href='ice.html?pack=hockey#seat'">
+              Enter ice portal →
+            </button>
+            <button type="button" disabled style="width:100%; margin-top:0.4rem; padding:0.5rem; font-size:0.78rem; border-radius:8px; border:1px solid var(--border-subtle); background:transparent; color:var(--text-muted);">
+              Coming soon — founder testing
+            </button>
+            <a href="sport.html?pack=hockey" style="display:block;margin-top:0.45rem;text-align:center;color:var(--accent-cyan);text-decoration:none;font-size:0.75rem;font-family:var(--font-mono);">Sport shell · measure</a>
+          </div>
+        </div>
+
+        <!-- Card 2: Golf -->
+        <div class="alacarte-item sports" style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:12px; padding:1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--accent-cyan); font-weight:700;">ATHLETICS // GOLF</div>
+            <h4 style="font-size:1.05rem; font-weight:800; margin:0.3rem 0;">18-Hole Real-Time Caddie</h4>
+            <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.45; margin-bottom:0.75rem;">
+              Models real-time barometric density, crosswind shear, and time-of-day green speeds (dew vs afternoon turf).
+            </p>
+          </div>
+          <div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--accent-mint); margin-bottom:0.5rem;">CAD $19.00</div>
+            <button class="nav-btn-solid" style="width:100%; padding:0.5rem; font-size:0.8rem;" onclick="location.href='sport.html?pack=golf'">
+              Unlock Pass →
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 3: Tournament Resolver -->
+        <div class="alacarte-item family" style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:12px; padding:1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--accent-cyan); font-weight:700;">FAMILY // WEEKEND</div>
+            <h4 style="font-size:1.05rem; font-weight:800; margin:0.3rem 0;">Weekend Tournament Resolver</h4>
+            <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.45; margin-bottom:0.75rem;">
+              Resolves multi-child split arena schedules, carpool splits, hotel check-ins, and rest windows.
+            </p>
+          </div>
+          <div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--accent-mint); margin-bottom:0.5rem;">CAD $9.99</div>
+            <button class="nav-btn-solid" style="width:100%; padding:0.5rem; font-size:0.8rem;" onclick="openPassCheckout('Weekend Tournament Logistics Resolver', 'SKU-PASS-TOURNAMENT', 'CAD $9.99')">
+              Unlock Pass →
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 4: Contractor Margin Lock -->
+        <div class="alacarte-item smb" style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:12px; padding:1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--accent-cyan); font-weight:700;">TRADES // BIDDING</div>
+            <h4 style="font-size:1.05rem; font-weight:800; margin:0.3rem 0;">Contractor Job Margin Lock</h4>
+            <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.45; margin-bottom:0.75rem;">
+              Calibrates wholesale materials, subcontractor labor, and regional market rates to guarantee target margins.
+            </p>
+          </div>
+          <div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--accent-mint); margin-bottom:0.5rem;">CAD $49.00</div>
+            <button class="nav-btn-solid" style="width:100%; padding:0.5rem; font-size:0.8rem;" onclick="openPassCheckout('Contractor Job Margin Lock Pass', 'SKU-PASS-CONTRACTOR', 'CAD $49.00')">
+              Unlock Pass →
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 5: Staffing Overtime Balancer -->
+        <div class="alacarte-item smb" style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:12px; padding:1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--accent-cyan); font-weight:700;">SMALL BUSINESS // SHIFTS</div>
+            <h4 style="font-size:1.05rem; font-weight:800; margin:0.3rem 0;">Weekly Overtime Balancer</h4>
+            <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.45; margin-bottom:0.75rem;">
+              Optimizes employee shifts and eliminates accidental 1.5x overtime hours across garages, shops, and dining.
+            </p>
+          </div>
+          <div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--accent-mint); margin-bottom:0.5rem;">CAD $29.00</div>
+            <button class="nav-btn-solid" style="width:100%; padding:0.5rem; font-size:0.8rem;" onclick="openPassCheckout('Weekly Overtime Balancer Pass', 'SKU-PASS-STAFFING', 'CAD $29.00')">
+              Unlock Pass →
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 6: Trade Van Fleet Route -->
+        <div class="alacarte-item smb" style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:12px; padding:1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--accent-cyan); font-weight:700;">TRADES // 2-8 VANS</div>
+            <h4 style="font-size:1.05rem; font-weight:800; margin:0.3rem 0;">Daily Van Route Clustering</h4>
+            <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.45; margin-bottom:0.75rem;">
+              Sequences service calls for trade vans, cuts 20% fuel waste, and eliminates city backtracking.
+            </p>
+          </div>
+          <div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--accent-mint); margin-bottom:0.5rem;">CAD $19.00 / day</div>
+            <button class="nav-btn-solid" style="width:100%; padding:0.5rem; font-size:0.8rem;" onclick="openPassCheckout('Daily Van Route Clustering Pass', 'SKU-PASS-VANFLEET', 'CAD $19.00')">
+              Unlock Pass →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+<div id="checkoutModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:9999; backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1.25rem;">
+    <div style="background:var(--bg-surface-elevated); border:1px solid var(--accent-pink); border-radius:18px; max-width:500px; width:100%; padding:1.75rem; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-primary);">Acquire Study Monograph</h3>
+        <button style="background:none; border:none; color:var(--text-muted); font-size:1.4rem; cursor:pointer;" onclick="closeCheckout()">✕</button>
+      </div>
+      <div style="background:var(--bg-main); padding:0.85rem; border-radius:10px; border:1px solid var(--border-subtle); margin-bottom:1rem;">
+        <div style="font-size:0.75rem; color:var(--accent-pink); font-weight:700;" id="modalSku">SKU-MED-LEAF-01</div>
+        <div style="font-weight:700; font-size:1rem;" id="modalTitle">Multiple Sclerosis: 28-State Closed-Loop Model</div>
+        <div style="font-size:1.15rem; font-weight:800; color:var(--accent-mint); margin-top:0.35rem;" id="modalPrice">CAD $49.00</div>
+      </div>
+      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;">
+        1:1 CAD Parity Settlement via Canadian Interbank Rails or Sovereign Crypto Vaults:
+      </p>
+      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem;">
+        <div style="background:var(--bg-main); padding:0.75rem; border-radius:8px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.82rem; font-weight:600;">🍁 Interac e-Transfer</span>
+          <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--accent-cyan);">admin@dualiscapax.ai</span>
+        </div>
+        <div style="background:var(--bg-main); padding:0.75rem; border-radius:8px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.82rem; font-weight:600;">⟠ Ethereum / USDC</span>
+          <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--accent-cyan);">0x0adC...AFBBc4</span>
+        </div>
+      </div>
+      <a class="nav-btn-solid" href="payments.html" style="display:block;width:100%;padding:0.85rem;background:var(--accent-pink);color:#FFF;text-align:center;text-decoration:none;box-sizing:border-box;">
+        Open real card checkout (Stripe) →
+      </a>
+      <a href="donate.html" style="display:block;text-align:center;margin-top:0.65rem;font-size:0.82rem;color:var(--accent-cyan);">Or gift via Interac / BTC / ETH / SOL (no ticket back)</a>
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">No fake settlement. Money only via Stripe Payment Links or listed vault addresses.</p>
+    </div>
+  </div>
+  <nav class="bottom-dock">
+    <a href="index.html" class="dock-btn" style="text-decoration:none;"><span>Home</span></a>
+    <a href="index.html#ask-iris" class="dock-btn" style="text-decoration:none;"><span>Ask Iris</span></a>
+    <a href="sandbox.html" class="dock-btn" style="text-decoration:none;"><span>Sandbox</span></a>
+    <a href="sectors.html" class="dock-btn" style="text-decoration:none;"><span>Sectors</span></a>
+    <a href="onboard.html" class="dock-btn btn-trial" style="text-decoration:none;"><span>Pilot ($0)</span></a>
+  </nav>
+  <script src="js/lander-peel-runtime.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+  <!-- Hardware Consent & Permission Guidance Modal (DCLM NO_FORCE Protocol) -->
+  <div id="permissionGuidanceModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); z-index:99999; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); align-items:center; justify-content:center; padding:1.25rem;">
+    <div style="background:var(--bg-surface-elevated); border:1px solid var(--accent-cyan); border-radius:18px; max-width:480px; width:100%; padding:1.75rem; box-shadow:0 24px 60px rgba(0,0,0,0.8); animation:fadeIn 0.25s ease-out;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <span style="font-size:1.3rem;">🎙️</span>
+          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-primary);">Microphone Access Guidance</h3>
+        </div>
+        <button style="background:none; border:none; color:var(--text-muted); font-size:1.4rem; cursor:pointer;" onclick="closePermissionModal()">✕</button>
+      </div>
+
+      <div style="background:rgba(56,189,248,0.08); border-left:3px solid var(--accent-cyan); padding:0.85rem; border-radius:0 8px 8px 0; margin-bottom:1.15rem; font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">
+        <strong style="color:var(--accent-cyan);">DCLM Layer [0] Law Floor (NO_FORCE):</strong> We never activate your microphone automatically without explicit consent. Audio is processed ephemerally in RAM and immediately zeroized (0.00% retained PII).
+      </div>
+
+      <p style="font-size:0.86rem; color:var(--text-primary); font-weight:600; margin-bottom:0.75rem;">
+        Your browser or device currently has microphone access disabled. To speak to Iris:
+      </p>
+
+      <!-- Step-by-Step Instructions -->
+      <div style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:12px; padding:1rem; margin-bottom:1.25rem; display:flex; flex-direction:column; gap:0.6rem; font-size:0.82rem; color:var(--text-secondary);">
+        <div style="display:flex; gap:0.5rem; align-items:flex-start;">
+          <span style="color:var(--accent-cyan); font-weight:700;">1.</span>
+          <span>Open your phone's <strong>Settings</strong> → <strong>Apps</strong> → <strong>Chrome</strong> → <strong>Permissions</strong>.</span>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:flex-start;">
+          <span style="color:var(--accent-cyan); font-weight:700;">2.</span>
+          <span>Tap <strong>Microphone</strong> and select <strong>"Allow only while using the app"</strong>.</span>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:flex-start;">
+          <span style="color:var(--accent-cyan); font-weight:700;">3.</span>
+          <span>Return to Chrome, tap the address bar tune icon, and ensure Microphone is set to <strong>Allow</strong>.</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+        <button class="nav-btn-solid" style="flex:1; padding:0.85rem; text-align:center; font-size:0.85rem; cursor:pointer;" onclick="(async function(){ if(window.irisRequestMicPermission){ await irisRequestMicPermission(); } triggerMicVoiceInput(); })()">{Try Microphone Again →
+        </button>
+        <button style="background:transparent; border:1px solid var(--border-subtle); color:var(--text-secondary); border-radius:8px; padding:0.85rem 1rem; font-size:0.82rem; font-weight:700; cursor:pointer;" onclick="closePermissionModal()">
+          Use Text Only
+        </button>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,24 @@
+/* Unread sprites stay dark. The live one lights. What passed stays. */
+.site.read-on .spr{
+  opacity:.04;
+  transition:opacity .12s linear, text-shadow .12s linear, filter .12s linear;
+}
+.site.read-on .spr.past{
+  opacity:.62;
+}
+.site.read-on .spr.on{
+  opacity:1;
+  text-shadow:0 0 12px rgba(255,224,170,.85);
+  color:#fff6dd;
+}
+.site.read-on img.spr-img{
+  opacity:.04;
+  filter:saturate(0) brightness(.3);
+  transition:opacity .16s linear, filter .16s linear;
+}
+.site.read-on img.spr-img.past{opacity:.7;filter:none}
+.site.read-on img.spr-img.on{opacity:1;filter:saturate(1.1) brightness(1.05)}
+@media (prefers-reduced-motion:reduce){
+  .site.read-on .spr,
+  .site.read-on img.spr-img{opacity:1;filter:none;text-shadow:none}
+}

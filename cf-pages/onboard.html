@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0B0E14">
+  <title>90-Day $0 Simulation — DualisCapax</title>
+  <meta name="description" content="Three short steps to a local 90-day seat. Phrase stays on device. After seal you load books on runtime — Dualis never sees them.">
+  <link rel="icon" type="image/svg+xml" href="brand/seal.svg">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="lander.css">
+  <style>
+    select#kind, #kind[type="hidden"] { /* seat via radios only */ }
+    #kind[hidden], select#kind { display:none !important; height:0 !important; width:0 !important; opacity:0 !important; position:absolute !important; pointer-events:none !important; }
+
+    .ob-wrap { max-width: 40rem; margin: 0 auto; }
+    .ob-chips { display:flex; flex-wrap:wrap; gap:0.45rem; margin-bottom:1rem; }
+    .ob-chip {
+      font-family: var(--font-mono);
+      font-size: 0.68rem; font-weight: 700;
+      padding: 0.28rem 0.65rem; border-radius: 999px;
+      background: var(--accent-mint-bg); color: var(--accent-mint);
+      border: 1px solid rgba(52, 211, 153, 0.28);
+    }
+    .ob-chip.warn {
+      background: rgba(244, 63, 94, 0.1); color: #fda4af;
+      border-color: rgba(244, 63, 94, 0.28);
+    }
+    .ob-progress {
+      display:flex; flex-wrap:wrap; gap:0.45rem;
+      margin: 0.85rem 0 1.25rem;
+    }
+    .ob-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem; font-weight: 700;
+      padding: 0.4rem 0.7rem; border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.03);
+    }
+    .ob-pill.on {
+      color: var(--accent-cyan);
+      border-color: rgba(56,189,248,0.55);
+      background: rgba(56,189,248,0.12);
+    }
+    .ob-pill.done {
+      color: var(--accent-mint);
+      border-color: rgba(52,211,153,0.45);
+      background: rgba(52,211,153,0.1);
+    }
+    .ob-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.15rem 1.2rem;
+    }
+    .ob-card h2 {
+      font-size: 1.05rem; font-weight: 800; margin: 0 0 0.35rem;
+      color: var(--text-primary);
+    }
+    .ob-card > .ob-lead {
+      color: var(--text-secondary); font-size: 0.88rem;
+      margin-bottom: 0.85rem; line-height: 1.5;
+    }
+    .ob-field { margin-top: 0.65rem; }
+    .ob-field label {
+      display:block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .ob-field input, .ob-field select {
+      width: 100%;
+      background: var(--bg-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      color: var(--text-primary);
+      padding: 0.7rem 0.85rem;
+      font: inherit; font-size: 0.9rem;
+    }
+    .ob-field input:focus, .ob-field select:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px var(--accent-cyan-glow);
+    }
+    .sector-radios { display:grid; gap:0.5rem; margin:0.55rem 0 0.25rem; }
+    @media (min-width:720px) { .sector-radios { grid-template-columns:1fr 1fr; } }
+    .sector-radios .sec {
+      display:flex; gap:0.7rem; align-items:flex-start;
+      border:1px solid var(--border-subtle);
+      background: var(--bg-main);
+      border-radius:12px; padding:0.8rem 0.75rem; cursor:pointer;
+    }
+    .sector-radios .sec:has(input:checked) {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 1px rgba(56,189,248,.35);
+    }
+    .sector-radios input { margin-top:0.25rem; accent-color:#38BDF8; width:auto; }
+    .sector-radios b { display:block; font-size:0.92rem; color:var(--text-primary); }
+    .sector-radios i {
+      display:block; font-style:normal; font-size:0.78rem;
+      color:var(--text-secondary); margin-top:0.15rem;
+    }
+    .ob-actions {
+      display:flex; flex-wrap:wrap; gap:0.55rem;
+      margin-top:1rem; align-items:center;
+    }
+    .ob-actions .nav-btn-solid,
+    .ob-actions .action-pill {
+      cursor:pointer; border:none; font:inherit;
+      display:inline-flex; align-items:center;
+    }
+    .ob-actions button.nav-btn-solid {
+      padding: 0.65rem 1.1rem;
+      border-radius: 8px;
+      background: var(--accent-mint);
+      color: #064E3B;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+    .ob-actions button.nav-btn-solid:hover { background: var(--accent-mint-hover); }
+    .ob-check {
+      display:flex; gap:0.65rem; align-items:flex-start;
+      font-size:0.86rem; color:var(--text-secondary);
+      margin: 0.35rem 0 0.5rem; line-height:1.45;
+    }
+    .ob-check input { width:auto; margin-top:0.2rem; accent-color:#34D399; }
+    .ob-out { color: var(--accent-cyan); font-size: 0.82rem; margin-top: 0.5rem; min-height: 1.2rem; }
+    #log {
+      margin-top: 0.85rem; padding: 0.85rem;
+      background: var(--bg-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      color: var(--text-secondary);
+      font-size: 0.85rem; white-space: pre-wrap; word-break: break-word;
+      min-height: 2.5rem;
+    }
+    #log a { color: var(--accent-mint); }
+    .ob-step { display:none; }
+    .ob-step.on { display:block; }
+    .ob-ban {
+      display:flex; gap:0.65rem; align-items:flex-start;
+      background: rgba(52,211,153,0.08);
+      border: 1px solid rgba(52,211,153,0.35);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      margin: 0.85rem 0 0;
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .ob-ban b { color: var(--accent-mint); }
+    .ob-adv {
+      margin-top: 1rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+      background: rgba(255,255,255,0.02);
+    }
+    .ob-adv > summary {
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      list-style: none;
+    }
+    .ob-adv > summary::-webkit-details-marker { display: none; }
+    .ob-adv > summary::before { content: "▸ "; color: var(--accent-cyan); }
+    .ob-adv[open] > summary::before { content: "▾ "; }
+    .ob-adv[open] > summary { color: var(--text-secondary); margin-bottom: 0.55rem; }
+    .ob-walk {
+      margin-top: 1.25rem; font-size: 0.8rem; color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .ob-walk a { color: var(--accent-cyan); }
+  </style>
+</head>
+<body id="top">
+  <header class="top-nav">
+    <a href="index.html" class="brand-group">
+      <svg class="brand-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
+        <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
+      </svg>
+      <span class="brand-name">Dualiscapax</span>
+    </a>
+    <a href="runtime.html" class="nav-btn-solid" style="text-decoration:none;">Runtime</a>
+  </header>
+
+  <div style="padding:0.65rem 1.25rem; border-bottom:1px solid var(--border-subtle); display:flex; flex-wrap:wrap; gap:0.65rem; align-items:center; background:rgba(11,14,20,0.9);">
+    <a class="subpage-back" href="index.html">← Lander</a>
+    <a href="onboard.html" style="color:var(--accent-mint);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Onboard</a>
+    <a href="portal.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Portal</a>
+    <a href="runtime.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Runtime</a>
+    <a href="unity.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Unity ID</a>
+  </div>
+
+  <main class="subpage-main page-wrapper">
+    <section class="pillar-section border-mint ob-wrap" style="margin-top:0.25rem;">
+      <h1 class="hero-title" style="font-size:clamp(1.75rem,5vw,2.6rem);margin:0.35rem 0 0.55rem;line-height:1.1;">Start at zero. Prove the seat<span>.</span></h1>
+      <div class="ob-chips" aria-label="Seat terms">
+        <span class="ob-chip">CAD $0 for 90 days</span>
+        <span class="ob-chip">Phrase stays on device</span>
+        <span class="ob-chip warn">Not a court stamp</span>
+      </div>
+      <div class="badge-pill badge-green">$0 seat · three steps // ED-GOV-20260901-ONBOARD-PATH</div>
+      <h2 class="section-headline">Initialize your 90-day live simulation<span style="color:var(--accent-mint)">.</span></h2>
+      <p class="section-body">
+        Short walk. After seal you open the <strong>on-device runtime</strong> and load books there —
+        Dualis never receives them. Portal keeps its own eight-word vault story; this page only fingerprints a device phrase for the seat seal.
+      </p>
+
+      <div class="ob-progress" id="obProgress" aria-label="Onboard steps">
+        <span class="ob-pill on" data-step="1">1 Who / seat</span>
+        <span class="ob-pill" data-step="2">2 Device phrase</span>
+        <span class="ob-pill" data-step="3">3 Attest + seal</span>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="ob-card ob-step on" id="step1" data-panel="1">
+        <h2>1 · Who / seat</h2>
+        <p class="ob-lead">Pick the seat that matches your desk. Same form for a person, shop, school, or firm.</p>
+        <div class="ob-field">
+          <label for="name">Name</label>
+          <input id="name" autocomplete="name">
+        </div>
+        <div class="ob-field">
+          <label id="sectorLabel">Sector seat</label>
+          <input type="hidden" id="kind" name="kind" value="corp">
+          <div class="sector-radios" id="sectorRadios" role="radiogroup" aria-labelledby="sectorLabel">
+            <label class="sec"><input type="radio" name="sectorSeat" value="school"><span><b>School board</b><i>Buses, facilities, boards</i></span></label>
+            <label class="sec"><input type="radio" name="sectorSeat" value="government"><span><b>Municipality / public</b><i>SCADA, fleets, works</i></span></label>
+            <label class="sec"><input type="radio" name="sectorSeat" value="corp" checked><span><b>Corporation</b><i>C-suite + auditor path</i></span></label>
+            <label class="sec"><input type="radio" name="sectorSeat" value="shop"><span><b>Trades / shop</b><i>Fleets, bays, crews</i></span></label>
+            <label class="sec"><input type="radio" name="sectorSeat" value="person"><span><b>Person / other</b><i>Household or custom</i></span></label>
+            <label class="sec"><input type="radio" name="sectorSeat" value="auditor"><span><b>Auditor / counsel</b><i>You are the auditor seating a client</i></span></label>
+          </div>
+        </div>
+        <div class="ob-field">
+          <label for="muni">Town or city</label>
+          <input id="muni" autocomplete="address-level2">
+        </div>
+        <div class="ob-field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email">
+        </div>
+        <div class="ob-field">
+          <label for="org">Work domain (optional)</label>
+          <input id="org" placeholder="only checked against your email">
+        </div>
+        <div class="ob-actions">
+          <button type="button" class="nav-btn-solid" id="next1">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="ob-card ob-step" id="step2" data-panel="2">
+        <h2>2 · Device phrase</h2>
+        <p class="ob-lead">
+          At least eight characters. We store a fingerprint on this device — not the phrase itself.
+          Optional passkey is a face/finger lock on this phone. Portal’s eight-word vault is a separate door.
+        </p>
+        <div class="ob-field">
+          <label for="phrase">Secret phrase</label>
+          <input id="phrase" type="password" autocomplete="new-password">
+        </div>
+        <div class="ob-actions">
+          <button type="button" class="nav-btn-solid" id="hashPhrase">Save the fingerprint</button>
+          <button type="button" class="action-pill" id="makeKey">Optional · make a passkey</button>
+        </div>
+        <p id="phraseOut" class="ob-out"></p>
+        <p id="keyOut" class="ob-out"></p>
+        <div class="ob-actions">
+          <button type="button" class="action-pill" id="back2">Back</button>
+          <button type="button" class="nav-btn-solid" id="next2">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="ob-card ob-step" id="step3" data-panel="3">
+        <h2>3 · Attest + seal</h2>
+        <p class="ob-lead">
+          Seal writes the Unity pack to this browser and hands you into <strong>runtime</strong>.
+          Books come next on the workbench — Dualis never sees them.
+        </p>
+        <div class="ob-ban" role="note">
+          <span aria-hidden="true">🔒</span>
+          <div>
+            <b>Next stop:</b> after seal you load books on <code style="font-family:var(--font-mono);color:var(--accent-cyan);">runtime.html</code>.
+            Files stay on this device. Dualis never receives them.
+          </div>
+        </div>
+
+        <div class="ob-field" style="margin-top:1rem;padding:1rem;border:1px solid var(--border-subtle);border-radius:12px;background:var(--bg-main);">
+          <label style="color:var(--accent-cyan);">Optional auditor for this $0 / 90-day seat</label>
+          <p class="ob-lead" style="margin:0.35rem 0 0.75rem;">
+            Leave blank if none. If you name one, you get a <strong>contract-specific link</strong> after seal
+            to share into their runtime — they back-check that seat’s math and Approve with one button.
+            Dualis never sees your books.
+          </p>
+          <div class="ob-field">
+            <label for="audNameOn">Auditor name</label>
+            <input id="audNameOn" autocomplete="name" placeholder="Leave blank for none">
+          </div>
+          <div class="ob-field">
+            <label for="audEmailOn">Auditor email</label>
+            <input id="audEmailOn" type="email" autocomplete="email" placeholder="How you’ll send them the link">
+          </div>
+        </div>
+
+        <label class="ob-check" style="margin-top:1rem;">
+          <input id="attest" type="checkbox">
+          <span>I say this is me. I want the ninety-day modeling seat at CAD $0. Dualis only keeps the meter. This is not a government ID check and not a court stamp.</span>
+        </label>
+        <div class="ob-actions">
+          <button type="button" class="action-pill" id="back3">Back</button>
+          <button type="button" class="nav-btn-solid" id="seal">Seal, download, start runtime</button>
+          <button type="button" class="action-pill" id="mail">Email me a reminder</button>
+          <button type="button" class="action-pill" id="dl">Download files only</button>
+        </div>
+        <pre id="log"></pre>
+
+        <details class="ob-adv">
+          <summary id="advanced">Advanced (optional) — Ethereum prove · firm chair</summary>
+          <p class="ob-lead" style="margin-top:0.35rem;">
+            Not required for public-sector or shop seats. NO_FORCE — leave closed unless you want them.
+          </p>
+          <div class="ob-field">
+            <label for="eth">Ethereum address (filled by Connect, or paste)</label>
+            <input id="eth" spellcheck="false" placeholder="0x… — or tap Connect wallet">
+          </div>
+          <div class="ob-actions">
+            <button type="button" class="nav-btn-solid" id="connectEth" style="border:none;cursor:pointer;">Connect wallet</button>
+            <button type="button" class="action-pill" id="signEth">Prove with signature</button>
+            <a class="action-pill" href="wallet-advice.html" style="text-decoration:none;">No wallet yet?</a>
+          </div>
+          <p id="ethOut" class="ob-out">Optional. Opens Trust Wallet, MetaMask, or any injected browser wallet if present — Dualis has no affiliation.</p>
+          <div class="ob-field">
+            <label for="firm">Firm name</label>
+            <input id="firm" placeholder="Leave blank if none yet">
+          </div>
+          <div class="ob-field">
+            <label for="firmRole">Firm role</label>
+            <select id="firmRole">
+              <option value="">none yet</option>
+              <option>llp</option>
+              <option>auditor</option>
+              <option>counsel</option>
+            </select>
+          </div>
+        </details>
+      </div>
+
+      <p class="ob-walk">
+        After seal (local bind only):
+        <a href="runtime.html"><strong>runtime.html</strong></a> — load books on device ← primary ·
+        <a href="portal.html">portal.html</a> (roles / eight-word vault) ·
+        <a href="unity.html">unity.html</a> ·
+        <a href="bind.html">bind.html</a>. Phrase fingerprint never leaves this device.
+      </p>
+    </section>
+  </main>
+
+  <script src="pack.js"></script>
+  <script src="unity-id.js"></script>
+  <script src="js/dc-passkey.js"></script>
+  <script src="onboard.js"></script>
+</body>
+</html>

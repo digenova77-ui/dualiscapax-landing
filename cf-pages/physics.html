@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deterministic Physics — DualisCapax</title>
+  <meta name="theme-color" content="#0B0E14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="lander.css">
+</head>
+<body id="top">
+  <header class="top-nav">
+    <a href="index.html" class="brand-group">
+      <svg class="brand-icon" viewBox="0 0 40 40" fill="none">
+        <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
+        <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
+      </svg>
+      <span class="brand-name">Dualiscapax</span>
+    </a>
+    <a href="onboard.html" class="nav-btn-solid" style="text-decoration:none;">Start $0 Simulation</a>
+  </header>
+  <div style="padding:0.65rem 1.25rem; border-bottom:1px solid var(--border-subtle); display:flex; flex-wrap:wrap; gap:0.65rem; align-items:center; background:rgba(11,14,20,0.9);">
+    <a class="subpage-back" href="index.html">← Lander</a>
+      <a href="iris.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Ask Iris</a>
+      <a href="research.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Research</a>
+      <a href="fuel.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Fuel</a>
+      <a href="sectors.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Sectors</a>
+      <a href="alacarte.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">À La Carte</a>
+      <a href="sandbox.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Sandbox</a>
+      <a href="purity.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Purity</a>
+      <a href="physics.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Physics</a>
+      <a href="unity.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Unity</a>
+      <a href="measure.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Measure</a>
+      <a href="onboard.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Onboard</a>
+  </div>
+  <main class="subpage-main page-wrapper">
+    <section id="sector-math" class="pillar-section" style="border-color:var(--accent-orange); background:rgba(245,158,11,0.02);">
+      <div class="badge-pill" style="background:rgba(245,158,11,0.15); color:var(--accent-orange); border:1px solid rgba(245,158,11,0.3);">
+        Engineering // Look free · Leaf / Branch / Atlas · SEAL gated
+      </div>
+      <h1 class="hero-title" style="font-size:clamp(1.75rem,5vw,2.6rem);margin:0.35rem 0 0.55rem;line-height:1.1;">Physics you can walk back<span>.</span></h1>
+      <h2 class="section-headline">Deterministic Physics: From Starbase launch pads to municipal water mains.</h2>
+      <p class="section-body">
+        Engineering failure is unmodeled thermodynamic dissipation. We replace trial-and-error destruction with symplectic Hamiltonian mechanics, 
+        adaptive CNC toolpath tuning, acoustic combustion screech nullification, and zero-odor environmental gas mineralization.
+      </p>
+
+      <!-- 2-Tier Cascading Engineering Filter Dropdowns -->
+      <div style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:14px; padding:1.25rem; margin-top:1.25rem;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;" class="filter-grid">
+          <div>
+            <label style="display:block; font-size:0.75rem; font-family:var(--font-mono); color:var(--accent-orange); font-weight:700; margin-bottom:0.4rem; text-transform:uppercase;">
+              1. Select Engineering / Physics Domain:
+            </label>
+            <select class="styled-select" id="engDomainSelect" onchange="updateEngineeringDomain()" oninput="updateEngineeringDomain()" style="border-color:rgba(245,158,11,0.4);">
+              <option value="mechanical">⚙️ Mechanical & Aerospace Engineering (10 Specifications)</option>
+              <option value="electrical">⚡ Electrical & Power Grid Engineering (10 Specifications)</option>
+              <option value="chemical">🧪 Chemical & Environmental Engineering (10 Specifications)</option>
+              <option value="civil">🏗️ Civil & Transportation Engineering (10 Specifications)</option>
+              <option value="computer">💻 Computer & Mathematical Systems (10 Specifications)</option>
+              <option value="eng_master">🌐 Master All-Discipline Grand Suite (50 Blueprints Total)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; font-size:0.75rem; font-family:var(--font-mono); color:var(--accent-cyan); font-weight:700; margin-bottom:0.4rem; text-transform:uppercase;">
+              2. Select Specific Blueprint / Specification:
+            </label>
+            <select class="styled-select" id="engSpecSelect" onchange="renderSpecificEngSpec()" oninput="renderSpecificEngSpec()" style="border-color:rgba(56,189,248,0.4);">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Dynamic Engineering Spec Presentation Card -->
+        <div id="engSpecCard" style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:12px; padding:1.25rem; margin-top:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.5rem;">
+            <span class="research-sku" id="engSku" style="color:var(--accent-orange);">SKU-ENG-SPACE-01</span>
+            <span class="research-watchdog" id="engWatchdog">Watchdog: &lt; 0.029 ms</span>
+          </div>
+
+          
+          <!-- Inventory Depth Census Indicator -->
+          <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:6px; padding:0.35rem 0.65rem; margin-bottom:0.75rem; font-family:var(--font-mono); font-size:0.72rem;">
+            <span style="color:var(--accent-orange);" id="engDomainCensus">Discipline Census: 10 Specifications</span>
+            <span style="color:var(--text-muted);" id="engDomainShare">20.0% Library Density (50 Total)</span>
+          </div>
+
+          <h3 id="engTitle" style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin-bottom:0.5rem;">
+            Starship Raptor 3: Acoustic Combustion Screech Anti-Phase Nullification
+          </h3>
+
+          <p id="engDesc" style="font-size:0.86rem; color:var(--text-secondary); line-height:1.55; margin-bottom:0.85rem;">
+            Non-linear acoustic boundary nullification eliminating 3.2 kHz to 4.8 kHz destructive high-frequency combustion screech in Raptor 3 methalox engines. Recovers $3.00B/yr in test-stand engine attrition.
+          </p>
+
+          <div id="engGoverning" style="background:var(--bg-main); border:1px solid var(--border-subtle); border-radius:8px; padding:0.65rem 0.85rem; font-family:var(--font-mono); font-size:0.78rem; color:var(--accent-orange); margin-bottom:0.85rem;">
+            Governing Tensor: BKM 4-Vector Regularity Gating • Piezoelectric PZT Anti-Phase Nullifier • Symplectic Turbomachinery
+          </div>
+
+          <div style="font-family:var(--font-mono); font-size:0.85rem; font-weight:800; color:var(--accent-mint); margin-bottom:0.85rem;" id="engPrice">
+            CAD $49.00 (Single Spec Leaf) • $490 (Space-10 Pack)
+          </div>
+
+          <!-- Gated Engineering Notice -->
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:8px; padding:0.75rem 1rem; margin-bottom:1rem; font-size:0.78rem; color:var(--text-muted); line-height:1.5;">
+            🔒 <strong>Gated Engineering Access:</strong> Theoretical parameters and baseline physics are 100% free ($0.00). Proprietary CAD kinematics, differential ODE finite-element meshes, and firmware RTL dockets maintain cryptographic gated access under DCLM Layer [0].
+          </div>
+
+          <div id="engGatePanel" style="border-top:1px solid var(--border-subtle);padding-top:1rem;margin-bottom:1rem;"></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="nav-btn-solid" style="background:var(--accent-orange); color:#082F49; padding:0.6rem 1.15rem; font-size:0.84rem; font-weight:800; cursor:pointer;" onclick="openCurrentGatedEngModal()">
+                Inspect Gated Spec & Pricing →
+              </button>
+              <button class="action-pill" style="padding:0.55rem 0.95rem; font-size:0.8rem;" onclick="askIrisAboutEngSpec()">
+                💬 Ask Iris About Spec
+              </button>
+            </div>
+            <a href="https://drive.google.com/drive/folders/1xzl9u459D9xfBf5ltJUba8kAL6jW2gy_" target="_blank" style="color:var(--text-muted); text-decoration:none; font-size:0.78rem; font-family:var(--font-mono); display:flex; align-items:center; gap:0.3rem;">
+              <span>View Full Archive in Drive</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="eng-gate" class="pillar-section border-purple" style="margin-top:1.25rem;border-color:var(--accent-purple);">
+      <div class="badge-pill" style="border-color:var(--accent-purple);color:var(--accent-purple);">Engineering gate · SEAL</div>
+      <h2 class="section-headline" style="font-size:1.25rem;">Depth door</h2>
+      <p class="section-body">
+        Look (title, residual prose) is free. Depth workbooks need <code style="font-family:var(--font-mono);font-size:0.78rem;">.edu</code> / <code style="font-family:var(--font-mono);font-size:0.78rem;">.org</code> / <code style="font-family:var(--font-mono);font-size:0.78rem;">.gov</code>, a plant allow-list domain, or Dualis <code style="font-family:var(--font-mono);font-size:0.78rem;">SEAL-1</code>.
+        Single specs map to Leaf CAD $49 (SKU-017). Discipline packs map to Branch CAD $299 (SKU-018). Atlas CAD $1,499 (SKU-029) is an index — not the sealed vault. Not a P.Eng. stamp.
+      </p>
+    </section>
+
+    <section id="swarm" class="pillar-section border-mint" style="margin-top:1.25rem;">
+      <!-- Decentralized Swarm & Pinata IPFS Engine Telemetry (50-Million Shades of Iris) -->
+      <div style="background:var(--bg-main); border:1px solid var(--accent-mint); border-radius:14px; padding:1.35rem; margin-top:1.25rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.5rem;">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span style="font-size:1.1rem;">🐝</span>
+            <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--accent-mint); font-weight:800; text-transform:uppercase;">
+              Universal Swarm Factory // Pinata IPFS Decentralized Mesh
+            </span>
+          </div>
+          <span style="font-size:0.7rem; font-family:var(--font-mono); color:var(--accent-cyan); background:rgba(56,189,248,0.1); padding:0.2rem 0.5rem; border-radius:4px;">
+            Arbitrary-Scale Concurrency
+          </span>
+        </div>
+
+        <p style="font-size:0.86rem; color:var(--text-secondary); line-height:1.5; margin-bottom:0.85rem;">
+          Agent Iris is not limited to 4 agencies—she is a <strong>universal swarm orchestrator</strong>. 
+          Enterprises, clinics, and small business owners spawn bespoke micro-workers on demand based on their exact operational friction.
+        </p>
+
+        <!-- Dynamic User Spawner Input Row -->
+        <div style="background:var(--bg-surface); padding:1rem; border-radius:10px; border:1px solid var(--border-subtle); margin-bottom:1rem;">
+          <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.4rem;">
+            Spawn a Bespoke Swarm Micro-Worker in RAM:
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <input type="text" id="customWorkerName" class="omnibox-input" style="flex:1; min-width:180px; margin-bottom:0;" placeholder="e.g. Iris-LocalBakery or Iris-DentalClinic...">
+            <button type="button" class="nav-btn-solid" style="padding:0.75rem 1.25rem; font-size:0.82rem; white-space:nowrap; cursor:pointer;" onclick="spawnUserCustomWorker()">
+              🚀 Spawn Worker →
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Swarm Node Telemetry Grid -->
+        <div id="swarmGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(135px, 1fr)); gap:0.5rem; margin-bottom:0.85rem;">
+          <div style="background:var(--bg-surface); padding:0.6rem; border-radius:8px; border:1px solid var(--border-subtle); text-align:center;">
+            <div style="font-size:0.7rem; font-family:var(--font-mono); color:var(--text-muted);">Iris-SCADA</div>
+            <div style="font-size:0.95rem; font-weight:800; color:var(--accent-mint); margin:0.15rem 0;">17.1 ms</div>
+            <div style="font-size:0.68rem; color:var(--text-secondary);">Hydro Shifting</div>
+          </div>
+          <div style="background:var(--bg-surface); padding:0.6rem; border-radius:8px; border:1px solid var(--border-subtle); text-align:center;">
+            <div style="font-size:0.7rem; font-family:var(--font-mono); color:var(--text-muted);">Iris-Transit</div>
+            <div style="font-size:0.95rem; font-weight:800; color:var(--accent-mint); margin:0.15rem 0;">21.6 ms</div>
+            <div style="font-size:0.68rem; color:var(--text-secondary);">180 Bus Routes</div>
+          </div>
+          <div style="background:var(--bg-surface); padding:0.6rem; border-radius:8px; border:1px solid var(--border-subtle); text-align:center;">
+            <div style="font-size:0.7rem; font-family:var(--font-mono); color:var(--text-muted);">Iris-BioMed</div>
+            <div style="font-size:0.95rem; font-weight:800; color:var(--accent-mint); margin:0.15rem 0;">19.2 ms</div>
+            <div style="font-size:0.68rem; color:var(--text-secondary);">28-State ODE</div>
+          </div>
+          <div style="background:var(--bg-surface); padding:0.6rem; border-radius:8px; border:1px solid var(--border-subtle); text-align:center;">
+            <div style="font-size:0.7rem; font-family:var(--font-mono); color:var(--text-muted);">Iris-Treasury</div>
+            <div style="font-size:0.95rem; font-weight:800; color:var(--accent-mint); margin:0.15rem 0;">10.4 ms</div>
+            <div style="font-size:0.68rem; color:var(--text-secondary);">81% → 100% Ret.</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted);">
+          <span>Active Workers in Mesh: <strong id="activeWorkerCount">4</strong></span>
+          <span style="color:var(--accent-mint);">0.00% Retained PII (Landauer Zeroized)</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+<div id="checkoutModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:9999; backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1.25rem;">
+    <div style="background:var(--bg-surface-elevated); border:1px solid var(--accent-pink); border-radius:18px; max-width:500px; width:100%; padding:1.75rem; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-primary);">Acquire Study Monograph</h3>
+        <button style="background:none; border:none; color:var(--text-muted); font-size:1.4rem; cursor:pointer;" onclick="closeCheckout()">✕</button>
+      </div>
+      <div style="background:var(--bg-main); padding:0.85rem; border-radius:10px; border:1px solid var(--border-subtle); margin-bottom:1rem;">
+        <div style="font-size:0.75rem; color:var(--accent-pink); font-weight:700;" id="modalSku">SKU-MED-LEAF-01</div>
+        <div style="font-weight:700; font-size:1rem;" id="modalTitle">Multiple Sclerosis: 28-State Closed-Loop Model</div>
+        <div style="font-size:1.15rem; font-weight:800; color:var(--accent-mint); margin-top:0.35rem;" id="modalPrice">CAD $49.00</div>
+      </div>
+      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;">
+        1:1 CAD Parity Settlement via Canadian Interbank Rails or Sovereign Crypto Vaults:
+      </p>
+      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem;">
+        <div style="background:var(--bg-main); padding:0.75rem; border-radius:8px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.82rem; font-weight:600;">🍁 Interac e-Transfer</span>
+          <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--accent-cyan);">admin@dualiscapax.ai</span>
+        </div>
+        <div style="background:var(--bg-main); padding:0.75rem; border-radius:8px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.82rem; font-weight:600;">⟠ Ethereum / USDC</span>
+          <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--accent-cyan);">0x0adC...AFBBc4</span>
+        </div>
+      </div>
+      <a class="nav-btn-solid" href="payments.html" style="display:block;width:100%;padding:0.85rem;background:var(--accent-pink);color:#FFF;text-align:center;text-decoration:none;box-sizing:border-box;">
+        Open real card checkout (Stripe) →
+      </a>
+      <a href="donate.html" style="display:block;text-align:center;margin-top:0.65rem;font-size:0.82rem;color:var(--accent-cyan);">Or gift via Interac / BTC / ETH / SOL (no ticket back)</a>
+      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">No fake settlement. Money only via Stripe Payment Links or listed vault addresses.</p>
+    </div>
+  </div>
+  <nav class="bottom-dock">
+    <a href="index.html" class="dock-btn" style="text-decoration:none;"><span>Home</span></a>
+    <a href="iris.html" class="dock-btn" style="text-decoration:none;"><span>Ask Iris</span></a>
+    <a href="sandbox.html" class="dock-btn" style="text-decoration:none;"><span>Sandbox</span></a>
+    <a href="sectors.html" class="dock-btn" style="text-decoration:none;"><span>Sectors</span></a>
+</nav>
+  <script src="js/payments-config.js"></script>
+  <script src="js/buy-catalog.js"></script>
+  <script src="js/access-layers.js"></script>
+  <script src="js/engineering-gate.js"></script>
+  <script src="js/lander-peel-runtime.js"></script>
+  <script>if(window.DCBuy)DCBuy.load("research/payment-links.json");</script>
+</body>
+</html>

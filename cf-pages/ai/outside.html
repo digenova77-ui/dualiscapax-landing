@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outside</title>
+  <script src="../assets/spine-nav.js" defer></script>
+  <style>
+    body { margin: 0; background: #050508; color: #f4f4f5; font-family: Inter, system-ui, sans-serif; padding: 1.1rem 1rem 6rem; }
+    h1 { font-size: 1.7rem; letter-spacing: -0.04em; margin: 0 0 0.4rem; }
+    p { color: rgba(244,244,245,0.55); max-width: 38rem; line-height: 1.45; }
+    .g { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.35rem; max-width: 22rem; margin: 0.8rem 0; }
+    .c { aspect-ratio: 1; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.03); }
+    .c.on { outline: 2px solid #9ec5ff; }
+    .c.sniffed { background: rgba(158,197,255,0.18); }
+    .row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.6rem 0; }
+    button { font: 700 0.95rem Inter, system-ui, sans-serif; padding: 0.5rem 0.8rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.05); color: #f4f4f5; }
+    .log { min-height: 4.5rem; line-height: 1.45; max-width: 38rem; }
+    .m { color: rgba(244,244,245,0.5); font-size: 0.92rem; }
+  </style>
+</head>
+<body>
+  <h1>Outside</h1>
+  <p>She sniffs the field. You are on the porch. Tug if you want. Nothing here assumes she will get faster.</p>
+  <div class="g" id="g"></div>
+  <div class="row">
+    <button type="button" id="go">Let her out</button>
+    <button type="button" id="tug">Tug</button>
+    <button type="button" id="auto">Tug more and more</button>
+    <button type="button" id="stop">Porch only</button>
+  </div>
+  <div class="log" id="log"></div>
+  <div class="m" id="m"></div>
+<script>
+(function () {
+  var N = 36, cells = [], sniffed = {}, at = 0, run = false, tugs = 0, delay = 520;
+  var auto = false, autoMs = 2800, autoId = 0, last = 0, started = 0;
+  var g = document.getElementById("g");
+  var log = document.getElementById("log");
+  var m = document.getElementById("m");
+  for (var i = 0; i < N; i++) {
+    var d = document.createElement("div");
+    d.className = "c";
+    g.appendChild(d);
+    cells.push(d);
+  }
+  function say(t) { log.textContent = t; }
+  function meter() {
+    var sec = started ? (Date.now() - started) / 1000 : 0;
+    var n = Object.keys(sniffed).length;
+    var rate = sec > 0.4 ? (n / sec) : 0;
+    m.textContent = "Mapped " + n + "/" + N + " · tugs " + tugs + " · rate " + rate.toFixed(2) + " /s · wait " + delay + "ms";
+  }
+  function paint() {
+    cells.forEach(function (d, i) {
+      d.className = "c" + (sniffed[i] ? " sniffed" : "") + (run && i === at ? " on" : "");
+    });
+    meter();
+  }
+  function next() {
+    if (!run) return;
+    sniffed[at] = true;
+    last = Date.now();
+    var left = [];
+    for (var i = 0; i < N; i++) if (!sniffed[i]) left.push(i);
+    if (!left.length) {
+      run = false; auto = false;
+      say("Field walked. No extra speed was built in. Pile is the walk.");
+      paint(); return;
+    }
+    at = left[Math.floor(Math.random() * left.length)];
+    paint();
+    setTimeout(next, delay);
+  }
+  function tug() {
+    tugs += 1;
+    delay = Math.min(1600, delay + 90);
+    say("Tug " + tugs + ". She does not leave the field. Next sniff waits longer.");
+    paint();
+  }
+  document.getElementById("go").onclick = function () {
+    if (run) return;
+    run = true; started = Date.now(); delay = 520; tugs = 0; sniffed = {}; at = 0;
+    say("Out. Sniffing. You are on the porch.");
+    paint(); next();
+  };
+  document.getElementById("tug").onclick = tug;
+  document.getElementById("auto").onclick = function () {
+    if (!run) return;
+    auto = true; autoMs = 2800;
+    say("Tugs will stack. Pant-leg mode.");
+    if (autoId) clearInterval(autoId);
+    autoId = setInterval(function () {
+      if (!run || !auto) { clearInterval(autoId); return; }
+      tug();
+      autoMs = Math.max(700, autoMs - 180);
+    }, autoMs);
+  };
+  document.getElementById("stop").onclick = function () {
+    auto = false;
+    if (autoId) clearInterval(autoId);
+    say("Porch only. Field still hers if she is mid-walk.");
+  };
+})();
+</script>
+</body>
+</html>

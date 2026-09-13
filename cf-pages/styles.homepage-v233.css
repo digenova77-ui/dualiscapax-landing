@@ -1,0 +1,163 @@
+/* DualisCapax homepage elevation v233
+   Drop-in AFTER styles.css?v=232-unblocked-rings-pure
+   Goals: parse-safe pipe, cheaper paint, cooler glass, respect reduced motion.
+*/
+
+:root {
+  --dc-ease: cubic-bezier(.22, 1, .36, 1);
+  --dc-glass: color-mix(in oklab, #0a1220 72%, transparent);
+  --dc-line: color-mix(in oklab, #8eb4c8 28%, transparent);
+  --dc-iris: #8eb4c8;
+  --dc-cyan: #00e5ff;
+  --dc-green: #00ffaa;
+}
+
+/* Cheap compositing for the universe + pipe */
+.cosmic-universe,
+.stage,
+.pipe-assembly,
+#nodesContainer,
+#gl-canvas {
+  contain: strict;
+  content-visibility: auto;
+  transform: translateZ(0);
+}
+
+.cosmic-nebula {
+  filter: blur(28px);
+  opacity: .88;
+  will-change: opacity;
+}
+
+.geodesic-sphere,
+.planetary-orbital-ring,
+.conduit-ring,
+.conduit-ring-tier2,
+.singularity-accretion-disk,
+.singularity-core {
+  backface-visibility: hidden;
+  contain: layout paint;
+}
+
+/* Repair: previous sheet left orphaned 10%/50% blocks after ringStream closed.
+   Re-declare a single clean stream. */
+@keyframes ringStream {
+  0%   { transform: translate3d(0,0,-960px) scale(.06); opacity: 0; }
+  12%  { opacity: .7; }
+  50%  { transform: translate3d(0,0,-250px) scale(1); opacity: .92; }
+  86%  { transform: translate3d(0,0,220px) scale(2.55); opacity: .88; }
+  100% { transform: translate3d(0,0,540px) scale(4.6); opacity: 0; }
+}
+
+@keyframes ringStreamTier2 {
+  0%   { transform: translate3d(0,0,-780px) scale(.05); opacity: 0; }
+  18%  { opacity: .7; }
+  100% { transform: translate3d(0,0,400px) scale(3.6); opacity: 0; }
+}
+
+.conduit-ring {
+  border-color: color-mix(in oklab, var(--dc-cyan) 80%, #fff);
+  box-shadow:
+    0 0 18px color-mix(in oklab, var(--dc-cyan) 35%, transparent),
+    inset 0 0 14px color-mix(in oklab, var(--dc-cyan) 18%, transparent);
+  animation-duration: 5.1s;
+}
+
+.conduit-ring-tier2 {
+  animation-duration: 2.6s;
+}
+
+/* Brand lockup */
+#heroGeodesicOrb {
+  filter: drop-shadow(0 0 14px color-mix(in oklab, var(--dc-cyan) 55%, transparent));
+  transition: filter .35s var(--dc-ease), transform .35s var(--dc-ease);
+}
+#heroGeodesicOrb:hover {
+  transform: scale(1.06) rotate(-8deg);
+  filter: drop-shadow(0 0 22px color-mix(in oklab, var(--dc-green) 50%, transparent));
+}
+
+/* Four celestial orbs — glass, not boxes */
+.foundation-card,
+[class*="orb"],
+.home-column-container > article,
+.home-column-container .card {
+  background: linear-gradient(165deg, color-mix(in oklab, #101827 78%, transparent), color-mix(in oklab, #070c18 88%, transparent));
+  border: 1px solid var(--dc-line);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  transition: transform .22s var(--dc-ease), border-color .22s var(--dc-ease), box-shadow .22s var(--dc-ease);
+}
+
+.foundation-card:hover,
+.foundation-card:focus-visible {
+  transform: translateY(-4px) scale(1.015);
+  border-color: color-mix(in oklab, var(--dc-cyan) 55%, var(--dc-line));
+  box-shadow:
+    0 16px 36px rgba(0,0,0,.55),
+    0 0 24px color-mix(in oklab, var(--dc-cyan) 22%, transparent),
+    inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+/* Header / dock — one thin hairline, no extra paint */
+header,
+.top-rail,
+.bottom-dock,
+nav[aria-label] {
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  background: color-mix(in oklab, #040711 62%, transparent);
+  border-color: color-mix(in oklab, var(--dc-cyan) 22%, transparent);
+}
+
+/* Type: keep the manifesto voice, tighten tracking on lockups */
+.brand,
+[class*="wordmark"],
+h1 {
+  letter-spacing: .18em;
+  text-wrap: balance;
+}
+
+/* Efficiency: skip offscreen realms */
+.realm-track-card,
+.mirror-container section {
+  content-visibility: auto;
+  contain-intrinsic-size: 120px 180px;
+}
+
+/* Motion law */
+@media (prefers-reduced-motion: reduce) {
+  .geodesic-sphere,
+  .planetary-orbital-ring,
+  .conduit-ring,
+  .conduit-ring-tier2,
+  .singularity-accretion-disk,
+  .singularity-core,
+  #heroGeodesicOrb {
+    animation: none !important;
+  }
+  .foundation-card,
+  .foundation-card:hover {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .foundation-card,
+  header,
+  .top-rail,
+  .bottom-dock {
+    backdrop-filter: none;
+    background: #0b1220;
+  }
+}
+
+@media (max-width: 720px) {
+  .cosmic-nebula { filter: blur(18px); }
+  .conduit-ring { animation-duration: 6.2s; }
+  .planet-major { opacity: .4; }
+}

@@ -1,0 +1,17 @@
+/* Money stays off the public surface until html.is-onboard */
+html:not(.is-onboard) .pack .cad,
+html:not(.is-onboard) [data-money] {
+  display: none !important;
+}
+html:not(.is-onboard) #earned {
+  font-size: 0 !important;
+  color: transparent !important;
+  letter-spacing: 0;
+}
+html:not(.is-onboard) #earned::after {
+  content: "\2014";
+  font-size: clamp(0.82rem, 3.2vw, 0.98rem);
+  font-weight: 600;
+  color: #e8f1ff;
+  letter-spacing: 0;
+}

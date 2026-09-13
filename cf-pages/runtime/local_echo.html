@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dualis local echo — this computer only</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.5 Georgia, "Times New Roman", serif;
+      color: #f3ead2;
+      background:
+        radial-gradient(900px 420px at 50% -10%, rgba(224,184,74,.16), transparent 60%),
+        #0b1020;
+    }
+    main { max-width: 960px; margin: 0 auto; padding: 28px 20px 64px; }
+    h1 { font-size: 28px; letter-spacing: .04em; margin: 0 0 8px; }
+    p.lead { color: #d7c48a; margin: 0 0 22px; }
+    .strip, .card {
+      border: 1px solid rgba(224,184,74,.28);
+      background: rgba(8,12,24,.72);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin: 0 0 16px;
+    }
+    .strip span { display: inline-block; margin: 0 16px 6px 0; font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace; color: #e8c45a; }
+    .hole { color: #f0b4a0; }
+    canvas { width: 100%; height: 280px; display: block; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid rgba(224,184,74,.16); }
+    th { color: #e8c45a; font-weight: 600; }
+    .note { font-size: 14px; color: #bfb39a; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Your books, on this desk</h1>
+    <p class="lead">This page lives at 127.0.0.1. Dualis staff cannot see it. Close the terminal and the picture goes away.</p>
+    <div class="strip" id="receipt">Loading the stamp…</div>
+    <div class="card">
+      <p class="note" id="summary">Reading the local sheet.</p>
+      <canvas id="chart" width="900" height="280"></canvas>
+    </div>
+    <div class="card">
+      <table id="grid"><thead></thead><tbody></tbody></table>
+    </div>
+  </main>
+  <script>
+    function hole(reason) {
+      document.getElementById("receipt").innerHTML = '<span class="hole">HOLE — ' + reason + "</span>";
+    }
+    function draw(labels, series) {
+      var c = document.getElementById("chart");
+      var ctx = c.getContext("2d");
+      var w = c.width, h = c.height;
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = "rgba(224,184,74,.25)";
+      ctx.beginPath(); ctx.moveTo(48, 16); ctx.lineTo(48, h - 36); ctx.lineTo(w - 16, h - 36); ctx.stroke();
+      if (!series.length) {
+        ctx.fillStyle = "#f0b4a0";
+        ctx.font = "16px Georgia";
+        ctx.fillText("No named numbers on this sheet. That is a hole, not zero.", 64, h / 2);
+        return;
+      }
+      var vals = [];
+      series.forEach(function (s) { s.values.forEach(function (v) { if (v != null) vals.push(v); }); });
+      var max = Math.max.apply(null, vals.concat([1]));
+      var min = Math.min.apply(null, vals.concat([0]));
+      if (min > 0) min = 0;
+      var span = max - min || 1;
+      var n = Math.max(labels.length, 1);
+      var colors = ["#e0b84a", "#7ad0c8", "#d98b6a", "#c7b6ff"];
+      series.forEach(function (s, si) {
+        ctx.strokeStyle = colors[si % colors.length];
+        ctx.fillStyle = colors[si % colors.length];
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        s.values.forEach(function (v, i) {
+          var x = 48 + (i + 0.5) * ((w - 72) / n);
+          var y = h - 36 - (((v == null ? min : v) - min) / span) * (h - 60);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          ctx.fillRect(x - 3, y - 3, 6, 6);
+        });
+        ctx.stroke();
+      });
+      ctx.fillStyle = "#d7c48a";
+      ctx.font = "12px ui-monospace, Menlo, monospace";
+      labels.forEach(function (lab, i) {
+        var x = 48 + (i + 0.5) * ((w - 72) / n);
+        ctx.fillText(String(lab || "").slice(0, 12), x - 18, h - 14);
+      });
+    }
+    function grid(headers, rows) {
+      var thead = document.querySelector("#grid thead");
+      var tbody = document.querySelector("#grid tbody");
+      thead.innerHTML = ""; tbody.innerHTML = "";
+      if (!headers || !headers.length) return;
+      var tr = document.createElement("tr");
+      headers.forEach(function (h) { var th = document.createElement("th"); th.textContent = h; tr.appendChild(th); });
+      thead.appendChild(tr);
+      rows.slice(0, 40).forEach(function (row) {
+        var r = document.createElement("tr");
+        headers.forEach(function (_, i) {
+          var td = document.createElement("td");
+          td.textContent = row[i] == null ? "" : row[i];
+          r.appendChild(td);
+        });
+        tbody.appendChild(r);
+      });
+    }
+    fetch("/api/state").then(function (r) { return r.json(); }).then(function (s) {
+      var rec = s.receipt || {};
+      var books = s.books || {};
+      document.getElementById("receipt").innerHTML =
+        "<span>ID " + (rec.id || "HOLE") + "</span>" +
+        "<span>YEAR " + (rec.year || "") + "</span>" +
+        "<span>STATUS " + (rec.status || "HOLE") + "</span>" +
+        "<span>HASH " + String(rec.hash || "").slice(0, 16) + "</span>" +
+        "<span>ECHO 127.0.0.1</span>";
+      if (books.status === "HOLE") {
+        document.getElementById("summary").textContent = books.next || books.reason || "No sheet on this desk yet.";
+        draw([], []);
+        return;
+      }
+      document.getElementById("summary").textContent =
+        (books.name || "sheet") + " · " + (books.numbers || 0) + " named numbers · stays on this computer";
+      draw(books.labels || [], books.series || []);
+      grid(books.headers || [], books.rows || []);
+    }).catch(function () { hole("NO_ECHO"); });
+  </script>
+</body>
+</html>

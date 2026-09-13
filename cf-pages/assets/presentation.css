@@ -1,0 +1,136 @@
+/* DualisCapax presentation — serious residual glass
+   Holographic enough to signal a different level.
+   Not cheesy: no scanline theater, no neon carnival.
+   Desktop / tablet / mobile: same gravity. */
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --bg: #050505;
+  --fg: #f2f2f0;
+  --muted: #8c8c88;
+  --border: #1a1a1a;
+  --accent: #2a7fd4;
+  --gold: #c4a035;
+  --surface: #0c0c0c;
+  --depth: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --pane-edge: rgba(42, 127, 212, 0.22);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f3f2ef;
+    --fg: #121212;
+    --muted: #5a5a56;
+    --border: #ddd9d2;
+    --accent: #1a5f9e;
+    --gold: #8a7020;
+    --surface: #faf9f7;
+    --depth: 0 8px 28px rgba(0, 0, 0, 0.06);
+    --pane-edge: rgba(26, 95, 158, 0.18);
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.theme-atmosphere {
+  position: relative;
+  isolation: isolate;
+}
+.theme-atmosphere::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: -15% -8% auto;
+  height: 55%;
+  z-index: -1;
+  opacity: 0.11;
+  background:
+    radial-gradient(ellipse 48% 42% at 30% 40%, rgba(42, 127, 212, 0.5), transparent 70%),
+    radial-gradient(ellipse 42% 38% at 70% 45%, rgba(196, 160, 53, 0.35), transparent 70%);
+}
+@media (prefers-color-scheme: light) {
+  .theme-atmosphere::before { opacity: 0.07; }
+}
+
+.theme-divider {
+  height: 1px;
+  border: none;
+  margin: 0.65rem auto 1.35rem;
+  max-width: 10rem;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--gold), transparent);
+  opacity: 0.4;
+}
+
+.holo-pane,
+.card.holo {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: var(--depth);
+  transform: none;
+}
+.holo-pane::before,
+.card.holo::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--pane-edge);
+  opacity: 0.85;
+}
+@media (hover: hover) and (min-width: 900px) {
+  .holo-pane:hover,
+  .card.holo:hover {
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+  }
+}
+
+@media (min-width: 900px) {
+  .holo-pane.holo-elevated,
+  .card.holo.holo-elevated {
+    background:
+      linear-gradient(165deg, color-mix(in srgb, var(--surface) 96%, var(--accent) 3%) 0%, var(--surface) 55%, var(--bg) 100%);
+  }
+}
+
+.glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+.card-dual {
+  border-image: linear-gradient(135deg, rgba(42, 127, 212, 0.25), rgba(196, 160, 53, 0.2)) 1;
+}
+
+.holo-disclaimer {
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+.holo-scan::after { display: none !important; }
+
+@media (max-width: 719px) {
+  .holo-pane, .card.holo {
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+}

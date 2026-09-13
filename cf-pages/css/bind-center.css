@@ -1,0 +1,176 @@
+/* Bind center — unusual host, not a cloud brochure.
+   A spinning lattice that holds public doors and merit rooms.
+   Onboard is the goal of every seat. */
+:root{
+  --bind-ink:#e8f1ff;
+  --bind-gold:#e8c36a;
+  --bind-blue:#9ec5ff;
+  --bind-void:#02040c;
+  --bind-plasma:#6cf0c2;
+}
+html.holo-on body{
+  background:
+    radial-gradient(1200px 700px at 50% -10%,rgba(158,197,255,.08),transparent 55%),
+    repeating-linear-gradient(0deg,transparent 0 3px,rgba(158,197,255,.03) 3px 4px),
+    #02040c;
+}
+.bind-sky{
+  position:relative;
+  min-height:74svh;
+  margin:0 auto 1.2rem;
+  width:min(52rem,calc(100% - 1.2rem));
+  perspective:1600px;
+  isolation:isolate;
+}
+.bind-sky::before,
+.bind-sky::after{
+  content:"";
+  position:absolute;
+  inset:-8%;
+  pointer-events:none;
+  border-radius:48% 52% 46% 54%;
+  border:1px dashed color-mix(in srgb,var(--bind-gold) 28%,transparent);
+  animation:bind-halo 18s linear infinite;
+}
+.bind-sky::after{
+  inset:4%;
+  border-radius:54% 46% 52% 48%;
+  border-color:color-mix(in srgb,var(--bind-blue) 30%,transparent);
+  animation-direction:reverse;
+  animation-duration:27s;
+}
+.bind-lattice{
+  position:relative;
+  height:min(74vw,30rem);
+  transform-style:preserve-3d;
+  animation:bind-spin 54s linear infinite;
+}
+@keyframes bind-spin{
+  from{transform:rotateX(16deg) rotateY(-8deg) rotateZ(0)}
+  to{transform:rotateX(16deg) rotateY(-8deg) rotateZ(360deg)}
+}
+@keyframes bind-halo{
+  from{transform:rotate(0)}
+  to{transform:rotate(360deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .bind-lattice,.bind-sky::before,.bind-sky::after,.bind-node::after{animation:none}
+}
+.bind-core{
+  position:absolute;inset:41%;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 36%,rgba(232,195,106,.7),rgba(108,240,194,.12) 42%,rgba(158,197,255,.08) 62%,transparent 74%);
+  box-shadow:0 0 56px rgba(232,195,106,.32),0 0 120px rgba(108,240,194,.12);
+  pointer-events:none;
+}
+.bind-core::after{
+  content:"";
+  position:absolute;inset:28%;
+  border-radius:50%;
+  border:1px solid rgba(232,195,106,.45);
+  box-shadow:inset 0 0 18px rgba(232,195,106,.35);
+}
+.bind-ring{
+  position:absolute;inset:7%;
+  border:1px solid color-mix(in srgb,var(--bind-gold) 38%,transparent);
+  border-radius:50%;
+  box-shadow:0 0 40px color-mix(in srgb,var(--bind-blue) 16%,transparent), inset 0 0 70px rgba(2,4,12,.6);
+}
+.bind-ring:nth-child(2){inset:17%;border-color:color-mix(in srgb,var(--bind-blue) 44%,transparent);transform:rotateX(72deg)}
+.bind-ring:nth-child(3){inset:27%;border-color:rgba(108,240,194,.28);transform:rotateY(66deg)}
+.bind-node{
+  position:absolute;
+  width:6.8rem;height:6.8rem;
+  margin:-3.4rem 0 0 -3.4rem;
+  clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  border:0;
+  background:
+    radial-gradient(circle at 50% 28%,rgba(158,197,255,.28),rgba(2,4,12,.88) 64%);
+  color:var(--bind-ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  cursor:pointer;
+  transform:translateZ(48px);
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  letter-spacing:.12em;text-transform:uppercase;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--bind-blue) 42%,transparent);
+}
+.bind-node::after{
+  content:"";
+  position:absolute;inset:-10%;
+  clip-path:inherit;
+  border:1px solid transparent;
+  pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0 70%,rgba(232,195,106,.55) 80%,transparent 92%);
+  animation:bind-halo 6s linear infinite;
+  opacity:.55;
+}
+.bind-node[data-open="false"]{opacity:.7;filter:saturate(.65)}
+.bind-node[data-open="false"]::after{background:conic-gradient(from 90deg,transparent 0 74%,rgba(158,197,255,.4) 86%,transparent 96%)}
+.bind-node b{display:block;font-size:.56rem;font-weight:700;color:var(--bind-gold);margin:0 0 .18rem;position:relative;z-index:1}
+.bind-node span{display:block;font-size:.56rem;line-height:1.25;padding:0 .45rem;position:relative;z-index:1}
+.bind-node.is-on, .bind-node:hover, .bind-node:focus-visible{
+  box-shadow:0 0 0 1px var(--bind-gold),0 0 32px rgba(232,195,106,.4);
+  transform:translateZ(86px) scale(1.06);
+  background:radial-gradient(circle at 50% 24%,rgba(232,195,106,.34),rgba(2,4,12,.86) 66%);
+}
+.bind-read{
+  margin:0 auto 1.4rem;
+  width:min(36rem,calc(100% - 1.4rem));
+  min-height:7.4rem;
+  padding:1rem .95rem 1.05rem;
+  border:1px solid rgba(158,197,255,.28);
+  background:
+    linear-gradient(180deg,rgba(158,197,255,.08),rgba(0,0,0,.42)),
+    repeating-linear-gradient(90deg,transparent 0 11px,rgba(158,197,255,.04) 11px 12px);
+  box-shadow:0 0 40px rgba(2,4,12,.35);
+}
+.bind-read .k{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--bind-blue);margin:0 0 .35rem}
+.bind-read .w{margin:0 0 .35rem;font-size:1.15rem}
+.bind-read .d{margin:0;color:rgba(232,195,106,.86);font-size:.95rem;line-height:1.5}
+.bind-read .knows{margin:.45rem 0 0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(158,197,255,.7);line-height:1.45}
+.bind-hero-line{margin:.35rem auto 0;max-width:28rem;text-align:center;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(232,195,106,.82);line-height:1.5}
+.seat-goal-line{margin:.2rem 0 0;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(158,197,255,.62)}
+.host-row,.held-row{
+  display:grid;
+  grid-template-columns:7.2rem 1fr auto;
+  gap:.55rem;
+  align-items:center;
+  padding:.7rem .75rem;
+  margin:0 0 .4rem;
+  border:1px solid rgba(158,197,255,.22);
+  background:rgba(2,4,12,.45);
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.68rem;letter-spacing:.06em;
+}
+.held-row{border-style:dashed;color:rgba(245,245,245,.62)}
+.host-row b,.held-row b{color:var(--bind-gold);font-weight:600}
+.host-geo{color:var(--bind-blue);text-transform:uppercase;letter-spacing:.14em}
+.geo-head{
+  margin:.85rem 0 .35rem;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(232,195,106,.78);
+}
+.merit-dock{display:flex;flex-wrap:wrap;gap:.45rem;justify-content:center;margin:.8rem 0 0}
+.merit-dock button,.look-dock button,.bind-cta{
+  min-height:2.2rem;padding:.35rem .8rem;
+  border:1px solid rgba(158,197,255,.5);
+  background:rgba(158,197,255,.12);
+  color:#e8f1ff;
+  font:700 .68rem/1 "IBM Plex Mono",ui-monospace,monospace;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
+}
+.bind-cta{display:inline-flex;align-items:center;background:rgba(232,195,106,.14);border-color:rgba(232,195,106,.55);color:var(--bind-gold)}
+.look-slip{
+  margin:.7rem auto 0;max-width:28rem;text-align:center;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(232,195,106,.8);line-height:1.55;word-break:break-all;
+}
+@media (max-width:40rem){
+  .host-row,.held-row{grid-template-columns:1fr;gap:.2rem}
+  .bind-node{width:5.5rem;height:5.5rem;margin:-2.75rem 0 0 -2.75rem}
+  .bind-node span{font-size:.48rem}
+}

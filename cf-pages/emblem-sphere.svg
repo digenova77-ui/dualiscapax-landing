@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <!-- Golden sphere -->
+  <defs>
+    <radialGradient id="goldSphere" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ffe9a0"/>
+      <stop offset="45%" stop-color="#d4a017"/>
+      <stop offset="100%" stop-color="#8a6a0a"/>
+    </radialGradient>
+    <radialGradient id="sphereShade" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.35)"/>
+    </radialGradient>
+  </defs>
+  <circle cx="60" cy="60" r="52" fill="url(#goldSphere)"/>
+  <circle cx="60" cy="60" r="52" fill="url(#sphereShade)"/>
+  <!-- DNA helix in blue -->
+  <g fill="none" stroke="#1e90ff" stroke-width="2.2" stroke-linecap="round">
+    <path d="M48 28 C62 40, 62 52, 48 64 C34 76, 34 88, 48 100"/>
+    <path d="M72 28 C58 40, 58 52, 72 64 C86 76, 86 88, 72 100"/>
+    <line x1="50" y1="36" x2="70" y2="36" stroke-width="1.6"/>
+    <line x1="50" y1="48" x2="70" y2="48" stroke-width="1.6"/>
+    <line x1="50" y1="60" x2="70" y2="60" stroke-width="1.6"/>
+    <line x1="50" y1="72" x2="70" y2="72" stroke-width="1.6"/>
+    <line x1="50" y1="84" x2="70" y2="84" stroke-width="1.6"/>
+  </g>
+</svg>

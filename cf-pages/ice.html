@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Ice — DualisCapax</title>
+  <meta name="description" content="Hockey ice portal. One rink. Claim a seat, next game, Maps, tape, measure, school, apps. Demo Leaf preview.">
+  <meta name="theme-color" content="#0B0E14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="lander.css">
+</head>
+<body class="ice-body" id="top">
+  <header class="ice-chrome">
+    <a href="index.html" class="brand-group">
+      <svg class="brand-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
+        <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
+      </svg>
+      <span class="brand-name">Dualiscapax</span>
+    </a>
+    <div class="ice-chrome-right">
+      <a class="ice-iris-hint" href="iris.html">Iris</a>
+      <button type="button" id="seatChip" class="ice-seat-chip is-empty">Claim seat</button>
+    </div>
+  </header>
+  <div class="ice-demo-banner">
+    <span>Demo ice · free to test · pay closed</span>
+    <span style="display:flex;gap:0.65rem;align-items:center;">
+      <button type="button" id="iceDevFlag" class="ice-dev-flag">Dev unlock</button>
+      <a href="sport.html?pack=hockey">← Sport</a>
+    </span>
+  </div>
+  <div class="ice-scroll-fade" aria-hidden="true"></div>
+  <div class="ice-rink">
+    <nav class="ice-rail" id="iceRail" aria-label="Ice stages"></nav>
+    <main class="ice-sheet">
+      <div id="iceStage" class="ice-stage" role="region" aria-live="polite"></div>
+    </main>
+  </div>
+  <div id="iceSheet" class="ice-bind-sheet" hidden></div>
+  <div id="icePassGate" class="ice-pass-gate" hidden>
+    <div class="ice-pass-card">
+      <h2>Unlock ice</h2>
+      <p>A passkey is on this phone. Unlock with face / finger / device PIN — no Dualis password.</p>
+      <p id="icePassMsg" class="ice-note"></p>
+      <button type="button" class="ice-btn" id="btnIceUnlock">Unlock with passkey</button>
+      <button type="button" class="ice-btn ghost" id="btnIceMakeKey" hidden>Make a passkey</button>
+      <a class="ice-btn ghost" href="onboard.html">Onboard / Unity</a>
+    </div>
+  </div>
+  <script src="js/api-config.js"></script>
+  <script src="js/dc-passkey.js"></script>
+  <script src="js/teamsnap-oauth.js"></script>
+  <script src="js/ice-portal.js"></script>
+</body>
+</html>

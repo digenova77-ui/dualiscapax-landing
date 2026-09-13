@@ -1,0 +1,85 @@
+<section id="ask-iris" data-core="adaptive-intelligence" class="pillar-section border-cyan iris-spark">
+      <div class="badge-pill badge-cyan">02 · Agent Iris</div>
+      <h2 class="section-headline">Ask Iris.</h2>
+      <p class="section-body" style="margin-bottom:0.85rem;">
+        One chat. Local RAM only. Tap a starter or a tool — she answers here.
+      </p>
+
+      <div class="iris-spark-shell">
+        <div id="irisChatStream" class="iris-spark-stream" aria-live="polite">
+          <div class="iris-msg iris-msg-agent" data-iris-greeting="1">
+            <div class="iris-msg-label">IRIS</div>
+            <div class="iris-msg-body">Hi — ask about money leak, research, edge runtime, or hockey à la carte. Starters and tools sit under the box.</div>
+          </div>
+        </div>
+
+        <div class="optical-viewfinder-container" id="irisOpticalViewfinder" hidden>
+          <div class="reticle-corner reticle-tl"></div>
+          <div class="reticle-corner reticle-tr"></div>
+          <div class="reticle-corner reticle-bl"></div>
+          <div class="reticle-corner reticle-br"></div>
+          <div class="reticle-crosshair"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:0.5rem;z-index:6;">
+            <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent-cyan);font-weight:800;">CAMERA · LOCAL</span>
+            <span id="irisVoiceStatusBadge" style="display:none;font-size:0.68rem;font-family:var(--font-mono);color:var(--accent-mint);"></span>
+          </div>
+          <video id="irisCameraVideo" playsinline muted autoplay></video>
+          <div style="display:flex;gap:0.45rem;flex-wrap:wrap;margin-top:0.65rem;z-index:6;">
+            <button type="button" class="nav-btn-solid" style="padding:0.4rem 0.85rem;font-size:0.75rem;" onclick="snapOpticalFrame()">Snap</button>
+            <button type="button" class="iris-tool-chip" onclick="flipIrisCamera()">Flip</button>
+            <button type="button" class="iris-tool-chip" onclick="closeOpticalViewfinder()">Close</button>
+          </div>
+        </div>
+
+        <input type="file" id="irisLocalFileInput" accept="image/*,application/pdf,.pdf" capture="environment" style="display:none" aria-hidden="true">
+
+        <div class="audio-wave-container" id="irisAudioWaveContainer" hidden>
+          <div style="display:flex;align-items:center;gap:0.55rem;flex:1;">
+            <div class="recording-dot" style="width:8px;height:8px;border-radius:50%;background:var(--accent-mint);"></div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--accent-mint);font-weight:800;">LISTENING</div>
+              <div style="font-size:0.68rem;color:var(--text-muted);" id="irisAudioGainText">Speak naturally…</div>
+            </div>
+          </div>
+          <div class="wave-bars-group" id="waveBarsGroup">
+            <div class="wave-bar" id="wb0"></div><div class="wave-bar" id="wb1"></div><div class="wave-bar" id="wb2"></div>
+            <div class="wave-bar" id="wb3"></div><div class="wave-bar" id="wb4"></div><div class="wave-bar" id="wb5"></div>
+            <div class="wave-bar" id="wb6"></div><div class="wave-bar" id="wb7"></div><div class="wave-bar" id="wb8"></div>
+          </div>
+          <button type="button" class="iris-tool-chip" onclick="stopVoiceRecordingManual()">Done</button>
+        </div>
+
+        <div class="iris-spark-dock" aria-label="Iris composer">
+          <div class="iris-orb-status" id="irisOrbStatus" style="display:none;" aria-live="polite"></div>
+          <div class="iris-spark-dock-row">
+            <button type="button" class="iris-dock-btn" id="btnCameraToggle" title="Camera" onclick="toggleSensor('camera')" aria-label="Camera">📷</button>
+            <button type="button" class="iris-dock-btn" id="btnScreenToggle" title="Screen / files" onclick="toggleSensor('screen')" aria-label="Screen">🖥️</button>
+            <button type="button" class="iris-dock-orb" id="irisOrb" data-role="mic" title="Talk to Iris" onclick="triggerMicVoiceInput()" aria-label="Voice ask">
+              <span class="iris-orb-glow"></span>
+              <span class="iris-orb-core">🎙️</span>
+            </button>
+            <button type="button" class="iris-dock-btn" id="btnVoiceToggle" title="Iris voice replies" onclick="toggleSensor('voice')" aria-label="Voice out">🔊</button>
+            <button type="button" class="iris-dock-btn" title="Clear chat" onclick="irisClearChat()" aria-label="Clear">✕</button>
+          </div>
+          <form class="iris-spark-composer" onsubmit="handleIrisUserPrompt(event)">
+            <input type="text" class="omnibox-input iris-spark-input" id="irisInputBox" placeholder="Message Iris…" autocomplete="off">
+            <button type="submit" class="nav-btn-solid iris-spark-send">Ask</button>
+          </form>
+          <div class="iris-spark-tools" id="irisToolRow" role="toolbar" aria-label="Iris shortcuts">
+            <button type="button" class="iris-tool-chip" id="btnMicToggle" onclick="toggleSensor('mic')">Mic</button>
+            <button type="button" class="iris-tool-chip" onclick="location.href='ice.html?pack=hockey#seat'">Ice</button>
+            <button type="button" class="iris-tool-chip" onclick="location.href='#core-alacarte'">À La Carte</button>
+            <button type="button" class="iris-tool-chip" onclick="location.href='measure.html'">Leak</button>
+            <button type="button" class="iris-tool-chip" onclick="location.href='runtime.html'">Runtime</button>
+          </div>
+          <div class="iris-spark-starters" id="irisPillContainer">
+            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('How much can my municipality or business save with off-peak load shifting?')">Money leak</button>
+            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('How deep is the DualisCapax engineering and medical model census across each discipline?')">Census</button>
+            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('Can Iris solve my differential equation or verify my math homework?')">Math</button>
+            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('What à la carte hockey ice portal can I open and how do I claim a seat?')">Hockey ice</button>
+            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('What is the DualisCapax core philosophy and the Unity Framework vision?')">Unity</button>
+          </div>
+          <p class="iris-spark-privacy">Center orb = talk. ✕ clears. Screen often blocked on iPhone — Iris notices quietly.</p>
+        </div>
+      </div>
+    </section>

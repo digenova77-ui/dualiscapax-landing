@@ -1,0 +1,26 @@
+/* Rooms — seat deck. First face = title + one line. */
+@import url("tokens.css");
+@import url("zero.css");
+
+.wrap.rooms{max-width:var(--wide)}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));
+  gap:.7rem;
+  margin:1.2rem 0 2rem;
+}
+.door{
+  display:block;min-height:8.2rem;
+  padding:.9rem .95rem 1rem;
+  border:1px solid rgba(232,195,106,.28);
+  background:rgba(243,239,230,.04);
+  color:inherit;
+}
+.door strong{display:block;font-size:1.05rem;margin-bottom:.28rem}
+.door span{display:block;color:var(--muted);font-size:.9rem}
+.door em{display:block;margin-top:.55rem;font:600 .68rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.streams{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.6rem}
+.stream{
+  border:1px solid var(--line);padding:.4rem .65rem;
+  font:600 .72rem/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--fg);
+}

@@ -1,0 +1,35 @@
+/* DualisCapax brand chrome — logo mark, not body prose */
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 0;
+}
+.nav-brand img {
+  height: 28px;
+  width: auto;
+  max-width: 200px;
+}
+.nav-brand .logo-dark { display: block; }
+.nav-brand .logo-light { display: none; }
+@media (prefers-color-scheme: light) {
+  .nav-brand .logo-dark { display: none; }
+  .nav-brand .logo-light { display: block; }
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+.footer-brand img {
+  height: 22px;
+  width: auto;
+}
+.footer-brand .logo-dark { display: inline-block; }
+.footer-brand .logo-light { display: none; }
+@media (prefers-color-scheme: light) {
+  .footer-brand .logo-dark { display: none; }
+  .footer-brand .logo-light { display: inline-block; }
+}

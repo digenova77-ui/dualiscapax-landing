@@ -1,0 +1,70 @@
+/* DualisCapax — CTAs only. Chrome lives in spine-nav.js (the ring). */
+:root {
+  --dc-body: 1.12rem;
+  --dc-p: 1.18rem;
+}
+.cta-row{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0.65rem;
+  margin-top:1.4rem;
+  width:100%;
+}
+.cta{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:3rem;
+  padding:0.8rem 0.95rem;
+  border:1px solid rgba(245,245,245,0.35);
+  border-radius:999px;
+  font-weight:700;
+  font-size:1.05rem;
+  line-height:1.2;
+  text-align:center;
+  box-sizing:border-box;
+  text-decoration:none;
+  color:inherit;
+  background:transparent;
+  cursor:pointer;
+}
+.cta.primary{
+  background:#f5f5f5;
+  color:#050505;
+  border-color:#f5f5f5;
+}
+.cta:active{ opacity:0.75; }
+@media (min-width:560px){
+  .cta-row.cta-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+.top-here, .top-toggle { display: none !important; }
+.top{
+  display:flex !important;
+  align-items:center;
+  justify-content:space-between;
+  gap:0.75rem;
+  padding:1.1rem 0 0.85rem;
+}
+.top .mark{
+  font-size:0.82rem;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:#f5f5f5;
+  text-decoration:none;
+}
+.top-links{
+  display:flex !important;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+.top-links a{
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:#9ec5ff;
+  text-decoration:none;
+}
+html.has-spine body { padding-top: 0; padding-bottom: 5.5rem; }

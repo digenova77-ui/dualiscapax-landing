@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Bind — pay with card · DualisCapax</title>
+<meta name="theme-color" content="#050505"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/cta.css"/>
+<link rel="stylesheet" href="assets/glass-tiers.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"IBM Plex Sans",Inter,system-ui,sans-serif;background:#000;color:#f5f5f5;min-height:100dvh;font-size:1.05rem}
+a{color:inherit;text-decoration:none}
+.quarks{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
+.wrap{position:relative;z-index:1;max-width:40rem;margin:0 auto;padding:max(1rem,env(safe-area-inset-top)) max(1.15rem,env(safe-area-inset-right)) max(2.5rem,env(safe-area-inset-bottom)) max(1.15rem,env(safe-area-inset-left))}
+.spine{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-bottom:1.2rem;font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-family:"IBM Plex Mono",ui-monospace,monospace}
+.spine a{color:#7eb6ff}
+.spine a.on{color:#f5f5f5;text-decoration:underline;text-underline-offset:.2em}
+.kicker{font-size:0.82rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7eb6ff;font-family:"IBM Plex Mono",ui-monospace,monospace}
+h1{font-size:clamp(1.85rem,7vw,2.5rem);font-weight:800;letter-spacing:-.03em;line-height:.95;margin:.55rem 0 .7rem}
+.lede{font-size:1.1rem;color:rgba(245,245,245,.78);margin-bottom:1.1rem;line-height:1.55}
+h2{font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff;margin:1.5rem 0 .65rem;font-family:"IBM Plex Mono",ui-monospace,monospace}
+.packs{display:grid;gap:.7rem;margin:.4rem 0 1rem}
+.pack{text-align:left;width:100%;border:1px solid rgba(126,182,255,.35);border-radius:14px;background:linear-gradient(180deg,rgba(126,182,255,.1),rgba(0,0,0,.2));padding:1rem 1.05rem;color:#f5f5f5;display:block}
+.pack:hover{border-color:#9ec5ff}
+.pack .cad{font-size:0.82rem;letter-spacing:.14em;text-transform:uppercase;color:#7eb6ff}
+.pack .amt{font-size:1.55rem;font-weight:800;letter-spacing:-.03em;margin:.15rem 0}
+.pack .sub{font-size:1rem;color:rgba(245,245,245,.62)}
+.pack .cta-line{margin-top:.55rem;font-size:.88rem;font-weight:700;color:#9ec5ff}
+.hold{font-size:1.02rem;color:rgba(245,245,245,.72);margin:1rem 0;line-height:1.55}
+.cta-row{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.2rem}
+a.cta{display:inline-flex;align-items:center;justify-content:center;min-height:2.6rem;padding:.55rem 1rem;border:1px solid #7eb6ff;border-radius:8px;font-weight:700;font-size:.95rem;color:#7eb6ff}
+a.cta.primary{background:rgba(126,182,255,.15)}
+foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:0.88rem;color:rgba(245,245,245,.38)}
+</style>
+</head>
+<body>
+<canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
+<div class="wrap">
+  <nav class="spine" aria-label="Site">
+    <a href="index.html?land=1">Home</a>
+    <a href="research/">Research</a>
+    <a href="payments.html" class="on">Bind (card)</a>
+    <a href="donate.html">Donate (Interac / crypto)</a>
+    <a href="ai/app.html">Iris</a>
+  </nav>
+
+  <p class="kicker">Bind · the counter</p>
+  <h1 class="hero-title" style="font-size:clamp(1.75rem,5vw,2.6rem);margin:0.35rem 0 0.55rem;line-height:1.1;">Pay only when savings are real<span>.</span></h1>
+  <p class="lede">Fuel is prepaid time. It works like a transit pass: you load it here, then the ride does not stop to count change at every stop. Unused time stays on your card. This is not a share of the company and not a coin.</p>
+  <p class="lede">Each box opens Stripe for that exact pack. You leave this page, pay there, and come back. If you would rather send a gift with no ticket back, that is Donate — bank or crypto, no card.</p>
+
+  <h2>Prepaid Fuel (time)</h2>
+  <div class="packs">
+    <a class="pack" href="https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05" target="_blank" rel="noopener">
+      <div class="cad">CAD $20</div>
+      <div class="amt">40 Fuel</div>
+      <div class="sub">A first real ride with Iris</div>
+      <div class="cta-line">Open Stripe → pay $20</div>
+    </a>
+    <a class="pack" href="https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02" target="_blank" rel="noopener">
+      <div class="cad">CAD $50</div>
+      <div class="amt">120 Fuel</div>
+      <div class="sub">Enough time to do the work</div>
+      <div class="cta-line">Open Stripe → pay $50</div>
+    </a>
+    <a class="pack" href="https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01" target="_blank" rel="noopener">
+      <div class="cad">CAD $120</div>
+      <div class="amt">320 Fuel</div>
+      <div class="sub">Stay on the line without topping up every hour</div>
+      <div class="cta-line">Open Stripe → pay $120</div>
+    </a>
+  </div>
+
+  <h2>Document seats (12 months)</h2>
+  <div class="packs">
+    <a class="pack" href="https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04" target="_blank" rel="noopener">
+      <div class="cad">CAD $49</div>
+      <div class="amt">Leaf</div>
+      <div class="sub">One gated room · 12 months</div>
+      <div class="cta-line">Open Stripe → pay $49</div>
+    </a>
+    <a class="pack" href="https://buy.stripe.com/00w5kF41NbU55ahaslffy03" target="_blank" rel="noopener">
+      <div class="cad">CAD $149</div>
+      <div class="amt">Branch</div>
+      <div class="sub">One field · 12 months</div>
+      <div class="cta-line">Open Stripe → pay $149</div>
+    </a>
+    <a class="pack" href="https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00" target="_blank" rel="noopener">
+      <div class="cad">CAD $499</div>
+      <div class="amt">Domain library</div>
+      <div class="sub">One domain class toolkit · 12 months · not the full vault</div>
+      <div class="cta-line">Open Stripe → pay $499</div>
+    </a>
+  </div>
+
+  <p class="hold">If the meter hits zero mid-ride, Iris will say we need more Fuel if you want to go further. She will not turn into a robot while you top up. Bank transfer or crypto with no card lives on <a href="donate.html" style="color:#9ec5ff">Donate</a>.</p>
+
+  <div class="cta-row">
+    <a class="cta primary" href="ai/app.html">Talk to Iris</a>
+    <a class="cta" href="donate.html">Donate without card</a>
+    <a class="cta" href="research/access.html">Access list</a>
+  </div>
+  <foot>DualisCapax · card checkout via Stripe · not securities</foot>
+</div>
+<script src="js/home-quarks.js"></script>
+</body>
+</html>
