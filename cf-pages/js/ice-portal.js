@@ -665,7 +665,19 @@
 
   /** Hub prefers next game, else next practice — never invents stub opponents. */
   /* League cites (OMHA-AAA + twin confirms) — never invent; only echo cited next game. */
-  var OMHA_NEXT_URL = "data/omha-quinte-u16-next.json";
+  /** Quinte OMHA packs are seat/team-scoped — never environment default for Kingston/other clubs. */
+  function seatIsQuinte() {
+    var seat = getSeat();
+    var slug = String((seat && seat.team_slug) || state.teamSlug || "").toLowerCase();
+    return slug.indexOf("quinte") !== -1;
+  }
+  function seatIsKingston() {
+    var seat = getSeat();
+    var slug = String((seat && seat.team_slug) || state.teamSlug || "").toLowerCase();
+    return slug.indexOf("kingston") !== -1 || slug.indexOf("gaels") !== -1;
+  }
+
+    var OMHA_NEXT_URL = "data/omha-quinte-u16-next.json";
   var OMHA_SCHEDULE_URL = "data/omha-quinte-u16-schedule.json";
   var omhaNextCache = null;
   var omhaNextTried = false;
@@ -673,6 +685,7 @@
   var omhaSchedTried = false;
 
   function omhaCitedNextGame() {
+    if (!seatIsQuinte()) return null;
     if (omhaNextCache) return omhaNextCache;
     if (omhaNextTried) return null;
     omhaNextTried = true;
@@ -689,8 +702,9 @@
     return omhaNextCache;
   }
 
-  /** Full OMHA-cited Quinte U16 slate — paints Cal before TeamSnap catches up. Never invent. */
+  /** Full OMHA-cited Quinte U16 slate — Quinte seats only. Never invent. */
   function omhaCitedSchedule() {
+    if (!seatIsQuinte()) return [];
     if (omhaSchedCache) return omhaSchedCache;
     if (omhaSchedTried) return [];
     omhaSchedTried = true;
@@ -715,6 +729,7 @@
   var tourneyPackCache = null;
   var tourneyPackTried = false;
   function kmhaCitedTournament() {
+    if (!seatIsQuinte()) return null;
     if (kmhaTourneyCache) return kmhaTourneyCache;
     if (kmhaTourneyTried) return null;
     kmhaTourneyTried = true;
@@ -827,49 +842,66 @@
   }
 
   /**
-   * Cited / household matchup packs by opponent slug — never invent.
-   * Face = verb bullets + Edge; expand = full You/Them/Edge cite sheet.
+   * Matchup packs belong to the SEATED PLAYER (team+jersey), not Ice chrome.
+   * Path: data/matchups/{team_slug}/{jersey}/vs-{opponent_slug}.json
+   * Prepare ahead so Game/Cal can draw in. Never invent. Dom household = Dom seat only.
    */
-  function matchupPlanForOpponent(oppRaw) {
-    var opp = String(oppRaw || "");
-    var low = opp.toLowerCase();
-    /* Greater Kingston Jr Gaels / Kingston Gaels — Oct 8 appointment + every rematch */
-    if (/kingston|gaels/.test(low)) {
-      return {
-        label: opp || "Greater Kingston Jr Gaels",
-        edge: "Size + set-shot vs light puck-movers",
-        edge2: "don’t ego friends",
-        dos: [
-          "Seal Dekeyser (#9) on the wall — 5′8″/143 puckhandler (EP)",
-          "Traffic net-front / set one-timer — NCSA Power F identity",
-          "Board Uppal (D · 6′0″/157 mobile puck-mover) when he carries",
-          "Don’t ego Gunter (#93) — physical twin + Bulls friend (household)",
-          "Know KP (#73) — playmaker/PP/sniper; friend, not a mystery"
-        ],
-        you: [
-          { t: "Power F · 5′11″/185 · L · LW", s: "cited NCSA" },
-          { t: "Puck protection · shot in traffic · heads-up physical", s: "cited NCSA" },
-          { t: "Dangerous when set / one-timer · boards · not volume sniper", s: "household" },
-          { t: "U16 league lines vs Gaels", s: "awaiting" }
-        ],
-        them: [
-          { t: "Dekeyser #9 — Offensive C / Playmaker / Puckhandler · 5′8″/143", s: "cited EP" },
-          { t: "Gunter #93 — Physical F / Playmaker / 2-Way C · 5′11″/170 · Napanee", s: "cited EP" },
-          { t: "Patterson #73 — Playmaker / PP Specialist / Sniper · L", s: "cited EP" },
-          { t: "Uppal — D · Mobile / Puck-Moving · 6′0″/157 (club F#96 conflict)", s: "cited EP/PR" },
-          { t: "Constantinidis #51 D — Defensive + Puck-Moving · 5′10″/168", s: "cited EP" },
-          { t: "Team avg ~5′10″/159 · Trueman compete/culture (no system cite)", s: "cited" },
-          { t: "Weak-side breakout / who overhandles", s: "awaiting" }
-        ],
-        avoid: [
-          "Open-ice skill race vs Dekeyser",
-          "Physical 1v1 slugfest vs Gunter",
-          "Invent a system exploit Dualis hasn’t cited"
-        ]
-      };
-    }
-    return null;
+  var matchupPackCache = {};
+  function opponentSlugFromLabel(oppRaw) {
+    var low = String(oppRaw || "").toLowerCase();
+    if (/kingston|gaels/.test(low)) return "greater-kingston-gaels";
+    if (/quinte|red\s*devils/.test(low)) return "quinte-red-devils";
+    return "";
   }
+  function matchupPackUrl(teamSlug, jersey, oppSlug) {
+    return "data/matchups/" + encodeURIComponent(teamSlug) + "/" +
+      encodeURIComponent(String(jersey)) + "/vs-" + encodeURIComponent(oppSlug) + ".json";
+  }
+  function loadSeatMatchupPack(teamSlug, jersey, oppSlug) {
+    if (!teamSlug || jersey == null || !oppSlug) return null;
+    var key = teamSlug + "|" + jersey + "|" + oppSlug;
+    if (Object.prototype.hasOwnProperty.call(matchupPackCache, key)) return matchupPackCache[key];
+    var pack = null;
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", matchupPackUrl(teamSlug, jersey, oppSlug), false);
+      xhr.send(null);
+      if (xhr.status >= 200 && xhr.status < 300) {
+        pack = JSON.parse(xhr.responseText || "null");
+      }
+    } catch (e) { pack = null; }
+    matchupPackCache[key] = pack;
+    return pack;
+  }
+  /** Face plan for THIS seat vs opponent — never Dom's notes for another kid. */
+  function matchupPlanForSeat(seat, oppRaw) {
+    seat = seat || getSeat();
+    if (!seat || seat.jersey == null) return null;
+    var teamSlug = String(seat.team_slug || state.teamSlug || "").trim();
+    if (!teamSlug) return null;
+    var oppSlug = opponentSlugFromLabel(oppRaw);
+    if (!oppSlug) return null;
+    var pack = loadSeatMatchupPack(teamSlug, seat.jersey, oppSlug);
+    if (!pack) return null;
+    var live = pack.status === "live" && Array.isArray(pack.dos) && pack.dos.length;
+    return {
+      label: (pack.opponent && pack.opponent.label) || String(oppRaw || ""),
+      status: pack.status || "awaiting_player_cites",
+      edge: pack.edge || "—",
+      edge2: pack.edge2 || "",
+      dos: live ? pack.dos : [],
+      you: pack.you || [],
+      them: pack.them || [],
+      avoid: pack.avoid || [],
+      seatOwned: true
+    };
+  }
+  /** @deprecated environment-level — use matchupPlanForSeat */
+  function matchupPlanForOpponent(oppRaw) {
+    return matchupPlanForSeat(getSeat(), oppRaw);
+  }
+
+  
 
   /** Game Day matchup lane — hybrid face + expand cite sheet. Every next game. */
   function matchupLaneHtml(board) {
@@ -878,17 +910,20 @@
       var m = String(board.who).match(/^vs\s+(.+)$/i);
       opp = m ? m[1] : String(board.who);
     }
-    var plan = matchupPlanForOpponent(opp);
+    var plan = matchupPlanForSeat(getSeat(), opp);
     var title = opp ? ("Matchup · " + opp) : "Matchup";
+    var seat = getSeat();
+    var seatBit = (seat && seat.jersey != null)
+      ? (" · #" + seat.jersey + (seat.last ? (" " + seat.last) : ""))
+      : "";
 
-    if (!plan) {
+    if (!plan || !plan.dos || !plan.dos.length) {
       return '<div class="ice-matchup" aria-label="DCLM matchup">' +
-        '<div class="ice-matchup-k">' + esc(title) + ' · live</div>' +
+        '<div class="ice-matchup-k">' + esc(title) + esc(seatBit) + ' · seat pack</div>' +
         '<ul class="ice-matchup-dos">' +
-          '<li class="ice-matchup-dash">— awaiting cites for this appointment</li>' +
+          '<li class="ice-matchup-dash">— awaiting cites for <strong>this seat</strong> vs this opponent (prepared ahead; not another player\'s notes)</li>' +
         "</ul>" +
         '<div class="ice-matchup-edge"><span class="ice-matchup-lab">Edge</span> —</div>' +
-        '' +
       "</div>";
     }
 
@@ -897,7 +932,7 @@
     }).join("");
 
     return '<div class="ice-matchup is-live" aria-label="DCLM matchup">' +
-      '<div class="ice-matchup-k">' + esc(title) + ' · live</div>' +
+      '<div class="ice-matchup-k">' + esc(title) + esc(seatBit) + ' · live</div>' +
       '<ul class="ice-matchup-dos">' + dos + "</ul>" +
       '<div class="ice-matchup-edge">' +
         '<div class="ice-matchup-edge-line"><span class="ice-matchup-lab">Edge</span> <span class="ice-matchup-edge-main">' + esc(plan.edge) + "</span></div>" +
