@@ -2130,20 +2130,24 @@
     }
     goStage("tape", true);
     setTimeout(function () {
+      if (liveBarnBlocksIframe(u)) {
+        /* Portrait-first: upright Tape invite stays; paired window for their login.
+           Do NOT arm landscape shell / orientation.lock yet — that was going landscape too early. */
+        applyTapeLiveEvents();
+        openTapeWindow(u, label || "dualis_livebarn");
+        return;
+      }
       var shell = document.getElementById("tapeLandShell");
       if (shell) {
-        shell.classList.add("active");
-        document.documentElement.classList.add("ice-tape-land-lock");
-        tryLockTapeLandscape();
+        if (tapeIsLandscape()) {
+          shell.classList.add("active");
+          document.documentElement.classList.add("ice-tape-land-lock");
+          tryLockTapeLandscape();
+        }
         applyTapeLiveEvents();
-        if (liveBarnBlocksIframe(u)) {
-          /* Do not load LB into iframe — dead frame. Paired landscape window carries their UI. */
-          openTapeWindow(u, label || "dualis_livebarn");
-        } else {
-          var frame = shell.querySelector("iframe.ice-tape-frame");
-          if (frame) {
-            try { frame.src = u; } catch (e0) {}
-          }
+        var frame = shell.querySelector("iframe.ice-tape-frame");
+        if (frame) {
+          try { frame.src = u; } catch (e0) {}
         }
       } else {
         openTapeWindow(u, label || "dualis_tape");
@@ -2374,8 +2378,18 @@
     }
   }
 
-  function tryLockTapeLandscape() {
+  function tapeIsLandscape() {
     try {
+      if (screen.orientation && screen.orientation.type) {
+        return String(screen.orientation.type).indexOf("landscape") === 0;
+      }
+    } catch (e0) {}
+    return (window.innerWidth || 0) > (window.innerHeight || 0);
+  }
+  function tryLockTapeLandscape() {
+    /* Never fight portrait. Lock only after the phone is already landscape (user rotated). */
+    try {
+      if (!tapeIsLandscape()) return;
       if (screen.orientation && screen.orientation.lock) {
         screen.orientation.lock("landscape").catch(function () {});
       }
@@ -2408,31 +2422,45 @@
 
     var stageInner = "";
     if (byoOn && frameSrc) {
-      /* Landscape shell = Dualis playground. Vendor fills the hole; chrome stays ours. */
+      var isLb = pipe === "livebarn" || isLiveBarnUrl(frameSrc);
+      /* Portrait-first: upright invite (clickable). Landscape shell arms only after rotate / playground. */
+      var lbInvite = isLb
+        ? ('<div class="ice-tape-lb-invite" id="tapeLbInvite">' +
+            '<p class="ice-tape-lb-kicker">Dualis session</p>' +
+            '<p class="ice-tape-lb-title">LiveBarn · your login</p>' +
+            '<p class="ice-tape-lb-copy">Open LiveBarn here in portrait — their window, our scoreboard. Rotate for the Dualis playground after.</p>' +
+            '<button type="button" class="ice-btn" id="btnTapeLbWindow">Open LiveBarn window →</button>' +
+            '<p class="ice-note ice-tape-lb-note">No LiveBarn API. No early rotate. Team cams that allow framing still play in-hole.</p>' +
+          '</div>')
+        : "";
+      var landHole = isLb
+        ? ('<div class="ice-tape-lb-hole" id="tapeLbHole">' +
+            '<p class="ice-tape-lb-kicker">Dualis playground</p>' +
+            '<p class="ice-tape-lb-title">LiveBarn stream window</p>' +
+            '<p class="ice-tape-lb-copy">Scoreboard stays here. Stream is in the paired window — same hole, their login.</p>' +
+            '<button type="button" class="ice-btn" id="btnTapeLbWindowLand">Open / focus LiveBarn →</button>' +
+            '<p class="ice-tape-lb-hint">Rotate to landscape for this playground face.</p>' +
+          '</div>')
+        : ('<iframe class="ice-tape-frame land" title="' + esc(frameTitle) + '" src="' + esc(frameSrc) + '" allow="autoplay; fullscreen; picture-in-picture; clipboard-read; clipboard-write" referrerpolicy="no-referrer-when-downgrade"></iframe>');
       stageInner =
+        lbInvite +
         '<div class="ice-tape-land" id="tapeLandShell">' +
           '<div class="ice-tape-land-inner">' +
             renderTapeScoreboard() +
-            '<div class="ice-tape-land-video' + (pipe === "livebarn" || isLiveBarnUrl(frameSrc) ? " is-lb-shell" : "") + '">' +
-              (pipe === "livebarn" || isLiveBarnUrl(frameSrc)
-                ? ('<div class="ice-tape-lb-hole" id="tapeLbHole">' +
-                    '<p class="ice-tape-lb-kicker">Dualis session</p>' +
-                    '<p class="ice-tape-lb-title">LiveBarn · your login</p>' +
-                    '<p class="ice-tape-lb-copy">We are the session. Scoreboard and ice chrome stay here. LiveBarn opens in a paired window shaped for this playground — their stream, our stage.</p>' +
-                    '<button type="button" class="ice-btn" id="btnTapeLbWindow">Open LiveBarn window →</button>' +
-                    '<p class="ice-note ice-tape-lb-note">No LiveBarn API. Families who already subscribe just sign in there. Team cam URLs that allow framing still play in-hole.</p>' +
-                  '</div>')
-                : ('<iframe class="ice-tape-frame land" title="' + esc(frameTitle) + '" src="' + esc(frameSrc) + '" allow="autoplay; fullscreen; picture-in-picture; clipboard-read; clipboard-write" referrerpolicy="no-referrer-when-downgrade"></iframe>')) +
+            '<div class="ice-tape-land-video' + (isLb ? " is-lb-shell" : "") + '">' +
+              landHole +
             '</div>' +
             '<div class="ice-tape-land-bar">' +
               '<button type="button" class="ice-btn ghost" id="btnTapeLandClose">← Ice</button>' +
-              '<span class="ice-tape-land-label">' + esc(pipe === "livebarn" || isLiveBarnUrl(frameSrc) ? "LiveBarn · Dualis session" : "Team cam") + "</span>" +
+              '<span class="ice-tape-land-label">' + esc(isLb ? "LiveBarn · Dualis session" : "Team cam") + "</span>" +
               '<a class="ice-btn ghost" id="btnTapeOpenByo" target="_blank" rel="noopener" href="' + esc(frameSrc) + '">Break out →</a>' +
             '</div>' +
           '</div>' +
         '</div>' +
         '<div class="ice-tape-stage is-byo is-land-armed">' +
-          '<button type="button" class="ice-btn" id="btnTapeLandOpen">Watch in playground →</button>' +
+          '<button type="button" class="ice-btn" id="btnTapeLandOpen">' +
+            (isLb ? "Enter playground (after rotate) →" : "Watch in playground →") +
+          '</button>' +
           (knownNote ? '<p class="ice-note">' + knownNote + "</p>" : "") +
         '</div>';
     } else {
@@ -3663,6 +3691,22 @@
       function armTapeLand() {
         var shell = document.getElementById("tapeLandShell");
         if (!shell) return;
+        if (!tapeIsLandscape() && liveBarnBlocksIframe(frameSrc || byo || LB_SIGNIN)) {
+          /* Portrait: keep invite clickable — ask rotate, do not fake 90° or lock yet */
+          var inv = document.getElementById("tapeLbInvite");
+          if (inv) {
+            var tip = inv.querySelector(".ice-tape-rotate-tip");
+            if (!tip) {
+              tip = document.createElement("p");
+              tip.className = "ice-note ice-tape-rotate-tip";
+              tip.textContent = "Rotate your phone to landscape, then tap Enter playground.";
+              inv.appendChild(tip);
+            }
+          } else if (typeof alert === "function") {
+            alert("Rotate to landscape, then tap Enter playground.");
+          }
+          return;
+        }
         shell.classList.add("active");
         document.documentElement.classList.add("ice-tape-land-lock");
         tryLockTapeLandscape();
@@ -3678,17 +3722,32 @@
       var landOpen = $("btnTapeLandOpen");
       if (landOpen) landOpen.addEventListener("click", function () {
         armTapeLand();
-        var hole = frameSrc || byo || LB_SIGNIN;
-        if (liveBarnBlocksIframe(hole)) openTapeWindow(hole, "dualis_livebarn");
+        /* LB stream stays in paired window — opened from invite, not forced here */
       });
-      var lbWin = $("btnTapeLbWindow");
-      if (lbWin) lbWin.addEventListener("click", function () {
-        openTapeWindow(frameSrc || byo || LB_SIGNIN, "dualis_livebarn");
-      });
+      function wireLbWindow(btnId) {
+        var btn = $(btnId);
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          openTapeWindow(frameSrc || byo || LB_SIGNIN, "dualis_livebarn");
+        });
+      }
+      wireLbWindow("btnTapeLbWindow");
+      wireLbWindow("btnTapeLbWindowLand");
+      /* If user rotates to landscape while on Tape LB, offer lock only then — never early */
+      if (!window._tapeOrientWired) {
+        window._tapeOrientWired = true;
+        window.addEventListener("orientationchange", function () {
+          setTimeout(function () {
+            var shell = document.getElementById("tapeLandShell");
+            if (!shell || !shell.classList.contains("active")) return;
+            if (tapeIsLandscape()) tryLockTapeLandscape();
+          }, 250);
+        });
+      }
       var landClose = $("btnTapeLandClose");
       if (landClose) landClose.addEventListener("click", disarmTapeLand);
       /* Auto-arm when Save remounted with byo on */
-      if (document.getElementById("tapeLandShell") && getTapePipe() === "byo" && getTapeStream()) {
+      if (document.getElementById("tapeLandShell") && getTapePipe() === "byo" && getTapeStream() && tapeIsLandscape()) {
         setTimeout(armTapeLand, 60);
       }
       /* Poll GameSheet live echo while landscape is up — never invent */
