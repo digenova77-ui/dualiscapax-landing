@@ -1583,22 +1583,32 @@
         tray += '<div class="ice-cal-matchup">' + matchupLaneHtml(matchupBoard) + "</div>";
       }
       if (focusStays.length) {
+        var tripDay = false;
+        for (var ti = 0; ti < focusEvs.length; ti++) {
+          var tk = calKindOf(focusEvs[ti]);
+          if (tk === "away" || tk === "tournament") { tripDay = true; break; }
+        }
         tray += '<div class="ice-cal-stays" aria-label="Stays this day">' +
           focusStays.map(function (row) {
             var s = row.s;
             var hasUrl = !!(s.url && /^https?:\/\//i.test(s.url));
+            var bindLab = tripDay
+              ? '<span class="ice-cal-pill ice-cal-stay-bind">Bound · this trip</span>'
+              : (s.tripTitle
+                ? ('<span class="ice-cal-pill ice-cal-stay-bind">bound · ' + esc(s.tripTitle) + "</span>")
+                : "");
             return '<div class="ice-cal-stay-row">' +
               '<span class="ice-cal-pill ice-cal-stay-pill">Stay</span>' +
-              '<strong>' + esc(s.title || "Stay") + "</strong>" +
+              bindLab +
+              '<strong>' + esc(s.title || "Stay") + "</strong>' +
               '<span class="ice-soft">' + esc(s.checkInLabel || s.checkIn || "") + " → " + esc(s.checkOutLabel || s.checkOut || "") + "</span>" +
               (hasUrl
-                ? ('<a class="ice-btn ghost" target="_blank" rel="noopener" href="' + esc(s.url) + '">Open stay →</a>')
+                ? ('<a class="ice-btn" target="_blank" rel="noopener" href="' + esc(s.url) + '">Open stay →</a>')
                 : '<span class="ice-soft">No link yet</span>') +
             "</div>";
           }).join("") +
         "</div>";
       }
-    }
 
     var legend = '<p class="ice-cal-legend" aria-label="Color legend">' +
       '<span class="ice-cal-home"><i></i>Home</span>' +
@@ -1606,6 +1616,7 @@
       '<span class="ice-cal-prac"><i></i>Practice</span>' +
       '<span class="ice-cal-tourney"><i></i>Tourny</span>' +
       '<span class="ice-cal-office"><i></i>Off-ice</span>' +
+      '<span class="ice-cal-stay-leg"><i></i>Stay</span>' +
       "</p>";
 
     return '<div class="ice-cal-month-shell">' +
@@ -1681,6 +1692,31 @@
       end: pick.end || "",
       cite: cite,
       name: pick.name || ""
+    };
+  }
+
+  /** Suggest lodging nights around a trip — Fri before → Mon after when dates known. Never invent the trip. */
+  function stayDatesFromTrip(trip) {
+    if (!trip || !trip.start) return null;
+    var start = new Date(trip.start);
+    if (isNaN(start.getTime())) return null;
+    var end = trip.end ? new Date(trip.end) : new Date(start);
+    if (isNaN(end.getTime())) end = new Date(start);
+    /* Check-in: day before first event (or same day if already Fri/Sat travel) */
+    var cin = new Date(start.getFullYear(), start.getMonth(), start.getDate() - 1);
+    var cout = new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1);
+    function ymdLocal(d) {
+      var m = d.getMonth() + 1, day = d.getDate();
+      return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day;
+    }
+    return {
+      checkIn: ymdLocal(cin),
+      checkOut: ymdLocal(cout),
+      label: (trip.kind === "tournament" ? "Tourny stay" : "Away stay") +
+        (trip.title ? (" · " + trip.title) : ""),
+      tripKind: trip.kind || "",
+      tripTitle: trip.title || "",
+      tripStart: trip.start || ""
     };
   }
 
@@ -1885,7 +1921,7 @@
       ? ('<div class="ice-go-stay-more">' +
           '<button type="button" class="ice-btn ghost" data-stay-add-link>Add stay</button>' +
           '<div id="stayAddPanel" hidden>' +
-            '<p class="ice-note" style="margin:0.35rem 0 0.55rem;">A stay is just a reservation link + dates — shows on Go when it’s next, and on Cal by day. Not the same as the hockey “trip” above.</p>' +
+            '<p class="ice-note" style="margin:0.35rem 0 0.55rem;">Dates required — they bind this stay onto Cal for the trip weekend. Prefills from next away/tourny when known.</p>' +
             '<div class="ice-field"><label for="stayUrlNew">Reservation link</label>' +
               '<input id="stayUrlNew" data-stay-url-new value="" placeholder="https://www.airbnb.com/trips/…" inputmode="url" autocomplete="off"></div>' +
             '<div class="ice-field"><label for="stayInNew">Check-in (YYYY-MM-DD)</label>' +
@@ -1915,7 +1951,7 @@
   function renderStayEmpty() {
     return '<div class="ice-go-stay ice-go-stay-empty">' +
       '<div class="ice-go-stay-k">Stay</div>' +
-      '<p class="ice-soft" style="margin:0.35rem 0 0.55rem;">Paste an Airbnb / hotel link + dates. That’s a stay (lodging) — not the hockey trip above. Next stay shows here; others sit on Cal by date.</p>' +
+      '<p class="ice-soft" style="margin:0.35rem 0 0.55rem;">Paste link + check-in/out. Dates bake it onto Cal for that trip weekend — tap the day, Open stay. Next stay shows on Go.</p>' +
       '<div class="ice-field"><label for="stayUrlNew">Reservation link</label>' +
         '<input id="stayUrlNew" data-stay-url-new value="" placeholder="https://www.airbnb.com/trips/…" inputmode="url" autocomplete="off"></div>' +
       '<div class="ice-field"><label for="stayInNew">Check-in (YYYY-MM-DD)</label>' +
@@ -3521,6 +3557,21 @@
           var pan = stage.querySelector("#stayAddPanel");
           if (!pan) return;
           pan.hidden = false;
+          /* Prefill nights from next away/tourny so Cal can bind the weekend */
+          var sug = stayDatesFromTrip(nextAwayTrip());
+          if (sug) {
+            var cinEl = stage.querySelector("[data-stay-in-new]");
+            var coutEl = stage.querySelector("[data-stay-out-new]");
+            var titleEl = stage.querySelector("[data-stay-title-new]");
+            if (cinEl && !cinEl.value) cinEl.value = sug.checkIn;
+            if (coutEl && !coutEl.value) coutEl.value = sug.checkOut;
+            if (titleEl && !titleEl.value) titleEl.value = sug.label;
+            pan.setAttribute("data-trip-bind", JSON.stringify({
+              tripTitle: sug.tripTitle,
+              tripKind: sug.tripKind,
+              tripStart: sug.tripStart
+            }));
+          }
           var inp = stage.querySelector("[data-stay-url-new]");
           if (inp) setTimeout(function () { try { inp.focus(); } catch (e) {} }, 50);
         });
@@ -3530,34 +3581,67 @@
         btnStayAdd.addEventListener("click", function () {
           var inp = stage.querySelector("[data-stay-url-new]");
           var url = (inp && inp.value || "").trim();
-          if (!url || !/^https?:\/\//i.test(url)) return;
+          if (!url || !/^https?:\/\//i.test(url)) {
+            if (typeof alert === "function") alert("Paste the Airbnb / hotel link first.");
+            return;
+          }
           var cin = ((stage.querySelector("[data-stay-in-new]") || {}).value || "").trim();
           var cout = ((stage.querySelector("[data-stay-out-new]") || {}).value || "").trim();
           var title = ((stage.querySelector("[data-stay-title-new]") || {}).value || "").trim() || "Stay";
-          if (cin && !/^\d{4}-\d{2}-\d{2}$/.test(cin)) {
-            if (typeof alert === "function") alert("Check-in use YYYY-MM-DD");
+          if (!cin || !/^\d{4}-\d{2}-\d{2}$/.test(cin)) {
+            if (typeof alert === "function") alert("Check-in required (YYYY-MM-DD) so Cal can show this stay.");
             return;
           }
-          if (cout && !/^\d{4}-\d{2}-\d{2}$/.test(cout)) {
-            if (typeof alert === "function") alert("Check-out use YYYY-MM-DD");
+          if (!cout || !/^\d{4}-\d{2}-\d{2}$/.test(cout)) {
+            if (typeof alert === "function") alert("Check-out required (YYYY-MM-DD) so Cal covers the trip weekend.");
             return;
           }
+          var bind = null;
+          try {
+            var pan = stage.querySelector("#stayAddPanel");
+            bind = pan && pan.getAttribute("data-trip-bind")
+              ? JSON.parse(pan.getAttribute("data-trip-bind"))
+              : null;
+          } catch (eB) { bind = null; }
           var list = loadStays();
           var row = {
             id: "stay-" + Date.now(),
             title: title,
             url: url,
-            checkIn: cin || "",
-            checkOut: cout || "",
-            checkInLabel: cin || "",
-            checkOutLabel: cout || "",
+            checkIn: cin,
+            checkOut: cout,
+            checkInLabel: cin,
+            checkOutLabel: cout,
+            tripTitle: (bind && bind.tripTitle) || "",
+            tripKind: (bind && bind.tripKind) || "",
+            tripStart: (bind && bind.tripStart) || "",
             note: "pasted on-device · Dualis does not invent stays"
           };
           list.push(row);
           saveStays(list);
-          goStage("go", true);
+          /* Land on Cal at check-in so the stay is visible on the trip weekend */
+          try {
+            state.calAnchor = new Date(Number(cin.slice(0, 4)), Number(cin.slice(5, 7)) - 1, 1);
+            state.calDayFocus = cin;
+          } catch (eC) {}
+          goStage("cal", true);
         });
       }
+      /* Empty Stay form on Go — same trip weekend prefill */
+      (function () {
+        var sug = stayDatesFromTrip(nextAwayTrip());
+        if (!sug) return;
+        var cinEl = stage.querySelector("[data-stay-in-new]");
+        var coutEl = stage.querySelector("[data-stay-out-new]");
+        var titleEl = stage.querySelector("[data-stay-title-new]");
+        if (cinEl && !cinEl.value) cinEl.value = sug.checkIn;
+        if (coutEl && !coutEl.value) coutEl.value = sug.checkOut;
+        if (titleEl && !titleEl.value) titleEl.value = sug.label;
+        var pan = stage.querySelector("#stayAddPanel") || stage.querySelector(".ice-go-stay-empty");
+        if (pan) pan.setAttribute("data-trip-bind", JSON.stringify({
+          tripTitle: sug.tripTitle, tripKind: sug.tripKind, tripStart: sug.tripStart
+        }));
+      })();
       stage.querySelectorAll("[data-stay-save]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var idx = Number(btn.getAttribute("data-stay-save"));
