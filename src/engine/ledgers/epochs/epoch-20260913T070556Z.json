@@ -1,0 +1,407 @@
+{
+  "timestamp_utc": "2026-09-13T07:05:56Z",
+  "epoch_root_hash": "cfa608b1c73cbe1d6324ed92c15369e487523b9752ef6d92134d3146161fd7bc",
+  "completed_count": 50,
+  "tasks": [
+    {
+      "task_id": "01a08ef8-99a5-7cb1-87e9-795290248030",
+      "task_type": "CODEX_REMOTE_TASK",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "d0514ed3e35b60400953375d05e1799d7ec28f43fa6dadfc06921f6c8c6a3f6c",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"01a08ef8-99a5-7cb1-87e9-795290248030\", \"agent\": \"Iris-Core\", \"status\": \"EXECUTED_CONSERVED\", \"latency_us\": 3.42, \"detail\": {\"instruction\": \"Autonomous Execution: CODEX_REMOTE_TASK\", \"target_repo\": \"digenova77-ui/dualiscapax-landing\", \"law_floor_verified\": true, \"zero_pii_enforced\": true}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0001",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "30bd442e08bc69a030fddd516fbddee4397a4aa411bca6af8a07f58a13abfa29",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0001\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 1.63, \"detail\": {\"target\": \"SEC-08-subsystem-1\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0002",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "d8b40963cfcbd8d7a6a4c81e1d65a5ac29a82a9d66e19e81ac776dbbcb273560",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0002\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.29, \"detail\": {\"target\": \"SEC-08-subsystem-2\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0003",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "e1250b7d5395bf9f94304ff142aa3e2a57dd2422cfb004e3095c8ff6ee5b1175",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0003\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.16, \"detail\": {\"target\": \"SEC-08-subsystem-3\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0004",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "9247f6c4c85cc6bd523d72afda2d0c80153828c143a55bde53a70938451e7a7a",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0004\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 1.2, \"detail\": {\"target\": \"SEC-08-subsystem-4\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0005",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "5719387337fb3aab3d4ffaa93253228d68dd3d3f4a618a7e34fc5254594c239f",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0005\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.12, \"detail\": {\"target\": \"SEC-08-subsystem-5\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0006",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "eb26f105651f7f85381a3e8c124fcd72558819f1f6485e59b6388718dd43fc0e",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0006\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 1.06, \"detail\": {\"target\": \"SEC-08-subsystem-6\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0007",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "787114eab8148c02d658f72af19a33d1666600aa64bb60b04c82192392bd0fa8",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0007\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.35, \"detail\": {\"target\": \"SEC-08-subsystem-7\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0008",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "d90a88238956738615a554b0d833c7606ab4379172b02834d3ed200b655bbbf0",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0008\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 1.2, \"detail\": {\"target\": \"SEC-08-subsystem-8\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0009",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "feaf9bf09703718cc1e7f2800f9a46880cd3e7d8008c01e6aa564048ac729164",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0009\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.96, \"detail\": {\"target\": \"SEC-08-subsystem-9\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0010",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "14c66d49ea0955e467605ab933ebd1563fc498f2a3747218e6b1a1bda0bc1e32",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0010\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.94, \"detail\": {\"target\": \"SEC-08-subsystem-10\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0011",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "56c3834f98ccc3a2209f208a1aac03c342bff7779d05b03d73c51d832aaca124",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0011\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.04, \"detail\": {\"target\": \"SEC-08-subsystem-11\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0012",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "719c1745da2b010fb52bc80fc2be27ef50e658f78ef8f0d5ab42aebea3629ec9",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0012\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.99, \"detail\": {\"target\": \"SEC-08-subsystem-12\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0013",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "8b2d35ed870dfcdae597f3f1b824e4ad9183381599c52a0e75be6925bcc9898b",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0013\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.81, \"detail\": {\"target\": \"SEC-08-subsystem-13\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0014",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "2f4501e1c9803cf6a31da6a120631ada43f686f4b8168d90f085cfd23ecf0a10",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0014\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.84, \"detail\": {\"target\": \"SEC-08-subsystem-14\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0015",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "e0bf6468363945f7eb2ec49d897c1295be2e401aed5cca44ed69fa1c3f16af60",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0015\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.82, \"detail\": {\"target\": \"SEC-08-subsystem-15\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0016",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "a240e1615270ba0fb1392f296ed3c1125d9fec0dc5f44b7bd27fc4a2edcd14b0",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0016\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.77, \"detail\": {\"target\": \"SEC-08-subsystem-16\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0017",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "1fa06cda6d0c52967047c25ff4b45f2214458c7b5013a6c579facfe30fd6223a",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0017\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.77, \"detail\": {\"target\": \"SEC-08-subsystem-17\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0018",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "9b9eef2315ebcf2cda9a675dccca685bddbda24659bc099c8f6594afc0fb1898",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0018\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.89, \"detail\": {\"target\": \"SEC-08-subsystem-18\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0019",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "fd8174abfdb3602099cc9dccba33fd255d16a1c8cd197201854da36c760af99f",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0019\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.88, \"detail\": {\"target\": \"SEC-08-subsystem-19\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0020",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "3d3c5772d59f58c92aff66383f0c577003a89be03d38747b7f9a65b7f2293837",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0020\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.85, \"detail\": {\"target\": \"SEC-08-subsystem-20\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0021",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "cf5b249a9825db64a96471848d130edab4a7a5b57e62077e36ac82ac38be75fd",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0021\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.77, \"detail\": {\"target\": \"SEC-08-subsystem-21\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0022",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "06ba5f42302942492ec45212220cc7b3943d2806e572b6da1b7f4060d07c78e1",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0022\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.88, \"detail\": {\"target\": \"SEC-08-subsystem-22\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0023",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "c8b38a33053b36ed388395900ac943d335955a2636b5125943d624c05f6badec",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0023\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.9, \"detail\": {\"target\": \"SEC-08-subsystem-23\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0024",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "a168e62e2abeeaf9893379c9d8411887389897d64ed78d40be1154df8f5ebcaf",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0024\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.78, \"detail\": {\"target\": \"SEC-08-subsystem-24\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0025",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "9ce1e38278a6cd7d4638f38fbc3d5a5d09bc85d4c31f737a04c57968f86ff7f5",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0025\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.85, \"detail\": {\"target\": \"SEC-08-subsystem-25\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0026",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "41dc29c83ee1227a67e85e7ec48825d4e85a09f321b4e6fd5df4b070f4aaf28a",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0026\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.73, \"detail\": {\"target\": \"SEC-08-subsystem-26\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0027",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "e7c0d5c2c7dcba67473b794ed7a57e2cba8d976a79571a08a9de921b99802288",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0027\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.79, \"detail\": {\"target\": \"SEC-08-subsystem-27\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0028",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "537bce0d6775a793351a323816d9958d4b4efc2548955bfbfe10a9e88413d118",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0028\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.75, \"detail\": {\"target\": \"SEC-08-subsystem-28\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0029",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "f2f04b5d266864253e478c9521b308205927f504a2bb00dfdd1be7f874a15da8",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0029\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.71, \"detail\": {\"target\": \"SEC-08-subsystem-29\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0030",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "27bf0fd5e864ac1f99ed9a879f09ad6fa9d61123e7204c1d002de1f72ad6a0d8",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0030\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.85, \"detail\": {\"target\": \"SEC-08-subsystem-30\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0031",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "a81db8c0acca9a5afc9680306af5313fc80703994471120eafd8bbdf57ff52d8",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0031\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.77, \"detail\": {\"target\": \"SEC-08-subsystem-31\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0032",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "ef90c1eec2bdbd00ccecf2b8b3bcc3f11a923b84c71f37870a673414f94d1d2b",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0032\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.87, \"detail\": {\"target\": \"SEC-08-subsystem-32\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0033",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "4ed1fb3b8237d6bbd4e22647644362597b5721a144f1c1e5bd9281dbfa0ef8a2",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0033\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.91, \"detail\": {\"target\": \"SEC-08-subsystem-33\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0034",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "7d75ae0de691fb8c32eb9600247678f404b610d7d0a87e31607269c5dad2a158",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0034\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.73, \"detail\": {\"target\": \"SEC-08-subsystem-34\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0035",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "c392743f85b4e98daaf51eea16fe7706292d6399f0bd8ecb9bb817ffb78cf13a",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0035\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.72, \"detail\": {\"target\": \"SEC-08-subsystem-35\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0036",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "e1b9cb5e0b9399e8068af89143373654a43e83f22f466ad667fe2e99cc3b3540",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0036\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.74, \"detail\": {\"target\": \"SEC-08-subsystem-36\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0037",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "8f06107ccd945a0eaa97842267e7d212b8499a38edbbb3e460cf6662b7d013fc",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0037\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.83, \"detail\": {\"target\": \"SEC-08-subsystem-37\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0038",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "8b0c56ad3b587a970095f46f3488d0a59b37a443941eced35a227088474748a6",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0038\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.75, \"detail\": {\"target\": \"SEC-08-subsystem-38\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0039",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "f8ee0443166736583ff95e3e2741fda825522c781c81019206435991650cc740",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0039\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.75, \"detail\": {\"target\": \"SEC-08-subsystem-39\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0040",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "2b0ebade24a381ecff24470e6b2be7d97480a9347008cdf8f7f5c030ca54e50c",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0040\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.83, \"detail\": {\"target\": \"SEC-08-subsystem-40\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0041",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "851cf54ccea7b2821440ce0410ba146d4cf1fceaa54108dc3d9517f292c58241",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0041\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.83, \"detail\": {\"target\": \"SEC-08-subsystem-41\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0042",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "d7446cc586b1bacf5f6403cda48e4bfbcfeab6b155c06c70151addedb19e312f",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0042\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.83, \"detail\": {\"target\": \"SEC-08-subsystem-42\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0043",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "84418f1067d856e23399697d77ddc672078228d6efd967396143fcbed8a81419",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0043\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.68, \"detail\": {\"target\": \"SEC-08-subsystem-43\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0044",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "2655b1d444a9d2f5b4f5fe8939878f0f89c154e909c2fc7d533dc35213a6073b",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0044\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.79, \"detail\": {\"target\": \"SEC-08-subsystem-44\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0045",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "7d067439f248e215488b7875ad941452827a850f43b6e24be915989ccb311d85",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0045\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.78, \"detail\": {\"target\": \"SEC-08-subsystem-45\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0046",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "2c4993e56f269fa6d31dc6644cebf9fb5a209c9e510aabfe37c30ce3ac5e2403",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0046\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.84, \"detail\": {\"target\": \"SEC-08-subsystem-46\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0047",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "ae34906316417e3fd5757102313adc4d5e1cc241c50203e7c02aaee45968e326",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0047\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.73, \"detail\": {\"target\": \"SEC-08-subsystem-47\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0048",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "b3b78da1fa52a39182b63524e25533469b4ab92c037d17010a9a40c8b6d08957",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0048\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 0.82, \"detail\": {\"target\": \"SEC-08-subsystem-48\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-08-TASK-0049",
+      "task_type": "DEFENSE_AIRLOCK_VERIFY",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "204e8f67c67c99a00cfa41fba260f38a51038dd657aecab234f926aeeea5a4c0",
+      "completed_at": 1789283156,
+      "result": "{\"task_id\": \"SEC-08-TASK-0049\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.8, \"detail\": {\"target\": \"SEC-08-subsystem-49\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    }
+  ]
+}
