@@ -1,0 +1,52 @@
+{
+  "title": "DualisCapax unit forest",
+  "law": "Structure first. Independent units — no timesliced one-brain. Harvest cites into packs; never invent. Platform scaffold for public-system seats — Dualis is not the government and claims no throne.",
+  "pattern": "trunk → branch → seat → pack",
+  "unit_contract": {
+    "required": ["UNIT.md", "QUEUE.json", "packs/"],
+    "optional": ["harvest.py", ".github workflow id"],
+    "status_enum": ["structure", "queued", "harvesting", "paused", "blocked_partner"]
+  },
+  "live": [
+    {
+      "id": "sports/golf-usa",
+      "status": "harvesting",
+      "workflow": "golf_usa_envelopes.yml",
+      "script": "scripts/harvest_golf_usa_envelopes.py",
+      "packs": "research/golf/usa/"
+    }
+  ],
+  "trunks": [
+    {
+      "id": "sports",
+      "role": "athlete + playground seats",
+      "branches": [
+        "hockey-boys-amateur",
+        "hockey-girls-women-amateur",
+        "golf-usa",
+        "football-ncaa",
+        "football-hs"
+      ]
+    },
+    {
+      "id": "public",
+      "role": "government-class residual seats (measure / cite / scaffold — not sovereign power)",
+      "branches": [
+        "health",
+        "education",
+        "transport-logistics",
+        "metro-governance",
+        "justice-courts",
+        "finance-treasury",
+        "emergency-safety",
+        "environment-land",
+        "labor-workforce"
+      ]
+    },
+    {
+      "id": "infra",
+      "role": "cross-cutting platform rails",
+      "branches": ["identity-seats", "cite-index", "protocol-ledger"]
+    }
+  ]
+}
