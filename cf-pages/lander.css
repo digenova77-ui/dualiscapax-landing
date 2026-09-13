@@ -4354,13 +4354,26 @@ html.ice-tape-land-lock body {
 /* Multi-stay: Cal tags + Go add-more */
 .ice-cal-mday.has-stay .ice-cal-stay-dot {
   display: block;
-  width: 5px; height: 5px; border-radius: 50%;
+  width: 7px; height: 7px; border-radius: 50%;
   background: #34D399;
-  margin: 1px auto 0;
+  box-shadow: 0 0 0 2px rgba(52,211,153,0.35);
+  margin: 2px auto 0;
+}
+.ice-cal-mday.has-stay {
+  box-shadow: inset 0 -3px 0 #34D399;
+}
+.ice-cal-stay-leg i {
+  display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%;
+  background: #34D399; margin-right: 0.25rem; vertical-align: middle;
 }
 .ice-cal-stay-pill {
   border-color: rgba(52,211,153,0.55) !important;
   color: #34D399 !important;
+}
+.ice-cal-stay-bind {
+  border-color: rgba(56,189,248,0.45) !important;
+  color: #38bdf8 !important;
+  font-size: 0.65rem;
 }
 .ice-cal-stays { margin-top: 0.55rem; display: flex; flex-direction: column; gap: 0.4rem; }
 .ice-cal-stay-row {
