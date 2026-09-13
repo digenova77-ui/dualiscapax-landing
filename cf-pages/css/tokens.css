@@ -1,0 +1,31 @@
+/* DualisCapax tokens — CSS_LAW.md. One source. No page rewrite in this file. */
+:root{
+  color-scheme:dark;
+  --bg:#07080c;
+  --fg:#f3efe6;
+  --muted:rgba(243,239,230,.68);
+  --line:rgba(158,201,232,.22);
+  --blue:#9ec9e8;
+  --gold:#e8c36a;
+  --paper:#f3efe6;
+  --g:.55rem;
+  --n:42rem;
+  --wide:68rem;
+  --z-sky:0;
+  --z-wrap:1;
+  --z-sticky:8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:ui-sans-serif,system-ui,sans-serif;
+  line-height:1.45;
+  min-height:100%;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{line-height:1.08;font-weight:650;letter-spacing:.01em}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}

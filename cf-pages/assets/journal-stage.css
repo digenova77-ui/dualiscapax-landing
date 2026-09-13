@@ -1,0 +1,62 @@
+/* DualisCapax journal entity stage — one object class, different entities */
+:root {
+  --stage-bg: #050505;
+  --stage-border: var(--border, #222);
+  --stage-height: 320px;
+}
+.pane {
+  padding: 1.15rem 1.15rem 2rem;
+  background: var(--surface, #0a0a0a);
+  position: sticky;
+  top: 0;
+  align-self: start;
+}
+.pane h2 {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted, #8a8a8a);
+  margin: 0 0 0.7rem;
+}
+.stage {
+  width: 100%;
+  height: var(--stage-height);
+  border: 1px solid var(--stage-border);
+  border-radius: 8px;
+  background: var(--stage-bg);
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+}
+.stage:active { cursor: grabbing; }
+.viewer-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+.viewer-tools button {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  background: transparent;
+  color: var(--fg, #fff);
+  border: 1px solid var(--border, #222);
+  border-radius: 3px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+}
+.viewer-tools button:hover {
+  border-color: var(--accent, #1e90ff);
+  color: var(--accent, #1e90ff);
+}
+.pane-note {
+  font-size: 0.7rem;
+  color: var(--muted, #8a8a8a);
+  margin-top: 0.65rem;
+}
+.pane-meta {
+  font-size: 0.78rem;
+  margin-top: 0.75rem;
+  line-height: 1.45;
+}
+.pane-meta strong { color: var(--gold, #d4a017); }

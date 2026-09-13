@@ -1,0 +1,60 @@
+{
+  "id": "dc.seat.identity.v1",
+  "law": "Map every unique identifier Dualis may ever bind \u2014 unused fields stay null/dash, never invent. Dual positions via positions[] + primary pos.",
+  "seat_key_shape": "on.aaa.{league}.{team_slug}.{age}.{season}.#{jersey}.{birth_year}",
+  "fields": {
+    "seat_key": "stable Dualis seat id (required)",
+    "team_id": "org team pack id",
+    "league": "omha|gthl|heo|alliance|\u2026",
+    "team_slug": "quinte-red-devils",
+    "age": "u16",
+    "season": "2026-2027",
+    "birth_year": "cohort year",
+    "jersey": "integer jersey",
+    "display_name": "privacy-safe face (often First-initial. Last)",
+    "preferred_alias": "best display as evidence improves",
+    "aliases": "all verified name forms only",
+    "first": "given name when cited",
+    "last": "family name",
+    "initial": "first initial when privacy-truncated",
+    "pos": "primary position OR dual face string (LW/RW, C/LW, C/RW) \u2014 parser expands to positions[]",
+    "positions": "ordered dual/multi \u2014 e.g. [\"LW\",\"RW\"] or [\"C\",\"LW\"]; all F-bucket",
+    "pos_bucket": "F|D|G",
+    "shot": "L|R stick when cited \u2014 empty until cite",
+    "size": "height/weight echo when cited",
+    "style": "Power F|Sniper|\u2026 when cited/locked",
+    "ids": {
+      "hcr": "Spordle/HCR member # when proven",
+      "spordle": "Spordle person/member id",
+      "teamsnap_person": "TeamSnap person id",
+      "teamsnap_player": "TeamSnap player id on this team",
+      "gamesheet": "GameSheet player id when partnered",
+      "elite_prospects": "EP player id when matched",
+      "hockeydb": "HockeyDB id when matched",
+      "ncsa": "NCSA athlete id when cited",
+      "unity": "Dualis Unity ID after bind"
+    },
+    "cite_status": "awaiting|household|cited|bound",
+    "landing_prebaked": "true when Me/Game packs exist offline for this seat"
+  },
+  "dual_forward_syntax": {
+    "accepted_faces": [
+      "LW/RW",
+      "RW/LW",
+      "C/LW",
+      "C/RW",
+      "LW/C",
+      "RW/C"
+    ],
+    "parse": "split on / \u2192 positions[] ordered as written; pos = first token",
+    "pos_bucket": "always F for any C|LW|RW combination",
+    "note": "Uncommon but valid Dualis syntax \u2014 never invent; only when cited",
+    "prefer_explicit": true,
+    "reject_face": [
+      "Winger",
+      "W",
+      "Wing"
+    ]
+  },
+  "wing_law": "Prefer explicit LW \u00b7 RW \u00b7 LW/RW \u00b7 C/LW \u00b7 C/RW. Do not face \"Winger\"/\"W\" \u2014 too vague (everyone is a winger). Bare W only as legacy alias \u2192 expand if cite says which wing; else dash until explicit."
+}

@@ -1,0 +1,39 @@
+name: pages-direct-upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: 'Optional note'
+        required: false
+        default: 'Direct Upload from Actions'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-direct-upload
+  cancel-in-progress: true
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Deploy cf-pages → dualiscapax-landing
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN missing in Actions secrets"
+            exit 1
+          fi
+          npx --yes wrangler@3.112.0 pages deploy cf-pages \
+            --project-name=dualiscapax-landing \
+            --commit-dirty=true

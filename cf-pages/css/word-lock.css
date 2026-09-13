@@ -1,0 +1,10 @@
+/* Word lockup is CSS text. No helix plate. No b64 image. */
+.word{
+  width:auto;
+  max-width:min(72vw,640px);
+}
+.word .lockup{display:none}
+.word .rest{
+  display:block;
+  letter-spacing:.22em;
+}

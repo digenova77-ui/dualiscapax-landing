@@ -1,0 +1,607 @@
+{
+  "version": 1,
+  "team_slug": "quinte-red-devils",
+  "age": "u16",
+  "season": "2026-2027",
+  "league": "OMHA AAA",
+  "round": "Regular Season",
+  "source": "omha-aaa.net",
+  "captured_at": "2026-09-12",
+  "captured_at_local": "2026-09-12 America/Toronto",
+  "listed_games_on_filter": 30,
+  "captured_games": 30,
+  "incomplete_rows": [],
+  "time_tbd": 0,
+  "league_window_note": "User lock: before Oct 2 2026 is not league. All captured games are Oct 8 2026+ OMHA AAA Regular Season.",
+  "provenance": {
+    "method": "echo-only crawl of public OMHA Digital Network pages; no invented times, opponents, or venues",
+    "group_schedule": "https://omha-aaa.net/Groups/1219/Schedule/",
+    "team_filter": "https://omha-aaa.net/Groups/1219/Schedule/?O=100359 (Quinte Red Devils, 30 games; Cloudflare blocked query-string filter from this crawler)",
+    "month_listings_used": [
+      "https://omha-aaa.net/Groups/1219/Schedule/ (Oct 2026, 63 U16 games / 9 Quinte)",
+      "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026 (80 / 9 Quinte)",
+      "https://omha-aaa.net/Groups/1219/Schedule/?Month=12&Year=2026 (57 / 6 Quinte)",
+      "https://omha-aaa.net/Groups/1219/Schedule/?Month=1&Year=2027 (82 / 5 Quinte)",
+      "https://omha-aaa.net/Groups/1219/Schedule/?Month=2&Year=2027 (27 / 1 Quinte)"
+    ],
+    "game_pages": "Each event cites https://omha-aaa.net/Groups/1219/Games/{omha_game_id}/ — date, clock, visitor, home, game_no, and venue echoed from that page.",
+    "theonedb": "Cross-checked Oct 8 U16E-232 (game 2381404): Jr Gaels at Red Devils · Thursday, October 8, 2026 at 8:30 PM · Mackay Arena · 265 Cannifton Rd, Belleville. Other games have TheOneDB venue links on the OMHA game page but were not independently fetched.",
+    "timezone": "America/Toronto via zoneinfo. EDT -04:00 through 2026-11-01 02:00; EST -05:00 after. All 30 games published a clock; none marked time_tbd.",
+    "home_away": "home when OMHA lists opponent @ Quinte Red Devils; away when Quinte Red Devils @ opponent.",
+    "name_rule": "vs {opponent} — echo opponent spelling from OMHA game page.",
+    "not_used": "No TeamSnap, no club site inventions, no pre-Oct 8 exhibition/league-lock games."
+  },
+  "events": [
+    {
+      "start": "2026-10-08T20:30:00-04:00",
+      "name": "vs Greater Kingston Jr Gaels",
+      "opponent": "Greater Kingston Jr Gaels",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-232",
+      "source": "omha-aaa",
+      "confirms": 2,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381404/",
+        "https://www.theonedb.com/Venues/FindForGame/2381404"
+      ],
+      "omha_game_id": "2381404",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381404",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Thu Oct 08 2026 8:30 PM · Greater Kingston Jr Gaels @ Quinte Red Devils · U16E-232 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-10-13T18:45:00-04:00",
+      "name": "vs Ajax-Pickering Raiders",
+      "opponent": "Ajax-Pickering Raiders",
+      "location": "Ajax Community Centre (Pad 3)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-333",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381328/"
+      ],
+      "omha_game_id": "2381328",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381328",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Tue Oct 13 2026 6:45 PM · Quinte Red Devils @ Ajax-Pickering Raiders · U16E-333 · Ajax Community Centre (Pad 3) · Regular Season"
+    },
+    {
+      "start": "2026-10-17T19:00:00-04:00",
+      "name": "vs North Central Predators",
+      "opponent": "North Central Predators",
+      "location": "MASK Mnjikaning Arena Sports Ki (MASK Mnjikaning Arena Sports Ki)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-248",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381378/"
+      ],
+      "omha_game_id": "2381378",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381378",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Sat Oct 17 2026 7:00 PM · Quinte Red Devils @ North Central Predators · U16E-248 · MASK Mnjikaning Arena Sports Ki (MASK Mnjikaning Arena Sports Ki) · Regular Season"
+    },
+    {
+      "start": "2026-10-18T16:00:00-04:00",
+      "name": "vs North Central Predators",
+      "opponent": "North Central Predators",
+      "location": "MASK Mnjikaning Arena Sports Ki (MASK Mnjikaning Arena Sports Ki)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-361",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382398/"
+      ],
+      "omha_game_id": "2382398",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382398",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Sun Oct 18 2026 4:00 PM · Quinte Red Devils @ North Central Predators · U16E-361 · MASK Mnjikaning Arena Sports Ki (MASK Mnjikaning Arena Sports Ki) · Regular Season"
+    },
+    {
+      "start": "2026-10-22T20:30:00-04:00",
+      "name": "vs Peterborough Petes",
+      "opponent": "Peterborough Petes",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-218",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381408/"
+      ],
+      "omha_game_id": "2381408",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381408",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Thu Oct 22 2026 8:30 PM · Peterborough Petes @ Quinte Red Devils · U16E-218 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-10-24T16:00:00-04:00",
+      "name": "vs Barrie Jr Colts",
+      "opponent": "Barrie Jr Colts",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-217",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382409/"
+      ],
+      "omha_game_id": "2382409",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382409",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Sat Oct 24 2026 4:00 PM · Barrie Jr Colts @ Quinte Red Devils · U16E-217 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-10-25T16:45:00-04:00",
+      "name": "vs York-Simcoe Express",
+      "opponent": "York-Simcoe Express",
+      "location": "St. Andrews College Arena (St. Andrews College Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-281",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381429/"
+      ],
+      "omha_game_id": "2381429",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381429",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Sun Oct 25 2026 4:45 PM · Quinte Red Devils @ York-Simcoe Express · U16E-281 · St. Andrews College Arena (St. Andrews College Arena) · Regular Season"
+    },
+    {
+      "start": "2026-10-29T20:30:00-04:00",
+      "name": "vs Whitby Wildcats",
+      "opponent": "Whitby Wildcats",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-268",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382412/"
+      ],
+      "omha_game_id": "2382412",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382412",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Thu Oct 29 2026 8:30 PM · Whitby Wildcats @ Quinte Red Devils · U16E-268 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-10-31T18:15:00-04:00",
+      "name": "vs Central Ontario Wolves",
+      "opponent": "Central Ontario Wolves",
+      "location": "Scugog Arena (Pad 2)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-250",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382381/"
+      ],
+      "omha_game_id": "2382381",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382381",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/",
+      "echo": "Sat Oct 31 2026 6:15 PM · Quinte Red Devils @ Central Ontario Wolves · U16E-250 · Scugog Arena (Pad 2) · Regular Season"
+    },
+    {
+      "start": "2026-11-03T20:45:00-05:00",
+      "name": "vs North Shore Whitecaps",
+      "opponent": "North Shore Whitecaps",
+      "location": "Campus Ice Centre (Pad 1)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-351",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381388/"
+      ],
+      "omha_game_id": "2381388",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381388",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Tue Nov 03 2026 8:45 PM · Quinte Red Devils @ North Shore Whitecaps · U16E-351 · Campus Ice Centre (Pad 1) · Regular Season"
+    },
+    {
+      "start": "2026-11-13T20:00:00-05:00",
+      "name": "vs North Central Predators",
+      "opponent": "North Central Predators",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-321",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381406/"
+      ],
+      "omha_game_id": "2381406",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381406",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Fri Nov 13 2026 8:00 PM · North Central Predators @ Quinte Red Devils · U16E-321 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-11-14T14:00:00-05:00",
+      "name": "vs Ajax-Pickering Raiders",
+      "opponent": "Ajax-Pickering Raiders",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-220",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381401/"
+      ],
+      "omha_game_id": "2381401",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381401",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Sat Nov 14 2026 2:00 PM · Ajax-Pickering Raiders @ Quinte Red Devils · U16E-220 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-11-15T18:00:00-05:00",
+      "name": "vs Markham Waxers",
+      "opponent": "Markham Waxers",
+      "location": "Markham Village Arena (Markham Village Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-275",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381368/"
+      ],
+      "omha_game_id": "2381368",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381368",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Sun Nov 15 2026 6:00 PM · Quinte Red Devils @ Markham Waxers · U16E-275 · Markham Village Arena (Markham Village Arena) · Regular Season"
+    },
+    {
+      "start": "2026-11-17T21:00:00-05:00",
+      "name": "vs Greater Kingston Jr Gaels",
+      "opponent": "Greater Kingston Jr Gaels",
+      "location": "Deseronto Community Centre (Deseronto Community Centre)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-203",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381358/"
+      ],
+      "omha_game_id": "2381358",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381358",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Tue Nov 17 2026 9:00 PM · Quinte Red Devils @ Greater Kingston Jr Gaels · U16E-203 · Deseronto Community Centre (Deseronto Community Centre) · Regular Season"
+    },
+    {
+      "start": "2026-11-21T16:00:00-05:00",
+      "name": "vs Markham Waxers",
+      "opponent": "Markham Waxers",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-322",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381405/"
+      ],
+      "omha_game_id": "2381405",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381405",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Sat Nov 21 2026 4:00 PM · Markham Waxers @ Quinte Red Devils · U16E-322 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-11-22T13:30:00-05:00",
+      "name": "vs Barrie Jr Colts",
+      "opponent": "Barrie Jr Colts",
+      "location": "Quinte Sports & Wellness Centre (CAA Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-231",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381402/"
+      ],
+      "omha_game_id": "2381402",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381402",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Sun Nov 22 2026 1:30 PM · Barrie Jr Colts @ Quinte Red Devils · U16E-231 · Quinte Sports & Wellness Centre (CAA Arena) · Regular Season"
+    },
+    {
+      "start": "2026-11-28T17:30:00-05:00",
+      "name": "vs Barrie Jr Colts",
+      "opponent": "Barrie Jr Colts",
+      "location": "Innisfil Recreation Centre (Recreation Centre Cortellucci)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-314",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381338/"
+      ],
+      "omha_game_id": "2381338",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381338",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Sat Nov 28 2026 5:30 PM · Quinte Red Devils @ Barrie Jr Colts · U16E-314 · Innisfil Recreation Centre (Recreation Centre Cortellucci) · Regular Season"
+    },
+    {
+      "start": "2026-11-29T16:15:00-05:00",
+      "name": "vs Peterborough Petes",
+      "opponent": "Peterborough Petes",
+      "location": "Healthy Planet Arena (Sign-A-Field Pad)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-236",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381398/"
+      ],
+      "omha_game_id": "2381398",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381398",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=11&Year=2026",
+      "echo": "Sun Nov 29 2026 4:15 PM · Quinte Red Devils @ Peterborough Petes · U16E-236 · Healthy Planet Arena (Sign-A-Field Pad) · Regular Season"
+    },
+    {
+      "start": "2026-12-02T20:15:00-05:00",
+      "name": "vs Whitby Wildcats",
+      "opponent": "Whitby Wildcats",
+      "location": "Quinte Sports & Wellness Centre (FDC Pad)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-286",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381409/"
+      ],
+      "omha_game_id": "2381409",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381409",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=12&Year=2026",
+      "echo": "Wed Dec 02 2026 8:15 PM · Whitby Wildcats @ Quinte Red Devils · U16E-286 · Quinte Sports & Wellness Centre (FDC Pad) · Regular Season"
+    },
+    {
+      "start": "2026-12-12T16:00:00-05:00",
+      "name": "vs York-Simcoe Express",
+      "opponent": "York-Simcoe Express",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-208",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382413/"
+      ],
+      "omha_game_id": "2382413",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382413",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=12&Year=2026",
+      "echo": "Sat Dec 12 2026 4:00 PM · York-Simcoe Express @ Quinte Red Devils · U16E-208 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-12-13T13:30:00-05:00",
+      "name": "vs York-Simcoe Express",
+      "opponent": "York-Simcoe Express",
+      "location": "Quinte Sports & Wellness Centre (CAA Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-251",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381410/"
+      ],
+      "omha_game_id": "2381410",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381410",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=12&Year=2026",
+      "echo": "Sun Dec 13 2026 1:30 PM · York-Simcoe Express @ Quinte Red Devils · U16E-251 · Quinte Sports & Wellness Centre (CAA Arena) · Regular Season"
+    },
+    {
+      "start": "2026-12-17T20:30:00-05:00",
+      "name": "vs North Shore Whitecaps",
+      "opponent": "North Shore Whitecaps",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-345",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381407/"
+      ],
+      "omha_game_id": "2381407",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381407",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=12&Year=2026",
+      "echo": "Thu Dec 17 2026 8:30 PM · North Shore Whitecaps @ Quinte Red Devils · U16E-345 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2026-12-19T15:45:00-05:00",
+      "name": "vs Whitby Wildcats",
+      "opponent": "Whitby Wildcats",
+      "location": "Iroquois Park Sports Centre (Pad 1)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-204",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381419/"
+      ],
+      "omha_game_id": "2381419",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381419",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=12&Year=2026",
+      "echo": "Sat Dec 19 2026 3:45 PM · Quinte Red Devils @ Whitby Wildcats · U16E-204 · Iroquois Park Sports Centre (Pad 1) · Regular Season"
+    },
+    {
+      "start": "2026-12-22T18:45:00-05:00",
+      "name": "vs Ajax-Pickering Raiders",
+      "opponent": "Ajax-Pickering Raiders",
+      "location": "Ajax Community Centre (Pad 3)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-293",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382372/"
+      ],
+      "omha_game_id": "2382372",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382372",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=12&Year=2026",
+      "echo": "Tue Dec 22 2026 6:45 PM · Quinte Red Devils @ Ajax-Pickering Raiders · U16E-293 · Ajax Community Centre (Pad 3) · Regular Season"
+    },
+    {
+      "start": "2027-01-03T13:30:00-05:00",
+      "name": "vs Central Ontario Wolves",
+      "opponent": "Central Ontario Wolves",
+      "location": "Quinte Sports & Wellness Centre (CAA Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-205",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381403/"
+      ],
+      "omha_game_id": "2381403",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381403",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=1&Year=2027",
+      "echo": "Sun Jan 03 2027 1:30 PM · Central Ontario Wolves @ Quinte Red Devils · U16E-205 · Quinte Sports & Wellness Centre (CAA Arena) · Regular Season"
+    },
+    {
+      "start": "2027-01-05T21:00:00-05:00",
+      "name": "vs Greater Kingston Jr Gaels",
+      "opponent": "Greater Kingston Jr Gaels",
+      "location": "Deseronto Community Centre (Deseronto Community Centre)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-265",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382388/"
+      ],
+      "omha_game_id": "2382388",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382388",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=1&Year=2027",
+      "echo": "Tue Jan 05 2027 9:00 PM · Quinte Red Devils @ Greater Kingston Jr Gaels · U16E-265 · Deseronto Community Centre (Deseronto Community Centre) · Regular Season"
+    },
+    {
+      "start": "2027-01-21T20:30:00-05:00",
+      "name": "vs Peterborough Petes",
+      "opponent": "Peterborough Petes",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-289",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382411/"
+      ],
+      "omha_game_id": "2382411",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382411",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=1&Year=2027",
+      "echo": "Thu Jan 21 2027 8:30 PM · Peterborough Petes @ Quinte Red Devils · U16E-289 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2027-01-23T16:00:00-05:00",
+      "name": "vs Markham Waxers",
+      "opponent": "Markham Waxers",
+      "location": "Quinte Sports & Wellness Centre (Mackay Arena)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "home",
+      "game_no": "U16E-360",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382410/"
+      ],
+      "omha_game_id": "2382410",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382410",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=1&Year=2027",
+      "echo": "Sat Jan 23 2027 4:00 PM · Markham Waxers @ Quinte Red Devils · U16E-360 · Quinte Sports & Wellness Centre (Mackay Arena) · Regular Season"
+    },
+    {
+      "start": "2027-01-26T20:30:00-05:00",
+      "name": "vs North Shore Whitecaps",
+      "opponent": "North Shore Whitecaps",
+      "location": "Campus Ice Centre (Pad 1)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-356",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2382402/"
+      ],
+      "omha_game_id": "2382402",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2382402",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=1&Year=2027",
+      "echo": "Tue Jan 26 2027 8:30 PM · Quinte Red Devils @ North Shore Whitecaps · U16E-356 · Campus Ice Centre (Pad 1) · Regular Season"
+    },
+    {
+      "start": "2027-02-13T18:15:00-05:00",
+      "name": "vs Central Ontario Wolves",
+      "opponent": "Central Ontario Wolves",
+      "location": "Scugog Arena (Pad 2)",
+      "event_type": "Game",
+      "is_game": true,
+      "home_away": "away",
+      "game_no": "U16E-355",
+      "source": "omha-aaa",
+      "confirms": 1,
+      "cite_urls": [
+        "https://omha-aaa.net/Groups/1219/Games/2381348/"
+      ],
+      "omha_game_id": "2381348",
+      "theonedb_url": "https://www.theonedb.com/Venues/FindForGame/2381348",
+      "schedule_month_url": "https://omha-aaa.net/Groups/1219/Schedule/?Month=2&Year=2027",
+      "echo": "Sat Feb 13 2027 6:15 PM · Quinte Red Devils @ Central Ontario Wolves · U16E-355 · Scugog Arena (Pad 2) · Regular Season"
+    }
+  ]
+}

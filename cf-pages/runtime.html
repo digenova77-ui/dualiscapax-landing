@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runtime · Live 90-day workbench — DualisCapax</title>
+  <meta name="theme-color" content="#0B0E14">
+  <meta name="description" content="Live integrator runtime: load your books on this device. DCLM measures locally. Dualis never receives your data. Report stays with you.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="lander.css">
+  <style>
+    .rt-grid { display:grid; gap:1rem; grid-template-columns:1fr; }
+    @media (min-width:900px) {
+      .rt-grid-2 { grid-template-columns: 1.15fr 0.85fr; }
+      .rt-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    }
+    .rt-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.15rem 1.2rem;
+    }
+    .rt-card h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin: 0 0 0.45rem;
+      color: var(--text-primary);
+    }
+    .rt-mono {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .rt-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      color: var(--accent-mint);
+      background: rgba(52,211,153,0.12);
+    }
+    .rt-pill.warn { color: var(--accent-orange); background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.35); }
+    .rt-pill.cyan { color: var(--accent-cyan); background: rgba(56,189,248,0.12); border-color: rgba(56,189,248,0.35); }
+    .rt-pill.muted { color: var(--text-muted); background: rgba(255,255,255,0.04); }
+    .rt-row { display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; }
+    .rt-field label {
+      display:block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .rt-field input, .rt-field select, .rt-field textarea {
+      width: 100%;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.7rem 0.85rem;
+      font: inherit;
+      font-size: 0.9rem;
+    }
+    .rt-field textarea { min-height: 7rem; resize: vertical; line-height: 1.45; }
+    .rt-pole {
+      background: var(--bg-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 0.9rem;
+    }
+    .rt-pole strong { display:block; font-size: 0.82rem; margin-bottom: 0.35rem; }
+    .rt-pole.waste { border-color: rgba(244,63,94,0.45); }
+    .rt-pole.residual { border-color: rgba(52,211,153,0.45); }
+    .rt-receipt {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      word-break: break-all;
+      background: var(--bg-main);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.85rem;
+    }
+    .rt-conn {
+      display:flex; justify-content:space-between; align-items:center; gap:0.75rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .rt-conn:last-child { border-bottom: none; padding-bottom: 0; }
+    .rt-drop {
+      border: 2px dashed rgba(56,189,248,0.55);
+      border-radius: 16px;
+      padding: 1.5rem 1.15rem 1.35rem;
+      text-align: center;
+      background: rgba(56,189,248,0.07);
+      cursor: pointer;
+    }
+    .rt-drop.drag { border-color: var(--accent-mint); background: rgba(52,211,153,0.08); }
+    .rt-drop input { display:none; }
+    .rt-choose {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      margin-top: 0.85rem;
+      padding: 0.85rem 1.25rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+      font-size: 0.95rem;
+      background: var(--accent-mint);
+      color: #064E3B;
+    }
+    .rt-choose:hover { background: var(--accent-mint-hover); }
+    .rt-hosts-details {
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 0.85rem 1rem;
+      background: var(--bg-surface);
+    }
+    .rt-hosts-details > summary {
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      list-style: none;
+    }
+    .rt-hosts-details > summary::-webkit-details-marker { display: none; }
+    .rt-hosts-details > summary::before {
+      content: "▸ ";
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+    }
+    .rt-hosts-details[open] > summary::before { content: "▾ "; }
+    .rt-hosts-details[open] > summary { color: var(--text-primary); margin-bottom: 0.55rem; }
+    .rt-host-soft {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin: 0.35rem 0 0;
+      padding-left: 1.1rem;
+    }
+    .rt-host-soft li { margin: 0.25rem 0; }
+    .rt-revoke {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px dashed var(--border-subtle);
+    }
+    .rt-revoke p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin: 0 0 0.65rem; }
+    .rt-revoke-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.55rem 0.95rem; border-radius: 8px; cursor: pointer;
+      font: inherit; font-weight: 700; font-size: 0.82rem;
+      background: transparent; color: #fda4af;
+      border: 1px solid rgba(244,63,94,0.45);
+    }
+    .rt-revoke-btn:hover { background: rgba(244,63,94,0.12); }
+    .rt-revoke-btn[hidden] { display: none !important; }
+    .rt-host-cmd {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--bg-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 0.15rem 0.4rem;
+    }
+    .rt-ban {
+      display:flex; gap:0.65rem; align-items:flex-start;
+      background: rgba(52,211,153,0.08);
+      border: 1px solid rgba(52,211,153,0.35);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      margin: 1rem 0 1.25rem;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .rt-ban b { color: var(--accent-mint); }
+    .rt-live {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--accent-mint);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .rt-steps { display:flex; flex-wrap:wrap; gap:0.4rem; margin: 0.75rem 0 0; }
+    .rt-step {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.35rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+    .rt-step.on { color: var(--accent-cyan); border-color: rgba(56,189,248,0.5); background: rgba(56,189,248,0.1); }
+    .rt-step.done { color: var(--accent-mint); border-color: rgba(52,211,153,0.45); }
+    .rt-report {
+      white-space: pre-wrap;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      min-height: 6rem;
+    }
+    .rt-actions { display:flex; flex-wrap:wrap; gap:0.55rem; margin-top: 0.85rem; }
+    .rt-actions .action-pill, .rt-actions .nav-btn-solid {
+      cursor: pointer; border: none; font: inherit;
+    }
+    .rt-hosts code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
+      background: var(--bg-main);
+      padding: 0.15rem 0.4rem;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body id="top">
+  <header class="top-nav">
+    <a href="index.html" class="brand-group">
+      <svg class="brand-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
+        <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
+      </svg>
+      <span class="brand-name">Dualiscapax</span>
+    </a>
+    <a href="onboard.html" class="nav-btn-solid" style="text-decoration:none;">Start $0 Simulation</a>
+  </header>
+
+  <div style="padding:0.65rem 1.25rem; border-bottom:1px solid var(--border-subtle); display:flex; flex-wrap:wrap; gap:0.65rem; align-items:center; background:rgba(11,14,20,0.9);">
+    <a class="subpage-back" href="index.html">← Lander</a>
+    <a href="onboard.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Onboard</a>
+    <a href="portal.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Portal</a>
+    <a href="runtime.html" style="color:var(--accent-cyan);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Runtime</a>
+    <a href="fuel.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Fuel</a>
+    <a href="measure.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Measure</a>
+    <span class="rt-live">Live · 90-day handoff</span>
+  </div>
+
+  <main class="subpage-main page-wrapper">
+    <section class="pillar-section border-cyan" style="margin-top:0.5rem;">
+      <div class="badge-pill" style="border-color:var(--accent-cyan);color:var(--accent-cyan);">On-device integrator runtime // ED-SPEC-20260901-RUNTIME-PATH</div>
+      <h1 class="hero-title" style="font-size:clamp(1.75rem,5vw,2.6rem);margin:0.35rem 0 0.55rem;line-height:1.1;">Your books stay on your machine<span>.</span></h1>
+      <h2 class="section-headline">Your books stay on your machine. Dualis never sees them.</h2>
+      <p class="section-body">
+        This is the workbench the <strong>90-day $0 seat</strong> is meant to hand you into.
+        You load what you want modeled. <strong>DCLM Layer [0]</strong> vetoes, then measures waste vs residual
+        <em>in this browser</em>. The report is written here. Operators do not receive your spreadsheet,
+        passphrase, or API logins — only a stamped receipt (ID · YEAR · SOURCE · STAMP · STATUS · HASH) if you ever grant outbound.
+      </p>
+
+      <div class="rt-ban" role="note">
+        <span aria-hidden="true">🔒</span>
+        <div>
+          <b>Data policy (non-negotiable):</b>
+          No silent cloud upload. No patient names. No passwords. Missing numbers are <code style="font-family:var(--font-mono);color:var(--accent-cyan);">HOLE</code>, not zero.
+          This is the <b>live workbench</b> the 90-day seat hands you into. Books stay on this device. Dualis never receives them.
+        </div>
+      </div>
+
+      <div class="rt-steps" id="rtSteps" aria-label="Runtime flow">
+        <span class="rt-step on" data-step="1">1 Seat</span>
+        <span class="rt-step" data-step="2">2 Load books</span>
+        <span class="rt-step" data-step="3">3 Measure</span>
+        <span class="rt-step" data-step="4">4 Report</span>
+        <span class="rt-step" data-step="5">5 Cleanup</span>
+      </div>
+    </section>
+
+    <!-- Envelope -->
+    <section class="pillar-section border-mint" style="margin-top:1.25rem;">
+      <div class="rt-row" style="justify-content:space-between; margin-bottom:0.85rem;">
+        <div>
+          <div class="rt-mono">Runtime envelope</div>
+          <h3 style="margin:0.2rem 0 0; font-size:1.15rem;">Per-person seat (local)</h3>
+        </div>
+        <div class="rt-row" id="seatPills">
+          <span class="rt-pill muted" id="pillSeat">NO SEAT</span>
+          <span class="rt-pill cyan" id="pillFuel">Fuel OPEN · 0</span>
+          <span class="rt-pill" id="pillHost">JS · browser</span>
+        </div>
+      </div>
+
+      <div class="rt-grid rt-grid-2">
+        <div class="rt-card" id="seatCard">
+          <h3>Unity / 90-day seat</h3>
+          <p id="seatBlurb" style="font-size:0.88rem;color:var(--text-secondary);line-height:1.5;margin-bottom:0.85rem;">
+            No sealed Unity ID in this browser yet. Finish onboard to mint a local seat, or continue in demo mode.
+          </p>
+          <div class="rt-actions">
+            <a class="nav-btn-solid" href="onboard.html" style="text-decoration:none;display:inline-flex;align-items:center;">Initialize $0 seat</a>
+            <button type="button" class="action-pill" id="btnDemoSeat">Use demo seat</button>
+          </div>
+          <div class="rt-revoke" id="revokeBox">
+            <p>
+              Dualis never forced you to stay. Revoke cancels this <b>local bind</b> anytime —
+              wet-ink / court stamps (if any) stay separate.
+            </p>
+            <button type="button" class="rt-revoke-btn" id="btnRevokeSeat" hidden>Revoke 90-day seat</button>
+            <p id="revokeOut" style="margin-top:0.55rem;font-size:0.78rem;color:var(--accent-orange);min-height:1rem;"></p>
+          </div>
+        </div>
+        <div class="rt-card">
+          <h3>Law floor (always on)</h3>
+          <div class="rt-grid" style="gap:0.45rem; font-size:0.82rem; color:var(--text-secondary);">
+            <div><span class="rt-pill">L0</span> NO_FORCE — invited software only</div>
+            <div><span class="rt-pill">L1</span> HOST_SAFE — on-device first; no sk_ here</div>
+            <div><span class="rt-pill">L2</span> CLEANUP_FIRST — purge after report</div>
+            <div><span class="rt-pill">L3</span> TRUTH_OR_NOTHING — HOLE ≠ zero</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Load + measure -->
+    <section class="pillar-section border-orange" style="margin-top:1.25rem;">
+      <div class="badge-pill badge-orange">Load → local DCLM → report</div>
+      <h2 class="section-headline" style="font-size:1.35rem;">Model what you already run</h2>
+      <p class="section-body"><strong>Upload first</strong> — choose a file on this device. Optional paste is below. Nothing is POSTed to Dualis — files stay in this browser.</p>
+
+      <div class="rt-grid rt-grid-2" style="margin-top:1rem;">
+        <div class="rt-card">
+          <div class="rt-field" style="margin-bottom:0.85rem;">
+            <label for="needClass">Need class</label>
+            <select id="needClass">
+              <option value="cost">Cost reduction</option>
+              <option value="schedule">Daily schedule</option>
+              <option value="plant">Plant / SCADA line</option>
+              <option value="lab">Lab / research</option>
+              <option value="location">Location sheet (e.g. course)</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="rt-drop" id="dropZone" tabindex="0" role="button" aria-label="Load books on this device — choose a file">
+            <input type="file" id="fileIn" accept=".csv,.txt,.pdf,.json,.md,text/csv,text/plain,application/pdf,application/json">
+            <div style="font-size:1.55rem;margin-bottom:0.4rem;" aria-hidden="true">📂</div>
+            <div style="font-weight:800;font-size:1.05rem;color:var(--text-primary);">Load books on this device</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.4rem;line-height:1.45;">
+              Drop a CSV, TXT, PDF, or JSON here — or use the button. Parsed in this browser only. Dualis never receives the file.
+            </div>
+            <button type="button" class="rt-choose" id="btnChooseFile">Choose file on this device</button>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.65rem;" id="fileLabel">No file loaded yet · stays on this device</div>
+          </div>
+
+          <div class="rt-field" style="margin-top:1rem;">
+            <label for="notes">Optional — paste notes instead (no patient / employee names)</label>
+            <textarea id="notes" placeholder="Optional paste if you prefer not to upload a file. Example: kitchen delivery fees ~$18k/mo; overtime peaks Fri–Sun…"></textarea>
+          </div>
+        </div>
+
+        <div class="rt-card">
+          <h3>Two-pole meter</h3>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem;">Same loop as RUNTIME-END-ENV — waste vs residual.</p>
+          <div class="rt-grid" style="gap:0.65rem;">
+            <div class="rt-pole waste">
+              <strong style="color:var(--accent-pink);">Pole A · Waste</strong>
+              <div class="rt-field">
+                <label for="poleWaste">What you already pay for in friction</label>
+                <input id="poleWaste" type="text" placeholder="e.g. CAD 216000 / yr delivery + overtime">
+              </div>
+            </div>
+            <div class="rt-pole residual">
+              <strong style="color:var(--accent-mint);">Pole B · Residual</strong>
+              <div class="rt-field">
+                <label for="poleResidual">What you could walk back</label>
+                <input id="poleResidual" type="text" placeholder="e.g. CAD 174960 Y1 recoverable">
+              </div>
+            </div>
+            <div class="rt-field">
+              <label for="unit">Unit</label>
+              <input id="unit" type="text" value="CAD / yr">
+            </div>
+          </div>
+          <div class="rt-actions">
+            <button type="button" class="nav-btn-solid" id="btnMeasure">Run local measure</button>
+            <button type="button" class="action-pill" id="btnClearBooks">Clear books from RAM</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Report + receipt -->
+    <section class="pillar-section border-green" style="margin-top:1.25rem;">
+      <div class="rt-grid rt-grid-2">
+        <div class="rt-card">
+          <div class="rt-row" style="justify-content:space-between;margin-bottom:0.5rem;">
+            <h3 style="margin:0;">On-device report</h3>
+            <span class="rt-pill" id="grantPill">GRANT · local only</span>
+          </div>
+          <div class="rt-report" id="reportBox">Run a measure to write the report here. It never leaves this tab unless you export it yourself.</div>
+          <div class="rt-actions">
+            <button type="button" class="action-pill" id="btnExport" disabled>Download report.md</button>
+            <button type="button" class="action-pill" id="btnCleanup">CLEANUP_FIRST</button>
+          </div>
+        </div>
+        <div class="rt-card">
+          <h3>Stamped receipt (not the books)</h3>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.55rem;">
+            Allowed outbound after bind: ID · YEAR · SOURCE · STAMP · STATUS · HASH · agreement hash · books hash (not cells) · residual unit · grant.
+          </p>
+          <div class="rt-receipt" id="receiptBox">No receipt yet.</div>
+        </div>
+      </div>
+    </section>
+
+    
+    
+        <div class="rt-card" id="auditorShareCard" style="display:none;margin-top:1rem;">
+          <h3>Auditor share link (this contract)</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.45;margin-bottom:0.65rem;">
+            Send this to the auditor you named. It opens <strong>their</strong> runtime on <em>this contract only</em>.
+            They check the math and tap Approve. Books stay with you unless you also send a local report file.
+          </p>
+          <div class="rt-field">
+            <label for="audShareUrl">Contract audit link</label>
+            <input id="audShareUrl" type="text" readonly style="font-family:var(--font-mono);font-size:0.75rem;">
+          </div>
+          <div class="rt-actions">
+            <button type="button" class="nav-btn-solid" id="btnCopyAudLink">Copy link</button>
+            <button type="button" class="action-pill" id="btnMailAudLink">Email auditor</button>
+            <button type="button" class="action-pill" id="btnDlAudPack">Download audit pack</button>
+          </div>
+          <p id="audShareOut" style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;"></p>
+        </div>
+
+    <!-- Auditor desk: back-check + one-button approval (2-of-3 key) -->
+    
+    <section class="pillar-section border-purple" id="auditorUnlock" style="display:none;margin-top:0.5rem;border-color:var(--accent-purple);">
+      <div class="badge-pill" style="border-color:var(--accent-purple);color:var(--accent-purple);">Auditor unlock · contract-bound</div>
+      <h2 class="section-headline" style="font-size:1.25rem;">Open this contract to back-check math</h2>
+      <p class="section-body">Confirm you are the named auditor for contract <code id="audUnlockCid" style="font-family:var(--font-mono);color:var(--accent-cyan);"></code>.</p>
+      <div class="rt-grid rt-grid-2">
+        <div class="rt-card">
+          <div class="rt-field"><label>Seat holder</label><input id="audUnlockHolder" readonly></div>
+          <div class="rt-field"><label>Named auditor</label><input id="audUnlockNamed" readonly></div>
+          <div class="rt-field"><label for="audUnlockEmail">Your email (must match)</label><input id="audUnlockEmail" type="email" placeholder="as named on the seat"></div>
+          <div class="rt-actions">
+            <button type="button" class="nav-btn-solid" id="btnAudUnlock">Unlock auditor desk</button>
+          </div>
+          <p id="audUnlockOut" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;"></p>
+        </div>
+        <div class="rt-card">
+          <h3>Or load invite JSON</h3>
+          <p style="font-size:0.82rem;color:var(--text-secondary);">If they sent <code style="font-family:var(--font-mono);font-size:0.75rem;">dualis-auditor-invite-*.json</code>, drop it here.</p>
+          <div class="rt-drop" id="audInviteDrop" style="margin-top:0.75rem;">
+            <input type="file" id="audInviteFile" accept=".json,application/json" style="display:none">
+            <div style="font-weight:700;">Load auditor invite</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pillar-section border-purple" id="auditorDesk" style="margin-top:1.25rem; border-color:var(--accent-purple);">
+      <div class="badge-pill" style="border-color:var(--accent-purple);color:var(--accent-purple);">Auditor desk · 2-of-3 key // local only</div>
+      <h2 class="section-headline" style="font-size:1.3rem;">Back-check the math. One-button approve.</h2>
+      <p class="section-body">Contract <code id="audDeskCid" style="font-family:var(--font-mono);color:var(--accent-cyan);"></code></p>
+      <p class="section-body">
+        Bound to one <strong>contract_id</strong>. Seat holders share <code style="font-family:var(--font-mono);font-size:0.78rem;color:var(--accent-cyan);">runtime.html?audit=…</code> with their named auditor.
+        Re-read the poles and receipt hash on <strong>this device</strong>. Approve writes a local attestation —
+        your key on the 2-of-3 line. Dualis never sees the books. HOLE stays HOLE; you cannot approve empty poles.
+      </p>
+
+      <div class="rt-grid rt-grid-2" style="margin-top:1rem;">
+        <div class="rt-card">
+          <h3>What you’re checking</h3>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.65rem;">Pulled from the last local measure, or paste a client report.</p>
+          <div class="rt-field" style="margin-bottom:0.65rem;">
+            <label for="audWaste">Pole A · Waste</label>
+            <input id="audWaste" type="text" readonly>
+          </div>
+          <div class="rt-field" style="margin-bottom:0.65rem;">
+            <label for="audResid">Pole B · Residual / walk-back</label>
+            <input id="audResid" type="text" readonly>
+          </div>
+          <div class="rt-field" style="margin-bottom:0.65rem;">
+            <label for="audUnit">Unit</label>
+            <input id="audUnit" type="text" readonly>
+          </div>
+          <div class="rt-field" style="margin-bottom:0.65rem;">
+            <label for="audHash">Books / receipt hash</label>
+            <input id="audHash" type="text" readonly style="font-family:var(--font-mono);font-size:0.75rem;">
+          </div>
+          <div class="rt-actions">
+            <button type="button" class="action-pill" id="btnAudRefresh">Refresh from measure</button>
+            <button type="button" class="action-pill" id="btnAudLoadFile">Load client report.md</button>
+            <input type="file" id="audFile" accept=".md,.txt,.json,text/markdown,text/plain,application/json" style="display:none">
+          </div>
+          <p id="audCheckOut" class="rt-mono" style="margin-top:0.75rem;text-transform:none;letter-spacing:0;font-size:0.8rem;color:var(--text-secondary);line-height:1.45;"></p>
+        </div>
+        <div class="rt-card">
+          <h3>Attestation</h3>
+          <div class="rt-field" style="margin-bottom:0.65rem;">
+            <label for="audName">Your name / firm (local)</label>
+            <input id="audName" type="text" placeholder="e.g. J. Smith CPA · stays on this device">
+          </div>
+          <div class="rt-field" style="margin-bottom:0.65rem;">
+            <label for="audNote">Note (optional)</label>
+            <textarea id="audNote" style="min-height:4rem" placeholder="Math agrees / variance noted…"></textarea>
+          </div>
+          <div id="audVerdict" style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem;">No attestation yet.</div>
+          <div class="rt-actions">
+            <button type="button" class="nav-btn-solid" id="btnAudApprove" style="background:var(--accent-mint);">Approve math</button>
+            <button type="button" class="action-pill" id="btnAudReject" style="border-color:var(--accent-pink);color:var(--accent-pink);">Reject / HOLE</button>
+          </div>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.75rem;line-height:1.45;">
+            Approve = your local key toward 2-of-3 (client + auditor + Dualis schedule). Not a government stamp. Not Dualis auto-sign.
+          </p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Connectors + hosts -->
+    <section class="pillar-section" style="margin-top:1.25rem; border-color:var(--accent-purple);">
+      <div class="badge-pill" style="border-color:var(--accent-purple);color:var(--accent-purple);">Connectors · WAIT_GRANT</div>
+      <h2 class="section-headline" style="font-size:1.25rem;">Everything they connect later is an invert door</h2>
+      <p class="section-body">No silent harvest. Connector grants are local-only until you say otherwise — nothing phones home.</p>
+
+      <div class="rt-grid rt-grid-2" style="margin-top:1rem;">
+        <div class="rt-card" id="connList">
+          <div class="rt-conn"><div><b>Time</b><div class="rt-mono">Calendar</div></div><button type="button" class="action-pill conn-btn" data-conn="time">WAIT_GRANT</button></div>
+          <div class="rt-conn"><div><b>Place</b><div class="rt-mono">Maps / course sheet</div></div><button type="button" class="action-pill conn-btn" data-conn="place">WAIT_GRANT</button></div>
+          <div class="rt-conn"><div><b>Money</b><div class="rt-mono">Bank CSV / invoice (read-only)</div></div><button type="button" class="action-pill conn-btn" data-conn="money">WAIT_GRANT</button></div>
+          <div class="rt-conn"><div><b>Machine</b><div class="rt-mono">Meter / PLC export</div></div><button type="button" class="action-pill conn-btn" data-conn="machine">WAIT_GRANT</button></div>
+          <div class="rt-conn"><div><b>Chat</b><div class="rt-mono">Iris OPEN surface</div></div><a class="action-pill" href="iris.html" style="text-decoration:none;">Open Iris</a></div>
+        </div>
+        <details class="rt-hosts-details rt-hosts">
+          <summary>Developer hosts (optional)</summary>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin:0 0 0.55rem;line-height:1.5;">
+            Most seats use <b>this browser page</b>. CLI hosts are for integrators who already run invited software on their own machines — not required for the 90-day seat.
+          </p>
+          <ul class="rt-host-soft">
+            <li>Browser (Android / iOS / desktop) — <b>this page</b> · LIVE</li>
+            <li>Node invite host — advanced · <span class="rt-host-cmd">runtime/dualis.js</span></li>
+            <li>Python invite host — advanced · <span class="rt-host-cmd">runtime.dualis</span></li>
+            <li>Plant controller — Python host only after an operator types invite (not a safety system)</li>
+          </ul>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.75rem;">
+            Invited software. Not an implant. Not a silent sit on a PLC.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="pillar-section border-cyan" style="margin-top:1.25rem;">
+      <div class="rt-row" style="justify-content:space-between;gap:1rem;">
+        <div>
+          <div class="rt-mono">Approval gate</div>
+          <h3 style="margin:0.25rem 0;font-size:1.1rem;">You are in the 90-day on-device runtime</h3>
+          <p style="font-size:0.88rem;color:var(--text-secondary);max-width:36rem;line-height:1.5;">
+            After seal, onboard sends you here. Portal stays the role door. Measure runs locally; CLEANUP_FIRST purges the working set.
+          </p>
+        </div>
+        <div class="rt-actions">
+          <a class="nav-btn-solid" href="onboard.html" style="text-decoration:none;">Need a seat? Onboard</a>
+          <a class="action-pill" href="portal.html" style="text-decoration:none;">Portal roles</a>
+          <button type="button" class="rt-revoke-btn" id="btnRevokeSeatGate" hidden>Revoke 90-day seat</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  (function () {
+    "use strict";
+
+    var booksMeta = null; // { name, size, shaPreview, textSample } — never uploaded
+    var lastReport = "";
+    var lastReceipt = null;
+    var demoSeat = false;
+
+    function $(id) { return document.getElementById(id); }
+
+    function setStep(n) {
+      document.querySelectorAll("#rtSteps .rt-step").forEach(function (el) {
+        var s = Number(el.getAttribute("data-step"));
+        el.classList.remove("on", "done");
+        if (s < n) el.classList.add("done");
+        if (s === n) el.classList.add("on");
+      });
+    }
+
+    function fuelBal() {
+      try {
+        if (window.DCFuel && typeof DCFuel.balance === "function") return Number(DCFuel.balance()) || 0;
+      } catch (e) {}
+      return 0;
+    }
+
+    function readUnity() {
+      try {
+        var raw = localStorage.getItem("dc.unity.id");
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) { return null; }
+    }
+
+    function renderSeat() {
+      var p = readUnity();
+      var blurb = $("seatBlurb");
+      var pill = $("pillSeat");
+      var fuel = $("pillFuel");
+      fuel.textContent = "Fuel OPEN · " + fuelBal();
+      var canRevoke = false;
+      if (p && p.look) {
+        var end = "";
+        try {
+          var d = new Date(p.at || Date.now());
+          d.setUTCDate(d.getUTCDate() + 90);
+          end = d.toISOString().slice(0, 10);
+        } catch (e) {}
+        blurb.innerHTML =
+          "<strong>" + escapeHtml(p.look.name || "unnamed") + "</strong> · " +
+          escapeHtml(p.look.kind || "seat") + "<br>" +
+          escapeHtml(p.look.municipality || "no town") +
+          (end ? "<br>CAD $0 modeling seat through <strong>" + end + "</strong>." : "") +
+          "<br><span style=\"color:var(--text-muted)\">Books stay on this device. Dualis operators do not see them.</span>";
+        pill.textContent = "SEAT · LOCAL";
+        pill.className = "rt-pill";
+        setStep(2);
+        canRevoke = true;
+      } else if (demoSeat) {
+        blurb.innerHTML = "<strong>Demo seat</strong> · local preview<br>CAD $0 · local only · not a Unity mint.<br><span style=\"color:var(--text-muted)\">Finish onboard to mint a Unity seat, or continue in demo mode.</span>";
+        pill.textContent = "DEMO SEAT";
+        pill.className = "rt-pill warn";
+        setStep(2);
+        canRevoke = true;
+      } else {
+        try {
+          var rev = localStorage.getItem("dc.unity.revoked");
+          if (rev) {
+            var ro = JSON.parse(rev);
+            blurb.innerHTML =
+              "Seat <strong>revoked</strong> on this device (" + escapeHtml((ro.at || "").slice(0, 19)) + "Z).<br>" +
+              "<span style=\"color:var(--text-muted)\">Local bind cancel only. Wet-ink / court (if any) stay separate. Dualis never forced you to stay.</span>";
+          }
+        } catch (e) {}
+        pill.textContent = "NO SEAT";
+        pill.className = "rt-pill muted";
+        setStep(1);
+      }
+      ["btnRevokeSeat", "btnRevokeSeatGate"].forEach(function (id) {
+        var b = $(id);
+        if (b) b.hidden = !canRevoke;
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s || "").replace(/[&<>"']/g, function (c) {
+        return ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" })[c];
+      });
+    }
+
+    async function sha256Hex(buf) {
+      if (!window.crypto || !crypto.subtle) return "sha256_unavailable_" + String(buf.byteLength || 0);
+      var dig = await crypto.subtle.digest("SHA-256", buf);
+      return Array.from(new Uint8Array(dig)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+    }
+
+    function parseMoneyish(s) {
+      var m = String(s || "").replace(/,/g, "").match(/-?\d+(\.\d+)?/);
+      return m ? Number(m[0]) : null;
+    }
+
+    function localMeasure() {
+      setStep(3);
+      var need = $("needClass").value;
+      var wasteS = $("poleWaste").value.trim();
+      var residS = $("poleResidual").value.trim();
+      var unit = $("unit").value.trim() || "units";
+      var notes = $("notes").value.trim();
+      var w = parseMoneyish(wasteS);
+      var r = parseMoneyish(residS);
+
+      // L3: missing poles → SEED / HOLE, not invented zeros
+      var status = "MEASURE";
+      var lines = [];
+      lines.push("Agent Iris · on-device residual report");
+      lines.push("Need class: " + need);
+      lines.push("Host: browser JS runtime");
+      lines.push("");
+
+      if (booksMeta) {
+        lines.push("Books loaded (local only): " + booksMeta.name + " · " + booksMeta.size + " bytes");
+        lines.push("Books hash: " + booksMeta.shaPreview);
+        lines.push("");
+      }
+
+      if (!wasteS && !residS && !notes && !booksMeta) {
+        status = "SEED";
+        lines.push("Status: SEED — no poles supplied.");
+        lines.push("Truth floor: HOLE, not zero. Add waste / residual poles or load a sheet.");
+      } else if (w == null || r == null) {
+        status = "SEED";
+        lines.push("Status: SEED — one or both poles are HOLE (not numeric).");
+        lines.push("Pole A (waste): " + (wasteS || "HOLE"));
+        lines.push("Pole B (residual): " + (residS || "HOLE"));
+        if (notes) lines.push("Notes (local): " + notes.slice(0, 400));
+        lines.push("");
+        lines.push("Invert door: name both poles in " + unit + " before claiming walk-back.");
+      } else {
+        var walk = Math.max(0, Math.min(w, r));
+        var kept = Math.max(0, w - walk);
+        lines.push("Status: MEASURE");
+        lines.push("Pole A waste: " + w + " " + unit);
+        lines.push("Pole B residual / walk-back: " + r + " " + unit);
+        lines.push("Named recoverable (min of poles): " + walk + " " + unit);
+        lines.push("Still paying if no invert: " + kept + " " + unit);
+        if (notes) { lines.push(""); lines.push("Context (local): " + notes.slice(0, 500)); }
+        lines.push("");
+        lines.push("Invert door: cut the named leak, or keep paying it. Simulation is not treatment. Not a share.");
+        lines.push("Grant: LOCAL_ONLY — Dualis did not receive this sheet.");
+      }
+
+      lastReport = lines.join("\n");
+      $("reportBox").textContent = lastReport;
+      $("btnExport").disabled = false;
+      try { persistMeasureToContract(); } catch (ePers) {}
+      $("grantPill").textContent = "GRANT · local only";
+      setStep(4);
+
+      // Receipt without books
+      var now = new Date();
+      var payload = [
+        "ID=rt_" + (readUnity() && readUnity().id ? String(readUnity().id).slice(0, 12) : "demo"),
+        "YEAR=" + now.getUTCFullYear(),
+        "SOURCE=runtime.html",
+        "STAMP=" + now.toISOString(),
+        "STATUS=" + status,
+        "NEED=" + need,
+        "UNIT=" + unit,
+        "BOOKS_HASH=" + (booksMeta ? booksMeta.shaPreview : "none"),
+        "GRANT=LOCAL_ONLY"
+      ].join("|");
+
+      var enc = new TextEncoder().encode(payload);
+      sha256Hex(enc).then(function (h) {
+        lastReceipt = {
+          id: payload.split("|")[0].slice(3),
+          year: now.getUTCFullYear(),
+          source: "runtime.html",
+          stamp: now.toISOString(),
+          status: status,
+          hash: h,
+          books_hash: booksMeta ? booksMeta.shaPreview : "none",
+          grant: "LOCAL_ONLY"
+        };
+        $("receiptBox").textContent =
+          "ID: " + lastReceipt.id + "\n" +
+          "YEAR: " + lastReceipt.year + "\n" +
+          "SOURCE: " + lastReceipt.source + "\n" +
+          "STAMP: " + lastReceipt.stamp + "\n" +
+          "STATUS: " + lastReceipt.status + "\n" +
+          "HASH: " + lastReceipt.hash + "\n" +
+          "BOOKS_HASH: " + lastReceipt.books_hash + " (cells not included)\n" +
+          "GRANT: " + lastReceipt.grant + "\n" +
+          "OUTBOUND: none (on-device — no network write of books)";
+        try {
+          localStorage.setItem("dc.runtime.lastReceipt", JSON.stringify(lastReceipt));
+          localStorage.setItem("dc.runtime.lastReport", lastReport);
+        } catch (e) {}
+      });
+    }
+
+    function cleanup() {
+      booksMeta = null;
+      lastReport = "";
+      lastReceipt = null;
+      $("fileIn").value = "";
+      $("fileLabel").textContent = "No file loaded yet · stays on this device";
+      $("notes").value = "";
+      $("poleWaste").value = "";
+      $("poleResidual").value = "";
+      $("reportBox").textContent = "Session purged (CLEANUP_FIRST). Books cleared from RAM. Seat seal untouched.";
+      $("receiptBox").textContent = "No receipt yet.";
+      $("btnExport").disabled = true;
+      try {
+        localStorage.removeItem("dc.runtime.lastReport");
+        localStorage.removeItem("dc.runtime.notes");
+        // keep lastReceipt optional? Policy: purge session memory after receipt — clear working set
+        localStorage.removeItem("dc.model.notes");
+      } catch (e) {}
+      setStep(5);
+      setTimeout(function () { setStep(readUnity() || demoSeat ? 2 : 1); }, 1200);
+    }
+
+    function loadFile(file) {
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = async function () {
+        var buf = reader.result;
+        var u8 = new Uint8Array(buf);
+        var hash = await sha256Hex(u8);
+        var sample = "";
+        try {
+          // text sample for CSV/TXT only — still never uploaded
+          if (/text|json|csv|markdown/i.test(file.type) || /\.(csv|txt|json|md)$/i.test(file.name)) {
+            sample = new TextDecoder().decode(u8.slice(0, 800));
+          }
+        } catch (e) {}
+        booksMeta = {
+          name: file.name,
+          size: file.size,
+          shaPreview: hash,
+          textSample: sample
+        };
+        $("fileLabel").textContent = file.name + " · " + file.size + " bytes · SHA-256 local · not uploaded";
+        setStep(2);
+        // naive CSV hint into poles if empty
+        if (sample && !$("poleWaste").value) {
+          var nums = sample.match(/-?\d{2,}([.,]\d+)?/g);
+          if (nums && nums.length >= 2) {
+            $("poleWaste").value = nums[0].replace(",", "") + " (from sheet — verify)";
+            $("poleResidual").value = nums[1].replace(",", "") + " (from sheet — verify)";
+          }
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // wire UI
+    $("btnDemoSeat").onclick = function () { demoSeat = true; renderSeat(); };
+    $("btnMeasure").onclick = localMeasure;
+    $("btnClearBooks").onclick = function () {
+      booksMeta = null;
+      $("fileIn").value = "";
+      $("fileLabel").textContent = "No file loaded yet · stays on this device";
+    };
+    $("btnCleanup").onclick = cleanup;
+    $("btnExport").onclick = function () {
+      if (!lastReport) return;
+      var blob = new Blob([lastReport + "\n\n---\n" + ($("receiptBox").textContent || "")], { type: "text/markdown" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "dualis-runtime-report-local.md";
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
+    };
+
+    var drop = $("dropZone");
+    var fileIn = $("fileIn");
+    var chooseBtn = $("btnChooseFile");
+    if (chooseBtn) {
+      chooseBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileIn.click();
+      });
+    }
+    drop.addEventListener("click", function (e) {
+      if (e.target && (e.target.id === "btnChooseFile" || (e.target.closest && e.target.closest("#btnChooseFile")))) return;
+      fileIn.click();
+    });
+    drop.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileIn.click(); }
+    });
+    fileIn.addEventListener("change", function () {
+      if (fileIn.files && fileIn.files[0]) loadFile(fileIn.files[0]);
+    });
+    ["dragenter", "dragover"].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("drag"); });
+    });
+    ["dragleave", "drop"].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) {
+        e.preventDefault();
+        drop.classList.remove("drag");
+        if (ev === "drop" && e.dataTransfer && e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+      });
+    });
+
+    document.querySelectorAll(".conn-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var on = btn.getAttribute("data-on") === "1";
+        if (on) {
+          btn.setAttribute("data-on", "0");
+          btn.textContent = "WAIT_GRANT";
+          btn.style.borderColor = "";
+          btn.style.color = "";
+        } else {
+          btn.setAttribute("data-on", "1");
+          btn.textContent = "GRANTED · local";
+          btn.style.borderColor = "var(--accent-mint)";
+          btn.style.color = "var(--accent-mint)";
+        }
+      });
+    });
+
+    // restore notes if any (local)
+    try {
+      var n = localStorage.getItem("dc.model.notes") || localStorage.getItem("dc.runtime.notes");
+      if (n) $("notes").value = n;
+      var prev = localStorage.getItem("dc.runtime.lastReport");
+      if (prev) {
+        lastReport = prev;
+        $("reportBox").textContent = prev;
+        $("btnExport").disabled = false;
+      }
+      var rc = localStorage.getItem("dc.runtime.lastReceipt");
+      if (rc) {
+        var o = JSON.parse(rc);
+        $("receiptBox").textContent =
+          "ID: " + o.id + "\nYEAR: " + o.year + "\nSOURCE: " + o.source +
+          "\nSTAMP: " + o.stamp + "\nSTATUS: " + o.status + "\nHASH: " + o.hash +
+          "\nBOOKS_HASH: " + (o.books_hash || "none") + "\nGRANT: " + (o.grant || "LOCAL_ONLY");
+      }
+    } catch (e) {}
+
+    $("notes").addEventListener("change", function () {
+      try { localStorage.setItem("dc.runtime.notes", $("notes").value); } catch (e) {}
+    });
+
+    function b64urlToBuf(s) {
+      var str = String(s || "").replace(/-/g, "+").replace(/_/g, "/");
+      while (str.length % 4) str += "=";
+      var bin = atob(str);
+      var out = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return out.buffer;
+    }
+
+    async function reauthForRevoke(unity) {
+      var out = $("revokeOut");
+      // Prefer WebAuthn if onboard stored a passkey id
+      var pk = unity && unity.passkey && unity.passkey.id;
+      if (pk && window.PublicKeyCredential && navigator.credentials && navigator.credentials.get) {
+        try {
+          if (out) out.textContent = "Confirm with passkey / face / finger…";
+          await navigator.credentials.get({
+            publicKey: {
+              challenge: crypto.getRandomValues(new Uint8Array(32)),
+              timeout: 60000,
+              userVerification: "preferred",
+              allowCredentials: [{ type: "public-key", id: b64urlToBuf(pk) }]
+            }
+          });
+          return { ok: true, via: "passkey" };
+        } catch (e) {
+          if (out) out.textContent = "Passkey cancelled or failed — try phrase or typed confirm.";
+          // fall through
+        }
+      }
+
+      var stored = unity && unity.passphrase_sha256;
+      if (stored) {
+        var typed = window.prompt("Re-enter your device phrase to revoke this local seat (fingerprint check). Leave blank to use typed CONFIRM REVOKE instead.");
+        if (typed != null && String(typed).length) {
+          var hex = await sha256Hex(new TextEncoder().encode(String(typed)));
+          if (hex === stored) return { ok: true, via: "phrase" };
+          if (out) out.textContent = "Phrase fingerprint did not match.";
+          return { ok: false, via: "phrase" };
+        }
+      }
+
+      var confirmText = window.prompt('Type CONFIRM REVOKE to cancel this local 90-day seat bind.');
+      if (confirmText && String(confirmText).trim().toUpperCase() === "CONFIRM REVOKE") {
+        return { ok: true, via: "typed" };
+      }
+      return { ok: false, via: "typed" };
+    }
+
+    async function performRevoke() {
+      var out = $("revokeOut");
+      var unity = readUnity();
+      var hasDemo = demoSeat && !unity;
+      if (!unity && !hasDemo) {
+        if (out) out.textContent = "No local seat to revoke.";
+        return;
+      }
+      if (!window.confirm("Revoke this 90-day seat on this device?\n\nThis cancels the local bind only. Dualis never forced you to stay. Wet-ink / court stamps (if any) stay separate.\n\nBooks, notes, and receipts in this browser will be purged (CLEANUP_FIRST).")) {
+        return;
+      }
+
+      var auth = await reauthForRevoke(unity || {});
+      if (!auth.ok) {
+        if (out) out.textContent = (out.textContent || "Revoke cancelled.") + " Seat kept.";
+        return;
+      }
+
+      var now = new Date();
+      var snap = {
+        status: "REVOKED",
+        at: now.toISOString(),
+        via: auth.via,
+        source: "runtime.html",
+        look: unity && unity.look ? {
+          name: unity.look.name || null,
+          kind: unity.look.kind || null,
+          municipality: unity.look.municipality || null
+        } : (hasDemo ? { name: "demo", kind: "demo" } : null),
+        prior_passkey: !!(unity && unity.passkey && unity.passkey.id),
+        law: ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"]
+      };
+      var payload = "REVOKED|" + snap.at + "|" + snap.via + "|" + (snap.look && snap.look.kind || "none");
+      var h = await sha256Hex(new TextEncoder().encode(payload));
+      snap.hash = h;
+
+      try {
+        localStorage.setItem("dc.unity.revoked", JSON.stringify(snap));
+        localStorage.removeItem("dc.unity.id");
+        localStorage.removeItem("dc.unity.pack");
+        localStorage.removeItem("dc.runtime.handoff");
+        localStorage.removeItem("dc.runtime.lastReport");
+        localStorage.removeItem("dc.runtime.lastReceipt");
+        localStorage.removeItem("dc.runtime.notes");
+        localStorage.removeItem("dc.model.notes");
+      } catch (e) {}
+
+      demoSeat = false;
+      booksMeta = null;
+      lastReport = "";
+      lastReceipt = null;
+      try {
+        $("fileIn").value = "";
+        $("fileLabel").textContent = "No file loaded yet · stays on this device";
+        $("notes").value = "";
+        $("poleWaste").value = "";
+        $("poleResidual").value = "";
+        $("reportBox").textContent = "Seat revoked. Working set purged (CLEANUP_FIRST).";
+        $("receiptBox").textContent =
+          "STATUS: REVOKED\nSTAMP: " + snap.at + "\nVIA: " + snap.via +
+          "\nHASH: " + snap.hash + "\nGRANT: LOCAL_BIND_CANCEL\nNOTE: wet-ink/court separate if any";
+        $("btnExport").disabled = true;
+      } catch (e) {}
+
+      if (out) out.textContent = "Revoked locally (" + auth.via + "). Redirecting…";
+      setTimeout(function () { location.href = "onboard.html?revoked=1"; }, 700);
+    }
+
+    function wireRevoke(btn) {
+      if (!btn) return;
+      btn.addEventListener("click", function () { performRevoke(); });
+    }
+    wireRevoke($("btnRevokeSeat"));
+    wireRevoke($("btnRevokeSeatGate"));
+
+    // Deep-link: runtime.html?revoke=1 or #revoke
+    try {
+      var q = new URLSearchParams(location.search || "");
+      if (q.get("revoke") === "1" || (location.hash || "").toLowerCase() === "#revoke") {
+        setTimeout(function () {
+          if (!$("btnRevokeSeat").hidden) performRevoke();
+          else if ($("revokeOut")) $("revokeOut").textContent = "No local seat to revoke. Seal one on onboard first.";
+        }, 400);
+      }
+    } catch (e) {}
+
+
+    // ===== Contract-bound auditor (share link + unlock + approve) =====
+    var auditMode = { active: false, contract_id: null, unlocked: false };
+
+    function qs(name) {
+      try { return new URLSearchParams(location.search).get(name); } catch (e) { return null; }
+    }
+
+    function readContracts() {
+      try { return JSON.parse(localStorage.getItem("dc.contracts") || "{}"); } catch (e) { return {}; }
+    }
+    function writeContracts(store) {
+      try { localStorage.setItem("dc.contracts", JSON.stringify(store)); } catch (e) {}
+    }
+    function getContract(cid) {
+      var s = readContracts();
+      return s[cid] || null;
+    }
+    function upsertContractMeasure(cid, measure, receipt) {
+      if (!cid) return;
+      var s = readContracts();
+      if (!s[cid]) s[cid] = { contract_id: cid };
+      s[cid].measure = measure;
+      s[cid].receipt = receipt;
+      s[cid].updated = new Date().toISOString();
+      writeContracts(s);
+    }
+
+    function currentContractId() {
+      if (auditMode.contract_id) return auditMode.contract_id;
+      try {
+        var p = JSON.parse(localStorage.getItem("dc.unity.id") || "null");
+        return (p && (p.contract_id || (p.seat && p.seat.contract_id))) || null;
+      } catch (e) { return null; }
+    }
+
+    function auditorShareUrl(cid) {
+      var base = location.origin + location.pathname.replace(/[^/]+$/, "runtime.html");
+      return base + "?audit=" + encodeURIComponent(cid);
+    }
+
+    function renderAuditorShare() {
+      var card = $("auditorShareCard");
+      if (!card) return;
+      var p = null;
+      try { p = JSON.parse(localStorage.getItem("dc.unity.id") || "null"); } catch (e) {}
+      var cid = currentContractId();
+      var named = p && p.auditor && p.auditor.named;
+      if (!cid || !named || auditMode.active) {
+        card.style.display = "none";
+        return;
+      }
+      card.style.display = "block";
+      var url = auditorShareUrl(cid);
+      if ($("audShareUrl")) $("audShareUrl").value = url;
+      if ($("btnCopyAudLink")) {
+        $("btnCopyAudLink").onclick = function () {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function () {
+              if ($("audShareOut")) $("audShareOut").textContent = "Copied. Send to your auditor.";
+            }).catch(function () { $("audShareOut").textContent = url; });
+          } else {
+            $("audShareUrl").select();
+            if ($("audShareOut")) $("audShareOut").textContent = "Select + copy the link.";
+          }
+        };
+      }
+      if ($("btnMailAudLink") && p.auditor.email) {
+        $("btnMailAudLink").onclick = function () {
+          var sub = encodeURIComponent("DualisCapax auditor link · " + cid);
+          var body = encodeURIComponent(
+            "Please open this contract-specific auditor link on your device:\n\n" + url +
+            "\n\nConfirm with your email (" + p.auditor.email + "). Back-check the math and tap Approve. Dualis does not receive the books."
+          );
+          location.href = "mailto:" + p.auditor.email + "?subject=" + sub + "&body=" + body;
+        };
+      }
+    }
+
+    function parseMoneyishAud(s) {
+      var m = String(s || "").replace(/,/g, "").match(/-?\d+(\.\d+)?/);
+      return m ? Number(m[0]) : null;
+    }
+
+    function refreshAuditorFromMeasure() {
+      var cid = currentContractId();
+      var c = cid && getContract(cid);
+      var w = "", r = "", u = "", hash = "";
+      if (c && c.measure) {
+        w = c.measure.waste_raw || c.measure.waste || "";
+        r = c.measure.residual_raw || c.measure.residual || "";
+        u = c.measure.unit || "";
+        hash = (c.receipt && (c.receipt.books_hash || c.receipt.hash)) || "";
+      } else {
+        w = ($("poleWaste") && $("poleWaste").value) || "";
+        r = ($("poleResidual") && $("poleResidual").value) || "";
+        u = ($("unit") && $("unit").value) || "";
+        try {
+          var rc = JSON.parse(localStorage.getItem("dc.runtime.lastReceipt") || "null");
+          if (rc) hash = rc.books_hash || rc.hash || "";
+        } catch (e) {}
+        if (!hash && typeof booksMeta !== "undefined" && booksMeta) hash = booksMeta.shaPreview || "";
+      }
+      if ($("audWaste")) $("audWaste").value = w;
+      if ($("audResid")) $("audResid").value = r;
+      if ($("audUnit")) $("audUnit").value = u;
+      if ($("audHash")) $("audHash").value = hash || "";
+      if ($("audDeskCid") && cid) $("audDeskCid").textContent = cid;
+      return runAuditorCheck();
+    }
+
+    function runAuditorCheck() {
+      var out = $("audCheckOut");
+      if (!out) return { ok: false, status: "HOLE" };
+      var w = parseMoneyishAud($("audWaste") && $("audWaste").value);
+      var r = parseMoneyishAud($("audResid") && $("audResid").value);
+      var unit = ($("audUnit") && $("audUnit").value) || "units";
+      var cid = currentContractId() || "none";
+      if (w == null || r == null) {
+        out.textContent = "Contract " + cid + " · STATUS HOLE — both poles need numbers. Cannot Approve (TRUTH_OR_NOTHING).";
+        out.style.color = "var(--accent-pink)";
+        return { ok: false, status: "HOLE" };
+      }
+      var walk = Math.max(0, Math.min(w, r));
+      out.innerHTML = "Contract <b>" + cid + "</b><br>STATUS: MEASURE CHECK<br>Waste " + w + " · Residual " + r + " " + unit +
+        "<br>Named recoverable (min): <b style=\"color:var(--accent-mint)\">" + walk + "</b> " + unit;
+      out.style.color = "var(--text-secondary)";
+      return { ok: true, status: "MEASURE", waste: w, residual: r, walk: walk, unit: unit, contract_id: cid };
+    }
+
+    async function auditorAttest(approve) {
+      var check = runAuditorCheck();
+      var verdict = $("audVerdict");
+      var name = ($("audName") && $("audName").value.trim()) || "";
+      var cid = currentContractId();
+      if (!cid) { if (verdict) verdict.textContent = "No contract_id — seal a seat first."; return; }
+      if (approve && !check.ok) { if (verdict) verdict.textContent = "Blocked: cannot Approve HOLE math."; return; }
+      if (!name) { if (verdict) verdict.textContent = "Add your name / firm before attesting."; return; }
+      if (!window.confirm((approve ? "Approve" : "Reject") + " math for contract " + cid + "?\n\nLocal attestation only. Books not uploaded.")) return;
+
+      var stamp = new Date().toISOString();
+      var payload = ["AUDITOR", approve ? "APPROVE" : "REJECT", cid, name, check.status, String(check.waste), String(check.residual), stamp].join("|");
+      var hash = await sha256Hex(new TextEncoder().encode(payload));
+      var att = {
+        role: "auditor",
+        decision: approve ? "APPROVE" : "REJECT",
+        contract_id: cid,
+        name: name,
+        note: ($("audNote") && $("audNote").value.trim()) || "",
+        books_or_receipt_hash: ($("audHash") && $("audHash").value) || null,
+        check: check,
+        stamp: stamp,
+        hash: hash,
+        grant: "LOCAL_ONLY",
+        law: "contract-bound 2-of-3 key · not court stamp"
+      };
+      try {
+        localStorage.setItem("dc.auditor.lastAttestation", JSON.stringify(att));
+        var store = readContracts();
+        if (!store[cid]) store[cid] = { contract_id: cid };
+        store[cid].attestation = att;
+        writeContracts(store);
+      } catch (e) {}
+      if (verdict) {
+        verdict.style.color = approve ? "var(--accent-mint)" : "var(--accent-pink)";
+        verdict.textContent = att.decision + " · " + cid + " · " + name + " · " + hash.slice(0, 16) + "…";
+      }
+    }
+
+    function showAuditorDesk(show) {
+      var desk = $("auditorDesk");
+      if (desk) desk.style.display = show ? "block" : (auditMode.active ? "none" : "block");
+      // When in audit mode, hide until unlock
+      if (auditMode.active && !auditMode.unlocked && desk) desk.style.display = "none";
+      if (auditMode.unlocked && desk) desk.style.display = "block";
+    }
+
+    function enterAuditMode(cid) {
+      auditMode = { active: true, contract_id: cid, unlocked: false };
+      var c = getContract(cid);
+      var un = $("auditorUnlock");
+      if (un) un.style.display = "block";
+      if ($("audUnlockCid")) $("audUnlockCid").textContent = cid;
+      if ($("audDeskCid")) $("audDeskCid").textContent = cid;
+      if (c) {
+        if ($("audUnlockHolder")) $("audUnlockHolder").value = (c.look && c.look.name) || "";
+        if ($("audUnlockNamed")) $("audUnlockNamed").value = (c.auditor && (c.auditor.name || c.auditor.email)) || "named on seat";
+      } else {
+        if ($("audUnlockHolder")) $("audUnlockHolder").value = "(contract not on this device yet — load invite JSON or open on the device that sealed)";
+        if ($("audUnlockNamed")) $("audUnlockNamed").value = "";
+      }
+      showAuditorDesk(false);
+      if ($("auditorShareCard")) $("auditorShareCard").style.display = "none";
+    }
+
+    function unlockAuditor() {
+      var cid = auditMode.contract_id || qs("audit");
+      var c = getContract(cid);
+      var email = ($("audUnlockEmail") && $("audUnlockEmail").value || "").trim().toLowerCase();
+      var out = $("audUnlockOut");
+      if (!c) {
+        if (out) out.textContent = "Contract not found on this device. Ask the seat holder to send the invite JSON, or open this link on a device where the seat was sealed / contract was synced.";
+        return;
+      }
+      if (!c.auditor || !c.auditor.named) {
+        if (out) out.textContent = "This contract has no named auditor.";
+        return;
+      }
+      var expect = (c.auditor.email || "").toLowerCase();
+      if (expect && email !== expect) {
+        if (out) out.textContent = "Email must match the auditor named on this contract.";
+        return;
+      }
+      auditMode.unlocked = true;
+      if ($("audName") && c.auditor.name) $("audName").value = c.auditor.name;
+      if (out) out.textContent = "Unlocked for contract " + cid + ".";
+      if ($("auditorUnlock")) $("auditorUnlock").style.display = "none";
+      showAuditorDesk(true);
+      refreshAuditorFromMeasure();
+    }
+
+    // Wire buttons
+    if ($("btnAudRefresh")) $("btnAudRefresh").onclick = refreshAuditorFromMeasure;
+    if ($("btnAudApprove")) $("btnAudApprove").onclick = function () { auditorAttest(true); };
+    if ($("btnAudReject")) $("btnAudReject").onclick = function () { auditorAttest(false); };
+    if ($("btnAudUnlock")) $("btnAudUnlock").onclick = unlockAuditor;
+
+    if ($("audInviteDrop") && $("audInviteFile")) {
+      $("audInviteDrop").onclick = function () { $("audInviteFile").click(); };
+      $("audInviteFile").onchange = function () {
+        var f = $("audInviteFile").files && $("audInviteFile").files[0];
+        if (!f) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var inv = JSON.parse(String(reader.result || "{}"));
+            var cid = inv.contract_id;
+            if (!cid) throw new Error("no contract_id");
+            var store = readContracts();
+            if (!store[cid]) {
+              store[cid] = {
+                contract_id: cid,
+                look: { name: inv.seat_holder || "" },
+                auditor: inv.auditor ? { named: true, name: inv.auditor.name, email: inv.auditor.email, status: "NAMED_AT_SEAL" } : { named: false },
+                measure: inv.measure || null,
+              receipt: inv.receipt || null,
+              from_invite: true
+              };
+              writeContracts(store);
+            }
+            enterAuditMode(cid);
+            if ($("audUnlockOut")) $("audUnlockOut").textContent = "Invite loaded for " + cid + ". Confirm email to unlock.";
+          } catch (e) {
+            if ($("audUnlockOut")) $("audUnlockOut").textContent = "Could not read invite JSON.";
+          }
+        };
+        reader.readAsText(f);
+      };
+    }
+
+    // Persist measure into contract store after local measure
+    var _origLocalMeasure = typeof localMeasure === "function" ? localMeasure : null;
+    // Hook via wrapping if exists later — also patch after report:
+    function persistMeasureToContract() {
+      var cid = currentContractId();
+      if (!cid) return;
+      var receipt = null;
+      try { receipt = JSON.parse(localStorage.getItem("dc.runtime.lastReceipt") || "null"); } catch (e) {}
+      upsertContractMeasure(cid, {
+        waste_raw: ($("poleWaste") && $("poleWaste").value) || "",
+        residual_raw: ($("poleResidual") && $("poleResidual").value) || "",
+        unit: ($("unit") && $("unit").value) || "",
+        waste: parseMoneyishAud($("poleWaste") && $("poleWaste").value),
+        residual: parseMoneyishAud($("poleResidual") && $("poleResidual").value)
+      }, receipt);
+      renderAuditorShare();
+    }
+
+    // Boot
+    
+    if ($("btnDlAudPack")) {
+      $("btnDlAudPack").onclick = function () {
+        var cid = currentContractId();
+        if (!cid) { if ($("audShareOut")) $("audShareOut").textContent = "No contract yet."; return; }
+        var c = getContract(cid) || { contract_id: cid };
+        var p = null;
+        try { p = JSON.parse(localStorage.getItem("dc.unity.id") || "null"); } catch (e) {}
+        var pack = {
+          schema: "dualis.auditor.pack.v1",
+          contract_id: cid,
+          seat_holder: (p && p.look && p.look.name) || (c.look && c.look.name) || "",
+          auditor: (p && p.auditor) || c.auditor || null,
+          measure: c.measure || null,
+          receipt: c.receipt || null,
+          grant: "LOCAL_ONLY",
+          note: "Poles + receipt hashes only. No books sheet. Load in runtime.html?audit=" + cid
+        };
+        var blob = new Blob([JSON.stringify(pack, null, 2)], { type: "application/json" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "dualis-audit-pack-" + cid + ".json";
+        a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
+        if ($("audShareOut")) $("audShareOut").textContent = "Audit pack downloaded (poles + hashes, not books). Send with the link.";
+      };
+    }
+
+    (function bootAudit() {
+      var aid = qs("audit");
+      if (aid) enterAuditMode(aid);
+      else {
+        // seat holder view
+        if ($("auditorUnlock")) $("auditorUnlock").style.display = "none";
+        renderAuditorShare();
+        // show desk for holders too (they can self-check) but approve is for auditor
+        var p = null;
+        try { p = JSON.parse(localStorage.getItem("dc.unity.id") || "null"); } catch (e) {}
+        if ($("audDeskCid")) $("audDeskCid").textContent = currentContractId() || "—";
+      }
+      // after measures
+      var _be = $("btnExport");
+      // wrap localMeasure completion: monkey-patch disabled export enable already calls refresh — add persist
+      var _oldDisabledSetter = null;
+    })();
+
+
+    renderAuditorShare();
+        renderSeat();
+  })();
+  </script>
+  <script src="js/fuel-ledger.js"></script>
+</body>
+</html>

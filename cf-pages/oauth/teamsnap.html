@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeamSnap connect — DualisCapax</title>
+  <meta name="theme-color" content="#0B0E14">
+  <link rel="stylesheet" href="../lander.css">
+</head>
+<body class="ice-body" style="padding:1.5rem;max-width:520px;margin:0 auto;">
+  <h1 class="ice-h">TeamSnap</h1>
+  <p class="ice-p" id="tsMsg">Finishing connect…</p>
+  <p class="ice-note" id="tsNote">Token exchange runs on the Dualis worker. Secret never sits on this page.</p>
+  <a class="ice-btn ghost" href="../ice.html#apps">Back to ice</a>
+  <script src="../js/api-config.js"></script>
+  <script src="../js/dc-passkey.js"></script>
+  <script src="../js/teamsnap-oauth.js"></script>
+  <script>
+    (async function () {
+      var msg = document.getElementById("tsMsg");
+      var note = document.getElementById("tsNote");
+      var q = new URLSearchParams(location.search);
+      var err = q.get("error");
+      var code = q.get("code");
+      var state = q.get("state");
+      var onceKey = "dc.teamsnap.oauth_code_used";
+
+      function fail(text, detail) {
+        msg.textContent = text;
+        if (detail && note) note.textContent = detail;
+      }
+
+      if (err) {
+        fail("TeamSnap said: " + err, q.get("error_description") || "");
+        return;
+      }
+      if (!code) {
+        fail("No OAuth code.", "Start Connect from ice → Apps → TeamSnap.");
+        return;
+      }
+      try {
+        if (sessionStorage.getItem(onceKey) === code) {
+          fail("This connect link was already used.", "Go back to ice → Apps → TeamSnap and Connect again.");
+          return;
+        }
+        sessionStorage.setItem(onceKey, code);
+      } catch (e0) {}
+
+      if (!window.DCTeamSnap) {
+        fail("Client script missing.", "Hard-refresh ice and try Connect again.");
+        return;
+      }
+
+      msg.textContent = "Exchanging code…";
+      var res;
+      try {
+        res = await DCTeamSnap.exchangeCode(code, state);
+      } catch (ex) {
+        fail("Token exchange crashed.", (ex && ex.message) || String(ex));
+        return;
+      }
+      if (!res || !res.ok) {
+        fail(
+          "Token exchange failed: " + ((res && (res.detail || res.reason)) || "?"),
+          "Worker needs TEAMSNAP_CLIENT_SECRET matching the current TeamSnap app."
+        );
+        return;
+      }
+
+      msg.textContent = "Connected. Pulling schedule…";
+      try {
+        await DCTeamSnap.refreshMeAndSchedule();
+        msg.textContent = "TeamSnap connected. Schedule cached on this device.";
+      } catch (e) {
+        msg.textContent = "Connected, but schedule pull failed (" + (e && e.message) + "). Open ice → Game to retry.";
+      }
+
+      /* Never block redirect on WebAuthn — hang was spinning forever */
+      try {
+        if (window.DCPasskey && DCPasskey.handshake) {
+          var hs = DCPasskey.handshake("teamsnap", { purpose: "oauth", how: "oauth" });
+          if (hs && typeof hs.then === "function") {
+            hs.catch(function () {});
+          }
+        }
+      } catch (e2) {}
+      try { localStorage.setItem("dc.ice.binds.teamsnap", "oauth"); } catch (e3) {}
+      var sealed = false;
+      try {
+        var pending = localStorage.getItem("dc.ice.pending_claim");
+        var pc = pending ? JSON.parse(pending) : null;
+        if (pc && pc.jersey != null) {
+          var seat = {
+            team_slug: pc.team_slug || "",
+            team_id: pc.team_id || "",
+            jersey: Number(pc.jersey),
+            last: pc.last || "",
+            initial: pc.initial || "",
+            pos: pc.pos || "",
+            display: pc.display || ("#" + pc.jersey),
+            via: "teamsnap",
+            claimed_at: new Date().toISOString(),
+            how: "oauth"
+          };
+          localStorage.setItem("dc.ice.seat", JSON.stringify(seat));
+          try {
+            document.cookie = "dc_ice_seat_bak=" + encodeURIComponent(JSON.stringify({
+              jersey: seat.jersey,
+              last: seat.last || "",
+              team_slug: seat.team_slug || "",
+              via: "teamsnap",
+              how: "oauth"
+            })) + "; path=/; max-age=604800; SameSite=Lax";
+          } catch (eBak) {}
+          sealed = true;
+          msg.textContent = "TeamSnap connected. Seat #" + seat.jersey + " sealed on this phone.";
+        } else {
+          msg.textContent = "TeamSnap connected. Pick your seat on ice — not sealed yet.";
+        }
+        localStorage.removeItem("dc.ice.pending_claim");
+      } catch (e4) {}
+
+      setTimeout(function () {
+        /* Game only after oauth seat seal; else Seat with token ready */
+        location.href = location.origin + "/ice.html#" + (sealed ? "game" : "seat");
+      }, 600);
+    })();
+  </script>
+</body>
+</html>
