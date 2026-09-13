@@ -1,11 +1,24 @@
 {
   "title": "DualisCapax unit forest",
-  "law": "Structure first. Independent units — no timesliced one-brain. Harvest cites into packs; never invent. Platform scaffold for public-system seats — Dualis is not the government and claims no throne.",
-  "pattern": "trunk → branch → seat → pack",
+  "law": "Structure first. Independent units \u2014 no timesliced one-brain. Harvest cites into packs; never invent. Platform scaffold for public-system seats \u2014 Dualis is not the government and claims no throne.",
+  "pattern": "trunk \u2192 branch \u2192 seat \u2192 pack",
   "unit_contract": {
-    "required": ["UNIT.md", "QUEUE.json", "packs/"],
-    "optional": ["harvest.py", ".github workflow id"],
-    "status_enum": ["structure", "queued", "harvesting", "paused", "blocked_partner"]
+    "required": [
+      "UNIT.md",
+      "QUEUE.json",
+      "packs/"
+    ],
+    "optional": [
+      "harvest.py",
+      ".github workflow id"
+    ],
+    "status_enum": [
+      "structure",
+      "queued",
+      "harvesting",
+      "paused",
+      "blocked_partner"
+    ]
   },
   "live": [
     {
@@ -13,7 +26,17 @@
       "status": "harvesting",
       "workflow": "golf_usa_envelopes.yml",
       "script": "scripts/harvest_golf_usa_envelopes.py",
-      "packs": "research/golf/usa/"
+      "packs": "research/golf/usa/",
+      "cron_slot": "A",
+      "cron": "7,37 * * * *",
+      "verification_layer_cap": 4,
+      "layers_proven": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
     }
   ],
   "trunks": [
@@ -30,7 +53,7 @@
     },
     {
       "id": "public",
-      "role": "government-class residual seats (measure / cite / scaffold — not sovereign power)",
+      "role": "government-class residual seats (measure / cite / scaffold \u2014 not sovereign power)",
       "branches": [
         "health",
         "education",
@@ -46,7 +69,86 @@
     {
       "id": "infra",
       "role": "cross-cutting platform rails",
-      "branches": ["identity-seats", "cite-index", "protocol-ledger"]
+      "branches": [
+        "identity-seats",
+        "cite-index",
+        "protocol-ledger"
+      ]
     }
-  ]
+  ],
+  "order_law": {
+    "summary": "Spawn and verify in layer order. Cap at the highest layer a unit needs. Do not re-verify a verifier that is already proven.",
+    "layers": [
+      {
+        "id": 0,
+        "name": "structure",
+        "means": "UNIT.md + QUEUE + packs folder exist"
+      },
+      {
+        "id": 1,
+        "name": "cite_class",
+        "means": "Allowed public cite sources named; never invent"
+      },
+      {
+        "id": 2,
+        "name": "harvest_script",
+        "means": "Script writes real packs from cites"
+      },
+      {
+        "id": 3,
+        "name": "workflow_cron",
+        "means": "Independent Actions workflow on an offset slot"
+      },
+      {
+        "id": 4,
+        "name": "live_registry",
+        "means": "Listed in FOREST.live with proven lower layers"
+      }
+    ],
+    "cap_rule": "A unit runs verification only up to the highest layer it needs for its current status. If layer N-1 is already proven for that unit (or a shared infra verifier), do not re-prove it every tick.",
+    "for": "order"
+  },
+  "cron_slots": {
+    "cadence": "twice_hourly",
+    "note": "Assign each live unit a unique minute offset. Avoid same-minute pileups. GH schedules often slip; gaps still reduce push races.",
+    "slots": [
+      {
+        "id": "A",
+        "minute": 7,
+        "cron": "7,37 * * * *",
+        "assigned": "sports/golf-usa"
+      },
+      {
+        "id": "B",
+        "minute": 12,
+        "cron": "12,42 * * * *",
+        "assigned": null
+      },
+      {
+        "id": "C",
+        "minute": 17,
+        "cron": "17,47 * * * *",
+        "assigned": null
+      },
+      {
+        "id": "D",
+        "minute": 22,
+        "cron": "22,52 * * * *",
+        "assigned": null
+      },
+      {
+        "id": "E",
+        "minute": 27,
+        "cron": "27,57 * * * *",
+        "assigned": null
+      },
+      {
+        "id": "F",
+        "minute": 2,
+        "cron": "2,32 * * * *",
+        "assigned": null
+      }
+    ],
+    "legacy_stagger_note": "swarm_runner :00, swarm_bot_fleet :15, unity_mesh :30 \u2014 ledger/stub rails; golf harvest owns slot A"
+  }
 }

@@ -19,3 +19,16 @@ Implementation order: **structure → queue → harvest script → workflow → 
 2. `sports/hockey-boys-amateur` — deepen Ontario packs into repo harvest  
 3. `sports/football-ncaa` then `football-hs`  
 4. First public trunk with a clear open cite class (start narrow: one metro open-data seat)
+
+
+## Order (layer cap)
+
+Verify upward only as far as the unit needs:
+
+0 structure → 1 cite class → 2 harvest script → 3 workflow/cron slot → 4 live registry
+
+**Cap:** stop at the highest layer required. **Do not** re-verify a verifier already proven (shared infra or prior seal for that unit).
+
+## Cron offsets
+
+See `FOREST.json` → `cron_slots`. New live units take the next free slot (B, C, …) — independent clocks, not one timesliced brain.
