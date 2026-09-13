@@ -50,7 +50,7 @@ jobs:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: PYTHONPATH=src/engine python3 src/engine/unity/unity_mesh_orchestrator.py "Golf USA course envelopes — map tee-block yardages + playground totality for public cites; target=${DUALIS_TARGET}"
+        run: PYTHONPATH=src/engine python3 src/engine/unity/unity_mesh_orchestrator.py "STUB target=${DUALIS_TARGET}"
       - name: Commit bot receipts
         run: |
           git config --local user.email "agent-iris@dualiscapax.ai"
