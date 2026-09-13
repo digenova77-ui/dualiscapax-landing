@@ -44,4 +44,11 @@ jobs:
             exit 0
           fi
           git commit -m "chore(golf): harvest USA course envelopes [skip ci]"
-          git push origin HEAD
+          # Fleet/ledger ticks race main — rebase then push with retries
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            echo "push race attempt $i — retry"
+            sleep $((i * 2))
+          done
+          echo "push failed after retries" >&2
+          exit 1
