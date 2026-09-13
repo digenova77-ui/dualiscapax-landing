@@ -1600,7 +1600,7 @@
             return '<div class="ice-cal-stay-row">' +
               '<span class="ice-cal-pill ice-cal-stay-pill">Stay</span>' +
               bindLab +
-              '<strong>' + esc(s.title || "Stay") + "</strong>' +
+              '<strong>' + esc(s.title || "Stay") + '</strong>' +
               '<span class="ice-soft">' + esc(s.checkInLabel || s.checkIn || "") + " → " + esc(s.checkOutLabel || s.checkOut || "") + "</span>" +
               (hasUrl
                 ? ('<a class="ice-btn" target="_blank" rel="noopener" href="' + esc(s.url) + '">Open stay →</a>')
@@ -1609,6 +1609,7 @@
           }).join("") +
         "</div>";
       }
+    }
 
     var legend = '<p class="ice-cal-legend" aria-label="Color legend">' +
       '<span class="ice-cal-home"><i></i>Home</span>' +
