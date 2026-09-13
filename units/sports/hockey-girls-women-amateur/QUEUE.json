@@ -1,8 +1,12 @@
 {
   "unit": "sports/hockey-girls-women-amateur",
-  "status": "structure",
-  "pending": [],
-  "batch_size_default": 3,
-  "seed_searches": [],
-  "notes": "Structure first — queue fills when harvest is wired."
+  "status": "queued",
+  "law": "Build the map. Never invent surnames or stats. Dash when cite missing.",
+  "pending": [
+    {"kind": "branch_index", "label": "OWHA / Ontario girls AAA branch list — public boards only"},
+    {"kind": "seed_search", "label": "U16 AAA girls clubs with current-season roster reveal cites"},
+    {"kind": "seed_search", "label": "U18 AA/AAA girls clubs — schedule boards when posted"}
+  ],
+  "batch_size_default": 2,
+  "notes": "Structure + cite class first. No cron until harvest script writes real JSON packs."
 }
