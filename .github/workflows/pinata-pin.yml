@@ -20,7 +20,7 @@ jobs:
         run: node scripts/pin-pinata.mjs
       - name: pin if JWT present
         env:
-          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+          PINATA_JWT: ${{ secrets.PINATAJWT }}
         run: |
           if [ -z "$PINATA_JWT" ]; then
             echo "PINATA_JWT empty. Seat pastes Actions secret. Not a code hole."
