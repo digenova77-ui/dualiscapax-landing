@@ -153,9 +153,9 @@ def refill_queue_from_searches(queue: Dict[str, Any], have: set) -> None:
             if not cid or cid in have or cid in pending:
                 continue
             pending.append(cid)
-            if len(pending) >= 40:
+            if len(pending) >= 80:
                 break
-        if len(pending) >= 40:
+        if len(pending) >= 80:
             break
     queue["pending_ids"] = pending
 
