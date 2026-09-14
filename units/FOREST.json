@@ -3,22 +3,9 @@
   "law": "Structure first. Independent units \u2014 no timesliced one-brain. Harvest cites into packs; never invent. Platform scaffold for public-system seats \u2014 Dualis is not the government and claims no throne.",
   "pattern": "trunk \u2192 branch \u2192 seat \u2192 pack",
   "unit_contract": {
-    "required": [
-      "UNIT.md",
-      "QUEUE.json",
-      "packs/"
-    ],
-    "optional": [
-      "harvest.py",
-      ".github workflow id"
-    ],
-    "status_enum": [
-      "structure",
-      "queued",
-      "harvesting",
-      "paused",
-      "blocked_partner"
-    ]
+    "required": ["UNIT.md", "QUEUE.json", "packs/"],
+    "optional": ["harvest.py", ".github workflow id"],
+    "status_enum": ["structure", "queued", "harvesting", "paused", "blocked_partner"]
   },
   "live": [
     {
@@ -30,13 +17,7 @@
       "cron_slot": "A",
       "cron": "7,37 * * * *",
       "verification_layer_cap": 4,
-      "layers_proven": [
-        0,
-        1,
-        2,
-        3,
-        4
-      ]
+      "layers_proven": [0, 1, 2, 3, 4]
     },
     {
       "id": "sports/hockey-girls-women-amateur",
@@ -47,13 +28,7 @@
       "cron_slot": "B",
       "cron": "12,42 * * * *",
       "verification_layer_cap": 4,
-      "layers_proven": [
-        0,
-        1,
-        2,
-        3,
-        4
-      ],
+      "layers_proven": [0, 1, 2, 3, 4],
       "note": "Branch index from OWHA public standings; rosters awaiting_player_cites"
     },
     {
@@ -65,127 +40,63 @@
       "cron_slot": "C",
       "cron": "17,47 * * * *",
       "verification_layer_cap": 4,
-      "layers_proven": [
-        0,
-        1,
-        2,
-        3,
-        4
-      ],
+      "layers_proven": [0, 1, 2, 3, 4],
       "note": "Dualis U16 AAA seat packs; public boards = cite pipes only (not Sportsheadz clone)"
+    },
+    {
+      "id": "infra/ice-session-bot",
+      "status": "harvesting",
+      "workflow": "ice_session_bot.yml",
+      "script": "scripts/ice_session_bot.py",
+      "packs": "units/infra/ice-session-bot/packs/",
+      "cron_slot": "E",
+      "cron": "27,57 * * * *",
+      "verification_layer_cap": 3,
+      "layers_proven": [0, 1, 2, 3],
+      "note": "Chat-session law on GitHub. Audit + receipt. Not a GrokBot clone. Does not CF-deploy."
     }
   ],
   "trunks": [
     {
       "id": "sports",
       "role": "athlete + playground seats",
-      "branches": [
-        "hockey-boys-amateur",
-        "hockey-girls-women-amateur",
-        "golf-usa",
-        "football-ncaa",
-        "football-hs"
-      ]
+      "branches": ["hockey-boys-amateur", "hockey-girls-women-amateur", "golf-usa", "football-ncaa", "football-hs"]
     },
     {
       "id": "public",
       "role": "government-class residual seats (measure / cite / scaffold \u2014 not sovereign power)",
-      "branches": [
-        "health",
-        "education",
-        "transport-logistics",
-        "metro-governance",
-        "justice-courts",
-        "finance-treasury",
-        "emergency-safety",
-        "environment-land",
-        "labor-workforce"
-      ]
+      "branches": ["health", "education", "transport-logistics", "metro-governance", "justice-courts", "finance-treasury", "emergency-safety", "environment-land", "labor-workforce"]
     },
     {
       "id": "infra",
       "role": "cross-cutting platform rails",
-      "branches": [
-        "identity-seats",
-        "cite-index",
-        "protocol-ledger"
-      ]
+      "branches": ["identity-seats", "cite-index", "protocol-ledger", "ice-session-bot"]
     }
   ],
   "order_law": {
     "summary": "Spawn and verify in layer order. Cap at the highest layer a unit needs. Do not re-verify a verifier that is already proven.",
     "layers": [
-      {
-        "id": 0,
-        "name": "structure",
-        "means": "UNIT.md + QUEUE + packs folder exist"
-      },
-      {
-        "id": 1,
-        "name": "cite_class",
-        "means": "Allowed public cite sources named; never invent"
-      },
-      {
-        "id": 2,
-        "name": "harvest_script",
-        "means": "Script writes real packs from cites"
-      },
-      {
-        "id": 3,
-        "name": "workflow_cron",
-        "means": "Independent Actions workflow on an offset slot"
-      },
-      {
-        "id": 4,
-        "name": "live_registry",
-        "means": "Listed in FOREST.live with proven lower layers"
-      }
+      {"id": 0, "name": "structure", "means": "UNIT.md + QUEUE + packs folder exist"},
+      {"id": 1, "name": "cite_class", "means": "Allowed public cite sources named; never invent"},
+      {"id": 2, "name": "harvest_script", "means": "Script writes real packs from cites"},
+      {"id": 3, "name": "workflow_cron", "means": "Independent Actions workflow on an offset slot"},
+      {"id": 4, "name": "live_registry", "means": "Listed in FOREST.live with proven lower layers"}
     ],
     "cap_rule": "A unit runs verification only up to the highest layer it needs for its current status. If layer N-1 is already proven for that unit (or a shared infra verifier), do not re-prove it every tick.",
     "for": "order"
   },
   "cron_slots": {
     "cadence": "twice_hourly",
-    "note": "Assign each live unit a unique minute offset. Avoid same-minute pileups. GH schedules often slip; gaps still reduce push races.",
+    "note": "Assign each live unit a unique minute offset. Avoid same-minute pileups.",
     "slots": [
-      {
-        "id": "A",
-        "minute": 7,
-        "cron": "7,37 * * * *",
-        "assigned": "sports/golf-usa"
-      },
-      {
-        "id": "B",
-        "minute": 12,
-        "cron": "12,42 * * * *",
-        "assigned": "sports/hockey-girls-women-amateur"
-      },
-      {
-        "id": "C",
-        "minute": 17,
-        "cron": "17,47 * * * *",
-        "assigned": "sports/hockey-boys-amateur"
-      },
-      {
-        "id": "D",
-        "minute": 22,
-        "cron": "22,52 * * * *",
-        "assigned": "factory_workers (receipt)"
-      },
-      {
-        "id": "E",
-        "minute": 27,
-        "cron": "27,57 * * * *",
-        "assigned": null
-      },
-      {
-        "id": "F",
-        "minute": 2,
-        "cron": "2,32 * * * *",
-        "assigned": null
-      }
+      {"id": "A", "minute": 7, "cron": "7,37 * * * *", "assigned": "sports/golf-usa"},
+      {"id": "B", "minute": 12, "cron": "12,42 * * * *", "assigned": "sports/hockey-girls-women-amateur"},
+      {"id": "C", "minute": 17, "cron": "17,47 * * * *", "assigned": "sports/hockey-boys-amateur"},
+      {"id": "D", "minute": 22, "cron": "22,52 * * * *", "assigned": "factory_workers (receipt)"},
+      {"id": "E", "minute": 27, "cron": "27,57 * * * *", "assigned": "infra/ice-session-bot"},
+      {"id": "F", "minute": 2, "cron": "2,32 * * * *", "assigned": null}
     ],
-    "legacy_stagger_note": "DEMOTING: swarm_runner / swarm_bot_fleet / unity_mesh schedules removed 2026-09-14. Golf A, girls-hockey B, factory receipt D. Mesh is truth-or-nothing (SKIP_STUB)."
+    "legacy_stagger_note": "swarm_runner / swarm_bot_fleet / unity_mesh schedules demoted. Ice-session-bot is slot E."
   },
   "queued": [
     {
@@ -206,12 +117,9 @@
   "factory": {
     "workflow": "factory_workers.yml",
     "cron_slot": "D",
-    "law": "Honest receipts only. No fake consensus. Harvest units own their crons.",
-    "demoted": [
-      "swarm_bot_fleet.yml",
-      "swarm_runner.yml",
-      "unity_mesh.yml schedule"
-    ]
+    "session_bot": "ice_session_bot.yml",
+    "law": "Honest receipts only. No fake consensus. Harvest units own their crons. Ice session bot applies chat-session law on GitHub — not a GrokBot clone.",
+    "demoted": ["swarm_bot_fleet.yml", "swarm_runner.yml", "unity_mesh.yml schedule"]
   },
   "product_law": {
     "sports_face": "Dualis Ice/session/seat/DCLM is the product. OMHA/OWHA/club Sportsheadz boards are cite pipes only \u2014 never the UX ceiling."
