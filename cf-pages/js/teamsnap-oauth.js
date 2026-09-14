@@ -32,7 +32,14 @@
     return id;
   }
   function redirectUri() {
-    return (w.DC_TEAMSNAP_REDIRECT || (location.origin + "/oauth/teamsnap.html"));
+    /* Same-origin callback so oauth_state + pending_claim survive the round trip.
+     * Force only when explicitly set (rare). Never default to a foreign apex. */
+    if (w.DC_TEAMSNAP_REDIRECT_FORCE) return String(w.DC_TEAMSNAP_REDIRECT_FORCE);
+    try {
+      return location.origin + "/oauth/teamsnap.html";
+    } catch (e) {
+      return "https://dualiscapax-landing.pages.dev/oauth/teamsnap.html";
+    }
   }
   function hasToken() {
     var t = lsJson(TOKEN_KEY);
@@ -60,7 +67,7 @@
     lsSet(STATE_KEY, JSON.stringify({
       state: state,
       at: Date.now(),
-      returnTo: opts.returnTo || (location.origin + "/ice.html#apps")
+      returnTo: opts.returnTo || (location.origin + "/ice.html#seat")
     }));
     var url = AUTH +
       "?client_id=" + encodeURIComponent(cid) +
@@ -109,8 +116,9 @@
       scope: body.scope || SCOPE,
       at: new Date().toISOString()
     };
+    tok.validated_at = new Date().toISOString();
     lsSet(TOKEN_KEY, JSON.stringify(tok));
-    return { ok: true, token: tok, returnTo: st.returnTo || (location.origin + "/ice.html#apps") };
+    return { ok: true, token: tok, returnTo: st.returnTo || (location.origin + "/ice.html#seat") };
   }
 
   function collectionItems(json) {

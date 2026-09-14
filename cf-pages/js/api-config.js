@@ -11,7 +11,13 @@
   g.DC_API_PATH = world === 1 ? '/v2/chat' : '/v1/chat';
   g.DC_API_BASE = g.DC_API_BASE || 'https://dualiscapax-depth.digenova77.workers.dev';
   g.DC_TEAMSNAP_CLIENT_ID = g.DC_TEAMSNAP_CLIENT_ID || '1Rz2X6pE32Qu_d3-AvwWLE5LbxPubnx3GzzgpZ95XEI';
-  g.DC_TEAMSNAP_REDIRECT = g.DC_TEAMSNAP_REDIRECT || 'https://dualiscapax.ai/oauth/teamsnap.html';
+  /* Prefer same-origin OAuth callback (set in teamsnap-oauth.redirectUri).
+   * Apex hardcode stranded pages.dev binds — state/pending live on the look-at origin.
+   * TeamSnap app must allowlist BOTH apex + pages.dev callback URLs. */
+  g.DC_TEAMSNAP_REDIRECT_ALLOWLIST = g.DC_TEAMSNAP_REDIRECT_ALLOWLIST || [
+    'https://dualiscapax.ai/oauth/teamsnap.html',
+    'https://dualiscapax-landing.pages.dev/oauth/teamsnap.html'
+  ];
   try {
     var q = new URLSearchParams(location.search).get('api');
     if (q) g.DC_API_BASE = q.replace(/\/$/, '');
