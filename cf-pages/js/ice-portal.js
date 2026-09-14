@@ -1329,24 +1329,78 @@
     }
     return q;
   }
-  function hasStayCoveringTournament(board) {
+  /**
+   * Cross-ref on-device stays to a calendar event (tourney / away).
+   * Match: date overlap with stay window, OR city in address/title, OR tripTitle/tourneyId bind.
+   * Never invent stays — only echo what is already on this phone.
+   */
+  function staysMatchingEvent(board) {
     var win = stayWindowForTournament(board);
-    if (!win || !win.checkIn) return false;
     var list = loadStays();
-    var a = new Date(win.checkIn + "T12:00:00").getTime();
-    var b = new Date((win.checkOut || win.checkIn) + "T12:00:00").getTime();
+    var out = [];
+    if (!board || !list.length) return out;
+    var a = null, b = null;
+    if (win && win.checkIn) {
+      a = new Date(win.checkIn + "T12:00:00").getTime();
+      b = new Date((win.checkOut || win.checkIn) + "T12:00:00").getTime();
+    }
+    var city = String((win && win.city) || board.city || board.where || "").trim().toLowerCase();
+    if (city === "—") city = "";
+    var who = String(board.who || "").trim().toLowerCase();
+    var tid = String(board.id || "").trim();
     for (var i = 0; i < list.length; i++) {
       var s = list[i];
-      var sa = stayStartMs(s);
-      var sb = stayEndMs(s);
-      if (sa == null) continue;
-      if (sb == null) sb = sa;
-      /* overlap with suggested window */
-      if (sa <= b && sb >= a) return true;
-      if (s.tripTitle && board.who && String(s.tripTitle).indexOf(String(board.who).slice(0, 12)) >= 0) return true;
+      if (!s) continue;
+      var hit = false;
+      /* explicit calendar bind */
+      if (tid && s.tourneyId && String(s.tourneyId) === tid) hit = true;
+      if (!hit && s.tripTitle && who) {
+        var tt = String(s.tripTitle).toLowerCase();
+        if (tt.indexOf(who.slice(0, Math.min(12, who.length))) >= 0 ||
+            who.indexOf(tt.slice(0, Math.min(12, tt.length))) >= 0) hit = true;
+      }
+      /* city echo in address / title / label */
+      if (!hit && city.length >= 3) {
+        var blob = (String(s.address || "") + " " + String(s.title || "") + " " +
+          String(s.label || "") + " " + String(s.city || "")).toLowerCase();
+        if (blob.indexOf(city) >= 0) hit = true;
+      }
+      /* date overlap with tourney stay window (calendar spine) */
+      if (!hit && a != null && b != null) {
+        var sa = stayStartMs(s);
+        var sb = stayEndMs(s);
+        if (sa !== Number.POSITIVE_INFINITY && sa <= b && sb >= a) hit = true;
+      }
+      if (hit) out.push({ s: s, idx: i });
     }
-    return false;
+    return out;
   }
+  function hasStayCoveringTournament(board) {
+    return staysMatchingEvent(board).length > 0;
+  }
+  /** Behind the scenes: attach trip/tourney ids onto matched stays so Cal + Stay stay linked. */
+  function linkStaysToEvent(board) {
+    var matches = staysMatchingEvent(board);
+    if (!matches.length || !board) return matches;
+    var list = loadStays();
+    var changed = false;
+    for (var i = 0; i < matches.length; i++) {
+      var idx = matches[i].idx;
+      var s = list[idx];
+      if (!s) continue;
+      if (board.id && !s.tourneyId) { s.tourneyId = board.id; changed = true; }
+      if (board.who && !s.tripTitle) { s.tripTitle = board.who; changed = true; }
+      if (!s.tripKind) { s.tripKind = "tournament"; changed = true; }
+      if (board.startISO && !s.tripStart) { s.tripStart = board.startISO; changed = true; }
+      var city = String(board.city || board.where || "").trim();
+      if (city && city !== "—" && !s.city) { s.city = city; changed = true; }
+      list[idx] = s;
+      matches[i].s = s;
+    }
+    if (changed) saveStays(list);
+    return matches;
+  }
+
 
   function tournamentOneLinerHtml(board) {
     /* One row — same weight as Next Games. Stay = book/add for city + night-before→end-day (overridable). */
@@ -1358,20 +1412,29 @@
     if (city && city.length > 42) city = shortWhere(city);
     if (!city) city = "—";
     var win = stayWindowForTournament(board);
-    var covered = hasStayCoveringTournament(board);
+    /* Cross-link first: if on-device stays already match this cal event, Stay opens them. */
+    var matched = linkStaysToEvent(board);
+    var covered = matched.length > 0;
     var stayBtn = "";
     if (win && win.checkIn && win.checkOut) {
-      stayBtn = covered
-        ? ('<button type="button" class="ice-tourney-stay is-on" data-tourney-check-stay' +
+      if (covered) {
+        var first = matched[0].s || {};
+        var openUrl = (first.url && /^https?:\/\//i.test(first.url)) ? first.url : "";
+        stayBtn = '<button type="button" class="ice-tourney-stay is-on" data-tourney-open-stay' +
             ' data-cin="' + esc(win.checkIn) + '" data-cout="' + esc(win.checkOut) + '"' +
-            ' data-city="' + esc(win.city) + '" data-label="' + esc(win.label) + '"' +
-            ' data-trip="' + esc(win.tripTitle) + '" data-tstart="' + esc(win.tripStart || "") + '">Stay ✓</button>')
-        : ('<button type="button" class="ice-tourney-stay" data-tourney-stay' +
+            ' data-city="' + esc(win.city) + '" data-trip="' + esc(win.tripTitle) + '"' +
+            ' data-stay-idx="' + esc(String(matched[0].idx)) + '"' +
+            (openUrl ? (' data-stay-url="' + esc(openUrl) + '"') : "") +
+            ' title="Open your stay for this tournament (' + matched.length + ')">Stay ✓</button>';
+      } else {
+        /* No stay yet — exact empty flow: Airbnb search + Add a stay prefill */
+        stayBtn = '<button type="button" class="ice-tourney-stay" data-tourney-stay' +
             ' data-cin="' + esc(win.checkIn) + '" data-cout="' + esc(win.checkOut) + '"' +
             ' data-city="' + esc(win.city) + '" data-label="' + esc(win.label) + '"' +
             ' data-trip="' + esc(win.tripTitle) + '" data-tstart="' + esc(win.tripStart || "") + '"' +
             ' data-air="' + esc(airbnbSearchUrlForStay(win)) + '"' +
-            ' title="Default ' + esc(win.checkIn) + " → " + esc(win.checkOut) + ' (you can override)">Stay</button>');
+            ' title="Default ' + esc(win.checkIn) + " → " + esc(win.checkOut) + ' (you can override)">Stay</button>';
+      }
     }
     return '<div class="ice-tourney-row">' +
       '<span class="ice-tourney-when">' + esc(when) + "</span>" +
@@ -1870,7 +1933,14 @@
     try {
       var row = JSON.parse(lsGet(STAY_KEY) || "[]");
       if (!Array.isArray(row)) row = [];
-      var cleaned = scrubHouseholdStays(row);
+      /* Scrub only seed/leak rows with no user-pasted reservation URL.
+         Real on-device stays (Airbnb page already applied) stay — calendar cross-link needs them. */
+      var cleaned = (row || []).filter(function (s) {
+        if (!s) return false;
+        var hasUrl = !!(s.url && /^https?:\/\//i.test(s.url));
+        if (hasUrl) return true; /* user applied — keep */
+        return !isHouseholdStayLeak(s);
+      });
       if (cleaned.length !== row.length) {
         try { lsSet(STAY_KEY, JSON.stringify(cleaned)); } catch (e0) {}
       }
@@ -3733,6 +3803,32 @@
             if (pan) pan.setAttribute("data-trip-bind", JSON.stringify({
               tripTitle: trip, tripKind: "tournament", tripStart: tstart
             }));
+          }, 80);
+        });
+      });
+      stage.querySelectorAll("[data-tourney-open-stay]").forEach(function (btn) {
+        btn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          var cin = btn.getAttribute("data-cin") || "";
+          var url = btn.getAttribute("data-stay-url") || "";
+          /* Calendar spine: focus the stay nights on Cal */
+          if (/^\d{4}-\d{2}-\d{2}$/.test(cin)) {
+            try {
+              state.calAnchor = new Date(Number(cin.slice(0, 4)), Number(cin.slice(5, 7)) - 1, 1);
+              state.calDayFocus = cin;
+            } catch (e2) {}
+          }
+          /* Open the Airbnb reservation already on this phone, if we have it */
+          if (url) {
+            try { window.open(url, "_blank", "noopener,noreferrer"); } catch (e3) {}
+          }
+          /* Go → Check your stays so the linked stay is visible next to Cal */
+          goStage("go", true);
+          setTimeout(function () {
+            var root = $("iceStage") || document.querySelector(".ice-stage") || document;
+            var checkBtn = root.querySelector("[data-stay-check]");
+            if (checkBtn) checkBtn.click();
           }, 80);
         });
       });
