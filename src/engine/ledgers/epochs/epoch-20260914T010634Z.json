@@ -1,0 +1,407 @@
+{
+  "timestamp_utc": "2026-09-14T01:06:34Z",
+  "epoch_root_hash": "40d5c71d3977b43df4dffb0dbcb3acd185ff74f085a6e2a2e0a34f8d969dfa30",
+  "completed_count": 50,
+  "tasks": [
+    {
+      "task_id": "01a08ef8-99a5-7cb1-87e9-795290248030",
+      "task_type": "CODEX_REMOTE_TASK",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "a35890c63633fc3173011dbe94505867c59f2a067b5be6a875ff8bb045726677",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"01a08ef8-99a5-7cb1-87e9-795290248030\", \"agent\": \"Iris-Core\", \"status\": \"EXECUTED_CONSERVED\", \"latency_us\": 2.57, \"detail\": {\"instruction\": \"Autonomous Execution: CODEX_REMOTE_TASK\", \"target_repo\": \"digenova77-ui/dualiscapax-landing\", \"law_floor_verified\": true, \"zero_pii_enforced\": true}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0001",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "973d43996c3d3e9b408025f97f7f88f6b7b8d83a10026f5d504901960c2d99d7",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0001\", \"agent\": \"Iris-BioMed\", \"status\": \"VERIFIED\", \"latency_us\": 1.08, \"detail\": {\"target\": \"SEC-02-subsystem-1\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0002",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "6319407e14ebdbfb32178b13a8ee253c5410b340751eaa8a1d2bc3b271c5061e",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0002\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.59, \"detail\": {\"target\": \"SEC-02-subsystem-2\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0003",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "e859f7e7fdbef8d26a85b81349281527053fc2e3f2dbbd4f1a730f32348f50c5",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0003\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 1.04, \"detail\": {\"target\": \"SEC-02-subsystem-3\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0004",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "7c111d11598ebe98310eb169ba4d0c4d1c7df2ee38e5a8570ef2e08b9731d579",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0004\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 1.37, \"detail\": {\"target\": \"SEC-02-subsystem-4\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0005",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "c45d4833e03c8f35141d98988cb78e8067f803e036f6f7a11a2993de8a4ae39f",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0005\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.93, \"detail\": {\"target\": \"SEC-02-subsystem-5\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0006",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "016b1ae74d4f91444d1bdea8181b76780358a723abc69350d358c44fb9d09c92",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0006\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.85, \"detail\": {\"target\": \"SEC-02-subsystem-6\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0007",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "3e6b944704488ab7eb48fe14369c17cbf21921f09176dda9515beda10dbcc245",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0007\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.99, \"detail\": {\"target\": \"SEC-02-subsystem-7\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0008",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "edce8b4a3698c0456c22aeab6b049cabba3b031f739c47878726b4f758b53275",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0008\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.79, \"detail\": {\"target\": \"SEC-02-subsystem-8\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0009",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "aa3aa92b512b84308d814e8a1907188aea81e029bf35e43cbbc70b8b558aff03",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0009\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.83, \"detail\": {\"target\": \"SEC-02-subsystem-9\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0010",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "ac5c455fd9e8ba702644798b08d0d6df0ec5b3e4568310dcf2d946aac218d85c",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0010\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.56, \"detail\": {\"target\": \"SEC-02-subsystem-10\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0011",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "f639c9cf8e81a5e418ced38139651c7ece5402770f72832a071d243a1da598cd",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0011\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.71, \"detail\": {\"target\": \"SEC-02-subsystem-11\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0012",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "66e2599e253ebb29382c96ff59db5226db3b31c08b6f1da7c902b0fcaf901336",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0012\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.64, \"detail\": {\"target\": \"SEC-02-subsystem-12\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0013",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "0d84907463f41c104e5017da00afadf923c7089ed45cfac85a0fb18ca8dc8ff2",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0013\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.64, \"detail\": {\"target\": \"SEC-02-subsystem-13\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0014",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "2abbd25681a2ab92bd2767bc96576da4a4a9c747d365d03f53d44dcaf7e73e60",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0014\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.69, \"detail\": {\"target\": \"SEC-02-subsystem-14\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0015",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "d9ad3236552c15609104ba518c3794f844b4260da4c1bec56bb739d00d2eb6a2",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0015\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.58, \"detail\": {\"target\": \"SEC-02-subsystem-15\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0016",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "de04f7ebffa4c70683e6c08469cd192f30c250589750088fb6d78f8853fdb2b2",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0016\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.65, \"detail\": {\"target\": \"SEC-02-subsystem-16\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0017",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "2ba68121d10178b62ec76fe101a8fe96bef2292ee8e15ba3269f940925f4e6a7",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0017\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.55, \"detail\": {\"target\": \"SEC-02-subsystem-17\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0018",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "3c1176844f10268766ef9c25bae8dd36fdc06483fc40f41783ef4a95262ca4cc",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0018\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.61, \"detail\": {\"target\": \"SEC-02-subsystem-18\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0019",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "850b776c7898889f78dcdbc0efaccb3f1cacf8a7d89ab21a95bb35360f9c3107",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0019\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.56, \"detail\": {\"target\": \"SEC-02-subsystem-19\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0020",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "3fac50f9efbabb9c8d8997f2fb735933c83512d46d4c360b19a8d9037cd93836",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0020\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.57, \"detail\": {\"target\": \"SEC-02-subsystem-20\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0021",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "729b02d121c3af957ce4927c7f48f5b2a1e0a6575f2b08835e38ae4b513de1b5",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0021\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.67, \"detail\": {\"target\": \"SEC-02-subsystem-21\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0022",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "2fa2a83f7b0074734a04194537df6a701c01622467026f033813e74008c13896",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0022\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.49, \"detail\": {\"target\": \"SEC-02-subsystem-22\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0023",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "c744dac693304023507720c5217f10635ab0d72ecfdbf86c8d56e905e4c1c142",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0023\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.62, \"detail\": {\"target\": \"SEC-02-subsystem-23\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0024",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "7f81259742837521b9c4f2d3225a1a311b81f5ba5839f1f92de826cad7f84557",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0024\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.52, \"detail\": {\"target\": \"SEC-02-subsystem-24\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0025",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "40f350f14457e96d628f11d10b96db95f89c13a6a311619b146257158b511458",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0025\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.6, \"detail\": {\"target\": \"SEC-02-subsystem-25\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0026",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "958d20dae0791c95efbf52e25cace662b0d0faaca77aed01e9a66858c0fb6413",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0026\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.5, \"detail\": {\"target\": \"SEC-02-subsystem-26\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0027",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "e0b36f6b2f01a04a5abde655864cdc4448bbc4b7b30bf6b05960b5bb56981598",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0027\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.63, \"detail\": {\"target\": \"SEC-02-subsystem-27\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0028",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "5269891949e4222ed39e9f68677f3b90570e1f883fcd9aaf6f1eea1a4a2bb8a1",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0028\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.56, \"detail\": {\"target\": \"SEC-02-subsystem-28\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0029",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "eecb69a213e431b17aac247e16c51306656a83d6c8632da53b70301e351aa297",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0029\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.6, \"detail\": {\"target\": \"SEC-02-subsystem-29\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0030",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "0b84aacac34b78eb55c09b75072cd318e75062408ba593228a9fd4f3fd326f9f",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0030\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.59, \"detail\": {\"target\": \"SEC-02-subsystem-30\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0031",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "c7294cf5a874f512fd348be45b961c3afaf0e02e554ce087446ba267fe44d65d",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0031\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.57, \"detail\": {\"target\": \"SEC-02-subsystem-31\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0032",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "74ad70586400dff7773295c29893f907c9592a13e0eee83fe4b365c90fda9f73",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0032\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.53, \"detail\": {\"target\": \"SEC-02-subsystem-32\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0033",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "7ef35f51605f51a85b33e0fa9e21311967d4dddd9b942ce2d81b69eac460eb7e",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0033\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.71, \"detail\": {\"target\": \"SEC-02-subsystem-33\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0034",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "120d802cdab264a22d072a7f574caf6b8b226513936e76f7ef941a633706f5d8",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0034\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.62, \"detail\": {\"target\": \"SEC-02-subsystem-34\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0035",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "06e0ea91155e3c0603e42df0528f24bad37b2338c004d3c3c5936170d02c71fc",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0035\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.6, \"detail\": {\"target\": \"SEC-02-subsystem-35\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0036",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "1dce0c600afa8b8b77ae1c25aae4f4a1a995fc778c5fd9fcb7bcfd8ccfa4493a",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0036\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.58, \"detail\": {\"target\": \"SEC-02-subsystem-36\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0037",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "83d3da2d40b332efe14c8cea8584ee7b88928319f083c42cdfd1d05e9f8a9ff8",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0037\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.62, \"detail\": {\"target\": \"SEC-02-subsystem-37\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0038",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "9af53a0aae7d1e91562c1f2ef51c1a9e4ae02dafcca7d6386eb14f09429eaaf6",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0038\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.5, \"detail\": {\"target\": \"SEC-02-subsystem-38\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0039",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "9b53b8d897b541357dfe44e61110fc89570f3cb802ffbe23b0441fed380edfeb",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0039\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.61, \"detail\": {\"target\": \"SEC-02-subsystem-39\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0040",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "984f52d33b61e3d5ee4a33caf6278a36c6dbb3813ebaaef7b6432c6230ce6dbf",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0040\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.48, \"detail\": {\"target\": \"SEC-02-subsystem-40\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0041",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "79df0c341673c225c3e929585bf9d299a2713ec85ff89e1552c30fdc8669e8b2",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0041\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.61, \"detail\": {\"target\": \"SEC-02-subsystem-41\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0042",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "04a02a70a19790265859a332be1e077287c306a4aa6501b4e8b573950a3cdbb7",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0042\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.52, \"detail\": {\"target\": \"SEC-02-subsystem-42\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0043",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "f84dce19027332181d22fd611811f7540473e1898c60744cfc990574da33cb89",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0043\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.6, \"detail\": {\"target\": \"SEC-02-subsystem-43\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0044",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "c85d24eb046496734437629ee0f17043dc9bee74667248a417853e66fcd3d97d",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0044\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.5, \"detail\": {\"target\": \"SEC-02-subsystem-44\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0045",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "3272ebca94b01e3e5fe7aa40f0e0c9880f56ef0726ed94e4f5764c585638ce01",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0045\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.62, \"detail\": {\"target\": \"SEC-02-subsystem-45\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0046",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "99c234136b711a769d7e2ef247276df7374a18c8bf93ad726d63eeb6ea355a0d",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0046\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.61, \"detail\": {\"target\": \"SEC-02-subsystem-46\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0047",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "13e9606cd9cef4eb1f427d663f914173570fc95f6391291258917afedad4c613",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0047\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.59, \"detail\": {\"target\": \"SEC-02-subsystem-47\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0048",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "217fff5c413e8a01e5f7a7e2804612f846b117b17b7b753416910b58a2bab641",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0048\", \"agent\": \"Iris-Treasury\", \"status\": \"VERIFIED\", \"latency_us\": 0.74, \"detail\": {\"target\": \"SEC-02-subsystem-48\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    },
+    {
+      "task_id": "SEC-02-TASK-0049",
+      "task_type": "EDUCATION_ALLOCATION_AUDIT",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "20a26438f3d43044280e35583f738160f0fa8c59f716f4a5259d212f095d8878",
+      "completed_at": 1789347994,
+      "result": "{\"task_id\": \"SEC-02-TASK-0049\", \"agent\": \"Iris-Core\", \"status\": \"VERIFIED\", \"latency_us\": 0.58, \"detail\": {\"target\": \"SEC-02-subsystem-49\", \"status\": \"SHA256_ANCHORED\", \"drift\": 0.0}}"
+    }
+  ]
+}
