@@ -37,6 +37,24 @@
         3,
         4
       ]
+    },
+    {
+      "id": "sports/hockey-girls-women-amateur",
+      "status": "harvesting",
+      "workflow": "hockey_girls_owha.yml",
+      "script": "scripts/harvest_hockey_girls_owha.py",
+      "packs": "research/hockey/girls-women/",
+      "cron_slot": "B",
+      "cron": "12,42 * * * *",
+      "verification_layer_cap": 4,
+      "layers_proven": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "note": "Branch index from OWHA public standings; rosters awaiting_player_cites"
     }
   ],
   "trunks": [
@@ -122,7 +140,7 @@
         "id": "B",
         "minute": 12,
         "cron": "12,42 * * * *",
-        "assigned": null
+        "assigned": "sports/hockey-girls-women-amateur"
       },
       {
         "id": "C",
@@ -134,7 +152,7 @@
         "id": "D",
         "minute": 22,
         "cron": "22,52 * * * *",
-        "assigned": null
+        "assigned": "factory_workers (receipt)"
       },
       {
         "id": "E",
@@ -149,15 +167,21 @@
         "assigned": null
       }
     ],
-    "legacy_stagger_note": "swarm_runner :00, swarm_bot_fleet :15, unity_mesh :30 \u2014 ledger/stub rails; golf harvest owns slot A"
+    "legacy_stagger_note": "DEMOTING: swarm_runner / swarm_bot_fleet / unity_mesh schedules removed 2026-09-14. Golf A, girls-hockey B, factory receipt D. Mesh is truth-or-nothing (SKIP_STUB)."
   },
   "queued": [
     {
-      "id": "sports/hockey-girls-women-amateur",
+      "id": "sports/hockey-boys-amateur",
       "status": "queued",
       "verification_layer_cap": 1,
-      "cron_slot_planned": "B",
-      "note": "Cite class locked; harvest script next \u2014 no free-run cron"
+      "cron_slot_planned": "C",
+      "note": "Ontario AAA gym next \u2014 deepen OMHA packs into repo harvest"
+    },
+    {
+      "id": "sports/football-ncaa",
+      "status": "structure",
+      "verification_layer_cap": 0,
+      "note": "Structure only"
     }
   ],
   "anti_circle": {
@@ -166,6 +190,16 @@
       "cloudflare_api_token_wrangler_pages_deploy",
       "apex_chase_same_dashboard_loop",
       "ask_user_for_api_tokens"
+    ]
+  },
+  "factory": {
+    "workflow": "factory_workers.yml",
+    "cron_slot": "D",
+    "law": "Honest receipts only. No fake consensus. Harvest units own their crons.",
+    "demoted": [
+      "swarm_bot_fleet.yml",
+      "swarm_runner.yml",
+      "unity_mesh.yml schedule"
     ]
   }
 }

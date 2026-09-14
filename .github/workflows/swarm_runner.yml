@@ -1,19 +1,15 @@
-name: DualisCapax Autonomous Swarm Runner & Epoch Flush
+name: DualisCapax Autonomous Swarm Runner (demoted)
+
+# DEMOTED 2026-09-14: hourly stub ledger flush removed from schedule.
+# Factory workers + purposeful harvest units own the clock.
+
 on:
-  schedule:
-    - cron: '0 * * * *'
   workflow_dispatch:
     inputs:
       task_id:
-        description: 'Specific Task ID to ingest and execute'
+        description: 'Manual archaeology only'
         required: false
-        default: '01a08ef8-99a5-7cb1-87e9-795290248030'
-      task_type:
-        description: 'Task Type'
-        required: false
-        default: 'CODEX_REMOTE_TASK'
-  repository_dispatch:
-    types: [swarm_task_trigger]
+        default: ''
 
 concurrency:
   group: dualis-swarm-engine
@@ -23,37 +19,20 @@ permissions:
   contents: write
 
 jobs:
-  run-swarm-epoch:
+  demoted:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.SWARM_DISPATCH_TOKEN || github.token }}
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Execute Perpetual Swarm Runner & Invariant Verification
-        env:
-          SWARM_TASK_ID: ${{ github.event.inputs.task_id || '01a08ef8-99a5-7cb1-87e9-795290248030' }}
-          SWARM_TASK_TYPE: ${{ github.event.inputs.task_type || 'CODEX_REMOTE_TASK' }}
-          SWARM_LEDGER_DIR: src/engine/ledgers
+      - uses: actions/checkout@v4
+      - name: Refuse stub epoch
         run: |
-          PYTHONPATH=src/engine python3 src/engine/agent_swarm_runner.py
-          PYTHONPATH=src/engine python3 src/engine/test_adversarial_swarm_attack.py
-
-      - name: Wake Landed Sector Agents (simulation only)
-        env:
-          SWARM_AGENT_DIR: src/engine/ledgers/agents
+          echo "swarm_runner schedule demoted — use factory_workers / unit harvests."
+          mkdir -p src/engine/ledgers/factory
+          printf '%s\n' '{"kind":"swarm_runner_demoted","law":"no stub epoch SUCCESS"}'             > src/engine/ledgers/factory/swarm_runner_demoted_notice.json
+      - name: Commit notice
         run: |
-          PYTHONPATH=src/engine python3 src/engine/sector_autonomy_agents.py
-
-      - name: Commit Epoch Ledger Docket
-        run: |
-          git config --local user.email "agent-iris@dualiscapax.ai"
-          git config --local user.name "Agent Iris (Autonomous Swarm)"
-          git add src/engine/ledgers/
-          git diff-index --quiet HEAD || (git commit -m "chore(swarm): flush epoch + sector agents [skip ci]" && git push origin main)
+          git config --local user.email "swarm@dualiscapax.ai"
+          git config --local user.name "Dualis Swarm (demoted)"
+          git add src/engine/ledgers/factory/swarm_runner_demoted_notice.json || true
+          git diff --cached --quiet && exit 0
+          git commit -m "chore(swarm): runner demoted [skip ci]"
+          git pull --rebase origin main && git push origin HEAD || true

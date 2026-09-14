@@ -14,12 +14,18 @@ Implementation order: **structure → queue → harvest script → workflow → 
 - Claim Dualis *is* government, police, or tax authority
 - Invent cites to fill thin trunks (girls/women’s hockey = build the map honestly)
 
-## Next harvest candidates (after golf proves stable)
-1. `sports/hockey-girls-women-amateur` — platform depth where infra is thin  
-2. `sports/hockey-boys-amateur` — deepen Ontario packs into repo harvest  
-3. `sports/football-ncaa` then `football-hs`  
-4. First public trunk with a clear open cite class (start narrow: one metro open-data seat)
+## Live (2026-09-14)
+- `sports/golf-usa` — slot A
+- `sports/hockey-girls-women-amateur` — slot B (OWHA branch index)
 
+## Next harvest candidates
+1. `sports/hockey-boys-amateur` — deepen Ontario packs into repo harvest (slot C)
+2. `sports/football-ncaa` then `football-hs`
+3. First public trunk with a clear open cite class (start narrow: one metro open-data seat)
+
+## Demoted rails
+- `swarm_bot_fleet` / `swarm_runner` / scheduled `unity_mesh` — no more stub SUCCESS theater
+- Factory receipt: `factory_workers.yml` (slot D)
 
 ## Order (layer cap)
 

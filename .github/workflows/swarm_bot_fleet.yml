@@ -1,13 +1,16 @@
-name: DualisCapax Swarm Bot Fleet
+name: DualisCapax Swarm Bot Fleet (demoted)
+
+# DEMOTED 2026-09-14: stub theater (tax/trading/mesh PASS) removed from schedule.
+# Purposeful harvest lives in golf_usa_envelopes.yml + hockey_girls_owha.yml.
+# Factory health: factory_workers.yml. Manual dispatch kept for ledger archaeology only.
+
 on:
-  schedule:
-    - cron: '15 * * * *'
   workflow_dispatch:
     inputs:
-      target:
-        description: 'Destination (blank = STUB)'
+      mode:
+        description: 'manual_only — schedule removed'
         required: false
-        default: 'STUB'
+        default: 'manual_only'
 
 concurrency:
   group: dualis-bot-fleet
@@ -17,58 +20,22 @@ permissions:
   contents: write
 
 jobs:
-  fleet:
+  demoted:
     runs-on: ubuntu-latest
-    env:
-      DUALIS_TARGET: ${{ github.event.inputs.target || 'STUB' }}
-      DUALIS_LIVE_ACTUATORS: 'false'
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.SWARM_DISPATCH_TOKEN || github.token }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Bot — perpetual swarm + adversarial
-        env:
-          SWARM_TASK_TYPE: CODEX_REMOTE_TASK
-          SWARM_LEDGER_DIR: src/engine/ledgers
+      - name: Refuse theater
         run: |
-          PYTHONPATH=src/engine python3 src/engine/agent_swarm_runner.py
-          PYTHONPATH=src/engine python3 src/engine/test_adversarial_swarm_attack.py
-      - name: Bot — sector agents (hockey/muni/hospitality/anchor)
-        env:
-          SWARM_AGENT_DIR: src/engine/ledgers/agents
-        run: PYTHONPATH=src/engine python3 src/engine/sector_autonomy_agents.py
-      - name: Bot — tax clerks (CRA send stays NO)
-        run: PYTHONPATH=src/engine python3 src/engine/tax/tax_swarm_runner.py
-      - name: Bot — paper trading (no venue)
-        run: PYTHONPATH=src/engine python3 src/engine/trading/trading_manifold_engine.py
-      - name: Bot — golf USA envelope harvest (purposeful)
-        env:
-          GOLF_HARVEST_BATCH: '2'
-        run: python3 scripts/harvest_golf_usa_envelopes.py
-      - name: Bot — unity mesh (secrets wired; body still stub until harvester lands)
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: PYTHONPATH=src/engine python3 src/engine/unity/unity_mesh_orchestrator.py "STUB target=${DUALIS_TARGET}"
-      - name: Commit bot receipts
+          echo "swarm_bot_fleet schedule removed."
+          echo "Use golf_usa_envelopes / hockey_girls_owha / factory_workers."
+          mkdir -p src/engine/ledgers/factory
+          printf '%s\n' '{"kind":"fleet_demoted","at":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'","law":"no stub UNANIMOUS_PASS"}' \
+            > src/engine/ledgers/factory/fleet_demoted_notice.json
+      - name: Commit notice if new
         run: |
           git config --local user.email "agent-iris@dualiscapax.ai"
           git config --local user.name "Agent Iris (Bot Fleet)"
-          git add src/engine/ledgers/ src/engine/tax/T2_DRAFT_RETURN.json research/golf/usa/ || true
-          if git diff-index --quiet HEAD; then
-            echo "No fleet changes."
-            exit 0
-          fi
-          git commit -m "chore(bots): fleet tick target=${DUALIS_TARGET} [skip ci]"
-          for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push origin HEAD && exit 0
-            echo "push race attempt $i — retry"
-            sleep $((i * 2))
-          done
-          echo "push failed after retries" >&2
-          exit 1
+          git add src/engine/ledgers/factory/fleet_demoted_notice.json || true
+          git diff --cached --quiet && exit 0
+          git commit -m "chore(bots): fleet demoted — use factory workers [skip ci]"
+          git pull --rebase origin main && git push origin HEAD || true
