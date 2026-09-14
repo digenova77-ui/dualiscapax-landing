@@ -1133,29 +1133,38 @@
     return matchupPlanForSeat(getSeat(), oppRaw);
   }
 
-  /** Me strip — pos → type → size/shot/style/age + S/W when cited. Omit empty S/W; dash other awaits. Never invent; no default LW. */
+  /** Me strip — position → type → size/shot/style/age + S/W when cited.
+   * Omit empty cells entirely. Never invent; no default LW. */
   function matchupMeStripHtml() {
     var arch = loadMeArch() || {};
     var seat = getSeat() || {};
-    /* Type = player type (Power F / Sniper / …); style cell may duplicate until type is its own cite */
-    var typeFace = String(arch.type || arch.style || "").trim();
+    var player = {};
+    try { player = findPlayer(seat.jersey) || {}; } catch (e0) { player = {}; }
+    /* Position face only when cited (duals OK). Never invent LW/D. */
+    var posRaw = resolvePosRaw(seat, player) || String(arch.pos || "").trim();
+    var posParsed = typeof parsePositions === "function" ? parsePositions(posRaw) : { face: "" };
+    var posFace = String((posParsed && posParsed.face) || facePosLabel(seat, player) || "").trim();
+    if (posFace === "W" || posFace === "Winger" || posFace === "F") posFace = "";
+    /* Type = player type cite (arch.type); fall back to style only when type unset */
+    var typeFace = String(arch.type || arch.player_type || "").trim();
+    if (!typeFace) typeFace = String(arch.style || "").trim();
     var dims = [
-      { lab: "Pos", v: arch.pos || seat.pos },
+      { lab: "Pos", v: posFace },
       { lab: "Type", v: typeFace },
       { lab: "Size", v: arch.size },
       { lab: "Shot", v: arch.shot },
+      { lab: "Style", v: arch.style },
       { lab: "Age", v: arch.age }
     ];
     var cells = dims.map(function (d) {
       var v = String(d.v || "").trim();
-      var face = v ? esc(v) : "—";
-      var cls = "ice-matchup-me-cell" + (v ? " is-locked" : " is-await");
-      return '<div class="' + cls + '">' +
+      if (!v) return ""; /* omit when empty — no fake dash */
+      return '<div class="ice-matchup-me-cell is-locked">' +
         '<span class="ice-matchup-me-lab">' + esc(d.lab) + "</span>" +
-        '<span class="ice-matchup-me-v">' + face + "</span>" +
+        '<span class="ice-matchup-me-v">' + esc(v) + "</span>" +
       "</div>";
     }).join("");
-    /* Strengths / weaknesses — cite-only; omit entirely when empty (not a fake dash row) */
+    /* Strengths / weaknesses — cite-only; omit entirely when empty */
     function swBlock(lab, raw) {
       var v = "";
       if (Array.isArray(raw)) v = raw.map(function (x) { return String(x || "").trim(); }).filter(Boolean).join(" · ");
@@ -3436,7 +3445,8 @@
         if (!row.size) row.size = "5'11\" / 185";
         if (!row.shot) row.shot = "L";
         if (!row.style) row.style = "Power F";
-        if (!row.pos) row.pos = seat.pos || "LW";
+        if (!row.pos) row.pos = seat.pos || ""; /* cite seat only — never default LW */
+        if (!row.type && row.style) row.type = row.style; /* player type echo from cited style */
         if (!row.age) row.age = "2011";
         /* NCSA public personal-statement echo — cite only, may be months old. Never invent for other seats. */
         if (!row.blurb) {
@@ -3457,7 +3467,7 @@
       var cur = {};
       try { cur = JSON.parse(lsGet(ME_ARCH_KEY) || "{}") || {}; } catch (e0) { cur = {}; }
       var next = row || {};
-      var keys = ["size", "shot", "style", "pos", "age", "type", "strengths", "weaknesses"];
+      var keys = ["size", "shot", "style", "pos", "age", "type", "player_type", "strengths", "weaknesses"];
       for (var i = 0; i < keys.length; i++) {
         var k = keys[i];
         if (String(cur[k] || "").trim()) continue; /* locked once defined */
