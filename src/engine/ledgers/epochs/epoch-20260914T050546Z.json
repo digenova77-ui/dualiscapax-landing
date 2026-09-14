@@ -1,0 +1,407 @@
+{
+  "timestamp_utc": "2026-09-14T05:05:46Z",
+  "epoch_root_hash": "6a7a65260189a95271d6f5d2790612058927cf2ba2d38db9f18921eedad36298",
+  "completed_count": 50,
+  "tasks": [
+    {
+      "task_id": "01a08ef8-99a5-7cb1-87e9-795290248030",
+      "task_type": "CODEX_REMOTE_TASK",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "ae883240fad3cc31d2fc7330f503b73f37930bcbd967179fd9a4711f6bfc574d",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"01a08ef8-99a5-7cb1-87e9-795290248030\", \"agent\": \"Iris-Core\", \"status\": \"EXECUTED_CONSERVED\", \"latency_us\": 3.43, \"detail\": {\"instruction\": \"Autonomous Execution: CODEX_REMOTE_TASK\", \"target_repo\": \"digenova77-ui/dualiscapax-landing\", \"law_floor_verified\": true, \"zero_pii_enforced\": true}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0001",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "948a3ef5ff7e46329859d6525f782966ce3640a794a4509d90de75e08a8927f5",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0001\", \"agent\": \"Iris-BioMed\", \"status\": \"SUCCESS\", \"latency_us\": 35.04, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1252, \"q_next\": 1.010495, \"p_next\": 0.493989505, \"h_next\": 0.6325628880375724, \"det_m\": 1.0, \"residual\": 3.880375724074625e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 14.83, \"latency_ms\": 0.0148, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"87299bcc033526737e5d8b4157abfbf54e5348f918c177aad6c1f581b2f53be2\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0002",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "81c09f0e23a22fb22939e274eeb83d34c4f1d6c2c28a582105ad4c5afa3b76e8",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0002\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 22.69, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.132, \"q_next\": 1.0204900000000001, \"p_next\": 0.48897951, \"h_next\": 0.6402504006499201, \"det_m\": 1.0, \"residual\": 4.0064992012922574e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 7.75, \"latency_ms\": 0.0077, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"acc843b200706eedad2893e11479225e654350b48d6f980804bcc3762110ea17\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0003",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "0a521376e88ebb8c6b85fc6d70629c3a6e0626e42bb2887561381f1894adaadf",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0003\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 16.61, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1389, \"q_next\": 1.030485, \"p_next\": 0.48396951499999996, \"h_next\": 0.6480629133371677, \"det_m\": 1.0, \"residual\": 4.133371677150777e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 4.78, \"latency_ms\": 0.0048, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0dc3530473e20589729d663af35b8f8ae57f337b0d19a5777efcc69caf3aeab9\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0004",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "0b5744f8e4f9457988194e033c6ab50328644d2fc87862b658ba9031b508c665",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0004\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 54.27, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1459, \"q_next\": 1.04048, \"p_next\": 0.47895951999999997, \"h_next\": 0.6560004260993153, \"det_m\": 1.0, \"residual\": 4.260993152760406e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.92, \"latency_ms\": 0.0039, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"9601ed76355f40aae7ee5764364a89cad0e2327aed400edde42de943ea958212\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0005",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "1982dd6c2e161760f5d912683f7d1643a44e377a08cd137e2dfa3f1ac6dc29d2",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0005\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 12.95, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1529, \"q_next\": 1.050475, \"p_next\": 0.473949525, \"h_next\": 0.6640629389363628, \"det_m\": 1.0, \"residual\": 4.389363628121146e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 4.14, \"latency_ms\": 0.0041, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"2cb6437a824451173bb964044a2e7c532de59def365168aed9c64594842c9119\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0006",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "f5c08cd0511e8eae43489e5aa4082b17d38d5313f78bb36b4793772e25be60f9",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0006\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 10.68, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.16, \"q_next\": 1.06047, \"p_next\": 0.46893953, \"h_next\": 0.6722504518483104, \"det_m\": 1.0, \"residual\": 4.5184831043432185e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.67, \"latency_ms\": 0.0037, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a41d984b1385def3f3b936b91ad39ceb5665f04320452481877e67254bb3894b\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0007",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "843dd6cd508c4feef985542f214c167990d3f945d43b6b163814e87f1aa93fce",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0007\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 24.95, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1671, \"q_next\": 1.070465, \"p_next\": 0.46392953499999995, \"h_next\": 0.6805629648351581, \"det_m\": 1.0, \"residual\": 4.648351581426624e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 4.71, \"latency_ms\": 0.0047, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"d240db8f6a539e70c9ac1531a2b5fda822e9814bb3763bea716f53b55bb67b0d\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0008",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "f05153677ef6657012082ede3c6cae642f2ed137c740c09207d9dfcbe8d667b4",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0008\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 21.34, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1743, \"q_next\": 1.08046, \"p_next\": 0.45891954, \"h_next\": 0.6890004778969058, \"det_m\": 1.0, \"residual\": 4.778969057150917e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 7.27, \"latency_ms\": 0.0073, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a9d00f31dc4eacd60970818e7ba4e16fd99751f9cf7a50d7b40158fe83360b71\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0009",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "4b90822f1ca1b6149b34393ee3ad88ffae46af3647255d9c096d686953118287",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0009\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 15.56, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1816, \"q_next\": 1.0904550000000002, \"p_next\": 0.453909545, \"h_next\": 0.6975629910335538, \"det_m\": 1.0, \"residual\": 4.910335537067212e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.41, \"latency_ms\": 0.0034, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0cce69eba07a1703d17cd728b5d5e9fdd8489ed4cbd4eccf4f9ce6bd0d48f413\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0010",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "81cd14f21bdb957fcbdf702e2ee1bfc465f3080e571ec709431d9f3d21d19d6b",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0010\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 27.04, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1185, \"q_next\": 1.0005, \"p_next\": 0.4989995, \"h_next\": 0.625000375500125, \"det_m\": 1.0, \"residual\": 3.755001249938772e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 14.87, \"latency_ms\": 0.0149, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"41f140088611fe2321df7cb42d14efd40320b01e421b8d06a9a604ff1af5d258\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0011",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "53ce77ca45b69fdf6e677075c36bbf1f99fc477299fe06086e2e353d616df9c2",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0011\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 13.77, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1252, \"q_next\": 1.010495, \"p_next\": 0.493989505, \"h_next\": 0.6325628880375724, \"det_m\": 1.0, \"residual\": 3.880375724074625e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 4.45, \"latency_ms\": 0.0045, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"87299bcc033526737e5d8b4157abfbf54e5348f918c177aad6c1f581b2f53be2\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0012",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "9d83f71a31b90d55497f728456f57148e75517a030c1d3d5c8d8dcba64fee193",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0012\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 9.54, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.132, \"q_next\": 1.0204900000000001, \"p_next\": 0.48897951, \"h_next\": 0.6402504006499201, \"det_m\": 1.0, \"residual\": 4.0064992012922574e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.98, \"latency_ms\": 0.003, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"acc843b200706eedad2893e11479225e654350b48d6f980804bcc3762110ea17\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0013",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "c648c75771fea8606ec9d3851af6a44ea5f50834ca9d652f72f992ca4a643925",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0013\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 10.97, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1389, \"q_next\": 1.030485, \"p_next\": 0.48396951499999996, \"h_next\": 0.6480629133371677, \"det_m\": 1.0, \"residual\": 4.133371677150777e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.5, \"latency_ms\": 0.0035, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0dc3530473e20589729d663af35b8f8ae57f337b0d19a5777efcc69caf3aeab9\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0014",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "6fb13c8cac5c928720625cab00fae9761f211d9e188e992d77d69295978a5618",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0014\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 8.42, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1459, \"q_next\": 1.04048, \"p_next\": 0.47895951999999997, \"h_next\": 0.6560004260993153, \"det_m\": 1.0, \"residual\": 4.260993152760406e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.63, \"latency_ms\": 0.0026, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"9601ed76355f40aae7ee5764364a89cad0e2327aed400edde42de943ea958212\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0015",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "439c2f25ed4519dd05936dbafc9d7b1c7a17da9eb8c0e976ca6a10256524874c",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0015\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 10.76, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1529, \"q_next\": 1.050475, \"p_next\": 0.473949525, \"h_next\": 0.6640629389363628, \"det_m\": 1.0, \"residual\": 4.389363628121146e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.66, \"latency_ms\": 0.0037, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"2cb6437a824451173bb964044a2e7c532de59def365168aed9c64594842c9119\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0016",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "36d516e60b0a0a4c152f5268e788aaedbec6522892b21ebb2e74b54e0f544dda",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0016\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 8.2, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.16, \"q_next\": 1.06047, \"p_next\": 0.46893953, \"h_next\": 0.6722504518483104, \"det_m\": 1.0, \"residual\": 4.5184831043432185e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.56, \"latency_ms\": 0.0026, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a41d984b1385def3f3b936b91ad39ceb5665f04320452481877e67254bb3894b\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0017",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "d0ef19ff9ef5b1876f824ad1b2c458c5d61e2c32b9f679e7e69c6b3039f2c156",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0017\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 10.84, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1671, \"q_next\": 1.070465, \"p_next\": 0.46392953499999995, \"h_next\": 0.6805629648351581, \"det_m\": 1.0, \"residual\": 4.648351581426624e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.52, \"latency_ms\": 0.0035, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"d240db8f6a539e70c9ac1531a2b5fda822e9814bb3763bea716f53b55bb67b0d\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0018",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "8b23bcb0806bbad79a5ffd9dbfceed5477c4d7739e57d207479d7c60426a6fb8",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0018\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 8.68, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1743, \"q_next\": 1.08046, \"p_next\": 0.45891954, \"h_next\": 0.6890004778969058, \"det_m\": 1.0, \"residual\": 4.778969057150917e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.75, \"latency_ms\": 0.0028, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a9d00f31dc4eacd60970818e7ba4e16fd99751f9cf7a50d7b40158fe83360b71\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0019",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "9cad6596d3f41a472b34939e94ee10c16b8d9c74a77980bd68c497ac5128def1",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0019\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 10.61, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1816, \"q_next\": 1.0904550000000002, \"p_next\": 0.453909545, \"h_next\": 0.6975629910335538, \"det_m\": 1.0, \"residual\": 4.910335537067212e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.4, \"latency_ms\": 0.0034, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0cce69eba07a1703d17cd728b5d5e9fdd8489ed4cbd4eccf4f9ce6bd0d48f413\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0020",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "fe8117fd9019e32fb4a5dfe30e115b7104c9217ba0f6f5106fdf70dc8973ac83",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0020\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 7.91, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1185, \"q_next\": 1.0005, \"p_next\": 0.4989995, \"h_next\": 0.625000375500125, \"det_m\": 1.0, \"residual\": 3.755001249938772e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.37, \"latency_ms\": 0.0024, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"41f140088611fe2321df7cb42d14efd40320b01e421b8d06a9a604ff1af5d258\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0021",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "105fab076e0e7a0d33d9583719cb88ad93eb1df3bf1f2c0bfe066fb02018c2be",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0021\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 10.29, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1252, \"q_next\": 1.010495, \"p_next\": 0.493989505, \"h_next\": 0.6325628880375724, \"det_m\": 1.0, \"residual\": 3.880375724074625e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.31, \"latency_ms\": 0.0033, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"87299bcc033526737e5d8b4157abfbf54e5348f918c177aad6c1f581b2f53be2\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0022",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "29fe865d0a2256243e6d70477fc7b324519fbbdca50a84b330fc95dedd82e73a",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0022\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 7.92, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.132, \"q_next\": 1.0204900000000001, \"p_next\": 0.48897951, \"h_next\": 0.6402504006499201, \"det_m\": 1.0, \"residual\": 4.0064992012922574e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.46, \"latency_ms\": 0.0025, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"acc843b200706eedad2893e11479225e654350b48d6f980804bcc3762110ea17\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0023",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "563471bc079b15ee283c82799cd5d6c5c9ac8fd15b86411183c074201b33128a",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0023\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 11.82, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1389, \"q_next\": 1.030485, \"p_next\": 0.48396951499999996, \"h_next\": 0.6480629133371677, \"det_m\": 1.0, \"residual\": 4.133371677150777e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.52, \"latency_ms\": 0.0035, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0dc3530473e20589729d663af35b8f8ae57f337b0d19a5777efcc69caf3aeab9\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0024",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "c1f68216d4d48341b639f5ad92ed7b81eb6a2f51f6aea8b89d35f4b831ab60e0",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0024\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 7.95, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1459, \"q_next\": 1.04048, \"p_next\": 0.47895951999999997, \"h_next\": 0.6560004260993153, \"det_m\": 1.0, \"residual\": 4.260993152760406e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.47, \"latency_ms\": 0.0025, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"9601ed76355f40aae7ee5764364a89cad0e2327aed400edde42de943ea958212\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0025",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "5645954e9fe534624e44bf25ecdef02e4c68a01b59248576e7915fc13490f222",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0025\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 8.25, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1529, \"q_next\": 1.050475, \"p_next\": 0.473949525, \"h_next\": 0.6640629389363628, \"det_m\": 1.0, \"residual\": 4.389363628121146e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.69, \"latency_ms\": 0.0027, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"2cb6437a824451173bb964044a2e7c532de59def365168aed9c64594842c9119\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0026",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "d601eca8beb8211027fe2f96e0ddc164e193573d820cab885cda7e54ed82df3b",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0026\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 7.87, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.16, \"q_next\": 1.06047, \"p_next\": 0.46893953, \"h_next\": 0.6722504518483104, \"det_m\": 1.0, \"residual\": 4.5184831043432185e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.33, \"latency_ms\": 0.0023, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a41d984b1385def3f3b936b91ad39ceb5665f04320452481877e67254bb3894b\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0027",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "a976d76705481a176c5d524a89e80dde6e9f4679578e2bad02ba220ef73b86cb",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0027\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.68, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1671, \"q_next\": 1.070465, \"p_next\": 0.46392953499999995, \"h_next\": 0.6805629648351581, \"det_m\": 1.0, \"residual\": 4.648351581426624e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.37, \"latency_ms\": 0.0024, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"d240db8f6a539e70c9ac1531a2b5fda822e9814bb3763bea716f53b55bb67b0d\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0028",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "ab6e0ec18ba07f88282c215fef1fc40652c79dc3b5d15d6daf310f65abf62266",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0028\", \"agent\": \"Iris-BioMed\", \"status\": \"SUCCESS\", \"latency_us\": 12.86, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1743, \"q_next\": 1.08046, \"p_next\": 0.45891954, \"h_next\": 0.6890004778969058, \"det_m\": 1.0, \"residual\": 4.778969057150917e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.56, \"latency_ms\": 0.0036, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a9d00f31dc4eacd60970818e7ba4e16fd99751f9cf7a50d7b40158fe83360b71\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0029",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "a8dc0abcdd2695af2feafd7cc89cef6ddf3bd3f3de65428e80bd98cb0f744ac3",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0029\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 8.25, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1816, \"q_next\": 1.0904550000000002, \"p_next\": 0.453909545, \"h_next\": 0.6975629910335538, \"det_m\": 1.0, \"residual\": 4.910335537067212e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.46, \"latency_ms\": 0.0025, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0cce69eba07a1703d17cd728b5d5e9fdd8489ed4cbd4eccf4f9ce6bd0d48f413\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0030",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "4ee89e9936b4c542ab85983d5a58cbb5b3d3a82d5f115aa11a2fc3af764cca40",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0030\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.89, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1185, \"q_next\": 1.0005, \"p_next\": 0.4989995, \"h_next\": 0.625000375500125, \"det_m\": 1.0, \"residual\": 3.755001249938772e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.27, \"latency_ms\": 0.0023, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"41f140088611fe2321df7cb42d14efd40320b01e421b8d06a9a604ff1af5d258\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0031",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "d2c5e74b02b54e76253acd061d037db00437faaf762162915ddfb50a6ac9e67e",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0031\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 7.98, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1252, \"q_next\": 1.010495, \"p_next\": 0.493989505, \"h_next\": 0.6325628880375724, \"det_m\": 1.0, \"residual\": 3.880375724074625e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.41, \"latency_ms\": 0.0024, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"87299bcc033526737e5d8b4157abfbf54e5348f918c177aad6c1f581b2f53be2\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0032",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "b614f7b4b75b9dec2a4287b438285a640ea427ad4d034521479edc3390e9adb0",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0032\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.49, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.132, \"q_next\": 1.0204900000000001, \"p_next\": 0.48897951, \"h_next\": 0.6402504006499201, \"det_m\": 1.0, \"residual\": 4.0064992012922574e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.27, \"latency_ms\": 0.0023, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"acc843b200706eedad2893e11479225e654350b48d6f980804bcc3762110ea17\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0033",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "19e475847783fcf36199baa29fa02d37bf36934d8a51dbadb1ee60a323f01026",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0033\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 8.11, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1389, \"q_next\": 1.030485, \"p_next\": 0.48396951499999996, \"h_next\": 0.6480629133371677, \"det_m\": 1.0, \"residual\": 4.133371677150777e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.54, \"latency_ms\": 0.0025, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0dc3530473e20589729d663af35b8f8ae57f337b0d19a5777efcc69caf3aeab9\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0034",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "85706fc23fe8f7773e4ca0ed11b7700cf8dd6f0e0675ec07b6dd869fd62ab551",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0034\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.85, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1459, \"q_next\": 1.04048, \"p_next\": 0.47895951999999997, \"h_next\": 0.6560004260993153, \"det_m\": 1.0, \"residual\": 4.260993152760406e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.33, \"latency_ms\": 0.0023, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"9601ed76355f40aae7ee5764364a89cad0e2327aed400edde42de943ea958212\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0035",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "5d7b986638f13894c3af40517248be7c0120a0c632307fbb8abf7686a9b14272",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0035\", \"agent\": \"Iris-BioMed\", \"status\": \"SUCCESS\", \"latency_us\": 24.24, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1529, \"q_next\": 1.050475, \"p_next\": 0.473949525, \"h_next\": 0.6640629389363628, \"det_m\": 1.0, \"residual\": 4.389363628121146e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 3.37, \"latency_ms\": 0.0034, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"2cb6437a824451173bb964044a2e7c532de59def365168aed9c64594842c9119\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0036",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "451e4586ae02f7af6c4843aa743c6a6c65d06190c95fe2d731851738afc9c062",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0036\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 7.77, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.16, \"q_next\": 1.06047, \"p_next\": 0.46893953, \"h_next\": 0.6722504518483104, \"det_m\": 1.0, \"residual\": 4.5184831043432185e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.41, \"latency_ms\": 0.0024, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a41d984b1385def3f3b936b91ad39ceb5665f04320452481877e67254bb3894b\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0037",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "f1fe797632ef165b4d89b86b9882df142d576560ae085dffed74a04b0888ef37",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0037\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.66, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1671, \"q_next\": 1.070465, \"p_next\": 0.46392953499999995, \"h_next\": 0.6805629648351581, \"det_m\": 1.0, \"residual\": 4.648351581426624e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.29, \"latency_ms\": 0.0023, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"d240db8f6a539e70c9ac1531a2b5fda822e9814bb3763bea716f53b55bb67b0d\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0038",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "1d3432ead2d55a5ec4e0001fe5736a7304aa2af7f0b5653bc5719078a358d732",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0038\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 8.23, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1743, \"q_next\": 1.08046, \"p_next\": 0.45891954, \"h_next\": 0.6890004778969058, \"det_m\": 1.0, \"residual\": 4.778969057150917e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.39, \"latency_ms\": 0.0024, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a9d00f31dc4eacd60970818e7ba4e16fd99751f9cf7a50d7b40158fe83360b71\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0039",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "0ceb8408c24fb971aaf43a864265b50ebbaa9487fcc038e1a63b73466e4768e6",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0039\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.38, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1816, \"q_next\": 1.0904550000000002, \"p_next\": 0.453909545, \"h_next\": 0.6975629910335538, \"det_m\": 1.0, \"residual\": 4.910335537067212e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.31, \"latency_ms\": 0.0023, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0cce69eba07a1703d17cd728b5d5e9fdd8489ed4cbd4eccf4f9ce6bd0d48f413\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0040",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "9dafda4bb3924a8656cd6019ccbaf09e7ca79f663748843d040cd9cd6fbbc8fe",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0040\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 7.8, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1185, \"q_next\": 1.0005, \"p_next\": 0.4989995, \"h_next\": 0.625000375500125, \"det_m\": 1.0, \"residual\": 3.755001249938772e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.2, \"latency_ms\": 0.0022, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"41f140088611fe2321df7cb42d14efd40320b01e421b8d06a9a604ff1af5d258\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0041",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "7357cceeb0ab4b8e7cffb9e8f7f1df69d188e7fdbc8b2d109e7134273804c473",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0041\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.34, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1252, \"q_next\": 1.010495, \"p_next\": 0.493989505, \"h_next\": 0.6325628880375724, \"det_m\": 1.0, \"residual\": 3.880375724074625e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.1, \"latency_ms\": 0.0021, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"87299bcc033526737e5d8b4157abfbf54e5348f918c177aad6c1f581b2f53be2\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0042",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "a162bfd4e99fb1854686bc2f716e92cd79489cbc04e47d803b1ceaaa5e96d789",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0042\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 8.77, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.132, \"q_next\": 1.0204900000000001, \"p_next\": 0.48897951, \"h_next\": 0.6402504006499201, \"det_m\": 1.0, \"residual\": 4.0064992012922574e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.47, \"latency_ms\": 0.0025, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"acc843b200706eedad2893e11479225e654350b48d6f980804bcc3762110ea17\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0043",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "d3a427298f5188896477078d3dab632c0896c899e3965dc4f26a263407502835",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0043\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.69, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1389, \"q_next\": 1.030485, \"p_next\": 0.48396951499999996, \"h_next\": 0.6480629133371677, \"det_m\": 1.0, \"residual\": 4.133371677150777e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.14, \"latency_ms\": 0.0021, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0dc3530473e20589729d663af35b8f8ae57f337b0d19a5777efcc69caf3aeab9\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0044",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "1354d8c93e336da7d703f0dfc386e712fb59ed51ec8553845b84af2e6485be72",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0044\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 14.12, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1459, \"q_next\": 1.04048, \"p_next\": 0.47895951999999997, \"h_next\": 0.6560004260993153, \"det_m\": 1.0, \"residual\": 4.260993152760406e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.33, \"latency_ms\": 0.0023, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"9601ed76355f40aae7ee5764364a89cad0e2327aed400edde42de943ea958212\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0045",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "e25f6081f68c09e50ba38115b6a8fdb2a96d579266e901e9d9c129ad765e7981",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0045\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.78, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1529, \"q_next\": 1.050475, \"p_next\": 0.473949525, \"h_next\": 0.6640629389363628, \"det_m\": 1.0, \"residual\": 4.389363628121146e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.36, \"latency_ms\": 0.0024, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"2cb6437a824451173bb964044a2e7c532de59def365168aed9c64594842c9119\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0046",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "0d8242ec1a644740467f2dd102f8f51476a2fb59e486735591fcc564f871d918",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0046\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 8.31, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.16, \"q_next\": 1.06047, \"p_next\": 0.46893953, \"h_next\": 0.6722504518483104, \"det_m\": 1.0, \"residual\": 4.5184831043432185e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.48, \"latency_ms\": 0.0025, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a41d984b1385def3f3b936b91ad39ceb5665f04320452481877e67254bb3894b\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0047",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "667b953de6dafceecdd8bd309a54432c2e69ded7c9d3c6088af68ed8b6ef4443",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0047\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 10.72, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1671, \"q_next\": 1.070465, \"p_next\": 0.46392953499999995, \"h_next\": 0.6805629648351581, \"det_m\": 1.0, \"residual\": 4.648351581426624e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.98, \"latency_ms\": 0.003, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"d240db8f6a539e70c9ac1531a2b5fda822e9814bb3763bea716f53b55bb67b0d\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0048",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "4f58d70520d7df3d397c757f3aa92f9d867bffe5e2d58a2eaaa371983e97c3a5",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0048\", \"agent\": \"Iris-Treasury\", \"status\": \"SUCCESS\", \"latency_us\": 7.87, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1743, \"q_next\": 1.08046, \"p_next\": 0.45891954, \"h_next\": 0.6890004778969058, \"det_m\": 1.0, \"residual\": 4.778969057150917e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.23, \"latency_ms\": 0.0022, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"a9d00f31dc4eacd60970818e7ba4e16fd99751f9cf7a50d7b40158fe83360b71\"}}"
+    },
+    {
+      "task_id": "SEC-06-TASK-0049",
+      "task_type": "SCADA_MICROGRID_BALANCE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "20493036164f9f281096ea6533a683e9846a5915e8138ac1b19fc1cb77841bf7",
+      "completed_at": 1789362346,
+      "result": "{\"task_id\": \"SEC-06-TASK-0049\", \"agent\": \"Iris-Core\", \"status\": \"SUCCESS\", \"latency_us\": 7.54, \"detail\": {\"status\": \"CONSERVED\", \"routing_tier\": \"SYSTEM_2_DELIBERATIVE\", \"gradient\": 1.1816, \"q_next\": 1.0904550000000002, \"p_next\": 0.453909545, \"h_next\": 0.6975629910335538, \"det_m\": 1.0, \"residual\": 4.910335537067212e-10, \"lease_coherence\": \"COHERENT\", \"latency_us\": 2.27, \"latency_ms\": 0.0023, \"tokens_consumed\": 0, \"landauer_joules\": 1.8374264864503833e-19, \"receipt_hash\": \"0cce69eba07a1703d17cd728b5d5e9fdd8489ed4cbd4eccf4f9ce6bd0d48f413\"}}"
+    }
+  ]
+}
