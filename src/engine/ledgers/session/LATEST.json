@@ -1,0 +1,39 @@
+{
+  "kind": "ice_session_bot",
+  "unit": "infra/ice-session-bot",
+  "captured_at": "2026-09-14T20:47:45Z",
+  "law": "same instruction set as the Ice chat team \u2014 not a GrokBot clone",
+  "task": "First run: audit Seat TeamSnap-only bind, ice-portal.js size/PLACEHOLDER, and write an honest receipt. Do not edit ice-portal.js.",
+  "audit": {
+    "ok": true,
+    "findings": [
+      {
+        "id": "portal_placeholder",
+        "ok": true,
+        "bytes": 633
+      },
+      {
+        "id": "portal_is_loader",
+        "ok": true,
+        "note": "inline engine not restored; loader allowed if last-good pin exists"
+      },
+      {
+        "id": "seat_spordle_option",
+        "ok": true,
+        "portal_has_button": false,
+        "overlay_present": true
+      },
+      {
+        "id": "forest_present",
+        "ok": true
+      }
+    ]
+  },
+  "model": {
+    "status": "LIVE_BRIEF",
+    "task": "First run: audit Seat TeamSnap-only bind, ice-portal.js size/PLACEHOLDER, and write an honest receipt. Do not edit ice-portal.js.",
+    "model": "grok-3",
+    "chars": 753,
+    "text": "**Ice Session Bot \u2014 Honest Receipt (AUDIT mode)**\n\n- **Seat / bind audit**: Instructions require TeamSnap-only binding. No `data-prove=spordle` or \u201cContinue with Spordle\u201d references observed in provided task text. No violation detected from input alone.\n- **ice-portal.js audit**: Task explicitly states \u201cDo not edit ice-portal.js\u201d. No file content, size, or PLACEHOLDER status supplied. Cannot confirm presence/absence of PLACEHOLDER or file size. No edit performed.\n- **Other constraints**: No XAI_API_KEY present \u2192 no model generation. No workflow_dispatch.task value beyond the audit request. No Spordle revival, no CF-deploy, no invented Grok content.\n\n**Result**: Audit complete on supplied instructions only. No code changes made. Receipt issued."
+  }
+}
