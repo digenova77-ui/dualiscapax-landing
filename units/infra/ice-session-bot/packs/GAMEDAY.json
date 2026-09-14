@@ -1,0 +1,25 @@
+{
+  "kind": "dclm_gameday",
+  "plan_id": "ice-session-plan-2026-09-14.2",
+  "cite_ready": "NONE",
+  "dual_path": {"forward": "what is developing", "rewind": "how we got here", "next_node": "EMPTY"},
+  "zones": {
+    "OZ": "arrive after the first chance dies",
+    "NZ": "move the puck through your square",
+    "DZ": "first contact + outlet; recover is a play"
+  },
+  "rulers": {
+    "vision": "Gretzky",
+    "d_mobility": "Orr",
+    "shot_power": ["MacInnis", "Iafrate", "Chara"],
+    "recover_finish": ["Henderson", "McCarty"]
+  },
+  "model_seat": {
+    "when": "pack already names Quinte U16 #29",
+    "nearest_ruler": "shot_power",
+    "not_akin": "Gretzky vision 1.000",
+    "tonight": "protect puck, shoot through traffic, arrive after the miss"
+  },
+  "pipes": ["TeamSnap", "GameSheet", "LiveBarn", "Hudl", "Maps"],
+  "never": ["invent TOI", "invent shot mph", "destiny", "Gretzky-or-bust"]
+}
