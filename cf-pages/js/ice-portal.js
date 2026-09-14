@@ -1378,9 +1378,59 @@
   function hasStayCoveringTournament(board) {
     return staysMatchingEvent(board).length > 0;
   }
+  /**
+   * Expand matches with same-city stays that touch the matched date range
+   * (back-to-back bookings — separate confs, one lodging flow). Never invent.
+   */
+  function expandAdjacentCityStays(board, matches) {
+    if (!matches || !matches.length) return matches || [];
+    var list = loadStays();
+    var city = String(board.city || board.where || "").trim().toLowerCase();
+    if (city === "—") city = "";
+    var byIdx = {};
+    var minA = null, maxB = null;
+    for (var i = 0; i < matches.length; i++) {
+      byIdx[matches[i].idx] = true;
+      var sa = stayStartMs(matches[i].s);
+      var sb = stayEndMs(matches[i].s);
+      if (sa !== Number.POSITIVE_INFINITY) {
+        if (minA == null || sa < minA) minA = sa;
+        if (maxB == null || sb > maxB) maxB = sb;
+      }
+    }
+    if (minA == null) return matches;
+    var changed = true;
+    while (changed) {
+      changed = false;
+      for (var j = 0; j < list.length; j++) {
+        if (byIdx[j]) continue;
+        var s = list[j];
+        if (!s) continue;
+        if (city.length >= 3) {
+          var blob = (String(s.address || "") + " " + String(s.title || "") + " " +
+            String(s.label || "") + " " + String(s.city || "")).toLowerCase();
+          if (blob.indexOf(city) < 0) continue;
+        } else continue;
+        var a = stayStartMs(s);
+        var b = stayEndMs(s);
+        if (a === Number.POSITIVE_INFINITY) continue;
+        /* touch or overlap the flowed window (±1 day for checkout/checkin abut) */
+        var day = 24 * 3600000;
+        if (a <= maxB + day && b >= minA - day) {
+          byIdx[j] = true;
+          matches.push({ s: s, idx: j });
+          if (a < minA) minA = a;
+          if (b > maxB) maxB = b;
+          changed = true;
+        }
+      }
+    }
+    matches.sort(function (x, y) { return stayStartMs(x.s) - stayStartMs(y.s); });
+    return matches;
+  }
   /** Behind the scenes: attach trip/tourney ids onto matched stays so Cal + Stay stay linked. */
   function linkStaysToEvent(board) {
-    var matches = staysMatchingEvent(board);
+    var matches = expandAdjacentCityStays(board, staysMatchingEvent(board));
     if (!matches.length || !board) return matches;
     var list = loadStays();
     var changed = false;
@@ -1418,14 +1468,36 @@
     var stayBtn = "";
     if (win && win.checkIn && win.checkOut) {
       if (covered) {
-        var first = matched[0].s || {};
-        var openUrl = (first.url && /^https?:\/\//i.test(first.url)) ? first.url : "";
+        /* May be N back-to-back bookings (e.g. Kitchener split) — keep each conf,
+           flow the date range across all. Never invent a merged reservation. */
+        var idxs = [];
+        var urls = [];
+        var flowIn = win.checkIn;
+        var flowOut = win.checkOut;
+        for (var mi = 0; mi < matched.length; mi++) {
+          idxs.push(String(matched[mi].idx));
+          var ms = matched[mi].s || {};
+          if (ms.url && /^https?:\/\//i.test(ms.url)) urls.push(ms.url);
+          var si = stayParseDay(ms);
+          var so = stayParseOut(ms);
+          if (si) {
+            var siY = ymdLocal(si);
+            if (!flowIn || siY < flowIn) flowIn = siY;
+          }
+          if (so) {
+            var soY = ymdLocal(so);
+            if (!flowOut || soY > flowOut) flowOut = soY;
+          }
+        }
         stayBtn = '<button type="button" class="ice-tourney-stay is-on" data-tourney-open-stay' +
-            ' data-cin="' + esc(win.checkIn) + '" data-cout="' + esc(win.checkOut) + '"' +
+            ' data-cin="' + esc(flowIn || win.checkIn) + '" data-cout="' + esc(flowOut || win.checkOut) + '"' +
             ' data-city="' + esc(win.city) + '" data-trip="' + esc(win.tripTitle) + '"' +
-            ' data-stay-idx="' + esc(String(matched[0].idx)) + '"' +
-            (openUrl ? (' data-stay-url="' + esc(openUrl) + '"') : "") +
-            ' title="Open your stay for this tournament (' + matched.length + ')">Stay ✓</button>';
+            ' data-stay-idxs="' + esc(idxs.join(",")) + '"' +
+            ' data-stay-urls="' + esc(urls.join("|")) + '"' +
+            ' title="' + esc(matched.length > 1
+              ? (matched.length + " stays cover this tournament · " + (flowIn || "") + " → " + (flowOut || ""))
+              : ("Open your stay · " + (flowIn || "") + " → " + (flowOut || ""))) +
+            '">Stay ✓' + (matched.length > 1 ? (" · " + matched.length) : "") + "</button>";
       } else {
         /* No stay yet — exact empty flow: Airbnb search + Add a stay prefill */
         stayBtn = '<button type="button" class="ice-tourney-stay" data-tourney-stay' +
@@ -1433,7 +1505,7 @@
             ' data-city="' + esc(win.city) + '" data-label="' + esc(win.label) + '"' +
             ' data-trip="' + esc(win.tripTitle) + '" data-tstart="' + esc(win.tripStart || "") + '"' +
             ' data-air="' + esc(airbnbSearchUrlForStay(win)) + '"' +
-            ' title="Default ' + esc(win.checkIn) + " → " + esc(win.checkOut) + ' (you can override)">Stay</button>';
+            ' title="Full stay window ' + esc(win.checkIn) + " → " + esc(win.checkOut) + ' — book once if you can; override only if needed">Stay</button>';
       }
     }
     return '<div class="ice-tourney-row">' +
@@ -3795,9 +3867,9 @@
             if (coutEl) coutEl.value = cout;
             if (titleEl) titleEl.value = label;
             if (note) {
-              note.textContent = "Suggested for this tournament: " + cin + " → " + cout +
+              note.textContent = "Full lodging window for this tournament: " + cin + " → " + cout +
                 (city ? (" · " + city) : "") +
-                ". Override any field. Open Airbnb reservation page → copy browser address → paste below after you book.";
+                " (night before start through checkout on the end day). Book this whole range in one reservation when you can — override only if you must. After booking: open Airbnb reservation page → copy browser address → paste below.";
             }
             var pan = root.querySelector("#stayAddPanel");
             if (pan) pan.setAttribute("data-trip-bind", JSON.stringify({
@@ -3811,24 +3883,51 @@
           ev.preventDefault();
           ev.stopPropagation();
           var cin = btn.getAttribute("data-cin") || "";
-          var url = btn.getAttribute("data-stay-url") || "";
-          /* Calendar spine: focus the stay nights on Cal */
+          var urlsRaw = btn.getAttribute("data-stay-urls") || btn.getAttribute("data-stay-url") || "";
+          var urls = urlsRaw ? urlsRaw.split("|").filter(Boolean) : [];
+          /* Calendar spine: focus the flowed check-in (covers back-to-back bookings) */
           if (/^\d{4}-\d{2}-\d{2}$/.test(cin)) {
             try {
               state.calAnchor = new Date(Number(cin.slice(0, 4)), Number(cin.slice(5, 7)) - 1, 1);
               state.calDayFocus = cin;
             } catch (e2) {}
           }
-          /* Open the Airbnb reservation already on this phone, if we have it */
-          if (url) {
-            try { window.open(url, "_blank", "noopener,noreferrer"); } catch (e3) {}
+          /* Open each on-device reservation (separate confs) — first always; rest if allowed */
+          for (var ui = 0; ui < urls.length; ui++) {
+            try { window.open(urls[ui], "_blank", "noopener,noreferrer"); } catch (e3) {}
           }
-          /* Go → Check your stays so the linked stay is visible next to Cal */
+          try {
+            sessionStorage.setItem("dc.ice.stay_focus_idxs", btn.getAttribute("data-stay-idxs") || "");
+            sessionStorage.setItem("dc.ice.stay_flow_note", JSON.stringify({
+              trip: btn.getAttribute("data-trip") || "",
+              city: btn.getAttribute("data-city") || "",
+              cin: cin,
+              cout: btn.getAttribute("data-cout") || "",
+              n: urls.length || 1,
+              at: Date.now()
+            }));
+          } catch (e4) {}
+          /* Go → Check your stays — both (or all) linked stays visible as one tourney flow */
           goStage("go", true);
           setTimeout(function () {
             var root = $("iceStage") || document.querySelector(".ice-stage") || document;
             var checkBtn = root.querySelector("[data-stay-check]");
             if (checkBtn) checkBtn.click();
+            var noteEl = root.querySelector("#stayCheckPanel");
+            try {
+              var flow = JSON.parse(sessionStorage.getItem("dc.ice.stay_flow_note") || "null");
+              if (flow && noteEl && flow.n > 1) {
+                var tip = document.createElement("p");
+                tip.className = "ice-note";
+                tip.style.margin = "0.35rem 0";
+                tip.textContent = "These " + flow.n + " stays cover " +
+                  (flow.trip || flow.city || "this tournament") +
+                  " as one lodging flow (" + (flow.cin || "") + " → " + (flow.cout || "") +
+                  "). Separate Airbnb confirmations — Dualis links them by date + city.";
+                if (noteEl.firstChild) noteEl.insertBefore(tip, noteEl.firstChild);
+                else noteEl.appendChild(tip);
+              }
+            } catch (e5) {}
           }, 80);
         });
       });
