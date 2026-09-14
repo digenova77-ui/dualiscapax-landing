@@ -1,0 +1,52 @@
+name: ice-session-bot
+
+# Slot E — this chat's instruction set on GitHub. Not swarm theater. Not GrokBots.
+
+on:
+  schedule:
+    - cron: '27,57 * * * *'
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'AUDIT (default) or a short session task for an optional xAI brief'
+        required: false
+        default: 'AUDIT'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ice-session-bot
+  cancel-in-progress: false
+
+jobs:
+  desk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run ice session bot
+        env:
+          ICE_SESSION_TASK: ${{ github.event.inputs.task || 'AUDIT' }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+        run: python3 scripts/ice_session_bot.py
+      - name: Commit honest receipt
+        run: |
+          git config user.email "ice-session-bot@dualiscapax.ai"
+          git config user.name "Dualis Ice Session Bot"
+          git add src/engine/ledgers/session/ units/infra/ice-session-bot/packs/ || true
+          if git diff --cached --quiet; then
+            echo "No receipt changes."
+            exit 0
+          fi
+          git commit -m "chore(session-bot): honest ice session receipt [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            echo "push race attempt $i — retry"
+            sleep $((i * 2))
+          done
+          echo "push failed after retries" >&2
+          exit 1

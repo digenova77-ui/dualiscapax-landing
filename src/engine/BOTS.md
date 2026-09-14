@@ -1,14 +1,17 @@
-# Swarm bots
+# Factory bots
 
-All runners are bots. Missing target = `STUB`. Actuators stay off.
+Live workers write cites and honest receipts. Demoted swarm stays off the clock.
 
-| Bot | Workflow | Cadence | Target if undefined |
+| Bot | Workflow | Slot | Job |
 |---|---|---|---|
-| Perpetual swarm | `swarm_runner.yml` | :00 | synthetic sector batch |
-| Sector agents | same + fleet | :00 / :15 | literature priors |
-| Tax clerks | fleet | :15 | in-memory sample txs, CRA send NO |
-| Paper trading | fleet | :15 | SHOP.TO / BTC-CAD paper |
-| Unity mesh | `unity_mesh.yml` + fleet | :30 / :15 | role-card stub, no vendor required |
-| Fleet umbrella | `swarm_bot_fleet.yml` | :15 + dispatch | `DUALIS_TARGET=STUB` |
+| Golf USA envelopes | `golf_usa_envelopes.yml` | A `7,37` | Course cite harvest |
+| Hockey girls OWHA | `hockey_girls_owha.yml` | B `12,42` | Branch index |
+| Hockey boys OMHA U16 | `hockey_boys_omha_u16.yml` | C `17,47` | Dualis seat packs |
+| Factory receipt | `factory_workers.yml` | D `22,52` | Honest tick only |
+| Ice session bot | `ice_session_bot.yml` | E `27,57` | This chat's law on GitHub |
 
-`DUALIS_LIVE_ACTUATORS=false` in fleet env. Do not flip that from chat.
+## Demoted (do not schedule)
+`swarm_runner.yml` · `swarm_bot_fleet.yml` · `unity_mesh.yml` schedule
+
+## Not these bots
+GrokBots (Chief of Staff, Ice Watchdog, DCLM Eyes, DCLM Meaning, Ice Web) are xAI agents in chat. Ice session bot is not a clone of them.
