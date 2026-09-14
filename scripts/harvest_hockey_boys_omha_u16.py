@@ -131,9 +131,13 @@ def discover_u16_on_host(host: str) -> Tuple[str, List[Dict[str, str]], Optional
 
 
 def echo_privacy_roster(host: str, team_id: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    """Echo First+initial / jersey / pos when present. Never invent surnames."""
+    """Echo carousel seats from club Players page. Never invent.
+
+    Petes-style lines: jersey, First L, pos, year.
+    Quinte-style lines: last name, year (+ /Players/{id}/ path).
+    """
     url = f"https://{host}/Teams/{team_id}/Players/"
-    cite = {"url": url, "fetched_at": utc_now(), "ok": False}
+    cite: Dict[str, Any] = {"url": url, "fetched_at": utc_now(), "ok": False}
     try:
         body = http_get(url)
         cite["ok"] = True
@@ -142,33 +146,87 @@ def echo_privacy_roster(host: str, team_id: str) -> Tuple[List[Dict[str, Any]], 
         return [], cite
     title_m = re.search(r"<title>([^<]+)", body)
     cite["page_title_echo"] = re.sub(r"\s+", " ", title_m.group(1) if title_m else "").strip()
+
     seats: List[Dict[str, Any]] = []
-    # Common Sportsheadz table: jersey, name, position — echo only clear rows
-    # Pattern examples: >32</td> ... >N. Armstrong</td> or similar
-    # Conservative: look for Name patterns with jersey nearby
-    rows = re.findall(
-        r"(?is)<tr[^>]*>\s*<td[^>]*>\s*#?\s*(\d{1,2})\s*</td>\s*<td[^>]*>\s*([^<]{2,40}?)\s*</td>(?:\s*<td[^>]*>\s*([^<]{0,20}?)\s*</td>)?",
-        body,
-    )
-    for jersey_s, name, pos in rows:
-        name = re.sub(r"\s+", " ", name).strip()
-        pos = re.sub(r"\s+", " ", (pos or "")).strip() or None
-        if not name or name.lower() in ("name", "player", "athletes"):
+    parts = body.split("hover-function player")
+    skip = {
+        "view full bio", "add", "share", "coaches & staff", "send", "email", "vcard",
+        '">',
+    }
+    for part in parts[1:]:
+        seg = part[:3000]
+        hrefs = re.findall(r'href="(/Teams/\d+/Players/\d+/)"', seg)
+        board_player_path = hrefs[0] if hrefs else None
+        board_player_id = None
+        if board_player_path:
+            m = re.search(r"/Players/(\d+)/", board_player_path)
+            board_player_id = m.group(1) if m else None
+
+        tmp = re.sub(r"<script[\s\S]*?</script>", "", seg)
+        tmp = re.sub(r"<[^>]+>", "\n", tmp)
+        lines = []
+        for ln in tmp.splitlines():
+            ln = re.sub(r"\s+", " ", ln).strip()
+            if not ln:
+                continue
+            if ln.lower() in skip:
+                continue
+            if ln.startswith("<"):
+                continue
+            lines.append(ln)
+
+        jersey = None
+        display = None
+        pos = None
+        year = None
+        # Walk lines: optional jersey digit, name, optional pos letter, year
+        i = 0
+        while i < len(lines):
+            ln = lines[i]
+            if jersey is None and re.fullmatch(r"\d{1,2}", ln):
+                jersey = int(ln)
+                i += 1
+                continue
+            if year is None and re.fullmatch(r"20\d{2}", ln):
+                year = int(ln)
+                i += 1
+                continue
+            if pos is None and re.fullmatch(r"[FDG]|LW|RW|C|[Dd]efence|[Ff]orward|[Gg]oal(?:ie)?", ln):
+                pos = ln.upper() if len(ln) <= 2 else ln
+                if pos in ("DEFENCE", "D"):
+                    pos = "D"
+                elif pos in ("FORWARD", "F"):
+                    pos = "F"
+                elif pos.startswith("GOAL"):
+                    pos = "G"
+                i += 1
+                continue
+            if display is None and re.search(r"[A-Za-z]", ln) and not re.fullmatch(r"20\d{2}", ln):
+                # privacy First L / last-only / First Last
+                if len(ln) <= 48 and "http" not in ln.lower():
+                    display = ln
+                i += 1
+                continue
+            i += 1
+
+        if not display:
             continue
-        if not re.search(r"[A-Za-z]", name):
+        # Coaches bleed: skip if no year and looks staff
+        if year is None and board_player_id is None:
             continue
-        jersey = int(jersey_s)
-        # privacy initial forms OK
         seats.append(
             {
                 "jersey": jersey,
-                "display_name_echo": name,
+                "display_name_echo": display,
                 "pos_echo": pos,
-                "cite_status": "cited_board" if name else "awaiting_player_cites",
+                "birth_year_echo": year,
+                "board_player_id": board_player_id,
+                "board_player_path": board_player_path,
+                "cite_status": "cited_board",
             }
         )
+    cite["echo_count"] = len(seats)
     return seats, cite
-
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
@@ -218,16 +276,42 @@ def main() -> int:
             players_url = f"https://{host}/Teams/{tid}/Players/"
             roster_echo, roster_cite = echo_privacy_roster(host, tid)
             # Dualis seat stubs — identity keys; full Quinte-class seats stay richer when already hand-built
+            pack_note_rich = None
             dualis_seats = []
             for row in roster_echo:
-                j = row["jersey"]
+                j = row.get("jersey")
+                bpid = row.get("board_player_id")
+                if j is not None:
+                    seat_key = f"{team_id}.#{j}"
+                elif bpid:
+                    seat_key = f"{team_id}.board-{bpid}"
+                else:
+                    seat_key = f"{team_id}.name-{slugify(row['display_name_echo'])}"
+                last = None
+                initial = None
+                first = None
+                name = row["display_name_echo"]
+                # First L  / First Last / Last
+                m = re.match(r"^([A-Za-z]+)\s+([A-Z])$", name)
+                if m:
+                    first, initial = m.group(1), m.group(2)
+                    last = None  # privacy truncated surname
+                    display = f"{initial}. {first}" if False else name  # keep board echo form
+                else:
+                    display = name
+                    if " " not in name:
+                        last = name
                 dualis_seats.append(
                     {
-                        "seat_key": f"{team_id}.#{j}",
-                        "display_name": row["display_name_echo"],
-                        "preferred_alias": row["display_name_echo"],
-                        "aliases": [row["display_name_echo"]],
+                        "seat_key": seat_key,
+                        "display_name": display,
+                        "preferred_alias": display,
+                        "aliases": [display],
                         "jersey": j,
+                        "last": last,
+                        "first": first,
+                        "initial": initial,
+                        "birth_year": row.get("birth_year_echo"),
                         "pos": row.get("pos_echo"),
                         "positions": [row["pos_echo"]] if row.get("pos_echo") else [],
                         "ids": {
@@ -241,11 +325,38 @@ def main() -> int:
                             "ncsa": None,
                             "unity": None,
                             "sportsheadz_team": tid,
+                            "sportsheadz_player": bpid,
                         },
                         "cite_status": row.get("cite_status") or "cited_board",
                         "landing_prebaked": False,
                     }
                 )
+            # Prefer richer hand-built Dualis seats when present (Quinte) — never dilute
+            rich_path = ROOT / "cf-pages" / "data" / f"{club_slug}.u16.{SEASON}.seats.json"
+            # also try quinte-red-devils naming
+            if not rich_path.exists():
+                alt = list((ROOT / "cf-pages" / "data").glob(f"*{club_slug}*.seats.json"))
+                # common: quinte-red-devils.u16.2026-2027.seats.json
+                for cand in (ROOT / "cf-pages" / "data").glob(f"*.u16.{SEASON}.seats.json"):
+                    try:
+                        rich = json.loads(cand.read_text())
+                    except Exception:
+                        continue
+                    if club_slug in (rich.get("team_id") or "") or club_slug in cand.name:
+                        rich_path = cand
+                        break
+            if rich_path.exists():
+                try:
+                    rich = json.loads(rich_path.read_text())
+                    if len(rich.get("seats") or []) >= len(dualis_seats):
+                        dualis_seats = rich["seats"]
+                        pack_note_rich = str(rich_path.relative_to(ROOT))
+                    else:
+                        pack_note_rich = None
+                except Exception:
+                    pack_note_rich = None
+            else:
+                pack_note_rich = None
             pack = {
                 "unit": "sports/hockey-boys-amateur",
                 "kind": "dualis_team_branch",
@@ -269,7 +380,8 @@ def main() -> int:
                 },
                 "seat_count": len(dualis_seats),
                 "seats": dualis_seats,
-                "roster_status": "echoed" if dualis_seats else "awaiting_player_cites",
+                "roster_status": ("rich_dualis_seats" if pack_note_rich else ("echoed" if dualis_seats else "awaiting_player_cites")),
+                "rich_seats_source": pack_note_rich,
                 "captured_at": utc_now(),
             }
             fname = f"{club_slug}.u16.{SEASON}.json"
