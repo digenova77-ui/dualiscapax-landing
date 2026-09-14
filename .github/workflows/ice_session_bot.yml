@@ -1,6 +1,8 @@
 name: ice-session-bot
 
 # Slot E — this chat's instruction set on GitHub. Not swarm theater. Not GrokBots.
+# Autonomy: audit Ice + À La Carte, apply known TeamSnap-only face copy, stamp plan hash.
+# Never writes ice-portal.js. Never CF-deploys.
 
 on:
   schedule:
@@ -11,6 +13,10 @@ on:
         description: 'AUDIT (default) or a short session task for an optional xAI brief'
         required: false
         default: 'AUDIT'
+      apply_face:
+        description: '1 = apply known TeamSnap-or-Spordle leftovers on live face files'
+        required: false
+        default: '1'
 
 permissions:
   contents: write
@@ -31,18 +37,31 @@ jobs:
       - name: Run ice session bot
         env:
           ICE_SESSION_TASK: ${{ github.event.inputs.task || 'AUDIT' }}
+          ICE_APPLY_FACE: ${{ github.event.inputs.apply_face || '1' }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
         run: python3 scripts/ice_session_bot.py
-      - name: Commit honest receipt
+      - name: Commit honest receipt + allowed face/health
         run: |
           git config user.email "ice-session-bot@dualiscapax.ai"
           git config user.name "Dualis Ice Session Bot"
-          git add src/engine/ledgers/session/ units/infra/ice-session-bot/packs/ || true
+          git add src/engine/ledgers/session/ \
+            units/infra/ice-session-bot/packs/ \
+            units/infra/ice-session-bot/QUEUE.json \
+            units/infra/ice-session-bot/PLAN.json \
+            cf-pages/js/dclm-alacarte.js \
+            cf-pages/iris.html \
+            cf-pages/alacarte.html \
+            cf-pages/ice.html \
+            cf-pages/js/ice-seat-teamsnap-only.js \
+            cf-pages/js/ice-skills.js \
+            || true
+          # Hard no: never stage the portal engine from this bot
+          git restore --staged cf-pages/js/ice-portal.js 2>/dev/null || true
           if git diff --cached --quiet; then
-            echo "No receipt changes."
+            echo "No receipt/face changes."
             exit 0
           fi
-          git commit -m "chore(session-bot): honest ice session receipt [skip ci]"
+          git commit -m "chore(session-bot): Ice/ALC self-improve tick [skip ci]"
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD && exit 0
             echo "push race attempt $i — retry"
