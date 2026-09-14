@@ -1,0 +1,28 @@
+{
+  "kind": "factory_tick",
+  "captured_at": "2026-09-14T13:54:17Z",
+  "law": "truth-or-nothing \u2014 no stub UNANIMOUS_PASS",
+  "live_units": [
+    {
+      "id": "sports/golf-usa",
+      "workflow": "golf_usa_envelopes.yml",
+      "cron_slot": "A"
+    },
+    {
+      "id": "sports/hockey-girls-women-amateur",
+      "workflow": "hockey_girls_owha.yml",
+      "cron_slot": "B"
+    }
+  ],
+  "actions": [
+    {
+      "step": "unity_mesh_stub_guard",
+      "verdict": "SKIP_STUB",
+      "ok": true,
+      "stdout_tail": "=== DUALISCAPAX UNITY MESH ===\nTask:    STUB\nVerdict: SKIP_STUB\nHash:    0x11c8f967fa9adf3c8ba698dbebe78e7e...\n"
+    }
+  ],
+  "golf_course_count": 195,
+  "girls_team_count_total": 69,
+  "girls_division_count": 2
+}
