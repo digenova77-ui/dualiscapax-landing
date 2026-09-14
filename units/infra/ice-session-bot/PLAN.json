@@ -1,42 +1,13 @@
 {
-  "plan_id": "ice-session-2026-09-14c",
-  "as_of": "2026-09-14T20:52:00Z",
-  "sync": "chat writes this file when the plan is logically true and an advancement; the bot does not hear the chat live",
-  "advancement_of": "INSTRUCTION-SET.md + GAP.md + first audit receipt",
-  "true_now": {
-    "seat_bind": "TeamSnap only. Spordle is not a Player Bind option on seating.",
-    "apps_not_seat": ["GameSheet", "LiveBarn", "Hudl", "Workout", "Nutrition"],
-    "portal": "ice-portal.js is a last-good loader to e6db8ff plus ice-seat-teamsnap-only.js overlay. Never PLACEHOLDER.",
-    "overlays": ["cf-pages/js/ice-seat-teamsnap-only.js", "cf-pages/js/ice-skills.js"],
-    "model_seat": "Quinte U16 #29 D. Di Genova is the Me/skills model. Founder flag never auto-injects that seat.",
-    "rulers": {
-      "vision": "Wayne Gretzky",
-      "d_mobility": "Bobby Orr",
-      "shot_power": ["Al MacInnis", "Al Iafrate", "Zdeno Chara"],
-      "law": "one skill one ruler; do not mash axes"
-    },
-    "dev_path": {
-      "nearest_ruler": true,
-      "rewrite_if": "tape or stats move the pin",
-      "cite_ready": "NONE unless Eyes stamped"
-    },
-    "dual_path": {
-      "columns": ["play_truth", "impact_truth"],
-      "next_node_fields": ["intended", "occupied", "vacated", "lookoff", "extra_beat", "office_use", "miss_that_places", "ready_before_receive"],
-      "empty_allowed": true
-    },
-    "goal_archive": {
-      "job": "comparative ruler for significance, not a highlight reel",
-      "examples": ["Paul Henderson 1972 (Canada)", "Darren McCarty 1997 SCF GWG (ruggedness to forever)", "1980 USA Miracle (US point of view)"],
-      "law": "nation-relative forever goals; on-ice hero != off-ice GM/coach translation"
-    },
-    "factory_slots": {
-      "A": "golf_usa_envelopes.yml",
-      "B": "hockey_girls_owha.yml",
-      "C": "hockey_boys_omha_u16.yml",
-      "D": "factory_workers.yml",
-      "E": "ice_session_bot.yml"
-    }
+  "plan_id": "ice-session-plan-2026-09-14",
+  "source": "units/infra/ice-session-bot/CURRENT-PLAN.md",
+  "advancement": "persist chat plan into factory ticks",
+  "seat_bind": "teamsnap_only",
+  "cite_ready": "NONE",
+  "rulers": {
+    "vision": "Wayne Gretzky",
+    "d_mobility": "Bobby Orr",
+    "shot_power": ["Al MacInnis", "Al Iafrate", "Zdeno Chara"]
   },
   "awaiting": [
     "AWAITING_GROKBOTS",
@@ -44,12 +15,5 @@
     "AWAITING_PORTAL_RESTORE",
     "AWAITING_CF_ZIP",
     "AWAITING_FOUR_AGENT_CHAT"
-  ],
-  "not_this_bot": [
-    "rewrite ice-portal.js on a tick",
-    "CF zip",
-    "invent dual-path scores",
-    "revive swarm UNANIMOUS_PASS",
-    "offer Spordle on Seat"
   ]
 }
