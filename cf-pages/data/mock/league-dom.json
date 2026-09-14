@@ -1,0 +1,325 @@
+{
+  "law": "MOCK \u00b7 prior season \u00b7 Dom test only \u00b7 blow-away. Fixture only \u2014 never write into Dom seat profile / Me attrs. Gate: Quinte #29 Di Genova + MOCK_LEAGUE_ENABLED. After test: flip kill switch / delete this file \u2014 zero ghost.",
+  "flag": "MOCK_LEAGUE_ENABLED",
+  "mock": true,
+  "blow_away": true,
+  "seat_gate": {
+    "team_slug": "quinte-red-devils",
+    "jersey": 29,
+    "last_includes": "di genova"
+  },
+  "season": "2024-2025",
+  "league": "OMHA AAA U16",
+  "banner": "MOCK \u00b7 prior season \u00b7 Dom test only \u00b7 blow-away",
+  "sources": [
+    {
+      "label": "OMHA AAA board standings 2024-2025 U16",
+      "url": "https://omha-aaa.net/Groups/1201/Standings/",
+      "echo": "east_west_standings + sample Pool B scores"
+    },
+    {
+      "label": "MYHockey Quinte U16 AAA 2024 OMHA player stats",
+      "url": "https://myhockeyrankings.com/team-info/4165/2024/stats",
+      "echo": "quinte_omha_scorers (team OMHA slice for format test)"
+    },
+    {
+      "label": "GameSheet season shell",
+      "url": "https://gamesheetstats.com/seasons/6840/goalies",
+      "echo": "shape reference only \u2014 full GS scorers board not captured this pass",
+      "gap": "league-wide GameSheet scorers page not fully echoed; Quinte OMHA slice used for Dualis row format proof"
+    }
+  ],
+  "captured_at": "2026-09-14T15:40:00Z",
+  "scores": [
+    {
+      "date": "2025-03-09",
+      "away": "Quinte Red Devils",
+      "away_score": 0,
+      "home": "North Shore Whitecaps",
+      "home_score": 4,
+      "note": "East Pool B \u00b7 OMHA board"
+    },
+    {
+      "date": "2025-03-08",
+      "away": "Quinte Red Devils",
+      "away_score": 3,
+      "home": "Whitby Wildcats",
+      "home_score": 1,
+      "note": "East Pool B \u00b7 OMHA board"
+    },
+    {
+      "date": "2025-03-04",
+      "away": "Whitby Wildcats",
+      "away_score": 2,
+      "home": "Quinte Red Devils",
+      "home_score": 4,
+      "note": "East Pool B \u00b7 OMHA board"
+    },
+    {
+      "date": "2025-03-02",
+      "away": "Quinte Red Devils",
+      "away_score": 3,
+      "home": "North Central Predators",
+      "home_score": 2,
+      "note": "East Pool B \u00b7 OMHA board"
+    },
+    {
+      "date": "2025-03-01",
+      "away": "North Shore Whitecaps",
+      "away_score": 2,
+      "home": "Quinte Red Devils",
+      "home_score": 1,
+      "note": "East Pool B \u00b7 OMHA board"
+    },
+    {
+      "date": "2025-02-25",
+      "away": "Peterborough Petes",
+      "away_score": 4,
+      "home": "Quinte Red Devils",
+      "home_score": 3,
+      "note": "East Pool B \u00b7 OMHA board"
+    },
+    {
+      "date": "2025-02-23",
+      "away": "York-Simcoe Express",
+      "away_score": 4,
+      "home": "Quinte Red Devils",
+      "home_score": 2,
+      "note": "East Pool B \u00b7 OMHA board"
+    },
+    {
+      "date": "2025-02-17",
+      "away": "Quinte Red Devils",
+      "away_score": 5,
+      "home": "York-Simcoe Express",
+      "home_score": 2,
+      "note": "East Pool B \u00b7 OMHA board"
+    }
+  ],
+  "standings": {
+    "division": "East",
+    "window": "Sep 30, 2024\u2013Feb 09, 2025",
+    "rows": [
+      {
+        "rank": 1,
+        "team": "Ajax-Pickering Raiders",
+        "gp": 32,
+        "w": 26,
+        "l": 5,
+        "t": 1,
+        "otl": 0,
+        "pts": 53,
+        "gf": 121,
+        "ga": 73
+      },
+      {
+        "rank": 2,
+        "team": "Barrie Jr Colts",
+        "gp": 32,
+        "w": 25,
+        "l": 4,
+        "t": 1,
+        "otl": 2,
+        "pts": 53,
+        "gf": 137,
+        "ga": 67
+      },
+      {
+        "rank": 3,
+        "team": "York-Simcoe Express",
+        "gp": 32,
+        "w": 24,
+        "l": 6,
+        "t": 0,
+        "otl": 2,
+        "pts": 50,
+        "gf": 136,
+        "ga": 62
+      },
+      {
+        "rank": 4,
+        "team": "Peterborough Petes",
+        "gp": 32,
+        "w": 20,
+        "l": 10,
+        "t": 2,
+        "otl": 0,
+        "pts": 42,
+        "gf": 99,
+        "ga": 86
+      },
+      {
+        "rank": 5,
+        "team": "Quinte Red Devils",
+        "gp": 32,
+        "w": 19,
+        "l": 10,
+        "t": 2,
+        "otl": 1,
+        "pts": 41,
+        "gf": 112,
+        "ga": 89,
+        "highlight": true
+      },
+      {
+        "rank": 6,
+        "team": "North Shore Whitecaps",
+        "gp": 32,
+        "w": 14,
+        "l": 13,
+        "t": 3,
+        "otl": 2,
+        "pts": 33,
+        "gf": 74,
+        "ga": 73
+      },
+      {
+        "rank": 7,
+        "team": "Whitby Wildcats",
+        "gp": 32,
+        "w": 10,
+        "l": 16,
+        "t": 2,
+        "otl": 4,
+        "pts": 26,
+        "gf": 82,
+        "ga": 99
+      },
+      {
+        "rank": 8,
+        "team": "North Central Predators",
+        "gp": 32,
+        "w": 10,
+        "l": 19,
+        "t": 2,
+        "otl": 1,
+        "pts": 23,
+        "gf": 60,
+        "ga": 96
+      },
+      {
+        "rank": 9,
+        "team": "Markham Waxers",
+        "gp": 32,
+        "w": 9,
+        "l": 18,
+        "t": 1,
+        "otl": 4,
+        "pts": 23,
+        "gf": 63,
+        "ga": 96
+      },
+      {
+        "rank": 10,
+        "team": "Central Ontario Wolves",
+        "gp": 32,
+        "w": 9,
+        "l": 20,
+        "t": 1,
+        "otl": 2,
+        "pts": 21,
+        "gf": 66,
+        "ga": 113
+      },
+      {
+        "rank": 11,
+        "team": "Greater Kingston Jr Gaels",
+        "gp": 32,
+        "w": 2,
+        "l": 29,
+        "t": 1,
+        "otl": 0,
+        "pts": 5,
+        "gf": 30,
+        "ga": 126
+      }
+    ]
+  },
+  "scorers": {
+    "scope": "Quinte Red Devils \u00b7 OMHA U16 regular season 2024-25 (team slice \u2014 format proof)",
+    "note": "League-wide GameSheet scorers board not fully echoed this pass; MYHockey Quinte OMHA slice used.",
+    "rows": [
+      {
+        "rank": 1,
+        "player": "MacLean Chisholm",
+        "pos": "F",
+        "jersey": 9,
+        "gp": 32,
+        "g": 17,
+        "a": 19,
+        "pts": 36
+      },
+      {
+        "rank": 2,
+        "player": "Ryan Foley",
+        "pos": "F",
+        "jersey": 91,
+        "gp": 32,
+        "g": 13,
+        "a": 13,
+        "pts": 26
+      },
+      {
+        "rank": 3,
+        "player": "Blake Munnings",
+        "pos": "D",
+        "jersey": 5,
+        "gp": 32,
+        "g": 4,
+        "a": 18,
+        "pts": 22
+      },
+      {
+        "rank": 4,
+        "player": "Chase Cybulskie",
+        "pos": "F",
+        "jersey": 66,
+        "gp": 31,
+        "g": 7,
+        "a": 12,
+        "pts": 19
+      },
+      {
+        "rank": 5,
+        "player": "Ryan Sherwin",
+        "pos": "F",
+        "jersey": 10,
+        "gp": 31,
+        "g": 6,
+        "a": 7,
+        "pts": 13
+      },
+      {
+        "rank": 6,
+        "player": "Nick Colson",
+        "pos": "D",
+        "jersey": 4,
+        "gp": 32,
+        "g": 4,
+        "a": 4,
+        "pts": 8
+      },
+      {
+        "rank": 7,
+        "player": "Cole Rowat",
+        "pos": "F",
+        "jersey": 92,
+        "gp": 32,
+        "g": 4,
+        "a": 4,
+        "pts": 8
+      },
+      {
+        "rank": 8,
+        "player": "Cole Coughlin",
+        "pos": "D",
+        "jersey": 12,
+        "gp": 32,
+        "g": 3,
+        "a": 4,
+        "pts": 7
+      }
+    ]
+  },
+  "kill_switch": "MOCK_LEAGUE_ENABLED"
+}
