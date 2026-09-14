@@ -1,0 +1,19 @@
+/* Ice skills / nearest-ruler — additive; existing Me clocks unchanged */
+.ice-skills{margin:1rem 0 0;padding:0.85rem 0.9rem 0.7rem;border:1px solid rgba(56,189,248,.22);border-radius:12px;background:rgba(8,14,24,.45)}
+.ice-skills-h{font:600 0.82rem/1.2 "IBM Plex Sans",system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#7dd3fc;margin:0 0 .2rem}
+.ice-skills-sub{margin:0 0 .65rem;font-size:.72rem;color:#94a3b8}
+.ice-skill-path{margin:0 0 .6rem;font-size:.8rem;color:#e2e8f0}
+.ice-skill-table{display:flex;flex-direction:column;gap:.35rem}
+.ice-skill-row{display:grid;grid-template-columns:7.2rem 1fr 6.4rem;gap:.15rem .55rem;padding:.4rem 0;border-top:1px solid rgba(148,163,184,.12);font-size:.72rem}
+.ice-skill-axis{font-weight:600;color:#f8fafc}
+.ice-skill-ruler{color:#93c5fd}
+.ice-skill-st{justify-self:end;font-family:ui-monospace,monospace;font-size:.68rem;color:#fde68a}
+.ice-skill-st.st-EMPTY,.ice-skill-st.st-n-a{color:#94a3b8}
+.ice-skill-st.st-cited-echo{color:#86efac}
+.ice-skill-note{grid-column:1/-1;color:#94a3b8}
+.ice-skill-train,.ice-skill-rewrite{margin:.55rem 0 0;font-size:.75rem;color:#cbd5e1}
+.ice-skill-rewrite span{color:#38bdf8;font-weight:600}
+@media (min-width:720px){
+  .ice-skill-row{grid-template-columns:8rem 1.1fr 6.5rem 2fr}
+  .ice-skill-note{grid-column:auto}
+}
