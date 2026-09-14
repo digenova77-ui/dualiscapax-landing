@@ -848,26 +848,185 @@
    * Matchup packs belong to the SEATED PLAYER (team+jersey), not Ice chrome.
    * Path: data/matchups/{team_slug}/{jersey}/vs-{opponent_slug}.json
    * Prepare ahead so Game/Cal can draw in. Never invent. Dom household = Dom seat only.
+   * Care order: you → team → opponent. Me strip = locked seat dims; situations cite-only
+   * (PP / PK / ST included when packs carry cites — dash/awaiting until season data).
    */
   var matchupPackCache = {};
+
+  /** Portal / soft team slugs → matchup pack home directory (ice_slug). Echo only. */
+  var MATCHUP_HOME_SLUG_ALIAS = {
+    "barrie-jr-colts": "barrie-aaa-zone",
+    "hamilton-steel": "hamilton-steel-hockey-club",
+    "north-central-predators": "north-central-predators-aaa",
+    "peterborough-petes": "peterborough-minor-petes",
+    "ajax-pickering-raiders": "ajax-pickering-minor-hockey",
+    "whitby-wildcats": "whitby-minor-hockey",
+    "central-ontario-wolves": "central-ontario-wolves-aaa",
+    "north-shore-whitecaps": "north-shore-whitecaps-aaa",
+    "burlington-eagles": "burlington-city-rep-hockey-club",
+    "grey-bruce-highlanders": "grey-bruce-highlanders-aaa-minor-hockey-association",
+    "halton-hurricanes": "halton-hurricanes-aaa",
+    "oakville-rangers": "oakville-rangers-hockey-club",
+    "southern-tier-admirals": "southern-tier-admirals-aaa",
+    "greater-kingston-aaa-hockey": "greater-kingston-gaels"
+  };
+
+  /** Pack opponent filenames under data/matchups/{team}/{jersey}/vs-*.json */
+  var MATCHUP_OPP_PACK_SLUGS = [
+    "ajax-pickering-minor-hockey",
+    "barrie-aaa-zone",
+    "burlington-city-rep-hockey-club",
+    "central-ontario-wolves-aaa",
+    "credit-river-capitals",
+    "greater-kingston-gaels",
+    "grey-bruce-highlanders-aaa-minor-hockey-association",
+    "halton-hurricanes-aaa",
+    "hamilton-steel-hockey-club",
+    "markham-waxers",
+    "niagara-north-stars",
+    "north-central-predators-aaa",
+    "north-shore-whitecaps-aaa",
+    "oakville-rangers-hockey-club",
+    "peterborough-minor-petes",
+    "quinte-red-devils",
+    "southern-tier-admirals-aaa",
+    "whitby-minor-hockey",
+    "york-simcoe-express"
+  ];
+
+  /** Schedule / portal labels & short slugs → pack opponent slug. Never invent a foe. */
+  var MATCHUP_OPP_ALIAS = {
+    "ajax-pickering-raiders": "ajax-pickering-minor-hockey",
+    "ajax-pickering-raider": "ajax-pickering-minor-hockey",
+    "ajax-pickering": "ajax-pickering-minor-hockey",
+    "ajax": "ajax-pickering-minor-hockey",
+    "pickering": "ajax-pickering-minor-hockey",
+    "raiders": "ajax-pickering-minor-hockey",
+    "barrie-jr-colts": "barrie-aaa-zone",
+    "barrie-colts": "barrie-aaa-zone",
+    "barrie": "barrie-aaa-zone",
+    "colts": "barrie-aaa-zone",
+    "burlington-eagles": "burlington-city-rep-hockey-club",
+    "burlington": "burlington-city-rep-hockey-club",
+    "eagles": "burlington-city-rep-hockey-club",
+    "central-ontario-wolves": "central-ontario-wolves-aaa",
+    "central-ontario": "central-ontario-wolves-aaa",
+    "wolves": "central-ontario-wolves-aaa",
+    "credit-river": "credit-river-capitals",
+    "capitals": "credit-river-capitals",
+    "greater-kingston-jr-gaels": "greater-kingston-gaels",
+    "greater-kingston-gaels": "greater-kingston-gaels",
+    "kingston-gaels": "greater-kingston-gaels",
+    "kingston": "greater-kingston-gaels",
+    "gaels": "greater-kingston-gaels",
+    "grey-bruce-highlanders": "grey-bruce-highlanders-aaa-minor-hockey-association",
+    "grey-bruce": "grey-bruce-highlanders-aaa-minor-hockey-association",
+    "highlanders": "grey-bruce-highlanders-aaa-minor-hockey-association",
+    "halton-hurricanes": "halton-hurricanes-aaa",
+    "halton": "halton-hurricanes-aaa",
+    "hurricanes": "halton-hurricanes-aaa",
+    "hamilton-steel": "hamilton-steel-hockey-club",
+    "hamilton": "hamilton-steel-hockey-club",
+    "steel": "hamilton-steel-hockey-club",
+    "markham": "markham-waxers",
+    "waxers": "markham-waxers",
+    "niagara": "niagara-north-stars",
+    "north-stars": "niagara-north-stars",
+    "north-central-predators": "north-central-predators-aaa",
+    "north-central": "north-central-predators-aaa",
+    "predators": "north-central-predators-aaa",
+    "north-shore-whitecaps": "north-shore-whitecaps-aaa",
+    "north-shore": "north-shore-whitecaps-aaa",
+    "whitecaps": "north-shore-whitecaps-aaa",
+    "oakville-rangers": "oakville-rangers-hockey-club",
+    "oakville": "oakville-rangers-hockey-club",
+    "rangers": "oakville-rangers-hockey-club",
+    "peterborough-petes": "peterborough-minor-petes",
+    "peterborough": "peterborough-minor-petes",
+    "petes": "peterborough-minor-petes",
+    "quinte": "quinte-red-devils",
+    "red-devils": "quinte-red-devils",
+    "devils": "quinte-red-devils",
+    "southern-tier-admirals": "southern-tier-admirals-aaa",
+    "southern-tier": "southern-tier-admirals-aaa",
+    "admirals": "southern-tier-admirals-aaa",
+    "whitby-wildcats": "whitby-minor-hockey",
+    "whitby": "whitby-minor-hockey",
+    "wildcats": "whitby-minor-hockey",
+    "york-simcoe": "york-simcoe-express",
+    "york": "york-simcoe-express",
+    "express": "york-simcoe-express"
+  };
+
+  function matchupNormKey(s) {
+    return String(s || "").toLowerCase()
+      .replace(/[–—]/g, "-")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function matchupHomeSlug(teamSlug) {
+    var raw = String(teamSlug || "").trim();
+    if (!raw) return "";
+    var key = matchupNormKey(raw);
+    if (MATCHUP_HOME_SLUG_ALIAS[key]) return MATCHUP_HOME_SLUG_ALIAS[key];
+    if (MATCHUP_HOME_SLUG_ALIAS[raw]) return MATCHUP_HOME_SLUG_ALIAS[raw];
+    return raw;
+  }
+
+  /**
+   * Resolve schedule / hub opponent label → pack vs-{slug}.json.
+   * Widened past Kingston-only so any OMHA U16 seat can load its pack when present.
+   * Returns "" when no confident cite map — never invent a foe slug.
+   */
   function opponentSlugFromLabel(oppRaw) {
-    var low = String(oppRaw || "").toLowerCase();
-    if (/kingston|gaels/.test(low)) return "greater-kingston-gaels";
-    if (/quinte|red\s*devils/.test(low)) return "quinte-red-devils";
+    var raw = String(oppRaw || "").trim();
+    if (!raw) return "";
+    var low = raw.toLowerCase();
+    var key = matchupNormKey(raw);
+    if (MATCHUP_OPP_PACK_SLUGS.indexOf(key) !== -1) return key;
+    if (MATCHUP_OPP_ALIAS[key]) return MATCHUP_OPP_ALIAS[key];
+    /* Pattern order: specific multi-word before generic tokens. */
+    var rules = [
+      [/ajax|pickering|raiders/, "ajax-pickering-minor-hockey"],
+      [/barrie|colts/, "barrie-aaa-zone"],
+      [/burlington|eagles/, "burlington-city-rep-hockey-club"],
+      [/central\s*ontario|wolves/, "central-ontario-wolves-aaa"],
+      [/credit\s*river|capitals/, "credit-river-capitals"],
+      [/kingston|gaels/, "greater-kingston-gaels"],
+      [/grey[-\s]?bruce|highlanders/, "grey-bruce-highlanders-aaa-minor-hockey-association"],
+      [/halton|hurricanes/, "halton-hurricanes-aaa"],
+      [/hamilton|steel/, "hamilton-steel-hockey-club"],
+      [/markham|waxers/, "markham-waxers"],
+      [/niagara|north\s*stars/, "niagara-north-stars"],
+      [/north\s*central|predators/, "north-central-predators-aaa"],
+      [/north\s*shore|whitecaps/, "north-shore-whitecaps-aaa"],
+      [/oakville|rangers/, "oakville-rangers-hockey-club"],
+      [/peterborough|petes/, "peterborough-minor-petes"],
+      [/quinte|red\s*devils/, "quinte-red-devils"],
+      [/southern\s*tier|admirals/, "southern-tier-admirals-aaa"],
+      [/whitby|wildcats/, "whitby-minor-hockey"],
+      [/york[-\s]?simcoe|express/, "york-simcoe-express"]
+    ];
+    for (var i = 0; i < rules.length; i++) {
+      if (rules[i][0].test(low)) return rules[i][1];
+    }
     return "";
   }
+
   function matchupPackUrl(teamSlug, jersey, oppSlug) {
     return "data/matchups/" + encodeURIComponent(teamSlug) + "/" +
       encodeURIComponent(String(jersey)) + "/vs-" + encodeURIComponent(oppSlug) + ".json";
   }
   function loadSeatMatchupPack(teamSlug, jersey, oppSlug) {
     if (!teamSlug || jersey == null || !oppSlug) return null;
-    var key = teamSlug + "|" + jersey + "|" + oppSlug;
+    var home = matchupHomeSlug(teamSlug);
+    var key = home + "|" + jersey + "|" + oppSlug;
     if (Object.prototype.hasOwnProperty.call(matchupPackCache, key)) return matchupPackCache[key];
     var pack = null;
     try {
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", matchupPackUrl(teamSlug, jersey, oppSlug), false);
+      xhr.open("GET", matchupPackUrl(home, jersey, oppSlug), false);
       xhr.send(null);
       if (xhr.status >= 200 && xhr.status < 300) {
         pack = JSON.parse(xhr.responseText || "null");
@@ -876,6 +1035,71 @@
     matchupPackCache[key] = pack;
     return pack;
   }
+
+  /**
+   * Cite-backed special-teams / situation rows from pack only.
+   * PP / PK / ST modeled when data exists — omit invent; empty → awaiting later.
+   */
+  function matchupCiteSituations(pack) {
+    var out = [];
+    if (!pack || typeof pack !== "object") return out;
+    var buckets = [
+      pack.situations, pack.key_situations, pack.situations_vs_me,
+      pack.special_teams, pack.pp_pk, pack.st
+    ];
+    for (var bi = 0; bi < buckets.length; bi++) {
+      var bucket = buckets[bi];
+      if (!bucket) continue;
+      if (Array.isArray(bucket)) {
+        for (var i = 0; i < bucket.length; i++) {
+          var row = bucket[i];
+          if (row == null) continue;
+          if (typeof row === "string") {
+            var ts = String(row).trim();
+            if (ts && ts !== "—" && !/^awaiting/i.test(ts)) out.push({ t: ts, s: "cited", kind: "ST" });
+            continue;
+          }
+          if (typeof row === "object") {
+            var t = String(row.t || row.text || row.label || row.do || "").trim();
+            var s = String(row.s || row.source || row.cite || "").trim();
+            var kind = String(row.kind || row.slot || row.type || "").trim();
+            if (!t || t === "—" || /^awaiting/i.test(t) || /^awaiting/i.test(s)) continue;
+            out.push({ t: t, s: s || "cited", kind: kind });
+          }
+        }
+      } else if (typeof bucket === "object") {
+        var slots = ["pp", "pk", "st", "power_play", "penalty_kill", "special_teams", "5v5", "odd_man"];
+        for (var si = 0; si < slots.length; si++) {
+          var sk = slots[si];
+          if (!Object.prototype.hasOwnProperty.call(bucket, sk)) continue;
+          var val = bucket[sk];
+          if (val == null) continue;
+          var vt = typeof val === "string" ? val : String((val && (val.t || val.text || val.label)) || "").trim();
+          var vs = typeof val === "object" ? String((val && (val.s || val.source)) || "cited") : "cited";
+          if (!vt || vt === "—" || /^awaiting/i.test(vt) || /^awaiting/i.test(vs)) continue;
+          out.push({ t: vt, s: vs, kind: sk.toUpperCase().replace("POWER_PLAY", "PP").replace("PENALTY_KILL", "PK").replace("SPECIAL_TEAMS", "ST") });
+        }
+      }
+    }
+    /* Named pack fields (pp / pk / st) when present as strings or {t,s} */
+    var named = [
+      ["pp", "PP"], ["power_play", "PP"],
+      ["pk", "PK"], ["penalty_kill", "PK"],
+      ["st", "ST"], ["special_teams", "ST"]
+    ];
+    for (var ni = 0; ni < named.length; ni++) {
+      var nk = named[ni][0];
+      if (!Object.prototype.hasOwnProperty.call(pack, nk)) continue;
+      var nv = pack[nk];
+      if (nv == null) continue;
+      var nt = typeof nv === "string" ? nv.trim() : String((nv && (nv.t || nv.text || nv.label)) || "").trim();
+      var ns = typeof nv === "object" ? String((nv && (nv.s || nv.source)) || "cited") : "cited";
+      if (!nt || nt === "—" || /^awaiting/i.test(nt) || /^awaiting/i.test(ns)) continue;
+      out.push({ t: nt, s: ns, kind: named[ni][1] });
+    }
+    return out;
+  }
+
   /** Face plan for THIS seat vs opponent — never Dom's notes for another kid. */
   function matchupPlanForSeat(seat, oppRaw) {
     seat = seat || getSeat();
@@ -887,16 +1111,21 @@
     var pack = loadSeatMatchupPack(teamSlug, seat.jersey, oppSlug);
     if (!pack) return null;
     var live = pack.status === "live" && Array.isArray(pack.dos) && pack.dos.length;
+    var edge = pack.edge || "—";
+    if (!live && (edge === "—" || !String(edge).trim())) edge = "—";
     return {
       label: (pack.opponent && pack.opponent.label) || String(oppRaw || ""),
+      oppSlug: oppSlug,
       status: pack.status || "awaiting_player_cites",
-      edge: pack.edge || "—",
-      edge2: pack.edge2 || "",
-      dos: live ? pack.dos : [],
+      edge: edge,
+      edge2: live ? (pack.edge2 || "") : "",
+      dos: live ? pack.dos.slice(0, 5) : [],
       you: pack.you || [],
       them: pack.them || [],
-      avoid: pack.avoid || [],
-      seatOwned: true
+      avoid: live ? (pack.avoid || []) : [],
+      situations: matchupCiteSituations(pack),
+      seatOwned: true,
+      live: !!live
     };
   }
   /** @deprecated environment-level — use matchupPlanForSeat */
@@ -904,9 +1133,161 @@
     return matchupPlanForSeat(getSeat(), oppRaw);
   }
 
-  
+  /** Me strip — locked seat/Me dims only (size shot style pos age). Dash when cite missing. */
+  function matchupMeStripHtml() {
+    var arch = loadMeArch() || {};
+    var seat = getSeat() || {};
+    var dims = [
+      { lab: "Size", v: arch.size },
+      { lab: "Shot", v: arch.shot },
+      { lab: "Style", v: arch.style },
+      { lab: "Pos", v: arch.pos || seat.pos },
+      { lab: "Age", v: arch.age }
+    ];
+    var cells = dims.map(function (d) {
+      var v = String(d.v || "").trim();
+      var face = v ? esc(v) : "—";
+      var cls = "ice-matchup-me-cell" + (v ? " is-locked" : " is-await");
+      return '<div class="' + cls + '">' +
+        '<span class="ice-matchup-me-lab">' + esc(d.lab) + "</span>" +
+        '<span class="ice-matchup-me-v">' + face + "</span>" +
+      "</div>";
+    }).join("");
+    return '<div class="ice-matchup-me" aria-label="Me attributes">' +
+      '<div class="ice-matchup-sec-k">Me</div>' +
+      '<div class="ice-matchup-me-row">' + cells + "</div>" +
+    "</div>";
+  }
 
-  /** Game Day matchup lane — hybrid face + expand cite sheet. Every next game. */
+  function matchupCiteRowHtml(row) {
+    var t = "";
+    var s = "";
+    if (typeof row === "string") t = row;
+    else if (row && typeof row === "object") {
+      t = String(row.t || row.text || "").trim();
+      s = String(row.s || row.source || "").trim();
+    }
+    if (!t) t = "—";
+    var awaitish = t === "—" || /^awaiting/i.test(t) || /^awaiting/i.test(s);
+    return '<div class="ice-matchup-sheet-row' + (awaitish ? " is-await" : "") + '">' +
+      '<span class="ice-matchup-sheet-t">' + esc(t) + "</span>" +
+      (s ? ('<span class="ice-matchup-tag">' + esc(s) + "</span>") : "") +
+    "</div>";
+  }
+
+  /** Opponent measurable face — cite-backed them chips only; awaiting when empty. */
+  function matchupThemFaceHtml(them) {
+    var rows = Array.isArray(them) ? them : [];
+    var cited = [];
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      var t = typeof r === "string" ? r : String((r && r.t) || "").trim();
+      var s = typeof r === "object" && r ? String(r.s || "").trim() : "";
+      if (!t || t === "—" || /^awaiting/i.test(t) || /^awaiting/i.test(s)) continue;
+      cited.push({ t: t, s: s });
+      if (cited.length >= 4) break;
+    }
+    if (!cited.length) {
+      return '<div class="ice-matchup-them-face" aria-label="Opponent measurable">' +
+        '<div class="ice-matchup-sec-k">Opponent</div>' +
+        '<div class="ice-matchup-dash-line">— awaiting cite</div>' +
+      "</div>";
+    }
+    var chips = cited.map(function (c) {
+      return '<div class="ice-matchup-chip">' +
+        '<span class="ice-matchup-chip-t">' + esc(c.t) + "</span>" +
+        (c.s ? ('<span class="ice-matchup-tag">' + esc(c.s) + "</span>") : "") +
+      "</div>";
+    }).join("");
+    return '<div class="ice-matchup-them-face" aria-label="Opponent measurable">' +
+      '<div class="ice-matchup-sec-k">Opponent</div>' +
+      '<div class="ice-matchup-chips">' + chips + "</div>" +
+    "</div>";
+  }
+
+  /**
+   * Key situations vs Me — verb dos when live; PP/PK/ST only when pack cites exist.
+   * No cite → omit slot content (dash/awaiting face). Never invent to look populated.
+   */
+  function matchupSituationsFaceHtml(plan) {
+    var bullets = [];
+    var dos = (plan && plan.dos) || [];
+    for (var i = 0; i < dos.length && bullets.length < 5; i++) {
+      var d = String(dos[i] || "").trim();
+      if (d) bullets.push(d);
+    }
+    var sits = (plan && plan.situations) || [];
+    for (var j = 0; j < sits.length && bullets.length < 5; j++) {
+      var st = sits[j];
+      var label = String((st && st.t) || "").trim();
+      if (!label) continue;
+      var kind = String((st && st.kind) || "").trim();
+      bullets.push(kind ? (kind + " · " + label) : label);
+    }
+    var stSlots = [
+      { k: "PP", has: false },
+      { k: "PK", has: false },
+      { k: "ST", has: false }
+    ];
+    for (var si = 0; si < sits.length; si++) {
+      var sk = String((sits[si] && sits[si].kind) || "").toUpperCase();
+      if (sk === "PP" || sk === "POWER_PLAY") stSlots[0].has = true;
+      if (sk === "PK" || sk === "PENALTY_KILL") stSlots[1].has = true;
+      if (sk === "ST" || sk === "SPECIAL_TEAMS") stSlots[2].has = true;
+    }
+    /* Empty PP/PK/ST is correct pre-season — show awaiting chips, never fake %. */
+    var stFace = stSlots.map(function (slot) {
+      if (slot.has) return "";
+      return '<span class="ice-matchup-st-await" title="Awaiting season cite">' + esc(slot.k) + " —</span>";
+    }).join("");
+
+    var list;
+    if (!bullets.length) {
+      list = '<ul class="ice-matchup-dos">' +
+        '<li class="ice-matchup-dash">— awaiting cites for <strong>this seat</strong> vs this opponent</li>' +
+      "</ul>";
+    } else {
+      list = '<ul class="ice-matchup-dos">' + bullets.map(function (b) {
+        return "<li>" + esc(b) + "</li>";
+      }).join("") + "</ul>";
+    }
+    return '<div class="ice-matchup-sits" aria-label="Key situations vs Me">' +
+      '<div class="ice-matchup-sec-k">Situations vs Me</div>' +
+      list +
+      (stFace ? ('<div class="ice-matchup-st-row" aria-label="Special teams awaiting cite">' + stFace + "</div>") : "") +
+    "</div>";
+  }
+
+  function matchupExpandSheetHtml(plan) {
+    var youRows = (plan && plan.you && plan.you.length)
+      ? plan.you.map(matchupCiteRowHtml).join("")
+      : '<div class="ice-matchup-sheet-row is-await"><span class="ice-matchup-sheet-t">— awaiting cite</span></div>';
+    var themRows = (plan && plan.them && plan.them.length)
+      ? plan.them.map(matchupCiteRowHtml).join("")
+      : '<div class="ice-matchup-sheet-row is-await"><span class="ice-matchup-sheet-t">— awaiting cite</span></div>';
+    var avoid = (plan && plan.avoid && plan.avoid.length)
+      ? ('<ul class="ice-matchup-avoid">' + plan.avoid.map(function (a) {
+          return "<li>" + esc(a) + "</li>";
+        }).join("") + "</ul>")
+      : '<p class="ice-matchup-dash-line">— awaiting cite</p>';
+    var sitExtra = "";
+    if (plan && plan.situations && plan.situations.length) {
+      sitExtra = '<div class="ice-matchup-sheet-h">PP / PK / ST (cited)</div>' +
+        plan.situations.map(matchupCiteRowHtml).join("");
+    } else {
+      sitExtra = '<div class="ice-matchup-sheet-h">PP / PK / ST</div>' +
+        '<div class="ice-matchup-sheet-row is-await"><span class="ice-matchup-sheet-t">— awaiting season cite (no games yet)</span></div>';
+    }
+    return '<div class="ice-matchup-sheet" hidden>' +
+      '<div class="ice-matchup-sheet-h">You</div>' + youRows +
+      '<div class="ice-matchup-sheet-h">Them</div>' + themRows +
+      sitExtra +
+      '<div class="ice-matchup-sheet-h">Edge / avoid</div>' + avoid +
+      '<p class="ice-matchup-note">Seat-owned pack · cite/echo only · never another jersey\'s notes</p>' +
+    "</div>";
+  }
+
+  /** Game Day / Cal matchup lane — Me | Opponent | Situations + Edge; expand You/Them/Edge. */
   function matchupLaneHtml(board) {
     var opp = "";
     if (board && board.who) {
@@ -919,31 +1300,60 @@
     var seatBit = (seat && seat.jersey != null)
       ? (" · #" + seat.jersey + (seat.last ? (" " + seat.last) : ""))
       : "";
+    var live = !!(plan && plan.live);
+    var statusBit = live ? " · live" : " · seat pack";
 
-    if (!plan || !plan.dos || !plan.dos.length) {
-      return '<div class="ice-matchup" aria-label="DCLM matchup">' +
-        '<div class="ice-matchup-k">' + esc(title) + esc(seatBit) + ' · seat pack</div>' +
-        '<ul class="ice-matchup-dos">' +
-          '<li class="ice-matchup-dash">— awaiting cites for <strong>this seat</strong> vs this opponent (prepared ahead; not another player\'s notes)</li>' +
-        "</ul>" +
-        '<div class="ice-matchup-edge"><span class="ice-matchup-lab">Edge</span> —</div>' +
-      "</div>";
+    var edgeMain = (plan && plan.edge && String(plan.edge).trim() && plan.edge !== "—")
+      ? esc(plan.edge)
+      : "—";
+    var edgeBlock = '<div class="ice-matchup-edge">' +
+      '<div class="ice-matchup-edge-line"><span class="ice-matchup-lab">Edge</span> <span class="ice-matchup-edge-main">' + edgeMain + "</span></div>" +
+      (plan && plan.edge2
+        ? ('<div class="ice-matchup-edge-sub">' + esc(plan.edge2) + "</div>")
+        : "") +
+    "</div>";
+
+    var body;
+    if (!plan) {
+      body = matchupMeStripHtml() +
+        '<div class="ice-matchup-them-face"><div class="ice-matchup-sec-k">Opponent</div>' +
+          '<div class="ice-matchup-dash-line">— awaiting cite</div></div>' +
+        '<div class="ice-matchup-sits"><div class="ice-matchup-sec-k">Situations vs Me</div>' +
+          '<ul class="ice-matchup-dos"><li class="ice-matchup-dash">— awaiting cites for <strong>this seat</strong> vs this opponent (prepared ahead; not another player\'s notes)</li></ul>' +
+          '<div class="ice-matchup-st-row"><span class="ice-matchup-st-await">PP —</span><span class="ice-matchup-st-await">PK —</span><span class="ice-matchup-st-await">ST —</span></div>' +
+        "</div>" +
+        edgeBlock;
+    } else {
+      body = matchupMeStripHtml() +
+        matchupThemFaceHtml(plan.them) +
+        matchupSituationsFaceHtml(plan) +
+        edgeBlock +
+        '<button type="button" class="ice-matchup-more" data-matchup-more aria-expanded="false">Cite sheet →</button>' +
+        matchupExpandSheetHtml(plan);
     }
 
-    var dos = plan.dos.map(function (d) {
-      return "<li>" + esc(d) + "</li>";
-    }).join("");
-
-    return '<div class="ice-matchup is-live" aria-label="DCLM matchup">' +
-      '<div class="ice-matchup-k">' + esc(title) + esc(seatBit) + ' · live</div>' +
-      '<ul class="ice-matchup-dos">' + dos + "</ul>" +
-      '<div class="ice-matchup-edge">' +
-        '<div class="ice-matchup-edge-line"><span class="ice-matchup-lab">Edge</span> <span class="ice-matchup-edge-main">' + esc(plan.edge) + "</span></div>" +
-        (plan.edge2
-          ? ('<div class="ice-matchup-edge-sub">' + esc(plan.edge2) + "</div>")
-          : "") +
-      "</div>" +
+    return '<div class="ice-matchup' + (live ? " is-live" : "") + '" aria-label="DCLM matchup">' +
+      '<div class="ice-matchup-k">' + esc(title) + esc(seatBit) + esc(statusBit) + "</div>" +
+      body +
     "</div>";
+  }
+
+  /** Hub Game Day board → matchup only when seat-owned pack exists (file on disk). */
+  function hubMatchupBoard(hub) {
+    if (!hub) return null;
+    if (hub.kind === "practice") return null;
+    var who = String(hub.who || "");
+    var m = who.match(/^vs\s+(.+)$/i);
+    var opp = m ? m[1] : "";
+    if (!opp || opp === "—") return null;
+    var plan = matchupPlanForSeat(getSeat(), opp);
+    if (!plan) return null;
+    return {
+      who: m ? who : ("vs " + opp),
+      when: hub.when,
+      where: hub.where,
+      kind: hub.kind
+    };
   }
 
   function seatNextOneLiner() {
@@ -1532,7 +1942,7 @@
   function renderGame() {
     if (!seatIsBound()) return lockedHtml();
     var bundle = tsNextBundle();
-    /* Matchup cite sheet lives on Cal — Game Day keeps countdown + who + where + games list. */
+    /* You-first matchup on Game Day when seat-owned pack exists for hub opponent (Cal keeps day-tray twin). */
     var packEvs = citedTournaments();
     var tourneyBoards = [];
     for (var ti = 0; ti < packEvs.length; ti++) {
@@ -1565,6 +1975,10 @@
           '<span class="ice-hub-arena-place">' + esc(arenaFace) + "</span>" +
         "</a>")
       : '<div class="ice-hub-arena is-empty" id="hubArenaMaps"><span class="ice-hub-arena-place">—</span></div>';
+    var hubMu = hubMatchupBoard(hub);
+    var matchupBlock = hubMu
+      ? ('<div class="ice-game-matchup" aria-label="Seat matchup vs opponent">' + matchupLaneHtml(hubMu) + "</div>")
+      : "";
     return '<div class="ice-game-compact ice-game-roomy">' +
       '<h1 class="ice-h ice-game-h">Game day</h1>' +
       '<div class="ice-hub">' +
@@ -1580,6 +1994,7 @@
         "</div>" +
         '<p class="ice-hub-status" id="hubStatus"' + (hub ? "" : " hidden") + '></p>' +
       "</div>" +
+      matchupBlock +
       '<div class="ice-game-up-grow">' +
         upcomingGamesListHtml(upcomingGameBoards(0, false)) +
       "</div>" +
@@ -1590,11 +2005,144 @@
     "</div>";
   }
 
+  /**
+   * Dom-only prior-season League mock — blow-away laws:
+   * 1) Fixture cf-pages/data/mock/league-dom.json + MOCK_LEAGUE_ENABLED kill switch
+   *    — NEVER write into Dom seat profile / Me attrs.
+   * 2) Gate ONLY Quinte #29 Di Genova — other seats stay empty awaiting cite.
+   * 3) After test: flip kill switch / delete fixture — zero ghost on profile.
+   * 4) Same League panes / tabs / UX — populate rows only. No new navigation.
+   */
+  var MOCK_LEAGUE_ENABLED = true; /* kill switch — set false or delete fixture to blow away */
+  var mockLeagueDomCache = null;
+  var mockLeagueDomTried = false;
+
+  function seatIsDomDiGenovaQuinte() {
+    var seat = getSeat();
+    if (!seat || Number(seat.jersey) !== 29) return false;
+    var last = String(seat.last || "").toLowerCase();
+    if (last.indexOf("di genova") === -1) return false;
+    var slug = String(seat.team_slug || state.teamSlug || "").toLowerCase();
+    return slug.indexOf("quinte") !== -1;
+  }
+
+  function loadMockLeagueDom() {
+    if (!MOCK_LEAGUE_ENABLED) return null;
+    if (!seatIsDomDiGenovaQuinte()) return null;
+    if (mockLeagueDomCache) return mockLeagueDomCache;
+    if (mockLeagueDomTried) return null;
+    mockLeagueDomTried = true;
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "data/mock/league-dom.json", false);
+      xhr.send(null);
+      if (xhr.status >= 200 && xhr.status < 300) {
+        var pack = JSON.parse(xhr.responseText || "null");
+        if (pack && pack.mock === true) mockLeagueDomCache = pack;
+      }
+    } catch (e) { mockLeagueDomCache = null; }
+    return mockLeagueDomCache;
+  }
+
+  function mockLeagueBannerHtml(pack) {
+    var lab = (pack && pack.banner) || "MOCK · prior season · Dom test only · blow-away";
+    return '<p class="ice-league-mock-banner" role="status">' + esc(lab) + "</p>";
+  }
+
+  function mockLeagueScoresHtml(pack) {
+    var rows = (pack && pack.scores) || [];
+    if (!rows.length) {
+      return '<p class="ice-league-empty">Out-of-town scores — awaiting GameSheet / league cite. Dualis never invents a score.</p>';
+    }
+    var body = rows.map(function (r) {
+      return '<div class="ice-league-score-row">' +
+        '<span class="ice-league-score-date">' + esc(r.date || "") + "</span>" +
+        '<span class="ice-league-score-match">' +
+          esc(r.away || "") + " " + esc(String(r.away_score != null ? r.away_score : "—")) +
+          " @ " +
+          esc(r.home || "") + " " + esc(String(r.home_score != null ? r.home_score : "—")) +
+        "</span>" +
+        (r.note ? ('<span class="ice-league-score-note">' + esc(r.note) + "</span>") : "") +
+      "</div>";
+    }).join("");
+    return mockLeagueBannerHtml(pack) + '<div class="ice-league-scores">' + body + "</div>";
+  }
+
+  function mockLeagueStandingsHtml(pack) {
+    var st = pack && pack.standings;
+    var rows = (st && st.rows) || [];
+    if (!rows.length) {
+      return '<p class="ice-league-empty">Standings — awaiting OMHA / GameSheet cite. Dash until real.</p>';
+    }
+    var head = '<div class="ice-league-table-h">' +
+      esc((st.division || "East") + " · " + (st.window || pack.season || "")) +
+    "</div>";
+    var table = '<div class="ice-league-table" role="table">' +
+      '<div class="ice-league-tr ice-league-th" role="row">' +
+        '<span>R</span><span>Team</span><span>GP</span><span>W</span><span>L</span><span>T</span><span>OTL</span><span>Pts</span><span>GF</span><span>GA</span>' +
+      "</div>" +
+      rows.map(function (r) {
+        var cls = "ice-league-tr" + (r.highlight ? " is-me-team" : "");
+        return '<div class="' + cls + '" role="row">' +
+          "<span>" + esc(r.rank) + "</span>" +
+          "<span>" + esc(r.team) + "</span>" +
+          "<span>" + esc(r.gp) + "</span>" +
+          "<span>" + esc(r.w) + "</span>" +
+          "<span>" + esc(r.l) + "</span>" +
+          "<span>" + esc(r.t) + "</span>" +
+          "<span>" + esc(r.otl) + "</span>" +
+          "<span>" + esc(r.pts) + "</span>" +
+          "<span>" + esc(r.gf) + "</span>" +
+          "<span>" + esc(r.ga) + "</span>" +
+        "</div>";
+      }).join("") +
+    "</div>";
+    return mockLeagueBannerHtml(pack) + head + table;
+  }
+
+  function mockLeagueScorersHtml(pack) {
+    var sc = pack && pack.scorers;
+    var rows = (sc && sc.rows) || [];
+    if (!rows.length) {
+      return '<p class="ice-league-empty">Leading scorers — GameSheet when connected. Never invent a points race.</p>';
+    }
+    var scope = sc.scope ? ('<div class="ice-league-table-h">' + esc(sc.scope) + "</div>") : "";
+    var gap = sc.note ? ('<p class="ice-league-mock-gap">' + esc(sc.note) + "</p>") : "";
+    var table = '<div class="ice-league-table ice-league-scorers" role="table">' +
+      '<div class="ice-league-tr ice-league-th" role="row">' +
+        '<span>R</span><span>Player</span><span>Pos</span><span>#</span><span>GP</span><span>G</span><span>A</span><span>P</span>' +
+      "</div>" +
+      rows.map(function (r) {
+        return '<div class="ice-league-tr" role="row">' +
+          "<span>" + esc(r.rank) + "</span>" +
+          "<span>" + esc(r.player) + "</span>" +
+          "<span>" + esc(r.pos || "") + "</span>" +
+          "<span>" + esc(r.jersey != null ? r.jersey : "") + "</span>" +
+          "<span>" + esc(r.gp) + "</span>" +
+          "<span>" + esc(r.g) + "</span>" +
+          "<span>" + esc(r.a) + "</span>" +
+          "<span>" + esc(r.pts) + "</span>" +
+        "</div>";
+      }).join("") +
+    "</div>";
+    return mockLeagueBannerHtml(pack) + scope + gap + table;
+  }
+
   /** League view under Game — no new dock tab. Shells only until GameSheet/OMHA cites land. Never invent. */
   function renderLeagueStub() {
     var seat = getSeat() || {};
     var league = String(seat.league || seat.league_id || "OMHA").toUpperCase();
     if (league.indexOf("OMHA") !== -1) league = "OMHA";
+    var mock = loadMockLeagueDom(); /* Dom + kill switch only; null for everyone else */
+    var scoresBody = mock
+      ? mockLeagueScoresHtml(mock)
+      : '<p class="ice-league-empty">Out-of-town scores — awaiting GameSheet / league cite. Dualis never invents a score.</p>';
+    var standBody = mock
+      ? mockLeagueStandingsHtml(mock)
+      : '<p class="ice-league-empty">Standings — awaiting OMHA / GameSheet cite. Dash until real.</p>';
+    var scorersBody = mock
+      ? mockLeagueScorersHtml(mock)
+      : '<p class="ice-league-empty">Leading scorers — GameSheet when connected. Never invent a points race.</p>';
     return (
       '<section class="ice-league" id="iceLeague" aria-label="League view">' +
         '<div class="ice-league-head">' +
@@ -1607,13 +2155,13 @@
           '<button type="button" class="ice-league-tab" data-league-pane="scorers" role="tab" aria-selected="false">Scorers</button>' +
         "</div>" +
         '<div class="ice-league-pane on" data-league-body="scores">' +
-          '<p class="ice-league-empty">Out-of-town scores — awaiting GameSheet / league cite. Dualis never invents a score.</p>' +
+          scoresBody +
         "</div>" +
         '<div class="ice-league-pane" data-league-body="standings" hidden>' +
-          '<p class="ice-league-empty">Standings — awaiting OMHA / GameSheet cite. Dash until real.</p>' +
+          standBody +
         "</div>" +
         '<div class="ice-league-pane" data-league-body="scorers" hidden>' +
-          '<p class="ice-league-empty">Leading scorers — GameSheet when connected. Never invent a points race.</p>' +
+          scorersBody +
         "</div>" +
       "</section>"
     );
@@ -4132,6 +4680,22 @@
       stage.querySelectorAll(".ice-go-host-sheet").forEach(function (sheet) {
         sheet.addEventListener("click", function (ev) {
           if (ev.target === sheet) sheet.hidden = true;
+        });
+      });
+    }
+
+    /* Matchup cite-sheet expand — Game Day + Cal day tray */
+    if (id === "game" || id === "cal") {
+      stage.querySelectorAll("[data-matchup-more]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var root = btn.closest(".ice-matchup");
+          var sheet = root && root.querySelector(".ice-matchup-sheet");
+          if (!sheet) return;
+          var open = sheet.hasAttribute("hidden");
+          if (open) sheet.removeAttribute("hidden");
+          else sheet.setAttribute("hidden", "");
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+          btn.textContent = open ? "Cite sheet ↑" : "Cite sheet →";
         });
       });
     }

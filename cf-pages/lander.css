@@ -3240,6 +3240,162 @@ a.ice-me-tile { text-decoration: none; color: inherit; }
 .ice-cal-tray .ice-matchup { max-height: none; }
 .ice-cal-tray .ice-matchup-dos li { font-size: 0.78rem; }
 
+/* Game Day you-first matchup (same lane as Cal — not a new dock) */
+.ice-game-matchup {
+  margin: 0.35rem 0 0.15rem;
+}
+.ice-game-matchup .ice-matchup { max-height: none; }
+
+.ice-matchup-sec-k {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0.4rem 0 0.22rem;
+}
+.ice-matchup-me-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+}
+.ice-matchup-me-cell {
+  flex: 1 1 auto;
+  min-width: 3.4rem;
+  padding: 0.22rem 0.35rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle, #2a3a50);
+  background: rgba(15, 23, 42, 0.45);
+}
+.ice-matchup-me-cell.is-await { opacity: 0.75; }
+.ice-matchup-me-lab {
+  display: block;
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.ice-matchup-me-v {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.ice-matchup-me-cell.is-locked .ice-matchup-me-v { color: var(--accent, #4da3ff); }
+.ice-matchup-dash-line {
+  margin: 0.1rem 0 0.2rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.ice-matchup-chips { display: flex; flex-direction: column; gap: 0.22rem; }
+.ice-matchup-chip {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.ice-matchup-chip-t { flex: 1; }
+.ice-matchup-st-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+.ice-matchup-st-await {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-subtle, #2a3a50);
+  border-radius: 999px;
+  padding: 0.12rem 0.45rem;
+}
+.ice-matchup-sheet-row.is-await .ice-matchup-sheet-t { color: var(--text-muted); font-weight: 600; }
+
+/* Dom mock League rows — same panes; banner only when gated */
+.ice-league-mock-banner {
+  margin: 0 0 0.45rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  border: 1px dashed rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+.ice-league-mock-gap {
+  margin: 0 0 0.35rem;
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+.ice-league-scores { display: flex; flex-direction: column; gap: 0.35rem; }
+.ice-league-score-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border-subtle, #2a3a50);
+}
+.ice-league-score-date {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.ice-league-score-match {
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.ice-league-score-note {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+}
+.ice-league-table-h {
+  margin: 0 0 0.35rem;
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+.ice-league-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  overflow-x: auto;
+}
+.ice-league-tr {
+  display: grid;
+  grid-template-columns: 1.4rem minmax(6.5rem, 1.6fr) repeat(8, minmax(1.6rem, 1fr));
+  gap: 0.2rem;
+  align-items: baseline;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.22rem 0;
+  border-bottom: 1px solid rgba(42, 58, 80, 0.55);
+}
+.ice-league-scorers .ice-league-tr {
+  grid-template-columns: 1.4rem minmax(6.5rem, 1.8fr) 1.6rem 1.6rem repeat(4, minmax(1.5rem, 1fr));
+}
+.ice-league-th {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom-color: var(--border-subtle, #2a3a50);
+}
+.ice-league-tr.is-me-team span:nth-child(2) { color: var(--accent, #4da3ff); }
+
 .ice-me-dim-triad span { color: var(--accent, #4da3ff); }
 
 /* Pos + Age labels match cyan name chip */
@@ -3272,7 +3428,7 @@ a.ice-me-tile { text-decoration: none; color: inherit; }
 
 
 
-/* Game Day roomy — matchup peeled to Cal; games fill the gap; tournament one row */
+/* Game Day roomy — hub + you-first matchup when pack exists; games + tourney; League shell */
 .ice-game-roomy {
   gap: 0.45rem;
   min-height: calc(100dvh - 11.5rem);
