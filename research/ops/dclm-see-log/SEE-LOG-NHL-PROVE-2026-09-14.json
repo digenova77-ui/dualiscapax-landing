@@ -1,0 +1,142 @@
+{
+  "schema": "dc.dclm.see_log.v0",
+  "ts": "2026-09-14T16:35:00Z",
+  "ts_local": "2026-09-14 12:35 ET",
+  "seatId": null,
+  "jersey": null,
+  "observedPos": null,
+  "note": "NHL historical offline prove only. Dom #29 deferred. No LiveBarn CV. No Sportlogiq clone. Dualis eyes = cite + human/vision frame read; LB echo-only if later proven.",
+  "source": {
+    "kind": "nhl_historical_broadcast_cite",
+    "url": "https://www.youtube.com/watch?v=qQ4rCm-VxqM",
+    "title": "NHL Playoff Highlights | Capitals vs. Hurricanes | Gm 4 | May 12, 2025",
+    "channel": "NHL",
+    "upload_date": "20250513",
+    "windows": [
+      { "label": "open", "t0": "00:00", "t1": "01:30", "file": "nhl_wsh_car_g4.mp4" },
+      { "label": "mid_goals", "t0": "02:00", "t1": "05:00", "file": "nhl_goals_window.mp4" },
+      { "label": "late", "t0": "07:00", "t1": "09:00", "file": "nhl_late.mp4" }
+    ],
+    "note": "cite only; Dualis does not host; research fair-use frame read"
+  },
+  "class_verdict": {
+    "role.goalie": { "result": "PASS", "confidence": "high", "evidence": "Multiple frames: crease + pads/mask/blocker (e.g. f_007~00:18, f_008~00:21, f_010~00:27, g_0060~03:00 nameplate THOMPSON #48, gd_017 post-goal WSH G knees in crease)." },
+    "pos.G": { "result": "PASS", "confidence": "high", "evidence": "Same as role.goalie." },
+    "pos.F_vs_D": { "result": "PARTIAL", "confidence": "med", "evidence": "Spatial formation sometimes readable (point vs slot). Broadcast FORWARDS/DEFENSE overlays give citeable labels but are broadcast text, not pure body-pose ID. Single-frame F vs D without overlay often weak." },
+    "pos.LW_C_RW": { "result": "FAIL", "confidence": "empty", "evidence": "No attested LW/C/RW from vision alone in this spike. Needs faceoff/boards/attack-direction sequence + roster cross-ref later." },
+    "jersey_read": { "result": "PARTIAL", "confidence": "med", "evidence": "Readable in several frames (#21,#24,#26,#37,#48,#72,#74,#77,#82,#4). Wide angle / blur / occlusion often empty." },
+    "event.hit": { "result": "FAIL", "confidence": "empty", "evidence": "No discrete open-ice/boards hit with clear before→impact→after attested. Net-front jostle (h_020) logged as battle only — not stamped hit." },
+    "event.blocked_shot": { "result": "FAIL", "confidence": "empty", "evidence": "Lane posture candidates only; no multi-frame puck-path interrupted by defender body/stick attested." },
+    "event.goal_puck_in_net": { "result": "PARTIAL", "confidence": "med", "evidence": "gd_017 (~highlight 02:28): puck visible in net mesh + board GOAL! text + CAR celebration; scorebug still 0-0 (pre-increment). Honest: visual puck-in-net PASS at med; not yet scorebug-synced in same frame." },
+    "event.goal_broadcast_indicator": { "result": "PASS", "confidence": "high", "evidence": "g_0032 / gd_025: scorebug red GOAL banner + CAR logo; celebration. g_0034: scorebug CAR 1 WSH 0 + arena ribbon GOAL at 1st 9:36." },
+    "scorebug": { "result": "PASS", "confidence": "high", "evidence": "Consistent TNT scorebug: teams, score, period, clock, SOG, series CAR LEADS 2-1 readable across many frames. Tesseract OCR noisy at 360p but human/vision read clear." }
+  },
+  "observations": [
+    {
+      "class": "scorebug",
+      "status": "attested",
+      "confidence": "high",
+      "window": { "t0": "00:09", "t1": "00:12" },
+      "frame": "frames/f_003.jpg",
+      "evidence": "WSH 0 CAR 0; 1st 19:22; CAR LEADS 2-1; FORWARDS overlay #28 Carrier #11 Staal #48 Martinook",
+      "jersey": null,
+      "observedPos": null
+    },
+    {
+      "class": "role.goalie",
+      "status": "attested",
+      "confidence": "high",
+      "window": { "t0": "00:18", "t1": "00:21" },
+      "frame": "frames/f_007.jpg",
+      "evidence": "CAR goalie in crease with pads; OZ structure WSH white vs CAR dark",
+      "jersey": null,
+      "observedPos": "G"
+    },
+    {
+      "class": "jersey_read",
+      "status": "attested",
+      "confidence": "high",
+      "window": { "t0": "00:27", "t1": "00:27" },
+      "frame": "frames/f_010.jpg",
+      "evidence": "WSH #21 #74 #72 visible; CAR #37 net-front",
+      "jersey": 37,
+      "observedPos": null
+    },
+    {
+      "class": "role.goalie",
+      "status": "attested",
+      "confidence": "high",
+      "window": { "t0": "03:00", "t1": "03:00" },
+      "frame": "frames_goals/g_0060.jpg",
+      "evidence": "WSH goalie nameplate THOMPSON #48 in crease (behind-net cam)",
+      "jersey": 48,
+      "observedPos": "G"
+    },
+    {
+      "class": "event.goal_puck_in_net",
+      "status": "attested",
+      "confidence": "med",
+      "window": { "t0": "02:28", "t1": "02:29" },
+      "frame": "frames_goal_dense/gd_017.jpg",
+      "evidence": "Puck in net mesh behind WSH goalie; LED boards GOAL!; CAR arms raised; scorebug still 0-0 / 1st 9:36",
+      "jersey": null,
+      "observedPos": null
+    },
+    {
+      "class": "event.goal_broadcast_indicator",
+      "status": "attested",
+      "confidence": "high",
+      "window": { "t0": "02:32", "t1": "02:34" },
+      "frame": "frames_goals/g_0032.jpg",
+      "evidence": "Scorebug GOAL banner + CAR celebration; #82 Kotkaniemi visible",
+      "jersey": 82,
+      "observedPos": null
+    },
+    {
+      "class": "scorebug",
+      "status": "attested",
+      "confidence": "high",
+      "window": { "t0": "02:34", "t1": "02:34" },
+      "frame": "frames_goals/g_0034.jpg",
+      "evidence": "Post-goal: WSH 0 CAR 1; SOG 7-7; 1st 9:36; ribbon board GOAL",
+      "jersey": null,
+      "observedPos": null
+    },
+    {
+      "class": "event.hit",
+      "status": "empty",
+      "confidence": "empty",
+      "window": { "t0": "00:00", "t1": "09:00" },
+      "frame": null,
+      "evidence": "No hit stamped after sampling open/mid/late/hitcand windows",
+      "jersey": null,
+      "observedPos": null
+    },
+    {
+      "class": "event.blocked_shot",
+      "status": "empty",
+      "confidence": "empty",
+      "window": { "t0": "00:00", "t1": "09:00" },
+      "frame": null,
+      "evidence": "No blocked-shot stamped; needs denser multi-frame puck tracking",
+      "jersey": null,
+      "observedPos": null
+    },
+    {
+      "class": "pos.LW_C_RW",
+      "status": "empty",
+      "confidence": "empty",
+      "window": { "t0": "00:00", "t1": "09:00" },
+      "frame": null,
+      "evidence": "Wing/center not attested from vision alone",
+      "jersey": null,
+      "observedPos": null
+    }
+  ],
+  "product_path": {
+    "now": "NHL offline post-game see→log defines identity classes (easier than peer real-time AI claims).",
+    "next": "Same eyes on amateur → measurable why-fail-vs-pro gaps.",
+    "later": "Dom #29 Quinte seat cross-ref when household tape cited.",
+    "livebarn": "Paired session pipe stays separate; echo-only if proven; never Dualis real-time CV on LB."
+  }
+}
