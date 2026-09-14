@@ -1133,15 +1133,17 @@
     return matchupPlanForSeat(getSeat(), oppRaw);
   }
 
-  /** Me strip — locked seat/Me dims only (size shot style pos age). Dash when cite missing. */
+  /** Me strip — pos → type → size/shot/style/age + S/W when cited. Omit empty S/W; dash other awaits. Never invent; no default LW. */
   function matchupMeStripHtml() {
     var arch = loadMeArch() || {};
     var seat = getSeat() || {};
+    /* Type = player type (Power F / Sniper / …); style cell may duplicate until type is its own cite */
+    var typeFace = String(arch.type || arch.style || "").trim();
     var dims = [
+      { lab: "Pos", v: arch.pos || seat.pos },
+      { lab: "Type", v: typeFace },
       { lab: "Size", v: arch.size },
       { lab: "Shot", v: arch.shot },
-      { lab: "Style", v: arch.style },
-      { lab: "Pos", v: arch.pos || seat.pos },
       { lab: "Age", v: arch.age }
     ];
     var cells = dims.map(function (d) {
@@ -1153,9 +1155,22 @@
         '<span class="ice-matchup-me-v">' + face + "</span>" +
       "</div>";
     }).join("");
+    /* Strengths / weaknesses — cite-only; omit entirely when empty (not a fake dash row) */
+    function swBlock(lab, raw) {
+      var v = "";
+      if (Array.isArray(raw)) v = raw.map(function (x) { return String(x || "").trim(); }).filter(Boolean).join(" · ");
+      else v = String(raw || "").trim();
+      if (!v) return "";
+      return '<div class="ice-matchup-me-sw">' +
+        '<span class="ice-matchup-me-lab">' + esc(lab) + "</span>" +
+        '<span class="ice-matchup-me-v">' + esc(v) + "</span>" +
+      "</div>";
+    }
+    var sw = swBlock("Strengths", arch.strengths) + swBlock("Weaknesses", arch.weaknesses);
     return '<div class="ice-matchup-me" aria-label="Me attributes">' +
       '<div class="ice-matchup-sec-k">Me</div>' +
       '<div class="ice-matchup-me-row">' + cells + "</div>" +
+      (sw ? ('<div class="ice-matchup-me-sw-row">' + sw + "</div>") : "") +
     "</div>";
   }
 
@@ -3442,7 +3457,7 @@
       var cur = {};
       try { cur = JSON.parse(lsGet(ME_ARCH_KEY) || "{}") || {}; } catch (e0) { cur = {}; }
       var next = row || {};
-      var keys = ["size", "shot", "style", "pos", "age"];
+      var keys = ["size", "shot", "style", "pos", "age", "type", "strengths", "weaknesses"];
       for (var i = 0; i < keys.length; i++) {
         var k = keys[i];
         if (String(cur[k] || "").trim()) continue; /* locked once defined */

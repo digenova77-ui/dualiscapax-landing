@@ -4637,3 +4637,24 @@ html.ice-tape-land-lock body {
   color: #86efac;
   border-color: rgba(74, 222, 128, 0.35);
 }
+
+
+/* Me strip strengths / weaknesses (cite-only; omitted when empty) */
+.ice-matchup-me-sw-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+.ice-matchup-me-sw {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.55rem;
+  align-items: baseline;
+  font-size: 0.78rem;
+}
+.ice-matchup-me-sw .ice-matchup-me-lab {
+  font-weight: 700;
+  opacity: 0.75;
+  min-width: 5.5rem;
+}
