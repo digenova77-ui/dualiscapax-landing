@@ -4180,8 +4180,13 @@
           lockSeatNow(bak.jersey, bak.via || "teamsnap", "oauth");
         }
       }
-      finalizePendingTeamSnapClaim();
+      var sealedNow = finalizePendingTeamSnapClaim();
       var seat2 = getSeat();
+      if (sealedNow || (seat2 && seat2.how === "oauth")) {
+        /* Tab 1 proven seat — same for every player after bind */
+        try { if (location.hash !== "#seat") location.hash = "#seat"; } catch (eHash) {}
+        goStage("seat", true);
+      }
       if (seat2 && window.DCTeamSnap && DCTeamSnap.hasToken && DCTeamSnap.hasToken()) {
         setBind("teamsnap", "oauth");
         if (seat2.how !== "oauth") {

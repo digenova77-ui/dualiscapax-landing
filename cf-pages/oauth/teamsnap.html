@@ -121,9 +121,19 @@
       } catch (e4) {}
 
       setTimeout(function () {
-        /* Game only after oauth seat seal; else Seat with token ready */
-        location.href = location.origin + "/ice.html#" + (sealed ? "game" : "seat");
-      }, 600);
+        /* Tab 1 = proven seat once bound. Same path every player — never Dom-special. */
+        var back = (res && res.returnTo) || (location.origin + "/ice.html#seat");
+        try {
+          var u = new URL(back, location.origin);
+          if (!u.hash || u.hash === "#") u.hash = "#seat";
+          /* Always land Seat after bind (proven face), not Game */
+          if (sealed) u.hash = "#seat";
+          back = u.pathname + u.search + u.hash;
+        } catch (eNav) {
+          back = location.origin + "/ice.html#seat";
+        }
+        location.href = back.indexOf("http") === 0 ? back : (location.origin + back);
+      }, 450);
     })();
   </script>
 </body>
