@@ -12,7 +12,7 @@ on:
       batch:
         description: 'Courses to harvest this run'
         required: false
-        default: '3'
+        default: '4'
 
 permissions:
   contents: write
@@ -32,7 +32,7 @@ jobs:
           python-version: '3.11'
       - name: Harvest OpenGolf envelopes
         env:
-          GOLF_HARVEST_BATCH: ${{ github.event.inputs.batch || '3' }}
+          GOLF_HARVEST_BATCH: ${{ github.event.inputs.batch || '4' }}
         run: python3 scripts/harvest_golf_usa_envelopes.py
       - name: Commit packs
         run: |

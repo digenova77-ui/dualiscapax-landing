@@ -1,0 +1,52 @@
+name: hockey-girls-owha-branch-index
+
+# Purposeful harvest — OWHA public standings → research/hockey/girls-women
+# Branch index only. Never invent players.
+
+on:
+  schedule:
+    - cron: '12,42 * * * *'
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Divisions to refresh this run (max seeded)'
+        required: false
+        default: '2'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hockey-girls-owha
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Harvest OWHA branch index
+        env:
+          GIRLS_HOCKEY_BATCH: ${{ github.event.inputs.batch || '2' }}
+        run: python3 scripts/harvest_hockey_girls_owha.py
+      - name: Commit packs
+        run: |
+          git config user.email "hockey-harvest@dualiscapax.ai"
+          git config user.name "Dualis Girls Hockey Harvest"
+          git add research/hockey/girls-women/ units/sports/hockey-girls-women-amateur/
+          if git diff --cached --quiet; then
+            echo "No pack changes."
+            exit 0
+          fi
+          git commit -m "chore(hockey): OWHA girls/women branch index harvest [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            echo "push race attempt $i — retry"
+            sleep $((i * 2))
+          done
+          echo "push failed after retries" >&2
+          exit 1

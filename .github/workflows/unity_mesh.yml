@@ -1,15 +1,17 @@
-name: DualisCapax Autonomous 4-Model Unity Mesh
+name: DualisCapax Unity Mesh (truth-or-nothing)
+
+# Schedule demoted 2026-09-14 — STUB ticks no longer claim UNANIMOUS_PASS.
+# Manual dispatch with a real task_prompt may call xAI when XAI_API_KEY is set.
+
 on:
-  schedule:
-    - cron: '30 * * * *'
-  issues:
-    types: [opened, labeled]
   workflow_dispatch:
     inputs:
       task_prompt:
-        description: 'Task Prompt for 4-Model Deliberation'
+        description: 'Non-STUB task for live sentry (blank = SKIP_STUB)'
         required: false
-        default: 'STUB: Autonomous Multi-Model Epoch Verification'
+        default: 'STUB'
+  issues:
+    types: [opened, labeled]
 
 permissions:
   contents: write
@@ -19,23 +21,27 @@ jobs:
   deliberate-and-build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Run 4-Model Assembly (stub if no keys)
+      - name: Run mesh (truth-or-nothing)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          PYTHONPATH=src/engine python3 src/engine/unity/unity_mesh_orchestrator.py "${{ github.event.inputs.task_prompt || github.event.issue.title || 'STUB' }}"
-      - name: Commit Consensus Docket
+          PYTHONPATH=src/engine python3 src/engine/unity/unity_mesh_orchestrator.py \
+            "${{ github.event.inputs.task_prompt || github.event.issue.title || 'STUB' }}"
+      - name: Commit honest docket
         run: |
           git config --local user.email "unity-mesh@dualiscapax.ai"
-          git config --local user.name "Unity 4-Model Consensus Engine"
+          git config --local user.name "Unity Mesh"
           git add src/engine/ledgers/consensus/
-          git diff-index --quiet HEAD || (git commit -m "chore(unity): consensus tick [skip ci]" && git push origin HEAD)
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore(unity): honest mesh docket [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            sleep $((i * 2))
+          done
