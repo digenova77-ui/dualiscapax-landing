@@ -4445,3 +4445,14 @@ html.ice-tape-land-lock body {
 .ice-tape-lb-note {
   margin-top: 0.75rem;
 }
+
+
+/* Go stays summary */
+.ice-go-stay-sum { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.25rem; }
+.ice-go-stay-sum-row {
+  padding: 0.55rem 0.65rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+}
+.ice-go-stay-sum-title { font-weight: 800; font-size: 0.92rem; }
