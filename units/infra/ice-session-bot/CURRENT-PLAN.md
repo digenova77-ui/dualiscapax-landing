@@ -1,14 +1,21 @@
-# Current plan (2026-09-14 session)
+# Current plan (2026-09-14.2)
 
-Source: Grok team chat. Encoded here so Ice Session Bot ticks stay current.
+Source: Grok team chat. Encoded so Ice Session Bot ticks stay current.
 Not live memory of the room. If a later chat contradicts this file, replace this file — do not invent.
 
-## Advancement over last tick
-Persist the session plan into the unit. Echo `plan_id` + hash on every receipt.
+## Advancement over 2026-09-14
+Constant self-improve on Dualis Ice + À La Carte:
+1. Load this plan + hash on every tick.
+2. Audit live face files (ice.html, alacarte.html, dclm-alacarte.js, iris.html, overlay, ice-skills).
+3. Apply only the known safe copy fix: `TeamSnap or Spordle` → `TeamSnap` on live face (not partner-ask research docs).
+4. Write `packs/ice-health.json`.
+5. Restore `ice-portal.js` **only if** it is the word PLACEHOLDER. Loader-to-e6db8ff is allowed emergency, not a 30-minute rewrite of a healthy loader.
+
 Do not add GrokBot dispatch, CF zip, or fake dual-path scores.
 
 ## Product
-Dualis Ice is the seat/session/DCLM product. Public OMHA/OWHA/Sportsheadz boards are cite pipes only.
+Dualis Ice is the seat/session/DCLM product. À La Carte is the athlete app lane into that ice.
+Public OMHA/OWHA/Sportsheadz boards are cite pipes only.
 
 ## Seat
 Player Bind on seating = TeamSnap only. Spordle is not a seat-prove option.

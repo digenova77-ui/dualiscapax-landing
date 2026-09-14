@@ -1,13 +1,30 @@
 {
-  "plan_id": "ice-session-plan-2026-09-14",
+  "plan_id": "ice-session-plan-2026-09-14.2",
+  "supersedes": "ice-session-plan-2026-09-14",
   "source": "units/infra/ice-session-bot/CURRENT-PLAN.md",
-  "advancement": "persist chat plan into factory ticks",
+  "advancement": "Ice + À La Carte self-improve: load plan on every tick, audit live face, apply known TeamSnap-only copy, write ice-health pack. Not GrokBot dispatch. Not CF zip.",
   "seat_bind": "teamsnap_only",
   "cite_ready": "NONE",
   "rulers": {
     "vision": "Wayne Gretzky",
     "d_mobility": "Bobby Orr",
     "shot_power": ["Al MacInnis", "Al Iafrate", "Zdeno Chara"]
+  },
+  "model_seat": {
+    "team": "Quinte Red Devils",
+    "age": "U16",
+    "jersey": 29,
+    "display": "D. Di Genova",
+    "nearest_ruler": "shot_power",
+    "rewrite_if": "tape stamps next_node"
+  },
+  "self_improve": {
+    "load_plan": true,
+    "audit_face": ["cf-pages/ice.html", "cf-pages/alacarte.html", "cf-pages/js/dclm-alacarte.js", "cf-pages/iris.html", "cf-pages/js/ice-seat-teamsnap-only.js", "cf-pages/js/ice-skills.js"],
+    "apply_known_copy": ["TeamSnap or Spordle -> TeamSnap"],
+    "write_health_pack": true,
+    "restore_portal": "only_if_PLACEHOLDER",
+    "never": ["CF zip", "PLACEHOLDER write", "fake dual-path", "swarm UNANIMOUS_PASS", "auto-inject founder seat"]
   },
   "awaiting": [
     "AWAITING_GROKBOTS",
