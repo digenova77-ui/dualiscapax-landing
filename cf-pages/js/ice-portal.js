@@ -1638,8 +1638,8 @@
               '<strong>' + esc(s.title || "Stay") + '</strong>' +
               '<span class="ice-soft">' + esc(s.checkInLabel || s.checkIn || "") + " → " + esc(s.checkOutLabel || s.checkOut || "") + "</span>" +
               (hasUrl
-                ? ('<a class="ice-btn" target="_blank" rel="noopener" href="' + esc(s.url) + '">Open stay →</a>')
-                : '<span class="ice-soft">No link yet</span>') +
+                ? ('<a class="ice-btn" data-cal-open-stay target="_blank" rel="noopener" href="' + esc(s.url) + '">Open this stay →</a>')
+                : '<span class="ice-soft">No Airbnb page saved yet — Add a stay on Go</span>') +
             "</div>";
           }).join("") +
         "</div>";
@@ -1887,6 +1887,32 @@
     return out;
   }
 
+
+  function renderStaysSummaryHtml() {
+    var list = loadStays();
+    if (!list.length) {
+      return '<p class="ice-note" style="margin:0.45rem 0 0;">No stays on this phone yet. Add a stay from your Airbnb reservation page.</p>';
+    }
+    var rows = list.map(function (s, i) {
+      var hasUrl = !!(s.url && /^https?:\/\//i.test(s.url));
+      var cin = s.checkInLabel || s.checkIn || "—";
+      var cout = s.checkOutLabel || s.checkOut || "—";
+      return '<div class="ice-go-stay-sum-row" data-stay-sum="' + i + '">' +
+        '<div class="ice-go-stay-sum-title">' + esc(s.title || ("Stay " + (i + 1))) + "</div>" +
+        '<div class="ice-soft">' + esc(cin) + " → " + esc(cout) +
+          (s.tripTitle ? (" · " + esc(s.tripTitle)) : "") + "</div>" +
+        '<div class="ice-hub-actions ice-go-stay-actions">' +
+          '<button type="button" class="ice-btn ghost" data-stay-jump-cal="' + i + '">See on Cal</button>' +
+          (hasUrl
+            ? ('<a class="ice-btn" target="_blank" rel="noopener" href="' + esc(s.url) + '">Open stay →</a>')
+            : "") +
+        "</div>" +
+      "</div>";
+    }).join("");
+    return '<p class="ice-note" style="margin:0.45rem 0 0.35rem;">How Dualis sees your stays on this phone (' + list.length + "). Tap See on Cal to confirm the green stay days.</p>" +
+      '<div class="ice-go-stay-sum" aria-label="Your stays">' + rows + "</div>";
+  }
+
   function renderStayCard(s, idx, opts) {
     opts = opts || {};
     var mapsStay = mapsDir(s.address || "");
@@ -1949,16 +1975,19 @@
             : "") +
         "</div>";
       paste =
-        '<div class="ice-field"><label for="stayUrl' + idx + '">Airbnb reservation link</label>' +
+        '<div class="ice-field"><label for="stayUrl' + idx + '">Airbnb reservation page (paste from browser)</label>' +
           '<input id="stayUrl' + idx + '" data-stay-url="' + idx + '" value="" placeholder="https://www.airbnb.com/trips/…" inputmode="url" autocomplete="off"></div>' +
-        '<button type="button" class="ice-btn" data-stay-save="' + idx + '">Save link</button>';
+        '<button type="button" class="ice-btn" data-stay-save="' + idx + '">Save Airbnb page</button>';
     }
     var addMore = opts.showAddMore
       ? ('<div class="ice-go-stay-more">' +
-          '<button type="button" class="ice-btn ghost" data-stay-add-link>Add stay</button>' +
+          '<div class="ice-hub-actions ice-go-stay-actions">' +
+            '<button type="button" class="ice-btn" data-stay-add>Add a stay</button>' +
+            '<button type="button" class="ice-btn ghost" data-stay-check>Check your stays</button>' +
+          "</div>" +
           '<div id="stayAddPanel" hidden>' +
-            '<p class="ice-note" style="margin:0.35rem 0 0.55rem;">Dates required — they bind this stay onto Cal for the trip weekend. Prefills from next away/tourny when known.</p>' +
-            '<div class="ice-field"><label for="stayUrlNew">Reservation link</label>' +
+            '<p class="ice-note" style="margin:0.35rem 0 0.55rem;">Open your Airbnb reservation page → copy the address from the browser → paste it here. Check-in/out dates bake this stay onto Cal for that trip weekend.</p>' +
+            '<div class="ice-field"><label for="stayUrlNew">Airbnb reservation page (paste from browser)</label>' +
               '<input id="stayUrlNew" data-stay-url-new value="" placeholder="https://www.airbnb.com/trips/…" inputmode="url" autocomplete="off"></div>' +
             '<div class="ice-field"><label for="stayInNew">Check-in (YYYY-MM-DD)</label>' +
               '<input id="stayInNew" data-stay-in-new value="" placeholder="2026-11-05" inputmode="text" autocomplete="off"></div>' +
@@ -1968,6 +1997,7 @@
               '<input id="stayTitleNew" data-stay-title-new value="" placeholder="Peterborough · TOC" autocomplete="off"></div>' +
             '<button type="button" class="ice-btn" id="btnStayAdd">Save stay</button>' +
           "</div>" +
+          '<div id="stayCheckPanel" hidden></div>' +
         "</div>")
       : "";
     return '<div class="ice-go-stay" data-stay-id="' + esc(s.id || ("stay-" + idx)) + '">' +
@@ -1987,16 +2017,24 @@
   function renderStayEmpty() {
     return '<div class="ice-go-stay ice-go-stay-empty">' +
       '<div class="ice-go-stay-k">Stay</div>' +
-      '<p class="ice-soft" style="margin:0.35rem 0 0.55rem;">Paste link + check-in/out. Dates bake it onto Cal for that trip weekend — tap the day, Open stay. Next stay shows on Go.</p>' +
-      '<div class="ice-field"><label for="stayUrlNew">Reservation link</label>' +
-        '<input id="stayUrlNew" data-stay-url-new value="" placeholder="https://www.airbnb.com/trips/…" inputmode="url" autocomplete="off"></div>' +
-      '<div class="ice-field"><label for="stayInNew">Check-in (YYYY-MM-DD)</label>' +
-        '<input id="stayInNew" data-stay-in-new value="" placeholder="2026-11-05" inputmode="text" autocomplete="off"></div>' +
-      '<div class="ice-field"><label for="stayOutNew">Check-out (YYYY-MM-DD)</label>' +
-        '<input id="stayOutNew" data-stay-out-new value="" placeholder="2026-11-07" inputmode="text" autocomplete="off"></div>' +
-      '<div class="ice-field"><label for="stayTitleNew">Label (optional)</label>' +
-        '<input id="stayTitleNew" data-stay-title-new value="" placeholder="Peterborough · TOC" autocomplete="off"></div>' +
-      '<button type="button" class="ice-btn" id="btnStayAdd">Save stay</button>' +
+      '<p class="ice-soft" style="margin:0.35rem 0 0.55rem;">Out-of-town lodging for the trip. Add a stay from your Airbnb reservation page, then Check your stays to confirm Cal.</p>' +
+      '<div class="ice-hub-actions ice-go-stay-actions">' +
+        '<button type="button" class="ice-btn" data-stay-add>Add a stay</button>' +
+        '<button type="button" class="ice-btn ghost" data-stay-check>Check your stays</button>' +
+      "</div>" +
+      '<div id="stayAddPanel" hidden>' +
+        '<p class="ice-note" style="margin:0.35rem 0 0.55rem;">Open your Airbnb reservation page → copy the address from the browser → paste it here. Check-in/out dates bake this stay onto Cal.</p>' +
+        '<div class="ice-field"><label for="stayUrlNew">Airbnb reservation page (paste from browser)</label>' +
+          '<input id="stayUrlNew" data-stay-url-new value="" placeholder="https://www.airbnb.com/trips/…" inputmode="url" autocomplete="off"></div>' +
+        '<div class="ice-field"><label for="stayInNew">Check-in (YYYY-MM-DD)</label>' +
+          '<input id="stayInNew" data-stay-in-new value="" placeholder="2026-11-05" inputmode="text" autocomplete="off"></div>' +
+        '<div class="ice-field"><label for="stayOutNew">Check-out (YYYY-MM-DD)</label>' +
+          '<input id="stayOutNew" data-stay-out-new value="" placeholder="2026-11-07" inputmode="text" autocomplete="off"></div>' +
+        '<div class="ice-field"><label for="stayTitleNew">Label (optional)</label>' +
+          '<input id="stayTitleNew" data-stay-title-new value="" placeholder="Peterborough · TOC" autocomplete="off"></div>' +
+        '<button type="button" class="ice-btn" id="btnStayAdd">Save stay</button>' +
+      "</div>" +
+      '<div id="stayCheckPanel" hidden></div>' +
     "</div>";
   }
 
@@ -3593,9 +3631,11 @@
     }
 
     if (id === "go") {
-      stage.querySelectorAll("[data-stay-add-link]").forEach(function (btn) {
+      stage.querySelectorAll("[data-stay-add]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var pan = stage.querySelector("#stayAddPanel");
+          var chk = stage.querySelector("#stayCheckPanel");
+          if (chk) chk.hidden = true;
           if (!pan) return;
           pan.hidden = false;
           /* Prefill nights from next away/tourny so Cal can bind the weekend */
@@ -3617,13 +3657,41 @@
           if (inp) setTimeout(function () { try { inp.focus(); } catch (e) {} }, 50);
         });
       });
+      stage.querySelectorAll("[data-stay-check]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var pan = stage.querySelector("#stayAddPanel");
+          var chk = stage.querySelector("#stayCheckPanel");
+          if (pan) pan.hidden = true;
+          if (!chk) return;
+          chk.hidden = false;
+          chk.innerHTML = renderStaysSummaryHtml();
+          chk.querySelectorAll("[data-stay-jump-cal]").forEach(function (j) {
+            j.addEventListener("click", function () {
+              var ix = Number(j.getAttribute("data-stay-jump-cal"));
+              var list = loadStays();
+              var s = list[ix];
+              if (!s) return;
+              var cin = String(s.checkIn || s.checkInLabel || "").slice(0, 10);
+              if (!/^\d{4}-\d{2}-\d{2}$/.test(cin)) {
+                goStage("cal", true);
+                return;
+              }
+              try {
+                state.calAnchor = new Date(Number(cin.slice(0, 4)), Number(cin.slice(5, 7)) - 1, 1);
+                state.calDayFocus = cin;
+              } catch (eJ) {}
+              goStage("cal", true);
+            });
+          });
+        });
+      });
       var btnStayAdd = stage.querySelector("#btnStayAdd");
       if (btnStayAdd) {
         btnStayAdd.addEventListener("click", function () {
           var inp = stage.querySelector("[data-stay-url-new]");
           var url = (inp && inp.value || "").trim();
           if (!url || !/^https?:\/\//i.test(url)) {
-            if (typeof alert === "function") alert("Paste the Airbnb / hotel link first.");
+            if (typeof alert === "function") alert("Open your Airbnb reservation page, copy the browser address, and paste it here.");
             return;
           }
           var cin = ((stage.querySelector("[data-stay-in-new]") || {}).value || "").trim();
