@@ -783,7 +783,10 @@
       who: ev.name || "Tournament",
       where: ev.location || "—",
       note: "tourney",
-      startISO: ev.start,
+      startISO: ev.start || "",
+      endISO: ev.end || "",
+      city: ev.location || "",
+      id: ev.id || "",
       kind: "tournament",
       confirms: ev.confirms || 0,
       source: ev.source || "cite"
@@ -1272,11 +1275,81 @@
       where: city,
       kind: "tournament",
       cite_status: ev.cite_status || "",
-      note: "tourney"
+      note: "tourney",
+      startISO: ev.start || "",
+      endISO: ev.end || "",
+      city: ev.city_face || ev.location || city || "",
+      id: ev.id || ""
     };
   }
+
+  /** YYYY-MM-DD in local calendar from Date. */
+  function ymdLocal(d) {
+    if (!d || isNaN(d.getTime())) return "";
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
+  }
+  /**
+   * Stay nights for a tournament: check-in night before start, check-out = end day
+   * (last night is end-1; leave after tourney). User may override in Add a stay.
+   * Nov 5–7 → in 4, out 7.
+   */
+  function stayWindowForTournament(board) {
+    if (!board) return null;
+    var start = board.startISO ? new Date(board.startISO) : null;
+    var end = board.endISO ? new Date(board.endISO) : null;
+    if (!start || isNaN(start.getTime())) return null;
+    if (!end || isNaN(end.getTime())) end = new Date(start.getTime());
+    var cin = new Date(start.getFullYear(), start.getMonth(), start.getDate() - 1);
+    var cout = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    var city = String(board.city || board.where || "").trim();
+    if (city === "—") city = "";
+    return {
+      checkIn: ymdLocal(cin),
+      checkOut: ymdLocal(cout),
+      city: city,
+      label: (board.who || "Tournament") + " stay",
+      tripTitle: board.who || "Tournament",
+      tripKind: "tournament",
+      tripStart: board.startISO || "",
+      tourneyId: board.id || ""
+    };
+  }
+  function airbnbSearchUrlForStay(win) {
+    if (!win) return "https://www.airbnb.com/";
+    var loc = encodeURIComponent(win.city || "hockey tournament");
+    /* Airbnb search: checkin/checkout query params when known */
+    var q = "https://www.airbnb.com/s/" + loc + "/homes";
+    if (win.checkIn && win.checkOut) {
+      q += "?checkin=" + encodeURIComponent(win.checkIn) +
+        "&checkout=" + encodeURIComponent(win.checkOut) +
+        "&adults=2";
+    }
+    return q;
+  }
+  function hasStayCoveringTournament(board) {
+    var win = stayWindowForTournament(board);
+    if (!win || !win.checkIn) return false;
+    var list = loadStays();
+    var a = new Date(win.checkIn + "T12:00:00").getTime();
+    var b = new Date((win.checkOut || win.checkIn) + "T12:00:00").getTime();
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      var sa = stayStartMs(s);
+      var sb = stayEndMs(s);
+      if (sa == null) continue;
+      if (sb == null) sb = sa;
+      /* overlap with suggested window */
+      if (sa <= b && sb >= a) return true;
+      if (s.tripTitle && board.who && String(s.tripTitle).indexOf(String(board.who).slice(0, 12)) >= 0) return true;
+    }
+    return false;
+  }
+
   function tournamentOneLinerHtml(board) {
-    /* One row — same weight as Next Games. */
+    /* One row — same weight as Next Games. Stay = book/add for city + night-before→end-day (overridable). */
     var when = board ? (board.when || "—") : "—";
     var who = board ? String(board.who || "").trim() : "";
     if (!who) who = "Tournament";
@@ -1284,10 +1357,27 @@
     var city = whereRaw;
     if (city && city.length > 42) city = shortWhere(city);
     if (!city) city = "—";
+    var win = stayWindowForTournament(board);
+    var covered = hasStayCoveringTournament(board);
+    var stayBtn = "";
+    if (win && win.checkIn && win.checkOut) {
+      stayBtn = covered
+        ? ('<button type="button" class="ice-tourney-stay is-on" data-tourney-check-stay' +
+            ' data-cin="' + esc(win.checkIn) + '" data-cout="' + esc(win.checkOut) + '"' +
+            ' data-city="' + esc(win.city) + '" data-label="' + esc(win.label) + '"' +
+            ' data-trip="' + esc(win.tripTitle) + '" data-tstart="' + esc(win.tripStart || "") + '">Stay ✓</button>')
+        : ('<button type="button" class="ice-tourney-stay" data-tourney-stay' +
+            ' data-cin="' + esc(win.checkIn) + '" data-cout="' + esc(win.checkOut) + '"' +
+            ' data-city="' + esc(win.city) + '" data-label="' + esc(win.label) + '"' +
+            ' data-trip="' + esc(win.tripTitle) + '" data-tstart="' + esc(win.tripStart || "") + '"' +
+            ' data-air="' + esc(airbnbSearchUrlForStay(win)) + '"' +
+            ' title="Default ' + esc(win.checkIn) + " → " + esc(win.checkOut) + ' (you can override)">Stay</button>');
+    }
     return '<div class="ice-tourney-row">' +
       '<span class="ice-tourney-when">' + esc(when) + "</span>" +
       '<span class="ice-tourney-who">' + esc(who) + "</span>" +
       '<span class="ice-tourney-city">' + esc(city) + "</span>" +
+      stayBtn +
     "</div>";
   }
   function tournamentsBlockHtml(boards) {
@@ -3596,6 +3686,72 @@
     } else {
       stopHubTick();
     }
+
+    if (id === "game") {
+      stage.querySelectorAll("[data-tourney-stay]").forEach(function (btn) {
+        btn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          var cin = btn.getAttribute("data-cin") || "";
+          var cout = btn.getAttribute("data-cout") || "";
+          var city = btn.getAttribute("data-city") || "";
+          var label = btn.getAttribute("data-label") || "Tournament stay";
+          var trip = btn.getAttribute("data-trip") || "";
+          var tstart = btn.getAttribute("data-tstart") || "";
+          var air = btn.getAttribute("data-air") || "";
+          /* Stash prefill for Go Add a stay (user can override dates) */
+          try {
+            sessionStorage.setItem("dc.ice.stay_prefill", JSON.stringify({
+              checkIn: cin, checkOut: cout, city: city, label: label,
+              tripTitle: trip, tripKind: "tournament", tripStart: tstart,
+              airSearch: air, at: Date.now()
+            }));
+          } catch (e0) {}
+          /* Open Airbnb search for city+dates in a tab, then Go with Add a stay open */
+          if (air) {
+            try { window.open(air, "_blank", "noopener,noreferrer"); } catch (e1) {}
+          }
+          goStage("go", true);
+          setTimeout(function () {
+            var stage2 = $("iceStage") || document.querySelector(".ice-stage");
+            var root = stage2 || document;
+            var addBtn = root.querySelector("[data-stay-add]");
+            if (addBtn) addBtn.click();
+            var cinEl = root.querySelector("[data-stay-in-new]");
+            var coutEl = root.querySelector("[data-stay-out-new]");
+            var titleEl = root.querySelector("[data-stay-title-new]");
+            var note = root.querySelector("#stayAddPanel .ice-note");
+            if (cinEl) cinEl.value = cin;
+            if (coutEl) coutEl.value = cout;
+            if (titleEl) titleEl.value = label;
+            if (note) {
+              note.textContent = "Suggested for this tournament: " + cin + " → " + cout +
+                (city ? (" · " + city) : "") +
+                ". Override any field. Open Airbnb reservation page → copy browser address → paste below after you book.";
+            }
+            var pan = root.querySelector("#stayAddPanel");
+            if (pan) pan.setAttribute("data-trip-bind", JSON.stringify({
+              tripTitle: trip, tripKind: "tournament", tripStart: tstart
+            }));
+          }, 80);
+        });
+      });
+      stage.querySelectorAll("[data-tourney-check-stay]").forEach(function (btn) {
+        btn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          var cin = btn.getAttribute("data-cin") || "";
+          if (/^\d{4}-\d{2}-\d{2}$/.test(cin)) {
+            try {
+              state.calAnchor = new Date(Number(cin.slice(0, 4)), Number(cin.slice(5, 7)) - 1, 1);
+              state.calDayFocus = cin;
+            } catch (e2) {}
+          }
+          goStage("cal", true);
+        });
+      });
+    }
+
 
 
     if (id === "cal") {
