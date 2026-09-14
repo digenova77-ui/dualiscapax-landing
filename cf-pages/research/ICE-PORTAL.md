@@ -9,15 +9,17 @@ One rink. Rink markings stay (seat chip, icon rail, Iris). The ice (`#iceStage`)
 
 | Rail | Stage | What |
 |---|---|---|
-| Seat | claim | Team → roster seat (First+initial) → prove TeamSnap / Spordle |
+| Seat | claim | Team → roster seat (First+initial) → prove TeamSnap |
 | Game | schedule | Next-game stub; more behind a tap |
 | Go | travel | Home + rink (default Quinte CAA Arena Belleville) → real Google Maps directions |
 | Tape | video | LiveBarn empty state; Demo tape panel |
 | Me | measure | Simplified hockey bout clocks; link to full `sport.html` measure |
 | School | NCAA labels | Paste / upload transcript; echo + published NCAA floors only |
-| Apps | binds | TeamSnap · Spordle/HCR · GameSheet (never paste) · LiveBarn · Hudl |
+| Apps | binds | TeamSnap · GameSheet (never paste) · LiveBarn · Hudl |
 
 Claim is identity. Other stages stay locked until a seat is claimed. Same flow for every player — including Quinte U16 **#29 D. Di Genova** (USER_VALIDATED pack). Founder/dev does **not** auto-inject that seat.
+
+Seat prove is **TeamSnap only**. Spordle/HCR is not a seating option (no partner verify; it confused Player Bind).
 
 ## Maps · echo-only ETA
 
@@ -47,5 +49,5 @@ Tries `research/ontario-aaa/omha-u16.2026-2027.index.json` + `rosters/{slug}.u16
 
 1. Open `ice.html?pack=hockey` (HTTP, not `file://`, if you want live JSON).
 2. Team: Quinte Red Devils. Seat: `#29 D. Di Genova`.
-3. Prove it’s you → Continue with TeamSnap (or Spordle) → Claim this seat.
+3. Prove it’s you → Continue with TeamSnap → Claim this seat.
 4. Rail: Game → Go (Open Maps) → Tape → Me → School → Apps.
