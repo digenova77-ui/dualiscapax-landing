@@ -13,3 +13,9 @@
 - Girls: roster cites (GameSheet / club pages) — still awaiting_player_cites
 - Boys amateur harvest script (slot C)
 - Multi-model mesh beyond xAI sentry — other vendors key_present_not_wired
+
+## OMHA boys (same day)
+- Live slot C: `hockey_boys_omha_u16.yml`
+- 19 Dualis `on.aaa.omha.*.u16.2026-2027` team packs
+- Law locked: Dualis >> Sportsheadz; boards are cite pipes only
+- Roster echo still thin (awaiting_player_cites) — Quinte hand-built seats remain the rich face

@@ -55,6 +55,24 @@
         4
       ],
       "note": "Branch index from OWHA public standings; rosters awaiting_player_cites"
+    },
+    {
+      "id": "sports/hockey-boys-amateur",
+      "status": "harvesting",
+      "workflow": "hockey_boys_omha_u16.yml",
+      "script": "scripts/harvest_hockey_boys_omha_u16.py",
+      "packs": "research/hockey/boys-amateur/omha-u16-aaa/",
+      "cron_slot": "C",
+      "cron": "17,47 * * * *",
+      "verification_layer_cap": 4,
+      "layers_proven": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "note": "Dualis U16 AAA seat packs; public boards = cite pipes only (not Sportsheadz clone)"
     }
   ],
   "trunks": [
@@ -146,7 +164,7 @@
         "id": "C",
         "minute": 17,
         "cron": "17,47 * * * *",
-        "assigned": null
+        "assigned": "sports/hockey-boys-amateur"
       },
       {
         "id": "D",
@@ -171,13 +189,6 @@
   },
   "queued": [
     {
-      "id": "sports/hockey-boys-amateur",
-      "status": "queued",
-      "verification_layer_cap": 1,
-      "cron_slot_planned": "C",
-      "note": "Ontario AAA gym next \u2014 deepen OMHA packs into repo harvest"
-    },
-    {
       "id": "sports/football-ncaa",
       "status": "structure",
       "verification_layer_cap": 0,
@@ -201,5 +212,8 @@
       "swarm_runner.yml",
       "unity_mesh.yml schedule"
     ]
+  },
+  "product_law": {
+    "sports_face": "Dualis Ice/session/seat/DCLM is the product. OMHA/OWHA/club Sportsheadz boards are cite pipes only \u2014 never the UX ceiling."
   }
 }
