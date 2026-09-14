@@ -1,0 +1,52 @@
+name: hockey-boys-omha-u16
+
+# Dualis packs for OMHA boys U16 AAA. Public club boards = cite pipes only.
+# Dualis is the seat/Ice/DCLM product — not a Sportsheadz clone.
+
+on:
+  schedule:
+    - cron: '17,47 * * * *'
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Club hosts to scan this run'
+        required: false
+        default: '20'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hockey-boys-omha-u16
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Harvest OMHA U16 AAA into Dualis packs
+        env:
+          OMHA_HARVEST_BATCH: ${{ github.event.inputs.batch || '20' }}
+        run: python3 scripts/harvest_hockey_boys_omha_u16.py
+      - name: Commit Dualis packs
+        run: |
+          git config user.email "hockey-harvest@dualiscapax.ai"
+          git config user.name "Dualis Boys Hockey Harvest"
+          git add research/hockey/boys-amateur/ units/sports/hockey-boys-amateur/
+          if git diff --cached --quiet; then
+            echo "No pack changes."
+            exit 0
+          fi
+          git commit -m "chore(hockey): OMHA U16 AAA Dualis seat packs [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            echo "push race attempt $i — retry"
+            sleep $((i * 2))
+          done
+          echo "push failed after retries" >&2
+          exit 1
