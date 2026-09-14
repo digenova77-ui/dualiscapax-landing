@@ -1,0 +1,407 @@
+{
+  "timestamp_utc": "2026-09-14T00:09:22Z",
+  "epoch_root_hash": "4800251385a94bfb7cf2c1fac690afb845df031794e1e23fcbc2f475b4e95248",
+  "completed_count": 50,
+  "tasks": [
+    {
+      "task_id": "01a08ef8-99a5-7cb1-87e9-795290248030",
+      "task_type": "CODEX_REMOTE_TASK",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "84db98bb3a08d28e1fb64876b2aaa5c2faf0dc8b9150b82385c40d78eb3fe260",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"01a08ef8-99a5-7cb1-87e9-795290248030\", \"agent\": \"Iris-Core\", \"status\": \"EXECUTED_CONSERVED\", \"latency_us\": 3.95, \"detail\": {\"instruction\": \"Autonomous Execution: CODEX_REMOTE_TASK\", \"target_repo\": \"digenova77-ui/dualiscapax-landing\", \"law_floor_verified\": true, \"zero_pii_enforced\": true}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0001",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "efe2e50f9a9d16587eddc5458f82b75882157cd53d576cabe94826132daaafb5",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0001\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 1.03, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-01-subsystem-1\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0002",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "8fbc129ca4a2d910c9dd21a38b6dd6b8e14bfeb8dec671d1808ef2786c82853b",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0002\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 1.79, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-01-subsystem-2\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0003",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "7d638f56980563a70fbf0e3a0462a401c86558d3e2d428b530b101980fae28f5",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0003\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 1.33, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-01-subsystem-3\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0004",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "23be0fa003ca53f466f46b5d8cb377ff67ad28fe13dc091c7fdcd774fc4efede",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0004\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.81, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-01-subsystem-4\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0005",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "b3d34ee25155b61c77bd7bff6dadecedf39763dc7dc5fd25b83ecdaf4af1c3c6",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0005\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.9, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-01-subsystem-5\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0006",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "0985881b09836761024075b8c4f2cfc135b45cb09fbe2fe01a9bb7c096e00bc9",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0006\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.98, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-01-subsystem-6\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0007",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "27183fadd4ec45aec269ca5ee061a64e44aa9cd8db21f62a7c76041ba30b1be4",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0007\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.97, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-01-subsystem-7\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0008",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "73fac4b93a4b371fce4c9b7f8e9489f9fa3cb46e44e5752b9bb084df812ed619",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0008\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.85, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-01-subsystem-8\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0009",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "5dbde1e2345a91432def48857f5e76aab72c8ceaac14f0f80001d05b0c7bc2cc",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0009\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.72, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-01-subsystem-9\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0010",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "54d292dc9bf1549161aba1c1bebfb5e9da24e1c57b3d49c513312b382242b62c",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0010\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.67, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.0, \"p\": 0.5, \"target\": \"SEC-01-subsystem-10\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0011",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "d3aef303b5e1d02c9e3c4d19fbb9c310b151ee695a154633ab362bc278eaf8de",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0011\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.96, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-01-subsystem-11\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0012",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "087a46ea2f5834f431d491a1538602e42ae472c40d74e6515ebc6fe1a6c4b15d",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0012\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.69, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-01-subsystem-12\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0013",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "38ec5976f3bbba85bdead275f2d8bfbdf742675884eb19bd6e048916cd3b5134",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0013\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.76, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-01-subsystem-13\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0014",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "6cdb2895bdacfa530ca26b826658c992d7d5770e049c108ac4c64e6cb98a22e8",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0014\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.67, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-01-subsystem-14\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0015",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "cf7a2a58840e76861bd87d1efb2276000550392655d8e2bfafd66b21010d0ab2",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0015\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.53, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-01-subsystem-15\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0016",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "ea9b65ee4b900facef6f36b9e18cdecb798de164bef86353c1bf9dc691eaf620",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0016\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.56, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-01-subsystem-16\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0017",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "6db484ee912f46026a4ff482646c7e4068ff858ee31ac306617450f950d17006",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0017\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.86, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-01-subsystem-17\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0018",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "3c7f97e5cb2d9000132b2e1a87b8a14d7698df94af66cccbe87bf56d2db1a895",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0018\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.61, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-01-subsystem-18\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0019",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "9f8eaf6a26e0b21da37242b58312baead1ac1fd1205b42e4a6c2bb3d960ec8bd",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0019\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.49, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-01-subsystem-19\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0020",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "a89d5960695fb4fd6c9cefa30cc56d8a9c83bd1c221663cfc5e3959f6bc00733",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0020\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.61, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.0, \"p\": 0.5, \"target\": \"SEC-01-subsystem-20\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0021",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "8deb0452340976e0ecd165c9c4bb034845da8585e45fb521cf743e5404b97c46",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0021\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.55, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-01-subsystem-21\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0022",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "f43ab1a92abbd64c0c12e82c1b2f454a2c56d2fed02eb54111cc38d169d57f76",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0022\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.56, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-01-subsystem-22\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0023",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "0f97ec52b5b5d8437bb4ae8578a66ec3375e62f81c58c304f1a481b1fddd0799",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0023\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.62, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-01-subsystem-23\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0024",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "264d26d03d74fd5d635a0e8a30809c706b3fabc4197d81a0e1e71d6a5929ce81",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0024\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.57, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-01-subsystem-24\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0025",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "ec582ce7d0d2c4fd5c7f6cbd3953e1f30606e7ab807cc985ab2d269741a4ee99",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0025\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.62, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-01-subsystem-25\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0026",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "0ba4af1038ce7a682a343ba153d6164e9983a92d424bc8b43d469193582c4a95",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0026\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.85, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-01-subsystem-26\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0027",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "12f744c4e1373d797be305e79448a8625e3719b8a1c2384dc8289499f6aa558e",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0027\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.57, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-01-subsystem-27\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0028",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "368b10f696216cc125cdbe9e60202f6939749ec7f7ac4ce0720581128af994c5",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0028\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.7, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-01-subsystem-28\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0029",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "c9da6ef9f7499a11f388008f3305bb095abbd90eb7ac778e110c7b3e4c88aa38",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0029\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.86, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-01-subsystem-29\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0030",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "93ac732cff75ceb97a7ed57f0a3d6168688ec653a05cc2ebfb34bb060b23c0c6",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0030\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.59, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.0, \"p\": 0.5, \"target\": \"SEC-01-subsystem-30\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0031",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "28cb2d8191fd5a63b70dbcaf2cfc6cd81c6ca60d6ae1c2c628c12ab880ab040c",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0031\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.59, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-01-subsystem-31\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0032",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "4e7f97b94dad960265cafda5e250ff000f72c7da6160b5d5767755386006a160",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0032\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.64, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-01-subsystem-32\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0033",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "b319e8815f686c6281256da9a79c19160f800cc096ce80b04125e19a482b72ff",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0033\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.56, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-01-subsystem-33\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0034",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "b4296b553079c239c93ab195ab4460ac49852f7a6d2f03cdf01a6df24144260e",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0034\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 0.89, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-01-subsystem-34\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0035",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "7131a04fb0ad5f4c4535b7c0a78ac0be717e4eb4a691c0a232b3b485b13c12f0",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0035\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.63, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-01-subsystem-35\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0036",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "9276bbd7796d6d973e87f05da84df9fa40ef7e97dbdd1d0c979130004aced9fe",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0036\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.65, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-01-subsystem-36\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0037",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "9bb0e73343eacde4d5accae4791a6ee5de6f1fe8add231129713161f3de711f1",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0037\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.61, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-01-subsystem-37\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0038",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "7b19b603b215d13e93d3899f7b140920ab2c757cc4a45ff8b1c02438022b729f",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0038\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.59, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-01-subsystem-38\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0039",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "acf1c17904c9eccde5b57e65aca2e0d0abc40308de9913c1074c88a022ecfe6b",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0039\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.52, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-01-subsystem-39\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0040",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "8df052236e3134bdee4d9ded2b1a1684f1f06c0f9005f5cb7b5d30f7862aba2c",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0040\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.56, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.0, \"p\": 0.5, \"target\": \"SEC-01-subsystem-40\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0041",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "b3e990efaa94de07f22277b8bc1164bc7cc8d36cf4f7708d869a1f97409cd3d6",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0041\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.53, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.01, \"p\": 0.495, \"target\": \"SEC-01-subsystem-41\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0042",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "c6cbc6c3f71baa4bf01fab6bfefb4b185fbb036c16cd56a64a8d0d0569ca836c",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0042\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.55, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.02, \"p\": 0.49, \"target\": \"SEC-01-subsystem-42\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0043",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "df8f4800e65f624f936c6425fe0accc3b12253a03f421cb9f2b6bbb081e49087",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0043\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.48, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.03, \"p\": 0.485, \"target\": \"SEC-01-subsystem-43\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0044",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "3b71062d4fddfad458e0862cabec1ed067d3ab89de0e7e5ecff1c9c9574d7854",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0044\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.55, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.04, \"p\": 0.48, \"target\": \"SEC-01-subsystem-44\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0045",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-BioMed",
+      "receipt_hash": "1ae68fa84cce0dc60dd62978f3356624f552554851b618ae50e6d51b5c3a647b",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0045\", \"agent\": \"Iris-BioMed\", \"status\": \"PROCESSED\", \"latency_us\": 1.13, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.05, \"p\": 0.475, \"target\": \"SEC-01-subsystem-45\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0046",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "5dd555842d93ccb2cc93df11ef63e42f39558cfa524ddd000a0fac615c05cee8",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0046\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.6, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.06, \"p\": 0.47, \"target\": \"SEC-01-subsystem-46\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0047",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "36dc92548750a32cc916a3a48cb7094c8e37b6fc45818f43bfe2f67fd59f8e16",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0047\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.69, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.07, \"p\": 0.46499999999999997, \"target\": \"SEC-01-subsystem-47\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0048",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Core",
+      "receipt_hash": "6c7483deed58fb0f91908174473e11899c3cd4bb3105a999cc319d34f195ceff",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0048\", \"agent\": \"Iris-Core\", \"status\": \"PROCESSED\", \"latency_us\": 0.57, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.08, \"p\": 0.46, \"target\": \"SEC-01-subsystem-48\"}}}"
+    },
+    {
+      "task_id": "SEC-01-TASK-0049",
+      "task_type": "BIOPHYSICAL_ODE_SOLVE",
+      "claimed_by": "Iris-Treasury",
+      "receipt_hash": "e4ca72527d1e03c53ac8371e601fe2f1e2b0282cf22b7fce16bdd528d6f79d34",
+      "completed_at": 1789344562,
+      "result": "{\"task_id\": \"SEC-01-TASK-0049\", \"agent\": \"Iris-Treasury\", \"status\": \"PROCESSED\", \"latency_us\": 0.63, \"detail\": {\"echo\": {\"sector\": \"Biophysical & Oncology\", \"domain\": \"PK/PD binding kinetics\", \"q\": 1.09, \"p\": 0.455, \"target\": \"SEC-01-subsystem-49\"}}}"
+    }
+  ]
+}
