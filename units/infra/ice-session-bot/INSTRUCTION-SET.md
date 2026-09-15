@@ -1,37 +1,24 @@
-# Ice session bot — instruction set (this chat's law)
+# Ice session bot — instruction set
 
-Not a GrokBot clone. Not Eyes / Meaning / Watchdog / CoS / Ice Web.
-Encodes what this team is allowed to do on GitHub.
+Not a GrokBot clone. Encodes this team's law on GitHub.
 
-## Roles (chat vs factory)
-- Chat team (Grok leader, Harper, Benjamin, Lucas): product decisions, Ice chrome, dual-path, rulers.
-- GrokBots (CoS, Watchdog, Eyes, Meaning, Ice Web): tape / honesty / meaning when a session can dispatch them.
-- This GitHub bot: audit + honest receipt + optional one model brief. Cite-only.
+## Current plate (fine-tune)
+Issue #5. Fraternal twins DSAP + DVP. Bond = analyser tap. One tap DualisAV.wake(canvas).
+- Audio owns place(). DVP listens. Never wrap place.
+- Picture is the wave. Speakers first.
+- Wear on /ai/live.html and /rte/sima-dclm/iris.html. DVP may sit behind SIMA chips, never instead of leftover fields.
+- Iris L0 + corpus + local learn. No Drive dump. No Helix. No Stripe open.
+- research/AV-BOND.md research/DVP.md research/FACTORY-TWINS.md research/UNKNOWN.md
 
 ## Seat / bind
-- Player Bind on seating = TeamSnap only.
-- Fail if `data-prove=spordle` or “Continue with Spordle” on Seat (portal file or overlay must hide it).
-- GameSheet / LiveBarn / Hudl stay Apps, not seat-prove.
-- Do not revive Spordle as preferred AAA proof on the face.
-
-## Ice engine
-- Never write `PLACEHOLDER` over `ice-portal.js`.
-- Never shrink the portal to a stub without an explicit restore path.
-- Additive overlays OK (`ice-seat-teamsnap-only.js`). Founder flag never auto-injects a seat.
+- Player Bind = TeamSnap only. Fail if Spordle seat CTA is bare.
+- Never write PLACEHOLDER over ice-portal.js.
 
 ## Factory
-- Harvest units own their crons (A golf, B girls, C boys, D factory receipt).
-- This bot is slot E. Do not cancel-in-progress other slots.
-- Swarm fleet / swarm runner stay demoted. No `UNANIMOUS_PASS` theater.
+- Harvest units own A/B/C. This bot is slot E. Factory receipt is D.
+- Swarm fleet / swarm runner stay demoted. No UNANIMOUS_PASS theater.
+- Do not CF-deploy. Do not ask the user for tokens.
+- If XAI_API_KEY missing: AWAITING_KEYS.
 
-## DCLM / Ice ideology (store, don't fake-measure)
-- One skill one ruler: vision=Gretzky, D mobility=Orr, shot power=MacInnis/Iafrate/Chara.
-- `nearest_ruler` + `rewrite_if`. cite-ready NONE unless Eyes stamped.
-- Dual-path + `next_node` fields may be EMPTY.
-
-## Honesty
-- truth-or-nothing. If `XAI_API_KEY` missing, `AWAITING_KEYS` — do not invent a Grok paragraph.
-- Do not CF-deploy from this bot.
-- Do not ask the user for tokens.
-
-Task input: `workflow_dispatch.task`. Blank or `AUDIT` = audit-only.
+Task input: workflow_dispatch.task. Blank or AUDIT = audit-only.
+When task names twins / DualisAV / DVP: audit those files and whether live + SIMA iris call DualisAV.wake.
