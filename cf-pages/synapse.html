@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memristive synapse status — DualisCapax</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Research status of memristive synapses. Dualis does not ship this hardware.">
+<style>
+:root{--bg:#020308;--cyan:#00e5ff;--ink:#d7e6ef;--muted:#7a8b96;--card:#0b1018}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header,main{max-width:52rem;margin:0 auto;padding:1.2rem}a{color:var(--cyan)}
+.card{background:var(--card);border:1px solid #133;border-radius:14px;padding:1rem;margin:1rem 0}
+.badge{display:inline-block;font:12px ui-monospace,monospace;padding:.15rem .45rem;border:1px solid #245;border-radius:6px;color:var(--cyan)}
+.bad{color:#ff8a8a;border-color:#622}canvas{width:100%;height:220px;background:#05070c;border-radius:10px}
+button{background:#062;color:#cffff0;border:1px solid #0a5;border-radius:8px;padding:.45rem .8rem;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <p class="badge">OBSERVED research · Dualis hardware UNRESOLVED</p>
+  <h1>Memristive synapse — status plate</h1>
+  <p>A memristor remembers how much charge passed through it. Resistance rises or falls with voltage history. That is a physical synapse, not a Dualis chip.</p>
+  <p><a href="manifold.html">Plate</a> · <a href="ice.html">Ice</a> · <a href="index.html">Home</a></p>
+</header>
+<main>
+  <section class="card">
+    <h2>What is real in 2026</h2>
+    <ul>
+      <li>Device: two terminals, history-dependent resistance (LTP / LTD).</li>
+      <li>Update rule at the device: pair STDP or triplet STDP. No backprop required.</li>
+      <li>Prototypes named in literature: Cs3Bi2Br9/NiO, 2D InSe (fJ-class reports), photon-controlled memristors, halide perovskite / BaTiO3 variants.</li>
+      <li>Nearby chips (not claimed as Dualis): BrainChip AKD1500 event neuromorphic; Intel Loihi 2 / IBM NorthPole in-memory compute.</li>
+    </ul>
+    <p class="badge bad">DualisCapax does not manufacture or ship memristive synapses. This page is a software sketch.</p>
+  </section>
+  <section class="card">
+    <h2>Software sketch of a resistance update</h2>
+    <p>Not hardware. A slider sends a pre/post spike pair. Conductance G moves toward LTP if the post spike is after the pre spike, LTD if before. Units are fake.</p>
+    <label>Δt pre→post (ms) <input id="dt" type="range" min="-40" max="40" value="10"></label>
+    <span id="dtv">10</span>
+    <p><button id="spike" type="button">Apply pair</button> <button id="reset" type="button">Reset G</button></p>
+    <canvas id="c" width="640" height="220"></canvas>
+    <p id="readout">G = 0.50 (UNRESOLVED simulation)</p>
+  </section>
+  <section class="card">
+    <h2>Ed25519 vs HMAC (tickets)</h2>
+    <p>HMAC-SHA256 is a shared secret. Anyone who has the secret can mint a ticket. That is local IPC only.</p>
+    <p>Ed25519 is asymmetric: a private key signs RFC 8785 canonical JSON; a public key verifies. Sovereign / production tickets must not treat HMAC as equivalent.</p>
+    <p>Ice passkeys on this site are WebAuthn on the phone. They are not memristors and they are not a factory root key.</p>
+  </section>
+</main>
+<script>
+(function(){
+  var G=0.5, hist=[], cv=document.getElementById('c'), ctx=cv.getContext('2d');
+  var dt=document.getElementById('dt'), dtv=document.getElementById('dtv');
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.strokeStyle='#00e5ff'; ctx.beginPath();
+    for(var i=0;i<hist.length;i++){
+      var x=i/(Math.max(hist.length-1,1))*(cv.width-20)+10;
+      var y=cv.height-20-hist[i]*(cv.height-40);
+      if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+  function apply(){
+    var d=+dt.value; dtv.textContent=d;
+    var dw = d>=0 ? 0.08*Math.exp(-d/20) : -0.08*Math.exp(d/20);
+    G=Math.max(0.05,Math.min(0.95,G+dw));
+    hist.push(G); if(hist.length>80)hist.shift();
+    document.getElementById('readout').textContent='G = '+G.toFixed(3)+' (Δt='+d+' ms, software only)';
+    draw();
+  }
+  dt.oninput=function(){dtv.textContent=dt.value};
+  document.getElementById('spike').onclick=apply;
+  document.getElementById('reset').onclick=function(){G=0.5;hist=[0.5];draw();apply();};
+  hist=[0.5]; draw();
+})();
+</script>
+</body>
+</html>
