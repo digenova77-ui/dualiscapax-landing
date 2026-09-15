@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SIMA-DCLM RTE — private sandbox</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--bg:#020308;--cyan:#00e5ff;--ink:#d7e6ef}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:48rem;margin:0 auto;padding:1.2rem}label{display:block;margin:.4rem 0}
+.card{border:1px solid #133;border-radius:12px;padding:1rem;background:#0b1018;margin:1rem 0}
+.badge{font:12px ui-monospace,monospace;color:#ffb4b4}input{width:8rem}
+</style>
+</head>
+<body>
+<main>
+  <p class="badge">OBSCURED ROUTE · NO PII · NOT A LIVE HOSPITAL SYSTEM · NO TOKEN IN THIS FILE</p>
+  <h1>SIMA-DCLM consulting sandbox</h1>
+  <p>For EHR friction math only. Do not paste patient names, chart IDs, or credentials.</p>
+  <div class="card">
+    <h2>Recovery sketch</h2>
+    <p>Recovery hours = (minutes saved × visits) / 60. Dollars = hours × rate. Example numbers are not a hospital measurement.</p>
+    <label>Minutes saved <input id="mins" type="number" value="4.9" step="0.1"></label>
+    <label>Annual visits <input id="vis" type="number" value="65000"></label>
+    <label>Hourly rate CAD <input id="rate" type="number" value="45.6"></label>
+    <p id="out"></p>
+  </div>
+  <div class="card">
+    <h2>Doctrine</h2>
+    <ul>
+      <li>Trained ≠ adopted</li>
+      <li>Idea ≠ opportunity</li>
+      <li>Local win with a downstream jam = friction migrated, not solved</li>
+    </ul>
+  </div>
+</main>
+<script>
+function rec(){
+  var m=+document.getElementById('mins').value, v=+document.getElementById('vis').value, r=+document.getElementById('rate').value;
+  var hrs=(m*v)/60;
+  document.getElementById('out').textContent = hrs.toFixed(0)+' hours · $'+(hrs*r).toFixed(0)+' CAD sketch — not observed at a named site';
+}
+['mins','vis','rate'].forEach(function(id){document.getElementById(id).oninput=rec}); rec();
+</script>
+</body>
+</html>
