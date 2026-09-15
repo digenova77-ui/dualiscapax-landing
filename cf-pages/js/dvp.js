@@ -1,10 +1,9 @@
 /**
- * DVP-1.0. Video rides DSAP. Audio always runs first.
- * A dead canvas must not mute a seat.
+ * DVP-1.0c. Listens to DSAP.listen. Never wraps place.
  */
 (function (w) {
-  if (w.DVP && w.DVP.version === "DVP-1.0b") return;
-  var canvas, ctx, raf, seats = [], amp = [], gold = 0, alive = false, hooked = false;
+  if (w.DVP && w.DVP.version === "DVP-1.0c") return;
+  var canvas, ctx, raf, seats = [], amp = [], gold = 0, alive = false;
   function mk() {
     seats = []; amp = [];
     for (var i = 0; i < 64; i++) {
@@ -49,7 +48,7 @@
     gold *= 0.94;
     raf = requestAnimationFrame(draw);
   }
-  function pulse(i, kind) {
+  function pulse(kind, i) {
     if (!alive) return;
     i = ((i % 64) + 64) % 64;
     amp[i] = 1;
@@ -64,24 +63,8 @@
     w.addEventListener("resize", size);
     if (raf) cancelAnimationFrame(raf);
     alive = true; draw();
+    if (w.DSAP && w.DSAP.listen) w.DSAP.listen(pulse);
     return w.DVP;
   }
-  function hook() {
-    if (hooked || !w.DSAP || !w.DSAP.place) return;
-    var orig = w.DSAP.place;
-    if (orig._dvp) return;
-    w.DSAP.place = function (kind, index) {
-      var out;
-      try { out = orig.call(w.DSAP, kind, index); }
-      finally {
-        try { pulse(index || 0, kind); } catch (e) {}
-      }
-      return out;
-    };
-    w.DSAP.place._dvp = true;
-    hooked = true;
-  }
-  w.DVP = { version: "DVP-1.0b", mount: mount, pulse: pulse, seats: 64 };
-  hook();
-  document.addEventListener("DOMContentLoaded", hook);
+  w.DVP = { version: "DVP-1.0c", mount: mount, pulse: pulse, seats: 64 };
 })(window);
