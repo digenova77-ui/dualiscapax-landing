@@ -1,11 +1,10 @@
 /**
- * DVP-1.0 Dualis Visual Plane.
- * Same 64 seats as DSAP. Pulse when a seat sounds.
- * No Helix. No filmed avatar. Camera is a different jacket.
+ * DVP-1.0. Video rides DSAP. Audio always runs first.
+ * A dead canvas must not mute a seat.
  */
 (function (w) {
-  if (w.DVP) return;
-  var canvas, ctx, raf, seats = [], amp = [], gold = 0, alive = false;
+  if (w.DVP && w.DVP.version === "DVP-1.0b") return;
+  var canvas, ctx, raf, seats = [], amp = [], gold = 0, alive = false, hooked = false;
   function mk() {
     seats = []; amp = [];
     for (var i = 0; i < 64; i++) {
@@ -50,6 +49,13 @@
     gold *= 0.94;
     raf = requestAnimationFrame(draw);
   }
+  function pulse(i, kind) {
+    if (!alive) return;
+    i = ((i % 64) + 64) % 64;
+    amp[i] = 1;
+    if (kind === "whistle") gold = 1;
+    amp[(i + 8) % 64] = Math.max(amp[(i + 8) % 64], 0.45);
+  }
   function mount(el) {
     canvas = typeof el === "string" ? document.getElementById(el) : el;
     if (!canvas) return null;
@@ -60,22 +66,22 @@
     alive = true; draw();
     return w.DVP;
   }
-  function pulse(i, kind) {
-    i = ((i % 64) + 64) % 64;
-    amp[i] = 1;
-    if (kind === "whistle") gold = 1;
-    var n = (i + 8) % 64; amp[n] = Math.max(amp[n], 0.45);
-  }
-  w.DVP = { version: "DVP-1.0", mount: mount, pulse: pulse, seats: 64 };
-  var _place = null;
   function hook() {
-    if (!w.DSAP || _place) return;
-    _place = w.DSAP.place;
+    if (hooked || !w.DSAP || !w.DSAP.place) return;
+    var orig = w.DSAP.place;
+    if (orig._dvp) return;
     w.DSAP.place = function (kind, index) {
-      if (alive) pulse(index || 0, kind);
-      return _place.apply(this, arguments);
+      var out;
+      try { out = orig.call(w.DSAP, kind, index); }
+      finally {
+        try { pulse(index || 0, kind); } catch (e) {}
+      }
+      return out;
     };
+    w.DSAP.place._dvp = true;
+    hooked = true;
   }
+  w.DVP = { version: "DVP-1.0b", mount: mount, pulse: pulse, seats: 64 };
   hook();
   document.addEventListener("DOMContentLoaded", hook);
 })(window);
