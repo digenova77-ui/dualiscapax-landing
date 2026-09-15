@@ -1,11 +1,12 @@
 /**
  * DualisCapax Stripe fulfill worker
  * Jacket: access.dual.v8
- * HMAC → merchSuperRefine → claimGrantD1 (evt_ + cs_) → persist
+ * HMAC → merchSuperRefine → claimGrantD1 (evt_ + cs_ + fuel lot) → persist
+ * D1 success never falls through to KV fuel += .
  */
 
 import { merchSuperRefine, merchIssuesToFulfill } from "./merch-refine.js";
-import { claimGrantD1, claimKv, finalizeKv, idempotencyKey } from "./idempotency.js";
+import { claimGrantD1, claimDualKv, finalizeKv } from "./idempotency.js";
 
 const JACKET = "access.dual.v8";
 
@@ -125,32 +126,58 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
   if (!database && !kv) return { ok: false, reason: "store_unbound", jacket: "identity", persist: false };
 
   if (database) {
-    const claimed = await claimGrantD1(
-      database,
-      { event_id: eventId, event_type: eventType || "checkout", session_id: sessionId },
-      {
-        session_id: sessionId,
-        event_id: eventId,
-        token_id: eventId,
-        email: email || "unbound@local",
-        tier: grant.iris_tier_unlock || sku,
-        sku,
-        amount_cad_cents: amountTotal,
-        currency: currency || "cad",
-        status: "granted"
+    try {
+      const fuelRow =
+        grant.kind === "fuel" && Number(grant.units) > 0 && sessionId
+          ? {
+              session_id: sessionId,
+              event_id: eventId,
+              email: email || "unbound@local",
+              units: grant.units,
+              sku
+            }
+          : null;
+      const claimed = await claimGrantD1(
+        database,
+        { event_id: eventId, event_type: eventType || "checkout", session_id: sessionId },
+        {
+          session_id: sessionId,
+          event_id: eventId,
+          token_id: eventId,
+          email: email || "unbound@local",
+          tier: grant.iris_tier_unlock || sku,
+          sku,
+          amount_cad_cents: amountTotal,
+          currency: currency || "cad",
+          status: "granted"
+        },
+        fuelRow
+      );
+      if (claimed.used) {
+        return {
+          ok: true,
+          idempotent: Boolean(claimed.idempotent),
+          jacket: claimed.idempotent ? "identity" : JACKET,
+          store: "d1",
+          record: claimed.entitlement || null,
+          fuel: claimed.fuel || null
+        };
       }
-    );
-    if (claimed.used && claimed.idempotent) {
-      return { ok: true, idempotent: true, jacket: "identity", store: "d1", record: claimed.entitlement || null };
+    } catch (err) {
+      if (!kv) {
+        return { ok: false, reason: "d1_error", jacket: "identity", error: String(err && err.message ? err.message : err) };
+      }
     }
   }
 
-  const id = idempotencyKey(eventId, sessionId);
-  if (kv && id) {
-    const kvClaim = await claimKv(kv, id.key, { event_id: eventId, session_id: sessionId, sku, status: "pending" });
-    if (kvClaim.used && kvClaim.idempotent) {
-      return { ok: true, idempotent: true, jacket: "identity", store: "kv", record: kvClaim.record };
-    }
+  const kvClaim = await claimDualKv(kv, eventId, sessionId, {
+    event_id: eventId,
+    session_id: sessionId,
+    sku,
+    status: "pending"
+  });
+  if (kvClaim.used && kvClaim.idempotent) {
+    return { ok: true, idempotent: true, jacket: "identity", store: "kv", via: kvClaim.via, record: kvClaim.record };
   }
 
   const record = {
@@ -172,21 +199,15 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
         : { action: "open_seat", term_months: grant.term_months, perpetual: Boolean(grant.perpetual), ip: grant.ip, note: "Identity gate still applies for medical/engineering depth rooms" }
   };
 
-  if (kv && id) {
-    if (email && grant.kind === "fuel") {
-      const ek = "fuel:" + email.toLowerCase();
-      const prev = Number((await kv.get(ek)) || 0);
-      await kv.put(ek, String(prev + grant.units), { expirationTtl: 60 * 60 * 24 * 400 });
-      record.fuel_balance_after = prev + grant.units;
-    }
+  if (kv) {
     if (email && grant.kind === "seat") {
       await kv.put("seat:" + email.toLowerCase() + ":" + sku, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 400 });
     }
-    await finalizeKv(kv, id.key, record);
-    await finalizeKv(kv, "session:" + sessionId, record);
+    await finalizeKv(kv, "event:" + eventId, record);
+    if (sessionId) await finalizeKv(kv, "session:" + sessionId, record);
   }
 
-  return { ok: true, idempotent: false, jacket: JACKET, store: database ? "d1" : "kv", record };
+  return { ok: true, idempotent: false, jacket: JACKET, store: "kv", record };
 }
 
 function json(obj, status) {
@@ -213,7 +234,8 @@ export default {
         jackets: ["cryptographic", "identity", "merchandise"],
         has_webhook_secret: Boolean(env && env.STRIPE_WEBHOOK_SECRET),
         has_kv: Boolean(env && env.FULFILL_KV),
-        has_d1: Boolean(db(env))
+        has_d1: Boolean(db(env)),
+        idempotency: "evt_ plus cs_; D1 write-once lots; no KV fuel +="
       });
     }
     if (request.method === "OPTIONS") {
