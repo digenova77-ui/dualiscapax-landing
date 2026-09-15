@@ -1,0 +1,51 @@
+{
+  "title": "DualisCapax — cited hockey tournaments",
+  "law": "Echo official listings only. Do not invent an event, a division, a team, or a player. AAA Silver Stick has no regionals.",
+  "season": "2026-2027",
+  "events": [
+    {
+      "id": "silver-stick-whitby-finals-2026",
+      "name": "International Silver Stick Whitby Finals",
+      "kind": "invite_finals",
+      "level_echo": "AAA by Invitation Only",
+      "ages_echo": ["U10", "U12", "U14", "U16"],
+      "start": "2026-11-26",
+      "end": "2026-11-29",
+      "location": "Whitby, ON",
+      "cite": "https://silverstick.org/Tournament-Listings/?Category=boys%20finals",
+      "rule_echo": "For AAA teams, Silver Stick does not host regional tournaments. AAA participates at Port Huron, Sarnia or Whitby and is by invite only.",
+      "status": "cited"
+    },
+    {
+      "id": "silver-stick-sarnia-boys-finals-2026",
+      "name": "International Silver Stick Sarnia Boys Finals",
+      "kind": "invite_finals",
+      "level_echo": "AAA, AA, A",
+      "ages_echo": ["U11", "U18"],
+      "start": "2026-12-03",
+      "end": "2027-01-17",
+      "location": "Sarnia, ON",
+      "cite": "https://silverstick.org/Tournament-Listings/?Category=boys%20finals",
+      "note": "Listing spans multiple groups and dates. Do not collapse into one invented AAA weekend.",
+      "status": "cited"
+    },
+    {
+      "id": "kmha-blueline-aaa-2026",
+      "name": "Blueline AAA Tournament",
+      "kind": "tournament",
+      "level_echo": "U12–U18 AAA",
+      "start": "2026-11-06",
+      "end": "2026-11-08",
+      "location": "Kitchener, ON",
+      "cite": "https://kitchenerminorhockey.com/Tournaments/12069/",
+      "already_in": "cf-pages/data/kmha-blueline-u16-next.json",
+      "status": "cited"
+    }
+  ],
+  "not_brought_in": [
+    {
+      "name": "Silver Stick regionals",
+      "why": "Official FAQ: AAA has no regional tournaments. AA and below regionals are a different product."
+    }
+  ]
+}
