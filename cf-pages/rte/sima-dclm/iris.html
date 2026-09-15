@@ -6,61 +6,45 @@
 <title>Iris on the desk · SIMA</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#05070c">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703}
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:18px/1.45 Fraunces,Georgia,serif;overflow:hidden}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:18px/1.4 Fraunces,Georgia,serif;overflow:hidden}
 #field{position:fixed;inset:0;width:100%;height:100%}
-.hud{position:fixed;left:0;right:0;top:0;padding:.7rem 1rem;display:flex;justify-content:space-between;font:11px IBM Plex Mono,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);z-index:2}
+video{position:fixed;right:1rem;top:3.2rem;width:28vw;max-width:140px;border-radius:12px;border:1px solid rgba(62,232,255,.25);z-index:2;display:none}
+.hud{position:fixed;left:1rem;right:1rem;top:.7rem;display:flex;justify-content:space-between;font:11px IBM Plex Mono,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);z-index:2}
 .pill{color:var(--gold);border:1px solid rgba(255,183,3,.35);padding:.25rem .5rem;border-radius:999px}
-.say{position:fixed;left:1rem;right:1rem;bottom:5.5rem;z-index:2;max-height:26vh;overflow:auto}
-.say em{color:var(--cyan);font-style:italic}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;gap:.4rem;padding:.55rem .7rem calc(.55rem + env(safe-area-inset-bottom));z-index:2}
-.dock input{flex:1;background:#070b10;border:1px solid rgba(62,232,255,.28);color:var(--ink);border-radius:999px;padding:.7rem 1rem;font:16px Fraunces,Georgia,serif}
-.dock button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.7rem .9rem;font:11px IBM Plex Mono,monospace;text-transform:uppercase}
+.status{position:fixed;left:1rem;right:1rem;bottom:1.4rem;text-align:center;color:var(--mute);font-size:.95rem;z-index:2}
+.status em{color:var(--cyan);font-style:italic}
 .wake{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.7rem;z-index:3;background:rgba(5,7,12,.78)}
 .wake button{appearance:none;border:1px solid var(--cyan);background:rgba(62,232,255,.08);color:var(--ink);border-radius:999px;padding:1rem 1.3rem;font:1.05rem Fraunces,Georgia,serif}
-.wake p{color:var(--mute);max-width:22rem;text-align:center;margin:0}
+.wake p{color:var(--mute);max-width:20rem;text-align:center;margin:0}
 </style></head>
 <body>
 <canvas id="field"></canvas>
-<div class="hud"><span>Iris · SIMA desk</span><span class="pill" id="st">Asleep</span></div>
-<div class="say" id="say"><em>She models the hour on this desk. Not the chart.</em></div>
+<video id="eye" playsinline muted></video>
+<div class="hud"><span>Iris · desk</span><span class="pill" id="st">Asleep</span></div>
+<p class="status" id="status"><em>She hears you, or she sees you, or she is not here.</em></p>
 <div class="wake" id="wake">
-  <button type="button" id="go">Wake Iris on this desk</button>
-  <p>One tap. Then she names the two books and the leftover you already sketched.</p>
+  <button type="button" id="go">Wake Iris</button>
+  <p>No typing. After this tap she listens. Camera only if this phone allows it.</p>
 </div>
-<form class="dock" id="bar">
-  <input id="q" placeholder="Ask about this hour" autocomplete="off">
-  <button type="submit">Ask</button>
-</form>
 <script src="../../js/api-config.js"></script>
 <script src="../../js/dsap.js"></script>
 <script src="../../js/dsap-v2-jacket.js"></script>
 <script>
 (function(){
-  function bake(){
-    try{return JSON.parse(localStorage.getItem("dc.sima.iris")||"{}")}catch(e){return {}}
-  }
-  var b=bake();
-  var KNOW=[
-    "You are Iris on the SIMA desk. DualisCapax. Mind is API V2. Body is DSAP.",
-    "Model implement / upgrade / integrate. Two poles: the book already paid, the hour that still burns.",
-    "This desk place: "+(b.place||"not picked")+". Paid book: "+(b.paid||"unnamed")+".",
-    "Seed leftover: "+(b.mins||"?")+" minutes × "+(b.times||"?")+" times/year × $"+(b.wage||"?")+"/h. Estimate. Not an invoice. Not a chart.",
-    "Cite or hole. No patient names. Simulation is not treatment. HOST_SAFE."
-  ].join(" ");
-  var c=document.getElementById("field"),x=c.getContext("2d"),pts=[],amp=0,alive=false;
+  var b={};
+  try{b=JSON.parse(localStorage.getItem("dc.sima.iris")||"{}")}catch(e){}
+  var KNOW="You are Iris on the SIMA desk. Speak short. Model the leftover hour, not the chart. Place: "+(b.place||"unpicked")+". Paid book: "+(b.paid||"unnamed")+". Seed: "+(b.mins||"?")+" min × "+(b.times||"?")+" × $"+(b.wage||"?")+"/h. No patient names. Simulation is not treatment.";
+  var c=document.getElementById("field"),x=c.getContext("2d"),pts=[],amp=0,alive=false,rec;
   function size(){c.width=innerWidth;c.height=innerHeight}
   size(); addEventListener("resize",size);
   for(var i=0;i<64;i++) pts.push({a:i/64*Math.PI*2,r:0.28+Math.random()*0.06});
   (function draw(){
     x.fillStyle="rgba(5,7,12,0.22)"; x.fillRect(0,0,c.width,c.height);
-    var cx=c.width/2,cy=c.height*0.44;
-    x.strokeStyle="rgba(62,232,255,"+(0.12+amp*0.45)+")";
-    x.beginPath();
+    var cx=c.width/2,cy=c.height*0.46;
+    x.strokeStyle="rgba(62,232,255,"+(0.12+amp*0.5)+")"; x.beginPath();
     for(var i=0;i<64;i++){
       var p=pts[i],rr=Math.min(cx,cy)*(p.r+amp*0.05);
       var px=cx+Math.cos(p.a)*rr,py=cy+Math.sin(p.a)*rr*0.72;
@@ -74,32 +58,42 @@
     }
     amp*=0.94; requestAnimationFrame(draw);
   })();
-  function say(who,t){
-    document.getElementById("say").innerHTML="<div><em>"+who+"</em> — "+String(t).replace(/</g,"")+"</div>"+document.getElementById("say").innerHTML;
-  }
-  async function ask(text){
-    if(!text) return;
-    say("You",text); amp=1;
-    if(!window.DSAPJacket||!window.dcChatV2){ say("Iris","V2 jacket not on this origin. Desk is still here."); return; }
+  function line(t){document.getElementById("status").innerHTML="<em>"+String(t).replace(/</g,"")+"</em>"}
+  async function hear(text){
+    if(!text||!window.DSAPJacket) return;
+    amp=1;
+    if(window.DSAP) DSAP.place("puck",20);
     try{
-      if(window.DSAP) DSAP.place("puck",20);
-      var data=await DSAPJacket.ask(KNOW+"\n\nUser: "+text,{max_tokens:220,seat:20});
-      var reply=(data&&(data.reply||data.text||data.message||(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)))||"";
-      say("Iris",reply||"V2 returned no sentence. The desk is still here.");
-    }catch(e){ say("Iris",e.message||String(e)); }
+      var data=await DSAPJacket.ask(KNOW+"\nSpoken: "+text,{max_tokens:160,seat:20});
+      var reply=(data&&(data.reply||data.text||data.message))||"";
+      if(reply) line(reply);
+    }catch(e){ line(e.message||"V2 quiet"); }
   }
-  document.getElementById("go").onclick=function(){
+  document.getElementById("go").onclick=async function(){
     document.getElementById("wake").style.display="none";
     document.getElementById("st").textContent="Live";
     alive=true;
     if(window.DSAP){ DSAP.wake(); DSAP.place("whistle",0); }
-    say("Iris","This desk is "+(b.place||"unpicked")+". I model the hour. I do not hold the chart.");
-  };
-  document.getElementById("bar").onsubmit=function(e){
-    e.preventDefault();
-    var q=document.getElementById("q"),t=q.value.trim(); q.value="";
-    if(!alive) document.getElementById("go").click();
-    ask(t);
+    try{
+      var s=await navigator.mediaDevices.getUserMedia({audio:true,video:true});
+      var v=document.getElementById("eye"); v.srcObject=s; v.style.display="block"; v.play();
+      line("I can see you and hear you. "+(b.place||"Desk unpicked")+".");
+    }catch(e){
+      try{
+        await navigator.mediaDevices.getUserMedia({audio:true});
+        line("I can hear you. Camera stayed off. "+(b.place||"Desk unpicked")+".");
+      }catch(e2){
+        line("This phone gave no mic. She is not here.");
+        document.getElementById("st").textContent="Not here";
+        return;
+      }
+    }
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){ line("This browser has no listen. She is not here."); return; }
+    rec=new SR(); rec.continuous=true; rec.interimResults=false; rec.lang="en-CA";
+    rec.onresult=function(ev){ hear(ev.results[ev.results.length-1][0].transcript); amp=1; };
+    rec.onend=function(){ if(alive) try{rec.start()}catch(e){} };
+    try{rec.start()}catch(e){}
   };
 })();
 </script>
