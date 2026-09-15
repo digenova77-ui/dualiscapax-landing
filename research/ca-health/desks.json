@@ -1,0 +1,45 @@
+{
+  "version": "2026-09-15",
+  "law": [
+    "NO_FORCE",
+    "TRUTH_OR_NOTHING",
+    "PHIPA_zero_chart_ids",
+    "SEED_until_book",
+    "no_invented_facility"
+  ],
+  "why": "The SIMA module must cover a person who works with individual hospitals AND the health networks those hospitals sit in. A province chip is not that desk.",
+  "desk_kinds": [
+    {
+      "id": "site-clerk",
+      "label": "One hospital desk",
+      "models": "One facility. One paid book. Re-key is still leftover."
+    },
+    {
+      "id": "network-worker",
+      "label": "Hospital + network worker",
+      "models": "Walks more than one site. Sites may share an OHT / authority and still run different vendor books. Leftover is the second language between sites."
+    },
+    {
+      "id": "shared-him",
+      "label": "Shared HIM / coding / abstract",
+      "models": "DAD/NACRS / ICD-10-CA is the second language the foundation already paid to speak."
+    }
+  ],
+  "object_kinds": [
+    {
+      "id": "network",
+      "examples": ["OHT", "provincial health authority", "hospital corporation"],
+      "cite_rule": "Named on an official ministry / authority / corporation page."
+    },
+    {
+      "id": "site",
+      "examples": ["hospital", "campus"],
+      "cite_rule": "Named on that corporation or ministry list. Never invented."
+    },
+    {
+      "id": "book",
+      "examples": ["Epic", "Meditech", "Cerner", "Connect Care", "DSQ"],
+      "cite_rule": "Public vendor/instance name only. No chart."
+    }
+  ]
+}
