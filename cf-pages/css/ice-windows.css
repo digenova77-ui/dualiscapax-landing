@@ -1,0 +1,21 @@
+:root{--bg:#07080d;--ink:#e8eefc;--mute:#8b96b3;--ice:#38bdf8;--gold:#ffb830;--line:#2a3348;--card:rgba(16,22,32,.82);--boards:#0b1018}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
+body{font:18px/1.5 Fraunces,Georgia,serif;background:
+  radial-gradient(circle at 50% 42%,rgba(56,189,248,.09),transparent 42%),
+  linear-gradient(180deg,#07080d 0%,#0b1018 100%);}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
+  linear-gradient(90deg,transparent 49.4%,rgba(56,189,248,.22) 49.4%,rgba(56,189,248,.22) 50.6%,transparent 50.6%),
+  radial-gradient(circle at 50% 46%,transparent 9.2%,rgba(56,189,248,.18) 9.3%,rgba(56,189,248,.18) 10%,transparent 10.1%);
+  opacity:.55}
+.wrap{position:relative;max-width:42rem;margin:0 auto;padding:1rem 1rem 5.3rem}
+.top{display:flex;justify-content:space-between;align-items:center;font:11px IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.pill{color:var(--gold);border:1px solid rgba(255,184,48,.4);padding:.3rem .55rem;border-radius:999px;background:rgba(255,184,48,.06)}
+h1{font-size:clamp(2rem,8vw,2.85rem);line-height:.98;margin:.8rem 0 .5rem}
+h1 em{font-style:italic;color:var(--ice);font-weight:400}
+.lede{color:#c5cee0;margin:0 0 .95rem}
+.card{background:var(--card);border:1px solid rgba(56,189,248,.2);border-radius:16px;padding:.95rem 1rem;margin:0 0 .55rem;box-shadow:inset 0 0 0 1px rgba(255,184,48,.05)}
+.card h2,.card strong{display:block;font-size:1.04rem;margin:0 0 .28rem}
+.card span,.note{display:block;color:var(--mute);font-size:.88rem;margin:0}
+.empty{color:var(--mute);border:1px dashed rgba(56,189,248,.35);border-radius:16px;padding:1rem;background:rgba(56,189,248,.04)}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(7,8,13,.94);border-top:1px solid rgba(56,189,248,.22);padding:.42rem .12rem calc(.42rem + env(safe-area-inset-bottom));font:10px IBM Plex Mono,monospace;letter-spacing:.05em;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--ice)}
