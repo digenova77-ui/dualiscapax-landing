@@ -1,16 +1,20 @@
 {
-  "status": "SEED",
-  "law": "Official public books only. No chart IDs. No Dualis EHR.",
-  "residual_unit": "hours | CAD | FTE",
+  "version": "2026-09-15",
+  "law": ["NO_FORCE", "TRUTH_OR_NOTHING", "PHIPA_zero_chart_ids", "SEED_until_book"],
   "networks": [
-    {"id": "ca", "label": "Canada", "grain": "Infoway · CIHI", "stack": "CA Core / FHIR R4", "href": "https://www.infoway-inforoute.ca"},
-    {"id": "on", "label": "Ontario", "grain": "Ontario Health · OHTs", "stack": "Epic · Meditech · Cerner", "href": "https://www.ontariohealth.ca"},
-    {"id": "ab", "label": "Alberta", "grain": "AHS", "stack": "Connect Care · Netcare", "href": "https://www.albertahealthservices.ca"},
-    {"id": "bc", "label": "British Columbia", "grain": "Health authorities", "stack": "CST Cerner · CareConnect", "href": "https://www.health.gov.bc.ca"},
-    {"id": "qc", "label": "Quebec", "grain": "CISSS / CIUSSS", "stack": "DSQ modernization", "href": "https://www.quebec.ca/en/health"},
-    {"id": "ns", "label": "Nova Scotia", "grain": "NS Health · IWK", "stack": "OPOR Epic", "href": "https://www.nshealth.ca"},
-    {"id": "nb", "label": "New Brunswick", "grain": "Horizon · Vitalité", "stack": "Horizon EHR", "href": "https://horizonnb.ca"},
-    {"id": "sk", "label": "Saskatchewan", "grain": "SHA", "stack": "eHealth SK", "href": "https://www.saskhealthauthority.ca"},
-    {"id": "mb", "label": "Manitoba", "grain": "Shared Health", "stack": "eChart MB", "href": "https://sharedhealthmb.ca"}
+    {"id": "ca", "label": "Canada", "pole_a": "Infoway / CIHI books"},
+    {"id": "on", "label": "Ontario", "pole_a": "OHTs · Epic / Meditech / Cerner"},
+    {"id": "ab", "label": "Alberta", "pole_a": "AHS · Connect Care"},
+    {"id": "bc", "label": "British Columbia", "pole_a": "Fraser · VCH · Island · Interior · Northern"},
+    {"id": "qc", "label": "Quebec", "pole_a": "CISSS / CIUSSS · DSQ"},
+    {"id": "nb", "label": "New Brunswick", "pole_a": "Horizon / Vitalité"},
+    {"id": "ns", "label": "Nova Scotia", "pole_a": "NS Health · OPOR"},
+    {"id": "pe", "label": "PEI", "pole_a": "Health PEI"},
+    {"id": "nl", "label": "Newfoundland & Labrador", "pole_a": "NL Health Services"},
+    {"id": "sk", "label": "Saskatchewan", "pole_a": "SHA · eHealth"},
+    {"id": "mb", "label": "Manitoba", "pole_a": "Shared Health · eChart"},
+    {"id": "yt", "label": "Yukon", "pole_a": "Yukon Health"},
+    {"id": "nt", "label": "NWT", "pole_a": "NTHSSA"},
+    {"id": "nu", "label": "Nunavut", "pole_a": "Dept. of Health"}
   ]
 }
