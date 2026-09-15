@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sounds · Ice</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#07080d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/ice-windows.css">
+<style>
+.pad{display:grid;gap:.55rem;margin:1rem 0}
+.pad button{appearance:none;border:1px solid rgba(56,189,248,.35);background:rgba(16,22,32,.85);color:var(--ink);border-radius:16px;padding:1rem;font:1.05rem Fraunces,Georgia,serif;text-align:left}
+.pad button span{display:block;color:var(--mute);font:12px IBM Plex Mono,monospace;margin-top:.25rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span>DualisCapax · Ice</span><span class="pill">Mute unless you tap</span></div>
+  <h1>Rink sounds.<br><em>Only if you ask.</em></h1>
+  <p class="lede">A whistle, a puck, a skate. Made on this phone. Not a broadcast horn. Not a stolen clip. Nothing plays until you tap.</p>
+  <div class="pad">
+    <button type="button" id="w">Whistle<span>Official’s call. Short.</span></button>
+    <button type="button" id="p">Puck<span>One touch. Not a goal song.</span></button>
+    <button type="button" id="s">Skate<span>Edge on ice. Soft.</span></button>
+  </div>
+  <p class="note">Game day stays quiet unless you open this page. Parents in the stands should not get a surprise.</p>
+</div>
+<nav class="dock">
+  <a href="./ice.html">Rink</a>
+  <a href="./schedule.html">Schedule</a>
+  <a href="./gameday.html">Game day</a>
+  <a class="on" href="./sounds.html">Sounds</a>
+</nav>
+<script src="./js/ice-sounds.js"></script>
+<script>
+document.getElementById("w").onclick=function(){window.DCIceSound&&DCIceSound.whistle()};
+document.getElementById("p").onclick=function(){window.DCIceSound&&DCIceSound.puck()};
+document.getElementById("s").onclick=function(){window.DCIceSound&&DCIceSound.skate()};
+</script>
+</body></html>
