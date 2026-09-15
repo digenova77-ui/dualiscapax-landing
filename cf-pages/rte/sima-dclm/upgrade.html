@@ -1,44 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Upgrade · SIMA</title>
-  <meta name="robots" content="noindex,nofollow" />
-  <meta name="theme-color" content="#05070c" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root { --ink:#eef4f8; --mute:#8b9caa; --cyan:#3ee8ff; --gold:#ffb703; --bg:#05070c; --line:rgba(62,232,255,.14); --card:rgba(8,14,22,.72); }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; background: var(--bg); color: var(--ink); min-height: 100dvh; }
-    body { font: 18px/1.55 Fraunces, Iowan Old Style, Palatino, Georgia, serif; background: radial-gradient(1200px 700px at 10% -10%, rgba(62,232,255,.09), transparent 55%), radial-gradient(900px 600px at 110% 8%, rgba(255,183,3,.07), transparent 50%), #05070c; }
-    main { max-width: 40rem; margin: 0 auto; padding: calc(18px + env(safe-area-inset-top)) 18px 4.5rem; }
-    .kicker { font: 11px/1 IBM Plex Mono, ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
-    h1 { font-size: clamp(2rem, 8vw, 2.8rem); line-height: .98; font-weight: 600; letter-spacing: -.03em; margin: .55rem 0 .7rem; }
-    h1 em { font-style: italic; font-weight: 400; color: var(--cyan); }
-    p { color: var(--mute); }
-    .pull { border-left: 2px solid var(--cyan); padding: .15rem 0 .15rem .9rem; color: #d7e3ea; font-style: italic; margin: 1rem 0; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 1.05rem; margin: 0 0 .75rem; }
-    .card h2 { margin: 0 0 .35rem; font-size: 1.05rem; color: var(--ink); }
-    .card p { margin: 0; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 1.1rem 0; }
-    a.chip { color: var(--cyan); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; font: 12px IBM Plex Mono, ui-monospace, monospace; }
-  </style>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Upgrade · SIMA-DCLM</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
+body{font:18px/1.55 Fraunces,Iowan Old Style,Palatino,Georgia,serif;background:radial-gradient(900px 600px at 110% 8%,rgba(255,183,3,.07),transparent 50%),#05070c}
+.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.pill{font:10px IBM Plex Mono,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(255,183,3,.35);padding:.35rem .6rem;border-radius:999px}
+h1{font-size:clamp(2.05rem,8vw,3.1rem);line-height:.98;font-weight:600;letter-spacing:-.03em;margin:1.1rem 0 .75rem}
+h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
+.lede{font-size:1.12rem;color:#c9d6df}
+.pull{border-left:2px solid var(--cyan);padding:.15rem 0 .15rem .9rem;color:#d7e3ea;font-style:italic;margin:1rem 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:0 0 .85rem}
+.card h2{font-size:1.02rem;margin:0 0 .45rem}
+.note{color:var(--mute);font-size:.92rem;margin:0}
+.seed{font:10px IBM Plex Mono,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0}
+.chip{font:11px IBM Plex Mono,monospace;border:1px solid var(--line);color:var(--cyan);text-decoration:none;border-radius:999px;padding:.4rem .65rem}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + env(safe-area-inset-bottom));font:10px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
 <body>
-<main>
-  <p class="kicker">SIMA · verb two · sometime</p>
-  <h1>Same book.<br><em>New floor.</em></h1>
-  <p class="pull">…or sometime upgrading…</p>
-  <p>She said sometime. So this page exists, and it is not implement with the label scratched off.</p>
-  <article class="card"><h2>The version is Pole A</h2><p>The site already paid for a book. They are buying the next one. You are still outside.</p></article>
-  <article class="card"><h2>What breaks when the floor moves</h2><p>A path they had. A click that dies. Training for a room that changed shape.</p></article>
-  <article class="card"><h2>Monday after the version</h2><p>They paid for the upgrade. They still type twice. That leftover is the seed — until her book measures.</p></article>
+<div class="wrap">
+  <div class="top"><span class="brand">DualisCapax · SIMA-DCLM</span><span class="pill">Till closed</span></div>
+  <h1>Keep the project.<br><em>Same book. New skin.</em></h1>
+  <p class="lede">She said sometime. Not every job. The version moves. The hour may not.</p>
+  <p class="pull">…or sometime upgrading, integrating, etc.</p>
+
+  <section class="card">
+    <p class="seed">Pole A</p>
+    <h2>They already paid for this book.</h2>
+    <p class="note">Upgrade is not a greenfield. The login stays. The path the desk learned may die.</p>
+  </section>
+  <section class="card">
+    <p class="seed">Pole B</p>
+    <h2>The workaround they built around the last version.</h2>
+    <p class="note">If the new screen eats that path, the leftover returns as if it were a new implement. It is not. It is regression.</p>
+  </section>
+  <section class="card">
+    <p class="seed">Theatre</p>
+    <h2>Classroom for a UI that still cannot hold the join.</h2>
+    <p class="note">Trained ≠ adopted. If the portal still times out after the version, the upgrade did not buy silence.</p>
+  </section>
+  <section class="card">
+    <p class="seed">Measure</p>
+    <h2>Seed until she walks this version.</h2>
+    <p class="note">Do not steal last year’s case-study percent. This cutover is this cutover.</p>
+  </section>
+
   <div class="chips">
     <a class="chip" href="./implement.html">Implement</a>
     <a class="chip" href="./integrate.html">Integrate</a>
-    <a class="chip" href="./index.html">Desk</a>
+    <a class="chip" href="./join.html">Join</a>
+    <a class="chip" href="./job.html">Job</a>
   </div>
-</main>
-</body>
-</html>
+</div>
+<nav class="dock">
+  <a href="./implement.html">Implement</a>
+  <a class="on" href="./upgrade.html">Upgrade</a>
+  <a href="./integrate.html">Integrate</a>
+  <a href="./join.html">Join</a>
+</nav>
+</body></html>
