@@ -4,64 +4,97 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Hockey — Dualis Capax</title>
-  <meta name="description" content="OMHA season to league championship to OHF. U16 is a draft-year lens. Ice is the seat. Checkout closed." />
+  <meta name="description" content="Five OHF member leagues. Each plays its own season. All roads meet at OHF. Ice is the seat. Checkout closed." />
   <style>
     :root { --ink:#e8eefc; --mute:#8b96b3; --line:#2a3348; --gold:#ffb830; --bg:#07080d; }
     * { box-sizing: border-box; }
-    html, body {
-      margin: 0; background: var(--bg); color: var(--ink);
-      font-family: ui-sans-serif, system-ui, sans-serif;
-      overflow-x: clip;
-    }
+    html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: ui-sans-serif, system-ui, sans-serif; overflow-x: clip; }
     main { max-width: 40rem; margin: 0 auto; padding: calc(18px + env(safe-area-inset-top)) 18px 4rem; }
     .kicker { letter-spacing: .16em; font-size: 11px; text-transform: uppercase; color: var(--mute); }
-    h1 { font-size: 1.7rem; line-height: 1.15; margin: .4rem 0 .75rem; }
+    h1 { font-size: 1.65rem; line-height: 1.15; margin: .4rem 0 .75rem; }
     p { color: var(--mute); line-height: 1.5; }
     ol.path { padding-left: 1.15rem; color: var(--ink); }
-    ol.path li { margin: .45rem 0; }
+    ol.path li { margin: .4rem 0; }
     ol.path strong { color: var(--gold); }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 1rem 0 1.4rem; }
-    a.chip, .chip {
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: .85rem 0 1.25rem; }
+    a.chip {
       display: inline-block; text-decoration: none; color: var(--ink);
       border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; font-size: 13px;
       background: rgba(255,255,255,.03);
     }
-    a.chip:hover { border-color: var(--gold); }
-    .note { font-size: 13px; border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1.5rem; }
+    .league {
+      border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin: 8px 0;
+      background: rgba(255,255,255,.03);
+    }
+    .league h2 { margin: 0 0 4px; font-size: 1rem; }
+    .league p { margin: 0; font-size: 13px; }
+    .note { font-size: 13px; border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1.4rem; }
   </style>
 </head>
 <body>
 <main>
-  <p class="kicker">SEC-01 · Hockey</p>
-  <h1>Every team is walking the same road.</h1>
-  <p>Pick the organization. Play the league season. Win the league championship. Then OHF. U16 is the draft-year lens — consensus ranks if a public book exists, never a named minor on this page.</p>
+  <p class="kicker">SEC-01 · Hockey · OHF</p>
+  <h1>Five leagues. One provincial weekend.</h1>
+  <p>Each league runs its own season and its own championship. Nobody nests inside OMHA. The unifying tournament is OHF.</p>
 
   <ol class="path">
-    <li><strong>Club / zone</strong> — who dresses the bench this season.</li>
-    <li><strong>OMHA season</strong> — the games that fill the year.</li>
-    <li><strong>League championship</strong> — the last weekend that still belongs to OMHA.</li>
-    <li><strong>OHF</strong> — the unifying tournament. Road to the Red Hats, then the provincial book.</li>
+    <li><strong>League season</strong> — the year that belongs to that member.</li>
+    <li><strong>League championship</strong> — last weekend still inside the member book.</li>
+    <li><strong>OHF</strong> — the provincial meeting. For OMHA that road is often called Red Hats, then OHF.</li>
   </ol>
 
-  <p class="kicker" style="margin-top:1.4rem">U16 AAA seats already in the library</p>
+  <p class="kicker" style="margin-top:1.3rem">OHF youth members</p>
+
+  <article class="league">
+    <h2>OMHA</h2>
+    <p>Ontario Minor Hockey Association. Most of southern and central Ontario outside the Alliance and GTHL maps. U16 here is a draft-year lens.</p>
+  </article>
+  <article class="league">
+    <h2>ALLIANCE</h2>
+    <p>Minor Hockey Alliance of Ontario. Own zones, own championship, then OHF.</p>
+  </article>
+  <article class="league">
+    <h2>GTHL</h2>
+    <p>Greater Toronto Hockey League. Not an OMHA zone. Own book, then OHF.</p>
+  </article>
+  <article class="league">
+    <h2>NOHA</h2>
+    <p>Northern Ontario Hockey Association. Own map, own championship, then OHF.</p>
+  </article>
+  <article class="league">
+    <h2>OWHA</h2>
+    <p>Ontario Women’s Hockey Association. Girls and women. Same OHF roof, own pathway.</p>
+  </article>
+
+  <div class="chips">
+    <a class="chip" href="ice.html?pack=hockey&amp;league=omha#seat">OMHA seat</a>
+    <a class="chip" href="ice.html?pack=hockey&amp;league=alliance#seat">ALLIANCE seat</a>
+    <a class="chip" href="ice.html?pack=hockey&amp;league=gthl#seat">GTHL seat</a>
+    <a class="chip" href="ice.html?pack=hockey&amp;league=noha#seat">NOHA seat</a>
+    <a class="chip" href="ice.html?pack=hockey&amp;league=owha#seat">OWHA seat</a>
+  </div>
+
+  <p class="kicker">U16 OMHA packs already in git</p>
   <div class="chips">
     <a class="chip" href="ice.html?pack=hockey&amp;org=barrie-aaa-zone#seat">Barrie AAA zone</a>
     <a class="chip" href="ice.html?pack=hockey&amp;org=greater-kingston-gaels#seat">Greater Kingston Gaels</a>
     <a class="chip" href="ice.html?pack=hockey&amp;org=hamilton-steel-hockey-club#seat">Hamilton Steel</a>
-    <a class="chip" href="ice.html?pack=hockey#seat">Open Ice seat</a>
   </div>
 
-  <p>Look is free. Checkout is closed. Factory writes org packs in git. Dualis does not paste GameSheet or name a player.</p>
+  <p>OHA and OHL are also OHF members. They are junior / major junior, not this youth plate. HEO and HNO sit <em>beside</em> the OHF under Hockey Canada — they are not OHF members.</p>
 
   <div class="chips">
-    <a class="chip" href="https://www.omha.net/" rel="noopener">OMHA book</a>
-    <a class="chip" href="https://www.ohf.on.ca/" rel="noopener">OHF book</a>
-    <a class="chip" href="alacarte.html">À la carte</a>
-    <a class="chip" href="geodesic.html">Geodesic</a>
+    <a class="chip" href="https://www.ohf.on.ca/about-us" rel="noopener">OHF members</a>
+    <a class="chip" href="https://www.omha.net/" rel="noopener">OMHA</a>
+    <a class="chip" href="https://alliancehockey.com/" rel="noopener">ALLIANCE</a>
+    <a class="chip" href="https://gthlcanada.com/" rel="noopener">GTHL</a>
+    <a class="chip" href="https://www.noha.on.ca/" rel="noopener">NOHA</a>
+    <a class="chip" href="https://www.owha.pointstreaksites.com/" rel="noopener">OWHA</a>
+    <a class="chip" href="ice.html?pack=hockey#seat">Ice</a>
     <a class="chip" href="/">Home</a>
   </div>
 
-  <p class="note">Official pathway language belongs to OMHA / OHF handbooks. This plate is a map, not a scoresheet and not a scout list.</p>
+  <p class="note">Names and maps echo the OHF member list. This is not a scoresheet and not a scout list. No named minors. Checkout closed.</p>
 </main>
 </body>
 </html>
