@@ -1,45 +1,41 @@
 {
-  "version": "2026-09-15",
+  "version": "2026-09-15b",
   "law": [
     "NO_FORCE",
     "TRUTH_OR_NOTHING",
     "PHIPA_zero_chart_ids",
     "SEED_until_book",
-    "no_invented_facility"
+    "never_inside_the_hospital"
   ],
-  "why": "The SIMA module must cover a person who works with individual hospitals AND the health networks those hospitals sit in. A province chip is not that desk.",
+  "primary_desk": {
+    "id": "outside-health-it",
+    "label": "Independent healthcare IT / modeller",
+    "from": "outside",
+    "models": "Hospitals and health networks as objects. Works with sites. Is not on the hospital payroll. Does not get a chart. Dualis is the aide beside that contractor's own book."
+  },
   "desk_kinds": [
+    {
+      "id": "outside-health-it",
+      "label": "Independent healthcare IT / modeller",
+      "from": "outside",
+      "models": "The person this module was always for."
+    },
+    {
+      "id": "network-worker-outside",
+      "label": "Contractor who walks many sites",
+      "from": "outside",
+      "models": "Several hospitals / OHTs as clients or models. Leftover is re-key and second languages between those books. Still not staff."
+    },
     {
       "id": "site-clerk",
       "label": "One hospital desk",
-      "models": "One facility. One paid book. Re-key is still leftover."
-    },
-    {
-      "id": "network-worker",
-      "label": "Hospital + network worker",
-      "models": "Walks more than one site. Sites may share an OHT / authority and still run different vendor books. Leftover is the second language between sites."
-    },
-    {
-      "id": "shared-him",
-      "label": "Shared HIM / coding / abstract",
-      "models": "DAD/NACRS / ICD-10-CA is the second language the foundation already paid to speak."
+      "from": "inside",
+      "models": "A possible later seat. Not the primary persona. No chart out if it ever lands."
     }
   ],
-  "object_kinds": [
-    {
-      "id": "network",
-      "examples": ["OHT", "provincial health authority", "hospital corporation"],
-      "cite_rule": "Named on an official ministry / authority / corporation page."
-    },
-    {
-      "id": "site",
-      "examples": ["hospital", "campus"],
-      "cite_rule": "Named on that corporation or ministry list. Never invented."
-    },
-    {
-      "id": "book",
-      "examples": ["Epic", "Meditech", "Cerner", "Connect Care", "DSQ"],
-      "cite_rule": "Public vendor/instance name only. No chart."
-    }
+  "not": [
+    "Hospital C-suite scraped from LinkedIn",
+    "A Dualis back door into Epic",
+    "Staff directory as the product"
   ]
 }
