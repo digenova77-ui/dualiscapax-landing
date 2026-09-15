@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Iris live · DualisCapax</title>
+<meta name="theme-color" content="#050508">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050508;--ink:#eef4f8;--mute:#8b9caa;--ice:#38bdf8;--gold:#ffb830}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:18px/1.45 Fraunces,Georgia,serif;overflow:hidden}
+#field{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;left:0;right:0;top:0;padding:.7rem 1rem;display:flex;justify-content:space-between;font:11px IBM Plex Mono,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);z-index:2}
+.pill{color:var(--gold);border:1px solid rgba(255,184,48,.35);padding:.25rem .5rem;border-radius:999px}
+.say{position:fixed;left:1rem;right:1rem;bottom:5.4rem;z-index:2;max-height:28vh;overflow:auto;font-size:1.05rem}
+.say em{color:var(--ice);font-style:italic}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;gap:.4rem;padding:.55rem .7rem calc(.55rem + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(5,5,8,.92));z-index:2}
+.dock input{flex:1;background:#0b1018;border:1px solid rgba(56,189,248,.28);color:var(--ink);border-radius:999px;padding:.7rem 1rem;font:16px Fraunces,Georgia,serif}
+.dock button{appearance:none;border:1px solid var(--ice);background:transparent;color:var(--ice);border-radius:999px;padding:.7rem .95rem;font:11px IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase}
+.wake{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.8rem;z-index:3;background:rgba(5,5,8,.72)}
+.wake button{appearance:none;border:1px solid var(--ice);background:rgba(56,189,248,.08);color:var(--ink);border-radius:999px;padding:1rem 1.4rem;font:1.05rem Fraunces,Georgia,serif}
+.wake p{color:var(--mute);max-width:22rem;text-align:center;margin:0}
+</style></head>
+<body>
+<canvas id="field"></canvas>
+<div class="hud"><span>Iris · DSAP-1.0 · V2</span><span class="pill" id="st">Asleep</span></div>
+<div class="say" id="say"><em>Tap once. After that Dualis does not mute her.</em></div>
+<div class="wake" id="wake">
+  <button type="button" id="go">Wake Iris</button>
+  <p>The browser must hear one tap. Then the ring, the voice, and V2 stay on until you leave.</p>
+</div>
+<form class="dock" id="bar">
+  <input id="q" placeholder="Speak or type — she is live" autocomplete="off">
+  <button type="submit">Ask</button>
+</form>
+<script src="../js/api-config.js"></script>
+<script src="../js/dsap.js"></script>
+<script src="../js/dsap-v2-jacket.js"></script>
+<script>
+(function(){
+  var c=document.getElementById("field"),x=c.getContext("2d");
+  var pts=[],alive=false,amp=0,rec;
+  var KNOW=[
+    "You are Iris of DualisCapax. Mind is API V2. Body is the DSAP ring.",
+    "Two poles or it is not Dualis. Cite or hole. Look is free. Measure first.",
+    "Hockey: five OHF youth members OMHA Alliance GTHL NOHA OWHA. No invented roster. TeamSnap seats.",
+    "SIMA: implement upgrade integrate. The hour that still burns. Thirteen jurisdictions public books only. No chart.",
+    "Simulation is not treatment. HOST_SAFE. Nothing identifiable leaves this phone unless they send words to V2."
+  ].join(" ");
+  function size(){c.width=innerWidth;c.height=innerHeight}
+  size(); addEventListener("resize",size);
+  for(var i=0;i<64;i++){
+    var a=i/64*Math.PI*2;
+    pts.push({a:a,r:0.28+Math.random()*0.08});
+  }
+  function draw(){
+    x.fillStyle="rgba(5,5,8,0.22)"; x.fillRect(0,0,c.width,c.height);
+    var cx=c.width/2,cy=c.height*0.46;
+    x.strokeStyle="rgba(56,189,248,"+(0.12+amp*0.5)+")";
+    x.beginPath();
+    for(var i=0;i<64;i++){
+      var p=pts[i],rr=Math.min(cx,cy)*(p.r+amp*0.06);
+      var px=cx+Math.cos(p.a)*rr, py=cy+Math.sin(p.a)*rr*0.72;
+      if(i) x.lineTo(px,py); else x.moveTo(px,py);
+    }
+    x.closePath(); x.stroke();
+    x.fillStyle="rgba(56,189,248,"+(0.35+amp)+")";
+    for(var j=0;j<64;j++){
+      var p=pts[j],rr=Math.min(cx,cy)*(p.r+amp*0.06);
+      x.beginPath(); x.arc(cx+Math.cos(p.a)*rr, cy+Math.sin(p.a)*rr*0.72, 2.1,0,Math.PI*2); x.fill();
+    }
+    amp*=0.94;
+    requestAnimationFrame(draw);
+  }
+  draw();
+  function say(who,t){
+    var el=document.getElementById("say");
+    el.innerHTML="<div><em>"+who+"</em> — "+t.replace(/</g,"")+"</div>"+el.innerHTML;
+  }
+  function pulse(){amp=1}
+  async function ask(text){
+    if(!text) return;
+    say("You",text);
+    pulse();
+    try{
+      if(window.DSAP) DSAP.place("puck",16);
+      var data=await DSAPJacket.ask(KNOW+"\n\nUser: "+text,{max_tokens:220,seat:16});
+      var reply=(data&&(data.reply||data.text||data.message||data.output))||"";
+      if(!reply && data) reply=JSON.stringify(data).slice(0,280);
+      if(reply) say("Iris",reply);
+      else say("Iris","V2 returned no sentence. The ring is still on.");
+    }catch(e){
+      say("Iris",e.message||String(e));
+    }
+  }
+  async function wake(){
+    document.getElementById("wake").style.display="none";
+    document.getElementById("st").textContent="Live";
+    alive=true;
+    if(window.DSAP) DSAP.wake();
+    try{
+      var s=await navigator.mediaDevices.getUserMedia({audio:true});
+      var ac=new (window.AudioContext||window.webkitAudioContext)();
+      var mic=ac.createMediaStreamSource(s);
+      var an=ac.createAnalyser(); an.fftSize=256; mic.connect(an);
+      var buf=new Uint8Array(an.frequencyBinCount);
+      (function listen(){
+        an.getByteTimeDomainData(buf);
+        var m=0; for(var i=0;i<buf.length;i++) m=Math.max(m,Math.abs(buf[i]-128));
+        if(m>18) amp=Math.min(1,amp+m/80);
+        requestAnimationFrame(listen);
+      })();
+    }catch(e){ say("Iris","Mic stayed off on this phone. Type. Dualis did not mute you."); }
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(SR){
+      rec=new SR(); rec.continuous=true; rec.interimResults=false; rec.lang="en-CA";
+      rec.onresult=function(ev){
+        var t=ev.results[ev.results.length-1][0].transcript;
+        ask(t);
+      };
+      rec.onend=function(){ if(alive) try{rec.start()}catch(e){} };
+      try{rec.start()}catch(e){}
+    }
+    pulse();
+    if(window.DSAP) DSAP.place("whistle",0);
+    say("Iris","I am here. V2 is the mind. The ring is the body.");
+  }
+  document.getElementById("go").onclick=wake;
+  document.getElementById("bar").onsubmit=function(e){
+    e.preventDefault();
+    var q=document.getElementById("q");
+    var t=q.value.trim(); q.value="";
+    if(!alive) wake();
+    ask(t);
+  };
+  document.addEventListener("visibilitychange",function(){
+    if(document.hidden && window.DSAP) DSAP.sleep();
+  });
+})();
+</script>
+</body></html>
