@@ -3,182 +3,197 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>À La Carte Passes — DualisCapax</title>
-  <meta name="theme-color" content="#0B0E14">
+  <title>DualisCapax — Autonomous A La Carte Swarm Suite</title>
+  <meta name="theme-color" content="#07090e">
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="lander.css">
+  <style>
+    :root {
+      --bg: #07090e;
+      --card-bg: rgba(18, 24, 38, 0.85);
+      --card-hover: rgba(24, 32, 50, 0.95);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(0, 240, 255, 0.35);
+      --accent-cyan: #00f0ff;
+      --accent-emerald: #00ff88;
+      --accent-amber: #ffb700;
+      --text: #f0f4fc;
+      --text-muted: #8a99ad;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5; padding-bottom: 90px; display: flex; justify-content: center;
+    }
+    .container { max-width: 920px; width: 100%; padding: 24px 16px; }
+    .top-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 20px; }
+    .brand-group { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+    .hex-logo { width: 24px; height: 24px; border: 2px solid var(--accent-cyan); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); background: rgba(0, 240, 255, 0.1); }
+    .brand-name { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.05em; }
+    .beta-badge { font-family: var(--mono); font-size: 0.72rem; background: rgba(0, 255, 136, 0.1); color: var(--accent-emerald); border: 1px solid var(--accent-emerald); padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .hero-banner { background: linear-gradient(180deg, rgba(0, 240, 255, 0.06) 0%, rgba(18, 24, 38, 0.4) 100%); border: 1px solid var(--border-active); border-radius: 12px; padding: 24px 20px; margin-bottom: 24px; }
+    .hero-title { font-size: 1.7rem; font-weight: 900; line-height: 1.25; margin-bottom: 8px; }
+    .hero-title span { color: var(--accent-cyan); }
+    .hero-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; }
+    .you-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 183, 0, 0.1); border: 1px solid var(--accent-amber); color: var(--accent-amber); padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-family: var(--mono); font-weight: 600; }
+    .section-label { font-size: 0.75rem; font-family: var(--mono); color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .archetype-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
+    .archetype-btn { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 10px; color: var(--text-muted); font-size: 0.8rem; font-weight: 700; cursor: pointer; text-align: center; }
+    .archetype-btn.active { border-color: var(--accent-cyan); background: rgba(0, 240, 255, 0.12); color: var(--accent-cyan); }
+    .nav-tabs { display: flex; overflow-x: auto; gap: 6px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .tab-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 14px; border-radius: 6px; font-family: var(--mono); font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
+    .tab-btn.active { background: var(--accent-cyan); color: #000; font-weight: 800; border-color: var(--accent-cyan); }
+    .module-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+    .module-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .card-title { font-size: 1.15rem; font-weight: 700; }
+    .card-status { font-family: var(--mono); font-size: 0.72rem; padding: 3px 8px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+    .status-live { background: rgba(0,255,136,0.12); border: 1px solid var(--accent-emerald); color: var(--accent-emerald); }
+    .status-wait { background: rgba(255,183,0,0.08); border: 1px solid var(--accent-amber); color: var(--accent-amber); }
+    .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px; }
+    .card-meta-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: var(--mono); font-size: 0.72rem; gap: 10px; }
+    .card-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .action-btn { flex: 1; padding: 9px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-align: center; text-decoration: none; }
+    .action-btn-primary { background: var(--accent-cyan); color: #000; border: 1px solid var(--accent-cyan); }
+    .action-btn-secondary { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+    .action-btn-disabled { background: rgba(255,255,255,0.03); color: var(--text-muted); border: 1px dashed var(--border); pointer-events: none; }
+    .calc-card { background: rgba(0,0,0,0.45); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .calc-header { font-size: 0.95rem; font-weight: 800; margin-bottom: 6px; color: var(--accent-cyan); display: flex; justify-content: space-between; }
+    .calc-info { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px; }
+    .calc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; font-family: var(--mono); }
+    .calc-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 12px 8px; }
+    .calc-val { font-size: 1.25rem; font-weight: 800; }
+    .calc-lbl { font-size: 0.68rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; }
+    .seat-statement { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px; color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+    .seat-statement strong { color: var(--text); }
+    .bottom-nav { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); background: rgba(13,18,29,0.95); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 30px; padding: 8px 18px; display: flex; gap: 22px; z-index: 1000; }
+    .nav-item { color: var(--text-muted); text-decoration: none; font-size: 0.78rem; font-weight: 600; }
+    .nav-item.active, .nav-item:hover { color: var(--accent-cyan); }
+    @media (max-width: 600px) {
+      .archetype-selector { grid-template-columns: repeat(2, 1fr); }
+      .calc-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body id="top">
-  <header class="top-nav">
-    <a href="index.html" class="brand-group">
-      <svg class="brand-icon" viewBox="0 0 40 40" fill="none">
-        <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
-        <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
-      </svg>
-      <span class="brand-name">Dualiscapax</span>
-    </a>
-</header>
-    <div style="padding:0.65rem 1.25rem; border-bottom:1px solid var(--border-subtle); display:flex; flex-wrap:wrap; gap:0.65rem; align-items:center; background:rgba(11,14,20,0.9);">
-    <a class="subpage-back" href="index.html">← Lander</a>
-      <a href="iris.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Ask Iris</a>
-      <a href="residual.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Residual</a>
-      <a href="edge.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Edge</a>
-      <a href="research.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Research</a>
-      <a href="alacarte.html" style="color:var(--accent-cyan);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">À La Carte</a>
-      <a href="runtime.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Runtime</a>
-      <a href="onboard.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.72rem;font-family:var(--font-mono);">Onboard</a>
-  </div>
-  <main class="subpage-main page-wrapper">
-
-    <section class="pillar-section border-cyan" style="border-color:var(--accent-cyan);">
-      <div class="badge-pill badge-cyan">À La Carte</div>
-      <h2 class="section-headline">One place for the athlete. Hockey first — same idea for other sports.</h2>
-      <p class="section-body">
-        DualisCapax is Canadian. We build seats for real kids and real families — not another app that makes you copy stats into boxes.
-      </p>
-      <p class="section-body" style="margin-top:0.75rem;">
-        Hockey is our first live framework. It shows how a seat works: claim who you are on the roster, then keep next game, travel, tape, and school on one screen.
-        Golf, football, soccer, basketball, and more plug into that same idea when they are ready. We do not pretend they are live before they are.
-      </p>
-      <p class="section-body" style="margin-top:0.75rem;">
-        What we model is simple. Your kid already has TeamSnap for who showed up, GameSheet for the score, and tape for the play.
-        Dualis brings that into one seat and helps you see what parents already notice on the glass — like a kid who fades late in the third —
-        from real games and real tape, never from made-up numbers on a landing page.
-      </p>
-    </section>
-
-    <section class="pillar-section border-cyan" style="border-color:var(--accent-cyan);">
-      <div class="badge-pill badge-cyan">Free to try · hockey</div>
-      <h2 class="section-headline">Ontario AAA ice portal — open for founder testing.</h2>
-      <p class="section-body">
-        Pick your team and jersey. Prove it with TeamSnap. Pay stays closed while you test.
-        Ontario AAA first, all ages; other provinces later because the rules differ.
-      </p>
-      <p style="margin-top:0.85rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
-        <a class="nav-btn-solid" href="ice.html?pack=hockey#seat" style="text-decoration:none;padding:0.6rem 1rem;">Enter ice portal →</a>
-        <a class="nav-btn-solid" href="sport.html?pack=hockey" style="text-decoration:none;padding:0.6rem 1rem;background:transparent;border:1px solid var(--border-subtle);color:var(--text-secondary);">Hockey seat details →</a>
-        <a class="nav-btn-solid" href="iris.html" style="text-decoration:none;padding:0.6rem 1rem;background:transparent;border:1px solid var(--border-subtle);color:var(--text-secondary);">Ask Iris →</a>
-      </p>
-    </section>
-
-    <section class="pillar-section border-mint" style="border-color:var(--accent-mint);">
-      <div class="badge-pill" style="border-color:var(--accent-mint);color:var(--accent-mint);">When it is not free</div>
-      <h2 class="section-headline">Seats you can understand.</h2>
-      <p class="section-body">
-        Looking around stays free. When pay opens, you buy a seat — not a mystery product.
-      </p>
-
-      <div style="margin-top:0.85rem;padding:0.95rem 1.1rem;background:var(--bg-main);border:1px solid var(--border-subtle);border-radius:12px;width:100%;box-sizing:border-box;">
-        <p class="section-body" style="margin:0;color:var(--accent-cyan);font-weight:800;">Household · Leaf $49 · family included</p>
-        <h3 class="section-headline" style="font-size:1.15rem;margin:0.35rem 0 0;">Your kid's games and travel</h3>
-        <p class="section-body" style="margin:0.4rem 0 0;">
-          One athlete seat. The family shares the same login — no separate family price. Travel tools are part of the household seat.
-          If the league uses GameSheet, Dualis pulls the score. You never paste it in.
-        </p>
-      </div>
-
-      <div style="margin-top:0.65rem;padding:0.95rem 1.1rem;background:var(--bg-main);border:1px solid var(--border-subtle);border-radius:12px;width:100%;box-sizing:border-box;">
-        <p class="section-body" style="margin:0;color:var(--accent-mint);font-weight:800;">Club $499 · Coach $299</p>
-        <h3 class="section-headline" style="font-size:1.15rem;margin:0.35rem 0 0;">The whole team as one picture</h3>
-        <p class="section-body" style="margin:0.4rem 0 0;">
-          A club or coach seat looks at the full roster together — lines and special teams when the coach sets them —
-          instead of eighteen separate family calendars. Kids' private details stay off the public card.
-        </p>
-        <p style="margin-top:0.75rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
-          <a class="nav-btn-solid" href="coach.html" style="text-decoration:none;padding:0.55rem 0.9rem;background:transparent;border:1px solid var(--border-subtle);color:var(--text-secondary);">Coach door →</a>
-          <a class="nav-btn-solid" href="manager.html" style="text-decoration:none;padding:0.55rem 0.9rem;background:transparent;border:1px solid var(--border-subtle);color:var(--text-secondary);">Manager door →</a>
-        </p>
-      </div>
-
-      <div style="margin-top:0.65rem;padding:0.95rem 1.1rem;background:var(--bg-main);border:1px solid var(--border-subtle);border-radius:12px;width:100%;box-sizing:border-box;">
-        <p class="section-body" style="margin:0;color:var(--accent-cyan);font-weight:800;">Why parents care</p>
-        <h3 class="section-headline" style="font-size:1.15rem;margin:0.35rem 0 0;">Late-game fade is real — we do not invent it.</h3>
-        <p class="section-body" style="margin:0.4rem 0 0;">
-          Every hockey parent has watched a kid look strong early and empty late. Dualis helps you see that from the games and tape you already have —
-          honestly, when the seat is real. We never sell destiny, and we never fill this page with fake clocks.
-        </p>
-      </div>
-    </section>
-
-    <section class="pillar-section border-cyan" style="border-color:var(--accent-cyan);">
-      <div class="badge-pill badge-cyan">Same idea · other sports</div>
-      <h2 class="section-headline">Hockey proves the seat. Others follow.</h2>
-      <p class="section-body">
-        Golf may come next because it does not need a team roster. Football, soccer, basketball, and other sports use the same seat idea when they are actually built.
-      </p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.65rem;margin-top:0.85rem;">
-        <div style="background:var(--bg-main);border:1px solid var(--border-subtle);border-radius:12px;padding:0.95rem 1.1rem;width:100%;box-sizing:border-box;">
-          <div style="display:flex;justify-content:space-between;gap:0.5rem;align-items:baseline;">
-            <h3 class="section-headline" style="font-size:1.05rem;margin:0;">Golf</h3>
-            <span class="section-body" style="margin:0;color:var(--text-muted);">Not live yet</span>
-          </div>
-          <p class="section-body" style="margin:0.4rem 0 0;">Individual path. No roster required. Coming after hockey proves the seat.</p>
-        </div>
-        <div style="background:var(--bg-main);border:1px solid var(--border-subtle);border-radius:12px;padding:0.95rem 1.1rem;width:100%;box-sizing:border-box;">
-          <div style="display:flex;justify-content:space-between;gap:0.5rem;align-items:baseline;">
-            <h3 class="section-headline" style="font-size:1.05rem;margin:0;">Football / NCAA</h3>
-            <span class="section-body" style="margin:0;color:var(--text-muted);">Not live yet</span>
-          </div>
-          <p class="section-body" style="margin:0.4rem 0 0;">Same seat pattern as hockey once it is ready. Roster-based.</p>
-        </div>
-        <div style="background:var(--bg-main);border:1px solid var(--border-subtle);border-radius:12px;padding:0.95rem 1.1rem;width:100%;box-sizing:border-box;">
-          <div style="display:flex;justify-content:space-between;gap:0.5rem;align-items:baseline;">
-            <h3 class="section-headline" style="font-size:1.05rem;margin:0;">Soccer</h3>
-            <span class="section-body" style="margin:0;color:var(--text-muted);">Not live yet</span>
-          </div>
-          <p class="section-body" style="margin:0.4rem 0 0;">Same seat idea. We will not invent a league feed.</p>
-        </div>
-        <div style="background:var(--bg-main);border:1px solid var(--border-subtle);border-radius:12px;padding:0.95rem 1.1rem;width:100%;box-sizing:border-box;">
-          <div style="display:flex;justify-content:space-between;gap:0.5rem;align-items:baseline;">
-            <h3 class="section-headline" style="font-size:1.05rem;margin:0;">Basketball</h3>
-            <span class="section-body" style="margin:0;color:var(--text-muted);">Not live yet</span>
-          </div>
-          <p class="section-body" style="margin:0.4rem 0 0;">Same seat idea when the sport is ready — not before.</p>
-        </div>
-      </div>
-      <p class="section-body" style="margin-top:1rem;">
-        We are not TeamSnap, Hockey Canada, or a medical clinic. We are the seat that sits with the tools you already use.
-      </p>
-    </section>
-
-  </main>
-<div id="checkoutModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:9999; backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1.25rem;">
-    <div style="background:var(--bg-surface-elevated); border:1px solid var(--accent-pink); border-radius:18px; max-width:500px; width:100%; padding:1.75rem; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-primary);">Acquire Study Monograph</h3>
-        <button style="background:none; border:none; color:var(--text-muted); font-size:1.4rem; cursor:pointer;" onclick="closeCheckout()">✕</button>
-      </div>
-      <div style="background:var(--bg-main); padding:0.85rem; border-radius:10px; border:1px solid var(--border-subtle); margin-bottom:1rem;">
-        <div style="font-size:0.75rem; color:var(--accent-pink); font-weight:700;" id="modalSku">SKU-MED-LEAF-01</div>
-        <div style="font-weight:700; font-size:1rem;" id="modalTitle">Multiple Sclerosis: 28-State Closed-Loop Model</div>
-        <div style="font-size:1.15rem; font-weight:800; color:var(--accent-mint); margin-top:0.35rem;" id="modalPrice">CAD $49.00</div>
-      </div>
-      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;">
-        1:1 CAD Parity Settlement via Canadian Interbank Rails or Sovereign Crypto Vaults:
-      </p>
-      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1.25rem;">
-        <div style="background:var(--bg-main); padding:0.75rem; border-radius:8px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.82rem; font-weight:600;">🍁 Interac e-Transfer</span>
-          <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--accent-cyan);">admin@dualiscapax.ai</span>
-        </div>
-        <div style="background:var(--bg-main); padding:0.75rem; border-radius:8px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.82rem; font-weight:600;">⧨ Ethereum / USDC</span>
-          <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--accent-cyan);">0x0adC...AFBBc4</span>
-        </div>
-      </div>
-      <a class="nav-btn-solid" href="payments.html" style="display:block;width:100%;padding:0.85rem;background:var(--accent-pink);color:#FFF;text-align:center;text-decoration:none;box-sizing:border-box;">
-        Open real card checkout (Stripe) →
+<body>
+  <div class="container">
+    <header class="top-header">
+      <a class="brand-group" href="/index.html">
+        <div class="hex-logo"></div>
+        <div class="brand-name">Dualiscapax</div>
       </a>
-      <a href="donate.html" style="display:block;text-align:center;margin-top:0.65rem;font-size:0.82rem;color:var(--accent-cyan);">Or gift via Interac / BTC / ETH / SOL (no ticket back)</a>
-      <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">No fake settlement. Money only via Stripe Payment Links or listed vault addresses.</p>
+      <div class="beta-badge">Hockey live · other sports not live yet</div>
+    </header>
+
+    <section class="hero-banner">
+      <h1 class="hero-title">Unified A La Carte <span>Swarm Suite</span></h1>
+      <p class="hero-desc">We identify you—athlete, operator, student, or agent. Hockey is the first live seat. Other modules use the same pattern when they are actually built. We do not pretend a sport is live before it is.</p>
+      <div class="you-pill">YOU IS THE POINT · ZERO LOCK-IN · THE SEAT THAT SITS WITH YOUR TOOLS</div>
+    </section>
+
+    <div class="section-label"><span>1. Select your operating profile</span><span style="color:var(--text-muted)">Context only</span></div>
+    <div class="archetype-selector">
+      <button class="archetype-btn active" type="button" onclick="setArchetype(this)">Athlete / Scout</button>
+      <button class="archetype-btn" type="button" onclick="setArchetype(this)">Business Operator</button>
+      <button class="archetype-btn" type="button" onclick="setArchetype(this)">Student / Scholar</button>
+      <button class="archetype-btn" type="button" onclick="setArchetype(this)">Retiree / Home</button>
     </div>
+
+    <div class="section-label"><span>2. Modules</span><span style="color:var(--accent-emerald)">Hockey live · rest queued</span></div>
+    <nav class="nav-tabs">
+      <button class="tab-btn active" type="button" onclick="switchCategory(this,'sports')">Sports</button>
+      <button class="tab-btn" type="button" onclick="switchCategory(this,'commerce')">Hospitality &amp; Retail</button>
+      <button class="tab-btn" type="button" onclick="switchCategory(this,'industrial')">Manufacturing &amp; Freight</button>
+      <button class="tab-btn" type="button" onclick="switchCategory(this,'healthcare')">Clinical &amp; Labs</button>
+      <button class="tab-btn" type="button" onclick="switchCategory(this,'institutional')">Education &amp; Infrastructure</button>
+    </nav>
+
+    <div class="module-grid" id="module-container">
+      <div class="module-card" data-cat="sports">
+        <div class="card-header">
+          <div class="card-title">Ice Hockey — inverse tactical recruiter solver</div>
+          <span class="card-status status-live">Live Beta (Free)</span>
+        </div>
+        <p class="card-desc">Ontario AAA ice portal. Claim the roster seat, bind TeamSnap, keep next game, travel, and tape on one screen. No invented clocks.</p>
+        <div class="card-meta-bar"><div>Ontario AAA first · TeamSnap bind</div><div>Free while testing</div></div>
+        <div class="card-actions">
+          <a class="action-btn action-btn-primary" href="/ice.html?pack=hockey#seat">Enter ice portal</a>
+          <a class="action-btn action-btn-secondary" href="/sport.html?pack=hockey">Seat details</a>
+        </div>
+      </div>
+
+      <div class="module-card" data-cat="sports">
+        <div class="card-header"><div class="card-title">Golf — kinetic dispersion &amp; caddie solver</div><span class="card-status status-wait">Not live yet</span></div>
+        <p class="card-desc">Individual path. No roster required. Comes after hockey proves the seat.</p>
+        <div class="card-meta-bar"><div>No fake live feed</div><div>Queued</div></div>
+        <div class="card-actions"><span class="action-btn action-btn-disabled">Opens when built</span></div>
+      </div>
+
+      <div class="module-card" data-cat="sports">
+        <div class="card-header"><div class="card-title">Football / NCAA — progression latency seat</div><span class="card-status status-wait">Not live yet</span></div>
+        <p class="card-desc">Same roster seat pattern as hockey once it is ready.</p>
+        <div class="card-meta-bar"><div>Roster-based</div><div>Queued</div></div>
+        <div class="card-actions"><span class="action-btn action-btn-disabled">Opens when built</span></div>
+      </div>
+
+      <div class="module-card" data-cat="sports">
+        <div class="card-header"><div class="card-title">Soccer — space creation engine</div><span class="card-status status-wait">Not live yet</span></div>
+        <p class="card-desc">Same seat idea. We will not invent a league feed.</p>
+        <div class="card-meta-bar"><div>No invented feed</div><div>Queued</div></div>
+        <div class="card-actions"><span class="action-btn action-btn-disabled">Opens when built</span></div>
+      </div>
+
+      <div class="module-card" data-cat="sports">
+        <div class="card-header"><div class="card-title">Basketball — shot-clock contour</div><span class="card-status status-wait">Not live yet</span></div>
+        <p class="card-desc">Same seat idea when the sport is ready — not before.</p>
+        <div class="card-meta-bar"><div>Queued</div></div>
+        <div class="card-actions"><span class="action-btn action-btn-disabled">Opens when built</span></div>
+      </div>
+
+      <div class="module-card" data-cat="commerce">
+        <div class="card-header"><div class="card-title">Restaurant &amp; retail — demand peak &amp; kitchen sync</div><span class="card-status status-wait">Not live yet</span></div>
+        <p class="card-desc">Peak-tariff clamp and POS/prep reconciliation when the sleeve is seated. Not a live POS integration today.</p>
+        <div class="card-meta-bar"><div>Hospitality sleeve queued</div></div>
+        <div class="card-actions"><span class="action-btn action-btn-disabled">Opens when built</span></div>
+      </div>
+    </div>
+
+    <div class="calc-card">
+      <div class="calc-header"><span>Seat pricing when pay opens</span><span style="color:var(--accent-emerald)">Look stays free</span></div>
+      <p class="calc-info">Hockey testing is free. These are seat prices for when pay opens — not a charge on this page.</p>
+      <div class="calc-grid">
+        <div class="calc-box"><div class="calc-val" style="color:var(--accent-cyan)">$49</div><div class="calc-lbl">Household / Leaf</div></div>
+        <div class="calc-box"><div class="calc-val" style="color:var(--accent-emerald)">$299</div><div class="calc-lbl">Coach</div></div>
+        <div class="calc-box"><div class="calc-val" style="color:var(--accent-amber)">$499</div><div class="calc-lbl">Club</div></div>
+      </div>
+    </div>
+
+    <footer class="seat-statement">
+      <p><strong>We are not TeamSnap, Spordle, Hockey Canada, or a medical clinic.</strong><br>
+      We are the seat that sits with the tools you already use. Hockey is live. Other modules are listed so you can see the pattern — they are not live until the route exists.</p>
+    </footer>
   </div>
-  <nav class="bottom-dock">
-    <a href="index.html" class="dock-btn" style="text-decoration:none;"><span>Home</span></a>
-    <a href="iris.html" class="dock-btn" style="text-decoration:none;"><span>Ask Iris</span></a>
-    <a href="sandbox.html" class="dock-btn" style="text-decoration:none;"><span>Sandbox</span></a>
-    <a href="sectors.html" class="dock-btn" style="text-decoration:none;"><span>Sectors</span></a>
-</nav>
-  <script src="js/lander-peel-runtime.js"></script>
+
+  <div class="bottom-nav">
+    <a href="/index.html" class="nav-item">Home</a>
+    <a href="/iris.html" class="nav-item">Ask Iris</a>
+    <a href="/sandbox.html" class="nav-item">Sandbox</a>
+    <a href="/sectors.html" class="nav-item">Sectors</a>
+  </div>
+
+  <script>
+    function setArchetype(el) {
+      document.querySelectorAll('.archetype-btn').forEach(function(b){ b.classList.remove('active'); });
+      el.classList.add('active');
+    }
+    function switchCategory(el, cat) {
+      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      el.classList.add('active');
+      document.querySelectorAll('.module-card').forEach(function(card) {
+        card.style.display = (card.getAttribute('data-cat') === cat) ? 'block' : 'none';
+      });
+    }
+  </script>
 </body>
 </html>
