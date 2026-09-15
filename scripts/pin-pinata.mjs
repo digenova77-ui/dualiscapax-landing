@@ -11,6 +11,7 @@
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fetchWithBackoff } from "./lib/exponential-backoff.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PIN = process.argv.includes("--pin");
@@ -104,11 +105,15 @@ fd.append("pinataMetadata", JSON.stringify({
 }));
 fd.append("pinataOptions", JSON.stringify({ cidVersion: 1, wrapWithDirectory: true }));
 
-const res = await fetch(ENDPOINT, {
-  method: "POST",
-  headers: { Authorization: "Bearer " + jwt },
-  body: fd
-});
+const res = await fetchWithBackoff(
+  ENDPOINT,
+  {
+    method: "POST",
+    headers: { Authorization: "Bearer " + jwt },
+    body: fd
+  },
+  { attempts: 5, baseMs: 500, maxMs: 20000 }
+);
 const text = await res.text();
 let body;
 try { body = JSON.parse(text); } catch { body = { raw: text }; }
