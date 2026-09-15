@@ -15,20 +15,29 @@ video{position:fixed;right:1rem;top:3.2rem;width:28vw;max-width:140px;border-rad
 .hud{position:fixed;left:1rem;right:1rem;top:.7rem;display:flex;justify-content:space-between;font:11px IBM Plex Mono,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);z-index:2}
 .pill{color:var(--gold);border:1px solid rgba(255,183,3,.35);padding:.25rem .5rem;border-radius:999px}
 .status{position:fixed;left:1rem;right:1rem;bottom:1.4rem;text-align:center;color:var(--mute);font-size:.95rem;z-index:2}
+@media(min-width:900px){.status{bottom:4.6rem}}
 .status em{color:var(--cyan);font-style:italic}
 .wake{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.7rem;z-index:3;background:rgba(5,7,12,.78)}
 .wake button{appearance:none;border:1px solid var(--cyan);background:rgba(62,232,255,.08);color:var(--ink);border-radius:999px;padding:1rem 1.3rem;font:1.05rem Fraunces,Georgia,serif}
 .wake p{color:var(--mute);max-width:20rem;text-align:center;margin:0}
+.desk{display:none;position:fixed;left:0;right:0;bottom:0;gap:.4rem;padding:.6rem .8rem;z-index:2}
+@media(min-width:900px){.desk{display:flex}}
+.desk input{flex:1;background:#070b10;border:1px solid rgba(62,232,255,.28);color:var(--ink);border-radius:999px;padding:.65rem 1rem;font:16px Fraunces,Georgia,serif}
+.desk button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.65rem .9rem;font:11px IBM Plex Mono,monospace;text-transform:uppercase}
 </style></head>
 <body>
 <canvas id="field"></canvas>
 <video id="eye" playsinline muted></video>
 <div class="hud"><span>Iris · desk</span><span class="pill" id="st">Asleep</span></div>
-<p class="status" id="status"><em>She hears you, or she sees you, or she is not here.</em></p>
+<p class="status" id="status"><em>Phone: hear or see. Desktop: a line of text still exists.</em></p>
 <div class="wake" id="wake">
   <button type="button" id="go">Wake Iris</button>
-  <p>No typing. After this tap she listens. Camera only if this phone allows it.</p>
+  <p>One tap. Phone listens. A keyboard on a wide screen can still type.</p>
 </div>
+<form class="desk" id="desk" autocomplete="off">
+  <input id="q" placeholder="Desktop — type to Iris">
+  <button type="submit">Send</button>
+</form>
 <script src="../../js/api-config.js"></script>
 <script src="../../js/dsap.js"></script>
 <script src="../../js/dsap-v2-jacket.js"></script>
@@ -69,6 +78,12 @@ video{position:fixed;right:1rem;top:3.2rem;width:28vw;max-width:140px;border-rad
       if(reply) line(reply);
     }catch(e){ line(e.message||"V2 quiet"); }
   }
+  document.getElementById("desk").onsubmit=function(e){
+    e.preventDefault();
+    var q=document.getElementById("q"),t=q.value.trim(); q.value="";
+    if(!alive) document.getElementById("go").click();
+    hear(t);
+  };
   document.getElementById("go").onclick=async function(){
     document.getElementById("wake").style.display="none";
     document.getElementById("st").textContent="Live";
@@ -83,17 +98,23 @@ video{position:fixed;right:1rem;top:3.2rem;width:28vw;max-width:140px;border-rad
         await navigator.mediaDevices.getUserMedia({audio:true});
         line("I can hear you. Camera stayed off. "+(b.place||"Desk unpicked")+".");
       }catch(e2){
-        line("This phone gave no mic. She is not here.");
-        document.getElementById("st").textContent="Not here";
-        return;
+        if(window.matchMedia("(min-width:900px)").matches){
+          line("No mic. Desktop text is still here.");
+          document.getElementById("st").textContent="Text";
+        }else{
+          line("This phone gave no mic. She is not here.");
+          document.getElementById("st").textContent="Not here";
+          return;
+        }
       }
     }
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){ line("This browser has no listen. She is not here."); return; }
-    rec=new SR(); rec.continuous=true; rec.interimResults=false; rec.lang="en-CA";
-    rec.onresult=function(ev){ hear(ev.results[ev.results.length-1][0].transcript); amp=1; };
-    rec.onend=function(){ if(alive) try{rec.start()}catch(e){} };
-    try{rec.start()}catch(e){}
+    if(SR){
+      rec=new SR(); rec.continuous=true; rec.interimResults=false; rec.lang="en-CA";
+      rec.onresult=function(ev){ hear(ev.results[ev.results.length-1][0].transcript); amp=1; };
+      rec.onend=function(){ if(alive) try{rec.start()}catch(e){} };
+      try{rec.start()}catch(e){}
+    }
   };
 })();
 </script>
