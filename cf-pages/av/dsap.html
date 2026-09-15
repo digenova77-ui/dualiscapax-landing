@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DSAP V2 jacket · DualisCapax</title>
+<meta name="theme-color" content="#050508">
+<link rel="stylesheet" href="../css/ice-windows.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span>API V2 sleeve · DSAP-1.0</span><span class="pill">Tap wakes</span></div>
+  <h1>The ring wears V2.<br><em>It does not replace Iris.</em></h1>
+  <p class="lede">Chat still goes to /v2/chat. After you tap, the answer is placed on the 64-point ring. Hide sleeps the context. That is the jacket we wrote and never hung on the pipe.</p>
+  <section class="card">
+    <h2>What this page does</h2>
+    <p class="note" id="path">Jacket not woken.</p>
+    <p style="margin:.8rem 0 0"><button type="button" id="go" style="appearance:none;border:1px solid rgba(56,189,248,.4);background:transparent;color:#38bdf8;border-radius:999px;padding:.55rem 1rem;font:12px IBM Plex Mono,monospace">Tap — wake the ring and ask V2</button></p>
+  </section>
+  <p class="note">Not a filmed human. Not a purchased avatar. Not a goal horn. Simulation is not treatment.</p>
+</div>
+<script src="../js/api-config.js"></script>
+<script src="../js/dsap.js"></script>
+<script src="../js/dsap-v2-jacket.js"></script>
+<script>
+document.getElementById("go").onclick=async function(){
+  var el=document.getElementById("path");
+  el.textContent=(window.DSAPJacket&&DSAPJacket.path())||"no jacket";
+  try{
+    await DSAPJacket.ask("Name the two poles of a hockey shift in one sentence.",{max_tokens:80,seat:16});
+  }catch(e){
+    el.textContent="V2 did not answer. Ring still woke. "+(e.message||e);
+  }
+};
+</script>
+</body></html>
