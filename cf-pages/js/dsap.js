@@ -1,9 +1,9 @@
 /**
- * DSAP-1.0. Audio owns the seat. Video may listen. Video may not wrap.
+ * DSAP-1.2. Audio owns the seat. Analyser is a tap after the speakers get the wave.
  */
 (function (w) {
-  if (w.DSAP && w.DSAP.version === "DSAP-1.1") return;
-  var ctx, ring = [], woken = false, ears = [];
+  if (w.DSAP && w.DSAP.version === "DSAP-1.2") return;
+  var ctx, ring = [], woken = false, ears = [], master, analyser, bins;
   function ac() {
     if (!ctx) ctx = new (w.AudioContext || w.webkitAudioContext)();
     if (ctx.state === "suspended") ctx.resume();
@@ -12,6 +12,14 @@
   function wake() {
     var c = ac();
     if (woken && ring.length) return c;
+    master = c.createGain();
+    master.gain.value = 1;
+    master.connect(c.destination);
+    analyser = c.createAnalyser();
+    analyser.fftSize = 128;
+    analyser.smoothingTimeConstant = 0.6;
+    master.connect(analyser);
+    bins = new Uint8Array(analyser.frequencyBinCount);
     ring = [];
     for (var i = 0; i < 64; i++) {
       var p = c.createPanner();
@@ -20,11 +28,21 @@
       p.refDistance = 1;
       var a = (i / 64) * Math.PI * 2;
       p.setPosition(Math.cos(a) * 2.2, 0, Math.sin(a) * 2.2);
-      p.connect(c.destination);
+      p.connect(master);
       ring.push(p);
     }
     woken = true;
     return c;
+  }
+  function wave() {
+    if (!analyser) return null;
+    analyser.getByteTimeDomainData(bins);
+    return bins;
+  }
+  function spectrum() {
+    if (!analyser) return null;
+    analyser.getByteFrequencyData(bins);
+    return bins;
   }
   function tell(kind, i) {
     for (var n = 0; n < ears.length; n++) {
@@ -58,14 +76,10 @@
     o.start(t);
     tell(kind, i);
   }
-  function listen(fn) {
-    if (typeof fn === "function") ears.push(fn);
-  }
-  function sleep() {
-    if (ctx && ctx.state === "running") ctx.suspend();
-  }
+  function listen(fn) { if (typeof fn === "function") ears.push(fn); }
+  function sleep() { if (ctx && ctx.state === "running") ctx.suspend(); }
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) sleep();
   });
-  w.DSAP = { wake: wake, place: place, sleep: sleep, listen: listen, version: "DSAP-1.1" };
+  w.DSAP = { wake: wake, place: place, sleep: sleep, listen: listen, wave: wave, spectrum: spectrum, version: "DSAP-1.2" };
 })(window);
