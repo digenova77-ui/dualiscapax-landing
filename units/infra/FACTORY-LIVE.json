@@ -1,0 +1,26 @@
+{
+  "kind": "factory_live_board",
+  "as_of": "2026-09-15T15:16:00Z",
+  "law": "Cron that harvests/audits/receipts is live. Swarm UNANIMOUS_PASS is not. Exit 0 is not product-live.",
+  "slots": [
+    {"id": "A", "cron": "7,37 * * * *", "workflow": "golf_usa_envelopes.yml", "job": "golf cite harvest", "live": true},
+    {"id": "B", "cron": "12,42 * * * *", "workflow": "hockey_girls_owha.yml", "job": "OWHA branch index", "live": true},
+    {"id": "C", "cron": "17,47 * * * *", "workflow": "hockey_boys_omha_u16.yml", "job": "OMHA U16 AAA seat packs", "live": true},
+    {"id": "D", "cron": "22,52 * * * *", "workflow": "factory_workers.yml", "job": "honest factory receipt + SKIP_STUB guard", "live": true},
+    {"id": "E", "cron": "27,57 * * * *", "workflow": "ice_session_bot.yml", "job": "Ice/ALC audit + TeamSnap-only face", "live": true}
+  ],
+  "observed_this_morning": {
+    "ice-session-bot": {"run_number": 39, "event": "schedule", "conclusion": "success", "at": "2026-09-15T15:02:15Z"},
+    "factory_workers": {"run_number": 51, "event": "schedule", "conclusion": "success", "at": "2026-09-15T15:01:05Z"},
+    "hockey_boys": "committing OMHA U16 AAA Dualis seat packs on schedule"
+  },
+  "dispatched_now": ["ice_session_bot.yml AUDIT"],
+  "not_live": [
+    "swarm_bot_fleet.yml — demoted",
+    "swarm_runner.yml — demoted",
+    "workers-live.yml — retired CF auto-deploy",
+    "/recruiter /golf /football /soccer /basketball routes — not product-live because public apex 404s those solvers",
+    "Pinata pin A==B — UNRESOLVED until a real pin + gateway GET is receipted"
+  ],
+  "deployment_authorized": false
+}
