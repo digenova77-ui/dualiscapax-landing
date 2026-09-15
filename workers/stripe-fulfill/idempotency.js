@@ -1,5 +1,5 @@
 /** Identity jacket helpers.
- *  Idempotency key = Stripe event.id (evt_…). session.id is secondary.
+ *  Idempotency key = Stripe event.id (evt_…). session.id (cs_…) is the grant key.
  *  Stripe webhooks do not send an Idempotency-Key header.
  */
 
@@ -9,6 +9,15 @@ export function idempotencyKey(eventId, sessionId) {
   if (eventId) return { kind: "event", key: "event:" + eventId, eventId: eventId, sessionId: sessionId || null };
   if (sessionId) return { kind: "session", key: "session:" + sessionId, eventId: null, sessionId: sessionId };
   return null;
+}
+
+function parseRecord(raw) {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return { raw: raw };
+  }
 }
 
 function eventInsert(db, row, now) {
@@ -137,15 +146,33 @@ export async function claimKv(kv, key, record) {
   if (!kv || !key) return { used: false };
   const seen = await kv.get(key);
   if (seen) {
-    try {
-      return { used: true, idempotent: true, record: JSON.parse(seen) };
-    } catch (e) {
-      return { used: true, idempotent: true, record: { raw: seen } };
-    }
+    return { used: true, idempotent: true, record: parseRecord(seen) };
   }
   const pending = Object.assign({}, record || {}, { status: "pending" });
   await kv.put(key, JSON.stringify(pending), { expirationTtl: TTL });
   return { used: true, idempotent: false, record: pending };
+}
+
+/** Check event:evt_ and session:cs_ before any KV mutate.
+ *  Replay if either key exists so completed + async_payment_succeeded share one grant.
+ */
+export async function claimDualKv(kv, eventId, sessionId, record) {
+  if (!kv) return { used: false };
+  const eventKey = eventId ? "event:" + eventId : null;
+  const sessionKey = sessionId ? "session:" + sessionId : null;
+  if (eventKey) {
+    const ev = await kv.get(eventKey);
+    if (ev) return { used: true, idempotent: true, store: "kv", via: "event", record: parseRecord(ev) };
+  }
+  if (sessionKey) {
+    const se = await kv.get(sessionKey);
+    if (se) return { used: true, idempotent: true, store: "kv", via: "session", record: parseRecord(se) };
+  }
+  const pending = Object.assign({}, record || {}, { status: "pending" });
+  const body = JSON.stringify(pending);
+  if (eventKey) await kv.put(eventKey, body, { expirationTtl: TTL });
+  if (sessionKey) await kv.put(sessionKey, body, { expirationTtl: TTL });
+  return { used: true, idempotent: false, store: "kv", record: pending, eventKey: eventKey, sessionKey: sessionKey };
 }
 
 export async function finalizeKv(kv, key, record) {
