@@ -4,50 +4,62 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Game day · Ice</title>
-<meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#07080d">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./css/ice-windows.css">
+<style>
+  body{margin:0;background:#07080d;color:#e8eefc;font-family:ui-sans-serif,system-ui,sans-serif}
+  .wrap{max-width:28rem;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px 5.5rem}
+  .kicker{letter-spacing:.16em;font-size:11px;text-transform:uppercase;color:#8b96b3}
+  h1{font-size:1.55rem;line-height:1.15}
+  .board{border:1px solid #2a3348;border-radius:16px;padding:16px;background:rgba(56,189,248,.04);text-align:center}
+  .clock{font-size:2.4rem;font-variant-numeric:tabular-nums;color:#ffb703}
+  .note{color:#8b96b3;font-size:13px;line-height:1.45}
+  #dvp{width:100%;height:88px;display:block;border-radius:12px;background:#05070c}
+  .dock{position:fixed;left:0;right:0;bottom:0;display:flex;gap:8px;justify-content:space-around;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#07080d;border-top:1px solid #2a3348}
+  .dock a{color:#8b96b3;text-decoration:none;font-size:12px}
+  .dock a.on{color:#ffb703}
+</style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><span>DualisCapax · Ice</span><span class="pill">Till closed</span></div>
-  <h1>This game.<br><em>Or nothing yet.</em></h1>
-  <p class="lede">Game day is the game in front of you. The week lives on Schedule.</p>
-  <section class="card">
-    <h2>Who is at the rink</h2>
-    <p class="note">TeamSnap is the list, when a seat is claimed. Dualis does not invent a roster.</p>
-  </section>
-  <section class="card">
-    <h2>When and where</h2>
+  <p class="kicker">This game</p>
+  <h1>Game day is the rink in front of you.</h1>
+  <div class="board">
+    <p class="kicker">Period clock lives here when a seat has a game</p>
+    <div class="clock" id="clock">—</div>
     <p class="note" id="when">Empty until TeamSnap has a next event on this phone. Dualis does not invent an arrival time.</p>
-  </section>
-  <section class="card">
-    <h2>What this shift is</h2>
-    <p class="note">Watch the whole sequence. A miss is not automatically a mistake. One job per seat.</p>
-  </section>
+  </div>
+  <p class="kicker" style="margin-top:1rem">The wave is the room</p>
+  <canvas id="dvp" width="640" height="176"></canvas>
+  <p class="note">Tap wakes the twins. Roster is TeamSnap when a seat is claimed. No invented names.</p>
 </div>
 <nav class="dock">
-  <a href="./ice.html">Rink</a>
+  <a href="./ice.html">Ice</a>
   <a href="./schedule.html">Schedule</a>
-  <a class="on" href="./gameday.html">Game day</a>
-  <a href="./hockey.html">Leagues</a>
+  <a class="on" href="./gameday.html">Gameday</a>
+  <a href="./hockey.html">OHF</a>
 </nav>
+<script src="js/api-config.js"></script>
+<script src="js/dsap.js"></script>
+<script src="js/dvp.js"></script>
+<script src="js/dc-av.js"></script>
 <script>
 (function(){
   try{
     var raw=localStorage.getItem("dc.teamsnap.events");
-    if(!raw)return;
-    var ev=JSON.parse(raw);
-    var next=Array.isArray(ev)?ev[0]:ev;
-    if(!next)return;
-    var title=next.name||next.title||"Next event";
-    var loc=next.location_name||next.location||"";
-    var when=next.start_date||next.start||"";
-    document.getElementById("when").textContent=[title,when,loc].filter(Boolean).join(" · ")+". Dualis did not invent this row.";
+    if(raw){
+      var ev=JSON.parse(raw);
+      var next=Array.isArray(ev)?ev[0]:ev;
+      if(next){
+        document.getElementById("when").textContent=[next.name||next.title,next.start_date||next.start,next.location_name||next.location].filter(Boolean).join(" · ")+". Dualis did not invent this row.";
+      }
+    }
   }catch(e){}
+  document.getElementById("dvp").addEventListener("click",function(){
+    if(window.DualisAV) DualisAV.wake("dvp","puck",16);
+    else if(window.DVP) DVP.mount("dvp");
+  });
+  if(window.DVP) DVP.mount("dvp");
 })();
 </script>
 </body></html>
