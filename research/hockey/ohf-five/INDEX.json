@@ -1,0 +1,56 @@
+{
+  "title": "DualisCapax — five OHF youth members",
+  "law": "League and association chips only. Dualis does not paste GameSheet. No named minors on this index.",
+  "pattern": "trunk→league→club→seat",
+  "ohf_members_seven": ["ALLIANCE", "GTHL", "NOHA", "OHA", "OHL", "OMHA", "OWHA"],
+  "youth_five": ["OMHA", "ALLIANCE", "GTHL", "NOHA", "OWHA"],
+  "not_inside_ohf": ["HEO", "HNO"],
+  "season": "2026-2027",
+  "leagues": [
+    {
+      "id": "omha",
+      "name": "Ontario Minor Hockey Association",
+      "ohf_member": true,
+      "cite": "https://www.omha.net/",
+      "harvest_slot": "C",
+      "workflow": "hockey_boys_omha_u16.yml",
+      "status": "harvesting_u16_aaa"
+    },
+    {
+      "id": "alliance",
+      "name": "Minor Hockey Alliance of Ontario",
+      "ohf_member": true,
+      "cite": "https://www.alliancehockey.com/",
+      "harvest_slot": "E",
+      "workflow": "hockey_ohf_five.yml",
+      "status": "index_seeded"
+    },
+    {
+      "id": "gthl",
+      "name": "Greater Toronto Hockey League",
+      "ohf_member": true,
+      "cite": "https://gthlcanada.com/",
+      "harvest_slot": "E",
+      "workflow": "hockey_ohf_five.yml",
+      "status": "index_seeded"
+    },
+    {
+      "id": "noha",
+      "name": "Northern Ontario Hockey Association",
+      "ohf_member": true,
+      "cite": "https://www.noha.on.ca/",
+      "harvest_slot": "E",
+      "workflow": "hockey_ohf_five.yml",
+      "status": "index_seeded"
+    },
+    {
+      "id": "owha",
+      "name": "Ontario Women's Hockey Association",
+      "ohf_member": true,
+      "cite": "https://www.owha.on.ca/",
+      "harvest_slot": "B",
+      "workflow": "hockey_girls_owha.yml",
+      "status": "harvesting_branch_index"
+    }
+  ]
+}
