@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Geodesic — Dualis Capax</title>
+  <meta name="description" content="The Dualis geodesic as a real 3D icosahedron. Drag it. Sound stays off until you ask." />
+  <style>
+    :root { --ink:#e8eefc; --mute:#8b96b3; --line:#2a3348; --gold:#ffb830; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; height: 100%; background: #07080d; color: var(--ink);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      overflow: hidden;
+      touch-action: none;
+    }
+    canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+    header, footer {
+      position: fixed; left: 16px; right: 16px; z-index: 2;
+      pointer-events: none;
+    }
+    header { top: calc(12px + env(safe-area-inset-top)); }
+    footer { bottom: calc(14px + env(safe-area-inset-bottom)); display: flex; gap: 10px; flex-wrap: wrap; }
+    h1 { margin: 0; font-size: 13px; letter-spacing: .18em; text-transform: uppercase; font-weight: 650; }
+    p { margin: 6px 0 0; color: var(--mute); font-size: 13px; max-width: 28rem; line-height: 1.45; }
+    a, button {
+      pointer-events: auto;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: rgba(7,8,13,.55);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+    button { cursor: pointer; }
+    button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+  </style>
+</head>
+<body>
+  <canvas id="geo" aria-label="Dualis geodesic"></canvas>
+  <header>
+    <h1>Geodesic</h1>
+    <p>Not a flat seal. An icosahedron you can turn. Leftover gold is the core. Sound off until you ask.</p>
+  </header>
+  <footer>
+    <a href="/">Home</a>
+    <a href="/look">Look</a>
+    <a href="/ice">Ice</a>
+    <a href="/rte/sima-dclm">SIMA</a>
+    <button id="tone" type="button" aria-pressed="false">Tone off</button>
+  </footer>
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script src="/js/geodesic-3d.js"></script>
+  <script>
+    (function () {
+      var canvas = document.getElementById("geo");
+      if (window.DualisGeodesic) window.DualisGeodesic.mount(canvas);
+      var tone = document.getElementById("tone");
+      var handle = null;
+      tone.addEventListener("click", function () {
+        if (handle) {
+          handle.stop();
+          handle = null;
+          tone.setAttribute("aria-pressed", "false");
+          tone.textContent = "Tone off";
+          return;
+        }
+        handle = window.DualisGeodesic.startAudio();
+        tone.setAttribute("aria-pressed", "true");
+        tone.textContent = "Tone on";
+      });
+    })();
+  </script>
+</body>
+</html>
