@@ -13,17 +13,9 @@ const PIN = process.argv.includes("--pin");
 const FULL = process.argv.includes("--full");
 const ENDPOINT = "https://api.pinata.cloud/pinning/pinFileToIPFS";
 
-const SKIP_DIR = new Set([".git", ".github", "node_modules", "workers", "artifacts", ".tmp", "dist"]);
+const SKIP_DIR = new Set([".git", ".github", "node_modules", "workers", "artifacts", ".tmp", "dist", "_peel-backup"]);
 const SKIP_FILE = /\.(env|pem|key)$/i;
 const SKIP_NAME = new Set([".env", ".DS_Store", "wrangler.toml"]);
-
-const LANDER_ROOT = new Set([
-  "index.html", "why.html", "story.html", "curtain.html", "world.html",
-  "ca.html", "on.html", "qc.html", "ab.html", "np.html",
-  "encyclopedia.html", "look.html", "onboard.html", "unity.html", "hub.html",
-  "404.html", "theme.css", "styles.css", "CNAME", "_headers"
-]);
-const LANDER_DIR = new Set(["js", "css", "data", "hall", "assets", "brand"]);
 
 function walk(dir, out) {
   for (const name of readdirSync(dir)) {
@@ -35,17 +27,11 @@ function walk(dir, out) {
   }
 }
 
-function want(rel) {
-  if (FULL) return true;
-  const top = rel.split("/")[0];
-  return LANDER_ROOT.has(rel) || LANDER_DIR.has(top);
-}
-
+const walkRoot = FULL ? ROOT : join(ROOT, "cf-pages");
 const files = [];
-walk(ROOT, files);
+walk(walkRoot, files);
 const list = files
-  .map((abs) => ({ abs, rel: relative(ROOT, abs).split(sep).join("/") }))
-  .filter((f) => want(f.rel))
+  .map((abs) => ({ abs, rel: relative(walkRoot, abs).split(sep).join("/") }))
   .sort((a, b) => a.rel.localeCompare(b.rel));
 
 mkdirSync(join(ROOT, "data"), { recursive: true });
@@ -59,7 +45,7 @@ const receipt = {
   pinned: false,
   cid: null,
   origin: "cloudflare-manual",
-  note: "Live site is Cloudflare (manual zip). This CID is the spare copy at tree root. GitHub is documentation only."
+  note: "Live site is Cloudflare. This CID is the spare copy of cf-pages (lander mode) or full repo. GitHub is the library."
 };
 
 if (!PIN) {
@@ -88,7 +74,7 @@ fd.append("pinataMetadata", JSON.stringify({
   name: "DualisCapax-L1-" + new Date().toISOString().slice(0, 10),
   keyvalues: { project: "DualisCapax", layer: "L1_Public_Face", mode: receipt.mode }
 }));
-fd.append("pinataOptions", JSON.stringify({ cidVersion: 1 }));
+fd.append("pinataOptions", JSON.stringify({ cidVersion: 1, wrapWithDirectory: true }));
 
 const res = await fetch(ENDPOINT, {
   method: "POST",
@@ -108,4 +94,4 @@ receipt.pin_size = body.PinSize || null;
 receipt.timestamp = body.Timestamp || null;
 writeFileSync(join(ROOT, "data", "pinata-last.json"), JSON.stringify(receipt, null, 2));
 console.log(JSON.stringify({ ok: true, cid: receipt.cid, files: list.length, size: receipt.pin_size }, null, 2));
-console.log("/ipfs/" + receipt.cid + "/why.html");
+console.log("/ipfs/" + receipt.cid + "/index.html");
