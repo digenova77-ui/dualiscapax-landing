@@ -1,0 +1,22 @@
+{
+  "task_prompt": "FACTORY: Iris twins \u2014 DSAP + DVP + L0 + SIMA bake (next shift)",
+  "timestamp_utc": "2026-09-15T23:27:55Z",
+  "elapsed_seconds": 0.1398,
+  "consensus_verdict": "FAIL_CLOSED",
+  "law": "truth-or-nothing \u2014 no invented multi-model convergence",
+  "keys_present": {
+    "gemini": false,
+    "xai": true,
+    "anthropic": false,
+    "openai": false
+  },
+  "stages": [
+    {
+      "model": "xAI (Grok)",
+      "role": "live_sentry",
+      "status": "CALL_FAILED",
+      "output": "[xAI call failed: HTTPError: HTTP Error 400: Bad Request]"
+    }
+  ],
+  "consensus_hash": "9bb10df45910bc355c8b5e9440a701639c57dd0ceac1e1249af8677555c3a98d"
+}
