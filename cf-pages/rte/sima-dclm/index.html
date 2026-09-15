@@ -9,107 +9,90 @@
 <meta name="theme-color" content="#05070c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#05070c; --bg2:#0a1018; --ink:#eef4f8; --mute:#8b9bab;
-  --cyan:#3ee8ff; --gold:#ffb703; --line:rgba(62,232,255,.14);
-  --card:rgba(8,14,22,.82); --ok:#9dffb0; --warn:#ffb4b4;
+  --bg:#05070c; --ink:#eef4f8; --mute:#8b9caa; --cyan:#3ee8ff; --gold:#ffb703;
+  --line:rgba(62,232,255,.14); --card:rgba(8,14,22,.72); --seed:#ffb4b4;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink)}
+html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
 body{
-  min-height:100dvh;
-  font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif;
+  font:18px/1.55 Fraunces,Iowan Old Style,Palatino,Georgia,serif;
   background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(62,232,255,.08), transparent 55%),
-    radial-gradient(900px 500px at -10% 110%, rgba(255,183,3,.07), transparent 50%),
-    var(--bg);
+    radial-gradient(1200px 700px at 10% -10%, rgba(62,232,255,.09), transparent 55%),
+    radial-gradient(900px 600px at 110% 8%, rgba(255,183,3,.07), transparent 50%),
+    linear-gradient(180deg,#05070c 0%,#070b12 55%,#05070c 100%);
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:72px 72px;mask-image:radial-gradient(ellipse at 50% 20%,#000 20%,transparent 75%);
 }
 a{color:var(--cyan);text-decoration:none}
 a:hover{text-decoration:underline}
-.wrap{max-width:44rem;margin:0 auto;padding:1.1rem 1.05rem 4.2rem}
-.top{
-  display:flex;justify-content:space-between;align-items:center;gap:.7rem;
-  font:11px/1.2 "IBM Plex Mono",ui-monospace,monospace;
-  letter-spacing:.08em;text-transform:uppercase;color:var(--gold);
+.wrap{position:relative;max-width:44rem;margin:0 auto;padding:1.4rem 1.15rem 4.5rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.brand{font:11px/1 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.pill{font:10px/1 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(255,183,3,.35);padding:.35rem .6rem;border-radius:999px}
+h1{font-size:clamp(2.15rem,8vw,3.35rem);line-height:.98;font-weight:600;letter-spacing:-.03em;margin:1.15rem 0 .85rem}
+h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
+.lede{font-size:1.18rem;color:#c9d6df;margin:0 0 1rem}
+.pull{border-left:2px solid var(--cyan);padding:.15rem 0 .15rem 1rem;color:#d7e3ea;font-style:italic;margin:0 0 1.2rem}
+.badges{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1.4rem}
+.badge{font:10px/1.3 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;border:1px solid #5a3030;color:var(--seed);padding:.28rem .5rem;border-radius:999px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:1.15rem 1.15rem 1.2rem;margin:0 0 1rem;
+  backdrop-filter:blur(10px);
 }
-.closed{
-  border:1px solid rgba(255,183,3,.45);color:var(--gold);
-  padding:.22rem .5rem;border-radius:999px;white-space:nowrap;
-}
-h1{
-  font-family:Fraunces,Georgia,serif;
-  font-size:clamp(2rem,8vw,3.15rem);
-  line-height:.98;font-weight:600;letter-spacing:-.03em;
-  margin:.85rem 0 .7rem;
-}
-h1 em{font-style:italic;color:var(--cyan);font-weight:500}
-.lede{font-size:1.12rem;color:#d2dee8;margin:0 0 1rem}
-.fine{color:var(--mute);font-size:.92rem}
-.pills{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0 1.15rem}
-.pill{
-  appearance:none;border:1px solid var(--line);background:#070c12;color:var(--ink);
-  border-radius:999px;padding:.42rem .72rem;font:13px/1.2 "IBM Plex Sans",sans-serif;
-}
-.pill[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 0 1px rgba(62,232,255,.25)}
-.stage{
-  border:1px solid var(--line);border-radius:22px;padding:1.05rem 1rem 1.15rem;
-  background:linear-gradient(180deg,rgba(16,28,38,.9),var(--card));
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-}
-.kicker{font:11px/1.2 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0 0 .35rem}
-h2{font-family:Fraunces,Georgia,serif;font-size:1.35rem;margin:0 0 .45rem;font-weight:600}
-.pair{display:grid;gap:.65rem;margin:.85rem 0}
-@media(min-width:640px){.pair{grid-template-columns:1fr 1fr}}
-.cell{border:1px solid var(--line);border-radius:14px;padding:.8rem .85rem;background:#070b10}
-.cell b{display:block;font:15px/1.3 "IBM Plex Mono",monospace;color:var(--cyan);margin-bottom:.25rem}
-label{display:block;color:var(--mute);font-size:.8rem;margin:.7rem 0 .25rem}
+.card h2{font-size:1.02rem;margin:0 0 .55rem;font-weight:600}
+.note{color:var(--mute);font-size:.92rem}
+.grid{display:grid;gap:.65rem}
+@media(min-width:640px){.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}}
+.stat{border:1px solid var(--line);border-radius:14px;padding:.9rem .85rem;background:rgba(0,0,0,.18)}
+.stat b{display:block;font:1.35rem/1.1 IBM Plex Mono,ui-monospace,monospace;color:var(--cyan)}
+.stat span{display:block;color:var(--mute);font-size:.8rem;margin-top:.28rem}
+label{display:block;color:var(--mute);font-size:.78rem;font-family:IBM Plex Mono,ui-monospace,monospace;letter-spacing:.04em;margin:.7rem 0 .28rem}
 input{
-  width:100%;background:#05080c;border:1px solid var(--line);color:var(--ink);
-  border-radius:10px;padding:.62rem .7rem;font:16px "IBM Plex Mono",monospace;
+  width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);
+  border-radius:10px;padding:.65rem .7rem;font:16px/1.3 IBM Plex Mono,ui-monospace,monospace;
 }
-.receipt{
-  margin-top:1rem;padding:1rem .95rem;border-radius:16px;
-  border:1px dashed rgba(255,183,3,.35);background:rgba(255,183,3,.05);
-}
-.receipt strong{color:var(--gold);font-family:Fraunces,Georgia,serif;font-size:1.35rem;font-weight:600}
-.badge{display:inline-block;border:1px solid #5a3030;color:var(--warn);font:11px "IBM Plex Mono",monospace;padding:.2rem .5rem;border-radius:999px;margin:.2rem .3rem .2rem 0}
-.rungs{display:grid;gap:.55rem;margin-top:.7rem}
-@media(min-width:640px){.rungs{grid-template-columns:1fr 1fr}}
-.rung{border:1px solid var(--line);border-radius:14px;padding:.75rem .8rem}
-.rung b{display:block;font-family:Fraunces,Georgia,serif;font-size:1.15rem}
-.rung span{display:block;color:var(--mute);font-size:.82rem;margin-top:.15rem}
-nav.foot{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:1.5rem;font-size:.9rem}
+input:focus{outline:2px solid rgba(62,232,255,.35);border-color:var(--cyan)}
+.readout{margin:1rem 0 0;padding:.9rem;border-radius:14px;background:#070b10;border:1px solid rgba(255,183,3,.22)}
+.readout strong{color:var(--gold)}
+.human{margin:.55rem 0 0;color:#c5d4de}
+.seed-tag{font:10px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.closed{color:var(--gold);font:11px/1.4 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;margin:.85rem 0 0}
+nav.foot{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:1.5rem;font-size:.88rem;font-family:IBM Plex Mono,ui-monospace,monospace}
 </style>
 </head>
 <body>
-<main class="wrap">
+<div class="wrap">
   <div class="top">
-    <span>À la carte · job aide</span>
-    <span class="closed">Till closed</span>
+    <span class="brand">DualisCapax · SIMA-DCLM</span>
+    <span class="pill">Till closed</span>
   </div>
   <h1>Keep the person.<br><em>Stop burning the hour.</em></h1>
-  <p class="lede">The foundation is already paid for — the board, the roster, the stack the ministry or the club already bought. People were trained. Then the same hour is typed again. That second typing is tax and overtime with nothing new to show.</p>
-  <p class="fine">This is an aide for the job you already run. Not a replacement hire. Not a live hospital. Not a ministry contract. Look is free.</p>
-  <p><span class="badge">NO PII</span><span class="badge">NO CHART IDS</span><span class="badge">SEED SKETCH</span></p>
-
-  <p class="fine" style="margin:1.1rem 0 .35rem">Which desk is wasting the hour?</p>
-  <div class="pills" id="desks" role="group" aria-label="Desk sketches">
-    <button class="pill" type="button" data-desk="clinic" aria-pressed="true">Clinic room</button>
-    <button class="pill" type="button" data-desk="city">City desk</button>
-    <button class="pill" type="button" data-desk="kitchen">Kitchen line</button>
-    <button class="pill" type="button" data-desk="rink">Rink office</button>
+  <p class="lede">The foundation is already there. The EHR. The roster book. The municipal stack. The kitchen board. People were trained. The other layer was paid for. Then the same hour is typed again.</p>
+  <p class="pull">That second typing is tax and overtime with nothing new to show. The aide sits beside the chair. It does not take the chair.</p>
+  <div class="badges">
+    <span class="badge">No PII</span>
+    <span class="badge">No chart IDs</span>
+    <span class="badge">No token in this file</span>
+    <span class="badge">Not a replacement hire</span>
   </div>
 
-  <section class="stage">
-    <p class="kicker" id="deskLabel">Clinic room · sketch</p>
-    <h2>Name the leftover</h2>
-    <p class="fine" id="deskCopy">Two systems already hold the visit. The chair types it a third time. Minutes are not a Dualis measurement until your desk says they are.</p>
-    <div class="pair">
-      <div class="cell"><b>Foundation</b>Already bought. Already trained. Sitting one layer over.</div>
-      <div class="cell"><b>Re-key</b>The hour that pays tax and buys nothing new.</div>
-    </div>
+  <section class="card">
+    <h2>What actually burns</h2>
+    <p>Trained is not adopted. A local win that jams the next desk is friction moved, not solved. Name the leftover on <em>this</em> desk — minutes, a sheet that exists twice, overtime that bought no care.</p>
+    <p class="note">We do not sell ALS. We do not stamp engineering. We do not invent a hospital. Look is free.</p>
+  </section>
+
+  <section class="card">
+    <h2>Sketch the leftover</h2>
+    <p class="seed-tag">Seed · sliders are not a site log</p>
+    <p class="note">Change the three numbers to your desk. Nothing is uploaded. Both poles stay SEED until your book names them.</p>
     <label>Minutes lost each time the work is re-keyed
       <input id="mins" type="number" inputmode="decimal" value="4.9" step="0.1" min="0">
     </label>
@@ -119,72 +102,65 @@ nav.foot{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:1.5rem;font-size:.9re
     <label>Loaded wage for that chair (CAD / hour)
       <input id="rate" type="number" inputmode="decimal" value="45.6" step="0.1" min="0">
     </label>
-    <div class="receipt" id="out"></div>
+    <div class="readout" id="out"></div>
   </section>
 
-  <section style="margin-top:1.35rem">
-    <p class="kicker">Human scale</p>
-    <h2>Coffee to a seat. Never the vault.</h2>
-    <div class="rungs">
-      <div class="rung"><b>Look $0</b><span>Stand in the room. Name the two poles. No card.</span></div>
-      <div class="rung"><b>$5 aide-hour</b><span>Fuel 10 — a short ride with the sandbox. CLOSED.</span></div>
-      <div class="rung"><b>$19 aide-shift</b><span>30-day job format. One indication. CLOSED.</span></div>
-      <div class="rung"><b>$49 aide-seat</b><span>12 months, one room. Not ALS. CLOSED.</span></div>
+  <section class="card">
+    <h2>In a human year</h2>
+    <div class="grid three" id="human"></div>
+    <p class="note" style="margin:.8rem 0 0">1 FTE ≈ 1,850 paid hours. 1 night ≈ 8 hours. These are translations of the sketch — not a grant and not a named city.</p>
+  </section>
+
+  <section class="card">
+    <h2>The aide, not the hire</h2>
+    <div class="grid two">
+      <div class="stat"><b>Look $0</b><span>Stand in the room. Name the two poles. No card.</span></div>
+      <div class="stat"><b>$5 hour</b><span>Fuel 10 — a short ride. CLOSED.</span></div>
+      <div class="stat"><b>$19 shift</b><span>30-day job format. One indication. CLOSED.</span></div>
+      <div class="stat"><b>$49 seat</b><span>Twelve months, one room. Not the vault. CLOSED.</span></div>
     </div>
-    <p class="fine" style="margin:.8rem 0 0">SALES CLOSED · IP LOCK · NO OPEN STRIPE ON THIS PAGE</p>
+    <p class="closed">Sales closed · IP lock · no open Stripe on this page</p>
   </section>
 
-  <section style="margin-top:1.35rem">
-    <p class="kicker">Law floor</p>
-    <p class="fine">NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</p>
-    <p class="fine">If we cannot name the leftover unit, the number stays a sketch. A pretty total is not a grant.</p>
+  <section class="card">
+    <h2>Law floor</h2>
+    <p class="note">NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</p>
+    <p>If we cannot name the leftover unit, the number stays a sketch. A pretty total is not a grant.</p>
   </section>
 
   <nav class="foot">
     <a href="/alacarte">À la carte</a>
     <a href="/look">Look</a>
-    <a href="/ice">Ice</a>
+    <a href="/sandbox">Sandbox</a>
     <a href="/manifold">Manifold</a>
     <a href="/">Home</a>
   </nav>
-</main>
+</div>
 <script>
-(function(){
-  var desks = {
-    clinic: { label: "Clinic room · sketch", copy: "Two systems already hold the visit. The chair types it a third time. Minutes are not a Dualis measurement until your desk says they are.", mins: 4.9, vis: 65000, rate: 45.6 },
-    city: { label: "City desk · sketch", copy: "The stack was bought. The report is still re-keyed into a second sheet. Public money pays the second typing.", mins: 12, vis: 2400, rate: 52 },
-    kitchen: { label: "Kitchen line · sketch", copy: "The board already knows the ticket. Someone still writes it twice when the line is on fire.", mins: 2.5, vis: 18000, rate: 28 },
-    rink: { label: "Rink office · sketch", copy: "TeamSnap already has the roster. The hour is lost moving the same names onto another clipboard.", mins: 8, vis: 900, rate: 32 }
-  };
-  function rec(){
-    var m = +document.getElementById("mins").value || 0;
-    var v = +document.getElementById("vis").value || 0;
-    var r = +document.getElementById("rate").value || 0;
-    var hrs = (m * v) / 60;
-    var cad = hrs * r;
-    var fte = hrs / 1800;
-    var out = document.getElementById("out");
-    if (!m || !v) { out.innerHTML = "Add minutes and count."; return; }
-    out.innerHTML = "Sketch leftover: <strong>" + Math.round(hrs).toLocaleString() + " hours</strong> · <strong>$" + Math.round(cad).toLocaleString() + " CAD</strong> a year if those minutes are real.<br><span class=\"fine\">About " + fte.toFixed(1) + " full-time years of typing what the foundation already holds. Not measured here. The aide costs a coffee. The burn is the re-key.</span>";
+function rec(){
+  var m=+document.getElementById('mins').value||0;
+  var v=+document.getElementById('vis').value||0;
+  var r=+document.getElementById('rate').value||0;
+  var hrs=(m*v)/60;
+  var cad=hrs*r;
+  var fte=hrs/1850;
+  var nights=hrs/8;
+  var out=document.getElementById('out');
+  var hum=document.getElementById('human');
+  if(!m||!v){
+    out.innerHTML='Add minutes and count.';
+    hum.innerHTML='';
+    return;
   }
-  document.querySelectorAll("#desks .pill").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      document.querySelectorAll("#desks .pill").forEach(function(b){ b.setAttribute("aria-pressed", "false"); });
-      btn.setAttribute("aria-pressed", "true");
-      var d = desks[btn.getAttribute("data-desk")];
-      document.getElementById("deskLabel").textContent = d.label;
-      document.getElementById("deskCopy").textContent = d.copy;
-      document.getElementById("mins").value = d.mins;
-      document.getElementById("vis").value = d.vis;
-      document.getElementById("rate").value = d.rate;
-      rec();
-    });
-  });
-  ["mins","vis","rate"].forEach(function(id){
-    document.getElementById(id).addEventListener("input", rec);
-  });
-  rec();
-})();
+  function n(x){return Math.round(x).toLocaleString();}
+  function d(x){return (Math.round(x*10)/10).toLocaleString();}
+  out.innerHTML='<span class="seed-tag">Seed sketch</span><p class="human">If those minutes are real, the re-key is <strong>'+n(hrs)+' hours</strong> · <strong>$'+n(cad)+' CAD</strong> in a year. The aide is a coffee-to-a-seat. The burn is the second typing.</p>';
+  hum.innerHTML=
+    '<div class="stat"><b>'+d(fte)+'</b><span>full-time years of re-key</span></div>'+
+    '<div class="stat"><b>'+n(nights)+'</b><span>eight-hour nights of leftover</span></div>'+
+    '<div class="stat"><b>$'+n(cad)+'</b><span>loaded wage on that leak</span></div>';
+}
+['mins','vis','rate'].forEach(function(id){document.getElementById(id).oninput=rec}); rec();
 </script>
 </body>
 </html>
