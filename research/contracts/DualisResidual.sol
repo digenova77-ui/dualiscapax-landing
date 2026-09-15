@@ -1,111 +1,62 @@
 // SPDX-License-Identifier: LicenseRef-Dualis-Residual-Draft
 pragma solidity ^0.8.24;
 
-/// @title DualisResidual
-/// @notice Draft. Not deployed. Encodes the one worldwide residual.
-/// Client keep: 81% year 1 → 100% year 5 of a MEASURED save.
-/// Dualis remainder while insight earns it (10% work + 10% royalty).
-/// No upfront. No private rate. No token. No scalp.
+/// One save. One split. Nothing else.
+/// Client keep 81% Y1 → 100% Y5. Dualis remainder (10% + 10%) while it lasts.
 contract DualisResidual {
     address public immutable dualis;
     address public client;
     address public attestor;
-
-    uint64 public saveOpenedAt;
-    uint256 public measuredSave;
+    uint64 public openedAt;
+    uint256 public save;
     bool public frozen;
-    bool public opened;
 
-    event Measured(uint256 amount, address attestor);
-    event Split(uint256 toClient, uint256 toDualis, uint8 yearIndex);
-    event Frozen(address by);
-    event AttestorSet(address who);
+    event Opened(uint256 save);
+    event Paid(uint256 toClient, uint256 toDualis);
+    event Frozen();
 
-    error NotParty();
-    error FrozenErr();
-    error NotOpen();
-    error AlreadyOpen();
-    error ZeroSave();
-    error BadYear();
-
-    modifier party() {
-        if (msg.sender != dualis && msg.sender != client && msg.sender != attestor) revert NotParty();
-        _;
+    constructor(address d, address c, address a) {
+        require(d != address(0) && c != address(0) && a != address(0));
+        dualis = d;
+        client = c;
+        attestor = a;
     }
 
-    constructor(address dualis_, address client_, address attestor_) {
-        require(dualis_ != address(0) && client_ != address(0) && attestor_ != address(0), "zero");
-        dualis = dualis_;
-        client = client_;
-        attestor = attestor_;
+    function keepBps() public view returns (uint16) {
+        if (openedAt == 0) return 8100;
+        uint256 y = (block.timestamp - openedAt) / 365 days;
+        if (y >= 4) return 10_000;
+        return uint16(8100 + y * 475);
     }
 
-    /// Client keep in bps. Y1 8100, then +475 bps/year to 10000 at Y5.
-    function clientBps(uint8 yearIndex) public pure returns (uint16) {
-        if (yearIndex > 4) return 10_000;
-        return uint16(8100 + uint16(yearIndex) * 475);
+    function open(uint256 measured) external {
+        require(msg.sender == attestor && !frozen && openedAt == 0 && measured > 0);
+        save = measured;
+        openedAt = uint64(block.timestamp);
+        emit Opened(measured);
     }
 
-    function yearIndex() public view returns (uint8) {
-        if (!opened || saveOpenedAt == 0) revert NotOpen();
-        uint256 elapsed = block.timestamp - saveOpenedAt;
-        uint256 y = elapsed / 365 days;
-        if (y > 4) return 4;
-        return uint8(y);
-    }
-
-    /// Only a measured save opens residual. Look stays off-chain at $0.
-    function attestSave(uint256 amount) external {
-        if (msg.sender != attestor) revert NotParty();
-        if (frozen) revert FrozenErr();
-        if (amount == 0) revert ZeroSave();
-        if (opened) revert AlreadyOpen();
-        measuredSave = amount;
-        saveOpenedAt = uint64(block.timestamp);
-        opened = true;
-        emit Measured(amount, msg.sender);
-    }
-
-    function previewSplit() public view returns (uint256 toClient, uint256 toDualis, uint8 y) {
-        if (!opened) revert NotOpen();
-        y = yearIndex();
-        uint256 keep = (measuredSave * clientBps(y)) / 10_000;
-        return (keep, measuredSave - keep, y);
-    }
-
-    /// Pull-pattern. No silent drain. Frozen stops both sides.
-    function release() external party {
-        if (frozen) revert FrozenErr();
-        if (!opened) revert NotOpen();
-        (uint256 toClient, uint256 toDualis, uint8 y) = previewSplit();
-        uint256 payC = toClient > address(this).balance ? address(this).balance : toClient;
-        uint256 payD = address(this).balance - payC;
-        if (payD > toDualis) {
-            payD = toDualis;
-            payC = address(this).balance - payD;
+    function pay() external {
+        require(!frozen && openedAt != 0 && address(this).balance > 0);
+        require(msg.sender == dualis || msg.sender == client || msg.sender == attestor);
+        uint256 pot = address(this).balance;
+        uint256 c = pot * keepBps() / 10_000;
+        uint256 d = pot - c;
+        if (c > 0) {
+            (bool x,) = client.call{value: c}("");
+            require(x);
         }
-        if (payC > 0) {
-            (bool a, ) = client.call{value: payC}("");
-            require(a, "client");
+        if (d > 0) {
+            (bool y,) = dualis.call{value: d}("");
+            require(y);
         }
-        if (payD > 0) {
-            (bool b, ) = dualis.call{value: payD}("");
-            require(b, "dualis");
-        }
-        emit Split(payC, payD, y);
+        emit Paid(c, d);
     }
 
-    function freeze() external party {
+    function freeze() external {
+        require(msg.sender == dualis || msg.sender == client || msg.sender == attestor);
         frozen = true;
-        emit Frozen(msg.sender);
-    }
-
-    function setAttestor(address next) external {
-        if (msg.sender != dualis && msg.sender != client) revert NotParty();
-        if (frozen) revert FrozenErr();
-        require(next != address(0), "zero");
-        attestor = next;
-        emit AttestorSet(next);
+        emit Frozen();
     }
 
     receive() external payable {}
