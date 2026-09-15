@@ -1,0 +1,29 @@
+{
+  "version": "2026-09-15",
+  "verb": "implement",
+  "lens": "outside-project",
+  "her_sentence": "I work on projects that are ultimately implementing EHRs, or sometime upgrading, integrating, etc .",
+  "what_it_is": "A site or network is putting a book in — new or replacement. The engagement is the change. Dualis aides the outside consultant on that project.",
+  "objects_touched": [
+    "site / corporation / OHT",
+    "vendor book (Epic, Meditech, Cerner, Connect Care, …)",
+    "second languages (HL7, FHIR, CIHI abstract if the go-live must still speak DAD/NACRS)",
+    "PHIPA as constraint",
+    "official leadership door for the SOW — not a scraped rolodex"
+  ],
+  "phases_model": [
+    {"id": "scope", "label": "Which sites, which book", "status": "model"},
+    {"id": "as-is", "label": "What people do now", "status": "model"},
+    {"id": "to-be", "label": "What the new book demands", "status": "model"},
+    {"id": "cutover", "label": "Old book dies", "status": "model"},
+    {"id": "after", "label": "Re-key and workarounds the RFP said would vanish", "status": "leftover-seed"}
+  ],
+  "leftover": "Minutes × volume × wage after go-live is a SEED sketch for leadership until her book measures.",
+  "not": [
+    "Dualis is the EHR",
+    "She is on the hospital payroll",
+    "We invent the client list",
+    "Chart IDs"
+  ],
+  "etc": "Upgrade and integrate stay other bricks."
+}
