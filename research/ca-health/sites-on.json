@@ -1,0 +1,51 @@
+{
+  "version": "2026-09-15",
+  "jurisdiction": "on",
+  "law": "Public topology. No chart IDs. No invented hospital.",
+  "roof": {
+    "id": "ontario-health",
+    "name": "Ontario Health",
+    "cite": "https://www.ontariohealth.ca/system/oht.html",
+    "note": "OHTs group primary care, hospitals, home care, mental health, LTC. One patient record is the government's sentence — Dualis does not claim the record."
+  },
+  "networks": [
+    {
+      "id": "fla-oht",
+      "name": "Frontenac, Lennox and Addington Ontario Health Team",
+      "kind": "oht",
+      "serves_echo": "Frontenac, Lennox and Addington, including Kingston, Greater Napanee and surrounding rural communities",
+      "cite": "https://www.ontario.ca/page/ontario-health-teams",
+      "sites_cited": [
+        {
+          "id": "khsc",
+          "name": "Kingston Health Sciences Centre",
+          "kind": "hospital-corporation",
+          "status": "named_public",
+          "note": "Corporation name is public. Campuses not enumerated here until a corporation page is cited."
+        }
+      ]
+    },
+    {
+      "id": "quinte-health",
+      "name": "Quinte Health",
+      "kind": "hospital-corporation",
+      "serves_echo": "Quinte region public hospital corporation",
+      "cite": "https://www.quintehealth.ca/",
+      "sites_cited": [],
+      "leftover": "Campuses stay a hole until the corporation list is echoed. Do not invent Belleville as a Dualis facility object without that cite attached."
+    },
+    {
+      "id": "gthn-oht",
+      "name": "Greater Hamilton Health Network Ontario Health Team",
+      "kind": "oht",
+      "serves_echo": "Hamilton, Haldimand and Niagara Northwest",
+      "cite": "https://www.ontario.ca/page/ontario-health-teams",
+      "sites_cited": []
+    }
+  ],
+  "holes": [
+    "Full OHT roster — Ontario Health page says learn more; this file is not the census.",
+    "Every hospital corporation campus list.",
+    "Which vendor book each site actually runs — SEED until that site's public statement or her book."
+  ]
+}
