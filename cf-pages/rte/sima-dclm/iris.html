@@ -30,15 +30,15 @@
 <div class="say" id="say"><em>She models the hour on this desk. Not the chart.</em></div>
 <div class="wake" id="wake">
   <button type="button" id="go">Wake Iris on this desk</button>
-  <p>One tap. Then she can name the two books and the leftover you already sketched.</p>
+  <p>One tap. Then she names the two books and the leftover you already sketched.</p>
 </div>
 <form class="dock" id="bar">
   <input id="q" placeholder="Ask about this hour" autocomplete="off">
   <button type="submit">Ask</button>
 </form>
-<script src="/js/api-config.js"></script>
-<script src="/js/dsap.js"></script>
-<script src="/js/dsap-v2-jacket.js"></script>
+<script src="../../js/api-config.js"></script>
+<script src="../../js/dsap.js"></script>
+<script src="../../js/dsap-v2-jacket.js"></script>
 <script>
 (function(){
   function bake(){
@@ -84,7 +84,7 @@
     try{
       if(window.DSAP) DSAP.place("puck",20);
       var data=await DSAPJacket.ask(KNOW+"\n\nUser: "+text,{max_tokens:220,seat:20});
-      var reply=(data&&(data.reply||data.text||data.message))||"";
+      var reply=(data&&(data.reply||data.text||data.message||(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)))||"";
       say("Iris",reply||"V2 returned no sentence. The desk is still here.");
     }catch(e){ say("Iris",e.message||String(e)); }
   }
