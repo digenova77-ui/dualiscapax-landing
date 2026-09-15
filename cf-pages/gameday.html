@@ -9,60 +9,36 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#07080d;--ink:#e8eefc;--mute:#8b96b3;--cyan:#38bdf8;--gold:#ffb830;--line:#2a3348;--card:#10141c}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
-body{font:18px/1.5 Fraunces,Georgia,serif}
-.wrap{max-width:42rem;margin:0 auto;padding:1.1rem 1rem 5.2rem}
-.top{display:flex;justify-content:space-between;align-items:center;font:11px IBM Plex Mono,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
-.pill{color:var(--gold);border:1px solid rgba(255,184,48,.35);padding:.3rem .55rem;border-radius:999px}
-h1{font-size:clamp(2rem,8vw,3rem);line-height:.98;margin:.9rem 0 .6rem}
-h1 em{font-style:italic;color:var(--cyan);font-weight:400}
-.lede{color:#c5cee0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1rem;margin:0 0 .75rem}
-.card h2{font-size:1.05rem;margin:0 0 .4rem}
-.note{color:var(--mute);font-size:.92rem;margin:0}
-.links a{display:block;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;margin:.45rem 0;background:var(--card)}
-.links a strong{display:block}
-.links a span{display:block;color:var(--mute);font-size:.88rem;margin-top:.15rem}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(7,8,13,.94);border-top:1px solid var(--line);padding:.4rem .2rem calc(.4rem + env(safe-area-inset-bottom));font:10px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
-.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
-</style></head>
+<link rel="stylesheet" href="./css/ice-windows.css">
+</head>
 <body>
 <div class="wrap">
   <div class="top"><span>DualisCapax · Ice</span><span class="pill">Till closed</span></div>
   <h1>This game.<br><em>Or nothing yet.</em></h1>
-  <p class="lede">One screen for game day. Not a second hockey app. Not a clock Dualis invented.</p>
-
+  <p class="lede">Game day is the game in front of you. The week lives on Schedule.</p>
   <section class="card">
     <h2>Who is at the rink</h2>
-    <p class="note" id="who">TeamSnap is the list, when a seat is claimed. Dualis does not invent a roster.</p>
+    <p class="note">TeamSnap is the list, when a seat is claimed. Dualis does not invent a roster.</p>
   </section>
   <section class="card">
     <h2>When and where</h2>
-    <p class="note" id="when">Empty until TeamSnap has a next event on this phone. Maps open that address. Dualis does not invent an arrival time.</p>
+    <p class="note" id="when">Empty until TeamSnap has a next event on this phone. Dualis does not invent an arrival time.</p>
   </section>
   <section class="card">
     <h2>What this shift is</h2>
-    <p class="note">Watch the whole sequence — what is developing, and how we got here. A miss is not automatically a mistake. One job per seat. Do not mash another player’s job onto this one.</p>
+    <p class="note">Watch the whole sequence. A miss is not automatically a mistake. One job per seat.</p>
   </section>
-
-  <nav class="links">
-    <a href="./ice.html"><strong>Open the rink</strong><span>Claim a seat with TeamSnap. That is the door.</span></a>
-    <a href="./hockey.html"><strong>See the five leagues</strong><span>OMHA, Alliance, GTHL, NOHA, OWHA. They meet at OHF.</span></a>
-    <a href="./ohf.html"><strong>See how they meet</strong><span>Championship path. Not a fake roster.</span></a>
-  </nav>
 </div>
 <nav class="dock">
   <a href="./ice.html">Rink</a>
+  <a href="./schedule.html">Schedule</a>
   <a class="on" href="./gameday.html">Game day</a>
   <a href="./hockey.html">Leagues</a>
-  <a href="./">Home</a>
 </nav>
 <script>
 (function(){
   try{
-    var raw=localStorage.getItem("dc.teamsnap.events")||localStorage.getItem("dc.ice.nextGame");
+    var raw=localStorage.getItem("dc.teamsnap.events");
     if(!raw)return;
     var ev=JSON.parse(raw);
     var next=Array.isArray(ev)?ev[0]:ev;
@@ -70,7 +46,7 @@ h1 em{font-style:italic;color:var(--cyan);font-weight:400}
     var title=next.name||next.title||"Next event";
     var loc=next.location_name||next.location||"";
     var when=next.start_date||next.start||"";
-    document.getElementById("when").textContent=title+(when?" · "+when:"")+(loc?" · "+loc:"")+". Maps if there is an address. Dualis did not invent this row.";
+    document.getElementById("when").textContent=[title,when,loc].filter(Boolean).join(" · ")+". Dualis did not invent this row.";
   }catch(e){}
 })();
 </script>
