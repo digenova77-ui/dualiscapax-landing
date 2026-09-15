@@ -1,7 +1,9 @@
 # One machine
 
-Look is $0 and off-chain. Walk away before sign is free.
-After sign: 90 days to back out with the pot returning to the client.
-After 90 days: they may still leave. Penalty is Dualis's residual slice on the measured save — the blueprint already in their hour — not the whole save.
-Attestor can be wrong — freeze.
+Look is $0 off-chain. Walk before sign is free.
+After sign they may break in the first 90 days anytime, free of charge.
+Breaking revokes live modeling. Dualis stops naming new leftover.
+A mask (snapshot already in their hands) may remain. It does not update.
+That is how the design is not ripped off during the cooling-off: they do not keep the ongoing brain.
+After 90 days, staying uses the one residual. Leaving then pays Dualis the residual slice — and live modeling still dies.
 No token. No private rate. No till until verified.

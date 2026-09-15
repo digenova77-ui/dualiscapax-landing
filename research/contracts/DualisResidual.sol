@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LicenseRef-Dualis-Residual-Draft
 pragma solidity ^0.8.24;
 
-/// Look off-chain. Sign on-chain. 90 days free exit.
-/// After that, exit pays Dualis the residual slice (keepBps remainder), not the whole save.
+/// 90-day free break anytime after sign.
+/// Break or late exit → live modeling OFF. Mask may remain off-chain. Feed does not.
 contract DualisResidual {
     uint256 public constant WINDOW = 90 days;
 
@@ -14,11 +14,12 @@ contract DualisResidual {
     uint256 public save;
     bool public frozen;
     bool public signed;
+    bool public live; // ongoing Dualis modeling of their losses
 
     event Signed();
     event Opened(uint256 save);
     event Paid(uint256 toClient, uint256 toDualis);
-    event Exited(bool inWindow, uint256 toClient, uint256 toDualis);
+    event Broke(bool inWindow);
     event Frozen();
 
     constructor(address d, address c, address a) {
@@ -42,40 +43,42 @@ contract DualisResidual {
     function sign() external {
         require(msg.sender == client && !signed && !frozen);
         signed = true;
+        live = true;
         signedAt = uint64(block.timestamp);
         emit Signed();
     }
 
     function open(uint256 measured) external {
-        require(msg.sender == attestor && signed && !frozen && openedAt == 0 && measured > 0);
+        require(live && msg.sender == attestor && signed && !frozen && openedAt == 0 && measured > 0);
         save = measured;
         openedAt = uint64(block.timestamp);
         emit Opened(measured);
     }
 
     function pay() external {
-        require(!frozen && openedAt != 0 && address(this).balance > 0);
+        require(live && !frozen && openedAt != 0 && address(this).balance > 0);
         require(msg.sender == dualis || msg.sender == client || msg.sender == attestor);
         _split(keepBps());
     }
 
-    /// Client may leave anytime after sign.
-    /// Inside 90 days: pot returns to client.
-    /// After 90: Dualis keeps the residual slice; client keeps the rest.
-    function exit() external {
-        require(msg.sender == client && signed && !frozen && address(this).balance > 0);
+    /// Client may break anytime after sign.
+    /// 90 days: pot back to client, live OFF.
+    /// After 90: residual slice to Dualis, live OFF.
+    function breakOff() external {
+        require(msg.sender == client && signed && live && !frozen);
+        live = false;
+        frozen = true;
         bool early = inWindow();
         if (early) {
             uint256 pot = address(this).balance;
-            (bool x,) = client.call{value: pot}("");
-            require(x);
-            frozen = true;
-            emit Exited(true, pot, 0);
-        } else {
+            if (pot > 0) {
+                (bool x,) = client.call{value: pot}("");
+                require(x);
+            }
+        } else if (address(this).balance > 0 && openedAt != 0) {
             _split(keepBps());
-            frozen = true;
-            emit Exited(false, 0, 0);
         }
+        emit Broke(early);
     }
 
     function freeze() external {
