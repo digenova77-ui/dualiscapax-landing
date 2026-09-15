@@ -2,8 +2,8 @@
 """DualisCapax — five OHF youth members as Dualis league indexes.
 
 OMHA / ALLIANCE / GTHL / NOHA / OWHA.
-Public association pages = cite pipes only.
-No player names. No GameSheet dump. No helix.
+If the cite disagrees with the seed, write an anomaly and keep it.
+Bring-in = promote an anomaly into the next seed. Never invent players.
 """
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ LEAGUES = [
         "name": "Ontario Minor Hockey Association",
         "short": "OMHA",
         "cite": "https://www.omha.net/",
+        "expect_in_title": ["omha", "ontario minor"],
         "ohf_path": "league season → championship → OHF",
         "seed_orgs": [
             {"slug": "barrie-aaa-zone", "name": "Barrie AAA Zone"},
@@ -40,6 +41,7 @@ LEAGUES = [
         "name": "Minor Hockey Alliance of Ontario",
         "short": "ALLIANCE",
         "cite": "https://alliancehockey.com/",
+        "expect_in_title": ["alliance"],
         "ohf_path": "own zones → championship → OHF",
         "seed_orgs": [
             {"slug": "windsor-aaa-zone", "name": "Windsor AAA Zone"},
@@ -53,6 +55,7 @@ LEAGUES = [
         "name": "Greater Toronto Hockey League",
         "short": "GTHL",
         "cite": "https://gthlcanada.com/",
+        "expect_in_title": ["gthl", "greater toronto"],
         "ohf_path": "own book → championship → OHF",
         "seed_orgs": [
             {"slug": "toronto-jr-canadiens", "name": "Toronto Jr. Canadiens"},
@@ -66,6 +69,7 @@ LEAGUES = [
         "name": "Northern Ontario Hockey Association",
         "short": "NOHA",
         "cite": "https://www.noha.on.ca/",
+        "expect_in_title": ["noha", "northern ontario"],
         "ohf_path": "own map → championship → OHF",
         "seed_orgs": [
             {"slug": "sudbury-wolves-aaa", "name": "Sudbury Wolves AAA"},
@@ -78,11 +82,19 @@ LEAGUES = [
         "name": "Ontario Women's Hockey Association",
         "short": "OWHA",
         "cite": "https://www.owha.on.ca/",
+        "expect_in_title": ["owha", "women"],
         "ohf_path": "own path → championship → OHF",
         "seed_orgs": [
             {"slug": "owha-branch-index", "name": "OWHA branch index (see girls harvest)"},
         ],
     },
+]
+
+BESIDE = [
+    {"id": "oha", "name": "Ontario Hockey Association", "why": "OHF member — junior, not this youth plate"},
+    {"id": "ohl", "name": "Ontario Hockey League", "why": "OHF member — major junior, not this youth plate"},
+    {"id": "heo", "name": "Hockey Eastern Ontario", "why": "Hockey Canada sibling beside OHF"},
+    {"id": "hno", "name": "Hockey Northwestern Ontario", "why": "Hockey Canada sibling beside OHF"},
 ]
 
 
@@ -95,6 +107,15 @@ def write_json(path: Path, obj: Any) -> None:
     path.write_text(json.dumps(obj, indent=2) + "\n")
 
 
+def load_json(path: Path) -> Any:
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return None
+
+
 def ping(url: str) -> Dict[str, Any]:
     cite: Dict[str, Any] = {"url": url, "fetched_at": utc_now(), "ok": False}
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html"})
@@ -103,8 +124,8 @@ def ping(url: str) -> Dict[str, Any]:
             body = resp.read(8000).decode("utf-8", errors="replace")
             cite["ok"] = True
             cite["status"] = getattr(resp, "status", 200)
-            title = ""
             low = body.lower()
+            title = ""
             if "<title>" in low:
                 i = low.find("<title>") + 7
                 j = low.find("</title>", i)
@@ -117,13 +138,40 @@ def ping(url: str) -> Dict[str, Any]:
 
 def main() -> int:
     captured = utc_now()
+    anomalies: List[Dict[str, Any]] = []
+    prev = load_json(OUT / "ANOMALIES.json") or {}
+    prior = list(prev.get("open") or [])
+
     leagues_out: List[Dict[str, Any]] = []
     for row in LEAGUES:
         cite = ping(row["cite"])
+        title = (cite.get("title_echo") or "").lower()
+        if not cite.get("ok"):
+            anomalies.append({
+                "kind": "cite_down",
+                "league": row["id"],
+                "cite": row["cite"],
+                "error": cite.get("error"),
+                "status": "noticed",
+                "bring_in": False,
+                "seen_at": captured,
+            })
+        elif row.get("expect_in_title") and not any(tok in title for tok in row["expect_in_title"]):
+            anomalies.append({
+                "kind": "title_mismatch",
+                "league": row["id"],
+                "cite": row["cite"],
+                "title_echo": cite.get("title_echo"),
+                "status": "noticed",
+                "bring_in": True,
+                "note": "Official page title does not echo the member name. Keep and inspect.",
+                "seen_at": captured,
+            })
+
         pack = {
             "unit": "sports/hockey-ohf-five",
             "kind": "dualis_league_index",
-            "law": "Org index only. No named minors. Cite pipe ≠ product face.",
+            "law": "Org index only. Anomalies stay visible. No named minors.",
             "league_id": row["id"],
             "short": row["short"],
             "name": row["name"],
@@ -138,28 +186,56 @@ def main() -> int:
         write_json(OUT / row["id"] / "INDEX.json", pack)
         write_json(UNIT / "packs" / row["id"] / "INDEX.json", pack)
         write_json(WEB / f"{row['id']}.json", pack)
-        leagues_out.append(
-            {
-                "id": row["id"],
-                "short": row["short"],
-                "cite_ok": bool(cite.get("ok")),
-                "org_count": pack["org_count"],
-            }
-        )
+        leagues_out.append({
+            "id": row["id"],
+            "short": row["short"],
+            "cite_ok": bool(cite.get("ok")),
+            "org_count": pack["org_count"],
+        })
+
+    for row in BESIDE:
+        anomalies.append({
+            "kind": "beside_the_five",
+            "league": row["id"],
+            "name": row["name"],
+            "note": row["why"],
+            "status": "noticed",
+            "bring_in": False,
+            "seen_at": captured,
+        })
+
+    # Keep prior open anomalies unless the same kind+league already restated.
+    keys = {(a["kind"], a.get("league")) for a in anomalies}
+    for old in prior:
+        k = (old.get("kind"), old.get("league"))
+        if k not in keys:
+            old["status"] = old.get("status") or "noticed"
+            anomalies.append(old)
+
+    anomaly_doc = {
+        "law": "Notice anomalies. Bring them in as orgs/leagues when they are real. Never invent a player.",
+        "captured_at": captured,
+        "open": anomalies,
+        "open_count": len(anomalies),
+    }
+    write_json(OUT / "ANOMALIES.json", anomaly_doc)
+    write_json(UNIT / "ANOMALIES.json", anomaly_doc)
+    write_json(WEB / "ANOMALIES.json", anomaly_doc)
 
     index = {
         "title": "DualisCapax OHF five — youth members",
-        "law": "Five leagues to start. Ontario is huge. Not OMHA-only.",
+        "law": "Five leagues to start. Anomalies stay on the table.",
         "season": SEASON,
         "captured_at": captured,
         "leagues": leagues_out,
         "ohf_members_youth": ["omha", "alliance", "gthl", "noha", "owha"],
         "not_on_this_plate": ["oha", "ohl", "heo", "hno"],
+        "anomaly_count": len(anomalies),
     }
     write_json(OUT / "INDEX.json", index)
     write_json(UNIT / "INDEX.json", index)
     write_json(WEB / "INDEX.json", index)
-    print(json.dumps({"ok": True, "leagues": leagues_out}, indent=2))
+    print(json.dumps({"ok": True, "leagues": leagues_out, "anomalies": len(anomalies)}, indent=2))
     return 0
 
 
