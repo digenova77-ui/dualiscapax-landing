@@ -1,10 +1,8 @@
 /**
- * Iris voice sleeve. Uses the best local Speech Synthesis voice.
- * Dry path. No scraped IR. No extra hiss.
- * Not in the HRTF ring — that hole stays named.
+ * IrisVoice — one mouth. Device TTS + puck. Words not in HRTF.
+ * Silent product: do not speak a dollar from a SEED.
  */
 (function (w) {
-  if (w.IrisVoice) return;
   var picked = null;
   var PREFER = [/samantha/i,/aria/i,/jenny/i,/google us english/i,/google uk english female/i,/karen/i,/moira/i,/ava/i,/natural/i,/premium/i];
   function score(v) {
@@ -20,28 +18,40 @@
     if (!w.speechSynthesis) return null;
     var list = w.speechSynthesis.getVoices() || [];
     if (!list.length) return null;
-    list = list.slice().sort(function (a, b) { return score(b) - score(a); });
-    picked = list[0];
+    picked = list.slice().sort(function (a, b) { return score(b) - score(a); })[0];
     return picked;
   }
   if (w.speechSynthesis) {
     pick();
     w.speechSynthesis.onvoiceschanged = pick;
   }
-  function speak(text) {
+  function silent(text) {
+    return String(text || "")
+      .replace(/\$[\d,]+(?:\.\d+)?/g, "[seed dollar unpublished]")
+      .replace(/\b[\d,]+\s*(?:CAD|cad)\b/g, "[seed dollar unpublished]")
+      .replace(/\babout\s+[\d,]+(?:\.\d+)?\s*(?:a year|per year|/yr)\b/gi, "open seed, no year in CAD");
+  }
+  function speak(text, seat) {
     if (!text || !w.speechSynthesis) return;
-    var u = new SpeechSynthesisUtterance(String(text).slice(0, 420));
+    var said = silent(String(text).slice(0, 420));
+    var u = new SpeechSynthesisUtterance(said);
     var v = picked || pick();
     if (v) u.voice = v;
     u.lang = (v && v.lang) || "en-CA";
     u.rate = 1.02;
-    u.pitch = 1.0;
+    u.pitch = 1;
     u.volume = 1;
     w.speechSynthesis.cancel();
     w.speechSynthesis.speak(u);
     if (w.DSAP) {
-      try { w.DSAP.wake(); w.DSAP.place("puck", 16); } catch (e) {}
+      try { w.DSAP.wake(); w.DSAP.place("puck", seat || 16); } catch (e) {}
     }
   }
-  w.IrisVoice = { speak: speak, pick: pick, voice: function () { return picked; } };
+  function hush() {
+    try { if (w.speechSynthesis) w.speechSynthesis.cancel(); } catch (e) {}
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) hush();
+  });
+  w.IrisVoice = { speak: speak, pick: pick, hush: hush, silent: silent, voice: function () { return picked; } };
 })(window);
