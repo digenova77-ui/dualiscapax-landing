@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Her desk · tap — SIMA-DCLM</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9bab;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.16);--card:#0b121a}
+*{box-sizing:border-box}html,body{margin:0;background:#03050a;color:var(--ink)}
+body{min-height:100dvh;font:15px/1.45 "IBM Plex Sans",system-ui,sans-serif;display:flex;justify-content:center;padding:1rem .7rem 2rem}
+.phone{
+  width:min(390px,100%);background:
+    radial-gradient(280px 180px at 80% 0,rgba(62,232,255,.12),transparent 60%),
+    var(--bg);
+  border:1px solid var(--line);border-radius:36px;padding:1.1rem 1rem 1.2rem;
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+.bar{display:flex;justify-content:space-between;align-items:center;font:10px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:Fraunces,Georgia,serif;font-size:1.85rem;line-height:1.02;margin:.7rem 0 .35rem;letter-spacing:-.03em}
+h1 em{font-style:italic;color:var(--cyan);font-weight:500}
+.sub{color:var(--mute);font-size:.88rem;margin:0 0 .9rem}
+.hero{
+  border:1px solid var(--line);border-radius:20px;padding:.95rem .9rem;background:var(--card);
+}
+.hero .k{font:10px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.hero .n{font-family:Fraunces,Georgia,serif;font-size:2.2rem;color:var(--gold);margin:.2rem 0}
+.hero p{margin:0;color:#c9d6df;font-size:.92rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.7rem 0}
+.cell{border:1px solid var(--line);border-radius:16px;padding:.7rem .7rem;background:#070b10;min-height:5.2rem}
+.cell b{display:block;font:10px/1.2 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);margin-bottom:.3rem}
+.cell span{color:#d5e0e8;font-size:.86rem}
+.taps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin:.75rem 0 .4rem}
+.tap{
+  appearance:none;border:1px solid var(--line);background:#070b10;color:var(--ink);
+  border-radius:999px;padding:.55rem .2rem;font:11px/1 "IBM Plex Mono",monospace;letter-spacing:.04em;
+}
+.tap[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
+.sheet{border:1px dashed rgba(255,183,3,.35);border-radius:16px;padding:.8rem .8rem;min-height:6.5rem}
+.sheet strong{color:var(--gold);font-family:Fraunces,Georgia,serif}
+.fine{color:var(--mute);font-size:.78rem;margin:.7rem 0 0}
+</style>
+</head>
+<body>
+<article class="phone" aria-label="Phone mock of her desk">
+  <div class="bar"><span>Her desk</span><span>Till closed</span></div>
+  <h1>What I need<br><em>this hour.</em></h1>
+  <p class="sub">DCLM names two poles and the leftover. One tap. Not a second system to type into.</p>
+  <div class="hero">
+    <div class="k">Seed sketch · this chair</div>
+    <div class="n" id="heroN">4.9 min</div>
+    <p id="heroP">Re-key after the foundation already held it.</p>
+  </div>
+  <div class="grid">
+    <div class="cell"><b>Pole A · waste</b><span id="poleA">Minutes typed twice</span></div>
+    <div class="cell"><b>Pole B · keep</b><span id="poleB">The person still in the chair</span></div>
+  </div>
+  <div class="taps" role="tablist">
+    <button class="tap" type="button" data-tap="now" aria-pressed="true">Now</button>
+    <button class="tap" type="button" data-tap="year" aria-pressed="false">Year</button>
+    <button class="tap" type="button" data-tap="next" aria-pressed="false">Next</button>
+  </div>
+  <div class="sheet" id="sheet"></div>
+  <p class="fine">NO_FORCE · SEED until her book names the minutes · aide beside the chair, never the hire · screenshot this phone for the JPEG.</p>
+</article>
+<script>
+(function(){
+  var views = {
+    now: {
+      n: "4.9 min",
+      p: "Re-key after the foundation already held it.",
+      a: "Minutes typed twice",
+      b: "The person still in the chair",
+      s: "<strong>This tap:</strong> the leftover is the second typing. Foundation already paid. She does not open another vault. She names the leak and goes back to the job."
+    },
+    year: {
+      n: "~$243k",
+      p: "If 65,000 times × 4.9 min × $45.60 holds. SEED — not a site log.",
+      a: "Hours that bought no care",
+      b: "The chair that already knows the work",
+      s: "<strong>Year tap:</strong> ~5,300 hours · about 2.9 FTE of re-key. Tax money on a second sheet. Not Dualis MEASURE. Her numbers replace these."
+    },
+    next: {
+      n: "Look",
+      p: "Stand in the room. Do not take her chair.",
+      a: "A pretty total without a unit",
+      b: "A named leftover she can invert",
+      s: "<strong>Next tap:</strong> change the three numbers on the aide plate. If both poles stay HOLE, status stays SEED. Grant is closed. The job continues."
+    }
+  };
+  function show(id){
+    var v = views[id];
+    document.getElementById("heroN").textContent = v.n;
+    document.getElementById("heroP").textContent = v.p;
+    document.getElementById("poleA").textContent = v.a;
+    document.getElementById("poleB").textContent = v.b;
+    document.getElementById("sheet").innerHTML = v.s;
+  }
+  document.querySelectorAll(".tap").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll(".tap").forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+      btn.setAttribute("aria-pressed","true");
+      show(btn.getAttribute("data-tap"));
+    });
+  });
+  show("now");
+})();
+</script>
+</body>
+</html>
