@@ -31,7 +31,7 @@
   </div>
   <p class="kicker" style="margin-top:1rem">The wave is the room</p>
   <canvas id="dvp" width="640" height="176"></canvas>
-  <p class="note">Tap wakes the twins. Roster is TeamSnap when a seat is claimed. No invented names.</p>
+  <p class="note">Tap once. The room speaks. Roster is TeamSnap when a seat is claimed.</p>
 </div>
 <nav class="dock">
   <a href="./ice.html">Ice</a>
@@ -43,8 +43,11 @@
 <script src="js/dsap.js"></script>
 <script src="js/dvp.js"></script>
 <script src="js/dc-av.js"></script>
+<script src="js/iris-voice.js"></script>
+<script src="js/iris-ice-voice.js"></script>
 <script>
 (function(){
+  var said = false;
   try{
     var raw=localStorage.getItem("dc.teamsnap.events");
     if(raw){
@@ -58,6 +61,10 @@
   document.getElementById("dvp").addEventListener("click",function(){
     if(window.DualisAV) DualisAV.wake("dvp","puck",16);
     else if(window.DVP) DVP.mount("dvp");
+    if(!said && window.IrisIceVoice){
+      said = true;
+      IrisIceVoice.announce("Game day.", 0);
+    }
   });
   if(window.DVP) DVP.mount("dvp");
 })();
