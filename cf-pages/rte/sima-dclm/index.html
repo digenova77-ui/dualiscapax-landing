@@ -4,163 +4,166 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Job aide · SIMA-DCLM — DualisCapax</title>
-<meta name="description" content="Keep the person. Stop burning the hour. An aide for the job you already run. Look is free. Till is closed.">
+<meta name="description" content="Keep the person. Stop burning the hour. DCLM names the leftover on this desk.">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#05070c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#05070c; --ink:#eef4f8; --mute:#8b9caa; --cyan:#3ee8ff; --gold:#ffb703;
-  --line:rgba(62,232,255,.14); --card:rgba(8,14,22,.72); --seed:#ffb4b4;
-}
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72);--seed:#ffb4b4}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
-body{
-  font:18px/1.55 Fraunces,Iowan Old Style,Palatino,Georgia,serif;
-  background:
-    radial-gradient(1200px 700px at 10% -10%, rgba(62,232,255,.09), transparent 55%),
-    radial-gradient(900px 600px at 110% 8%, rgba(255,183,3,.07), transparent 50%),
-    linear-gradient(180deg,#05070c 0%,#070b12 55%,#05070c 100%);
-}
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
-  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
-  background-size:72px 72px;mask-image:radial-gradient(ellipse at 50% 20%,#000 20%,transparent 75%);
-}
-a{color:var(--cyan);text-decoration:none}
-a:hover{text-decoration:underline}
-.wrap{position:relative;max-width:44rem;margin:0 auto;padding:1.4rem 1.15rem 4.5rem}
+body{font:18px/1.55 Fraunces,Iowan Old Style,Palatino,Georgia,serif;background:radial-gradient(1200px 700px at 10% -10%,rgba(62,232,255,.09),transparent 55%),radial-gradient(900px 600px at 110% 8%,rgba(255,183,3,.07),transparent 50%),#05070c}
+.wrap{position:relative;max-width:44rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
 .top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
 .brand{font:11px/1 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
 .pill{font:10px/1 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(255,183,3,.35);padding:.35rem .6rem;border-radius:999px}
-h1{font-size:clamp(2.15rem,8vw,3.35rem);line-height:.98;font-weight:600;letter-spacing:-.03em;margin:1.15rem 0 .85rem}
+h1{font-size:clamp(2.05rem,8vw,3.2rem);line-height:.98;font-weight:600;letter-spacing:-.03em;margin:1.1rem 0 .75rem}
 h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
-.lede{font-size:1.18rem;color:#c9d6df;margin:0 0 1rem}
-.pull{border-left:2px solid var(--cyan);padding:.15rem 0 .15rem 1rem;color:#d7e3ea;font-style:italic;margin:0 0 1.2rem}
-.badges{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1.4rem}
-.badge{font:10px/1.3 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;border:1px solid #5a3030;color:var(--seed);padding:.28rem .5rem;border-radius:999px}
-.card{
-  background:var(--card);border:1px solid var(--line);border-radius:20px;
-  padding:1.15rem 1.15rem 1.2rem;margin:0 0 1rem;
-  backdrop-filter:blur(10px);
-}
-.card h2{font-size:1.02rem;margin:0 0 .55rem;font-weight:600}
-.note{color:var(--mute);font-size:.92rem}
-.grid{display:grid;gap:.65rem}
+.lede{font-size:1.12rem;color:#c9d6df}
+.pull{border-left:2px solid var(--cyan);padding:.1rem 0 .1rem .9rem;color:#d7e3ea;font-style:italic;margin:1rem 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:0 0 .85rem;backdrop-filter:blur(10px)}
+.card h2{font-size:1.02rem;margin:0 0 .45rem}
+.note{color:var(--mute);font-size:.9rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{font:11px IBM Plex Mono,ui-monospace,monospace;border:1px solid var(--line);background:#070b10;color:var(--ink);border-radius:999px;padding:.4rem .65rem}
+.chip.on{border-color:var(--cyan);color:var(--cyan)}
+.grid{display:grid;gap:.55rem}
 @media(min-width:640px){.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}}
-.stat{border:1px solid var(--line);border-radius:14px;padding:.9rem .85rem;background:rgba(0,0,0,.18)}
-.stat b{display:block;font:1.35rem/1.1 IBM Plex Mono,ui-monospace,monospace;color:var(--cyan)}
-.stat span{display:block;color:var(--mute);font-size:.8rem;margin-top:.28rem}
-label{display:block;color:var(--mute);font-size:.78rem;font-family:IBM Plex Mono,ui-monospace,monospace;letter-spacing:.04em;margin:.7rem 0 .28rem}
-input{
-  width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);
-  border-radius:10px;padding:.65rem .7rem;font:16px/1.3 IBM Plex Mono,ui-monospace,monospace;
-}
-input:focus{outline:2px solid rgba(62,232,255,.35);border-color:var(--cyan)}
-.readout{margin:1rem 0 0;padding:.9rem;border-radius:14px;background:#070b10;border:1px solid rgba(255,183,3,.22)}
-.readout strong{color:var(--gold)}
-.human{margin:.55rem 0 0;color:#c5d4de}
+.stat{border:1px solid var(--line);border-radius:14px;padding:.8rem;background:rgba(0,0,0,.18)}
+.stat b{display:block;font:1.2rem/1.1 IBM Plex Mono,ui-monospace,monospace;color:var(--cyan)}
+.stat span{display:block;color:var(--mute);font-size:.78rem;margin-top:.2rem}
+label{display:block;color:var(--mute);font:11px IBM Plex Mono,ui-monospace,monospace;margin:.65rem 0 .25rem}
+input{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.6rem;font:16px IBM Plex Mono,ui-monospace,monospace}
 .seed-tag{font:10px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
-.closed{color:var(--gold);font:11px/1.4 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;margin:.85rem 0 0}
-nav.foot{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:1.5rem;font-size:.88rem;font-family:IBM Plex Mono,ui-monospace,monospace}
+.readout{margin:.8rem 0 0;padding:.8rem;border-radius:14px;background:#070b10;border:1px solid rgba(255,183,3,.22)}
+.readout strong{color:var(--gold)}
+.hex{font:10px/1.4 IBM Plex Mono,ui-monospace,monospace;color:var(--mute);word-break:break-all}
+button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.55rem .9rem;font:12px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
+.closed{color:var(--gold);font:11px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;margin:.7rem 0 0}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + env(safe-area-inset-bottom));font:10px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}
+.dock a.on{color:var(--cyan)}
+nav.foot{display:flex;flex-wrap:wrap;gap:.8rem;margin:1.2rem 0 2rem;font:13px IBM Plex Mono,ui-monospace,monospace}
+nav.foot a{color:var(--cyan)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top">
-    <span class="brand">DualisCapax · SIMA-DCLM</span>
-    <span class="pill">Till closed</span>
-  </div>
+  <div class="top"><span class="brand">DualisCapax · SIMA-DCLM</span><span class="pill">Till closed</span></div>
   <h1>Keep the person.<br><em>Stop burning the hour.</em></h1>
-  <p class="lede">The foundation is already there. The EHR. The roster book. The municipal stack. The kitchen board. People were trained. The other layer was paid for. Then the same hour is typed again.</p>
-  <p class="pull">That second typing is tax and overtime with nothing new to show. The aide sits beside the chair. It does not take the chair.</p>
-  <div class="badges">
-    <span class="badge">No PII</span>
-    <span class="badge">No chart IDs</span>
-    <span class="badge">No token in this file</span>
-    <span class="badge">Not a replacement hire</span>
-  </div>
-
-  <section class="card">
-    <h2>What actually burns</h2>
-    <p>Trained is not adopted. A local win that jams the next desk is friction moved, not solved. Name the leftover on <em>this</em> desk — minutes, a sheet that exists twice, overtime that bought no care.</p>
-    <p class="note">We do not sell ALS. We do not stamp engineering. We do not invent a hospital. Look is free.</p>
+  <p class="lede">Tap the book she already works in. DCLM names two poles and the leftover. Nothing identifiable leaves this phone.</p>
+  <p class="pull">Foundation already paid. Second typing still burns. Aide beside the chair — not a hire.</p>
+  <section class="card" id="look">
+    <h2>Desk</h2>
+    <p class="seed-tag">Layer [0] · no chart IDs</p>
+    <p class="note" id="deskNote">Pick a network. Topology is public. Leftover stays SEED until her book measures it.</p>
+    <div class="chips" id="chips"></div>
   </section>
-
   <section class="card">
-    <h2>Sketch the leftover</h2>
-    <p class="seed-tag">Seed · sliders are not a site log</p>
-    <p class="note">Change the three numbers to your desk. Nothing is uploaded. Both poles stay SEED until your book names them.</p>
-    <label>Minutes lost each time the work is re-keyed
-      <input id="mins" type="number" inputmode="decimal" value="4.9" step="0.1" min="0">
-    </label>
-    <label>Times that happens in a year
-      <input id="vis" type="number" inputmode="numeric" value="65000" min="0">
-    </label>
-    <label>Loaded wage for that chair (CAD / hour)
-      <input id="rate" type="number" inputmode="decimal" value="45.6" step="0.1" min="0">
-    </label>
-    <div class="readout" id="out"></div>
-  </section>
-
-  <section class="card">
-    <h2>In a human year</h2>
-    <div class="grid three" id="human"></div>
-    <p class="note" style="margin:.8rem 0 0">1 FTE ≈ 1,850 paid hours. 1 night ≈ 8 hours. These are translations of the sketch — not a grant and not a named city.</p>
-  </section>
-
-  <section class="card">
-    <h2>The aide, not the hire</h2>
+    <h2>Two poles</h2>
     <div class="grid two">
-      <div class="stat"><b>Look $0</b><span>Stand in the room. Name the two poles. No card.</span></div>
-      <div class="stat"><b>$5 hour</b><span>Fuel 10 — a short ride. CLOSED.</span></div>
-      <div class="stat"><b>$19 shift</b><span>30-day job format. One indication. CLOSED.</span></div>
-      <div class="stat"><b>$49 seat</b><span>Twelve months, one room. Not the vault. CLOSED.</span></div>
+      <div class="stat"><b id="poleA">—</b><span>Pole A · already paid</span></div>
+      <div class="stat"><b id="poleB">Re-key</b><span>Pole B · still burns</span></div>
     </div>
-    <p class="closed">Sales closed · IP lock · no open Stripe on this page</p>
   </section>
-
+  <section class="card" id="leftover">
+    <h2>Leftover</h2>
+    <p class="seed-tag">Seed sketch · not a site log</p>
+    <label>Minutes lost on each re-key<input id="mins" type="number" inputmode="decimal" value="4.9" step="0.1" min="0"></label>
+    <label>Times that happens in a year<input id="vis" type="number" inputmode="numeric" value="65000" min="0"></label>
+    <label>Loaded wage CAD / hour<input id="rate" type="number" inputmode="decimal" value="45.6" step="0.1" min="0"></label>
+    <div class="readout" id="out"></div>
+    <div class="grid three" id="human" style="margin-top:.7rem"></div>
+  </section>
+  <section class="card" id="aide">
+    <h2>Aide · not the hire</h2>
+    <div class="grid two">
+      <div class="stat"><b>$0 Look</b><span>Name the poles. No card.</span></div>
+      <div class="stat"><b>$5 hour</b><span>CLOSED</span></div>
+      <div class="stat"><b>$19 shift</b><span>CLOSED</span></div>
+      <div class="stat"><b>$49 seat</b><span>CLOSED</span></div>
+    </div>
+    <p class="closed">No open Stripe · NO_FORCE · TRUTH_OR_NOTHING</p>
+  </section>
   <section class="card">
-    <h2>Law floor</h2>
-    <p class="note">NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING</p>
-    <p>If we cannot name the leftover unit, the number stays a sketch. A pretty total is not a grant.</p>
+    <h2>Receipt</h2>
+    <p class="note">SHA-256 of this sketch on this phone. Parent is the last save. Not uploaded. Not a grant.</p>
+    <p class="hex" id="rx">No receipt yet.</p>
+    <p style="margin:.7rem 0 0"><button type="button" id="save">Save sketch</button></p>
   </section>
-
   <nav class="foot">
     <a href="/alacarte">À la carte</a>
+    <a href="/ice">Ice</a>
     <a href="/look">Look</a>
-    <a href="/sandbox">Sandbox</a>
-    <a href="/manifold">Manifold</a>
     <a href="/">Home</a>
   </nav>
 </div>
+<nav class="dock">
+  <a class="on" href="#look">Look</a>
+  <a href="#look">Desk</a>
+  <a href="#leftover">Leftover</a>
+  <a href="#aide">Aide</a>
+</nav>
 <script>
-function rec(){
-  var m=+document.getElementById('mins').value||0;
-  var v=+document.getElementById('vis').value||0;
-  var r=+document.getElementById('rate').value||0;
-  var hrs=(m*v)/60;
-  var cad=hrs*r;
-  var fte=hrs/1850;
-  var nights=hrs/8;
-  var out=document.getElementById('out');
-  var hum=document.getElementById('human');
-  if(!m||!v){
-    out.innerHTML='Add minutes and count.';
-    hum.innerHTML='';
-    return;
-  }
-  function n(x){return Math.round(x).toLocaleString();}
-  function d(x){return (Math.round(x*10)/10).toLocaleString();}
-  out.innerHTML='<span class="seed-tag">Seed sketch</span><p class="human">If those minutes are real, the re-key is <strong>'+n(hrs)+' hours</strong> · <strong>$'+n(cad)+' CAD</strong> in a year. The aide is a coffee-to-a-seat. The burn is the second typing.</p>';
-  hum.innerHTML=
-    '<div class="stat"><b>'+d(fte)+'</b><span>full-time years of re-key</span></div>'+
-    '<div class="stat"><b>'+n(nights)+'</b><span>eight-hour nights of leftover</span></div>'+
-    '<div class="stat"><b>$'+n(cad)+'</b><span>loaded wage on that leak</span></div>';
+var NETS=[
+  {id:"ca",l:"Canada",a:"Infoway / CIHI books"},
+  {id:"on",l:"Ontario",a:"OHTs · Epic / Meditech / Cerner"},
+  {id:"ab",l:"Alberta",a:"AHS · Connect Care"},
+  {id:"bc",l:"British Columbia",a:"Fraser · VCH · Island · Interior · Northern"},
+  {id:"qc",l:"Quebec",a:"CISSS / CIUSSS · DSQ"},
+  {id:"nb",l:"New Brunswick",a:"Horizon / Vitalité"},
+  {id:"ns",l:"Nova Scotia",a:"NS Health · OPOR"},
+  {id:"pe",l:"PEI",a:"Health PEI"},
+  {id:"nl",l:"Newfoundland & Labrador",a:"NL Health Services"},
+  {id:"sk",l:"Saskatchewan",a:"SHA · eHealth"},
+  {id:"mb",l:"Manitoba",a:"Shared Health · eChart"},
+  {id:"yt",l:"Yukon",a:"Yukon Health"},
+  {id:"nt",l:"NWT",a:"NTHSSA"},
+  {id:"nu",l:"Nunavut",a:"Dept. of Health"}
+];
+var net=new URLSearchParams(location.search).get("net")||"on";
+function n(x){return Math.round(x).toLocaleString("en-CA")}
+function d(x){return (Math.round(x*10)/10).toLocaleString("en-CA")}
+function cur(){for(var i=0;i<NETS.length;i++)if(NETS[i].id===net)return NETS[i];return NETS[1]}
+function chips(){
+  var h="",c=document.getElementById("chips");
+  NETS.forEach(function(x){h+='<button type="button" class="chip'+(x.id===net?" on":"")+'" data-id="'+x.id+'">'+x.l+"</button>"});
+  c.innerHTML=h;
+  c.querySelectorAll(".chip").forEach(function(b){b.onclick=function(){net=b.getAttribute("data-id");history.replaceState({},"","?net="+net);paint();}});
 }
-['mins','vis','rate'].forEach(function(id){document.getElementById(id).oninput=rec}); rec();
+function rec(){
+  var m=+document.getElementById("mins").value||0;
+  var v=+document.getElementById("vis").value||0;
+  var r=+document.getElementById("rate").value||0;
+  var hrs=(m*v)/60,cad=hrs*r;
+  var out=document.getElementById("out"),hum=document.getElementById("human");
+  if(!m||!v){out.textContent="Add minutes and count.";hum.innerHTML="";return {hrs:0,cad:0,m:m,v:v,r:r}}
+  out.innerHTML='<span class="seed-tag">Seed</span><p>If those minutes are real: <strong>'+n(hrs)+' hours</strong> · <strong>$'+n(cad)+' CAD</strong> / yr. Burn is the second typing.</p>';
+  hum.innerHTML='<div class="stat"><b>'+d(hrs/1850)+'</b><span>FTE of re-key</span></div><div class="stat"><b>'+n(hrs/8)+'</b><span>8-hour nights</span></div><div class="stat"><b>$'+n(cad)+'</b><span>loaded wage sketch</span></div>';
+  return {hrs:hrs,cad:cad,m:m,v:v,r:r};
+}
+function paint(){
+  var x=cur();
+  document.getElementById("deskNote").textContent=x.l+" · "+x.a+" · leftover SEED until her book measures.";
+  document.getElementById("poleA").textContent=x.a;
+  chips(); rec();
+}
+async function sha(s){
+  var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
+}
+document.getElementById("save").onclick=async function(){
+  var s=rec(),x=cur();
+  var parent=localStorage.getItem("dc.sima.parent")||"0".repeat(64);
+  var body=JSON.stringify({net:x.id,a:x.a,b:"re-key",m:s.m,v:s.v,r:s.r,status:"SEED",parent:parent,t:Date.now()});
+  var h=await sha(body);
+  localStorage.setItem("dc.sima.parent",h);
+  document.getElementById("rx").textContent="parent "+parent.slice(0,12)+"… → "+h;
+};
+["mins","vis","rate"].forEach(function(id){document.getElementById(id).oninput=rec});
+paint();
 </script>
 </body>
 </html>
