@@ -1,0 +1,19 @@
+{
+  "plan_id": "GAMMA-V2-2026-09-15",
+  "delta": "DELTA-01",
+  "law": "12 dimensions live on existing claim/provenance/evidence structures. Do not invent a flat 12-field vector.",
+  "dimensions": [
+    {"id": 1, "name": "integrity", "lives_on": "EpistemicVector.integrity"},
+    {"id": 2, "name": "provenance", "lives_on": "EpistemicVector.provenance"},
+    {"id": 3, "name": "observation", "lives_on": "EpistemicVector.observation"},
+    {"id": 4, "name": "measurement", "lives_on": "EpistemicVector.measurement"},
+    {"id": 5, "name": "verification", "lives_on": "EpistemicVector.verification"},
+    {"id": 6, "name": "validation", "lives_on": "EpistemicVector.validation"},
+    {"id": 7, "name": "freshness", "lives_on": "FreshnessVector.decay_state + ttl_seconds"},
+    {"id": 8, "name": "temporal_scope", "lives_on": "EvidenceCeiling.temporal_scope"},
+    {"id": 9, "name": "spatial_scope", "lives_on": "EvidenceCeiling.spatial_scope"},
+    {"id": 10, "name": "population_scope", "lives_on": "EvidenceCeiling.population_scope"},
+    {"id": 11, "name": "causal_scope", "lives_on": "EvidenceCeiling.causal_scope", "delta_02": "CORRELATIVE is dependence, not causality"},
+    {"id": 12, "name": "authority_use", "lives_on": "ClaimObject.origin_type + taint_ceiling + requested_permitted_use + ActionCapabilityTicket.scheme"}
+  ]
+}
