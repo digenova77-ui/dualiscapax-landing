@@ -1,41 +1,35 @@
 {
-  "version": "2026-09-15b",
+  "version": "2026-09-15c",
   "law": [
     "NO_FORCE",
     "TRUTH_OR_NOTHING",
     "PHIPA_zero_chart_ids",
     "SEED_until_book",
-    "never_inside_the_hospital"
+    "her_eyes",
+    "cite_or_hole"
   ],
-  "primary_desk": {
-    "id": "outside-health-it",
-    "label": "Independent healthcare IT / modeller",
+  "her_sentence": "I work on projects that are ultimately implementing EHRs, or sometime upgrading, integrating, etc .",
+  "job": {
+    "id": "outside-ehr-projects",
     "from": "outside",
-    "models": "Hospitals and health networks as objects. Works with sites. Is not on the hospital payroll. Does not get a chart. Dualis is the aide beside that contractor's own book."
+    "shape": "Engagements that implement, upgrade, or integrate electronic health records. Not a staff shift. Not a badge.",
+    "verbs": ["implement", "upgrade", "integrate"],
+    "etc": "Hole until she names the next verb."
   },
-  "desk_kinds": [
-    {
-      "id": "outside-health-it",
-      "label": "Independent healthcare IT / modeller",
-      "from": "outside",
-      "models": "The person this module was always for."
-    },
-    {
-      "id": "network-worker-outside",
-      "label": "Contractor who walks many sites",
-      "from": "outside",
-      "models": "Several hospitals / OHTs as clients or models. Leftover is re-key and second languages between those books. Still not staff."
-    },
-    {
-      "id": "site-clerk",
-      "label": "One hospital desk",
-      "from": "inside",
-      "models": "A possible later seat. Not the primary persona. No chart out if it ever lands."
-    }
+  "objects_the_project_touches": [
+    "site / corporation / network",
+    "vendor book",
+    "join between books",
+    "law on the engagement",
+    "business door for the SOW"
   ],
   "not": [
-    "Hospital C-suite scraped from LinkedIn",
-    "A Dualis back door into Epic",
-    "Staff directory as the product"
-  ]
+    "Hospital payroll",
+    "Inside HIM / ward clerk",
+    "C-suite scrape",
+    "Dualis as the EHR",
+    "Chart IDs",
+    "Invented client list"
+  ],
+  "aide": "Dualis sits beside the project. Look free. Till closed."
 }
