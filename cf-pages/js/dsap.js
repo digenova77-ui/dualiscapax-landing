@@ -1,10 +1,9 @@
 /**
- * DSAP-1.0 sleeve. Storyboard was av/storyboard.html.
- * 64-point ring. Tap wakes. Hide suspends. No NHL horn. No filmed avatar.
+ * DSAP-1.0. Audio owns the seat. Video may listen. Video may not wrap.
  */
 (function (w) {
-  if (w.DSAP) return;
-  var ctx, ring = [], woken = false;
+  if (w.DSAP && w.DSAP.version === "DSAP-1.1") return;
+  var ctx, ring = [], woken = false, ears = [];
   function ac() {
     if (!ctx) ctx = new (w.AudioContext || w.webkitAudioContext)();
     if (ctx.state === "suspended") ctx.resume();
@@ -26,6 +25,11 @@
     }
     woken = true;
     return c;
+  }
+  function tell(kind, i) {
+    for (var n = 0; n < ears.length; n++) {
+      try { ears[n](kind, i); } catch (e) {}
+    }
   }
   function place(kind, index) {
     var c = wake();
@@ -52,6 +56,10 @@
     }
     o.connect(g); g.connect(ring[i]);
     o.start(t);
+    tell(kind, i);
+  }
+  function listen(fn) {
+    if (typeof fn === "function") ears.push(fn);
   }
   function sleep() {
     if (ctx && ctx.state === "running") ctx.suspend();
@@ -59,5 +67,5 @@
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) sleep();
   });
-  w.DSAP = { wake: wake, place: place, sleep: sleep, version: "DSAP-1.0" };
+  w.DSAP = { wake: wake, place: place, sleep: sleep, listen: listen, version: "DSAP-1.1" };
 })(window);
