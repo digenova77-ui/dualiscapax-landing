@@ -1,0 +1,49 @@
+{
+  "version": "2026-09-15",
+  "law": [
+    "official_page_only",
+    "no_personal_email",
+    "no_personal_phone",
+    "no_invented_executive",
+    "PHIPA_zero_chart_ids"
+  ],
+  "why": "A popular contact list is the official leadership / switchboard page. A scraped C-suite rolodex is not Dualis.",
+  "roles": ["CEO", "COO", "CFO", "CIO", "CMIO", "CNIO", "VP Health Information", "HIM director", "switchboard"],
+  "pages": [
+    {
+      "org": "Ontario Health",
+      "kind": "network-roof",
+      "page": "https://www.ontariohealth.ca/",
+      "use": "public roof + OHT index"
+    },
+    {
+      "org": "Ontario Health Teams (ministry page)",
+      "kind": "network-index",
+      "page": "https://www.ontario.ca/page/ontario-health-teams",
+      "use": "named OHT list"
+    },
+    {
+      "org": "Quinte Health",
+      "kind": "hospital-corporation",
+      "page": "https://www.quintehealth.ca/",
+      "leadership_page": "https://www.quintehealth.ca/",
+      "use": "corporation switchboard / published leadership. Names only if that page still lists them."
+    },
+    {
+      "org": "Kingston Health Sciences Centre",
+      "kind": "hospital-corporation",
+      "page": "https://kingstonhsc.ca/",
+      "use": "corporation switchboard / published leadership."
+    },
+    {
+      "org": "CIHI",
+      "kind": "standards-book",
+      "page": "https://www.cihi.ca/en",
+      "use": "standards, not a hospital desk"
+    }
+  ],
+  "holes": [
+    "Named C-suite emails and direct lines — not stored in this repo.",
+    "A complete Ontario hospital leadership census."
+  ]
+}
