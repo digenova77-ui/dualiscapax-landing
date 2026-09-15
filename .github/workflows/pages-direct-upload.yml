@@ -34,6 +34,9 @@ jobs:
             echo "::error::CLOUDFLARE_API_TOKEN missing in Actions secrets"
             exit 1
           fi
+          # One shot. Do not wrap wrangler in a retry loop.
+          # 10000 = token scope (Pages Write missing). Backoff cannot fix that.
+          # 429 = Client API cap; re-run the workflow later, do not tight-loop.
           npx --yes wrangler@3.112.0 pages deploy cf-pages \
             --project-name=dualiscapax-landing \
             --commit-dirty=true
