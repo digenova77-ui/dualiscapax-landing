@@ -4,110 +4,96 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Job aide · SIMA-DCLM — DualisCapax</title>
-<meta name="description" content="Keep the person. Stop burning the hour. Implement, upgrade, or integrate the book she already works in.">
+<meta name="description" content="Implement, upgrade, or integrate an EHR. Measure the leftover hour on this desk. No chart IDs.">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#05070c">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
-body{font:18px/1.55 Fraunces,Iowan Old Style,Palatino,Georgia,serif;background:radial-gradient(1200px 700px at 10% -10%,rgba(62,232,255,.09),transparent 55%),radial-gradient(900px 600px at 110% 8%,rgba(255,183,3,.07),transparent 50%),#05070c}
-.wrap{position:relative;max-width:44rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
+body{font:18px/1.55 Fraunces,Georgia,serif;background:radial-gradient(1200px 700px at 10% -10%,rgba(62,232,255,.09),transparent 55%),#05070c}
+.wrap{max-width:44rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
 .top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
-.brand{font:11px/1 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
-.pill{font:10px/1 IBM Plex Mono,ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(255,183,3,.35);padding:.35rem .6rem;border-radius:999px}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.pill{font:10px IBM Plex Mono,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(255,183,3,.35);padding:.35rem .6rem;border-radius:999px}
 h1{font-size:clamp(2.05rem,8vw,3.2rem);line-height:.98;font-weight:600;letter-spacing:-.03em;margin:1.1rem 0 .75rem}
 h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
 .lede{font-size:1.12rem;color:#c9d6df}
 .pull{border-left:2px solid var(--cyan);padding:.1rem 0 .1rem .9rem;color:#d7e3ea;font-style:italic;margin:1rem 0}
 .verbs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.45rem;margin:1rem 0}
 .verb{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:.7rem .55rem;background:var(--card);text-align:center}
-.verb b{display:block;font:12px IBM Plex Mono,ui-monospace,monospace;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase}
+.verb b{display:block;font:12px IBM Plex Mono,monospace;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase}
 .verb span{display:block;color:var(--mute);font-size:.78rem;margin-top:.25rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:0 0 .85rem;backdrop-filter:blur(10px)}
-.card h2{font-size:1.02rem;margin:0 0 .45rem}
-.note{color:var(--mute);font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:0 0 .85rem}
+.card h2{font-size:1.02rem;margin:0 0 .45rem}.note{color:var(--mute);font-size:.9rem}
 .chips{display:flex;flex-wrap:wrap;gap:.4rem}
-.chip{font:11px IBM Plex Mono,ui-monospace,monospace;border:1px solid var(--line);background:#070b10;color:var(--ink);border-radius:999px;padding:.4rem .65rem}
+.chip{font:11px IBM Plex Mono,monospace;border:1px solid var(--line);background:#070b10;color:var(--ink);border-radius:999px;padding:.4rem .65rem}
 .chip.on{border-color:var(--cyan);color:var(--cyan)}
-.grid{display:grid;gap:.55rem}
-@media(min-width:640px){.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}}
+.grid{display:grid;gap:.55rem}@media(min-width:640px){.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}}
 .stat{border:1px solid var(--line);border-radius:14px;padding:.8rem;background:rgba(0,0,0,.18)}
-.stat b{display:block;font:1.2rem/1.1 IBM Plex Mono,ui-monospace,monospace;color:var(--cyan)}
+.stat b{display:block;font:1.2rem/1.1 IBM Plex Mono,monospace;color:var(--cyan)}
 .stat span{display:block;color:var(--mute);font-size:.78rem;margin-top:.2rem}
-label{display:block;color:var(--mute);font:11px IBM Plex Mono,ui-monospace,monospace;margin:.65rem 0 .25rem}
-input{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.6rem;font:16px IBM Plex Mono,ui-monospace,monospace}
-.seed-tag{font:10px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+label{display:block;color:var(--mute);font:11px IBM Plex Mono,monospace;margin:.65rem 0 .25rem}
+input{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.6rem;font:16px IBM Plex Mono,monospace}
+.seed-tag{font:10px IBM Plex Mono,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
 .readout{margin:.8rem 0 0;padding:.8rem;border-radius:14px;background:#070b10;border:1px solid rgba(255,183,3,.22)}
 .readout strong{color:var(--gold)}
-.hex{font:10px/1.4 IBM Plex Mono,ui-monospace,monospace;color:var(--mute);word-break:break-all}
-button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.55rem .9rem;font:12px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
-.closed{color:var(--gold);font:11px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;margin:.7rem 0 0}
+.hex{font:10px/1.4 IBM Plex Mono,monospace;color:var(--mute);word-break:break-all}
+button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.55rem .9rem;font:12px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
 #dvp{width:100%;height:72px;display:block;border-radius:12px;background:#070b10;margin:.6rem 0 0}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + env(safe-area-inset-bottom));font:10px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
-.dock a{color:var(--mute);text-decoration:none}
-.dock a.on{color:var(--cyan)}
-nav.foot{display:flex;flex-wrap:wrap;gap:.8rem;margin:1.2rem 0 2rem;font:13px IBM Plex Mono,ui-monospace,monospace}
-nav.foot a{color:var(--cyan)}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + env(safe-area-inset-bottom));font:10px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+nav.foot{display:flex;flex-wrap:wrap;gap:.8rem;margin:1.2rem 0 2rem;font:13px IBM Plex Mono,monospace}nav.foot a{color:var(--cyan)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><span class="brand">DualisCapax · Job aide</span><span class="pill">Till closed</span></div>
+  <div class="top"><span class="brand">DualisCapax · Job aide</span><span class="pill">Her desk</span></div>
   <h1>Keep the person.<br><em>Stop burning the hour.</em></h1>
-  <p class="lede">Tap the book she already works in. DCLM names two poles and the leftover. Nothing identifiable leaves this phone.</p>
-  <p class="pull">Foundation already paid. Second typing still burns. Aide beside the chair — not a hire.</p>
+  <p class="lede">This is an EHR project desk. Implement. Upgrade. Integrate. Not a clinic volume counter. No chart IDs leave this phone.</p>
+  <p class="pull">I work on projects that are ultimately implementing EHRs, or sometime upgrading, integrating, etc.</p>
   <div class="verbs">
-    <a class="verb" href="implement.html"><b>Implement</b><span>Stand the book up</span></a>
+    <a class="verb" href="implement.html"><b>Implement</b><span>Stand the EHR up</span></a>
     <a class="verb" href="upgrade.html"><b>Upgrade</b><span>Move the version</span></a>
     <a class="verb" href="integrate.html"><b>Integrate</b><span>Make two books talk</span></a>
   </div>
   <section class="card" id="look">
-    <h2>Desk</h2>
-    <p class="seed-tag">Layer [0] · no chart IDs</p>
-    <p class="note" id="deskNote">Pick a network. Topology is public. Leftover stays SEED until her book measures it.</p>
+    <h2>Where the project sits</h2>
+    <p class="seed-tag">Public topology · not a patient list</p>
+    <p class="note" id="deskNote">Pick the network the project touches. That names the paid book. Not visits.</p>
     <div class="chips" id="chips"></div>
     <canvas id="dvp" width="640" height="144" aria-label="Desk wave"></canvas>
   </section>
   <section class="card">
-    <h2>Two poles</h2>
+    <h2>Two poles on this project</h2>
     <div class="grid two">
-      <div class="stat"><b id="poleA">—</b><span>Pole A · already paid</span></div>
-      <div class="stat"><b id="poleB">Re-key</b><span>Pole B · still burns</span></div>
+      <div class="stat"><b id="poleA">—</b><span>Pole A · the EHR already paid</span></div>
+      <div class="stat"><b id="poleB">Second typing</b><span>Pole B · still burns between books</span></div>
     </div>
   </section>
   <section class="card" id="leftover">
-    <h2>Leftover</h2>
-    <p class="seed-tag">Seed sketch · not a site log</p>
-    <label>Minutes lost on each re-key<input id="mins" type="number" inputmode="decimal" value="4.9" step="0.1" min="0"></label>
-    <label>Times that happens in a year<input id="vis" type="number" inputmode="numeric" value="65000" min="0"></label>
-    <label>Loaded wage CAD / hour<input id="rate" type="number" inputmode="decimal" value="45.6" step="0.1" min="0"></label>
+    <h2>Leftover on her week</h2>
+    <p class="seed-tag">Seed · not hospital throughput</p>
+    <p class="chips" id="verbChips"></p>
+    <label>Minutes lost each time they re-key between books<input id="mins" type="number" inputmode="decimal" value="12" step="0.5" min="0"></label>
+    <label>Times that happens this week<input id="week" type="number" inputmode="numeric" value="8" min="0"></label>
+    <label>Loaded wage CAD / hour (her seat or the clerk she is covering)<input id="rate" type="number" inputmode="decimal" value="45.6" step="0.1" min="0"></label>
     <div class="readout" id="out"></div>
     <div class="grid three" id="human" style="margin-top:.7rem"></div>
   </section>
   <section class="card" id="aide">
-    <h2>Aide · not the hire</h2>
-    <div class="grid two">
-      <div class="stat"><b>$0 Look</b><span>Name the poles. No card.</span></div>
-      <div class="stat"><b>$5 hour</b><span>CLOSED</span></div>
-      <div class="stat"><b>$19 shift</b><span>CLOSED</span></div>
-      <div class="stat"><b>$49 seat</b><span>CLOSED</span></div>
-    </div>
-    <p class="closed">No open Stripe · NO_FORCE · TRUTH_OR_NOTHING</p>
+    <h2>Aide beside the chair</h2>
+    <p class="note">Look is $0. Fuel packs live on <a href="/pay.html" style="color:var(--cyan)">/pay</a> if she wants depth time. This desk does not sell an “indication leaf.” That SKU is Dualis library, not an EHR field.</p>
   </section>
   <section class="card">
     <h2>Receipt</h2>
-    <p class="note">SHA-256 of this sketch on this phone. Parent is the last save. Not uploaded. Not a grant.</p>
+    <p class="note">SHA-256 of this sketch on this phone. Not uploaded. Not a chart.</p>
     <p class="hex" id="rx">No receipt yet.</p>
     <p style="margin:.7rem 0 0"><button type="button" id="save">Save sketch</button></p>
   </section>
   <nav class="foot">
     <a href="job.html">The job</a>
-    <a href="/alacarte">À la carte</a>
-    <a href="/ice">Ice</a>
+    <a href="pair.html">Name the two books</a>
     <a href="/">Home</a>
   </nav>
 </div>
@@ -140,7 +126,9 @@ var NETS=[
   {id:"nt",l:"NWT",a:"NTHSSA"},
   {id:"nu",l:"Nunavut",a:"Dept. of Health"}
 ];
+var VERBS=["implement","upgrade","integrate"];
 var net=new URLSearchParams(location.search).get("net")||"on";
+var verb=new URLSearchParams(location.search).get("verb")||"integrate";
 function n(x){return Math.round(x).toLocaleString("en-CA")}
 function d(x){return (Math.round(x*10)/10).toLocaleString("en-CA")}
 function cur(){for(var i=0;i<NETS.length;i++)if(NETS[i].id===net)return NETS[i];return NETS[1]}
@@ -148,37 +136,36 @@ function chips(){
   var h="",c=document.getElementById("chips");
   NETS.forEach(function(x){h+='<button type="button" class="chip'+(x.id===net?" on":"")+'" data-id="'+x.id+'">'+x.l+"</button>"});
   c.innerHTML=h;
-  c.querySelectorAll(".chip").forEach(function(b){b.onclick=function(){net=b.getAttribute("data-id");history.replaceState({},"","?net="+net);paint();wake();}});
+  c.querySelectorAll(".chip").forEach(function(b){b.onclick=function(){net=b.getAttribute("data-id");sync();paint();wake();}});
+  var vh="",vc=document.getElementById("verbChips");
+  VERBS.forEach(function(v){vh+='<button type="button" class="chip'+(v===verb?" on":"")+'" data-v="'+v+'">'+v+"</button>"});
+  vc.innerHTML=vh;
+  vc.querySelectorAll(".chip").forEach(function(b){b.onclick=function(){verb=b.getAttribute("data-v");sync();rec();};});
 }
+function sync(){history.replaceState({},"","?net="+net+"&verb="+verb)}
 function rec(){
   var m=+document.getElementById("mins").value||0;
-  var v=+document.getElementById("vis").value||0;
+  var w=+document.getElementById("week").value||0;
   var r=+document.getElementById("rate").value||0;
-  var hrs=(m*v)/60,cad=hrs*r;
+  var weekHrs=(m*w)/60, yearHrs=weekHrs*48, cad=yearHrs*r;
   var out=document.getElementById("out"),hum=document.getElementById("human");
-  if(!m||!v){out.textContent="Add minutes and count.";hum.innerHTML="";return {hrs:0,cad:0,m:m,v:v,r:r}}
-  out.innerHTML='<span class="seed-tag">Seed</span><p>If those minutes are real: <strong>'+n(hrs)+' hours</strong> · <strong>$'+n(cad)+' CAD</strong> / yr. Burn is the second typing.</p>';
-  hum.innerHTML='<div class="stat"><b>'+d(hrs/1850)+'</b><span>FTE of re-key</span></div><div class="stat"><b>'+n(hrs/8)+'</b><span>8-hour nights</span></div><div class="stat"><b>$'+n(cad)+'</b><span>loaded wage sketch</span></div>';
-  return {hrs:hrs,cad:cad,m:m,v:v,r:r};
+  if(!m||!w){out.textContent="Add minutes and times this week.";hum.innerHTML="";return {m:m,w:w,r:r,weekHrs:0,yearHrs:0,cad:0}}
+  out.innerHTML='<span class="seed-tag">Seed · '+verb+'</span><p>This week: <strong>'+d(weekHrs)+' hours</strong>. Across 48 weeks if the leftover holds: <strong>'+n(yearHrs)+' hours</strong> · <strong>$'+n(cad)+' CAD</strong>. Not visits. Not a bill.</p>';
+  hum.innerHTML='<div class="stat"><b>'+d(weekHrs)+'</b><span>hours this week</span></div><div class="stat"><b>'+n(yearHrs/8)+'</b><span>8-hour days / yr</span></div><div class="stat"><b>$'+n(cad)+'</b><span>loaded wage sketch</span></div>';
+  return {m:m,w:w,r:r,weekHrs:weekHrs,yearHrs:yearHrs,cad:cad};
 }
-function wake(){
-  if(window.DualisAV) DualisAV.wake("dvp","desk",16);
-  else if(window.DVP) DVP.mount("dvp");
-}
+function wake(){if(window.DualisAV)DualisAV.wake("dvp","desk",16);else if(window.DVP)DVP.mount("dvp")}
 function paint(){
   var x=cur();
-  document.getElementById("deskNote").textContent=x.l+" · "+x.a+" · leftover SEED until her book measures.";
+  document.getElementById("deskNote").textContent=x.l+" · "+x.a+" · paid book. Leftover is the mute between books.";
   document.getElementById("poleA").textContent=x.a;
   chips(); rec();
 }
-async function sha(s){
-  var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
-}
+async function sha(s){var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0")}).join("")}
 document.getElementById("save").onclick=async function(){
   var s=rec(),x=cur();
   var parent=localStorage.getItem("dc.sima.parent")||"0".repeat(64);
-  var body=JSON.stringify({net:x.id,a:x.a,b:"re-key",m:s.m,v:s.v,r:s.r,status:"SEED",parent:parent,t:Date.now()});
+  var body=JSON.stringify({net:x.id,verb:verb,a:x.a,b:"second-typing",m:s.m,w:s.w,r:s.r,status:"SEED",parent:parent,t:Date.now()});
   var h=await sha(body);
   localStorage.setItem("dc.sima.parent",h);
   localStorage.setItem("dc.sima.sketch",body);
@@ -189,16 +176,18 @@ try{
   var sk=JSON.parse(localStorage.getItem("dc.sima.sketch")||"null");
   if(sk){
     if(sk.net) net=sk.net;
+    if(sk.verb) verb=sk.verb;
     if(sk.m) document.getElementById("mins").value=sk.m;
-    if(sk.v) document.getElementById("vis").value=sk.v;
+    if(sk.w) document.getElementById("week").value=sk.w;
+    if(sk.v && sk.v>500) {/* old hospital-volume field — drop it */}
+    else if(sk.v && !sk.w) document.getElementById("week").value=sk.v;
     if(sk.r) document.getElementById("rate").value=sk.r;
     var p=localStorage.getItem("dc.sima.parent");
     if(p) document.getElementById("rx").textContent="last "+p.slice(0,16)+"… on this phone";
   }
 }catch(e){}
-["mins","vis","rate"].forEach(function(id){document.getElementById(id).oninput=rec});
+["mins","week","rate"].forEach(function(id){document.getElementById(id).oninput=rec});
 paint();
 if(window.DVP) DVP.mount("dvp");
 </script>
-</body>
-</html>
+</body></html>
