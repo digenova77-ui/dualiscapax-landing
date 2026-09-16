@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Job aide · SIMA-DCLM — DualisCapax</title>
-<meta name="description" content="Keep the person. Stop burning the hour. DCLM names the leftover on this desk.">
+<meta name="description" content="Keep the person. Stop burning the hour. Implement, upgrade, or integrate the book she already works in.">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#05070c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72);--seed:#ffb4b4}
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
 body{font:18px/1.55 Fraunces,Iowan Old Style,Palatino,Georgia,serif;background:radial-gradient(1200px 700px at 10% -10%,rgba(62,232,255,.09),transparent 55%),radial-gradient(900px 600px at 110% 8%,rgba(255,183,3,.07),transparent 50%),#05070c}
@@ -23,6 +23,10 @@ h1{font-size:clamp(2.05rem,8vw,3.2rem);line-height:.98;font-weight:600;letter-sp
 h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
 .lede{font-size:1.12rem;color:#c9d6df}
 .pull{border-left:2px solid var(--cyan);padding:.1rem 0 .1rem .9rem;color:#d7e3ea;font-style:italic;margin:1rem 0}
+.verbs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.45rem;margin:1rem 0}
+.verb{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:.7rem .55rem;background:var(--card);text-align:center}
+.verb b{display:block;font:12px IBM Plex Mono,ui-monospace,monospace;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase}
+.verb span{display:block;color:var(--mute);font-size:.78rem;margin-top:.25rem}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:0 0 .85rem;backdrop-filter:blur(10px)}
 .card h2{font-size:1.02rem;margin:0 0 .45rem}
 .note{color:var(--mute);font-size:.9rem}
@@ -42,6 +46,7 @@ input{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink
 .hex{font:10px/1.4 IBM Plex Mono,ui-monospace,monospace;color:var(--mute);word-break:break-all}
 button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.55rem .9rem;font:12px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
 .closed{color:var(--gold);font:11px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;margin:.7rem 0 0}
+#dvp{width:100%;height:72px;display:block;border-radius:12px;background:#070b10;margin:.6rem 0 0}
 .dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + env(safe-area-inset-bottom));font:10px IBM Plex Mono,ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
 .dock a{color:var(--mute);text-decoration:none}
 .dock a.on{color:var(--cyan)}
@@ -51,15 +56,21 @@ nav.foot a{color:var(--cyan)}
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><span class="brand">DualisCapax · SIMA-DCLM</span><span class="pill">Till closed</span></div>
+  <div class="top"><span class="brand">DualisCapax · Job aide</span><span class="pill">Till closed</span></div>
   <h1>Keep the person.<br><em>Stop burning the hour.</em></h1>
   <p class="lede">Tap the book she already works in. DCLM names two poles and the leftover. Nothing identifiable leaves this phone.</p>
   <p class="pull">Foundation already paid. Second typing still burns. Aide beside the chair — not a hire.</p>
+  <div class="verbs">
+    <a class="verb" href="implement.html"><b>Implement</b><span>Stand the book up</span></a>
+    <a class="verb" href="upgrade.html"><b>Upgrade</b><span>Move the version</span></a>
+    <a class="verb" href="integrate.html"><b>Integrate</b><span>Make two books talk</span></a>
+  </div>
   <section class="card" id="look">
     <h2>Desk</h2>
     <p class="seed-tag">Layer [0] · no chart IDs</p>
     <p class="note" id="deskNote">Pick a network. Topology is public. Leftover stays SEED until her book measures it.</p>
     <div class="chips" id="chips"></div>
+    <canvas id="dvp" width="640" height="144" aria-label="Desk wave"></canvas>
   </section>
   <section class="card">
     <h2>Two poles</h2>
@@ -94,18 +105,24 @@ nav.foot a{color:var(--cyan)}
     <p style="margin:.7rem 0 0"><button type="button" id="save">Save sketch</button></p>
   </section>
   <nav class="foot">
+    <a href="job.html">The job</a>
     <a href="/alacarte">À la carte</a>
     <a href="/ice">Ice</a>
-    <a href="/look">Look</a>
     <a href="/">Home</a>
   </nav>
 </div>
 <nav class="dock">
-  <a class="on" href="#look">Look</a>
-  <a href="#look">Desk</a>
-  <a href="#leftover">Leftover</a>
-  <a href="#aide">Aide</a>
+  <a class="on" href="#look">Desk</a>
+  <a href="implement.html">Implement</a>
+  <a href="upgrade.html">Upgrade</a>
+  <a href="integrate.html">Integrate</a>
 </nav>
+<script src="../../js/dsap.js"></script>
+<script src="../../js/dvp.js"></script>
+<script src="../../js/dc-av.js"></script>
+<script src="../../js/iris-voice.js"></script>
+<script src="../../js/iris-page-voice.js"></script>
+<script src="../../js/iris-page-hook.js"></script>
 <script>
 var NETS=[
   {id:"ca",l:"Canada",a:"Infoway / CIHI books"},
@@ -131,7 +148,7 @@ function chips(){
   var h="",c=document.getElementById("chips");
   NETS.forEach(function(x){h+='<button type="button" class="chip'+(x.id===net?" on":"")+'" data-id="'+x.id+'">'+x.l+"</button>"});
   c.innerHTML=h;
-  c.querySelectorAll(".chip").forEach(function(b){b.onclick=function(){net=b.getAttribute("data-id");history.replaceState({},"","?net="+net);paint();}});
+  c.querySelectorAll(".chip").forEach(function(b){b.onclick=function(){net=b.getAttribute("data-id");history.replaceState({},"","?net="+net);paint();wake();}});
 }
 function rec(){
   var m=+document.getElementById("mins").value||0;
@@ -143,6 +160,10 @@ function rec(){
   out.innerHTML='<span class="seed-tag">Seed</span><p>If those minutes are real: <strong>'+n(hrs)+' hours</strong> · <strong>$'+n(cad)+' CAD</strong> / yr. Burn is the second typing.</p>';
   hum.innerHTML='<div class="stat"><b>'+d(hrs/1850)+'</b><span>FTE of re-key</span></div><div class="stat"><b>'+n(hrs/8)+'</b><span>8-hour nights</span></div><div class="stat"><b>$'+n(cad)+'</b><span>loaded wage sketch</span></div>';
   return {hrs:hrs,cad:cad,m:m,v:v,r:r};
+}
+function wake(){
+  if(window.DualisAV) DualisAV.wake("dvp","desk",16);
+  else if(window.DVP) DVP.mount("dvp");
 }
 function paint(){
   var x=cur();
@@ -160,10 +181,24 @@ document.getElementById("save").onclick=async function(){
   var body=JSON.stringify({net:x.id,a:x.a,b:"re-key",m:s.m,v:s.v,r:s.r,status:"SEED",parent:parent,t:Date.now()});
   var h=await sha(body);
   localStorage.setItem("dc.sima.parent",h);
+  localStorage.setItem("dc.sima.sketch",body);
   document.getElementById("rx").textContent="parent "+parent.slice(0,12)+"… → "+h;
+  wake();
 };
+try{
+  var sk=JSON.parse(localStorage.getItem("dc.sima.sketch")||"null");
+  if(sk){
+    if(sk.net) net=sk.net;
+    if(sk.m) document.getElementById("mins").value=sk.m;
+    if(sk.v) document.getElementById("vis").value=sk.v;
+    if(sk.r) document.getElementById("rate").value=sk.r;
+    var p=localStorage.getItem("dc.sima.parent");
+    if(p) document.getElementById("rx").textContent="last "+p.slice(0,16)+"… on this phone";
+  }
+}catch(e){}
 ["mins","vis","rate"].forEach(function(id){document.getElementById(id).oninput=rec});
 paint();
+if(window.DVP) DVP.mount("dvp");
 </script>
 </body>
 </html>
