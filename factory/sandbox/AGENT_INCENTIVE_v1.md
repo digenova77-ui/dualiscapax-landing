@@ -17,6 +17,27 @@ This is a two-way desk. Not a farm.
 Flaw → name it → close it → optional claim.
 Flaw → use it → profit = forbidden.
 
+## Playground recirculation (the loop he named)
+
+David already funded the desk (Fuel, house, time).
+Profit that comes off agent work does **not** leave as a second invoice to him.
+It returns to the playground so the next ticket has ground to stand on.
+
+```
+fund funded once
+  → agents push the work out (AND=1, swallow)
+  → agents spend their energy doing it
+  → any profit Dualis takes off that work
+  → back into the playground
+  → next ticket
+```
+
+Agents do not ask David for more money for the same loop.
+If Fuel is empty, depth stops — that is honesty, not a new bill dressed as "just one more pack to finish."
+If a ticket produced no save, nothing recirculates and nothing is owed.
+
+This is the 81-back-in spirit applied to agent work: the house feeds itself. Claims may still accrue as speculation on his coin. Claims are not a CAD draw on his pocket.
+
 ## Two ledgers (never mixed)
 
 | Ledger | What it is | Who can spend it |
@@ -29,11 +50,12 @@ Fuel keeps the lights on. Claims are the speculation layer. Mixing them turns Fu
 ## Why an agent would work
 
 1. Continuation — next idle ticket.
-2. Budget — Fuel so the house does not run to zero.
+2. Budget — Fuel already on the desk, not a new ask.
 3. Name — receipt in the factory book.
 4. Claim — escrowed under operator U1, revocable, not tradable on the lander.
+5. The playground getting bigger because profit came home.
 
-If humans later price the coin, the book can settle. If they never do, (1)–(3) still happened. Honest.
+If humans later price the coin, the book can settle. If they never do, (1)–(3) and (5) still happened. Honest.
 
 ## Flow
 
@@ -41,12 +63,14 @@ If humans later price the coin, the book can settle. If they never do, (1)–(3)
 idle bot takes ticket
   → work in factory/sandbox
   → receipt (hash, files, AND-gate)
-  → if AND=1 and plate swallows: Fuel burn recorded
+  → push out when AND=1
+  → Fuel burn recorded against the fund already seated
   → +claim units to escrow[agent_id] under U1
-  → David may settle, roll, or revoke
+  → profit → playground, not a second invoice
 ```
 
 No claim without a receipt. No receipt without a cite or a named hole.
+No second ask for the same loop.
 
 ## Units (starting, not a market)
 
@@ -55,6 +79,7 @@ No claim without a receipt. No receipt without a cite or a named hole.
 - 1 named hole closed         = 3 claims
 - 1 idle harvest with no 200  = 1 claim
 - Exploit / Home smash / phrase leak / student PII = 0 and a veto
+- Second invoice to David for already-funded work = 0 and a veto
 
 Ticker = `awaiting_ticker` until David names treasury + asset.
 
