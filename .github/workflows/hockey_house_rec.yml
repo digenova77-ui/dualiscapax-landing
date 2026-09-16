@@ -1,0 +1,40 @@
+name: hockey-house-rec
+
+# House + rec + both genders across OMHA ALLIANCE GTHL NOHA OWHA.
+# Book only. Does not paint cf-pages/ice.html.
+
+on:
+  schedule:
+    - cron: '12,42 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hockey-house-rec
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Harvest house/rec member cites
+        run: python3 scripts/harvest_hockey_house_rec.py
+      - name: Commit book
+        run: |
+          git config user.email "hockey-harvest@dualiscapax.ai"
+          git config user.name "Dualis House Rec Harvest"
+          git add research/hockey/house-rec/
+          if git diff --cached --quiet; then echo none; exit 0; fi
+          git commit -m "chore(hockey): house+rec both-gender member harvest [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            sleep $((i * 2))
+          done
+          exit 1
