@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Teacher bind · Easthill</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1a365d">
+<style>
+:root{--bg:#0b1a2b;--ink:#eef4f8;--mute:#8b9caa;--cyan:#7dd3fc;--gold:#f6c445}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Georgia,serif}
+.wrap{max-width:36rem;margin:0 auto;padding:1.2rem 1rem 4rem}
+.brand{font:11px ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:1.7rem}em{color:var(--gold);font-style:normal}
+.card{border:1px solid rgba(125,211,252,.2);border-radius:16px;padding:.9rem;margin:.6rem 0;background:rgba(8,14,22,.55)}
+label{display:block;font:10px ui-monospace,monospace;text-transform:uppercase;color:var(--mute);margin:.4rem 0 .15rem}
+input,select{width:100%;background:#070b10;border:1px solid rgba(125,211,252,.25);color:var(--ink);border-radius:10px;padding:.5rem;font:16px Georgia,serif}
+button,a.verb{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.45rem .8rem;font:11px ui-monospace,monospace;text-transform:uppercase;text-decoration:none;display:inline-block;margin:.25rem .2rem 0 0}
+.note{color:var(--mute);font-size:.95rem}
+#paint{white-space:pre-wrap;font:12px ui-monospace,monospace;color:var(--mute)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">HPEDSB · Easthill Elementary · first seat</p>
+<h1>You do not have a Unity ID yet.<br><em>That is the point of this page.</em></h1>
+<p class="note">Same eight words as Ice. Dualis never sees them. Confirm the room before any child card exists.</p>
+<div class="card" id="stepPhrase">
+  <p class="brand">1 · Phrase</p>
+  <p id="phraseSay">Open Portal. Make eight words. Write them on paper. There is no reset email.</p>
+  <p><a class="verb" href="/portal">Portal</a></p>
+</div>
+<div class="card" id="stepRoom">
+  <p class="brand">2 · Confirm the room</p>
+  <p class="note">We infer nothing from an email. You say it. Wrong room stays locked.</p>
+  <label>Board</label>
+  <select id="board">
+    <option value="hpedsb">Hastings and Prince Edward DSB (hpedsb.on.ca)</option>
+    <option value="alcdsb">Algonquin and Lakeshore CDSB</option>
+    <option value="limestone">Limestone DSB</option>
+    <option value="other">Another Ontario board (name it below)</option>
+  </select>
+  <label>School</label>
+  <input id="school" value="Easthill Elementary">
+  <label>Grade / role</label>
+  <input id="grade" value="Grade 2">
+  <label>Your name — first last, device only</label>
+  <input id="who" placeholder="Sara Foster" autocomplete="name">
+  <p><button type="button" id="confirm">This is my room</button></p>
+  <p class="note" id="roomSay"></p>
+</div>
+<div class="card">
+  <p class="brand">3 · Hatch</p>
+  <p class="note">Unity hangs a teacher door off the same seat as Ice. No student names leave this phone.</p>
+  <p><button type="button" id="hatch">Bind Unity to this room</button> <a class="verb" href="./index.html">Desk</a></p>
+  <pre id="paint"></pre>
+</div>
+<p class="note">Other teachers: change board and school. Same three steps. Board members use role “board office” and do not open child cards.</p>
+</div>
+<script src="/js/device-pass.js"></script>
+<script src="/js/unity-id.js"></script>
+<script src="/js/unity-bind.js"></script>
+<script>
+function say(){
+  var open = window.UnityBind && UnityBind.phraseOpen && UnityBind.phraseOpen();
+  document.getElementById('phraseSay').textContent = open
+    ? 'Phrase is open on this device.'
+    : 'Open Portal. Make eight words. Write them on paper. There is no reset email.';
+  if (window.UnityBind && UnityBind.paint) UnityBind.paint(document.getElementById('paint'));
+}
+document.getElementById('confirm').onclick = function(){
+  var who = document.getElementById('who').value.trim();
+  if (!who) { document.getElementById('roomSay').textContent = 'Name the adult. Not a child.'; return; }
+  var bind = {
+    schema: 'dc.teacher.bind.v1',
+    who: who,
+    board: document.getElementById('board').value,
+    school: document.getElementById('school').value.trim(),
+    grade: document.getElementById('grade').value.trim(),
+    confirmed: true,
+    sent: false,
+    at: new Date().toISOString()
+  };
+  try { localStorage.setItem('dc.teacher.bind', JSON.stringify(bind)); } catch (e) {}
+  document.getElementById('roomSay').textContent = 'Room confirmed on this device. Dualis did not email the board.';
+};
+document.getElementById('hatch').onclick = function(){
+  if (!window.UnityBind) return;
+  var r = UnityBind.attachTeacher();
+  document.getElementById('roomSay').textContent = r.ok
+    ? ('Teacher door ' + r.door.human + ' · ' + r.door.status)
+    : (r.hole || 'awaiting_phrase');
+  say();
+};
+say();
+</script>
+</body></html>
