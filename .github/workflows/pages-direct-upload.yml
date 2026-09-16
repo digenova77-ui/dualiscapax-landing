@@ -34,9 +34,16 @@ jobs:
             echo "::error::CLOUDFLARE_API_TOKEN missing in Actions secrets"
             exit 1
           fi
-          # One shot. Do not wrap wrangler in a retry loop.
-          # 10000 = token scope (Pages Write missing). Backoff cannot fix that.
-          # 429 = Client API cap; re-run the workflow later, do not tight-loop.
+          set +e
           npx --yes wrangler@3.112.0 pages deploy cf-pages \
             --project-name=dualiscapax-landing \
             --commit-dirty=true
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ]; then
+            echo "::error::Direct Upload failed (exit $code)."
+            echo "::error::If the log says Authentication error [code: 10000]: the token is seated but lacks Account → Cloudflare Pages → Edit on this Account ID."
+            echo "::error::Backoff will not fix 10000. Replace CLOUDFLARE_API_TOKEN then re-run this workflow once."
+            echo "::error::Do not open AWS / R2 / KV to skip this. dualiscapax.ai is this Pages project."
+            exit "$code"
+          fi

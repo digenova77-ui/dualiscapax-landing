@@ -9,22 +9,28 @@
     }
     return "";
   }
-  function measured() {
-    try {
-      var raw = localStorage.getItem("dc.teamsnap.events");
-      if (!raw) return null;
-      var ev = JSON.parse(raw);
-      var n = Array.isArray(ev) ? ev[0] : ev;
-      if (!n) return null;
-      return {
-        title: pick(n, ["name", "title", "event_name"]),
-        vs: pick(n, ["opponent_name", "opponent", "against", "away_team", "home_team"]),
-        when: pick(n, ["start_date", "start", "starts_at"]),
-        loc: pick(n, ["location_name", "location", "venue"])
-      };
-    } catch (e) {
-      return null;
+  function readStore() {
+    var keys = ["dc.teamsnap.events", "dc.ice.teamsnap.events"];
+    for (var k = 0; k < keys.length; k++) {
+      try {
+        var raw = localStorage.getItem(keys[k]);
+        if (!raw) continue;
+        var ev = JSON.parse(raw);
+        var n = Array.isArray(ev) ? ev[0] : ev;
+        if (n) return n;
+      } catch (e) {}
     }
+    return null;
+  }
+  function measured() {
+    var n = readStore();
+    if (!n) return null;
+    return {
+      title: pick(n, ["name", "title", "event_name"]),
+      vs: pick(n, ["opponent_name", "opponent", "against", "away_team", "home_team"]),
+      when: pick(n, ["start_date", "startDate", "start", "starts_at"]),
+      loc: pick(n, ["location_name", "locationName", "location", "venue"])
+    };
   }
   function line() {
     var m = measured();
