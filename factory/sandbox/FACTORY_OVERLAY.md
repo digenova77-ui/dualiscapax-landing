@@ -36,6 +36,7 @@ Iris is not a fourth religion. She runs **this file**. Hop-limited observation o
 ## AND for every member
 
 Look $0. Home not smashed. ice.html not full-replaced. No phrase in git. No student names in git. Dualis ≠ coin on a poster. Dualis ≠ issuer because a spec exists.
+Wrong ring cannot emit an official-looking form.
 
 ## Affinity +1
 
@@ -46,4 +47,10 @@ After the ten is already fair, one more short close. Not a scenic route. Not APY
 Never idle = run the overlay again.
 Never idle ≠ invent work.
 
-Cross-ref: FACTORY_TEN, IDEA_FARM, AGENT_RTE, AGENT_ECONOMY, DCLM_UNITY_MATRIX, UNITY_THREE_BOOKS, POL1_STANDARD, COMPLIANCE_FLOOR, SARA_SURFACE.
+## Ingest (do not rewrite)
+
+`UNITY_STANDARD.md` / `UR1_STANDARD.md` — seat + ring + doors + confirm.
+`PERSONAL_DESK.md` — same desk for every jurisdiction; prepare then sign.
+`COMPLIANCE_MAP.md` — find, define, or `awaiting_ring`.
+
+Cross-ref: FACTORY_TEN, IDEA_FARM, AGENT_RTE, AGENT_ECONOMY, DCLM_UNITY_MATRIX, UNITY_THREE_BOOKS, POL1_STANDARD, COMPLIANCE_FLOOR, SARA_SURFACE, THE_ARROW.
