@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Class cards · Grade 2</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:17px/1.5 Fraunces,Georgia,serif}
+.wrap{max-width:44rem;margin:0 auto;padding:1.1rem 1rem 5.6rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:1.85rem;margin:.6rem 0}
+.note{color:var(--mute);font-size:.92rem}
+.card{border:1px solid var(--line);border-radius:16px;padding:.85rem;margin:.55rem 0;background:var(--card)}
+label{display:block;font:10px IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:.45rem 0 .15rem}
+input,textarea{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.5rem;font:16px/1.4 Georgia,serif}
+textarea{min-height:3.2rem}
+button,.verb{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.45rem .75rem;font:11px IBM Plex Mono,monospace;text-transform:uppercase;margin:.25rem .25rem 0 0;text-decoration:none;display:inline-block}
+.name{color:var(--cyan);font-weight:600}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.94);border-top:1px solid var(--line);padding:.45rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">On this phone · not on Dualis</p>
+<h1>Each child.<br>Her notes.</h1>
+<p class="note">Paste a list to start. Then open one name. Marks, home, how they work with the class, how they learn — only what she types. Dualis does not invent a child or a family.</p>
+<div class="card">
+<label>Add names (one per line)</label>
+<textarea id="raw" placeholder="First L."></textarea>
+<button type="button" id="add">Add to this phone</button>
+<button type="button" id="wipe">Clear all cards</button>
+</div>
+<div id="list"></div>
+<div class="card" id="edit" hidden>
+<p class="name" id="who"></p>
+<label>Marks / Growing Success notes</label><textarea id="marks"></textarea>
+<label>Home — only what she needs to remember</label><textarea id="home"></textarea>
+<label>How they work with the class</label><textarea id="classmates"></textarea>
+<label>How they learn</label><textarea id="learn"></textarea>
+<label>Next step she will try</label><textarea id="next"></textarea>
+<p><button type="button" id="save">Save card</button> <button type="button" id="back">Back to list</button></p>
+</div>
+</div>
+<nav class="dock"><a href="./index.html">Desk</a><a class="on" href="./class.html">Class</a><a href="/portal">Phrase</a></nav>
+<script>
+var KEY='dc.sara.g2.cards';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function saveAll(a){localStorage.setItem(KEY,JSON.stringify(a)); try{localStorage.setItem('dc.sara.g2.class',JSON.stringify(a.map(function(x){return x.name})))}catch(e){}}
+function draw(){
+  var a=load(), box=document.getElementById('list');
+  box.innerHTML='';
+  if(!a.length){box.innerHTML='<p class="note">No cards yet.</p>';return;}
+  a.forEach(function(c,i){
+    var d=document.createElement('div'); d.className='card';
+    d.innerHTML='<p class="name">'+c.name+'</p><p class="note">'+(c.next||c.learn||'Tap to itemize')+'</p>';
+    d.onclick=function(){open(i)}; box.appendChild(d);
+  });
+}
+var cur=-1;
+function open(i){
+  var c=load()[i]; if(!c)return; cur=i;
+  document.getElementById('list').hidden=true;
+  document.getElementById('edit').hidden=false;
+  document.getElementById('who').textContent=c.name;
+  ['marks','home','classmates','learn','next'].forEach(function(k){document.getElementById(k).value=c[k]||'';});
+}
+function closeEdit(){cur=-1;document.getElementById('edit').hidden=true;document.getElementById('list').hidden=false;draw();}
+document.getElementById('add').onclick=function(){
+  var lines=document.getElementById('raw').value.split(/\n/).map(function(s){return s.trim()}).filter(Boolean);
+  var a=load();
+  lines.forEach(function(name){
+    if(a.some(function(x){return x.name===name})) return;
+    a.push({id:'c'+Date.now()+Math.random().toString(16).slice(2),name:name,marks:'',home:'',classmates:'',learn:'',next:'',at:new Date().toISOString()});
+  });
+  saveAll(a); document.getElementById('raw').value=''; draw();
+};
+document.getElementById('save').onclick=function(){
+  var a=load(); if(cur<0||!a[cur])return;
+  ['marks','home','classmates','learn','next'].forEach(function(k){a[cur][k]=document.getElementById(k).value;});
+  a[cur].at=new Date().toISOString(); saveAll(a); closeEdit();
+};
+document.getElementById('back').onclick=closeEdit;
+document.getElementById('wipe').onclick=function(){
+  if(!confirm('Clear every card from this phone? Dualis cannot restore them.'))return;
+  localStorage.removeItem(KEY); localStorage.removeItem('dc.sara.g2.class'); draw();
+};
+draw();
+</script>
+</body></html>
