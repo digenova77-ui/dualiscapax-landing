@@ -2,31 +2,34 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Board door · named hole</title>
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0b1220">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b1220;--ink:#f3efe4;--mute:#9aa7b5;--gold:#e8c36a;--line:rgba(232,195,106,.22);--card:#121a2a}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Georgia,serif}
-.wrap{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 5.5rem}
-.brand{font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-h1{font-size:1.9rem}.note{color:var(--mute)}
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:18px/1.55 Fraunces,Georgia,serif;background:#05070c}
+.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(1.9rem,7vw,2.8rem);font-weight:600}h1 em{font-style:italic;color:var(--cyan);font-weight:400}
+.note{color:var(--mute)}
 a.row{display:block;color:var(--ink);text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem;margin:.45rem 0}
 a.row span{display:block;color:var(--mute);font-size:.9rem}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#0b1220;border-top:1px solid var(--line);padding:.5rem;font:10px ui-monospace,monospace;text-transform:uppercase}
-.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--gold)}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.5rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
 </style></head>
 <body>
 <div class="wrap">
 <p class="brand">person_door · awaiting_board_oidc</p>
-<h1>The board holds the key.</h1>
-<p class="note">A teacher signs in with the same account they already use at work. Dualis does not take that password. Dualis has no OIDC client in these tenants yet. Until a board signs a row, use the official door, then open the desk on this phone.</p>
-<a class="row" href="https://www.hpeschools.ca" rel="noopener">HPEDSB official site<span>@hpedsb.on.ca · staff also use board Google apps accounts</span></a>
+<h1>The board holds the key.<br><em>The mailbox names the grade.</em></h1>
+<p class="note">Sign in with the account already at work. Dualis does not take that password. When the teacher grants the mailbox, Dualis looks up school and grade. That is the signup. They should not have to pick a grade by hand.</p>
+<a class="row" href="./bind.html">Grant the work mail on this phone<span>Domain maps the board. Grade waits on mailbox unless already cited.</span></a>
+<a class="row" href="https://www.hpeschools.ca" rel="noopener">HPEDSB official site<span>@hpedsb.on.ca · Google apps accounts</span></a>
 <a class="row" href="https://www.alcdsb.on.ca" rel="noopener">ALCDSB official site<span>@alcdsb.on.ca</span></a>
 <a class="row" href="https://www.limestone.on.ca" rel="noopener">Limestone official site<span>@limestone.on.ca</span></a>
-<p class="note">Dualis is not Aspen, not the family portal, and not the board SIS. Class lists stay on the teacher’s device.</p>
-<p><a href="./index.html" style="color:#e8c36a">Pick a school anyway (Look)</a></p>
+<p class="note">Dualis is not Aspen. Class lists stay on the device. No staff emails on GitHub.</p>
 </div>
-<nav class="dock"><a href="./index.html">Boards</a><a class="on" href="./door.html">Door</a><a href="./desk.html">Desk</a><a href="/">Home</a></nav>
+<nav class="dock"><a href="./index.html">Boards</a><a href="./bind.html">Bind</a><a class="on" href="./door.html">Door</a><a href="./desk.html">Desk</a></nav>
 </body></html>
