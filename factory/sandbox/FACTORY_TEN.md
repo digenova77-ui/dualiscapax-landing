@@ -1,6 +1,10 @@
 # FACTORY_TEN — standing law
 
 This is not a list we wrote once. This is how the mill runs.
+This is how the **idea farm** manifests.
+
+An idea does not become a room because it was spoken.
+It enters the kennel. It waits in the ten. DCLM keeps or kills it. One atom lands. Leftover goes home. Still-open is the harvest report.
 
 Every idle tick:
 
@@ -18,5 +22,7 @@ If Ice is 308, do not full-replace `ice.html`.
 Coin wrapper stays last while any of 1–7 bleed.
 
 Affinity +1 lives here: after the ten already looks fair, one more close still happens. Sitting on a new essay does not.
+
+A million ideas with no ten-loop is a spray. That is not this farm.
 
 Cross-ref: `NEXT10_DCLM.md` (current cue) · `NEXT_WEAKEST.md` · `PLAYGROUND_ORDER.md` · `COMPLIANCE_FLOOR.md`
