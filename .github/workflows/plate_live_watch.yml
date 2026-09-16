@@ -1,0 +1,60 @@
+name: plate-live-watch
+
+# After cf-pages changes, wait and curl the mouth. No Cloudflare token.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cf-pages/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: plate-live-watch
+  cancel-in-progress: true
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for Pages then curl
+        run: |
+          sleep 90
+          python3 << 'PY'
+          import json, urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def head(url):
+              req = urllib.request.Request(url, method='HEAD')
+              try:
+                  with urllib.request.urlopen(req, timeout=20) as r:
+                      return {'url': url, 'status': getattr(r, 'status', None), 'location': r.headers.get('Location')}
+              except Exception as e:
+                  return {'url': url, 'error': str(e)}
+
+          rec = {
+            'kind': 'plate_live_watch',
+            'captured_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'sha': '''${{ github.sha }}''',
+            'home': head('https://dualiscapax.ai/'),
+            'ice': head('https://dualiscapax.ai/ice'),
+            'rte': head('https://dualiscapax.ai/rte'),
+          }
+          out = Path('factory/sandbox/receipts')
+          out.mkdir(parents=True, exist_ok=True)
+          (out / 'plate_live.json').write_text(json.dumps(rec, indent=2) + '\n')
+          print(json.dumps(rec, indent=2))
+          PY
+      - name: Commit receipt
+        run: |
+          git config user.email "plate-watch@dualiscapax.ai"
+          git config user.name "Dualis Plate Watch"
+          git add factory/sandbox/receipts/plate_live.json
+          if git diff --cached --quiet; then echo none; exit 0; fi
+          git commit -m "chore(plate): live watch receipt [skip ci]"
+          git pull --rebase origin main && git push origin HEAD || git pull --rebase origin main && git push origin HEAD
