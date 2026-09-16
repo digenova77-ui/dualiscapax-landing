@@ -2,10 +2,11 @@ name: hockey-ohf-five
 
 # Five OHF youth members: OMHA ALLIANCE GTHL NOHA OWHA.
 # Org indexes + official cites only. No named minors. No helix.
+# Time-splice: :09/:39 — golf keeps slot A :07/:37.
 
 on:
   schedule:
-    - cron: '7,37 * * * *'
+    - cron: '9,39 * * * *'
   workflow_dispatch:
 
 permissions:
