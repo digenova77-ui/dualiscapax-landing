@@ -1,0 +1,57 @@
+name: factory-mill
+
+# Clock A: mint one of 1.792e6 slots. Does NOT push main.
+on:
+  schedule:
+    - cron: '11,26,41,56 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: factory-mill
+  cancel-in-progress: true
+
+jobs:
+  mill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mint next slot
+        run: |
+          python3 << 'PY'
+          import json
+          from datetime import datetime, timezone
+          axes = {
+            "clades": ["hockey","golf","next_sport","leisure","energy_water","business","finance","exploration","sima_ehr","civic_muni"],
+            "layers": ["L1_input","L2_cascade","L3_interpret","L4_effector","L5_loop"],
+            "debate": ["definition","marker","modality","endpoint","regulator","access_cost","graft_risk"],
+          }
+          n_clade, n_geo, n_L, n_D, n_S = 10, 80, 5, 7, 32
+          cap = n_clade * n_geo * n_L * n_D * n_S
+          minute = int(datetime.now(timezone.utc).strftime("%Y%m%d%H%M"))
+          slot = minute % cap
+          s = slot
+          seat = s % n_S; s //= n_S
+          deb = s % n_D; s //= n_D
+          lay = s % n_L; s //= n_L
+          geo = s % n_geo; s //= n_geo
+          clade = s % n_clade
+          card = {
+            "kind": "mill_slot",
+            "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "slot_id": slot,
+            "capacity": cap,
+            "clade": axes["clades"][clade],
+            "geo_slot": geo,
+            "layer": axes["layers"][lay],
+            "debate": axes["debate"][deb],
+            "seat": seat + 1,
+            "status": "seed",
+            "hole": "awaiting_P1_%s_%s" % (axes["clades"][clade], axes["debate"][deb]),
+            "law": "cite-or-hole; do not invent; do not push HTML",
+          }
+          print(json.dumps(card, indent=2))
+          PY
