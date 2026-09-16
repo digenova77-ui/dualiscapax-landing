@@ -1,8 +1,9 @@
 -- DualisCapax D1 · encyclopedia gateway spec
 -- Database: dualiscapax-fulfillments
--- events = accepted Stripe webhook (append-only)
+-- events = accepted Stripe webhook (append-only, PK event_id)
 -- entitlements = write-once grant (ON CONFLICT session_id DO NOTHING)
 -- fuel_credits = write-once Fuel units (ON CONFLICT session_id DO NOTHING)
+-- grants = write-once Dualis atom (ON CONFLICT atom DO NOTHING)
 -- Balance = SUM(units) WHERE email = ?  — no running-total UPDATE
 
 CREATE TABLE IF NOT EXISTS events (
@@ -34,9 +35,19 @@ CREATE TABLE IF NOT EXISTS fuel_credits (
   created_at INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS grants (
+  atom       TEXT PRIMARY KEY,
+  event_id   TEXT NOT NULL,
+  session_id TEXT,
+  sku        TEXT,
+  created_at INTEGER NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id);
 CREATE INDEX IF NOT EXISTS idx_token_id ON entitlements(token_id);
 CREATE INDEX IF NOT EXISTS idx_email ON entitlements(email);
 CREATE INDEX IF NOT EXISTS idx_sku ON entitlements(sku);
 CREATE INDEX IF NOT EXISTS idx_fuel_email ON fuel_credits(email);
 CREATE INDEX IF NOT EXISTS idx_fuel_event ON fuel_credits(event_id);
+CREATE INDEX IF NOT EXISTS idx_grants_event ON grants(event_id);
+CREATE INDEX IF NOT EXISTS idx_grants_session ON grants(session_id);
