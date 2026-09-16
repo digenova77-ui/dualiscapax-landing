@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Grade 2 desk · Easthill</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:17px/1.5 Fraunces,Georgia,serif}
+.wrap{max-width:72rem;margin:0 auto;padding:1.1rem 1rem 5.6rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);margin:.5rem 0}
+h1 em{color:var(--cyan);font-weight:400}
+.note{color:var(--mute)}
+.card{border:1px solid var(--line);border-radius:16px;padding:.85rem;margin:.5rem 0;background:var(--card)}
+label{display:block;font:10px IBM Plex Mono,monospace;text-transform:uppercase;color:var(--mute);margin:.35rem 0 .15rem}
+input,textarea,select{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.45rem;font:16px Georgia,serif}
+textarea{min-height:3rem}
+button,a.verb{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.4rem .7rem;font:11px IBM Plex Mono,monospace;text-transform:uppercase;text-decoration:none;display:inline-block;margin:.2rem .2rem 0 0}
+.desk-only{display:none}
+.phone-only{display:block}
+@media (min-width:900px){
+  .flow{display:grid;grid-template-columns:minmax(16rem,22rem) 1fr;gap:1rem;align-items:start}
+  .desk-only{display:block}
+  .phone-only{display:none}
+  textarea{min-height:4.2rem}
+}
+@media (hover:none){
+  .desk-only{display:none !important}
+}
+.list button{display:block;width:100%;text-align:left;border-radius:12px;margin:.25rem 0}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.94);border-top:1px solid var(--line);padding:.45rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Easthill · Grade 2 · <span class="phone-only">phone</span><span class="desk-only">laptop</span></p>
+<h1>Keep the child.<br><em>Stop burning the evening.</em></h1>
+<p class="note phone-only">Look up or add. Deep work waits for the laptop.</p>
+<p class="note desk-only">Week, child, notes, next step — one flow. Same cards as the phone.</p>
+<div class="card" id="gate"><p class="note" id="gateSay">Same eight words as Ice.</p><p><a class="verb" href="/portal">Portal</a></p></div>
+<div id="app" hidden>
+<div class="flow">
+  <div>
+    <div class="card">
+      <label>Add a name</label>
+      <input id="newName" placeholder="First L.">
+      <button type="button" id="add">Save on this device</button>
+    </div>
+    <div class="card list" id="list"></div>
+    <div class="card phone-only">
+      <p class="note">Minutes after 2:30</p>
+      <input id="minsP" type="number" value="45">
+    </div>
+  </div>
+  <div class="desk-only">
+    <div class="card" id="deep">
+      <p class="brand" id="who">Pick a child</p>
+      <label>Marks / Growing Success</label><textarea id="marks"></textarea>
+      <label>How they learn</label><textarea id="learn"></textarea>
+      <label>How they work with the class</label><textarea id="classmates"></textarea>
+      <label>Home — only what school needs</label><textarea id="home"></textarea>
+      <label>Next step</label><textarea id="next"></textarea>
+      <p><button type="button" id="save">Save card</button> <a class="verb" href="./share.html">Grants</a></p>
+    </div>
+    <div class="card">
+      <label>Minutes after bells</label>
+      <input id="mins" type="number" value="45">
+      <label>Days this week</label>
+      <input id="days" type="number" value="5">
+      <p class="note" id="out"></p>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<nav class="dock"><a class="on" href="./index.html">Desk</a><a href="./class.html">Cards</a><a href="./share.html">Share</a><a href="/portal">Phrase</a></nav>
+<script src="/js/device-pass.js"></script>
+<script>
+var KEY='dc.sara.g2.cards'; var cur=-1;
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function persist(a){localStorage.setItem(KEY,JSON.stringify(a)); localStorage.setItem('dc.sara.g2.class',JSON.stringify(a.map(function(x){return x.name})));}
+function list(){
+  var box=document.getElementById('list'), a=load();
+  box.innerHTML='';
+  a.forEach(function(c,i){
+    var b=document.createElement('button'); b.type='button';
+    b.textContent=c.name+(c.next?' · '+c.next.slice(0,40):'');
+    b.onclick=function(){open(i)}; box.appendChild(b);
+  });
+  if(!a.length) box.innerHTML='<p class="note">No cards yet.</p>';
+}
+function open(i){
+  var c=load()[i]; if(!c)return; cur=i;
+  document.getElementById('who').textContent=c.name;
+  ['marks','learn','classmates','home','next'].forEach(function(k){var el=document.getElementById(k); if(el) el.value=c[k]||'';});
+}
+function leftover(){
+  var m=+document.getElementById('mins').value||+document.getElementById('minsP').value||0;
+  var d=+document.getElementById('days').value||5;
+  var el=document.getElementById('out'); if(el) el.textContent=(m*d/60).toFixed(1)+' hours after bells this week.';
+}
+document.getElementById('add').onclick=function(){
+  var name=document.getElementById('newName').value.trim(); if(!name)return;
+  var a=load();
+  if(a.some(function(x){return x.name===name})) return;
+  a.push({id:'c'+Date.now(),name:name,marks:'',home:'',classmates:'',learn:'',next:'',at:new Date().toISOString()});
+  persist(a); document.getElementById('newName').value=''; list();
+};
+document.getElementById('save').onclick=function(){
+  var a=load(); if(cur<0||!a[cur])return;
+  ['marks','learn','classmates','home','next'].forEach(function(k){a[cur][k]=document.getElementById(k).value;});
+  a[cur].at=new Date().toISOString(); persist(a); list();
+};
+['mins','days','minsP'].forEach(function(id){var el=document.getElementById(id); if(el) el.oninput=leftover;});
+function gate(){
+  var open=window.DCVault && DCVault.session && DCVault.session();
+  if(open){document.getElementById('gate').hidden=true;document.getElementById('app').hidden=false;list();leftover();return;}
+  document.getElementById('gateSay').textContent=(window.DCVault&&DCVault.hasVault&&DCVault.hasVault())?'Ice words are on this device. Open Portal.':'Eight words. Same as Ice.';
+}
+gate();
+</script>
+</body></html>
