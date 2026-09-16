@@ -1,12 +1,12 @@
 /**
  * DualisCapax Stripe fulfill worker
  * Jacket: access.dual.v8
- * HMAC → merchSuperRefine → claimGrantD1 (evt_ + cs_ + fuel lot) → persist
+ * HMAC → merchSuperRefine → claimGrantD1 (evt_ + cs_ + atom + fuel lot) → persist
  * D1 success never falls through to KV fuel += .
  */
 
 import { merchSuperRefine, merchIssuesToFulfill } from "./merch-refine.js";
-import { claimGrantD1, claimDualKv, finalizeKv } from "./idempotency.js";
+import { claimGrantD1, claimDualKv, finalizeKv, dualisAtom } from "./idempotency.js";
 
 const JACKET = "access.dual.v8";
 
@@ -116,7 +116,18 @@ function merchandiseJacket(session, resolved) {
   return out;
 }
 
-async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amountTotal, currency, via }) {
+function atomFromSession(session, sku) {
+  const meta = (session && session.metadata) || {};
+  return dualisAtom({
+    sku: sku || meta.sku || meta.dc_sku,
+    host: meta.host || meta.dc_host,
+    window: meta.window || meta.dc_window,
+    payer: meta.payer || meta.dc_payer || (session.customer_details && session.customer_details.email),
+    sessionId: session && session.id
+  });
+}
+
+async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amountTotal, currency, via, atom }) {
   const grant = sku ? SKU_GRANT[sku] : null;
   if (!grant) return { ok: false, reason: "unknown_sku", sku, via, amount_total: amountTotal, jacket: JACKET };
   if (!eventId) return { ok: false, reason: "missing_event_id", jacket: "identity" };
@@ -137,6 +148,9 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
               sku
             }
           : null;
+      const grantRow = atom
+        ? { atom, event_id: eventId, session_id: sessionId, sku }
+        : null;
       const claimed = await claimGrantD1(
         database,
         { event_id: eventId, event_type: eventType || "checkout", session_id: sessionId },
@@ -151,7 +165,8 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
           currency: currency || "cad",
           status: "granted"
         },
-        fuelRow
+        fuelRow,
+        grantRow
       );
       if (claimed.used) {
         return {
@@ -159,8 +174,10 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
           idempotent: Boolean(claimed.idempotent),
           jacket: claimed.idempotent ? "identity" : JACKET,
           store: "d1",
+          atom: atom || null,
           record: claimed.entitlement || null,
-          fuel: claimed.fuel || null
+          fuel: claimed.fuel || null,
+          grant: claimed.grant || null
         };
       }
     } catch (err) {
@@ -174,6 +191,7 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
     event_id: eventId,
     session_id: sessionId,
     sku,
+    atom: atom || null,
     status: "pending"
   });
   if (kvClaim.used && kvClaim.idempotent) {
@@ -185,6 +203,7 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
     jacket: JACKET,
     event_id: eventId,
     session_id: sessionId,
+    atom: atom || null,
     sku,
     via,
     grant,
@@ -235,7 +254,7 @@ export default {
         has_webhook_secret: Boolean(env && env.STRIPE_WEBHOOK_SECRET),
         has_kv: Boolean(env && env.FULFILL_KV),
         has_d1: Boolean(db(env)),
-        idempotency: "evt_ plus cs_; D1 write-once lots; no KV fuel +="
+        idempotency: "evt_ plus cs_ plus atom; D1 write-once lots; no KV fuel +="
       });
     }
     if (request.method === "OPTIONS") {
@@ -292,10 +311,11 @@ export default {
       via: merch.via,
       email: session.customer_details && session.customer_details.email,
       amountTotal: session.amount_total,
-      currency: session.currency
+      currency: session.currency,
+      atom: atomFromSession(session, merch.sku)
     });
     return json({ received: true, fulfill: result });
   }
 };
 
-export { SKU_GRANT, AMOUNT_CAD_CENTS_TO_SKU, skuFromSession, merchandiseJacket, amountMatchesSku };
+export { SKU_GRANT, AMOUNT_CAD_CENTS_TO_SKU, skuFromSession, merchandiseJacket, amountMatchesSku, atomFromSession };
