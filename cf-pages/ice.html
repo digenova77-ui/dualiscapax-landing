@@ -4,12 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Ice — DualisCapax</title>
-  <meta name="description" content="Hockey ice portal. One rink. Claim a seat, next game, Maps, tape, measure, school, apps. Demo Leaf preview.">
+  <meta name="description" content="Hockey ice portal. One rink. Claim a seat, next game, Maps, tape, measure, school, apps.">
   <meta name="theme-color" content="#0B0E14">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="lander.css">
   <link rel="stylesheet" href="css/ice-skills.css">
   <link rel="stylesheet" href="css/ice-gameday.css">
+  <style>
+    .ice-dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:space-around;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#0B0E14;border-top:1px solid #2a3348}
+    .ice-dock a{color:#8b96b3;text-decoration:none;font-size:12px}
+    .ice-dock a.on{color:#38BDF8}
+    body.ice-body{padding-bottom:4.2rem}
+  </style>
 </head>
 <body class="ice-body" id="top">
   <header class="ice-chrome">
@@ -50,6 +56,12 @@
       <a class="ice-btn ghost" href="onboard.html">Onboard / Unity</a>
     </div>
   </div>
+  <nav class="ice-dock" aria-label="Ice">
+    <a class="on" href="./ice.html">Ice</a>
+    <a href="./schedule.html">Schedule</a>
+    <a href="./gameday.html">Gameday</a>
+    <a href="./hockey.html">OHF</a>
+  </nav>
   <script src="js/api-config.js"></script>
   <script src="js/dc-passkey.js"></script>
   <script src="js/teamsnap-oauth.js"></script>
@@ -57,5 +69,9 @@
   <script src="js/ice-seat-teamsnap-only.js"></script>
   <script src="js/ice-skills.js"></script>
   <script src="js/ice-gameday.js"></script>
+  <script src="js/iris-voice.js"></script>
+  <script src="js/iris-ice-voice.js"></script>
+  <script src="js/iris-page-voice.js"></script>
+  <script src="js/iris-page-hook.js"></script>
 </body>
 </html>
