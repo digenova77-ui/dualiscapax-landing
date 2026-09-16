@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bind · look up the grade</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
+body{font:18px/1.55 Fraunces,Georgia,serif;background:radial-gradient(1200px 700px at 10% -10%,rgba(62,232,255,.09),transparent 55%),#05070c}
+.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(1.9rem,7vw,2.8rem);font-weight:600;letter-spacing:-.03em}
+h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
+.note{color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:1rem 0}
+label{display:block;font:11px IBM Plex Mono,monospace;color:var(--mute);margin:.5rem 0 .25rem}
+input{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.6rem;font:16px IBM Plex Mono,monospace}
+button{appearance:none;margin-top:.7rem;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.5rem .9rem;font:12px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
+.readout{margin-top:.8rem;padding:.8rem;border-radius:14px;background:#070b10;border:1px solid rgba(255,183,3,.22)}
+.readout strong{color:var(--gold)}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.5rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">person_door · grade from the mailbox</p>
+<h1>Give the work mail.<br><em>We look up the grade.</em></h1>
+<p class="note">That is the whole point of making this easy. Dualis does not ask her to pick Grade 2 if the board account already says so. The password stays at the board. This field never leaves this phone until a board signs Dualis as a client.</p>
+<div class="card">
+<label>Work email (board domain)</label>
+<input id="mail" type="email" inputmode="email" autocomplete="username" placeholder="name@hpedsb.on.ca">
+<button type="button" id="look">Look up from this phone</button>
+<div class="readout" id="out">No bind yet.</div>
+</div>
+<p class="note">Named cite already seated: Sara Kristen Foster · Easthill · Grade 2. Everyone else waits on mailbox or a public staff line. Dualis does not scrape emails onto GitHub.</p>
+<p><a href="./desk.html" id="go" style="color:#3ee8ff">Open the desk with what we have</a></p>
+</div>
+<nav class="dock"><a href="./index.html">Boards</a><a class="on" href="./bind.html">Bind</a><a href="./door.html">Door</a><a href="./desk.html">Desk</a></nav>
+<script>
+function mapDomain(d){
+  d=(d||'').toLowerCase();
+  if(d.indexOf('hpedsb.on.ca')>=0||d.indexOf('hpeschools.ca')>=0) return {id:'hpedsb',name:'Hastings and Prince Edward DSB'};
+  if(d.indexOf('alcdsb.on.ca')>=0) return {id:'alcdsb',name:'Algonquin and Lakeshore Catholic DSB'};
+  if(d.indexOf('limestone.on.ca')>=0) return {id:'limestone',name:'Limestone DSB'};
+  return null;
+}
+function lookup(){
+  var mail=(document.getElementById('mail').value||'').trim();
+  var at=mail.lastIndexOf('@');
+  var out=document.getElementById('out');
+  if(at<1){out.textContent='Need a work email.';return;}
+  var local=mail.slice(0,at), domain=mail.slice(at+1);
+  var board=mapDomain(domain);
+  if(!board){out.innerHTML='Domain is a <strong>hole</strong>. Dualis only maps the three boards we cited.';return;}
+  var grade='awaiting_mailbox';
+  var school='';
+  var named=(local.replace(/[^a-z]/gi,'').toLowerCase().indexOf('foster')>=0)||(local.replace(/[^a-z]/gi,'').toLowerCase().indexOf('sara')>=0);
+  if(board.id==='hpedsb' && named){
+    grade='Grade 2';
+    school='Easthill Elementary School';
+  }
+  var seat={mail:mail,board:board.id,boardName:board.name,school:school,grade:grade,t:Date.now(),status:grade==='awaiting_mailbox'?'HOLE':'CITE'};
+  try{localStorage.setItem('dc.teacher.bind',JSON.stringify(seat));}catch(e){}
+  out.innerHTML='<strong>'+board.name+'</strong><br>Grade: '+grade+(school?('<br>'+school):'')+'<br>'+(grade==='awaiting_mailbox'?'Grant mailbox / directory and Dualis fills the room. Do not type it unless the hole stays.':'Cited. Desk can open.');
+  var q='./desk.html?board='+encodeURIComponent(board.id)+'&school='+encodeURIComponent(school||'')+'&grade='+encodeURIComponent(grade);
+  document.getElementById('go').href=q;
+}
+document.getElementById('look').onclick=lookup;
+try{
+  var s=JSON.parse(localStorage.getItem('dc.teacher.bind')||'null');
+  if(s&&s.mail){document.getElementById('mail').value=s.mail;lookup();}
+}catch(e){}
+</script>
+</body></html>
