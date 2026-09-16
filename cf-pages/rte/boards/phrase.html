@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Teacher phrase · same as Ice</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100dvh}
+body{font:18px/1.55 Fraunces,Georgia,serif;background:radial-gradient(1200px 700px at 10% -10%,rgba(62,232,255,.09),transparent 55%),#05070c}
+.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(1.9rem,7vw,2.8rem);font-weight:600;letter-spacing:-.03em}
+h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
+.note{color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:1rem 0}
+textarea{width:100%;min-height:5rem;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:.7rem;font:15px IBM Plex Mono,monospace}
+button{appearance:none;margin:.4rem .35rem 0 0;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.5rem .85rem;font:12px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
+.bad{color:#ffb4b4}.ok{color:#c8f0d2}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.5rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Same vault as Ice</p>
+<h1>Eight words.<br><em>This phone only.</em></h1>
+<p class="note">No password on Dualis. If Ice already opened this device, those words open the teacher desk too. If you lose the words, we cannot get you back in.</p>
+<div class="card" id="gate">
+<label class="brand" for="phrase">Eight-word phrase</label>
+<textarea id="phrase" autocomplete="off" spellcheck="false" placeholder="eight words that live only here"></textarea>
+<p>
+  <button type="button" id="make">Make a phrase</button>
+  <button type="button" id="open">Open</button>
+  <button type="button" id="unlock">I already have my words</button>
+</p>
+<p class="note" id="note">Write them on paper. There is no reset email.</p>
+</div>
+<div class="card" id="openDesk" hidden>
+<p class="ok" id="who"></p>
+<p class="note">Phrase is open. Next Dualis looks, then you confirm the room. The classroom still does not exist until that tap.</p>
+<p>
+  <a href="./bind.html" style="color:#3ee8ff">Look up the room</a><br>
+  <a href="./confirm.html" style="color:#3ee8ff">Confirm</a>
+</p>
+<button type="button" id="lock">Lock</button>
+</div>
+</div>
+<nav class="dock"><a class="on" href="./phrase.html">Phrase</a><a href="./bind.html">Bind</a><a href="./confirm.html">Confirm</a><a href="./desk.html">Desk</a></nav>
+<script src="/js/device-pass.js"></script>
+<script>
+function fail(e){
+  var n=document.getElementById('note');
+  n.className='note bad';
+  n.textContent=(e&&e.message)?e.message:'That phrase does not open this device.';
+}
+function paint(s){
+  document.getElementById('gate').hidden=true;
+  document.getElementById('openDesk').hidden=false;
+  document.getElementById('who').textContent=(s.role||'teacher')+' · '+String(s.id||'').slice(0,8)+' · this device';
+}
+document.getElementById('make').onclick=function(){
+  document.getElementById('phrase').value=DCVault.generate();
+  document.getElementById('note').className='note';
+  document.getElementById('note').textContent='Copy these eight words now. Then tap Open. We cannot show them again.';
+};
+document.getElementById('open').onclick=function(){
+  DCVault.create(document.getElementById('phrase').value,'teacher').then(function(s){
+    document.getElementById('phrase').value=''; paint(s);
+  }).catch(fail);
+};
+document.getElementById('unlock').onclick=function(){
+  DCVault.unlock(document.getElementById('phrase').value).then(function(s){
+    document.getElementById('phrase').value=''; paint(s);
+  }).catch(fail);
+};
+document.getElementById('lock').onclick=function(){
+  DCVault.lock();
+  document.getElementById('openDesk').hidden=true;
+  document.getElementById('gate').hidden=false;
+  document.getElementById('note').textContent='Locked. Same eight words open Ice and this desk.';
+};
+var open=DCVault.session();
+if(open) paint(open);
+else if(DCVault.hasVault()){
+  document.getElementById('note').textContent='This device already has Ice words. Type them and tap I already have my words.';
+}
+</script>
+</body></html>
