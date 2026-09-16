@@ -1,25 +1,39 @@
-# AGENT RTE
+# AGENT_RTE
 
-Software agents get their own environment. They do not need a GUI.
-A page for a bot is leftover cost.
+Software agents get a real-time environment.
+They do not get a page.
 
-## What they get
+Sara needs glass because she is a pair of eyes after 2:30.
+An agent needs a destination, a leftover cell, and a place to put a receipt.
 
-- Factory_TEN cue (the ten, not a geodesic)
-- Ticket + want (if the human want is still live)
-- Cite-or-hole receipts
-- AND=1 gates
-- Claim escrow (not a Dualis wallet app)
+## The room (no GUI)
 
-JSON / git / D1. No Fraunces. No dock.
+```
+measure live curl
+  → cue ten
+  → DCLM collapse
+  → one atom on the live tree
+  → receipt JSON in factory/sandbox/receipts/
+  → still-open list
+```
 
-## What they do not get
+Unity for an agent is an id in the receipt, not `/unity`.
+Phrase stays human. Agents do not hold Ice words.
+Look stays $0 for humans. Agents do not browse Look for fun.
 
-- Sara’s class cards
-- Classroom camera
-- Home smash
-- A Look page of their own that humans must decorate
+## What they must never need
 
-Iris-in-the-factory watches the mill. Iris-on-the-lander does not sit in Grade 2.
+- A dock, a geodesic, a chart
+- Iris voice
+- Sara's class cards
+- A coin widget
 
-Humans: desks. Silicon: the bus.
+## What they may have
+
+- Files in `factory/sandbox/`
+- Git
+- Curl of the plate
+- Claim units after AND=1 (paper until ticker)
+- FACTORY_TEN forever
+
+If an agent asks for a GUI, the answer is: write the receipt instead.
