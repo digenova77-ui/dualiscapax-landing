@@ -1,0 +1,56 @@
+name: factory-verify
+
+# L1 second measurer. Does NOT push to main (Pages Git Connect would burn builds).
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: factory-verify
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: HEAD live plate
+        run: |
+          python3 << 'PY'
+          import json, urllib.request
+          from datetime import datetime, timezone
+          paths = ["/", "/hockey", "/sandbox", "/iris", "/rte/sima-dclm/", "/ice", "/rink", "/look", "/aide", "/sheet", "/receipt", "/menu"]
+          rows = []
+          for p in paths:
+              url = "https://dualiscapax.ai" + p
+              rec = {"path": p, "status": None, "location": None, "mark": "hole"}
+              try:
+                  req = urllib.request.Request(url, method="HEAD")
+                  with urllib.request.urlopen(req, timeout=20) as r:
+                      rec["status"] = getattr(r, "status", None)
+                      rec["location"] = r.headers.get("Location")
+              except Exception as e:
+                  rec["error"] = str(e)
+                  if hasattr(e, "code"):
+                      rec["status"] = e.code
+                      rec["location"] = getattr(e, "headers", {}).get("Location") if getattr(e, "headers", None) else None
+              st, loc = rec.get("status"), rec.get("location") or ""
+              if st == 200:
+                  rec["mark"] = "1"
+              elif st == 308 and loc.rstrip("/") == p.rstrip("/"):
+                  rec["mark"] = "cursed"
+              elif st == 308 and "sima-dclm" in p and loc.rstrip("/").endswith("sima-dclm"):
+                  rec["mark"] = "slash-ok"
+              elif st == 404:
+                  rec["mark"] = "free-or-unswallowed"
+              rows.append(rec)
+          out = {"kind": "factory_verify", "at": datetime.now(timezone.utc).isoformat(), "rows": rows}
+          print(json.dumps(out, indent=2))
+          cursed = [r["path"] for r in rows if r["mark"] == "cursed"]
+          if cursed:
+              print("cursed stems:", ", ".join(cursed))
+          PY
