@@ -1,11 +1,18 @@
 name: plate-live-watch
 
-# After cf-pages changes, wait and curl the mouth. No Cloudflare token.
+# After plate-relevant changes, wait and curl the mouth. No Cloudflare token.
 on:
   push:
     branches: [main]
     paths:
       - 'cf-pages/**'
+      - 'functions/**'
+      - 'js/**'
+      - '_redirects'
+      - 'ice.html'
+      - 'look.html'
+      - 'hockey.html'
+      - 'rte/**'
   workflow_dispatch:
 
 permissions:
@@ -35,15 +42,20 @@ jobs:
                   with urllib.request.urlopen(req, timeout=20) as r:
                       return {'url': url, 'status': getattr(r, 'status', None), 'location': r.headers.get('Location')}
               except Exception as e:
-                  return {'url': url, 'error': str(e)}
+                  rec = {'url': url, 'error': str(e)}
+                  if hasattr(e, 'code'):
+                      rec['status'] = e.code
+                      rec['location'] = e.headers.get('Location') if getattr(e, 'headers', None) else None
+                  return rec
 
+          paths = ['/', '/ice', '/ice.html', '/look', '/hockey', '/portal',
+                   '/rte/easthill/', '/sara', '/js/modules.json']
+          rows = {p: head('https://dualiscapax.ai' + p) for p in paths}
           rec = {
             'kind': 'plate_live_watch',
             'captured_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
             'sha': '''${{ github.sha }}''',
-            'home': head('https://dualiscapax.ai/'),
-            'ice': head('https://dualiscapax.ai/ice'),
-            'rte': head('https://dualiscapax.ai/rte'),
+            'rows': rows,
           }
           out = Path('factory/sandbox/receipts')
           out.mkdir(parents=True, exist_ok=True)
