@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IEP draft · Grade 2</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b1220">
+<style>
+:root{--bg:#0b1220;--ink:#f3efe4;--mute:#9aa7b5;--gold:#e8c36a;--line:rgba(232,195,106,.22)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Georgia,serif}
+.wrap{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 5.6rem}
+.brand{font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:1.9rem}select,textarea,input,button{width:100%;font:16px Georgia,serif;margin:.2rem 0 .65rem;background:#0a101c;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:.55rem}
+button{color:var(--gold);border-radius:999px}
+.note{color:var(--mute)}label{font:11px ui-monospace,monospace;color:var(--mute)}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#0b1220;border-top:1px solid var(--line);padding:.5rem;font:10px ui-monospace,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--gold)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Ontario IEP shape · draft only</p>
+<h1>IEP working copy</h1>
+<p class="note">This is not the board IEP in Aspen. It is her working page so the official one has a human first draft. Pick a name from the class on this phone, or leave blank.</p>
+<label>Student (from this phone)</label>
+<select id="who"></select>
+<label>Reason the IEP exists</label>
+<textarea id="why" rows="2" placeholder="Identified / non-identified / IPRC pending — her words."></textarea>
+<label>Strengths</label>
+<textarea id="str" rows="3"></textarea>
+<label>Needs</label>
+<textarea id="need" rows="3"></textarea>
+<label>Accommodations (same curriculum, different path)</label>
+<textarea id="acc" rows="3" placeholder="Scribe, extra time, quiet space, visuals, movement break."></textarea>
+<label>Modifications / alternative (if any)</label>
+<textarea id="mod" rows="2" placeholder="Leave empty if accommodations only."></textarea>
+<label>Annual goal in plain words</label>
+<textarea id="goal" rows="2"></textarea>
+<button type="button" id="save">Save IEP draft on this phone</button>
+<p class="note" id="say"></p>
+</div>
+<nav class="dock"><a href="./class.html">Class</a><a class="on" href="./iep.html">IEP</a><a href="./report.html">Report</a><a href="./index.html">Desk</a></nav>
+<script>
+var CK='dc.sara.g2.class', IK='dc.sara.g2.iep';
+function names(){try{return JSON.parse(localStorage.getItem(CK)||'[]')}catch(e){return[]}}
+function ieps(){try{return JSON.parse(localStorage.getItem(IK)||'{}')}catch(e){return{}}}
+function fillWho(){
+  var s=document.getElementById('who');s.innerHTML='<option value="">(no student named)</option>';
+  names().forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;s.appendChild(o)});
+}
+function load(){
+  var w=document.getElementById('who').value, d=ieps()[w]||{};
+  ['why','str','need','acc','mod','goal'].forEach(function(id){document.getElementById(id).value=d[id]||''});
+}
+document.getElementById('who').onchange=load;
+document.getElementById('save').onclick=function(){
+  var w=document.getElementById('who').value;
+  if(!w){document.getElementById('say').textContent='Name a student from the class list first.';return;}
+  var all=ieps();
+  all[w]={why:why.value,str:str.value,need:need.value,acc:acc.value,mod:mod.value,goal:goal.value,t:Date.now()};
+  localStorage.setItem(IK,JSON.stringify(all));
+  document.getElementById('say').textContent='Draft saved for '+w+' on this phone. Still not the board form.';
+};
+fillWho(); load();
+</script>
+</body></html>

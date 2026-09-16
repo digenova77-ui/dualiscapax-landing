@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Report draft · Grade 2</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b1220">
+<style>
+:root{--bg:#0b1220;--ink:#f3efe4;--mute:#9aa7b5;--gold:#e8c36a;--line:rgba(232,195,106,.22)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Georgia,serif}
+.wrap{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 5.6rem}
+.brand{font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:1.9rem}select,textarea,button{width:100%;font:16px Georgia,serif;margin:.2rem 0 .65rem;background:#0a101c;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:.55rem}
+button{color:var(--gold);border-radius:999px}
+.note{color:var(--mute)}label{font:11px ui-monospace,monospace;color:var(--mute)}
+.draft{white-space:pre-wrap;border:1px solid var(--line);border-radius:12px;padding:.8rem;background:#0a101c}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#0b1220;border-top:1px solid var(--line);padding:.5rem;font:10px ui-monospace,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--gold)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Growing Success · draft comments</p>
+<h1>Report card working copy</h1>
+<p class="note">Levels 1–4 and R. Comments name the child, the work, the next step. Official copy lives in the board system. This page only drafts.</p>
+<label>Student</label>
+<select id="who"></select>
+<label>Subject</label>
+<select id="subj">
+<option>Language</option><option>Mathematics</option><option>Science and Technology</option>
+<option>Social Studies</option><option>Health and Physical Education</option><option>The Arts</option>
+</select>
+<label>Level this term</label>
+<select id="lvl"><option>4</option><option selected>3</option><option>2</option><option>1</option><option>R</option></select>
+<label>What you saw</label>
+<textarea id="saw" rows="3" placeholder="Reads patterned text with growing fluency."></textarea>
+<label>Next step</label>
+<textarea id="next" rows="2" placeholder="Practise decoding longer vowels in new texts."></textarea>
+<button type="button" id="make">Draft the comment</button>
+<button type="button" id="save">Save draft</button>
+<p class="draft" id="out">Pick a student on this phone first.</p>
+</div>
+<nav class="dock"><a href="./class.html">Class</a><a href="./iep.html">IEP</a><a class="on" href="./report.html">Report</a><a href="./index.html">Desk</a></nav>
+<script>
+var CK='dc.sara.g2.class', RK='dc.sara.g2.rep';
+function names(){try{return JSON.parse(localStorage.getItem(CK)||'[]')}catch(e){return[]}}
+function reps(){try{return JSON.parse(localStorage.getItem(RK)||'{}')}catch(e){return{}}}
+function fill(){
+  var s=document.getElementById('who');s.innerHTML='<option value="">(no student)</option>';
+  names().forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;s.appendChild(o)});
+}
+function draft(){
+  var w=who.value, subj=subj.value, lvl=lvl.value, saw=saw.value.trim(), nx=next.value.trim();
+  if(!w){return 'Name a student from the class list first.';}
+  var open=w+' is working at Level '+lvl+' in '+subj+'.';
+  if(lvl==='R') open=w+' is receiving additional support in '+subj+' this term.';
+  var mid=saw?(' '+saw+(/[.!?]$/.test(saw)?'':' .')):'';
+  var end=nx?(' Next, '+nx+(/[.!?]$/.test(nx)?'':' .')):'';
+  return open+mid+end;
+}
+document.getElementById('make').onclick=function(){document.getElementById('out').textContent=draft()};
+document.getElementById('save').onclick=function(){
+  var w=who.value; if(!w){out.textContent='Name a student first.';return;}
+  var all=reps(); if(!all[w]) all[w]={};
+  all[w][subj.value]={lvl:lvl.value,text:draft(),t:Date.now()};
+  localStorage.setItem(RK,JSON.stringify(all));
+  out.textContent=draft()+'\n\nSaved on this phone.';
+};
+fill();
+</script>
+</body></html>
