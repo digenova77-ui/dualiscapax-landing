@@ -1,49 +1,32 @@
 {
   "title": "DualisCapax unit forest",
-  "law": "Structure first. Independent units — no timesliced one-brain. Harvest cites into packs; never invent.",
+  "law": "Cite-or-hole. One writer per minute. Plate is Merge. Book is Swarm. Never invent.",
+  "conductor": {
+    "id": "merge-plate",
+    "owns": "cf-pages/",
+    "now": ["index.html", "ice.html", "rte/index.html", "_redirects", "_headers"]
+  },
+  "orchestrator": {
+    "id": "chief-of-staff",
+    "role": "watch plate + kennel; do not create bots; do not click Cloudflare"
+  },
   "current_plate": {
-    "id": "twins-dsap-dvp",
-    "issue": 5,
-    "law": "Audio owns place. DVP listens. Wave is the picture. DualisAV.wake is one tap. No Helix.",
-    "files": ["cf-pages/js/dsap.js", "cf-pages/js/dvp.js", "cf-pages/js/dc-av.js", "research/AV-BOND.md", "research/FACTORY-TWINS.md"]
+    "id": "ice-rte-200",
+    "law": "/ice and /rte must 200. Home stays 200. No ice/ folder. No Helix."
   },
   "live": [
-    {
-      "id": "sports/golf-usa",
-      "status": "harvesting",
-      "workflow": "golf_usa_envelopes.yml",
-      "cron_slot": "A",
-      "cron": "7,37 * * * *"
-    },
-    {
-      "id": "sports/hockey-girls-women-amateur",
-      "status": "harvesting",
-      "workflow": "hockey_girls_owha.yml",
-      "cron_slot": "B",
-      "cron": "12,42 * * * *"
-    },
-    {
-      "id": "sports/hockey-boys-amateur",
-      "status": "harvesting",
-      "workflow": "hockey_boys_omha_u16.yml",
-      "cron_slot": "C",
-      "cron": "17,47 * * * *"
-    },
-    {
-      "id": "infra/ice-session-bot",
-      "status": "harvesting",
-      "workflow": "ice_session_bot.yml",
-      "cron_slot": "E",
-      "cron": "27,57 * * * *",
-      "note": "Fine-tuned to twins plate issue #5. Audit DualisAV wear. Not a GrokBot clone. Does not CF-deploy."
-    }
+    {"id": "hockey-house-rec", "workflow": "hockey_house_rec.yml", "cron": "2,32 * * * *"},
+    {"id": "unity-playground-idle", "workflow": "unity_playground_idle.yml", "cron": "4,34 * * * *"},
+    {"id": "golf-usa", "workflow": "golf_usa_envelopes.yml", "cron": "7,37 * * * *"},
+    {"id": "hockey-ohf-five", "workflow": "hockey_ohf_five.yml", "cron": "9,39 * * * *"},
+    {"id": "hockey-girls-owha", "workflow": "hockey_girls_owha.yml", "cron": "12,42 * * * *"},
+    {"id": "hockey-boys-omha-u16", "workflow": "hockey_boys_omha_u16.yml", "cron": "17,47 * * * *"},
+    {"id": "factory-workers", "workflow": "factory_workers.yml", "cron": "22,52 * * * *"},
+    {"id": "ice-session-bot", "workflow": "ice_session_bot.yml", "cron": "27,57 * * * *"}
   ],
+  "holes": ["rte-stream-rights", "family-schedule-bind", "signed-contracts"],
+  "hashtags_when_ice_200": ["#DualisCapax", "#citeorhole", "#OMHA", "#OWHA", "#OHF"],
   "factory": {
-    "workflow": "factory_workers.yml",
-    "cron_slot": "D",
-    "session_bot": "ice_session_bot.yml",
-    "current_plate": "twins-dsap-dvp",
-    "law": "Honest receipts only. No fake consensus. Fine-tune session bot to issue #5.",
     "demoted": ["swarm_bot_fleet.yml", "swarm_runner.yml"]
   },
   "anti_circle": {
