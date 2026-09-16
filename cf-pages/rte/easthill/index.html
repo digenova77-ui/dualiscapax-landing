@@ -2,40 +2,100 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Grade 2 desk · Easthill — DualisCapax</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Grade 2 desk · Sara · Easthill — DualisCapax</title>
+<meta name="description" content="Grade 2 teacher desk for Sara Kristen Foster at Easthill Elementary. Class list stays on this phone.">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0b1220">
-<style>
-:root{--bg:#0b1220;--ink:#f3efe4;--mute:#9aa7b5;--gold:#e8c36a;--line:rgba(232,195,106,.22);--card:#121a2a}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Georgia,serif;min-height:100dvh}
-.wrap{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 5.6rem}
-.brand{font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-.pill{float:right;font:10px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:.3rem .55rem;border-radius:999px}
-h1{font-size:clamp(1.9rem,7vw,2.8rem);line-height:1.02;margin:.8rem 0 .5rem}
-.lede,.note{color:var(--mute)}
-a.row{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:.85rem 1rem;margin:.45rem 0}
-a.row strong{display:block}a.row span{color:var(--mute);font-size:.9rem}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#0b1220;border-top:1px solid var(--line);padding:.5rem .2rem calc(.5rem + env(safe-area-inset-bottom));font:10px ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
-.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--gold)}
-</style></head>
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./desk.css">
+</head>
 <body>
 <div class="wrap">
-<span class="pill">On this phone</span>
-<p class="brand">DualisCapax · Easthill Elementary</p>
-<h1>Sara Kristen Foster<br>Grade 2 desk</h1>
-<p class="lede">Easthill Elementary, 135 MacDonald Ave, Belleville. HPEDSB. JK–8. Bells 8:10–2:30.</p>
-<p class="note">No student list ships with this page. She pastes her class. IEPs and report drafts stay in this browser. Not Aspen. Not the board SIS.</p>
-<a class="row" href="./week.html"><strong>This week</strong><span>What Monday actually needs.</span></a>
-<a class="row" href="./class.html"><strong>Class list</strong><span>Paste names. First name + initial is enough.</span></a>
-<a class="row" href="./plan.html"><strong>Lesson plan</strong><span>Ontario Grade 2 strands. Language 2023 · Math 2020 · Science 2022.</span></a>
-<a class="row" href="./iep.html"><strong>IEP draft</strong><span>Strengths, needs, accommodations. Empty until she names a child.</span></a>
-<a class="row" href="./report.html"><strong>Report comments</strong><span>Growing Success draft. She edits. Board form is official.</span></a>
+  <div class="top"><span class="brand">DualisCapax · Easthill Elementary</span><span class="pill">On this phone</span></div>
+  <h1>Keep the child.<br><em>Stop burning the evening.</em></h1>
+  <p class="lede">Sara Kristen Foster. Grade 2. Easthill Elementary, 135 MacDonald Ave, Belleville. HPEDSB. JK–8. Bells 8:10–2:30. Principal Amy Woodland.</p>
+  <p class="pull">Plan the lesson. Name the class on this phone. Draft the IEP and the comment. The board form is still the official book.</p>
+  <div class="verbs">
+    <a class="verb" href="./week.html"><b>Week</b><span>What Monday needs</span></a>
+    <a class="verb" href="./class.html"><b>Class</b><span>Paste. Never upload</span></a>
+    <a class="verb" href="./plan.html"><b>Plan</b><span>Ontario Grade 2</span></a>
+    <a class="verb" href="./iep.html"><b>IEP</b><span>Draft, not Aspen</span></a>
+  </div>
+  <section class="card">
+    <h2>Where this room sits</h2>
+    <p class="seed-tag">Public school book · not a student list</p>
+    <p class="note">Eastside school group. Queen Elizabeth and Queen Victoria closed into Easthill. Dualis does not invent who sits in the chairs.</p>
+    <canvas id="dvp" width="640" height="144" aria-label="Desk wave"></canvas>
+  </section>
+  <section class="card">
+    <h2>Leftover on her week</h2>
+    <p class="seed-tag">Seed · not a bill · no names in the receipt</p>
+    <p class="note">Marking, planning, IEP drafts after bells. Count hours. Do not put a child in this box.</p>
+    <label>Minutes after school that still belong to the class<input id="mins" type="number" inputmode="decimal" value="45" step="5" min="0"></label>
+    <label>School days this week<input id="days" type="number" inputmode="numeric" value="5" min="0" max="7"></label>
+    <div class="readout" id="out"></div>
+    <div class="grid three" id="human" style="margin-top:.7rem"></div>
+  </section>
+  <section class="card">
+    <h2>Receipt</h2>
+    <p class="note">SHA-256 of the leftover sketch and how many names sit on this phone. Names themselves stay off the hash body.</p>
+    <p class="hex" id="rx">No receipt yet.</p>
+    <p><button type="button" id="save">Save sketch</button></p>
+  </section>
+  <nav class="foot">
+    <a href="./report.html">Report draft</a>
+    <a href="/teacher">Every teacher desk</a>
+    <a href="/">Home</a>
+  </nav>
 </div>
 <nav class="dock">
-<a class="on" href="./index.html">Desk</a>
-<a href="./week.html">Week</a>
-<a href="./class.html">Class</a>
-<a href="./plan.html">Plan</a>
+  <a class="on" href="./index.html">Desk</a>
+  <a href="./week.html">Week</a>
+  <a href="./class.html">Class</a>
+  <a href="./plan.html">Plan</a>
+  <a href="./report.html">Report</a>
 </nav>
+<script src="/js/dsap.js"></script>
+<script src="/js/dvp.js"></script>
+<script src="/js/dc-av.js"></script>
+<script>
+function d(x){return (Math.round(x*10)/10).toLocaleString("en-CA")}
+function n(x){return Math.round(x).toLocaleString("en-CA")}
+function classCount(){try{return JSON.parse(localStorage.getItem("dc.sara.g2.class")||"[]").length}catch(e){return 0}}
+function rec(){
+  var m=+document.getElementById("mins").value||0;
+  var days=+document.getElementById("days").value||0;
+  var weekHrs=(m*days)/60, yearHrs=weekHrs*38;
+  var out=document.getElementById("out"),hum=document.getElementById("human");
+  var kids=classCount();
+  if(!m||!days){out.textContent="Add minutes and school days.";hum.innerHTML="";return {m:m,days:days,weekHrs:0,yearHrs:0,kids:kids}}
+  out.innerHTML='<span class="seed-tag">Seed · after bells</span><p>This week: <strong>'+d(weekHrs)+' hours</strong> after 2:30. Across 38 instructional weeks if it holds: <strong>'+n(yearHrs)+' hours</strong>. Class names on this phone: <strong>'+kids+'</strong>. Not uploaded.</p>';
+  hum.innerHTML='<div class="stat"><b>'+d(weekHrs)+'</b><span>hours this week</span></div><div class="stat"><b>'+n(yearHrs/8)+'</b><span>8-hour days / yr</span></div><div class="stat"><b>'+kids+'</b><span>names on this phone</span></div>';
+  return {m:m,days:days,weekHrs:weekHrs,yearHrs:yearHrs,kids:kids};
+}
+async function sha(s){var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0")}).join("")}
+document.getElementById("save").onclick=async function(){
+  var s=rec();
+  var parent=localStorage.getItem("dc.sara.parent")||"0".repeat(64);
+  var body=JSON.stringify({room:"easthill-g2",m:s.m,days:s.days,kids:s.kids,status:"SEED",parent:parent,t:Date.now()});
+  var h=await sha(body);
+  localStorage.setItem("dc.sara.parent",h);
+  localStorage.setItem("dc.sara.sketch",body);
+  document.getElementById("rx").textContent="parent "+parent.slice(0,12)+"… → "+h;
+  if(window.DualisAV) DualisAV.wake("dvp","desk",16);
+};
+try{
+  var sk=JSON.parse(localStorage.getItem("dc.sara.sketch")||"null");
+  if(sk){
+    if(sk.m) document.getElementById("mins").value=sk.m;
+    if(sk.days) document.getElementById("days").value=sk.days;
+    var p=localStorage.getItem("dc.sara.parent");
+    if(p) document.getElementById("rx").textContent="last "+p.slice(0,16)+"… on this phone";
+  }
+}catch(e){}
+["mins","days"].forEach(function(id){document.getElementById(id).oninput=rec});
+rec();
+if(window.DVP) DVP.mount("dvp");
+</script>
 </body></html>
