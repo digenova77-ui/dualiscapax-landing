@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where it sits · SIMA-DCLM</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#05070c;color:#eef4f8;min-height:100dvh;font:18px/1.55 Fraunces,Georgia,serif}
+.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.16em;text-transform:uppercase;color:#8b9caa}
+h1{font-size:clamp(1.9rem,7vw,2.8rem);line-height:.98}h1 em{font-style:italic;color:#3ee8ff}
+.note{color:#8b9caa}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin:1rem 0}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr 1fr}}
+button.p{text-align:left;background:rgba(8,14,22,.72);border:1px solid rgba(62,232,255,.14);color:#eef4f8;border-radius:14px;padding:.75rem .8rem;font:15px/1.3 Fraunces,Georgia,serif}
+button.p.on{border-color:#3ee8ff;color:#3ee8ff}
+button.p small{display:block;color:#8b9caa;font:11px IBM Plex Mono,monospace;margin-top:.25rem}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;padding:.6rem;background:#05070c;border-top:1px solid rgba(62,232,255,.14);font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:#8b9caa;text-decoration:none}.dock a.on{color:#3ee8ff}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">DualisCapax · SIMA-DCLM</p>
+<h1>Where the project<br><em>actually sits.</em></h1>
+<p class="note">Thirteen rooms. Public network names only. Tap the one she is on. Empty is honest. Not a patient map.</p>
+<div class="grid" id="g"></div>
+<p class="note" id="say">No province named yet.</p>
+</div>
+<nav class="dock"><a href="./job.html">Job</a><a class="on" href="./province.html">Where</a><a href="./week.html">Week</a><a href="./index.html">Desk</a></nav>
+<script>
+var NET=[
+["ca","Canada","Infoway / CIHI books"],["on","Ontario","OHTs · Epic / Meditech / Cerner"],
+["ab","Alberta","AHS · Connect Care"],["bc","British Columbia","Fraser · VCH · Island · Interior · Northern"],
+["qc","Quebec","CISSS / CIUSSS · DSQ"],["nb","New Brunswick","Horizon / Vitalité"],
+["ns","Nova Scotia","NS Health · OPOR"],["pe","PEI","Health PEI"],
+["nl","Newfoundland & Labrador","NL Health Services"],["sk","Saskatchewan","SHA · eHealth"],
+["mb","Manitoba","Shared Health · eChart"],["yt","Yukon","Yukon Health"],
+["nt","NWT","NTHSSA"],["nu","Nunavut","Dept. of Health"]
+];
+var cur=null;
+try{cur=localStorage.getItem('sima_prov');}catch(e){}
+var g=document.getElementById('g');
+function draw(){
+  g.innerHTML='';
+  NET.forEach(function(n){
+    var b=document.createElement('button');
+    b.className='p'+(cur===n[0]?' on':'');
+    b.type='button';
+    b.innerHTML=n[1]+'<small>'+n[2]+'</small>';
+    b.onclick=function(){
+      cur=(cur===n[0])?null:n[0];
+      try{if(cur)localStorage.setItem('sima_prov',cur);else localStorage.removeItem('sima_prov');}catch(e){}
+      draw(); say();
+    };
+    g.appendChild(b);
+  });
+}
+function say(){
+  var el=document.getElementById('say');
+  if(!cur){el.textContent='No province named yet.';return;}
+  var n=NET.filter(function(x){return x[0]===cur})[0];
+  el.textContent=n?('Sitting in '+n[1]+'. Pole A on the public book: '+n[2]+'. Still a sketch until her SOW cites the site.'):'';
+}
+draw(); say();
+</script>
+</body></html>

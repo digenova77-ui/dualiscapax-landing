@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Name the pair · SIMA-DCLM</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#05070c;color:#eef4f8;min-height:100dvh;font:18px/1.55 Fraunces,Georgia,serif}
+.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.16em;text-transform:uppercase;color:#8b9caa}
+h1{font-size:clamp(1.9rem,7vw,2.8rem);line-height:.98}h1 em{font-style:italic;color:#3ee8ff}
+label{display:block;color:#8b9caa;font:11px IBM Plex Mono,monospace;letter-spacing:.06em;margin:.8rem 0 .3rem}
+input,textarea{width:100%;background:#070b10;border:1px solid rgba(62,232,255,.14);color:#eef4f8;border-radius:10px;padding:.65rem;font:16px/1.35 IBM Plex Mono,monospace}
+.note{color:#8b9caa}.card{border:1px solid rgba(62,232,255,.14);border-radius:20px;padding:1rem;margin:1rem 0;background:rgba(8,14,22,.72)}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;padding:.6rem;background:#05070c;border-top:1px solid rgba(62,232,255,.14);font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:#8b9caa;text-decoration:none}.dock a.on{color:#3ee8ff}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">DualisCapax · SIMA-DCLM</p>
+<h1>Name the two<br><em>already paid for.</em></h1>
+<p class="note">Stays on this phone. Not a chart. Not uploaded. Empty is honest.</p>
+<div class="card">
+<label>System A (the book they already bought)
+<input id="a" placeholder="e.g. the hospital book" autocomplete="off">
+</label>
+<label>System B (the other paid stack)
+<input id="b" placeholder="e.g. the clinic book / lab / billing" autocomplete="off">
+</label>
+<label>What people still type by hand between them
+<textarea id="hand" rows="3" placeholder="Leave empty if she has not said yet."></textarea>
+</label>
+<p class="note" id="say">Two names make a pair. One name is a hole.</p>
+</div>
+<p class="note">If both fields stay empty, Dualis does not invent a diagram.</p>
+</div>
+<nav class="dock"><a href="./job.html">Job</a><a class="on" href="./pair.html">Pair</a><a href="./integrate.html">Integrate</a><a href="./index.html">Desk</a></nav>
+<script>
+function say(){
+  var a=document.getElementById('a').value.trim();
+  var b=document.getElementById('b').value.trim();
+  var h=document.getElementById('hand').value.trim();
+  var el=document.getElementById('say');
+  try{localStorage.setItem('sima_pair',JSON.stringify({a:a,b:b,h:h}));}catch(e){}
+  if(!a&&!b){el.textContent='Two names make a pair. One name is a hole.';return;}
+  if(a&&!b){el.textContent='A is named. B is a hole.';return;}
+  if(!a&&b){el.textContent='B is named. A is a hole.';return;}
+  el.textContent=h?('Pair named. Hand path named. Still a sketch until her book cites it.'):('Pair named. Hand path empty — still a hole.');
+}
+try{
+  var s=JSON.parse(localStorage.getItem('sima_pair')||'{}');
+  if(s.a)document.getElementById('a').value=s.a;
+  if(s.b)document.getElementById('b').value=s.b;
+  if(s.h)document.getElementById('hand').value=s.h;
+}catch(e){}
+['a','b','hand'].forEach(function(id){document.getElementById(id).oninput=say}); say();
+</script>
+</body></html>
