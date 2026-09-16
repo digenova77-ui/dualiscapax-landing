@@ -1,17 +1,23 @@
-# SARA SURFACE
+# SARA_SURFACE
 
 Same book. Two rooms.
+Laptop = deep flow. Phone = one task.
+Same localStorage keys. Do not fork a second class list.
 
-## Laptop / desktop
+## Phone (simple)
 
-Deep, logical, flowable. Week beside class cards. Plan and leftover hours visible. Quiet wave allowed. Share grants visible as intent. She works after bells here.
+- Open phrase
+- Add a name
+- Tap a child, type one field
+- Look up what she already wrote
+- No charts, no wave required, no grant matrix unless she asked
 
-## Phone / mobile
+## Laptop (deep)
 
-Simple entry and lookup echo. One task. No charts, no year-hour theatre, no geodesic. Add a name. Open a card. Type a next step. Go.
+- Week + leftover + class list + open card in one view
+- Grant row visible
+- Growing Success draft beside the child
+- Flow: Monday → who → how they learn → next step → save
 
-## Law
-
-Same localStorage keys. Do not fork the child file.
-`prefers-reduced-motion` kills the wave on both.
-Do not build a second SIS for the laptop.
+Detect: `(min-width: 900px)` and/or `(hover: hover) and (pointer: fine)`.
+`prefers-reduced-motion` still kills decoration.
