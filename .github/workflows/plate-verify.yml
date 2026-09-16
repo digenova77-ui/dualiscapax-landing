@@ -1,0 +1,53 @@
+name: plate-verify
+
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "ice.html"
+      - "look.html"
+      - "hockey.html"
+      - "functions/**"
+      - "_redirects"
+      - "_routes.json"
+      - "rte/easthill/**"
+      - ".github/workflows/plate-verify.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plate-verify
+  cancel-in-progress: true
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Curl plate without following redirects
+        run: |
+          set -u
+          BASE=https://dualiscapax.ai
+          holes=0
+          echo "path status location"
+          for p in / /portal /js/modules.json /ice /ice.html /look /hockey /rte/easthill/ /rte/easthill /sara; do
+            hdr=$(mktemp)
+            code=$(curl -sI --max-redirs 0 -o "$hdr" -w "%{http_code}" --max-time 20 "$BASE$p" || echo 000)
+            loc=$(grep -i '^location:' "$hdr" | tr -d '\r' | head -1 || true)
+            printf '%-28s %s %s\n' "$p" "$code" "$loc"
+            if [ "$p" = "/" ] || [ "$p" = "/portal" ]; then
+              if [ "$code" != "200" ]; then echo "::error::$p expected 200 got $code"; holes=$((holes+1)); fi
+            else
+              if [ "$code" = "308" ] || [ "$code" = "404" ] || [ -n "$loc" ]; then
+                echo "::warning::$p not green code=$code $loc"
+                holes=$((holes+1))
+              fi
+            fi
+          done
+          echo "HOLES=$holes"
+          echo "Autonomy: this job is the second measurer. It does not deploy Pages."
+          echo "If /ice is 308 after Functions swallow, leftover is zone Worker (dashboard)."
