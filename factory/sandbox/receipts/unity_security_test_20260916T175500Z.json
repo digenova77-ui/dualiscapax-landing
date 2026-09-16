@@ -1,0 +1,9 @@
+{
+  "kind": "unity_security_test",
+  "at": "2026-09-16T17:55:00Z",
+  "apply": false,
+  "reason": "T20 old-vault-on-v2-code not browser-tested",
+  "fail": ["T09_session_spoof", "T12_teacher_spoof_after_session_spoof", "T07_constant_U1", "T14_kdf_below_owasp", "T18_no_csp"],
+  "pass": ["T04_normalize", "T05_eight_word_gate", "T11_no_phrase_no_hatch", "T13_look_ungated", "T16_aes_gcm_shape", "T17_no_phrase_post"],
+  "wordlist": {"tokens": 420, "unique": 419, "dup": ["lark"], "bits8": 69.7}
+}
