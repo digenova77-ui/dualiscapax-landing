@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Confirm the room · then the desk opens</title>
+<title>Confirm the room · passphrase like Ice</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#05070c">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,22 +21,31 @@ h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
 button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.55rem .9rem;font:12px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase;margin:.35rem .3rem 0 0}
 button.no{border-color:rgba(255,183,3,.45);color:var(--gold)}
 label{display:block;font:11px IBM Plex Mono,monospace;color:var(--mute);margin:.55rem 0 .25rem}
-input,select{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.55rem;font:16px IBM Plex Mono,monospace}
+input,select,textarea{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.55rem;font:16px IBM Plex Mono,monospace}
+textarea{min-height:4.2rem}
 .dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.5rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
 .dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+.hide{display:none}
 </style></head>
 <body>
 <div class="wrap">
-<p class="brand">Confirm before the classroom exists</p>
-<h1>Are we right<br><em>before we build it?</em></h1>
-<p class="note">Dualis looked. Dualis does not seat the room until you say yes. Wrong is cheaper than a classroom pointed at the wrong grade.</p>
-<div class="card">
+<p class="brand">Same eight words as Ice · device only</p>
+<h1>Unlock.<br><em>Then say we are right.</em></h1>
+<p class="note">Ice does not use a Dualis password. Neither does this desk. Eight words stay on this phone. Dualis never sees them. No reset email.</p>
+<div class="card" id="phraseGate">
+<label>Eight-word phrase</label>
+<textarea id="phrase" autocomplete="off" spellcheck="false" placeholder="eight words that live only here"></textarea>
+<button type="button" id="make">Make a phrase</button>
+<button type="button" id="open">Open new vault</button>
+<button type="button" class="no" id="unlock">I already have my words</button>
+<p class="note" id="pnote">Write the words on paper. Lose them and this phone cannot open the classroom.</p>
+</div>
+<div class="card hide" id="roomGate">
   <p class="readout" id="found">No look yet. Bind first.</p>
-  <p id="gate"></p>
   <div id="fix" hidden>
-    <label>School (plain words)</label>
+    <label>School</label>
     <input id="school" placeholder="Easthill Elementary School">
-    <label>Grade / assignment</label>
+    <label>Grade</label>
     <select id="grade">
       <option value="">(still a hole)</option>
       <option>JK</option><option>SK</option>
@@ -44,57 +53,79 @@ input,select{width:100%;background:#070b10;border:1px solid var(--line);color:va
       <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
       <option>Secondary</option><option>Spec Ed / LST</option>
     </select>
-    <button type="button" id="saveFix">Use this instead, then confirm</button>
+    <button type="button" id="saveFix">Use this instead</button>
   </div>
   <p>
     <button type="button" id="yes">Yes — this is my room</button>
     <button type="button" class="no" id="no">No — fix it first</button>
+    <button type="button" class="no" id="lock">Lock</button>
   </p>
   <p class="note" id="say"></p>
 </div>
-<p class="note">Class list, IEP drafts, and plans stay empty until this tap. Confirm does not upload children.</p>
 </div>
 <nav class="dock">
   <a href="./bind.html">Bind</a>
   <a class="on" href="./confirm.html">Confirm</a>
   <a href="./desk.html">Desk</a>
-  <a href="./door.html">Door</a>
+  <a href="/portal">Portal</a>
 </nav>
+<script src="/js/device-pass.js"></script>
 <script>
-function read(){
-  try{return JSON.parse(localStorage.getItem('dc.teacher.bind')||'null')}catch(e){return null}
-}
+function read(){try{return JSON.parse(localStorage.getItem('dc.teacher.bind')||'null')}catch(e){return null}}
 function write(s){try{localStorage.setItem('dc.teacher.bind',JSON.stringify(s));}catch(e){}}
+function unlocked(){return !!(window.DCVault && DCVault.session());}
+function showRoom(){
+  document.getElementById('phraseGate').classList.add('hide');
+  document.getElementById('roomGate').classList.remove('hide');
+  paint();
+}
 function paint(){
   var s=read();
   var box=document.getElementById('found');
-  if(!s){box.textContent='No look yet. Open Bind. Dualis has to look before you can confirm.';document.getElementById('yes').disabled=true;return s;}
+  if(!s){box.textContent='No look yet. Open Bind first.';document.getElementById('yes').disabled=true;return;}
   box.innerHTML='<strong>'+(s.boardName||s.board||'board unknown')+'</strong><br>'
     +(s.school||'School not named')+'<br>Grade: '+(s.grade||'awaiting_mailbox')
-    +'<br>Status: '+(s.confirmed?'CONFIRMED — desk may open':'PROPOSAL — not a classroom yet');
+    +'<br>Status: '+(s.confirmed?'CONFIRMED':'PROPOSAL')+' · vault open on this phone';
   document.getElementById('yes').disabled=false;
   if(s.school) document.getElementById('school').value=s.school;
   if(s.grade && s.grade!=='awaiting_mailbox') document.getElementById('grade').value=s.grade;
-  return s;
 }
+function fail(e){
+  document.getElementById('pnote').textContent=(e&&e.message)?e.message:'Those words do not open this device.';
+}
+document.getElementById('make').onclick=function(){
+  document.getElementById('phrase').value=DCVault.generate();
+  document.getElementById('pnote').textContent='Copy these eight words now. Then tap Open new vault. Dualis cannot show them again.';
+};
+document.getElementById('open').onclick=function(){
+  DCVault.create(document.getElementById('phrase').value,'teacher').then(function(){
+    document.getElementById('phrase').value='';
+    showRoom();
+  }).catch(fail);
+};
+document.getElementById('unlock').onclick=function(){
+  DCVault.unlock(document.getElementById('phrase').value).then(function(){
+    document.getElementById('phrase').value='';
+    showRoom();
+  }).catch(fail);
+};
+document.getElementById('lock').onclick=function(){
+  DCVault.lock();
+  document.getElementById('roomGate').classList.add('hide');
+  document.getElementById('phraseGate').classList.remove('hide');
+};
 document.getElementById('yes').onclick=function(){
+  if(!unlocked()){document.getElementById('say').textContent='Unlock the eight words first.';return;}
   var s=read();
   if(!s){document.getElementById('say').textContent='Bind first.';return;}
-  if(!s.grade || s.grade==='awaiting_mailbox'){
-    document.getElementById('say').textContent='Dualis still has a hole on grade. Fix it first, then confirm.';
+  if(!s.grade || s.grade==='awaiting_mailbox' || !s.school){
+    document.getElementById('say').textContent='Name school and grade first.';
     document.getElementById('fix').hidden=false;
     return;
   }
-  if(!s.school){
-    document.getElementById('say').textContent='Name the school first.';
-    document.getElementById('fix').hidden=false;
-    return;
-  }
-  s.confirmed=true; s.confirmedAt=Date.now(); s.status='CONFIRMED';
+  s.confirmed=true; s.confirmedAt=Date.now(); s.status='CONFIRMED'; s.vault='dc_vault_v1';
   write(s);
-  try{localStorage.setItem('dc.teacher.seat',JSON.stringify({board:s.board,school:s.school,grade:s.grade,confirmed:true}));}catch(e){}
-  document.getElementById('say').textContent='Confirmed on this phone. The desk may open.';
-  paint();
+  try{localStorage.setItem('dc.teacher.seat',JSON.stringify({board:s.board,school:s.school,grade:s.grade,confirmed:true,vault:true}));}catch(e){}
   location.href='./desk.html';
 };
 document.getElementById('no').onclick=function(){
@@ -102,18 +133,16 @@ document.getElementById('no').onclick=function(){
   s.confirmed=false; s.status='PROPOSAL';
   write(s);
   document.getElementById('fix').hidden=false;
-  document.getElementById('say').textContent='Not seated. Correct the school or grade, then tap yes.';
   paint();
 };
 document.getElementById('saveFix').onclick=function(){
   var s=read()||{};
   s.school=(document.getElementById('school').value||'').trim();
   s.grade=document.getElementById('grade').value||'';
-  s.confirmed=false; s.status='PROPOSAL';
-  write(s);
-  document.getElementById('say').textContent='Corrected on this phone. Confirm if this is now right.';
-  paint();
+  s.confirmed=false;
+  write(s); paint();
 };
-paint();
+if(unlocked()) showRoom();
+else if(DCVault.hasVault()) document.getElementById('pnote').textContent='This phone already has Ice words. Type them. Same vault.';
 </script>
 </body></html>
