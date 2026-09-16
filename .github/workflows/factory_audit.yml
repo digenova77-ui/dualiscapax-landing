@@ -1,0 +1,70 @@
+name: factory-audit
+
+# Always-on DCLM website-field. Iris observes. Does NOT push main.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: factory-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: DCLM live word + Iris stamp
+        run: |
+          python3 << 'PY'
+          import json, urllib.request
+          from datetime import datetime, timezone
+          paths = ["/", "/hockey", "/sandbox", "/iris", "/rte/sima-dclm/", "/sheet", "/ice", "/rink", "/look", "/alacarte", "/why", "/aide"]
+          rows = []
+          for p in paths:
+              rec = {"path": p, "status": None, "location": None, "mark": "hole"}
+              try:
+                  req = urllib.request.Request("https://dualiscapax.ai" + p, method="HEAD")
+                  with urllib.request.urlopen(req, timeout=15) as r:
+                      rec["status"] = getattr(r, "status", None)
+                      rec["location"] = r.headers.get("Location")
+              except Exception as e:
+                  rec["error"] = type(e).__name__
+                  if hasattr(e, "code"):
+                      rec["status"] = e.code
+                      rec["location"] = getattr(e, "headers", {}).get("Location") if getattr(e, "headers", None) else None
+              st, loc = rec.get("status"), (rec.get("location") or "")
+              if st == 200:
+                  rec["mark"] = "1"
+              elif st == 308 and loc.rstrip("/") == p.rstrip("/"):
+                  rec["mark"] = "cursed"
+              elif st == 308 and "sima-dclm" in loc:
+                  rec["mark"] = "slash-ok"
+              elif st == 404:
+                  rec["mark"] = "free-or-unswallowed"
+              rows.append(rec)
+          home = next((r for r in rows if r["path"] == "/"), {})
+          cursed = [r["path"] for r in rows if r["mark"] == "cursed"]
+          ones = [r["path"] for r in rows if r["mark"] == "1"]
+          card = {
+            "kind": "audit_always",
+            "observer": "iris-academy",
+            "mouth_off_plate": True,
+            "human_invoke": False,
+            "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "seats_measured": {
+              "1_home_200": 1 if home.get("mark") == "1" else 0,
+              "4_no_new_308_self_named": 0 if cursed else 1,
+              "13_sheet_or_hockey": 1 if any(r["path"] in ("/sheet", "/hockey") and r["mark"] == "1" for r in rows) else 0,
+            },
+            "ones": ones,
+            "cursed": cursed,
+            "rows": rows,
+            "law": "THEOREM_U1; David does not invoke this; Iris watches",
+          }
+          print(json.dumps(card, indent=2))
+          PY
