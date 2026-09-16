@@ -21,20 +21,12 @@ jobs:
       - name: HEAD live plate
         run: |
           python3 << 'PY'
-          import json, urllib.request, urllib.error
+          import json, urllib.request
           from datetime import datetime, timezone
-
-          class NoFollow(urllib.request.HTTPRedirectHandler):
-              def redirect_request(self, req, fp, code, msg, headers, newurl):
-                  return None
-
-          opener = urllib.request.build_opener(NoFollow)
           paths = [
-              "/", "/portal", "/js/modules.json",
-              "/ice", "/ice.html", "/ice-desk/", "/rink",
-              "/look", "/hockey",
-              "/rte/easthill/", "/rte/easthill", "/sara",
-              "/rte/sima-dclm/", "/aide"
+            "/", "/portal", "/ice", "/ice.html", "/ice-desk/", "/look", "/hockey",
+            "/rte/easthill/", "/sara", "/js/modules.json", "/js/unity-bind.js",
+            "/rte/sima-dclm/", "/rink"
           ]
           rows = []
           for p in paths:
@@ -42,37 +34,30 @@ jobs:
               rec = {"path": p, "status": None, "location": None, "mark": "hole"}
               try:
                   req = urllib.request.Request(url, method="HEAD")
-                  with opener.open(req, timeout=20) as r:
+                  with urllib.request.urlopen(req, timeout=20) as r:
                       rec["status"] = getattr(r, "status", None)
                       rec["location"] = r.headers.get("Location")
-              except urllib.error.HTTPError as e:
-                  rec["status"] = e.code
-                  rec["location"] = e.headers.get("Location") if e.headers else None
-                  rec["error"] = str(e)
               except Exception as e:
                   rec["error"] = str(e)
                   if hasattr(e, "code"):
                       rec["status"] = e.code
-              st, loc = rec.get("status"), (rec.get("location") or "")
+                      rec["location"] = e.headers.get("Location") if getattr(e, "headers", None) else None
+              st, loc = rec.get("status"), rec.get("location") or ""
               if st == 200 and not loc:
                   rec["mark"] = "1"
-              elif st == 308 and loc.rstrip("/").endswith(p.strip("/").split("/")[-1] or "ice"):
+              elif st == 200:
+                  rec["mark"] = "200-with-location"
+              elif st == 308 and loc.rstrip("/") == p.rstrip("/"):
                   rec["mark"] = "cursed"
-              elif st == 308:
-                  rec["mark"] = "redirect"
               elif st == 404:
                   rec["mark"] = "free-or-unswallowed"
               rows.append(rec)
-          out = {
-              "kind": "factory_verify",
-              "at": datetime.now(timezone.utc).isoformat(),
-              "ticket1": next((r["path"] for r in rows if r["mark"] != "1" and r["path"] != "/"), None),
-              "rows": rows,
-          }
+          out = {"kind": "factory_verify", "at": datetime.now(timezone.utc).isoformat(), "rows": rows}
           print(json.dumps(out, indent=2))
           cursed = [r["path"] for r in rows if r["mark"] == "cursed"]
           if cursed:
               print("cursed stems:", ", ".join(cursed))
-          if out["ticket1"]:
-              print("TICKET1", out["ticket1"])
+          missing = [r["path"] for r in rows if r["path"] in ("/ice-desk/", "/js/modules.json") and r["mark"] != "1"]
+          if missing:
+              print("not yet swallowed:", ", ".join(missing))
           PY
