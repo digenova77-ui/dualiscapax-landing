@@ -2,31 +2,51 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>This week · Grade 2</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>This week · Grade 2 · Easthill</title>
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0b1220">
-<style>
-:root{--bg:#0b1220;--ink:#f3efe4;--mute:#9aa7b5;--gold:#e8c36a;--line:rgba(232,195,106,.22);--card:#121a2a}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Georgia,serif}
-.wrap{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 5.6rem}
-.brand{font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-h1{font-size:1.9rem}
-a.row{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:.85rem 1rem;margin:.45rem 0}
-a.row span{display:block;color:var(--mute);font-size:.9rem}
-.note{color:var(--mute)}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#0b1220;border-top:1px solid var(--line);padding:.5rem;font:10px ui-monospace,monospace;text-transform:uppercase}
-.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--gold)}
-</style></head>
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./desk.css">
+</head>
 <body>
 <div class="wrap">
-<p class="brand">Easthill · Grade 2 · Sara</p>
-<h1>What this week is</h1>
-<p class="note">Bells 8:10–2:30. The aide follows her week, not a Dualis pitch.</p>
-<a class="row" href="./plan.html">Write tomorrow’s lesson<span>Ontario strand + what they will do.</span></a>
-<a class="row" href="./class.html">Check the list<span>Who is in the room. On this phone.</span></a>
-<a class="row" href="./iep.html">Touch an IEP<span>Only if a child is named.</span></a>
-<a class="row" href="./report.html">Draft a comment<span>Growing Success. She edits the last line.</span></a>
+  <div class="top"><span class="brand">Easthill · Grade 2 · Sara</span><span class="pill">Bells 8:10–2:30</span></div>
+  <h1>What this week<br><em>actually needs.</em></h1>
+  <p class="lede">Five school days. One strand in the morning. One strand after recess. The aide follows her week, not a Dualis pitch.</p>
+  <section class="card">
+    <h2>Day tap</h2>
+    <p class="note">Mark the day she is standing in. Plans she already saved on this phone show under it.</p>
+    <div class="verbs" id="days"></div>
+    <p class="readout" id="say">Pick a day.</p>
+  </section>
+  <section class="card">
+    <h2>Then do the human work</h2>
+    <p><a class="verb" href="./plan.html"><b>Write the lesson</b><span>Ontario strand + what they will do</span></a></p>
+    <p><a class="verb" href="./class.html"><b>Check the list</b><span>Who is in the room. On this phone.</span></a></p>
+    <p><a class="verb" href="./iep.html"><b>Touch an IEP</b><span>Only if a child is named.</span></a></p>
+    <p><a class="verb" href="./report.html"><b>Draft a comment</b><span>Growing Success. She edits the last line.</span></a></p>
+  </section>
+  <nav class="foot"><a href="./index.html">Desk</a><a href="/teacher">Boards</a><a href="/">Home</a></nav>
 </div>
-<nav class="dock"><a href="./index.html">Desk</a><a class="on" href="./week.html">Week</a><a href="./plan.html">Plan</a><a href="./class.html">Class</a></nav>
+<nav class="dock"><a href="./index.html">Desk</a><a class="on" href="./week.html">Week</a><a href="./plan.html">Plan</a><a href="./class.html">Class</a><a href="./report.html">Report</a></nav>
+<script>
+var DAYS=["Mon","Tue","Wed","Thu","Fri"];
+var KEY='dc.sara.g2.plans';
+function all(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function draw(){
+  var h='';
+  DAYS.forEach(function(d){h+='<button type="button" class="verb" data-d="'+d+'"><b>'+d+'</b><span>Tap</span></button>'});
+  document.getElementById('days').innerHTML=h;
+  document.querySelectorAll('#days .verb').forEach(function(b){
+    b.onclick=function(){
+      var d=b.getAttribute('data-d');
+      var p=all().filter(function(x){return (x.when||'').indexOf(d)!==-1 || true;}).slice(-3);
+      var lines=p.length?p.map(function(x){return (x.when||'')+' · '+x.strand+' — '+(x.do||'')}).join('\n'):'No saved plan yet. Open Plan and write tomorrow.';
+      document.getElementById('say').textContent=d+' · '+lines;
+    };
+  });
+}
+draw();
+</script>
 </body></html>
