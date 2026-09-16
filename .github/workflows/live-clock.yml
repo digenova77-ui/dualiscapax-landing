@@ -6,7 +6,7 @@ on:
     - cron: '17 * * * *'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: live-clock
@@ -17,33 +17,48 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Probe apex
+      - uses: actions/checkout@v4
+      - name: Probe apex and plate
         run: |
           set +e
           probe() {
             local path="$1"
-            local code
-            code=$(curl -sS -o /tmp/body -w "%{http_code}" --max-time 20 "https://dualiscapax.ai${path}")
-            echo "${path} ${code}"
+            curl -sS -o /tmp/body -w "%{http_code}" --max-time 20 "https://dualiscapax.ai${path}"
           }
-          echo "## Live clock" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| path | status |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
-          fail=0
-          for p in / /ice /gameday /gameday.html /rte/sima-dclm/ /alacarte; do
-            line=$(probe "$p")
-            echo "$line"
-            code=${line##* }
-            echo "| \`$p\` | $code |" >> "$GITHUB_STEP_SUMMARY"
-            if [ "$p" = "/gameday" ] || [ "$p" = "/gameday.html" ]; then
-              if [ "$code" != "200" ]; then fail=1; fi
+          {
+            echo "# LIVE-STATUS"
+            echo ""
+            echo "Probed: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo ""
+            echo "| path | status |"
+            echo "|---|---|"
+            fail=0
+            gd=""
+            for p in / /ice /gameday /gameday.html /rte/sima-dclm/ /alacarte; do
+              code=$(probe "$p")
+              echo "| \`$p\` | $code |"
+              if [ "$p" = "/gameday" ]; then gd="$code"; fi
+              if [ "$p" = "/gameday" ] || [ "$p" = "/gameday.html" ]; then
+                if [ "$code" != "200" ]; then fail=1; fi
+              fi
+            done
+            echo ""
+            if [ "$fail" -ne 0 ]; then
+              echo "Hole: gameday not 200. Kitchen A Git Connect or B Pages Edit. See research/CANON.md."
+            else
+              echo "Gameday 200. Deploy hole closed."
             fi
-          done
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [ "$fail" -ne 0 ]; then
-            echo "NEXT BLOW: Pages Edit on CLOUDFLARE_API_TOKEN, then pages-direct-upload once. See research/NEXT-BLOW.md. Do not open AWS." >> "$GITHUB_STEP_SUMMARY"
-            echo "::warning::gameday still not 200. Hole is Pages 10000 / stale snapshot. Not a new product."
-          else
-            echo "gameday 200. Deploy hole closed." >> "$GITHUB_STEP_SUMMARY"
+          } > research/LIVE-STATUS.md
+          echo "gameday=$gd fail=$fail" >> "$GITHUB_STEP_SUMMARY"
+          cat research/LIVE-STATUS.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit plate only if it changed
+        run: |
+          git config user.name "dualis-live-clock"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/LIVE-STATUS.md
+          if git diff --staged --quiet; then
+            echo "No status change."
+            exit 0
           fi
+          git commit -m "chore(clock): LIVE-STATUS [skip ci]"
+          git push
