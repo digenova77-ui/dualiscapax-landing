@@ -5,38 +5,51 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Teacher desk · DualisCapax</title>
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0b1220">
+<meta name="theme-color" content="#05070c">
 <style>
-:root{--bg:#0b1220;--ink:#f3efe4;--mute:#9aa7b5;--gold:#e8c36a;--line:rgba(232,195,106,.22);--card:#121a2a}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Georgia,serif}
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--gold:#ffb703;--cyan:#3ee8ff;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Fraunces,Georgia,serif}
 .wrap{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 5.5rem}
 .brand{font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
 h1{font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.08}
 .note{color:var(--mute)}
 a.row{display:block;color:var(--ink);text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem 1rem;margin:.45rem 0}
 a.row span{display:block;color:var(--mute);font-size:.9rem}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#0b1220;border-top:1px solid var(--line);padding:.5rem;font:10px ui-monospace,monospace;text-transform:uppercase}
-.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--gold)}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#05070c;border-top:1px solid var(--line);padding:.5rem;font:10px ui-monospace,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+.gate{border:1px solid rgba(255,183,3,.35);border-radius:16px;padding:1rem;margin:1rem 0;background:rgba(255,183,3,.06)}
+.gate a{color:var(--gold)}
 </style></head>
 <body>
 <div class="wrap">
 <p class="brand" id="who">Teacher desk</p>
 <h1 id="h">This classroom</h1>
-<p class="note">Same tools for every teacher in the three boards. Dualis did not put a staff list here. Paste the class on this phone.</p>
-<a class="row" href="/rte/easthill/class.html"><strong>Class list</strong><span>Paste names. Stays on this device.</span></a>
-<a class="row" href="/rte/easthill/plan.html"><strong>Lesson plan</strong><span>Ontario strands. Grade is what you picked.</span></a>
-<a class="row" href="/rte/easthill/iep.html"><strong>IEP draft</strong><span>Not the board IEP. Empty until a child is named here.</span></a>
-<a class="row" href="/rte/easthill/report.html"><strong>Report comments</strong><span>Growing Success draft. Official copy is Aspen / the board form.</span></a>
-<a class="row" href="./door.html"><strong>Board login</strong><span>Named hole. Dualis has no tenant client yet.</span></a>
+<div id="body"></div>
 </div>
-<nav class="dock"><a href="./index.html">Boards</a><a class="on" href="./desk.html">Desk</a><a href="./door.html">Door</a><a href="/">Home</a></nav>
+<nav class="dock"><a href="./index.html">Boards</a><a href="./bind.html">Bind</a><a href="./confirm.html">Confirm</a><a class="on" href="./desk.html">Desk</a></nav>
 <script>
 var q=new URLSearchParams(location.search);
-var school=q.get('school')||'School not named';
-var grade=q.get('grade')||'';
-var board=q.get('board')||'';
+var bind=null, seat=null;
+try{bind=JSON.parse(localStorage.getItem('dc.teacher.bind')||'null')}catch(e){}
+try{seat=JSON.parse(localStorage.getItem('dc.teacher.seat')||'null')}catch(e){}
+var confirmed=!!(bind&&bind.confirmed);
+var school=confirmed?(bind.school||''):(q.get('school')||'');
+var grade=confirmed?(bind.grade||''):(q.get('grade')||'');
+var board=confirmed?(bind.board||''):(q.get('board')||'');
 document.getElementById('who').textContent=(board||'tri-board')+' · on this phone';
-document.getElementById('h').textContent=school+(grade?(' · '+grade):'');
-try{localStorage.setItem('dc.teacher.seat',JSON.stringify({board:board,school:school,grade:grade}));}catch(e){}
+var body=document.getElementById('body');
+if(!confirmed){
+  document.getElementById('h').textContent='Not a classroom yet';
+  body.innerHTML='<div class="gate"><p>Dualis looked, or has not looked yet. Either way the room does not exist until you confirm the board, school, and grade.</p><p><a href="./bind.html">Look first</a> · <a href="./confirm.html">Confirm if the look is right</a></p></div><p class="note">No class list, IEP, or plan is created from a proposal.</p>';
+}else{
+  document.getElementById('h').textContent=school+(grade?(' · '+grade):'');
+  body.innerHTML='<p class="note">Confirmed on this phone. Same tools for every teacher in the three boards. Dualis did not put a staff list here. Paste the class only after this seat is yours.</p>'
+    +'<a class="row" href="/rte/easthill/class.html"><strong>Class list</strong><span>Paste names. Stays on this device.</span></a>'
+    +'<a class="row" href="/rte/easthill/plan.html"><strong>Lesson plan</strong><span>Ontario strands for '+grade+'.</span></a>'
+    +'<a class="row" href="/rte/easthill/iep.html"><strong>IEP draft</strong><span>Not the board IEP. Empty until a child is named here.</span></a>'
+    +'<a class="row" href="/rte/easthill/report.html"><strong>Report comments</strong><span>Growing Success draft. Official copy is the board form.</span></a>'
+    +'<a class="row" href="./confirm.html"><strong>Change the seat</strong><span>Wrong grade? Confirm again.</span></a>';
+  try{localStorage.setItem('dc.teacher.seat',JSON.stringify({board:board,school:school,grade:grade,confirmed:true}));}catch(e){}
+}
 </script>
 </body></html>
