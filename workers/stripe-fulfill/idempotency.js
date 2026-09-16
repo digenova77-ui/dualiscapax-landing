@@ -1,9 +1,19 @@
 /** Identity jacket helpers.
- *  Idempotency key = Stripe event.id (evt_…). session.id (cs_…) is the grant key.
- *  Stripe webhooks do not send an Idempotency-Key header.
+ *  Stripe outbound POST uses Idempotency-Key = atom.
+ *  Webhook fulfill uses D1: events.event_id + entitlements.session_id + grants.atom.
  */
 
 const TTL = 60 * 60 * 24 * 400;
+
+export function dualisAtom(parts) {
+  const sku = parts && parts.sku ? String(parts.sku) : "";
+  const host = parts && parts.host ? String(parts.host) : "";
+  const window = parts && parts.window ? String(parts.window) : "";
+  const payer = parts && parts.payer ? String(parts.payer) : "";
+  if (sku && host && window && payer) return `dc:${sku}:${host}:${window}:${payer}`;
+  if (parts && parts.sessionId) return `cs:${parts.sessionId}`;
+  return null;
+}
 
 export function idempotencyKey(eventId, sessionId) {
   if (eventId) return { kind: "event", key: "event:" + eventId, eventId: eventId, sessionId: sessionId || null };
@@ -61,6 +71,14 @@ function fuelInsert(db, row, now) {
     );
 }
 
+function grantInsert(db, row, now) {
+  return db
+    .prepare(
+      "INSERT INTO grants (atom, event_id, session_id, sku, created_at) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT(atom) DO NOTHING"
+    )
+    .bind(row.atom, row.event_id, row.session_id || null, row.sku || null, now);
+}
+
 export async function claimD1(db, row) {
   if (!db || !row || !row.event_id) return { used: false };
   const now = row.created_at || Math.floor(Date.now() / 1000);
@@ -85,26 +103,30 @@ function metaChanges(result) {
   return result && result.meta && typeof result.meta.changes === "number" ? result.meta.changes : 0;
 }
 
-/** One TX: claim evt_ + write entitlement + optional write-once fuel lot.
- *  Replay if events.changes===0 OR entitlements.changes===0 OR fuel_credits.changes===0.
+/** One TX: claim evt_ + entitlement + optional fuel lot + optional atom grant.
+ *  Replay if any INSERT reports changes===0.
  *  Do not UPDATE a running total in this batch.
  */
-export async function claimGrantD1(db, eventRow, entRow, fuelRow) {
+export async function claimGrantD1(db, eventRow, entRow, fuelRow, grantRow) {
   if (!db || !eventRow || !eventRow.event_id) return { used: false };
   const now = eventRow.created_at || Math.floor(Date.now() / 1000);
   const stmts = [eventInsert(db, eventRow, now)];
   const hasEnt = Boolean(entRow && entRow.session_id);
   const hasFuel =
     Boolean(fuelRow && fuelRow.session_id && fuelRow.event_id && Number(fuelRow.units) > 0);
+  const hasGrant = Boolean(grantRow && grantRow.atom && grantRow.event_id);
   if (hasEnt) stmts.push(entitlementInsert(db, entRow, now));
   if (hasFuel) stmts.push(fuelInsert(db, fuelRow, now));
+  if (hasGrant) stmts.push(grantInsert(db, grantRow, now));
   const results = await db.batch(stmts);
   const ev = metaChanges(results && results[0]);
   let idx = 1;
   const en = hasEnt ? metaChanges(results && results[idx++]) : null;
   const fu = hasFuel ? metaChanges(results && results[idx++]) : null;
-  const replay = ev === 0 || (hasEnt && en === 0) || (hasFuel && fu === 0);
+  const gr = hasGrant ? metaChanges(results && results[idx++]) : null;
+  const replay = ev === 0 || (hasEnt && en === 0) || (hasFuel && fu === 0) || (hasGrant && gr === 0);
   const sid = (entRow && entRow.session_id) || (fuelRow && fuelRow.session_id) || eventRow.session_id;
+  const atom = hasGrant ? grantRow.atom : null;
   if (replay) {
     const existing = sid
       ? await db.prepare("SELECT * FROM entitlements WHERE session_id = ?1").bind(sid).first()
@@ -112,15 +134,22 @@ export async function claimGrantD1(db, eventRow, entRow, fuelRow) {
     const lots = sid
       ? await db.prepare("SELECT * FROM fuel_credits WHERE session_id = ?1").bind(sid).first()
       : null;
+    const grant = atom
+      ? await db.prepare("SELECT * FROM grants WHERE atom = ?1").bind(atom).first()
+      : sid
+        ? await db.prepare("SELECT * FROM grants WHERE session_id = ?1").bind(sid).first()
+        : null;
     return {
       used: true,
       idempotent: true,
       entitlement: existing || null,
       fuel: lots || null,
+      grant: grant || null,
       store: "d1",
       event_changes: ev,
       entitlement_changes: en,
-      fuel_changes: fu
+      fuel_changes: fu,
+      grant_changes: gr
     };
   }
   return {
@@ -129,7 +158,8 @@ export async function claimGrantD1(db, eventRow, entRow, fuelRow) {
     store: "d1",
     event_changes: ev,
     entitlement_changes: en,
-    fuel_changes: fu
+    fuel_changes: fu,
+    grant_changes: gr
   };
 }
 
