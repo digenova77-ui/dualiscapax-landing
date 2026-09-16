@@ -1,6 +1,5 @@
 name: unity-playground-idle
 
-# Draw book → landscape drawers. NEVER cf-pages/.
 on:
   schedule:
     - cron: '4,34 * * * *'
@@ -33,35 +32,31 @@ jobs:
                   return None
           ohf = load('research/hockey/ohf-five/INDEX.json')
           house = load('research/hockey/house-rec/INDEX.json')
+          ice_html = (root / 'cf-pages' / 'ice.html').exists()
+          ice_dir = (root / 'cf-pages' / 'ice' / 'index.html').exists()
           landscape = {
             'kind': 'global_landscape',
             'captured_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'law': 'cite-or-hole — bots fill drawers, never invent, never paint plate',
+            'law': 'one ice path: ice/index.html only',
             'drawn_from': {'ohf_five': bool(ohf), 'house_rec': bool(house)},
+            'ice_html_forbidden': ice_html,
+            'ice_folder': ice_dir,
             'drawers': {
-              '0_plate_ice': 'awaiting_200',
+              '0_plate_ice': 'folder' if ice_dir and not ice_html else 'twin_or_missing',
               '3_ohf_five': 'book' if ohf else 'hole',
               '4_house_rec': 'book' if house else 'awaiting_association_cites',
               '5_hockey_canada': 'hole',
               '6_iihf': 'hole',
-              '7_sport_world': 'hole',
               '8_golf': 'book' if Path('research/golf').exists() else 'hole',
               '9_stream_rights': 'hole',
-              '10_playground': 'sandbox',
             },
-            'ohf_leagues': (ohf or {}).get('leagues') or (ohf or {}).get('ohf_members_youth') or [],
           }
           out = root / 'factory' / 'sandbox'
           out.mkdir(parents=True, exist_ok=True)
           (out / 'landscape.json').write_text(json.dumps(landscape, indent=2) + '\n')
-          rec_dir = out / 'receipts'
-          rec_dir.mkdir(parents=True, exist_ok=True)
-          day = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
-          (rec_dir / f'landscape_{day}.json').write_text(json.dumps(landscape, indent=2) + '\n')
-          ice_dir = (root / 'cf-pages' / 'ice' / 'index.html').exists()
-          if ice_dir:
-              raise SystemExit('hole: ice/ folder returned')
-          print(json.dumps({'ok': True}, indent=2))
+          if ice_html:
+              raise SystemExit('hole: ice.html twin returned')
+          print(json.dumps({'ok': True, 'ice_folder': ice_dir}, indent=2))
           PY
       - name: Commit landscape
         run: |
