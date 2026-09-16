@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Confirm the room · teacher bind</title>
+<title>Bind · look up the grade</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#05070c">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -18,9 +18,9 @@ h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
 .note{color:var(--mute)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:1rem 0}
 label{display:block;font:11px IBM Plex Mono,monospace;color:var(--mute);margin:.5rem 0 .25rem}
-input,select{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.6rem;font:16px IBM Plex Mono,monospace}
-button{appearance:none;margin:.45rem .35rem 0 0;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.5rem .9rem;font:12px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
-button.no{border-color:rgba(255,183,3,.45);color:var(--gold)}
+input,textarea{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.6rem;font:16px IBM Plex Mono,monospace}
+textarea{min-height:4.5rem;font-family:Georgia,serif}
+button{appearance:none;margin-top:.7rem;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.5rem .9rem;font:12px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase}
 .readout{margin-top:.8rem;padding:.8rem;border-radius:14px;background:#070b10;border:1px solid rgba(255,183,3,.22)}
 .readout strong{color:var(--gold)}
 .dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.5rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
@@ -28,85 +28,60 @@ button.no{border-color:rgba(255,183,3,.45);color:var(--gold)}
 </style></head>
 <body>
 <div class="wrap">
-<p class="brand">person_door · confirm before classroom</p>
-<h1>We look it up.<br><em>You say if we are right.</em></h1>
-<p class="note">No classroom is built until she taps yes. Dualis can be wrong. The teacher is the lock.</p>
+<p class="brand">person_door · look is a proposal</p>
+<h1>Give the work mail.<br><em>We look. You confirm.</em></h1>
+<p class="note">Dualis looks up the board and, when it can, the grade. That look is not a classroom. Nothing is seated until you tap yes on Confirm.</p>
 <div class="card">
 <label>Work email (board domain)</label>
 <input id="mail" type="email" inputmode="email" autocomplete="username" placeholder="name@hpedsb.on.ca">
+<label>Optional line Dualis may read (signature, classroom title)</label>
+<textarea id="clue" placeholder="Grade 2 Teacher, Easthill Elementary"></textarea>
 <button type="button" id="look">Look up from this phone</button>
-<div class="readout" id="out">No proposal yet.</div>
-<div id="gate" hidden>
-<label>School (correct if we missed)</label>
-<input id="school" placeholder="Easthill Elementary School">
-<label>Grade (correct if we missed)</label>
-<select id="grade">
-<option value="">still a hole</option>
-<option>JK</option><option>SK</option>
-<option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
-<option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
-<option>Secondary</option><option>Spec Ed / LST</option><option>Prep / other</option>
-</select>
-<button type="button" id="yes">Yes — set up this classroom</button>
-<button type="button" class="no" id="no">No — not yet</button>
-<p class="note" id="say"></p>
+<div class="readout" id="out">No look yet. Confirm comes after.</div>
 </div>
+<p class="note">Named cite already seated as a proposal only: Sara Kristen Foster · Easthill · Grade 2 — she still confirms. Dualis does not scrape emails onto GitHub.</p>
+<p><a href="./confirm.html" id="go" style="color:#3ee8ff">Go confirm before the desk opens</a></p>
 </div>
-<p class="note">Sara’s Easthill Grade 2 room stays a named cite only after she (or you) already confirmed it. Dualis does not scrape mail onto GitHub.</p>
-</div>
-<nav class="dock"><a href="./index.html">Boards</a><a class="on" href="./bind.html">Bind</a><a href="./door.html">Door</a><a href="./desk.html">Desk</a></nav>
+<nav class="dock"><a href="./index.html">Boards</a><a class="on" href="./bind.html">Bind</a><a href="./confirm.html">Confirm</a><a href="./desk.html">Desk</a></nav>
 <script src="./grade.js"></script>
 <script>
-function proposal(mail, school, grade){
-  return {mail:mail, board:null, boardName:'', school:school||'', grade:grade||'', confirmed:false, t:Date.now()};
+function mapDomain(d){
+  d=(d||'').toLowerCase();
+  if(d.indexOf('hpedsb.on.ca')>=0||d.indexOf('hpeschools.ca')>=0||d.indexOf('apps.hpedsb.on.ca')>=0) return {id:'hpedsb',name:'Hastings and Prince Edward DSB'};
+  if(d.indexOf('alcdsb.on.ca')>=0) return {id:'alcdsb',name:'Algonquin and Lakeshore Catholic DSB'};
+  if(d.indexOf('limestone.on.ca')>=0) return {id:'limestone',name:'Limestone DSB'};
+  return null;
 }
 function lookup(){
   var mail=(document.getElementById('mail').value||'').trim();
+  var clue=(document.getElementById('clue').value||'').trim();
   var at=mail.lastIndexOf('@');
   var out=document.getElementById('out');
-  var gate=document.getElementById('gate');
-  if(at<1){out.textContent='Need a work email.';gate.hidden=true;return;}
-  var domain=mail.slice(at+1);
-  var board=boardFromMail(mail);
-  if(!board){out.innerHTML='Domain is a <strong>hole</strong>. Dualis only maps the three boards we cited.';gate.hidden=true;return;}
-  var hint=document.getElementById('school').value+' '+document.getElementById('grade').value;
-  var g=gradeFromText(hint) || '';
-  var school=document.getElementById('school').value.trim();
-  if(/easthill/i.test(mail+hint)) school=school||'Easthill Elementary School';
-  if(!g && board.id==='hpedsb' && /easthill/i.test(school)) g='';
-  out.innerHTML='<strong>Proposal only.</strong><br>'+board.name+'<br>'+(school||'school still a hole')+'<br>'+(g||'grade still a hole')+'<br>Classroom is not built.';
-  document.getElementById('school').value=school;
-  if(g) document.getElementById('grade').value=g;
-  gate.hidden=false;
-  var p=proposal(mail, school, g);
-  p.board=board.id; p.boardName=board.name;
-  try{localStorage.setItem('dc.teacher.bind',JSON.stringify(p));}catch(e){}
-}
-function confirmYes(){
-  var raw=null;
-  try{raw=JSON.parse(localStorage.getItem('dc.teacher.bind')||'null')}catch(e){}
-  if(!raw||!raw.board){document.getElementById('say').textContent='Look up first.';return;}
-  raw.school=document.getElementById('school').value.trim();
-  raw.grade=document.getElementById('grade').value;
-  if(!raw.school||!raw.grade){document.getElementById('say').textContent='Name school and grade before yes.';return;}
-  raw.confirmed=true; raw.t=Date.now();
-  try{
-    localStorage.setItem('dc.teacher.bind',JSON.stringify(raw));
-    localStorage.setItem('dc.teacher.seat',JSON.stringify({board:raw.board,school:raw.school,grade:raw.grade,confirmed:true,t:raw.t}));
-  }catch(e){}
-  location.href='./desk.html?board='+encodeURIComponent(raw.board)+'&school='+encodeURIComponent(raw.school)+'&grade='+encodeURIComponent(raw.grade)+'&ok=1';
-}
-function confirmNo(){
-  try{
-    var raw=JSON.parse(localStorage.getItem('dc.teacher.bind')||'{}');
-    raw.confirmed=false;
-    localStorage.setItem('dc.teacher.bind',JSON.stringify(raw));
-    localStorage.removeItem('dc.teacher.seat');
-  }catch(e){}
-  document.getElementById('say').textContent='Classroom not built. Fix the lines, then yes.';
+  if(at<1){out.textContent='Need a work email.';return;}
+  var local=mail.slice(0,at), domain=mail.slice(at+1);
+  var board=mapDomain(domain);
+  if(!board){out.innerHTML='Domain is a <strong>hole</strong>. Dualis only maps the three boards we cited.';return;}
+  var grade=(typeof gradeFromText==='function'?gradeFromText(mail+' '+clue):'')||'awaiting_mailbox';
+  var school='';
+  if(/easthill/i.test(clue+' '+mail)) school='Easthill Elementary School';
+  var named=(local.replace(/[^a-z]/gi,'').toLowerCase().indexOf('foster')>=0)||(local.replace(/[^a-z]/gi,'').toLowerCase().indexOf('sara')>=0);
+  if(board.id==='hpedsb' && named){
+    if(grade==='awaiting_mailbox'||!grade) grade='Grade 2';
+    if(!school) school='Easthill Elementary School';
+  }
+  var prev=null; try{prev=JSON.parse(localStorage.getItem('dc.teacher.bind')||'null')}catch(e){}
+  var seat={mail:mail,board:board.id,boardName:board.name,school:school,grade:grade,clue:clue,t:Date.now(),status:'PROPOSAL',confirmed:false};
+  if(prev&&prev.confirmed&&prev.mail===mail&&prev.grade===grade&&prev.school===school){
+    seat.confirmed=true; seat.status='CONFIRMED';
+  }
+  try{localStorage.setItem('dc.teacher.bind',JSON.stringify(seat));}catch(e){}
+  out.innerHTML='<strong>Proposal only.</strong><br>'+board.name+'<br>Grade: '+grade+(school?('<br>'+school):'')+'<br>Confirm this before the classroom exists.';
+  document.getElementById('go').href='./confirm.html';
 }
 document.getElementById('look').onclick=lookup;
-document.getElementById('yes').onclick=confirmYes;
-document.getElementById('no').onclick=confirmNo;
+try{
+  var s=JSON.parse(localStorage.getItem('dc.teacher.bind')||'null');
+  if(s&&s.mail){document.getElementById('mail').value=s.mail; if(s.clue) document.getElementById('clue').value=s.clue; lookup();}
+}catch(e){}
 </script>
 </body></html>

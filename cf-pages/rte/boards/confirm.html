@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Confirm the room · then the desk opens</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 Fraunces,Georgia,serif;min-height:100dvh}
+.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(1.9rem,7vw,2.8rem);font-weight:600;line-height:1.02}
+h1 em{font-style:italic;font-weight:400;color:var(--cyan)}
+.note{color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:1.05rem;margin:1rem 0}
+.readout{padding:.8rem;border-radius:14px;background:#070b10;border:1px solid rgba(255,183,3,.22)}
+.readout strong{color:var(--gold)}
+button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.55rem .9rem;font:12px IBM Plex Mono,monospace;letter-spacing:.06em;text-transform:uppercase;margin:.35rem .3rem 0 0}
+button.no{border-color:rgba(255,183,3,.45);color:var(--gold)}
+label{display:block;font:11px IBM Plex Mono,monospace;color:var(--mute);margin:.55rem 0 .25rem}
+input,select{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.55rem;font:16px IBM Plex Mono,monospace}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.92);border-top:1px solid var(--line);padding:.5rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Confirm before the classroom exists</p>
+<h1>Are we right<br><em>before we build it?</em></h1>
+<p class="note">Dualis looked. Dualis does not seat the room until you say yes. Wrong is cheaper than a classroom pointed at the wrong grade.</p>
+<div class="card">
+  <p class="readout" id="found">No look yet. Bind first.</p>
+  <p id="gate"></p>
+  <div id="fix" hidden>
+    <label>School (plain words)</label>
+    <input id="school" placeholder="Easthill Elementary School">
+    <label>Grade / assignment</label>
+    <select id="grade">
+      <option value="">(still a hole)</option>
+      <option>JK</option><option>SK</option>
+      <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
+      <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+      <option>Secondary</option><option>Spec Ed / LST</option>
+    </select>
+    <button type="button" id="saveFix">Use this instead, then confirm</button>
+  </div>
+  <p>
+    <button type="button" id="yes">Yes — this is my room</button>
+    <button type="button" class="no" id="no">No — fix it first</button>
+  </p>
+  <p class="note" id="say"></p>
+</div>
+<p class="note">Class list, IEP drafts, and plans stay empty until this tap. Confirm does not upload children.</p>
+</div>
+<nav class="dock">
+  <a href="./bind.html">Bind</a>
+  <a class="on" href="./confirm.html">Confirm</a>
+  <a href="./desk.html">Desk</a>
+  <a href="./door.html">Door</a>
+</nav>
+<script>
+function read(){
+  try{return JSON.parse(localStorage.getItem('dc.teacher.bind')||'null')}catch(e){return null}
+}
+function write(s){try{localStorage.setItem('dc.teacher.bind',JSON.stringify(s));}catch(e){}}
+function paint(){
+  var s=read();
+  var box=document.getElementById('found');
+  if(!s){box.textContent='No look yet. Open Bind. Dualis has to look before you can confirm.';document.getElementById('yes').disabled=true;return s;}
+  box.innerHTML='<strong>'+(s.boardName||s.board||'board unknown')+'</strong><br>'
+    +(s.school||'School not named')+'<br>Grade: '+(s.grade||'awaiting_mailbox')
+    +'<br>Status: '+(s.confirmed?'CONFIRMED — desk may open':'PROPOSAL — not a classroom yet');
+  document.getElementById('yes').disabled=false;
+  if(s.school) document.getElementById('school').value=s.school;
+  if(s.grade && s.grade!=='awaiting_mailbox') document.getElementById('grade').value=s.grade;
+  return s;
+}
+document.getElementById('yes').onclick=function(){
+  var s=read();
+  if(!s){document.getElementById('say').textContent='Bind first.';return;}
+  if(!s.grade || s.grade==='awaiting_mailbox'){
+    document.getElementById('say').textContent='Dualis still has a hole on grade. Fix it first, then confirm.';
+    document.getElementById('fix').hidden=false;
+    return;
+  }
+  if(!s.school){
+    document.getElementById('say').textContent='Name the school first.';
+    document.getElementById('fix').hidden=false;
+    return;
+  }
+  s.confirmed=true; s.confirmedAt=Date.now(); s.status='CONFIRMED';
+  write(s);
+  try{localStorage.setItem('dc.teacher.seat',JSON.stringify({board:s.board,school:s.school,grade:s.grade,confirmed:true}));}catch(e){}
+  document.getElementById('say').textContent='Confirmed on this phone. The desk may open.';
+  paint();
+  location.href='./desk.html';
+};
+document.getElementById('no').onclick=function(){
+  var s=read()||{};
+  s.confirmed=false; s.status='PROPOSAL';
+  write(s);
+  document.getElementById('fix').hidden=false;
+  document.getElementById('say').textContent='Not seated. Correct the school or grade, then tap yes.';
+  paint();
+};
+document.getElementById('saveFix').onclick=function(){
+  var s=read()||{};
+  s.school=(document.getElementById('school').value||'').trim();
+  s.grade=document.getElementById('grade').value||'';
+  s.confirmed=false; s.status='PROPOSAL';
+  write(s);
+  document.getElementById('say').textContent='Corrected on this phone. Confirm if this is now right.';
+  paint();
+};
+paint();
+</script>
+</body></html>
