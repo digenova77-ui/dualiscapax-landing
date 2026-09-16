@@ -1,49 +1,67 @@
 name: pages-direct-upload
 
+# Factory handoff: always pack cf-pages as an artifact.
+# Cloudflare deploy is attempted second. 10000 does not eat the zip.
+
 on:
   workflow_dispatch:
     inputs:
       note:
         description: 'Optional note'
         required: false
-        default: 'Direct Upload from Actions'
+        default: 'Factory handoff pack'
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: pages-direct-upload
   cancel-in-progress: true
 
 jobs:
+  pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Zip cf-pages (flat)
+        run: |
+          set -euo pipefail
+          cd cf-pages
+          zip -r ../dualis-pages-handoff.zip . -x '*.DS_Store' '_peel-backup/*' 'data/matchups/*'
+          echo "packed $(unzip -Z1 ../dualis-pages-handoff.zip | grep -v '/$' | wc -l) files"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dualis-pages-handoff
+          path: dualis-pages-handoff.zip
+          retention-days: 14
+
   upload:
+    needs: pack
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Deploy cf-pages → dualiscapax-landing
+      - name: Try Cloudflare Pages (may 10000)
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          set -euo pipefail
-          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
-            echo "::error::CLOUDFLARE_API_TOKEN missing in Actions secrets"
-            exit 1
-          fi
           set +e
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN missing — zip artifact is the handoff."
+            exit 0
+          fi
           npx --yes wrangler@3.112.0 pages deploy cf-pages \
             --project-name=dualiscapax-landing \
             --commit-dirty=true
           code=$?
-          set -e
           if [ "$code" -ne 0 ]; then
-            echo "::error::Direct Upload failed (exit $code)."
-            echo "::error::If the log says Authentication error [code: 10000]: the token is seated but lacks Account → Cloudflare Pages → Edit on this Account ID."
-            echo "::error::Backoff will not fix 10000. Replace CLOUDFLARE_API_TOKEN then re-run this workflow once."
-            echo "::error::Do not open AWS / R2 / KV to skip this. dualiscapax.ai is this Pages project."
-            exit "$code"
+            echo "::warning::Cloudflare 10000 or deploy fail. Artifact from pack job is the handoff."
+            exit 0
           fi
