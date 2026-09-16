@@ -1,8 +1,6 @@
 name: unity-playground-idle
 
-# Sandbox receipts only. NEVER writes cf-pages/.
-# Time-splice: :04/:34 — not boys :17/:47.
-
+# Draw book → landscape drawers. NEVER cf-pages/.
 on:
   schedule:
     - cron: '4,34 * * * *'
@@ -21,40 +19,57 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Sandbox receipt only
+      - name: Draw book into landscape
         run: |
           python3 << 'PY'
           import json
           from pathlib import Path
           from datetime import datetime, timezone
           root = Path('.')
-          plate = root / 'cf-pages'
-          ice_html = (plate / 'ice.html').exists()
-          ice_dir = (plate / 'ice' / 'index.html').exists()
-          rec = {
-            'kind': 'unity_playground_idle',
+          def load(p):
+              try:
+                  return json.loads(Path(p).read_text())
+              except Exception:
+                  return None
+          ohf = load('research/hockey/ohf-five/INDEX.json')
+          house = load('research/hockey/house-rec/INDEX.json')
+          landscape = {
+            'kind': 'global_landscape',
             'captured_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'law': 'cite-or-hole — sandbox only, no plate paint',
-            'ice_html': ice_html,
-            'ice_folder_forbidden': ice_dir,
-            'sandbox': 'factory/sandbox/playground.html',
-            'promote': False,
+            'law': 'cite-or-hole — bots fill drawers, never invent, never paint plate',
+            'drawn_from': {'ohf_five': bool(ohf), 'house_rec': bool(house)},
+            'drawers': {
+              '0_plate_ice': 'awaiting_200',
+              '3_ohf_five': 'book' if ohf else 'hole',
+              '4_house_rec': 'book' if house else 'awaiting_association_cites',
+              '5_hockey_canada': 'hole',
+              '6_iihf': 'hole',
+              '7_sport_world': 'hole',
+              '8_golf': 'book' if Path('research/golf').exists() else 'hole',
+              '9_stream_rights': 'hole',
+              '10_playground': 'sandbox',
+            },
+            'ohf_leagues': (ohf or {}).get('leagues') or (ohf or {}).get('ohf_members_youth') or [],
           }
-          out = root / 'factory' / 'sandbox' / 'receipts'
+          out = root / 'factory' / 'sandbox'
           out.mkdir(parents=True, exist_ok=True)
+          (out / 'landscape.json').write_text(json.dumps(landscape, indent=2) + '\n')
+          rec_dir = out / 'receipts'
+          rec_dir.mkdir(parents=True, exist_ok=True)
           day = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
-          (out / f'receipt_{day}.json').write_text(json.dumps(rec, indent=2) + '\n')
-          print(json.dumps(rec, indent=2))
+          (rec_dir / f'landscape_{day}.json').write_text(json.dumps(landscape, indent=2) + '\n')
+          ice_dir = (root / 'cf-pages' / 'ice' / 'index.html').exists()
           if ice_dir:
-              raise SystemExit('hole: ice/ folder returned — do not idle-decorate, Merge first')
+              raise SystemExit('hole: ice/ folder returned')
+          print(json.dumps({'ok': True}, indent=2))
           PY
-      - name: Commit sandbox receipt
+      - name: Commit landscape
         run: |
           git config user.email "playground-idle@dualiscapax.ai"
           git config user.name "Dualis Unity Playground Idle"
           git add factory/sandbox/
           if git diff --cached --quiet; then echo none; exit 0; fi
-          git commit -m "chore(playground): idle sandbox receipt [skip ci]"
+          git commit -m "chore(pipe): landscape drawers from book [skip ci]"
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD && exit 0
             sleep $((i * 2))
