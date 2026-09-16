@@ -2,10 +2,11 @@ name: unity-playground-idle
 
 # When harvests have nothing bigger, stamp a sandbox receipt.
 # NEVER writes cf-pages/. Live plate stays Merge-only.
+# Time-splice: NOT :07/:37 (OHF-five owns that).
 
 on:
   schedule:
-    - cron: '7,37 * * * *'
+    - cron: '17,47 * * * *'
   workflow_dispatch:
 
 permissions:
