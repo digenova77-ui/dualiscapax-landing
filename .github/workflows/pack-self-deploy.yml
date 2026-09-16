@@ -2,16 +2,26 @@ name: pack-self-deploy
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["dualis-factory-workers"]
+    types: [completed]
 
 permissions:
   contents: read
 
+concurrency:
+  group: pack-self-deploy
+  cancel-in-progress: true
+
 jobs:
   pack:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Zip cf-pages at archive root
         run: |
           cd cf-pages
