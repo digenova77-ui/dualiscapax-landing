@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Share · Grade 2 desk</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:17px/1.5 Fraunces,Georgia,serif}
+.wrap{max-width:44rem;margin:0 auto;padding:1.1rem 1rem 5.6rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:1.8rem}
+.note{color:var(--mute);font-size:.92rem}
+.card{border:1px solid var(--line);border-radius:16px;padding:.9rem;margin:.6rem 0;background:var(--card)}
+label{display:flex;align-items:center;gap:.55rem;margin:.35rem 0;font-size:.95rem}
+input[type=checkbox]{width:1.1rem;height:1.1rem}
+select,input[type=text]{width:100%;background:#070b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:.45rem;margin:.25rem 0;font:16px Georgia,serif}
+button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.45rem .8rem;font:11px IBM Plex Mono,monospace;text-transform:uppercase}
+.pill{font:10px IBM Plex Mono,monospace;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.94);border-top:1px solid var(--line);padding:.45rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Grant · default off · this phone</p>
+<h1>Who may see<br>this card.</h1>
+<p class="note">Nothing is sent yet. These switches are her intent. Parent = that child’s caregiver only. EA, board, triboard = named seats. Official book stays the board’s.</p>
+<div class="card">
+<label class="brand">Child</label>
+<select id="who"></select>
+<p class="pill" id="state">No card selected</p>
+</div>
+<div class="card">
+<p class="brand">Simple</p>
+<label><input type="checkbox" data-seat="ea"> EA</label>
+<label><input type="checkbox" data-seat="parent"> Parent of this child</label>
+<label><input type="checkbox" data-seat="board"> HPEDSB official</label>
+<label><input type="checkbox" data-seat="tri"> Other board (ALCDSB / Limestone)</label>
+</div>
+<div class="card">
+<p class="brand">Expanded · fields</p>
+<label><input type="checkbox" data-field="marks"> Marks / notes</label>
+<label><input type="checkbox" data-field="home"> Home notes</label>
+<label><input type="checkbox" data-field="classmates"> How they work with the class</label>
+<label><input type="checkbox" data-field="learn"> How they learn</label>
+<label><input type="checkbox" data-field="next"> Next step</label>
+</div>
+<p><button type="button" id="save">Save grants on this phone</button></p>
+<p class="note" id="say"></p>
+</div>
+<nav class="dock"><a href="./index.html">Desk</a><a href="./class.html">Class</a><a class="on" href="./share.html">Share</a></nav>
+<script>
+var CK='dc.sara.g2.cards', GK='dc.sara.g2.grants';
+function cards(){try{return JSON.parse(localStorage.getItem(CK)||'[]')}catch(e){return[]}}
+function grants(){try{return JSON.parse(localStorage.getItem(GK)||'{}')}catch(e){return{}}}
+function fill(){
+  var s=document.getElementById('who'); s.innerHTML='<option value="">Choose a child</option>';
+  cards().forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.name;s.appendChild(o)});
+}
+function loadG(){
+  var id=document.getElementById('who').value, g=grants()[id]||{seats:{},fields:{}};
+  document.querySelectorAll('[data-seat]').forEach(function(el){el.checked=!!g.seats[el.getAttribute('data-seat')]});
+  document.querySelectorAll('[data-field]').forEach(function(el){el.checked=!!g.fields[el.getAttribute('data-field')]});
+  document.getElementById('state').textContent=id?'Grants on this phone':'No card selected';
+}
+document.getElementById('who').onchange=loadG;
+document.getElementById('save').onclick=function(){
+  var id=document.getElementById('who').value;
+  if(!id){document.getElementById('say').textContent='Pick a child first.';return;}
+  var all=grants();
+  all[id]={seats:{},fields:{},at:new Date().toISOString(),sent:false};
+  document.querySelectorAll('[data-seat]').forEach(function(el){all[id].seats[el.getAttribute('data-seat')]=el.checked});
+  document.querySelectorAll('[data-field]').forEach(function(el){all[id].fields[el.getAttribute('data-field')]=el.checked});
+  localStorage.setItem(GK,JSON.stringify(all));
+  document.getElementById('say').textContent='Saved on this phone. Not sent. sent=false until a board pipe exists.';
+};
+fill(); loadG();
+</script>
+</body></html>
