@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Capture · Grade 2 desk</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--gold:#ffb703;--line:rgba(62,232,255,.18)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Georgia,serif}
+.wrap{max-width:42rem;margin:0 auto;padding:1.1rem 1rem 5.6rem}
+.brand{font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:1.75rem}
+.note{color:var(--mute)}
+.card{border:1px solid var(--line);border-radius:16px;padding:.9rem;margin:.6rem 0}
+label{display:flex;gap:.5rem;align-items:flex-start;margin:.4rem 0}
+button{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.45rem .8rem;font:11px ui-monospace,monospace;text-transform:uppercase;margin:.2rem .2rem 0 0}
+#preview{width:100%;border-radius:12px;background:#070b10;min-height:8rem}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#05070c;border-top:1px solid var(--line);padding:.45rem;font:10px ui-monospace,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">This device · not Dualis · not a post</p>
+<h1>Record the room<br>only if the right is real.</h1>
+<p class="note">Not posting is the floor, not the whole law. Board policy and parent grants still have to exist. Iris may note the environment. She does not ship children.</p>
+<div class="card">
+<label><input type="checkbox" id="c1"> I am not posting this publicly</label>
+<label><input type="checkbox" id="c2"> Board policy allows this capture for my teaching</label>
+<label><input type="checkbox" id="c3"> I am not asking Dualis to identify children</label>
+<label><input type="checkbox" id="c4"> Phrase is open on this device</label>
+</div>
+<div class="card">
+<p class="brand">Iris environment (optional)</p>
+<p class="note" id="iris">Quiet until you ask. After a clip she can say whether the room was loud or still — on this phone.</p>
+<textarea id="ask" placeholder="How did the room feel after recess?" style="width:100%;min-height:3.5rem;background:#070b10;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:.5rem"></textarea>
+</div>
+<div class="card">
+<video id="preview" playsinline muted></video>
+<p>
+  <button type="button" id="cam">Camera</button>
+  <button type="button" id="screen">This screen</button>
+  <button type="button" id="rec">Start</button>
+  <button type="button" id="stop">Stop</button>
+</p>
+<p class="note" id="say">Locked until all four boxes are true.</p>
+<a id="dl" hidden download="easthill-capture.webm">Save to this device</a>
+</div>
+</div>
+<nav class="dock"><a href="./index.html">Desk</a><a href="./class.html">Cards</a><a class="on" href="./capture.html">Capture</a></nav>
+<script src="/js/device-pass.js"></script>
+<script>
+var stream=null, rec=null, chunks=[];
+function allowed(){
+  var phrase=window.DCVault && DCVault.session && DCVault.session();
+  document.getElementById('c4').checked=!!phrase;
+  return document.getElementById('c1').checked && document.getElementById('c2').checked && document.getElementById('c3').checked && phrase;
+}
+function say(t){document.getElementById('say').textContent=t;}
+async function openStream(screen){
+  if(!allowed()){say('All four boxes, including phrase.');return;}
+  if(stream) stream.getTracks().forEach(function(t){t.stop()});
+  stream = screen
+    ? await navigator.mediaDevices.getDisplayMedia({video:true,audio:true})
+    : await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+  document.getElementById('preview').srcObject=stream;
+  document.getElementById('preview').play();
+  say('Preview on this device. Dualis is not receiving this.');
+}
+document.getElementById('cam').onclick=function(){openStream(false).catch(function(e){say(e.message)});
+};
+document.getElementById('screen').onclick=function(){openStream(true).catch(function(e){say(e.message)});
+};
+document.getElementById('rec').onclick=function(){
+  if(!allowed()||!stream){say('Open camera or screen after the four boxes.');return;}
+  chunks=[]; rec=new MediaRecorder(stream); rec.ondataavailable=function(e){if(e.data.size) chunks.push(e.data)};
+  rec.onstop=function(){
+    var blob=new Blob(chunks,{type:'video/webm'});
+    var url=URL.createObjectURL(blob);
+    var a=document.getElementById('dl'); a.href=url; a.hidden=false; a.textContent='Save clip to this device';
+    say('Clip is local. Not uploaded. Duration '+Math.round(blob.size/50000)+' (rough).');
+    var q=document.getElementById('ask').value.trim();
+    if(q) document.getElementById('iris').textContent='Iris (this phone): she heard your question — "'+q+'" — and will not name children. Write what you noticed on the card.';
+  };
+  rec.start(); say('Recording on this device.');
+};
+document.getElementById('stop').onclick=function(){ if(rec && rec.state!=='inactive') rec.stop(); };
+['c1','c2','c3'].forEach(function(id){document.getElementById(id).onchange=function(){ if(!allowed()) say('Locked until all four boxes are true.'); }});
+if(!(window.DCVault && DCVault.session && DCVault.session())) say('Open phrase first.');
+</script>
+</body></html>
