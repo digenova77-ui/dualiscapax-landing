@@ -4,26 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Ice — DualisCapax</title>
-  <meta name="description" content="Hockey ice portal. One rink. Claim a seat, next game, Maps, tape, measure, school, apps.">
+  <meta name="description" content="Hockey ice. Claim a seat. Next game when TeamSnap has one. Dualis does not invent a roster.">
   <meta name="theme-color" content="#0B0E14">
-  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="lander.css">
   <link rel="stylesheet" href="css/ice-skills.css">
   <link rel="stylesheet" href="css/ice-gameday.css">
   <style>
-    .ice-dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:space-around;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#0B0E14;border-top:1px solid #2a3348}
+    body.ice-body{margin:0;background:#0B0E14;color:#e8eefc;font-family:ui-sans-serif,system-ui,sans-serif;padding-bottom:4.4rem}
+    .ice-fallback{max-width:28rem;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px 1rem}
+    .ice-fallback h1{font-size:1.5rem;margin:.3rem 0 .6rem}
+    .ice-sheet-card{border:1px solid #2a3348;border-radius:16px;padding:14px;background:rgba(56,189,248,.05);margin:10px 0}
+    .ice-sheet-card p{color:#8b96b3;font-size:14px;line-height:1.45;margin:.35rem 0}
+    .kicker{letter-spacing:.16em;font-size:11px;text-transform:uppercase;color:#8b96b3}
+    .ice-dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:space-around;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#0B0E14;border-top:1px solid #2a3348}
     .ice-dock a{color:#8b96b3;text-decoration:none;font-size:12px}
     .ice-dock a.on{color:#38BDF8}
-    body.ice-body{padding-bottom:4.2rem}
+    .ice-rink:empty + .ice-fallback{display:block}
   </style>
 </head>
 <body class="ice-body" id="top">
   <header class="ice-chrome">
     <a href="index.html" class="brand-group">
-      <svg class="brand-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
-        <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
-      </svg>
       <span class="brand-name">Dualiscapax</span>
     </a>
     <div class="ice-chrome-right">
@@ -32,30 +33,29 @@
     </div>
   </header>
   <div class="ice-demo-banner">
-    <span>Demo ice · free to test · pay closed</span>
-    <span style="display:flex;gap:0.65rem;align-items:center;">
-      <button type="button" id="iceDevFlag" class="ice-dev-flag">Dev unlock</button>
-      <a href="sport.html?pack=hockey">← Sport</a>
-    </span>
+    <span>Demo ice · Look $0 · pay on /pay</span>
+    <a href="hockey.html">OHF five</a>
   </div>
-  <div class="ice-scroll-fade" aria-hidden="true"></div>
   <div class="ice-rink">
     <nav class="ice-rail" id="iceRail" aria-label="Ice stages"></nav>
     <main class="ice-sheet">
       <div id="iceStage" class="ice-stage" role="region" aria-live="polite"></div>
     </main>
   </div>
-  <div id="iceSheet" class="ice-bind-sheet" hidden></div>
-  <div id="icePassGate" class="ice-pass-gate" hidden>
-    <div class="ice-pass-card">
-      <h2>Unlock ice</h2>
-      <p>A passkey is on this phone. Unlock with face / finger / device PIN — no Dualis password.</p>
-      <p id="icePassMsg" class="ice-note"></p>
-      <button type="button" class="ice-btn" id="btnIceUnlock">Unlock with passkey</button>
-      <button type="button" class="ice-btn ghost" id="btnIceMakeKey" hidden>Make a passkey</button>
-      <a class="ice-btn ghost" href="onboard.html">Onboard / Unity</a>
+  <div class="ice-fallback" id="iceFallback">
+    <p class="kicker">The rink</p>
+    <h1>Ice is this phone.</h1>
+    <div class="ice-sheet-card">
+      <p class="kicker">Seat</p>
+      <p id="fbSeat">No seat claimed. Dualis does not invent a name.</p>
     </div>
+    <div class="ice-sheet-card">
+      <p class="kicker">Next game</p>
+      <p id="fbGame">Empty until TeamSnap has a next event here.</p>
+    </div>
+    <p><a href="gameday.html" style="color:#38BDF8">Game day</a> · <a href="schedule.html" style="color:#38BDF8">Schedule</a> · <a href="hockey.html" style="color:#38BDF8">Five leagues</a></p>
   </div>
+  <div id="iceSheet" class="ice-bind-sheet" hidden></div>
   <nav class="ice-dock" aria-label="Ice">
     <a class="on" href="./ice.html">Ice</a>
     <a href="./schedule.html">Schedule</a>
@@ -69,9 +69,34 @@
   <script src="js/ice-seat-teamsnap-only.js"></script>
   <script src="js/ice-skills.js"></script>
   <script src="js/ice-gameday.js"></script>
-  <script src="js/iris-voice.js"></script>
-  <script src="js/iris-ice-voice.js"></script>
-  <script src="js/iris-page-voice.js"></script>
-  <script src="js/iris-page-hook.js"></script>
+  <script>
+  (function(){
+    function text(id,s){var n=document.getElementById(id);if(n)n.textContent=s}
+    try{
+      var seat=JSON.parse(localStorage.getItem("dc.ice.seat")||"null");
+      if(seat){
+        var bits=[seat.first,seat.last,seat.jersey?("#"+seat.jersey):"",seat.team||seat.org].filter(Boolean);
+        if(bits.length) text("fbSeat", bits.join(" ")+". From this phone. Dualis did not invent it.");
+      }
+    }catch(e){}
+    try{
+      var raw=localStorage.getItem("dc.teamsnap.events")||localStorage.getItem("dc.ice.events");
+      if(raw){
+        var ev=JSON.parse(raw);
+        var next=Array.isArray(ev)?ev[0]:ev;
+        if(next){
+          text("fbGame", [next.name||next.title,next.start_date||next.start,next.location_name||next.location].filter(Boolean).join(" · ")+".");
+        }
+      }
+    }catch(e){}
+    function hideIfPortal(){
+      var st=document.getElementById("iceStage");
+      var fb=document.getElementById("iceFallback");
+      if(st && st.children.length && fb) fb.hidden=true;
+    }
+    document.addEventListener("dc-ice-portal-ready", hideIfPortal);
+    setTimeout(hideIfPortal, 800);
+  })();
+  </script>
 </body>
 </html>
