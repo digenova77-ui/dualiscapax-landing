@@ -1,0 +1,44 @@
+{
+  "schema": "queue-from-measure-v1",
+  "observe_at": "2026-09-16T23:01Z",
+  "question": "What can the live site not demonstrate that the model says it should?",
+  "tickets": [
+    {
+      "id": 1,
+      "from": "HOLE",
+      "path": "/ice",
+      "observe": "308 Location:/ice",
+      "expected": "200 no Location",
+      "capability": "functions/_middleware.js seated",
+      "authority": "Pages swallow + zone Worker must not own /*",
+      "next": "re-curl --no-location after swallow; if still 308 dashboard route"
+    },
+    {
+      "id": 2,
+      "from": "HOLE",
+      "path": "/look",
+      "observe": "308 Location:/look",
+      "expected": "200 no Location",
+      "next": "same family as /ice"
+    },
+    {
+      "id": 3,
+      "from": "DISAGREE",
+      "path": "/rte/easthill/",
+      "observe_grok": 200,
+      "observe_lucas": 404,
+      "expected": "two measurers 200",
+      "state": "NOT_GREEN",
+      "next": "second sandbox re-curl; do not promote"
+    },
+    {
+      "id": 4,
+      "from": "404",
+      "path": "/sara",
+      "observe": 404,
+      "expected": "200 rewrite to easthill index",
+      "next": "root _redirects alias after ice family 200"
+    }
+  ],
+  "do_not_queue": ["13 instrument pages", "index.html replace", "ice.html full-replace", "invented hockey roster"]
+}
