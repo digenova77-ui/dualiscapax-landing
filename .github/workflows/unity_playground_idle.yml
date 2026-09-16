@@ -1,0 +1,62 @@
+name: unity-playground-idle
+
+# When harvests have nothing bigger, stamp a sandbox receipt.
+# NEVER writes cf-pages/. Live plate stays Merge-only.
+
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: unity-playground-idle
+  cancel-in-progress: false
+
+jobs:
+  idle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sandbox receipt only
+        run: |
+          python3 << 'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
+          root = Path('.')
+          plate = root / 'cf-pages'
+          ice_html = (plate / 'ice.html').exists()
+          ice_dir = (plate / 'ice' / 'index.html').exists()
+          rec = {
+            'kind': 'unity_playground_idle',
+            'captured_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'law': 'cite-or-hole — sandbox only, no plate paint',
+            'ice_html': ice_html,
+            'ice_folder_forbidden': ice_dir,
+            'sandbox': 'factory/sandbox/playground.html',
+            'promote': False,
+          }
+          out = root / 'factory' / 'sandbox' / 'receipts'
+          out.mkdir(parents=True, exist_ok=True)
+          day = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+          (out / f'receipt_{day}.json').write_text(json.dumps(rec, indent=2) + '\n')
+          print(json.dumps(rec, indent=2))
+          if ice_dir:
+              raise SystemExit('hole: ice/ folder returned — do not idle-decorate, Merge first')
+          PY
+      - name: Commit sandbox receipt
+        run: |
+          git config user.email "playground-idle@dualiscapax.ai"
+          git config user.name "Dualis Unity Playground Idle"
+          git add factory/sandbox/
+          if git diff --cached --quiet; then echo none; exit 0; fi
+          git commit -m "chore(playground): idle sandbox receipt [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            sleep $((i * 2))
+          done
+          exit 1
