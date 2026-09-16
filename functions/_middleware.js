@@ -1,4 +1,4 @@
-/* Serve cursed pretty-stems as 200 assets. No Location. Home passes through. */
+/* Serve cursed pretty-stems + ice-desk as 200 assets. No Location. Home passes through. */
 const MAP = {
   "/ice": "/ice.html",
   "/ice/": "/ice.html",
@@ -20,7 +20,9 @@ const MAP = {
   "/rte/easthill/class": "/rte/easthill/class.html",
   "/rte/easthill/class.html": "/rte/easthill/class.html",
   "/rte/easthill/share": "/rte/easthill/share.html",
-  "/rte/easthill/share.html": "/rte/easthill/share.html"
+  "/rte/easthill/share.html": "/rte/easthill/share.html",
+  "/ice-desk": "/ice-desk/index.html",
+  "/ice-desk/": "/ice-desk/index.html"
 };
 
 export async function onRequest(context) {
