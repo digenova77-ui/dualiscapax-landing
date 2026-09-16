@@ -1,0 +1,14 @@
+{
+  "kind": "dev_operator_grant",
+  "grant": "david.operator.test",
+  "granted_by": "david",
+  "at": "2026-09-16T17:57:00Z",
+  "revoked": false,
+  "human": "U1",
+  "public": "DC1-H1-0001",
+  "seat": "operator_first",
+  "founder_reserved": {"human": "U0", "public": "DC0-Z0-0000", "unity_verification": "NOT_PASSED"},
+  "scope": ["factory/sandbox", "local hatch tests"],
+  "forbidden": ["phrase", "cloudflare_token", "stripe_key", "board_password", "student_pii", "pages_deploy"],
+  "note": "Public label only. Not an API key. Revoke by setting revoked=true."
+}
