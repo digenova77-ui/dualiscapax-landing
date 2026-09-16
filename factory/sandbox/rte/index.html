@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>RTE desk — DualisCapax sandbox</title>
+<style>
+:root{
+  --bg:#070b12;--card:#0e1622;--ink:#e8eef8;--mute:#8b9bb0;
+  --line:#1c2a3d;--ice:#7eb8ff;--ok:#3ee0a0;--warn:#e8c36a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,sans-serif}
+header{padding:1.1rem 1.2rem .4rem}
+.badge{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ice)}
+h1{font-size:1.55rem;margin:.25rem 0 .4rem}
+.lede{color:var(--mute);margin:0 0 1rem}
+main{max-width:26rem;margin:0 auto;padding:0 1rem 5rem}
+.grid{display:grid;gap:.7rem}
+a.card, .card{
+  display:block;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:1rem 1.05rem;color:inherit;text-decoration:none;
+}
+a.card:active{border-color:var(--ice)}
+.card b{display:block;font-size:1.02rem}
+.card span{display:block;color:var(--mute);font-size:.88rem;margin-top:.2rem}
+.row{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.pill{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--warn)}
+.ok{color:var(--ok)}
+footer{position:fixed;left:0;right:0;bottom:0;background:#0a1018;border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;padding:.55rem .4rem calc(.55rem + env(safe-area-inset-bottom));
+  font-size:.72rem;letter-spacing:.04em;color:var(--mute)}
+footer b{color:var(--ice);font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <div class="badge">Sandbox · not dualiscapax.ai</div>
+  <h1>RTE desk</h1>
+  <p class="lede">What she actually does today. One tap per job. No PHI. No costume words.</p>
+</header>
+<main class="grid">
+  <a class="card" href="#today">
+    <div class="row"><b>Today’s board</b><span class="pill">hole — no live feed</span></div>
+    <span>Open tickets and handoffs she already named. Empty until a cite exists.</span>
+  </a>
+  <a class="card" href="#integrate">
+    <b>Connect two systems</b>
+    <span>Which system talks to which. Ontario first. 13 provinces sit under this tap later.</span>
+  </a>
+  <a class="card" href="#upgrade">
+    <b>Upgrade a system already in</b>
+    <span>Version on the floor vs version they want. No vendor pitch.</span>
+  </a>
+  <a class="card" href="#implement">
+    <b>Stand something new up</b>
+    <span>From zero to live on their site — checklist, not a novel.</span>
+  </a>
+  <a class="card" href="#pair">
+    <b>Pair with a person</b>
+    <span>Business contacts only. No patient list. Ever.</span>
+  </a>
+  <div class="card">
+    <div class="row"><b>Live plate</b><span class="ok">Home 200</span></div>
+    <span>Ice still a hole. This desk does not promote until you say the picture matches.</span>
+  </div>
+</main>
+<footer>
+  <span><b>RTE</b></span>
+  <span>Look</span>
+  <span>Ice</span>
+  <span>Home</span>
+</footer>
+</body>
+</html>
