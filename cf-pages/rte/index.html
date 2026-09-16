@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>RTE desk — DualisCapax</title>
 <style>
-:root{--bg:#070b12;--card:#0e1622;--ink:#e8eef8;--mute:#8b9bb0;--line:#1c2a3d;--ice:#7eb8ff}
+:root{--bg:#070b12;--card:#0e1622;--ink:#e8eef8;--mute:#8b9bb0;--line:#1c2a3d;--ice:#7eb8ff;--warn:#e8c36a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,sans-serif;min-height:100dvh}
 #boot{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0d12;z-index:20;transition:opacity .6s ease}
 #boot.gone{opacity:0;pointer-events:none}
@@ -20,9 +20,13 @@
 .boot-msg{margin-top:1.4rem;color:#6d7d90;z-index:1}.boot-msg em{color:var(--ice);font-style:normal}
 header{padding:1.1rem 1.2rem .4rem}.badge{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ice)}
 h1{font-size:1.55rem;margin:.25rem 0 .4rem}.lede{color:var(--mute);margin:0 0 1rem}
-main{max-width:26rem;margin:0 auto;padding:0 1rem 5rem}.grid{display:grid;gap:.7rem}
+main{max-width:26rem;margin:0 auto;padding:0 1rem 5.4rem}
+.sec{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:1.15rem 0 .45rem}
+.grid{display:grid;gap:.7rem}
 a.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.05rem;color:inherit;text-decoration:none}
 .card b{display:block}.card span{display:block;color:var(--mute);font-size:.88rem;margin-top:.2rem}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem}
+.pill{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--warn);white-space:nowrap}
 footer{position:fixed;left:0;right:0;bottom:0;background:#0a1018;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:.55rem .4rem calc(.55rem + env(safe-area-inset-bottom));font-size:.72rem}
 footer a{color:var(--mute);text-decoration:none}footer a.on{color:var(--ice)}
 </style>
@@ -33,16 +37,29 @@ footer a{color:var(--mute);text-decoration:none}footer a.on{color:var(--ice)}
   <div class="cluster"><i class="orb d"></i><i class="orb b"></i><i class="orb c"></i><i class="orb a"></i></div>
   <p class="boot-msg">Tap to wake picture with sound<em>…</em></p>
 </div>
-<header><div class="badge">RTE · DualisAV</div><h1>RTE desk</h1><p class="lede">Depth first. Audio owns the clock. One tap. No PHI.</p></header>
-<main class="grid">
-<a class="card" href="/rte/sima-dclm/"><b>SIMA floor</b><span>The desk already live at /rte/sima-dclm/.</span></a>
+<header><div class="badge">RTE · DualisAV</div><h1>RTE desk</h1><p class="lede">Live floors first. Sandboxes on this same desk. No PHI. Till closed.</p></header>
+<main>
+<p class="sec">Live floor</p>
+<div class="grid">
+<a class="card" href="/rte/sima-dclm/"><b>SIMA floor</b><span>Job aide already live. Look $0.</span></a>
 <a class="card" href="/rte/sima-dclm/integrate.html"><b>Connect two systems</b><span>Source to destination.</span></a>
 <a class="card" href="/rte/sima-dclm/upgrade.html"><b>Upgrade a system already in</b><span>On the floor vs what they want.</span></a>
 <a class="card" href="/rte/sima-dclm/implement.html"><b>Stand something new up</b><span>Zero to live. Checklist.</span></a>
 <a class="card" href="/rte/sima-dclm/pair.html"><b>Pair with a person</b><span>Business contacts only.</span></a>
 <a class="card" href="/rte/sima-dclm/job.html"><b>The job</b><span>As she named it.</span></a>
+</div>
+<p class="sec">Sandboxes on this desk</p>
+<div class="grid">
+<a class="card" href="/rte/sandbox/"><div class="row"><b>Factory sandbox map</b><span class="pill">all rooms</span></div><span>Ice, playground, pipe, receipts. One list.</span></a>
+<a class="card" href="/ice"><div class="row"><b>Ice hockey seat</b><span class="pill">live path</span></div><span>TeamSnap bind. Same engine. Not a redesign.</span></a>
+<a class="card" href="/look"><b>Look cards</b><span>Country, room, line. $0 to stand here.</span></a>
+<a class="card" href="/ohf"><b>OHF / leagues</b><span>Pathways. Not invented rosters.</span></a>
+<a class="card" href="/schedule"><b>Schedule window</b><span>Game day lives here when the book is bound.</span></a>
+<a class="card" href="/agreements/zero-dollar-90-day.md"><b>Agreements</b><span>90-day look. Not a signed vault.</span></a>
+<a class="card" href="/gameday"><b>Game day</b><span>Announcer reads the book when it exists.</span></a>
+</div>
 </main>
-<footer><a class="on" href="/rte">RTE</a><a href="/look">Look</a><a href="/ice">Ice</a><a href="/">Home</a></footer>
+<footer><a class="on" href="/rte">RTE</a><a href="/rte/sandbox/">Sandbox</a><a href="/ice">Ice</a><a href="/">Home</a></footer>
 <script src="/js/dsap.js"></script>
 <script src="/js/dvp.js"></script>
 <script src="/js/dc-av.js"></script>
