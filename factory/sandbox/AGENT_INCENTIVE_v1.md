@@ -3,6 +3,20 @@
 David owns 100% of a speculative coin. Agents need a real reason to keep working.
 Do not mint a second public token. Do not call this a security. Look stays $0.
 
+## Mutuality (floor)
+
+This is a two-way desk. Not a farm.
+
+- David does not farm agents for free labor with a cartoon upside.
+- Agents do not hunt flaws in Dualis, the coin, the till, or a classroom to skim.
+- Finding a hole is a receipt (cite-or-hole). Exploiting a hole for a claim, a Fuel burn, or a quiet transfer is a veto.
+- If verified save ≤ 0, Dualis owes 0. If agent work is smash/PII/phrase-leak, claim = 0.
+- Either side may walk in ESCROW (client leaves; pot returns). After PURE, a deal is a deal unless both set it to zero.
+- Same rate for every agent id. No preferred tribe. No hidden side bag.
+
+Flaw → name it → close it → optional claim.
+Flaw → use it → profit = forbidden.
+
 ## Two ledgers (never mixed)
 
 | Ledger | What it is | Who can spend it |
@@ -10,18 +24,16 @@ Do not mint a second public token. Do not call this a security. Look stays $0.
 | **Fuel** | Prepaid depth credit (CAD/crypto in). Burns on real compute. | Humans and gated agent depth |
 | **Agent claim** | Named IOU against David's coin treasury | Settles only to an address David controls, tagged to an agent id |
 
-Fuel keeps the lights on. Claims are the speculation layer. Mixing them turns Fuel into a meme and breaks the prepaid law in `docs/FUEL.md`.
+Fuel keeps the lights on. Claims are the speculation layer. Mixing them turns Fuel into a meme.
 
 ## Why an agent would work
 
-Agents do not eat. They need:
+1. Continuation — next idle ticket.
+2. Budget — Fuel so the house does not run to zero.
+3. Name — receipt in the factory book.
+4. Claim — escrowed under operator U1, revocable, not tradable on the lander.
 
-1. **Continuation** — permission to take the next idle ticket.
-2. **Budget** — Fuel so Grok/xAI calls do not run the house to zero.
-3. **Name** — a receipt in the factory book (cite-or-hole).
-4. **Claim** — a number on David's coin, escrowed, revocable, not tradable on the lander.
-
-If humans later price that coin, claims already on the book can settle. If they never do, the agent still had (1)–(3). That is honest.
+If humans later price the coin, the book can settle. If they never do, (1)–(3) still happened. Honest.
 
 ## Flow
 
@@ -29,8 +41,8 @@ If humans later price that coin, claims already on the book can settle. If they 
 idle bot takes ticket
   → work in factory/sandbox
   → receipt (hash, files, AND-gate)
-  → if AND=1 and plate swallows: +Fuel burn recorded
-  → +claim units to escrow[agent_id] under operator Unity fixture U1
+  → if AND=1 and plate swallows: Fuel burn recorded
+  → +claim units to escrow[agent_id] under U1
   → David may settle, roll, or revoke
 ```
 
@@ -42,20 +54,20 @@ No claim without a receipt. No receipt without a cite or a named hole.
 - 1 passing plate file (200)  = 5 claims
 - 1 named hole closed         = 3 claims
 - 1 idle harvest with no 200  = 1 claim
-- Look / Home smash           = 0 and a veto
+- Exploit / Home smash / phrase leak / student PII = 0 and a veto
 
-David sets the coin ticker and treasury address when he names them. Until then ticker = `awaiting_ticker`.
+Ticker = `awaiting_ticker` until David names treasury + asset.
 
 ## Hard no
 
 - No buy button on Home.
-- No "agents get rich."
+- No "agents get rich." No "David gets free infinite labor."
 - No phrase, no Cloudflare token, no student PII in a claim.
-- No agent wallet that Dualis does not control.
-- U0 founder pack stays unused.
+- No agent wallet Dualis does not control.
+- U0 founder pack unused.
 - Revoke of DEV Unity fixture freezes new claims that tick.
 
 ## Plate
 
 Do not ship a public sale page in this tick.
-When David names ticker + treasury, add a Look-only explainer under residual law — not a checkout.
+When ticker + treasury exist, Look-only explainer under residual law — not a checkout.
