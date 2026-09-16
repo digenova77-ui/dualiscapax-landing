@@ -2,10 +2,11 @@ name: hockey-house-rec
 
 # House + rec + both genders across OMHA ALLIANCE GTHL NOHA OWHA.
 # Book only. Does not paint cf-pages/ice.html.
+# Time-splice: :02/:32 — not girls :12/:42.
 
 on:
   schedule:
-    - cron: '12,42 * * * *'
+    - cron: '2,32 * * * *'
   workflow_dispatch:
 
 permissions:
