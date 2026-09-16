@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Class list · Grade 2</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b1220">
+<style>
+:root{--bg:#0b1220;--ink:#f3efe4;--mute:#9aa7b5;--gold:#e8c36a;--line:rgba(232,195,106,.22);--card:#121a2a}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 Georgia,serif}
+.wrap{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 5.6rem}
+.brand{font:11px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:1.9rem}textarea,button{width:100%;font:16px/1.4 Georgia,serif}
+textarea{min-height:9rem;background:#0a101c;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:.7rem}
+button{margin-top:.6rem;background:transparent;color:var(--gold);border:1px solid var(--line);border-radius:999px;padding:.55rem .9rem}
+.note{color:var(--mute)}ul{padding-left:1.1rem}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#0b1220;border-top:1px solid var(--line);padding:.5rem;font:10px ui-monospace,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--gold)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Easthill · Grade 2 · Sara</p>
+<h1>Import the class</h1>
+<p class="note">One name per line. Prefer first name + last initial. Nothing is uploaded. Dualis does not invent children.</p>
+<textarea id="raw" placeholder="Maya F.\nNoah K."></textarea>
+<button type="button" id="save">Save on this phone</button>
+<button type="button" id="wipe">Clear this phone</button>
+<p class="note" id="say">No list yet.</p>
+<ul id="list"></ul>
+</div>
+<nav class="dock"><a href="./index.html">Desk</a><a class="on" href="./class.html">Class</a><a href="./iep.html">IEP</a><a href="./report.html">Report</a></nav>
+<script>
+var KEY='dc.sara.g2.class';
+function names(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function draw(){
+  var n=names(),ul=document.getElementById('list'),say=document.getElementById('say');
+  ul.innerHTML='';
+  n.forEach(function(x){var li=document.createElement('li');li.textContent=x;ul.appendChild(li)});
+  say.textContent=n.length? (n.length+' on this phone. Not on Dualis servers.'):'No list yet.';
+  document.getElementById('raw').value=n.join('\n');
+}
+document.getElementById('save').onclick=function(){
+  var n=document.getElementById('raw').value.split(/\n/).map(function(s){return s.trim()}).filter(Boolean);
+  localStorage.setItem(KEY,JSON.stringify(n)); draw();
+};
+document.getElementById('wipe').onclick=function(){
+  if(!confirm('Clear the class list from this phone?'))return;
+  localStorage.removeItem(KEY); draw();
+};
+draw();
+</script>
+</body></html>
