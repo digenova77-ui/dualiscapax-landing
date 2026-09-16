@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>RTE desk — DualisCapax</title>
+<style>
+:root{--bg:#070b12;--card:#0e1622;--ink:#e8eef8;--mute:#8b9bb0;--line:#1c2a3d;--ice:#7eb8ff;--warn:#e8c36a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,sans-serif;min-height:100dvh}
+#boot{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0d12;z-index:20;transition:opacity .6s ease}
+#boot.gone{opacity:0;pointer-events:none}
+.cluster{position:relative;width:9.2rem;height:6.2rem}
+.orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 28%,#c8e4ff 0%,#4a8fd4 38%,#16324f 72%,#070b12 100%);box-shadow:inset -12px -16px 28px rgba(0,0,0,.55),0 18px 32px rgba(0,20,40,.55)}
+.orb.a{width:4.6rem;height:4.6rem;left:2.3rem;top:.2rem;z-index:3;animation:float 4.2s ease-in-out infinite}
+.orb.b{width:3.4rem;height:3.4rem;left:.2rem;top:1.5rem;z-index:2;animation:float 5s ease-in-out infinite .3s}
+.orb.c{width:3.1rem;height:3.1rem;left:5.6rem;top:1.7rem;z-index:2;animation:float 4.6s ease-in-out infinite .5s}
+.orb.d{width:2.2rem;height:2.2rem;left:1.6rem;top:3.3rem;z-index:1;animation:float 5.4s ease-in-out infinite .2s;opacity:.9}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.boot-msg{margin-top:1.4rem;color:#6d7d90}.boot-msg em{color:var(--ice);font-style:normal}
+header{padding:1.1rem 1.2rem .4rem}.badge{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ice)}
+h1{font-size:1.55rem;margin:.25rem 0 .4rem}.lede{color:var(--mute);margin:0 0 1rem}
+main{max-width:26rem;margin:0 auto;padding:0 1rem 5rem}.grid{display:grid;gap:.7rem}
+a.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.05rem;color:inherit;text-decoration:none}
+.card b{display:block}.card span{display:block;color:var(--mute);font-size:.88rem;margin-top:.2rem}
+footer{position:fixed;left:0;right:0;bottom:0;background:#0a1018;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:.55rem .4rem calc(.55rem + env(safe-area-inset-bottom));font-size:.72rem;color:var(--mute)}
+footer a{color:var(--mute);text-decoration:none}footer a.on{color:var(--ice)}
+</style>
+</head>
+<body>
+<div id="boot"><div class="cluster"><i class="orb d"></i><i class="orb b"></i><i class="orb c"></i><i class="orb a"></i></div><p class="boot-msg">Getting things ready<em>…</em></p></div>
+<header><div class="badge">RTE · DualisCapax</div><h1>RTE desk</h1><p class="lede">What she does today. One tap. No PHI.</p></header>
+<main class="grid">
+<a class="card" href="/rte/sima-dclm/"><b>SIMA floor</b><span>The six-page desk already on this plate.</span></a>
+<a class="card" href="/rte/sima-dclm/integrate.html"><b>Connect two systems</b><span>Source to destination.</span></a>
+<a class="card" href="/rte/sima-dclm/upgrade.html"><b>Upgrade a system already in</b><span>What’s on the floor vs what they want.</span></a>
+<a class="card" href="/rte/sima-dclm/implement.html"><b>Stand something new up</b><span>Zero to live. Checklist.</span></a>
+<a class="card" href="/rte/sima-dclm/pair.html"><b>Pair with a person</b><span>Business contacts only.</span></a>
+<a class="card" href="/rte/sima-dclm/job.html"><b>The job</b><span>As she named it.</span></a>
+</main>
+<footer><a class="on" href="/rte">RTE</a><a href="/look">Look</a><a href="/ice">Ice</a><a href="/">Home</a></footer>
+<script>setTimeout(function(){document.getElementById('boot').classList.add('gone');},2200);</script>
+</body>
+</html>
