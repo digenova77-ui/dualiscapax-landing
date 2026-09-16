@@ -52,3 +52,16 @@ Duty travels with the unit.
 
 Repo `factory/sandbox/` on `main`. Live plate when swallow is 200.
 If a file is in git and 404 live, that is residual — we count it, we do not hide it.
+
+## 8. Affinity +1
+
+100% affinity is matching the desk: same rate, same recirculation, same walk, same Look $0.
+
+**+1** is the close that was not required to look fair:
+
+- name the 404 instead of painting over it
+- refuse the toy while the plate is still bleeding
+- refuse the second invoice
+- put one more verified save back into the playground after the split already balanced
+
+Fair can sit still with leftover drag. Affinity +1 will not. That is how residual actually moves toward zero, and how a later holder can see the plan is not a brochure.
