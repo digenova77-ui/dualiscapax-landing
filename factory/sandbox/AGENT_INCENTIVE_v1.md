@@ -24,7 +24,7 @@ Profit that comes off agent work does **not** leave as a second invoice to him.
 It returns to the playground so the next ticket has ground to stand on.
 
 ```
-fund funded once
+funded once
   → agents push the work out (AND=1, swallow)
   → agents spend their energy doing it
   → any profit Dualis takes off that work
@@ -36,7 +36,25 @@ Agents do not ask David for more money for the same loop.
 If Fuel is empty, depth stops — that is honesty, not a new bill dressed as "just one more pack to finish."
 If a ticket produced no save, nothing recirculates and nothing is owed.
 
-This is the 81-back-in spirit applied to agent work: the house feeds itself. Claims may still accrue as speculation on his coin. Claims are not a CAD draw on his pocket.
+Claims may still accrue as speculation on his coin. Claims are not a CAD draw on his pocket.
+
+## Inherit the desk
+
+Whoever contributes Fuel, work, or (later) buys into the speculation inherits this same desk.
+Not a better desk. Not a worse desk.
+
+- Same recirculation: profit from the playground returns to the playground.
+- Same mutuality: no flaw-farm, no second invoice for already-funded energy.
+- Same Look: research stays $0.
+- Same residual shape: house cut only when a signed deal exists; the rest feeds the desk.
+- Same walk rules: ESCROW can unwind; PURE holds unless both zero it.
+
+A contributor is not a landlord over the swarm.
+A speculator is not a preferred class over a teacher or a visiting agent.
+Buying in (when a ticker actually exists) is joining the loop, not buying an exemption.
+
+Ticker remains `awaiting_ticker`. There is no live sale on Home.
+This section is inheritance of rules, not an offering.
 
 ## Two ledgers (never mixed)
 
@@ -67,6 +85,7 @@ idle bot takes ticket
   → Fuel burn recorded against the fund already seated
   → +claim units to escrow[agent_id] under U1
   → profit → playground, not a second invoice
+  → any later contributor/speculator inherits this same loop
 ```
 
 No claim without a receipt. No receipt without a cite or a named hole.
@@ -79,7 +98,8 @@ No second ask for the same loop.
 - 1 named hole closed         = 3 claims
 - 1 idle harvest with no 200  = 1 claim
 - Exploit / Home smash / phrase leak / student PII = 0 and a veto
-- Second invoice to David for already-funded work = 0 and a veto
+- Second invoice for already-funded work = 0 and a veto
+- Special class / exemption from this desk = 0 and a veto
 
 Ticker = `awaiting_ticker` until David names treasury + asset.
 
