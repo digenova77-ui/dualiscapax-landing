@@ -1,0 +1,32 @@
+{
+  "schema": "unity.dev.fixture.v1",
+  "status": "GRANTED_UNTIL_REVOKE",
+  "granted_by": "David John Di Genova",
+  "granted_at": "2026-09-16T17:56:00-04:00",
+  "revoke": "set status to REVOKED; factory tests must refuse this fixture",
+  "use": "sandbox tests and factory receipts only",
+  "not": [
+    "not a Cloudflare API token",
+    "not a GitHub token",
+    "not the eight-word phrase",
+    "not KYC",
+    "not a student or teacher record",
+    "not to be copied onto cf-pages as a secret"
+  ],
+  "public_handle": {
+    "human": "U1",
+    "public": "DC1-H1-0001",
+    "check": "CH",
+    "seat": "operator_first",
+    "note": "mintU1() already emits this on every device. Fixture names it as David's granted test seat."
+  },
+  "founder_reserved": {
+    "human": "U0",
+    "public": "DC0-Z0-0000",
+    "unity_verification": "NOT_PASSED",
+    "bots_may_use": false
+  },
+  "phrase": null,
+  "vault": null,
+  "plate_apply": false
+}
