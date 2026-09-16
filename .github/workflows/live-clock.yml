@@ -1,0 +1,49 @@
+name: live-clock
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-clock
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe apex
+        run: |
+          set +e
+          probe() {
+            local path="$1"
+            local code
+            code=$(curl -sS -o /tmp/body -w "%{http_code}" --max-time 20 "https://dualiscapax.ai${path}")
+            echo "${path} ${code}"
+          }
+          echo "## Live clock" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| path | status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          fail=0
+          for p in / /ice /gameday /gameday.html /rte/sima-dclm/ /alacarte; do
+            line=$(probe "$p")
+            echo "$line"
+            code=${line##* }
+            echo "| \`$p\` | $code |" >> "$GITHUB_STEP_SUMMARY"
+            if [ "$p" = "/gameday" ] || [ "$p" = "/gameday.html" ]; then
+              if [ "$code" != "200" ]; then fail=1; fi
+            fi
+          done
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$fail" -ne 0 ]; then
+            echo "NEXT BLOW: Pages Edit on CLOUDFLARE_API_TOKEN, then pages-direct-upload once. See research/NEXT-BLOW.md. Do not open AWS." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::gameday still not 200. Hole is Pages 10000 / stale snapshot. Not a new product."
+          else
+            echo "gameday 200. Deploy hole closed." >> "$GITHUB_STEP_SUMMARY"
+          fi
