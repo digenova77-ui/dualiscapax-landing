@@ -33,16 +33,18 @@ jobs:
           ohf = load('research/hockey/ohf-five/INDEX.json')
           house = load('research/hockey/house-rec/INDEX.json')
           ice_html = (root / 'cf-pages' / 'ice.html').exists()
+          rink_html = (root / 'rink.html').exists() or (root / 'cf-pages' / 'rink.html').exists()
           ice_dir = (root / 'cf-pages' / 'ice' / 'index.html').exists()
           landscape = {
             'kind': 'global_landscape',
             'captured_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'law': 'one ice path: ice/index.html only',
+            'law': 'canonical hockey surface: rink.html; ice.html is a forbidden twin',
             'drawn_from': {'ohf_five': bool(ohf), 'house_rec': bool(house)},
             'ice_html_forbidden': ice_html,
+            'rink_html': rink_html,
             'ice_folder': ice_dir,
             'drawers': {
-              '0_plate_ice': 'folder' if ice_dir and not ice_html else 'twin_or_missing',
+              '0_plate_ice': 'rink' if rink_html and not ice_html else 'twin_or_missing',
               '3_ohf_five': 'book' if ohf else 'hole',
               '4_house_rec': 'book' if house else 'awaiting_association_cites',
               '5_hockey_canada': 'hole',
@@ -56,7 +58,9 @@ jobs:
           (out / 'landscape.json').write_text(json.dumps(landscape, indent=2) + '\n')
           if ice_html:
               raise SystemExit('hole: ice.html twin returned')
-          print(json.dumps({'ok': True, 'ice_folder': ice_dir}, indent=2))
+          if not rink_html:
+              raise SystemExit('hole: rink.html canonical missing')
+          print(json.dumps({'ok': True, 'rink_html': rink_html, 'ice_folder': ice_dir}, indent=2))
           PY
       - name: Commit landscape
         run: |
