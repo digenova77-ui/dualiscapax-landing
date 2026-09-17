@@ -2,36 +2,56 @@ name: Bulletin Board Watcher (Native WIF)
 
 on:
   schedule:
-    # Autonomous heartbeat: runs every 30 minutes on GitHub compute
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
-  contents: write   # Allows committing the downloaded ./bulletin manifest/state
-  id-token: write   # Required for GitHub OIDC to mint Google WIF tokens
+  contents: write
+  id-token: write
+
+# Pacemaker only. ./bulletin is INPUT/EVIDENCE for the factory.
+# This workflow must not deploy Pages, Cloudflare, or treat a board drop as execution authority.
 
 jobs:
   poll-bulletin-board:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+      id-token: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 1. Exchange short-lived GitHub OIDC token with Google WIF
+      - name: Fail closed if WIF provider/SA are empty
+        env:
+          WIF_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          WIF_SA: ${{ vars.GCP_SERVICE_ACCOUNT || secrets.GCP_SERVICE_ACCOUNT }}
+        run: |
+          set -euo pipefail
+          if [ -z "${WIF_PROVIDER}" ] || [ -z "${WIF_SA}" ]; then
+            echo "::error::HOLE: GCP_WORKLOAD_IDENTITY_PROVIDER and/or GCP_SERVICE_ACCOUNT empty in repo vars and secrets."
+            echo "Set Actions Variables (preferred) or Secrets with those exact names."
+            echo "Do not add credentials_json. Keep GitHub OIDC -> Google WIF."
+            echo "Expected OIDC subject after vars exist:"
+            echo "  repo:digenova77-ui/dualiscapax-landing:ref:refs/heads/main"
+            echo "  repo:digenova77-ui/dualiscapax-landing:environment:... (if env used)"
+            echo "Google WIF attribute condition must allow this repo + workflow."
+            echo "SA needs Drive Viewer on folder 1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4."
+            exit 1
+          fi
+          echo "WIF provider and SA names present (values not printed)."
+
       - name: Authenticate to Google Cloud (Workload Identity Federation)
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER || secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT || secrets.GCP_SERVICE_ACCOUNT }}
 
-      # 2. Set up Python environment
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # 3. Read FACTORY_BULLETIN_BOARD into ./bulletin/ (read-only)
       - name: Read FACTORY_BULLETIN_BOARD (read-only)
         run: |
           pip install --quiet google-api-python-client google-auth
@@ -39,14 +59,11 @@ jobs:
             --folder-id 1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4 \
             --out ./bulletin
 
-      # 4. Commit updated bulletin state (or tick artifact) to repo
       - name: Commit & Push Bulletin Snapshot
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add ./bulletin _manifest.json 2>/dev/null || true
-
+          git add ./bulletin
           if git diff --staged --quiet; then
             echo "No bulletin changes. Clean tick."
           else
@@ -54,7 +71,6 @@ jobs:
             git push origin main
           fi
 
-      # 5. Archive snapshot as run artifact
       - name: Upload Bulletin Artifact
         uses: actions/upload-artifact@v4
         if: always()
