@@ -6,9 +6,8 @@ job can read them like normal files during a run.
 
 Auth: Workload Identity Federation -- no key file, ever. The GitHub
       Actions job authenticates via the google-github-actions/auth
-      step (see the .yml alongside this script), which drops
-      short-lived credentials into the environment. This script just
-      picks those up automatically via Application Default Credentials.
+      step, which drops short-lived credentials into the environment.
+      This script picks those up via Application Default Credentials.
       The service account is granted VIEWER on the folder only --
       never grant it Editor/Writer access.
 
@@ -17,6 +16,7 @@ Usage:
 """
 
 import argparse
+import hashlib
 import io
 import json
 import os
@@ -29,7 +29,7 @@ from googleapiclient.http import MediaIoBaseDownload
 # Read-only scope, deliberately. Do not widen this.
 SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 
-GOOGLE_DOC_EXPORT_MIME = "text/markdown"  # export Google Docs as markdown-ish text
+GOOGLE_DOC_EXPORT_MIME = "text/markdown"
 
 
 def get_drive_service():
@@ -82,8 +82,16 @@ def download_file(service, file_id, mime_type):
     return buf.getvalue()
 
 
-def safe_filename(name):
-    return "".join(c if c.isalnum() or c in " ._-()[]" else "_" for c in name)
+def safe_filename(name, file_id):
+    raw = "".join(c if c.isalnum() or c in "._-()[]" else "_" for c in (name or ""))
+    while ".." in raw:
+        raw = raw.replace("..", "_")
+    raw = raw.strip(" .")
+    if not raw or raw in {".", ".."}:
+        raw = "unnamed"
+    prefix = (file_id or "id")[:8]
+    out = f"{prefix}_{raw}"
+    return out[:180]
 
 
 def main():
@@ -92,11 +100,13 @@ def main():
     parser.add_argument("--out", default="./bulletin", help="Local output directory")
     args = parser.parse_args()
 
-    os.makedirs(args.out, exist_ok=True)
+    out_dir = os.path.abspath(args.out)
+    os.makedirs(out_dir, exist_ok=True)
     service = get_drive_service()
     files = list_folder(service, args.folder_id)
 
     manifest = []
+    keep = {"_manifest.json"}
     for f in files:
         content = download_file(service, f["id"], f["mimeType"])
         entry = {
@@ -105,21 +115,34 @@ def main():
             "mimeType": f["mimeType"],
             "modifiedTime": f["modifiedTime"],
             "downloaded": content is not None,
+            "sha256": hashlib.sha256(content).hexdigest() if content else None,
+            "out_name": None,
         }
+
+        if content is not None:
+            out_name = safe_filename(f["name"], f["id"])
+            if f["mimeType"] == "application/vnd.google-apps.document" and not out_name.lower().endswith(".md"):
+                out_name += ".md"
+            dest = os.path.abspath(os.path.join(out_dir, out_name))
+            if os.path.commonpath([out_dir, dest]) != out_dir:
+                print(f"ERROR: refused path escape for {f['name']!r}", file=sys.stderr)
+                sys.exit(1)
+            with open(dest, "wb") as fh:
+                fh.write(content)
+            entry["out_name"] = os.path.basename(dest)
+            keep.add(os.path.basename(dest))
+
         manifest.append(entry)
 
-        if content is None:
-            continue
+    for existing in os.listdir(out_dir):
+        if existing not in keep:
+            path = os.path.join(out_dir, existing)
+            if os.path.isfile(path):
+                os.remove(path)
 
-        out_name = safe_filename(f["name"])
-        if f["mimeType"] == "application/vnd.google-apps.document" and not out_name.lower().endswith(".md"):
-            out_name += ".md"
-
-        with open(os.path.join(args.out, out_name), "wb") as fh:
-            fh.write(content)
-
-    with open(os.path.join(args.out, "_manifest.json"), "w") as fh:
+    with open(os.path.join(out_dir, "_manifest.json"), "w") as fh:
         json.dump(manifest, fh, indent=2)
+        fh.write("\n")
 
     print(f"Pulled {len(files)} item(s) from folder {args.folder_id} into {args.out}/")
 
