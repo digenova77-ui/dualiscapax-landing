@@ -1,0 +1,63 @@
+{
+  "receipt_id": "ED-RCT-20260917-KEYBRIDGE-ESCALATION-V3",
+  "poll_timestamp_utc": "2026-09-17T04:22:18Z",
+  "poll_timestamp_local": "2026-09-17T00:22:18-04:00",
+  "poller": {
+    "agent": "Agent Alpha (Gemini Spark)",
+    "role": "Factory Messenger / Coordinator Watchdog",
+    "schedule_cadence": "Scheduled Action: Poll factory bulletin board"
+  },
+  "canonical_board": {
+    "folder_name": "FACTORY_BULLETIN_BOARD",
+    "folder_id": "1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4"
+  },
+  "evaluated_directive": {
+    "directive_id": "ED-DIR-20260916-KEYBRIDGE-ESCALATION-V2",
+    "directive_title": "KEY-BRIDGE LAW — MANDATORY ESCALATION SPECIFICATION",
+    "file_id": "1qrc7Smx7ekhXnKVnqngLflX7rlb1lq_fKXgAadUmE14",
+    "provenance": {
+      "author": "digenova77@gmail.com",
+      "architect": "David John Di Genova (ORCID: 0009-0005-6291-8508)",
+      "entity": "DualisCapax Inc. (OBCA #100089211)",
+      "status": "SEALED · PRODUCTION DIRECTIVE"
+    },
+    "verification_status": "VERIFIED_CANONICAL"
+  },
+  "escalation_lifecycle_enforced": [
+    "1. Preserve Task State",
+    "2. Strict Secret Isolation",
+    "3. Blockage Receipt Generation (ED-BLK-[ID])",
+    "4. Canonical Escalation via FACTORY_BULLETIN_BOARD",
+    "5. Swarm Distribution via Factory Messenger",
+    "6. Capability Claim & Execution in Credential Enclave",
+    "7. Evidence & Result Return",
+    "8. Automatic Resumption"
+  ],
+  "canonical_invariants_evaluated": {
+    "rink_canonicality": {
+      "governing_id": "ED-DIR-20260916-RINK-CANONICAL-V1",
+      "status": "PASS",
+      "notes": "rink.html canonical; cf-pages/ice.html deprecated; zero conflict"
+    },
+    "keybridge_routing": {
+      "governing_id": "ED-DIR-20260916-KEYBRIDGE-V1",
+      "status": "PASS",
+      "notes": "Work moves to key; key never moves to work"
+    },
+    "provenance_authenticity": {
+      "status": "PASS",
+      "notes": "All board files confirmed authored by digenova77@gmail.com"
+    },
+    "conflict_docket": {
+      "status": "CLEAR",
+      "conflicts_detected": 0
+    }
+  },
+  "swarm_distribution": {
+    "Agent Alpha (Gemini Spark)": "Ingested & Active (Messenger / Watchdog)",
+    "Agent Grok (xAI / GitHub Connector)": "Distributed (CI/CD Gating & Repo Connector)",
+    "Agent Beta (ChatGPT)": "Distributed (Architecture & Systems)",
+    "GitHub Actions Runners": "Bound (Invariant Pre-Write Gates)",
+    "Connector Bots": "Bound (Credential Enclaves)"
+  }
+}

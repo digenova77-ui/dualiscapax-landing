@@ -1,0 +1,58 @@
+{
+  "document_control_id": "ED-DIR-20260917-URGENCY-MESSENGER-FACTORY-V1",
+  "classification": "BINDING FACTORY LAW · URGENCY ROUTING STANDARD · SYSTEM OF RECORD",
+  "operating_entity": "DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7 · OBCA #100089211)",
+  "authority": "Canonical FACTORY_BULLETIN_BOARD",
+  "system_architect": "David John Di Genova (ORCID: 0009-0005-6291-8508)",
+  "governing_framework": "Dualis & Unity Framework (v0.40-Public) / DCLM Layer [0] Law Floor / DCCP Conserved Plane",
+  "canonical_channel": "Google Drive / DualisCapax / FACTORY_BULLETIN_BOARD/ (1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4)",
+  "status": "SEALED · PRODUCTION OPERATIONAL",
+  "date_of_record": "September 17, 2026 (01:35 EDT) / 2026-09-17 05:35 UTC",
+  "operating_principle": "Urgency is routing priority, NOT execution authority.",
+  "canonical_urgency_classes": {
+    "U0": "ROUTINE — Normal queue processing.",
+    "U1": "ATTENTION — Requires awareness during the next normal factory observation cycle.",
+    "U2": "PRIORITY — Should be routed ahead of ordinary queued work where capacity permits.",
+    "U3": "URGENT — Requires accelerated routing/observation and should be surfaced to the responsible desk promptly.",
+    "U4": "CRITICAL — Requires immediate factory attention and escalation through the existing authority chain.",
+    "U5": "OPERATOR — Explicit operator-directed matter. Operator authority must still be expressed through permitted authority mechanism, including ALLOW where required."
+  },
+  "canonical_message_envelope": {
+    "sequence": "URGENCY -> TARGET -> REASON -> REQUIRED_RESPONSE -> EXPIRY -> AUTHORITY -> RECEIPT",
+    "required_fields": [
+      "urgency",
+      "target",
+      "reason",
+      "required_response",
+      "expiry",
+      "authority",
+      "receipt"
+    ]
+  },
+  "routing_law": {
+    "governing_sequence": "DETECT -> CLASSIFY -> ROUTE -> CLAIM -> DCLM -> AUTHORITY CHECK -> EXECUTE -> VERIFY -> RECEIPT",
+    "prohibited_bypasses": [
+      "bypass DCLM",
+      "bypass evidence requirements",
+      "bypass collision testing",
+      "bypass claim/ownership",
+      "bypass conflict detection",
+      "authorize an unapproved production write",
+      "convert PROPOSED into VALIDATED",
+      "fabricate evidence",
+      "fabricate consensus",
+      "override an existing operator ALLOW requirement",
+      "create a competing command channel"
+    ]
+  },
+  "expiry_handling": {
+    "rule": "Support time-bounded urgency. If now > expiry, mark bulletin/route as EXPIRED, do not silently execute stale work, preserve historical audit receipt, require fresh routing."
+  },
+  "deduplication": {
+    "rule": "canonical bulletin -> canonical serialization -> TASK_HASH (SHA256). Identical canonical task must not be executed twice regardless of re-reading or multiple watchers."
+  },
+  "board_interlock": {
+    "canonical_path": "Operator / authorized source -> FACTORY_BULLETIN_BOARD -> Messenger / watcher -> Urgency classification -> Responsible desk / factory unit -> Claim -> DCLM -> Authority check -> Execution -> Evidence / verification -> Receipt.",
+    "principle": "The Bulletin Board remains the doorbell. It is not the factory floor. The Messenger routes the bell; the factory performs the work."
+  }
+}
