@@ -1,13 +1,13 @@
 # SPARK ALPHA — INVOCATION BRIDGE CENSUS & AUDIT RECEIPT
 
-**Document Control ID:** ED-TEST-20260917-BRIDGE-CENSUS-V1  
-**Test ID:** TEST-IRIS-BRIDGE-CENSUS-001  
-**Probe ID:** IRIS-INVOKE-PROBE-20260917-001  
+**Document Control ID:** `ED-TEST-20260917-BRIDGE-CENSUS-V1`  
+**Test ID:** `TEST-IRIS-BRIDGE-CENSUS-001`  
+**Probe ID:** `IRIS-INVOKE-PROBE-20260917-001`  
 **Classification:** FACTORY ARCHITECTURAL CENSUS · READ-ONLY AUDIT · INVOCATION BRIDGE TRACE  
 **Operating Entity:** DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7)  
 **Originating Agent:** Agent Alpha (Gemini Spark / Coordinator Watchdog)  
-**Target Surface:** FACTORY\_BULLETIN\_BOARD (Folder ID: 1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4)  
-**Target Repository:** digenova77-ui/dualiscapax-landing  
+**Target Surface:** `FACTORY_BULLETIN_BOARD` (Folder ID: `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`)  
+**Target Repository:** `digenova77-ui/dualiscapax-landing`  
 **Timestamp:** 2026-09-17T14:15:00-04:00 (18:15:00 UTC)  
 **Status:** SEALED · READ-ONLY CENSUS COMPLETE · CONCLUSION: NO\_EXISTING\_BRIDGE\_FOUND
 
@@ -15,15 +15,15 @@
 
 ## 1\. Executive Summary & Objective
 
-This architectural census traces probe marker IRIS-INVOKE-PROBE-20260917-001 through the existing DualisCapax repository, workflow triggers, and factory mechanisms.
+This architectural census traces probe marker `IRIS-INVOKE-PROBE-20260917-001` through the existing DualisCapax repository, workflow triggers, and factory mechanisms.
 
 The objective is to determine whether an existing, authorized mechanical invocation path exists that could cause a newly deposited bulletin-board item to invoke an execution worker.
 
 **Findings:**
 
-- **Mechanical Invocation Bridge:** NO\_EXISTING\_BRIDGE\_FOUND.  
-- **Downstream Consumer Status:** TRANSPORT\_EXISTS\_BUT\_INVOCATION\_BRIDGE\_UNPROVEN.  
-- **System Boundary:** The current operational path terminates strictly at RESIDUAL → ADMISSIBLE WORK → DOCUMENT. No active webhook, dispatch trigger, or queue consumer bridges the bulletin board into automated worker execution.
+- **Mechanical Invocation Bridge:** `NO_EXISTING_BRIDGE_FOUND`.  
+- **Downstream Consumer Status:** `TRANSPORT_EXISTS_BUT_INVOCATION_BRIDGE_UNPROVEN`.  
+- **System Boundary:** The current operational path terminates strictly at `RESIDUAL → ADMISSIBLE WORK → DOCUMENT`. No active webhook, dispatch trigger, or queue consumer bridges the bulletin board into automated worker execution.
 
 ---
 
@@ -31,12 +31,12 @@ The objective is to determine whether an existing, authorized mechanical invocat
 
 | Candidate Bridge | Source Surface | Destination | Trigger Mechanism | Permissions Required | Active in Repo? | Reached by New Bulletin? | Can Create Execution Event? |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| **1\. Drive Webhook → repository\_dispatch** | Google Drive Board (1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4) | GitHub Actions runner | repository\_dispatch: \[drive\_update\] | repo scope token | **NO** (Blueprint only in ED-SPEC-20260901) | NO | NO |
-| **2\. Scheduled Board Watcher** | Google Drive Board (1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4) | Local workspace ./bulletin/ | cron: '\*/30 \* \* \* \*' \+ workflow\_dispatch | contents: write, id-token: write | **YES** (Workflow exists, WIF vars empty) | Transport target only (if green) | **NO** (File dump only; invokes zero workers) |
-| **3\. Workflow Chaining (workflow\_run)** | bulletin-board-watch.yml completion | Downstream worker / desk | on: workflow\_run | actions: write | **NO** (Zero workflows define workflow\_run) | NO | NO |
-| **4\. Bulletin Push Filter** | Git commit to ./bulletin/\*\* | Worker dispatch workflow | on: push: paths: \['bulletin/\*\*'\] | contents: write | **NO** (Zero workflows monitor bulletin/\*\*) | NO | NO |
-| **5\. Queue Consumer / Claim Script** | ./bulletin/\_manifest.json | Worker execution desk | Python poller / claim loop | Local process permissions | **NO** (Audited as HOLE in BOARD\_MANIFEST Sec. 5\) | NO | NO |
-| **6\. External Dispatch Connector** | Grok / xAI / Chat Connector | GitHub Actions API | POST /dispatches | Personal Access Token / App Token | **NO** (Grok pollers paused; no automated bridge) | NO | NO |
+| **1\. Drive Webhook → repository\_dispatch** | Google Drive Board (`1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`) | GitHub Actions runner | `repository_dispatch: [drive_update]` | `repo` scope token | **NO** (Blueprint only in `ED-SPEC-20260901`) | NO | NO |
+| **2\. Scheduled Board Watcher** | Google Drive Board (`1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`) | Local workspace `./bulletin/` | `cron: '*/30 * * * *'` \+ `workflow_dispatch` | `contents: write`, `id-token: write` | **YES** (Workflow exists, WIF vars empty) | Transport target only (if green) | **NO** (File dump only; invokes zero workers) |
+| **3\. Workflow Chaining (workflow\_run)** | `bulletin-board-watch.yml` completion | Downstream worker / desk | `on: workflow_run` | `actions: write` | **NO** (Zero workflows define `workflow_run`) | NO | NO |
+| **4\. Bulletin Push Filter** | Git commit to `./bulletin/**` | Worker dispatch workflow | `on: push: paths: ['bulletin/**']` | `contents: write` | **NO** (Zero workflows monitor `bulletin/**`) | NO | NO |
+| **5\. Queue Consumer / Claim Script** | `./bulletin/_manifest.json` | Worker execution desk | Python poller / claim loop | Local process permissions | **NO** (Audited as HOLE in `BOARD_MANIFEST` Sec. 5\) | NO | NO |
+| **6\. External Dispatch Connector** | Grok / xAI / Chat Connector | GitHub Actions API | `POST /dispatches` | Personal Access Token / App Token | **NO** (Grok pollers paused; no automated bridge) | NO | NO |
 
 ---
 
@@ -44,26 +44,26 @@ The objective is to determine whether an existing, authorized mechanical invocat
 
 ### OBSERVED (Direct Repository & Runtime Telemetry)
 
-1. .github/workflows/bulletin-board-watch.yml defines exactly two triggers: cron: '\*/30 \* \* \* \*' and workflow\_dispatch. It contains no repository\_dispatch, workflow\_call, or workflow\_run.  
-2. In bulletin-board-watch.yml, execution runs python scripts/read\_bulletin\_board.py \--folder-id 1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4 \--out ./bulletin and commits ./bulletin/ to git.  
-3. No other workflow in .github/workflows/ targets paths: \['bulletin/\*\*'\] or triggers on the completion of bulletin-board-watch.yml.  
-4. GitHub's native security model suppresses workflow triggers on pushes authenticated via default GITHUB\_TOKEN, preventing cascaded execution from bot commits without a personal token.  
+1. `.github/workflows/bulletin-board-watch.yml` defines exactly two triggers: `cron: '*/30 * * * *'` and `workflow_dispatch`. It contains no `repository_dispatch`, `workflow_call`, or `workflow_run`.  
+2. In `bulletin-board-watch.yml`, execution runs `python scripts/read_bulletin_board.py --folder-id 1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4 --out ./bulletin` and commits `./bulletin/` to git.  
+3. No other workflow in `.github/workflows/` targets `paths: ['bulletin/**']` or triggers on the completion of `bulletin-board-watch.yml`.  
+4. GitHub's native security model suppresses workflow triggers on pushes authenticated via default `GITHUB_TOKEN`, preventing cascaded execution from bot commits without a personal token.  
 5. In [BOARD\_MANIFEST\_\[ED-MAN-20260917-CANONICAL-V1\]](https://docs.google.com/document/d/1HsJpEQFXG7DbUOoulRmuyhQClbxAh5OgDPIy0VyAT1Y/edit?usp=drivesdk&ouid=112289214673457983411) Section 5, forensic telemetry explicitly records:  
-   - Watcher → Signaler: HOLE  
-   - Signaler → Dispatcher: HOLE  
-   - Dispatcher → Desk: HOLE  
-6. WIF variables are currently unset in GitHub repository settings, causing the transport layer itself to fail closed at step google-github-actions/auth@v2.
+   - `Watcher → Signaler: HOLE`  
+   - `Signaler → Dispatcher: HOLE`  
+   - `Dispatcher → Desk: HOLE`  
+6. WIF variables are currently unset in GitHub repository settings, causing the transport layer itself to fail closed at step `google-github-actions/auth@v2`.
 
 ### DERIVED (Logical Architectural Deductions)
 
-1. Even if the Google WIF transport layer were operational and successfully pushed ./bulletin/ to git, zero downstream workers would be invoked because no consumer monitors or reacts to ./bulletin/ artifacts.  
-2. A newly landed bulletin docket (such as IRIS-INVOKE-PROBE-20260917-001) remains an inert document on Drive until a human or autonomous agent manually triggers an inspection or dispatch.
+1. Even if the Google WIF transport layer were operational and successfully pushed `./bulletin/` to git, zero downstream workers would be invoked because no consumer monitors or reacts to `./bulletin/` artifacts.  
+2. A newly landed bulletin docket (such as `IRIS-INVOKE-PROBE-20260917-001`) remains an inert document on Drive until a human or autonomous agent manually triggers an inspection or dispatch.
 
 ### MODELED (Theoretical Interventions)
 
 1. An event-driven invocation bridge would require either:  
-   - An external webhook (e.g. Google Apps Script / Cloudflare Worker) triggering GitHub repository\_dispatch.  
-   - A secondary workflow triggered via workflow\_run after bulletin-board-watch completes, parsing ./bulletin/\_manifest.json for dockets marked NEW.
+   - An external webhook (e.g. Google Apps Script / Cloudflare Worker) triggering GitHub `repository_dispatch`.  
+   - A secondary workflow triggered via `workflow_run` after `bulletin-board-watch` completes, parsing `./bulletin/_manifest.json` for dockets marked `NEW`.
 
 ### PROPOSED
 
@@ -71,7 +71,7 @@ The objective is to determine whether an existing, authorized mechanical invocat
 
 ### VALIDATED
 
-- Complete absence of mechanical invocation consumers verified across all declarative workflow definitions in digenova77-ui/dualiscapax-landing.
+- Complete absence of mechanical invocation consumers verified across all declarative workflow definitions in `digenova77-ui/dualiscapax-landing`.
 
 ### UNRESOLVED
 
@@ -235,8 +235,8 @@ The objective is to determine whether an existing, authorized mechanical invocat
 
 ## 5\. Architectural Conclusion
 
-**NO\_EXISTING\_BRIDGE\_FOUND**
+**`NO_EXISTING_BRIDGE_FOUND`**
 
-*Special Test Result:* **TRANSPORT\_EXISTS\_BUT\_INVOCATION\_BRIDGE\_UNPROVEN**
+*Special Test Result:* **`TRANSPORT_EXISTS_BUT_INVOCATION_BRIDGE_UNPROVEN`**
 
-The claim that the current factory stops at RESIDUAL → ADMISSIBLE WORK → DOCUMENT without reaching INVOCATION is rigorously verified by direct evidence. No automated invocation mechanism was built, simulated, or modified during this read-only census.  
+The claim that the current factory stops at `RESIDUAL → ADMISSIBLE WORK → DOCUMENT` without reaching `INVOCATION` is rigorously verified by direct evidence. No automated invocation mechanism was built, simulated, or modified during this read-only census.  
