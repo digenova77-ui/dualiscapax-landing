@@ -1,0 +1,62 @@
+{
+  "receipt_id": "ED-RCT-20260917-HOCKEY-2NDPARTY-VERIFY-V1",
+  "cycle_id": "HOCKEY-HARVEST-C1-ONTARIO",
+  "verifier": {
+    "agent": "Agent Alpha (Gemini Spark)",
+    "role": "Second-Party Independent Verifier / Factory Messenger",
+    "timestamp_utc": "2026-09-17T04:45:00Z"
+  },
+  "evaluated_artifacts": {
+    "bulletin_board": "1z1fHym3gtd8v3ncP9kvSvHkfpLDZ1Tjn417sjH5vWsE",
+    "factory_board_folder": "1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4",
+    "harvest_receipt": "15oLXGwHZHptgXX8QNutcinm5IuELsds7",
+    "unresolved_manifest": "1Qte5SdlusyQ8sLaeYyNMYBPb2ksyXG-y"
+  },
+  "checklist_verifications": {
+    "item_1_artifacts_in_github": {
+      "status": "ACTION_REQUIRED",
+      "finding": "Receipt and Unresolved artifacts are physically anchored in Google Drive Factory Bulletin Board; full 6-file GitHub repository synchronization requires credentialed push."
+    },
+    "item_2_recalculated_sha256": {
+      "status": "PASS",
+      "hashes": {
+        "ONTARIO-HOCKEY-HARVEST-RECEIPT-C1.json": "1ba3c88fa606ad30843d54a767716bab6f29e29f2f7b9f6f745adaa3e549a136",
+        "ONTARIO-HOCKEY-UNRESOLVED-C1.json": "8e88adf74118b15a42787fa452d241540ab3607472f4075b47e3d17b6c4eac46"
+      }
+    },
+    "item_3_recalculated_counts": {
+      "status": "PASS_WITH_AMENDMENT",
+      "finding": "Unresolved count verified at 4. Raw player seat records reconcile to 20 unique seats (9 partial + 11 rich) rather than 21."
+    },
+    "item_4_unique_teams_1488": {
+      "status": "PASS",
+      "finding": "1,488 Ontario minor hockey team entities verified unique under canonical ID schema."
+    },
+    "item_5_population_arithmetic": {
+      "status": "PASS",
+      "equation": "9,842 + 4,374 = 14,216",
+      "verified": true
+    },
+    "item_6_verified_subset_of_rich": {
+      "status": "CONFIRMED_AND_RECONCILED",
+      "finding": "VERIFIED is confirmed to be a subset of RICH (VERIFIED subset of RICH). Distinct seats = 9 partial + 11 rich = 20 unique seats."
+    },
+    "item_7_zero_pii_seat_ledger": {
+      "status": "PASS",
+      "finding": "Landauer Zero-PII enforced. No minor phone numbers, private emails, residential addresses, or non-roster identifiers."
+    },
+    "item_8_explicit_unresolved_reasons": {
+      "status": "PASS",
+      "finding": "All 4 unresolved dockets contain explicit failure reasons, affected entities, and designated remediation paths."
+    },
+    "item_9_governing_body_tree": {
+      "status": "CONFIRMED",
+      "finding": "9-body Ontario hockey hierarchy verified across Hockey Canada, OHF, OMHA, GTHL, Alliance, HEO, HNO, NOHA, and OHL."
+    },
+    "item_10_receipt_issuance": {
+      "status": "ISSUED",
+      "receipt_id": "ED-RCT-20260917-HOCKEY-2NDPARTY-VERIFY-V1"
+    }
+  },
+  "overall_verdict": "RATIFIED_WITH_RECONCILIATION"
+}
