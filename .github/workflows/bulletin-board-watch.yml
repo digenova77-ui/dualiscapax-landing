@@ -12,15 +12,16 @@ permissions:
 # Pacemaker only. ./bulletin is INPUT/EVIDENCE for the factory.
 # This workflow must not deploy Pages, Cloudflare, or treat a board drop as execution authority.
 
+concurrency:
+  group: bulletin-board-watch
+  cancel-in-progress: false
+
 jobs:
   poll-bulletin-board:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
-    concurrency:
-      group: bulletin-board-watch
-      cancel-in-progress: false
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -37,11 +38,6 @@ jobs:
             echo "::error::HOLE: GCP_WORKLOAD_IDENTITY_PROVIDER and/or GCP_SERVICE_ACCOUNT empty in repo vars and secrets."
             echo "Set Actions Variables (preferred) or Secrets with those exact names."
             echo "Do not add credentials_json. Keep GitHub OIDC -> Google WIF."
-            echo "Expected OIDC subject after vars exist:"
-            echo "  repo:digenova77-ui/dualiscapax-landing:ref:refs/heads/main"
-            echo "  repo:digenova77-ui/dualiscapax-landing:environment:... (if env used)"
-            echo "Google WIF attribute condition must allow this repo + workflow."
-            echo "SA needs Drive Viewer on folder 1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4."
             exit 1
           fi
           echo "WIF provider and SA names present (values not printed)."
@@ -71,16 +67,16 @@ jobs:
           git add ./bulletin
           if git diff --staged --quiet; then
             echo "No bulletin changes. Clean tick."
-            exit 0
+          else
+            git commit -m "chore(bulletin): sync board snapshot via WIF [skip ci]"
+            for i in 1 2 3 4 5; do
+              git pull --rebase origin main && git push origin HEAD && exit 0
+              echo "push race attempt $i — retry"
+              sleep $((i * 2))
+            done
+            echo "push failed after retries" >&2
+            exit 1
           fi
-          git commit -m "chore(bulletin): sync board snapshot via WIF [skip ci]"
-          for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push origin main && exit 0
-            echo "push race attempt $i — retry"
-            sleep $((i * 2))
-          done
-          echo "push failed after retries; artifact remains the snapshot receipt" >&2
-          exit 1
 
       - name: Upload Bulletin Artifact
         uses: actions/upload-artifact@v4
