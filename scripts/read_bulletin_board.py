@@ -19,6 +19,7 @@ Usage:
 import argparse
 import io
 import json
+import os
 import sys
 
 import google.auth
@@ -33,8 +34,6 @@ GOOGLE_DOC_EXPORT_MIME = "text/markdown"  # export Google Docs as markdown-ish t
 
 def get_drive_service():
     try:
-        # Picks up the short-lived credentials the auth step already
-        # placed in the environment -- nothing to configure here.
         creds, _ = google.auth.default(scopes=SCOPES)
     except google.auth.exceptions.DefaultCredentialsError:
         print(
@@ -69,10 +68,8 @@ def list_folder(service, folder_id):
 
 def download_file(service, file_id, mime_type):
     if mime_type == "application/vnd.google-apps.document":
-        # Native Google Doc -- export as text
         request = service.files().export_media(fileId=file_id, mimeType=GOOGLE_DOC_EXPORT_MIME)
     elif mime_type.startswith("application/vnd.google-apps"):
-        # Other native Google types (sheets, slides, folders) -- skip content, just note it
         return None
     else:
         request = service.files().get_media(fileId=file_id)
