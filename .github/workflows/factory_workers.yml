@@ -40,7 +40,7 @@ jobs:
             "kind": "factory_tick",
             "captured_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "law": "truth-or-nothing — no stub UNANIMOUS_PASS",
-            "live_units": [{"id": u.get("id"), "workflow": u.get("workflow"), "cron_slot": u.get("cron_slot")} for u in live],
+            "live_units": [{"id": u.get("id"), "workflow": u.get("workflow"), "cron_slot": u.get("cron_slot") or u.get("cron")} for u in live],
             "actions": [],
           }
           # Mesh: force STUB path → must SKIP_STUB
