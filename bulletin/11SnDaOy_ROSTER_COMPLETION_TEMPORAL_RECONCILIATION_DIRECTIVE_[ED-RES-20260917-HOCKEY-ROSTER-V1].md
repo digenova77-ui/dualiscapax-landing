@@ -1,6 +1,6 @@
 # DUALISCAPAX RESEARCH DIRECTIVE: HOCKEY ROSTER COMPLETION & TEMPORAL RECONCILIATION
 
-**Document Control ID:** `ED-RES-20260917-HOCKEY-ROSTER-V1`  
+**Document Control ID:** ED-RES-20260917-HOCKEY-ROSTER-V1  
 **Classification:** PROPOSED RESEARCH SPECIFICATION · READ-ONLY · SYSTEM OF RECORD  
 **Operating Entity:** DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7)  
 **Authority:** Factory Evidence Authority / DCLM Research Law Floor  
@@ -14,11 +14,11 @@
 
 In competitive youth and junior hockey data harvesting, automated systems routinely commit the **"Fallacy of the Magic Number"**—treating a regulatory player count (such as 17 or 18 skaters) as self-evident proof that a roster is complete, finalized, and static.
 
-Under the DCLM Layer \[0\] Law Floor (`TRUTH_OR_NOTHING`), a headcount measures regulatory compliance with league minimums or maximums; **it proves nothing regarding roster completeness, historical stability, or the causal mechanism of player transitions**.
+Under the DCLM Layer \[0\] Law Floor (TRUTH\_OR\_NOTHING), a headcount measures regulatory compliance with league minimums or maximums; **it proves nothing regarding roster completeness, historical stability, or the causal mechanism of player transitions**.
 
 This directive establishes:
 
-1. **The 5-Tier State Model:** Strict formal separation between `COMPLIANT`, `PROVISIONALLY_COMPLETE`, `CONFIRMED`, `DELTA`, and `UNKNOWN`.  
+1. **The 5-Tier State Model:** Strict formal separation between COMPLIANT, PROVISIONALLY\_COMPLETE, CONFIRMED, DELTA, and UNKNOWN.  
 2. **Sub-Federation Archetypes:** Separate analysis of governing regulations and publication architectures across the **OHF**, **OMHA**, and **OWHA**.  
 3. **Differential Object Accounting:** The Delta Rule ($\\Delta \= S\_{\\text{known}} \\setminus S\_{\\text{current}}$) ensuring roster modifications trigger targeted entity tracking rather than full-league re-harvests.  
 4. **Entropy-Minimizing Harvesting:** A cryptographic checksum verification model that hardens state evidence without redundant scraping cycles.
@@ -44,7 +44,7 @@ This directive establishes:
   - **U16 AAA Baseline (Example: Quinte Red Devils U16 AAA):** Standard target is 20 active seats (12 Forwards, 6 Defense, 2 Goaltenders).  
   - **U10–U15 Minor Baseline:** Commonly carries 15 to 19 players depending on association carding capacity and regional center density.  
   - **Affiliated Players (AP):** Teams are permitted to affiliate up to **19 players** from lower age cohorts or lower competitive tiers within their geographic base.  
-  - **Publication Platforms:** MBSportsWeb (e.g., `quintereddevils.ca`), Sport-Ngin, LeagueStat, and GameSheet Inc.
+  - **Publication Platforms:** MBSportsWeb (e.g., quintereddevils.ca), Sport-Ngin, LeagueStat, and GameSheet Inc.
 
 ### 2.3 Ontario Women's Hockey Association (OWHA) — Female Minor & Junior Hockey
 
@@ -95,15 +95,15 @@ Public hockey roster publication is **asynchronous, non-atomic, and staged acros
 
 To construct temporal roster provenance without relying on internal database IDs, harvesters must extract:
 
-- **HTTP Headers:** `Last-Modified`, `ETag`, and CMS content hashes.  
-- **DOM Metadata:** CMS player profile identifiers (e.g., MBSportsWeb `/Player/{id}/`, RAMP player GUIDs).  
-- **GameSheet Event Timestamps:** Game Sheet official verification signatures, game start timestamps, and player status flags (`A` \= Active, `AP` \= Affiliate, `S` \= Scratched, `SUSP` \= Suspended).
+- **HTTP Headers:** Last-Modified, ETag, and CMS content hashes.  
+- **DOM Metadata:** CMS player profile identifiers (e.g., MBSportsWeb /Player/{id}/, RAMP player GUIDs).  
+- **GameSheet Event Timestamps:** Game Sheet official verification signatures, game start timestamps, and player status flags (A \= Active, AP \= Affiliate, S \= Scratched, SUSP \= Suspended).
 
 ---
 
 ## 4\. Entity Resolution & Stable Identifiers
 
-Because minor hockey regulations forbid exposing national registry IDs publicly, the factory must construct a **Deterministic Composite Object Identifier (`PLAYER_KEY`)**:
+Because minor hockey regulations forbid exposing national registry IDs publicly, the factory must construct a **Deterministic Composite Object Identifier (PLAYER\_KEY)**:
 
 $$\\text{PLAYER\_KEY} \= \\text{SHA256}(\\text{Normalized\_Name} \\parallel \\text{Birth\_Cohort} \\parallel \\text{Home\_Association} \\parallel \\text{Branch\_Code})$$
 
@@ -181,7 +181,7 @@ When an established roster changes (e.g., $18 \\to 17$ players), the factory **m
 
 ### 6.1 Step 1: Object-Level Set Subtraction
 
-$$\\Delta\_{\\text{missing}} \= S\_{\\text{known}} \\setminus S\_{\\text{current}}$$ Isolate the unique `PLAYER_KEY` of the dropped object.
+$$\\Delta\_{\\text{missing}} \= S\_{\\text{known}} \\setminus S\_{\\text{current}}$$ Isolate the unique PLAYER\_KEY of the dropped object.
 
 ### 6.2 Step 2: Bounded Traversal in Known League Evidence
 
@@ -195,8 +195,8 @@ Search the current federated graph for $\\text{PLAYER\_KEY}$ across surrounding 
 
 ### 6.3 Step 3: Evidentiary Resolution or Preservation of UNKNOWN
 
-- **If Verified:** State transitions to `CONFIRMED_TRANSFER`, `VERIFIED_STATUS_CHANGE`, or `SOURCE_CORRECTION`.  
-- **If Unverified:** State transitions strictly to **`UNKNOWN`**. The missing player seat is quarantined. **Zero speculative transfers or fabricated cuts are admitted.**
+- **If Verified:** State transitions to CONFIRMED\_TRANSFER, VERIFIED\_STATUS\_CHANGE, or SOURCE\_CORRECTION.  
+- **If Unverified:** State transitions strictly to **UNKNOWN**. The missing player seat is quarantined. **Zero speculative transfers or fabricated cuts are admitted.**
 
 ---
 
