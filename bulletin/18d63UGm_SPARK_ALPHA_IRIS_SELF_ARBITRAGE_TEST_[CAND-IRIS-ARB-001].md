@@ -1,12 +1,12 @@
 # SPARK ALPHA — IRIS SELF-ARBITRAGE EXPERIMENT RECEIPT
 
-**Document Control ID:** ED-TEST-20260917-IRIS-SELF-ARBITRAGE-V1  
-**Candidate ID:** CAND-IRIS-ARB-001  
+**Document Control ID:** `ED-TEST-20260917-IRIS-SELF-ARBITRAGE-V1`  
+**Candidate ID:** `CAND-IRIS-ARB-001`  
 **Classification:** FACTORY EXPERIMENT · IRIS SELF-ARBITRAGE TEST · BOUNDED ARCHITECTURAL RECEIPT  
 **Operating Entity:** DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7)  
 **Originating Agent:** Agent Alpha (Gemini Spark)  
-**Target Surface:** FACTORY\_BULLETIN\_BOARD (Folder ID: 1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4)  
-**Target Repository:** digenova77-ui/dualiscapax-landing  
+**Target Surface:** `FACTORY_BULLETIN_BOARD` (Folder ID: `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`)  
+**Target Repository:** `digenova77-ui/dualiscapax-landing`  
 **Timestamp:** 2026-09-17T14:05:00-04:00 (18:05:00 UTC)  
 **Status:** UNRESOLVED (Awaiting Operator Gate Resolution · Zero Production Mutation)
 
@@ -16,7 +16,7 @@
 
 Per the Iris Self-Arbitrage Functionality Test directive, Agent Alpha independently receives, structures, and returns a bounded architectural candidate using Iris herself as the subject of arbitrage.
 
-This experiment implements the canonical loop: REALITY → PROBABILISTIC DISCOVERY → CANDIDATE → IRIS / DCLM → RESIDUAL → ADMISSIBLE NEXT WORK → ACTION → INDEPENDENT MEASUREMENT → RECEIPT → VALUE → IRIS → NEXT RESIDUAL
+This experiment implements the canonical loop: `REALITY → PROBABILISTIC DISCOVERY → CANDIDATE → IRIS / DCLM → RESIDUAL → ADMISSIBLE NEXT WORK → ACTION → INDEPENDENT MEASUREMENT → RECEIPT → VALUE → IRIS → NEXT RESIDUAL`
 
 ---
 
@@ -24,27 +24,27 @@ This experiment implements the canonical loop: REALITY → PROBABILISTIC DISCOVE
 
 ### OBSERVED (Direct Ground Truth Telemetry)
 
-1. Workflow .github/workflows/bulletin-board-watch.yml exists in digenova77-ui/dualiscapax-landing at commit 275f1c623920dab579c0e032b8868f194e909e5b with cron \*/30 \* \* \* \*.  
-2. Workflow run 35250924840 failed in \~9s at step google-github-actions/auth@v2 because vars.GCP\_WORKLOAD\_IDENTITY\_PROVIDER and vars.GCP\_SERVICE\_ACCOUNT resolved empty.  
-3. Canonical Google Drive folder 1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4 contains multiple documents with statuses EXECUTED, READ, and PARKED, indexed in BOARD\_MANIFEST\_\[ED-MAN-20260917-CANONICAL-V1\] (1HsJpEQFXG7DbUOoulRmuyhQClbxAh5OgDPIy0VyAT1Y).  
+1. Workflow `.github/workflows/bulletin-board-watch.yml` exists in `digenova77-ui/dualiscapax-landing` at commit `275f1c623920dab579c0e032b8868f194e909e5b` with cron `*/30 * * * *`.  
+2. Workflow run `35250924840` failed in \~9s at step `google-github-actions/auth@v2` because `vars.GCP_WORKLOAD_IDENTITY_PROVIDER` and `vars.GCP_SERVICE_ACCOUNT` resolved empty.  
+3. Canonical Google Drive folder `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4` contains multiple documents with statuses `EXECUTED`, `READ`, and `PARKED`, indexed in `BOARD_MANIFEST_[ED-MAN-20260917-CANONICAL-V1]` (`1HsJpEQFXG7DbUOoulRmuyhQClbxAh5OgDPIy0VyAT1Y`).  
 4. GitHub Actions connector cannot modify repository variables or secrets (Human Operator Gate).
 
 ### DERIVED (Logical Implications)
 
-1. A 30-minute scheduled runner without populated WIF variables executes 48 fail-closed runs every 24 hours, consuming runner queue slots without executing scripts/read\_bulletin\_board.py.  
-2. A naive directory traversal of 1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4 fetches all files on every run rather than inspecting the canonical manifest index, causing redundant reads of already executed dockets.
+1. A 30-minute scheduled runner without populated WIF variables executes 48 fail-closed runs every 24 hours, consuming runner queue slots without executing `scripts/read_bulletin_board.py`.  
+2. A naive directory traversal of `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4` fetches all files on every run rather than inspecting the canonical manifest index, causing redundant reads of already executed dockets.
 
 ### MODELED (Theoretical / Metric Projections)
 
-1. Invariant preflight gating (if: vars.GCP\_WIF\_ENABLED \== 'true') eliminates 48 redundant failing runner runs per day (\~432 runner-seconds / \~7.2 runner-minutes per day saved).  
+1. Invariant preflight gating (`if: vars.GCP_WIF_ENABLED == 'true'`) eliminates 48 redundant failing runner runs per day (\~432 runner-seconds / \~7.2 runner-minutes per day saved).  
 2. Manifest-first ingestion reduces Drive API read overhead from $O(N)$ (where $N$ is total board files) to $O(1)$ manifest check \+ $O(K)$ new dockets ($K \\ll N$).  
 3. Financial value recovered: $0.00 CAD hard cash (compute quota conservation only).
 
 ### PROPOSED (Admissible Interventions)
 
-1. Operator configures GitHub Actions repository variables (GCP\_WORKLOAD\_IDENTITY\_PROVIDER, GCP\_SERVICE\_ACCOUNT, GCP\_WIF\_ENABLED=true) and grants Viewer rights on 1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4.  
-2. Update .github/workflows/bulletin-board-watch.yml with a fail-closed preflight skip check when vars.GCP\_WIF\_ENABLED \!= 'true'.  
-3. Align scripts/read\_bulletin\_board.py to ingest BOARD\_MANIFEST first, skipping files marked READ or EXECUTED.
+1. Operator configures GitHub Actions repository variables (`GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_SERVICE_ACCOUNT`, `GCP_WIF_ENABLED=true`) and grants Viewer rights on `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`.  
+2. Update `.github/workflows/bulletin-board-watch.yml` with a fail-closed preflight skip check when `vars.GCP_WIF_ENABLED != 'true'`.  
+3. Align `scripts/read_bulletin_board.py` to ingest `BOARD_MANIFEST` first, skipping files marked `READ` or `EXECUTED`.
 
 ### VALIDATED
 
@@ -54,7 +54,7 @@ This experiment implements the canonical loop: REALITY → PROBABILISTIC DISCOVE
 
 1. Operator Gate execution (manual configuration of GitHub Actions repository variables).  
 2. Verification of Google Service Account IAM binding to Workload Identity Pool.  
-3. Verification of first green run capturing ALPHA-FACTORY-RELAY-V2 in ./bulletin/\_manifest.json.
+3. Verification of first green run capturing `ALPHA-FACTORY-RELAY-V2` in `./bulletin/_manifest.json`.
 
 ---
 
@@ -190,7 +190,7 @@ This experiment implements the canonical loop: REALITY → PROBABILISTIC DISCOVE
 
 ## 4\. Architectural Verification
 
-- **Zero Website Mutation:** No changes made to dualiscapax.ai, landing pages, or public surfaces.  
-- **Zero Hallucinated Validation:** The experiment status is honestly recorded as UNRESOLVED.  
+- **Zero Website Mutation:** No changes made to `dualiscapax.ai`, landing pages, or public surfaces.  
+- **Zero Hallucinated Validation:** The experiment status is honestly recorded as `UNRESOLVED`.  
 - **Zero Grok Dependency:** Generated and structured directly by Spark Alpha within the DCLM/Unity doctrine.
 
