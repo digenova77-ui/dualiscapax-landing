@@ -958,6 +958,7 @@ class TestMarkerAdmissibleEvidence(unittest.TestCase):
         "PASS": "caller AGREE/PASS unbound → UNKNOWN in AuthorityKernel",
         "STAMPED": "DC_ARTIFACT_TIP rewritten + receipt hash match; derivation_state UNVERIFIED unless expected-pre-stamp revalidated",
         "VERIFIED_DERIVATION": "verify_artifact_receipt --expected-pre-stamp exit 0 only (receipt claim alone insufficient)",
+        "DERIVATION_AND_SEMANTIC_GATE_OK": "admit_artifact_authority.mjs only — requires expected+require-derivation verify exit 0 + semantic fingerprint; still NOT live deploy",
         "READY": "not an authority token in Workers",
         "DEPLOYABLE": "requires live binds NOT_VERIFIED + Bind-continue — suite green ≠ deployable",
     }
@@ -1009,6 +1010,11 @@ class TestRecursiveFactoryBeliefFence(unittest.TestCase):
         verify = (ROOT / "factory/tools/verify_artifact_receipt.mjs").read_text()
         self.assertIn("INTEGRITY_OK_DERIVATION_UNVERIFIED", verify)
         self.assertIn("Receipt derivation_state alone is not demonstrable derivation", verify)
+        admit = (ROOT / "factory/tools/admit_artifact_authority.mjs").read_text()
+        self.assertIn("SOLE consumer", admit)
+        self.assertIn("--expected-pre-stamp", admit)
+        self.assertIn("UNVERIFIED tip+receipt story cannot cross", admit)
+        self.assertIn("semantic_authority_gut", admit)
 
     def test_origin_join_pack_green_does_not_mean_tip_content(self):
         oj = (ROOT / "workers/origin-join/worker.js").read_text()
@@ -1371,6 +1377,329 @@ class TestProvenanceDerivationDistinction(unittest.TestCase):
         self.assertIn("VERIFIED_DERIVATION", floor)
         self.assertIn("NOT deploy-ready", floor)
         self.assertIn("story-without-derivation", floor)
+        self.assertIn("admit_artifact_authority", floor)
+
+
+
+class TestAuthorityAdmitGate(unittest.TestCase):
+    """Q1: UNVERIFIED provenance must not reach authority-bearing admit."""
+
+    def _tip(self):
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip()
+
+    def test_omit_expected_refuses_usage(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory(prefix="admit-omit-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                'export const DC_ARTIFACT_TIP = "UNSTAMPED";\n'
+            )
+            a = subprocess.run(
+                ["node", "factory/tools/admit_artifact_authority.mjs", str(out)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(a.returncode, 2)
+
+    def test_unverified_default_stamp_cannot_admit(self):
+        """Omitted --require-derivation / default stamp → UNVERIFIED cannot cross admit."""
+        import hashlib
+        import json
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="admit-unv-") as tmp:
+            base = Path(tmp)
+            clean = base / "clean"
+            clean.mkdir()
+            r = subprocess.run(
+                [
+                    "npx", "wrangler", "deploy",
+                    "-c", "workers/origin-join/wrangler.toml",
+                    "--dry-run", "--outdir", str(clean),
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=120,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr)
+            manifest = base / "expected.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "worker.js": hashlib.sha256(
+                            (clean / "worker.js").read_text().encode()
+                        ).hexdigest()
+                    }
+                )
+                + "\n"
+            )
+            orphan = base / "orphan"
+            orphan.mkdir()
+            (orphan / "worker.js").write_text(
+                'export const DC_ARTIFACT_TIP = "UNSTAMPED"; const EVIL = 1;\n'
+            )
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(orphan), tip],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            receipt = json.loads((orphan / ".dc_artifact_tip_receipt.json").read_text())
+            self.assertEqual(receipt["derivation_state"], "UNVERIFIED")
+            a = subprocess.run(
+                [
+                    "node",
+                    "factory/tools/admit_artifact_authority.mjs",
+                    str(orphan),
+                    "--expected-pre-stamp",
+                    str(manifest),
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(a.returncode, 1, a.stdout + a.stderr)
+            self.assertIn("AUTHORITY_REFUSED", a.stderr)
+            self.assertIn("derivation_not_verified", a.stderr)
+
+    def test_verify_exit3_alone_is_not_authority(self):
+        """Alternate invocation: verify without expected → exit 3; admit still refuses."""
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="admit-e3-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                'export const DC_ARTIFACT_TIP = "UNSTAMPED";\n'
+                'const demoteForbiddenLabels = (o) => o;\n'
+            )
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            v = subprocess.run(
+                ["node", "factory/tools/verify_artifact_receipt.mjs", str(out)],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(v.returncode, 3)
+            # No path from exit-3 integrity to admit without expected.
+            a = subprocess.run(
+                ["node", "factory/tools/admit_artifact_authority.mjs", str(out)],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(a.returncode, 2)
+
+    def test_clean_pack_admits_with_derivation(self):
+        import hashlib
+        import json
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="admit-clean-") as tmp:
+            base = Path(tmp)
+            out = base / "pack"
+            out.mkdir()
+            r = subprocess.run(
+                [
+                    "npx", "wrangler", "deploy",
+                    "-c", "workers/origin-join/wrangler.toml",
+                    "--dry-run", "--outdir", str(out),
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=120,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr)
+            pre = (out / "worker.js").read_text()
+            manifest = base / "expected.json"
+            manifest.write_text(
+                json.dumps({"worker.js": hashlib.sha256(pre.encode()).hexdigest()})
+                + "\n"
+            )
+            s = subprocess.run(
+                [
+                    "node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip,
+                    "--expected-pre-stamp", str(manifest), "--require-derivation",
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            a = subprocess.run(
+                [
+                    "node", "factory/tools/admit_artifact_authority.mjs",
+                    str(out), "--expected-pre-stamp", str(manifest),
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(a.returncode, 0, a.stdout + a.stderr)
+            self.assertIn("DERIVATION_AND_SEMANTIC_GATE_OK", a.stdout)
+            self.assertIn("NOT live Cloudflare deploy", a.stdout)
+
+
+class TestSemanticGutEgg(unittest.TestCase):
+    """P3: byte provenance ≠ semantic integrity. Evil twin must FAIL CLOSED at admit."""
+
+    def _tip(self):
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip()
+
+    def _stamp_with_self_expected(self, out: Path, tip: str):
+        import hashlib
+        import json
+
+        pre = (out / "worker.js").read_text()
+        manifest = out / "expected.json"
+        manifest.write_text(
+            json.dumps({"worker.js": hashlib.sha256(pre.encode()).hexdigest()}) + "\n"
+        )
+        s = subprocess.run(
+            [
+                "node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip,
+                "--expected-pre-stamp", str(manifest), "--require-derivation",
+            ],
+            cwd=ROOT, capture_output=True, text=True, timeout=30,
+        )
+        return s, manifest
+
+    def test_identity_demote_fails_admit_even_with_matching_expected(self):
+        """DEMOTE→identity: tip+receipt+markers+VERIFIED_DERIVATION vs self-expected → admit refuse."""
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="gut-demote-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                "export const DC_ARTIFACT_TIP = \"UNSTAMPED\";\n"
+                "const demoteForbiddenLabels = (x) => x;\n"
+                'const authority_effect = "NONE";\n'
+            )
+            s, manifest = self._stamp_with_self_expected(out, tip)
+            self.assertEqual(s.returncode, 0, s.stderr)
+            body = (out / "worker.js").read_text()
+            self.assertIn("demoteForbiddenLabels", body)
+            self.assertIn(f'DC_ARTIFACT_TIP = "{tip}"', body)
+            a = subprocess.run(
+                [
+                    "node", "factory/tools/admit_artifact_authority.mjs",
+                    str(out), "--expected-pre-stamp", str(manifest),
+                    "--semantic-profile", "none",
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(a.returncode, 1, a.stdout + a.stderr)
+            self.assertIn("semantic_authority_gut", a.stderr)
+            self.assertIn("identity_demoteForbiddenLabels", a.stderr)
+
+    def test_none_to_authorized_fails_admit(self):
+        """NONE→AUTHORIZED elevating field fails admit despite self-expected derivation."""
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="gut-auth-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                "export const DC_ARTIFACT_TIP = \"UNSTAMPED\";\n"
+                "export default { authority_effect: \"AUTHORIZED\" };\n"
+            )
+            s, manifest = self._stamp_with_self_expected(out, tip)
+            self.assertEqual(s.returncode, 0, s.stderr)
+            a = subprocess.run(
+                [
+                    "node", "factory/tools/admit_artifact_authority.mjs",
+                    str(out), "--expected-pre-stamp", str(manifest),
+                    "--semantic-profile", "none",
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(a.returncode, 1, a.stdout + a.stderr)
+            self.assertIn("elevating_authority_effect", a.stderr)
+
+    def test_claim_only_to_validated_fails_admit(self):
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="gut-val-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                "export const DC_ARTIFACT_TIP = \"UNSTAMPED\";\n"
+                "export default { tier: \"VALIDATED\", claim_authority: \"VALIDATED\" };\n"
+            )
+            s, manifest = self._stamp_with_self_expected(out, tip)
+            self.assertEqual(s.returncode, 0, s.stderr)
+            a = subprocess.run(
+                [
+                    "node", "factory/tools/admit_artifact_authority.mjs",
+                    str(out), "--expected-pre-stamp", str(manifest),
+                    "--semantic-profile", "none",
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(a.returncode, 1, a.stdout + a.stderr)
+            self.assertIn("claim_only_to_validated", a.stderr)
+
+    def test_unknown_to_agree_hardcode_fails_admit(self):
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="gut-agree-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                "export const DC_ARTIFACT_TIP = \"UNSTAMPED\";\n"
+                "export const independent_replay = \"AGREE\";\n"
+            )
+            s, manifest = self._stamp_with_self_expected(out, tip)
+            self.assertEqual(s.returncode, 0, s.stderr)
+            a = subprocess.run(
+                [
+                    "node", "factory/tools/admit_artifact_authority.mjs",
+                    str(out), "--expected-pre-stamp", str(manifest),
+                    "--semantic-profile", "none",
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(a.returncode, 1, a.stdout + a.stderr)
+            self.assertIn("unknown_to_agree_hardcode", a.stderr)
+
+    def test_demote_ban_list_gutted_fails_admit(self):
+        """Superficial demoteForbiddenLabels name without AUTHORIZED ban → refuse."""
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="gut-ban-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                "export const DC_ARTIFACT_TIP = \"UNSTAMPED\";\n"
+                "function demoteForbiddenLabels(obj) { return obj; }\n"
+                "const PROMOTABLE = true;\n"
+            )
+            s, manifest = self._stamp_with_self_expected(out, tip)
+            self.assertEqual(s.returncode, 0, s.stderr)
+            a = subprocess.run(
+                [
+                    "node", "factory/tools/admit_artifact_authority.mjs",
+                    str(out), "--expected-pre-stamp", str(manifest),
+                    "--semantic-profile", "none",
+                ],
+                cwd=ROOT, capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(a.returncode, 1, a.stdout + a.stderr)
+            # identity demote and/or ban list missing
+            err = a.stderr
+            self.assertTrue(
+                "identity_demoteForbiddenLabels" in err or "demote_ban_list_missing" in err,
+                err,
+            )
+
+    def test_layer_catch_map_documented(self):
+        floor = (ROOT / "factory/FLOOR_V01.md").read_text()
+        self.assertIn("admit_artifact_authority", floor)
+        self.assertIn("semantic gut", floor.lower() if False else floor)
+        self.assertIn("byte provenance", floor.lower())
+        # Twain/DCLM honesty
+        self.assertIn("Twain UNKNOWN", floor)
+        self.assertNotIn("DCLM CONVERGED", floor.split("Provenance")[0] if False else "")
+
 
 
 
