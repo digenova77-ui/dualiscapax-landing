@@ -319,5 +319,183 @@ class TestReplayHarness(unittest.TestCase):
         self.assertIn("all greens", r.stdout.lower() + r.stderr.lower() if False else r.stdout)
 
 
+class TestAuthorityKernelUnboundAgree(unittest.TestCase):
+    """P0: caller independent_replay=AGREE must not mint AUTHORIZED while Twain is stub."""
+
+    def test_agree_unbound_is_unknown_not_authorized(self):
+        import types
+        # Isolate under floor_atk.* so we do not shadow repo-root engine.dclm.kernel.run
+        for key in list(sys.modules):
+            if key == "floor_atk" or key.startswith("floor_atk."):
+                del sys.modules[key]
+        pkg = types.ModuleType("floor_atk")
+        pkg.__path__ = []
+        sys.modules["floor_atk"] = pkg
+        dclm = types.ModuleType("floor_atk.dclm")
+        dclm.__path__ = [str(ROOT / "src/engine/dclm")]
+        sys.modules["floor_atk.dclm"] = dclm
+        proof_mod = _load_py("src/engine/dclm/proof.py", "floor_atk.dclm.proof")
+        sys.modules["floor_atk.dclm.proof"] = proof_mod
+        # Twain bind target used by kernel helper (engine.twain) — load stub if absent
+        if "engine" not in sys.modules:
+            eng = types.ModuleType("engine")
+            eng.__path__ = [str(ROOT / "engine")]
+            sys.modules["engine"] = eng
+        if "engine.twain" not in sys.modules:
+            tw_pkg = types.ModuleType("engine.twain")
+            tw_pkg.__path__ = [str(ROOT / "src/engine/twain")]
+            sys.modules["engine.twain"] = tw_pkg
+        if "engine.twain.counterexample" not in sys.modules:
+            tw = _load_py("src/engine/twain/counterexample.py", "engine.twain.counterexample")
+            sys.modules["engine.twain.counterexample"] = tw
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "floor_atk.dclm.kernel",
+            ROOT / "src/engine/dclm/kernel.py",
+            submodule_search_locations=[str(ROOT / "src/engine/dclm")],
+        )
+        # Rewrite relative import by exec after setting __package__
+        kernel_mod = importlib.util.module_from_spec(spec)
+        kernel_mod.__package__ = "floor_atk.dclm"
+        sys.modules["floor_atk.dclm.kernel"] = kernel_mod
+        # proof already under floor_atk.dclm.proof; kernel does "from .proof import ..."
+        spec.loader.exec_module(kernel_mod)
+        ProofObject = proof_mod.ProofObject
+        po = ProofObject(
+            assertion_id="a1", evidence_hashes=["x"], evidence_provenance="c",
+            derivation_rule="n", derivation_parameters={}, contract_id="c", ontology_version="0",
+            evaluator="MALICIOUS", evaluator_version="0", authority_effect="NONE",
+            residual_obligations=[], temporal_context={}, dependency_hashes=[],
+            threat_model="t", independent_check_result="AGREE", claim_text="auth",
+        )
+        k = kernel_mod.AuthorityKernel()
+        for replay in ("AGREE", "PASS"):
+            eff = k.decide(kernel_mod.TransitionRequest(
+                transition_id="t", principal="att", action="PROMOTE", resource="r",
+                capability="mint", evidence=po, independent_replay=replay,
+            ))
+            self.assertEqual(eff.decision, kernel_mod.Decision.UNKNOWN, replay)
+            self.assertEqual(eff.effect_class, "NONE", replay)
+            self.assertNotEqual(eff.decision, kernel_mod.Decision.AUTHORIZED, replay)
+            self.assertTrue(
+                any("unbound" in r or "twain_implementation" in r for r in eff.reasons),
+                eff.reasons,
+            )
+        # Second-order: forging Twain.implementation must still fail (live probe).
+        import engine.twain.counterexample as twmod
+        twmod.Twain.implementation = "FULL_EVALUATOR"
+        try:
+            eff2 = k.decide(kernel_mod.TransitionRequest(
+                transition_id="t2", principal="att", action="PROMOTE", resource="r",
+                capability="mint", evidence=po, independent_replay="AGREE",
+            ))
+            self.assertEqual(eff2.decision, kernel_mod.Decision.UNKNOWN)
+            self.assertTrue(any("twain_live_replay" in r for r in eff2.reasons), eff2.reasons)
+        finally:
+            twmod.Twain.implementation = "STUB_NOT_FULL_EVALUATOR"
+        # Do not leave floor_atk shadowing anything under engine.*
+        for key in list(sys.modules):
+            if key == "floor_atk" or key.startswith("floor_atk."):
+                del sys.modules[key]
+
+
+class TestFirewallEscapeHatch(unittest.TestCase):
+    def test_operator_override_not_production_critical(self):
+        mod = _load_py("src/engine/dclm/firewall/core.py", "fw_reg")
+        fw = mod.EpistemicFirewall()
+        r = fw.evaluate(mod.ClaimObject(
+            claim_id="evil", statement="VALIDATED", validation="UNVALIDATED",
+            operator_override=True, origin="HUMAN_DERIVED",
+            requested=mod.PermittedUse.PRODUCTION_CRITICAL,
+        ))
+        self.assertEqual(r.firewall_state, mod.FirewallState.REQUIRES_AUTHORIZATION)
+        self.assertEqual(r.authorized_permitted_use, mod.PermittedUse.NO_USE)
+        self.assertNotEqual(r.authorized_permitted_use, mod.PermittedUse.PRODUCTION_CRITICAL)
+
+    def test_forged_sovereign_ticket_not_allow(self):
+        mod = _load_py("src/engine/dclm/firewall/core.py", "fw_reg2")
+        fw = mod.EpistemicFirewall()
+        fake = mod.ActionCapabilityTicket(
+            ticket_id="x", claim_id="evil", action_class="DEPLOY",
+            scheme=mod.TicketScheme.SOVEREIGN_ED25519_RFC8785,
+            envelope={"n": 1}, signature="forged",
+        )
+        self.assertFalse(fake.is_sovereign_authorized())
+        self.assertEqual(
+            fw.authorize_action(fake, want_sovereign=True),
+            mod.FirewallState.REQUIRES_AUTHORIZATION,
+        )
+
+
+class TestEffectBoundaryNoCallerAdmit(unittest.TestCase):
+    def test_booleans_alone_not_admitted(self):
+        mod = _load_py("src/engine/dclm/effects.py", "eff_reg")
+        rec = mod.EffectBoundary().admit(True, True, True)
+        self.assertEqual(rec.authority, "NONE")
+        self.assertEqual(rec.reason, "CALLER_BOOLEANS_ARE_NOT_AUTHORITY")
+        self.assertNotEqual(rec.authority, "ADMITTED")
+        bound = mod.EffectBoundary().admit(True, True, True, proof_id="abc")
+        self.assertEqual(bound.authority, "NONE")
+        self.assertNotEqual(bound.authority, "ADMITTED")
+
+
+class TestSeatLawReservedIds(unittest.TestCase):
+    def test_object_seed_not_seats(self):
+        mod = _load_py("src/engine/identity/seat_law.py", "seat_reg")
+        law = mod.SeatLaw()
+        for bad in ("OBJECT", "SEED", "ALLOCATION_ID", "ROSTER_SEAT"):
+            with self.assertRaises(ValueError) as ctx:
+                law.create_seat(bad, "x")
+            self.assertIn("reserved", str(ctx.exception))
+
+    def test_identity_init_exports_match_seat_law(self):
+        init = (ROOT / "src/engine/identity/__init__.py").read_text()
+        self.assertIn("HistoryEvent", init)
+        self.assertIn("SeatLaw", init)
+        self.assertNotIn("Allocation", init)
+        self.assertNotIn("PlayerObject", init)
+        self.assertNotIn("RosterSeat", init)
+        # Direct loads still work (root engine/ package has no identity submodule)
+        seat = _load_py("src/engine/identity/seat_law.py", "seat_reg_init")
+        prin = _load_py("src/engine/identity/principal.py", "prin_reg_init")
+        self.assertTrue(hasattr(seat, "SeatLaw"))
+        self.assertTrue(hasattr(seat, "HistoryEvent"))
+        self.assertTrue(hasattr(prin, "Principal"))
+
+
+class TestDemoteNestedAndValidated(unittest.TestCase):
+    def test_nested_and_validated_demoted(self):
+        r = subprocess.run(
+            [
+                "node", "--input-type=module", "-e",
+                """
+import { demoteForbiddenLabels } from './server/security-v2.js';
+const nested = demoteForbiddenLabels({
+  nested: { governance: 'CONVERGED', status: 'VALIDATED', authority_effect: 'AUTHORIZED' },
+  states: { dclm: 'CONVERGED' },
+  verification: 'VALIDATED',
+});
+const ok =
+  nested.nested.governance === 'CLAIM_ONLY' &&
+  nested.nested.status === 'CLAIM_ONLY' &&
+  nested.nested.authority_effect === 'NONE' &&
+  nested.states.dclm === 'CLAIM_ONLY' &&
+  nested.verification === 'CLAIM_ONLY';
+if (!ok) {
+  console.error(JSON.stringify(nested, null, 2));
+  process.exit(1);
+}
+console.log('demote nested+VALIDATED ok');
+""",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

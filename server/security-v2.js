@@ -195,7 +195,7 @@ export function explicitChatStates({ transport, authorization }) {
   };
 }
 
-export function demoteForbiddenLabels(obj) {
+export function demoteForbiddenLabels(obj, depth = 0) {
   const banned = [
     "SUCCESS_VERIFIED",
     "convergence_met",
@@ -212,12 +212,27 @@ export function demoteForbiddenLabels(obj) {
     "KYC_VERIFIED",
     "ACTIVE_BOUND",
     "ANONYMOUS_OPEN_AUTHORIZED",
+    "VALIDATED",
+    "PROMOTABLE",
+    "INDEPENDENTLY_VERIFIED",
+    "ADVERSARIALLY_SURVIVED",
+    "PROVENANCE_COMPLETE",
   ];
-  const claimOnlyKeys = new Set(["claim_authority", "tier", "status", "state", "governance", "verification", "dclm", "authority", "authorization"]);
-  const out = Object.assign({}, obj || {});
+  const claimOnlyKeys = new Set(["claim_authority", "tier", "status", "state", "governance", "verification", "dclm", "authority", "authorization", "validation"]);
+  if (obj == null || typeof obj !== "object") return obj;
+  if (depth > 8) return obj;
+  if (Array.isArray(obj)) {
+    return obj.map((x) => (x != null && typeof x === "object" ? demoteForbiddenLabels(x, depth + 1) : x));
+  }
+  const out = Object.assign({}, obj);
   for (const k of Object.keys(out)) {
-    const v = String(out[k]);
-    if (k === "authority_effect" && ["AUTHORIZED", "GRANTED", "SETTLED", "CONVERGED"].includes(v)) {
+    const raw = out[k];
+    if (raw != null && typeof raw === "object") {
+      out[k] = demoteForbiddenLabels(raw, depth + 1);
+      continue;
+    }
+    const v = String(raw);
+    if (k === "authority_effect" && ["AUTHORIZED", "GRANTED", "SETTLED", "CONVERGED", "ADMITTED"].includes(v)) {
       out.authority_effect = "NONE";
       out.authority_effect_demoted = true;
       continue;
