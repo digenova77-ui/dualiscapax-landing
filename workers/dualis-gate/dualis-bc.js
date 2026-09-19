@@ -151,7 +151,16 @@ export default {
       const verified = await verifyStripeWebhook(request, env.STRIPE_IDENTITY_SECRET);
       if (!verified.ok) return json({ ok: false, reason: verified.reason }, 400, origin);
       const out = await acceptStripeEvent(env, verified.event);
-      return json({ ok: true, duplicate: !!out.duplicate }, 200, origin);
+      // Observability only — never promotes authority / KYC mint.
+      return json({
+        ok: true,
+        duplicate: !!out.duplicate,
+        kyc_written: out.kyc_written === true,
+        authority_effect: out.authority_effect || "NONE",
+        status: out.status || null,
+        collision: out.reason === "PAYLOAD_HASH_COLLISION",
+        ...(out.reason ? { ledger_reason: out.reason } : {})
+      }, 200, origin);
     }
 
     if (path === "/pay/quote" && request.method === "GET") {
@@ -170,13 +179,32 @@ export default {
       const verified = await verifyStripeWebhook(request, env.STRIPE_WEBHOOK_SECRET);
       if (!verified.ok) return json({ ok: false, reason: verified.reason }, 400, origin);
       if (!checkoutOpen(env)) {
-        await acceptStripeEvent(env, verified.event);
-        return json({ ok: true, applied: false, reason: "closed" }, 200, origin);
+        const out = await acceptStripeEvent(env, verified.event);
+        // Closed ack + ledger observability; applied stays false; no authority promote.
+        return json({
+          ok: true,
+          applied: false,
+          reason: "closed",
+          duplicate: !!out.duplicate,
+          kyc_written: out.kyc_written === true,
+          authority_effect: out.authority_effect || "NONE",
+          status: out.status || null,
+          collision: out.reason === "PAYLOAD_HASH_COLLISION",
+          ...(out.reason && out.reason !== "closed" ? { ledger_reason: out.reason } : {})
+        }, 200, origin);
       }
       const ev = verified.event;
       if (ev.type === "checkout.session.completed" || ev.type === "invoice.paid") {
         const out = await acceptStripeEvent(env, ev);
-        return json({ ok: true, duplicate: !!out.duplicate }, 200, origin);
+        return json({
+          ok: true,
+          duplicate: !!out.duplicate,
+          kyc_written: out.kyc_written === true,
+          authority_effect: out.authority_effect || "NONE",
+          status: out.status || null,
+          collision: out.reason === "PAYLOAD_HASH_COLLISION",
+          ...(out.reason ? { ledger_reason: out.reason } : {})
+        }, 200, origin);
       }
       return json({ ok: true, ignored: ev.type }, 200, origin);
     }

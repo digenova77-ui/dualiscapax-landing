@@ -246,6 +246,11 @@ assert("hmac hex length", typeof hx === "string" && hx.length === 64, hx);
   const res = await gate.fetch(req, env);
   const body = await res.json();
   assert("hooks good 200 closed", res.status === 200 && body.ok === true && body.applied === false, JSON.stringify(body));
+  assert("hooks closed reason", body.reason === "closed", JSON.stringify(body));
+  assert("hooks kyc_written false", body.kyc_written === false, JSON.stringify(body));
+  assert("hooks authority_effect NONE", body.authority_effect === "NONE", JSON.stringify(body));
+  assert("hooks duplicate false first", body.duplicate === false, JSON.stringify(body));
+  assert("hooks collision false", body.collision === false, JSON.stringify(body));
   assert("hooks first row appended", env.DB.events.size === before + 1, String(env.DB.events.size));
 }
 {
@@ -255,6 +260,9 @@ assert("hmac hex length", typeof hx === "string" && hx.length === 64, hx);
   const res = await gate.fetch(req, env);
   const body = await res.json();
   assert("hooks replay 200 closed", res.status === 200 && body.ok === true && body.applied === false, JSON.stringify(body));
+  assert("hooks replay duplicate true", body.duplicate === true, JSON.stringify(body));
+  assert("hooks replay kyc_written false", body.kyc_written === false, JSON.stringify(body));
+  assert("hooks replay authority_effect NONE", body.authority_effect === "NONE", JSON.stringify(body));
   assert("hooks replay no second row", env.DB.events.size === before, String(env.DB.events.size));
 }
 
