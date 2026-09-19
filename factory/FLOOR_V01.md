@@ -125,3 +125,23 @@ Deploy readiness: **NO** (live binds/secrets NOT_VERIFIED).
 
 Still NOT deploy-ready: live bindings/secrets NOT_VERIFIED, Stripe PARKED, Twain UNKNOWN,
 marker tests ≠ semantic proof, origin-join still proxies GitHub `main`.
+
+## P0 fulfill CHECKOUT_OPEN gate (2026-09-19)
+
+**FOUND:** Signed `checkout.session.completed` against live
+`dualiscapax-stripe-fulfill-v2` (valid `STRIPE_WEBHOOK_SECRET` + D1 bound)
+produced `fulfill.ok:true` and wrote `events`/`entitlements`/`fuel_credits`/`grants`
+while dualis-gate `CHECKOUT_OPEN=false`. Health claimed `PARKED_UNTIL_BIND_CONTINUE`
+but the grant path was not gated.
+
+**REPAIR:** After signature verify and merch refine, before `grantAccess`:
+if `String(env.CHECKOUT_OPEN||'') !== 'true'`, return
+`{received:true, fulfill:{ok:false, reason:'closed', authority_effect:'NONE', ...}}`
+and do **not** write D1 grants/fuel/entitlements/events via `claimGrantD1`.
+Git `workers/stripe-fulfill/wrangler.toml` `[vars] CHECKOUT_OPEN = "false"`
+(no D1 `database_id` committed).
+
+**Also:** dualis-gate closed/identity HTTP now exposes `kyc_written` /
+`duplicate` / `collision` / `authority_effect` / `status` without promoting authority.
+
+Deploy readiness: **NO**. Do **not** set `CHECKOUT_OPEN=true`.

@@ -277,6 +277,8 @@ export default {
         binding_presence_claim_only: true,
         operational_authority: "NONE",
         stripe_process_state: "PARKED_UNTIL_BIND_CONTINUE",
+        checkout_open: String(env && env.CHECKOUT_OPEN || "") === "true",
+        grant_path_gated_by_checkout_open: true,
         idempotency: "evt_ plus cs_ plus atom; D1 write-once lots; no KV fuel +="
       });
     }
@@ -306,6 +308,23 @@ export default {
     const ps = session.payment_status;
     if (ps && ps !== "paid" && ps !== "no_payment_required") {
       return json({ received: true, wait: ps, fulfill: { ok: false, reason: "not_paid" } });
+    }
+
+    // Fail closed: after signature verify, before any merch/grant — parked ⇒ no D1 writes.
+    // Health/bindings may be present; GRANT path requires CHECKOUT_OPEN==="true".
+    if (String(env.CHECKOUT_OPEN || "") !== "true") {
+      return json({
+        received: true,
+        fulfill: {
+          ok: false,
+          reason: "closed",
+          authority_effect: "NONE",
+          iris_kernel_authorized: false,
+          jacket: "identity",
+          checkout_open: false,
+          note: "CHECKOUT_OPEN!==true; no D1 events/entitlements/fuel_credits/grants write"
+        }
+      });
     }
 
     const resolved = skuFromSession(session, env);

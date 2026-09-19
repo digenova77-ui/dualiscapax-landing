@@ -749,6 +749,11 @@ class TestEnvAuthorityDefaultsFailClosed(unittest.TestCase):
         self.assertIn('CHECKOUT_OPEN = "false"', src)
         gate = (ROOT / "workers/dualis-gate/dualis-bc.js").read_text()
         self.assertIn('String(env.CHECKOUT_OPEN || "") === "true"', gate)
+        fulfill_toml = (ROOT / "workers/stripe-fulfill/wrangler.toml").read_text()
+        self.assertIn('CHECKOUT_OPEN = "false"', fulfill_toml)
+        self.assertIn("[vars]", fulfill_toml)
+        fulfill = (ROOT / "workers/stripe-fulfill/worker.js").read_text()
+        self.assertIn('String(env.CHECKOUT_OPEN || "") !== "true"', fulfill)
 
     def test_iris_house_key_default_off(self):
         src = (ROOT / "workers/iris-gateway/wrangler.toml").read_text()
@@ -920,12 +925,54 @@ class TestStripeParkedState(unittest.TestCase):
         self.assertIn('operational_authority: "NONE"', fulfill)
         self.assertIn('stripe_process_state: "PARKED_UNTIL_BIND_CONTINUE"', fulfill)
         self.assertIn("has_webhook_secret: Boolean(env && env.STRIPE_WEBHOOK_SECRET)", fulfill)
+        self.assertIn("grant_path_gated_by_checkout_open: true", fulfill)
+        self.assertIn("checkout_open:", fulfill)
 
     def test_accept_stripe_event_never_mints_kyc(self):
         src = (ROOT / "workers/dualis-gate/d1-idempotency.js").read_text()
         self.assertIn("kyc_written: false", src)
         self.assertNotIn("INSERT INTO unity_kyc", src)
         self.assertIn("authority_effect: \"NONE\"", src)
+
+    def test_fulfill_grant_path_gated_by_checkout_open(self):
+        """P0: signed paid events must not call grantAccess while CHECKOUT_OPEN!==true."""
+        fulfill = (ROOT / "workers/stripe-fulfill/worker.js").read_text()
+        self.assertIn('String(env.CHECKOUT_OPEN || "") !== "true"', fulfill)
+        self.assertIn('reason: "closed"', fulfill)
+        self.assertIn('authority_effect: "NONE"', fulfill)
+        # Gate appears before grantAccess invocation in fetch handler.
+        idx_gate = fulfill.find('String(env.CHECKOUT_OPEN || "") !== "true"')
+        idx_grant = fulfill.find("await grantAccess(env,")
+        self.assertGreater(idx_gate, 0)
+        self.assertGreater(idx_grant, 0)
+        self.assertLess(idx_gate, idx_grant, "CHECKOUT_OPEN gate must precede grantAccess")
+        self.assertIn("grant_path_gated_by_checkout_open: true", fulfill)
+        self.assertIn("checkout_open:", fulfill)
+        toml = (ROOT / "workers/stripe-fulfill/wrangler.toml").read_text()
+        self.assertIn('CHECKOUT_OPEN = "false"', toml)
+        # No live D1 id in git toml
+        live = [
+            ln for ln in toml.splitlines()
+            if (not ln.lstrip().startswith("#")) and "database_id" in ln
+        ]
+        self.assertEqual(live, [])
+
+    def test_gate_closed_and_identity_expose_observability_without_authority(self):
+        """Closed/identity HTTP expose kyc_written/duplicate/collision/authority_effect; no promote."""
+        gate = (ROOT / "workers/dualis-gate/dualis-bc.js").read_text()
+        for token in (
+            "kyc_written:",
+            "authority_effect:",
+            "collision:",
+            "duplicate:",
+            'reason: "closed"',
+            "applied: false",
+        ):
+            self.assertIn(token, gate)
+        self.assertNotIn('applied: true', gate)
+        self.assertNotIn('kyc_written: true', gate.replace("out.kyc_written === true", "SAFE"))
+        self.assertNotIn('authority_effect: "AUTHORIZED"', gate)
+        self.assertNotIn('authority_effect: "GRANTED"', gate)
 
 
 class TestOriginJoinNotFactoryFloorArtifact(unittest.TestCase):
