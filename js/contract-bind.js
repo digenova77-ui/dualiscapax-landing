@@ -144,10 +144,21 @@
     }
     rec.sku = sku || rec.sku || null;
     rec.session_id = sessionId || rec.session_id || null;
-    rec.state = seatLike && !fuelOn() ? "HELD" : "SETTLED";
+    // Client-local only. SETTLED+ok is never economic authority.
+    rec.state = seatLike && !fuelOn() ? "HELD" : "CLIENT_LOCAL_SIMULATION";
+    rec.authority_effect = "NONE";
+    rec.economic_authority = false;
     rec.settled_at = new Date().toISOString();
     writeJSON(STORE, rec);
-    return { ok: true, record: rec, metadata: { sku: rec.sku, contract_nullifier: rec.contract_nullifier } };
+    return {
+      ok: false,
+      state: "CLIENT_LOCAL_SIMULATION",
+      authority_effect: "NONE",
+      economic_authority: false,
+      record: rec,
+      metadata: { sku: rec.sku, contract_nullifier: rec.contract_nullifier },
+      note: "Device-local bind simulation. Server ledger settlement required for economic effect."
+    };
   }
 
   function consume(nullifier) {

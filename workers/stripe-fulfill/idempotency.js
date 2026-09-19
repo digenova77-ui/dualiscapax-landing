@@ -47,7 +47,7 @@ function entitlementInsert(db, row, now) {
       row.session_id,
       row.token_id || row.event_id || row.session_id,
       row.email || "unbound@local",
-      row.tier || "GRANTED",
+      row.tier || "CLAIM_ONLY",
       row.sku || "unresolved",
       row.amount_cad_cents || null,
       row.currency || "cad",
