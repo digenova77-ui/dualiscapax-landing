@@ -217,6 +217,68 @@ class TestFulfillLabelDemotion(unittest.TestCase):
         self.assertIn("CLAIM_ONLY", schema)
 
 
+
+class TestGateClaimOnly(unittest.TestCase):
+    """engineering/medical localStorage marks are CLIENT_LOCAL_UI_MARK, not seats/Iris."""
+
+    GATE_FILES = (
+        "js/engineering-gate.js",
+        "cf-pages/js/engineering-gate.js",
+        "js/medical-gate.js",
+        "cf-pages/js/medical-gate.js",
+    )
+
+    def test_gate_marks_are_claim_only_not_iris_or_seat(self):
+        for rel in self.GATE_FILES:
+            src = (ROOT / rel).read_text()
+            self.assertIn("CLIENT_LOCAL_UI_MARK", src, rel)
+            self.assertIn('claim_authority', src, rel)
+            self.assertIn("CLAIM_ONLY", src, rel)
+            # Accept both quote styles used in eng vs medical
+            self.assertTrue(
+                "seat_authority = false" in src or "seat_authority: false" in src,
+                rel,
+            )
+            self.assertTrue(
+                "iris_kernel_authorized = false" in src or "iris_kernel_authorized: false" in src,
+                rel,
+            )
+            self.assertTrue(
+                "economic_authority = false" in src or "economic_authority: false" in src,
+                rel,
+            )
+            self.assertIn("authority_effect", src, rel)
+            self.assertIn("NONE", src, rel)
+            self.assertIn("asClientLocalUiMark", src, rel)
+            self.assertIn("NOT SeatLaw", src, rel)
+            self.assertIn("NOT Iris AUTHORIZED", src, rel)
+            # ok:true retained for local UI unlock (granted() checks ok)
+            self.assertIn("ok: true", src, rel)
+            # Must not claim Iris AUTHORIZED as a positive grant outcome
+            self.assertNotRegex(src, r"iris_kernel_authorized\s*[=:]\s*true")
+            self.assertNotRegex(src, r"seat_authority\s*[=:]\s*true")
+
+    def test_engineering_gate_copies_byte_equal(self):
+        a = (ROOT / "js/engineering-gate.js").read_text()
+        b = (ROOT / "cf-pages/js/engineering-gate.js").read_text()
+        self.assertEqual(a, b, "js/ and cf-pages/ engineering-gate must stay byte-equal")
+
+    def test_medical_gate_core_claim_marks_synced(self):
+        """Core stamp helper must match; cf-pages may keep prompt() only."""
+        a = (ROOT / "js/medical-gate.js").read_text()
+        b = (ROOT / "cf-pages/js/medical-gate.js").read_text()
+        for needle in (
+            'claim_authority = "CLAIM_ONLY"',
+            'state = "CLIENT_LOCAL_UI_MARK"',
+            "seat_authority = false",
+            "iris_kernel_authorized = false",
+            "economic_authority = false",
+            "asClientLocalUiMark",
+        ):
+            self.assertIn(needle, a)
+            self.assertIn(needle, b)
+
+
 class TestReplayHarness(unittest.TestCase):
     def test_replay_tester_green(self):
         r = subprocess.run(
