@@ -2,7 +2,8 @@
 
 SOURCE_REPAIR ≠ PRODUCTION_REPAIR. These tests bind the repo tip only.
 Twain evaluator: MISSING IMPLEMENTATION → independent Twain replay is UNKNOWN.
-engine.dclm.kernel.run: BLOCKED (meter.chain ImportError) → jacket tests report blocker, not fabricate pass.
+engine.dclm.kernel.run: phantom chain export removed; jacket runs UPSTREAM_OBSERVED only.
+Twain: honest stub returns UNKNOWN / never AGREE.
 """
 from __future__ import annotations
 
@@ -109,21 +110,90 @@ class TestKvFailClosed(unittest.TestCase):
         self.assertIn("authoritative: false", w)
 
 
-class TestBlockers(unittest.TestCase):
-    def test_jacket_kernel_run_blocker(self):
-        """engine.dclm.kernel.run cannot be imported — meter.chain missing."""
+class TestDclmImportHonest(unittest.TestCase):
+    def test_kernel_run_imports_without_phantom_chain(self):
+        """chain was never in meter — package must not re-export it."""
         init = (ROOT / "engine/dclm/__init__.py").read_text()
-        self.assertIn("chain", init)
+        self.assertNotIn("from .meter import Measure, chain", init)
+        self.assertIn("CHAIN_STATUS", init)
         meter = (ROOT / "engine/dclm/meter.py").read_text()
         tree = ast.parse(meter)
         names = {n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
-        self.assertNotIn("chain", names)  # documents the hole
+        self.assertNotIn("chain", names)
+        import importlib
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        # Fresh import
+        for mod in list(sys.modules):
+            if mod == "engine" or mod.startswith("engine.dclm"):
+                del sys.modules[mod]
+        from engine.dclm.kernel import run
+        rec = run("Belleville overtime is $180000. Time-boxed pilot can walk back.", case_id="T-1")
+        self.assertIn(rec.grant, {"MEASURE", "SEED", "VETO"})
+        self.assertNotEqual(getattr(rec, "grant", None), "CONVERGED")
 
-    def test_twain_missing_implementation(self):
+    def test_jacket_upstream_observed_runs(self):
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        spec = importlib.util.spec_from_file_location(
+            "dclm_jacket_floor", ROOT / "ops/apiv2/dclm_jacket.py"
+        )
+        mod = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        spec.loader.exec_module(mod)
+        j = mod.Jacket()
+        out = j.sandbox_execute("Belleville overtime is $180000. Time-boxed pilot can walk back.")
+        self.assertEqual(out.get("authority_effect"), "NONE")
+        self.assertEqual(out.get("verification"), "NOT_EXECUTED")
+        self.assertIn(out.get("status"), {"UPSTREAM_OBSERVED", "FAIL_CLOSED_LOGIC_DIVERGENCE"})
+        self.assertNotIn(out.get("status"), {"CONVERGED", "SUCCESS_VERIFIED", "DCLM_L0_CONVERGED"})
+
+
+class TestTwainHonestStub(unittest.TestCase):
+    def test_twain_stub_unknown_not_agree(self):
+        # Load by file path — repo-root engine/ shadows src/engine on PYTHONPATH.
         twain_dir = ROOT / "src/engine/twain"
+        self.assertTrue((twain_dir / "counterexample.py").exists())
         self.assertTrue((twain_dir / "__init__.py").exists())
-        files = [p.name for p in twain_dir.iterdir() if p.suffix == ".py"]
-        self.assertEqual(files, ["__init__.py"])  # counterexample.py absent
+        mod = _load_py("src/engine/twain/counterexample.py", "twain_counterexample_floor")
+        t = mod.Twain()
+        r = t.evaluate({"claim": "anything"})
+        self.assertIsInstance(r, mod.TwainResult)
+        self.assertEqual(r.status, "UNKNOWN")
+        self.assertEqual(r.independent_replay, "UNKNOWN")
+        self.assertFalse(r.claims_agreed)
+        self.assertEqual(r.authority_effect, "NONE")
+        self.assertNotEqual(r.status, "AGREE")
+        rr = t.independent_replay({"claim": "x"})
+        self.assertEqual(rr.independent_replay, "UNKNOWN")
+        init = (twain_dir / "__init__.py").read_text()
+        self.assertIn("from .counterexample import Twain, TwainResult", init)
+
+
+class TestSessionStampSync(unittest.TestCase):
+    def test_cf_pages_session_stamp_matches_client_correlation(self):
+        a = (ROOT / "js/session-stamp.js").read_text()
+        b = (ROOT / "cf-pages/js/session-stamp.js").read_text()
+        self.assertEqual(a, b)
+        self.assertIn("CLIENT_CORRELATION_ID", b)
+        self.assertIn("authoritative: false", b)
+
+
+class TestBindSuccessNoClientMint(unittest.TestCase):
+    def test_bind_success_refuses_local_fuel_mint(self):
+        src = (ROOT / "bind-success.html").read_text()
+        self.assertIn("CLIENT_HINT", src)
+        self.assertIn("authority_effect: NONE", src)
+        self.assertNotIn("sessionStorage.setItem(\"dc.fuel\"", src)
+        self.assertNotIn("Iris SPARK tier unlocks", src)
+
+
+class TestFulfillLabelDemotion(unittest.TestCase):
+    def test_d1_success_demotes_iris_authority(self):
+        src = (ROOT / "workers/stripe-fulfill/worker.js").read_text()
+        self.assertIn("iris_kernel_authorized: false", src)
+        self.assertIn("sku_catalog_label", src)
+        self.assertIn("KV_CANNOT_MINT_GRANT", src)
 
 
 class TestReplayHarness(unittest.TestCase):

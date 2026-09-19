@@ -24,29 +24,35 @@ a.btn.primary{background:rgba(158,197,255,.15)}
 </head>
 <body>
 <div class="wrap">
-  <p class="kicker">Bind · settled</p>
-  <h1>Purchase received</h1>
-  <p>Stripe confirmed payment. The fulfill webhook maps this checkout to the product you bought — Fuel credit or a document seat.</p>
+  <p class="kicker">Bind · client receipt page</p>
+  <h1>Checkout returned</h1>
+  <p>This page is a client-facing return URL. It does not mint Fuel, seats, Iris tiers, or authority. Only the signed Stripe fulfill webhook + D1 ledger can credit.</p>
   <div class="card" id="grant">
-    <strong id="title">Resolving grant…</strong>
-    <p id="detail">If metadata was set on the Payment Link, the grant matches that SKU. Amount fallback covers the six live CAD faces.</p>
+    <strong id="title">Resolving label…</strong>
+    <p id="detail">URL sku is a CLIENT_HINT for display only. It cannot unlock Iris or write Fuel.</p>
   </div>
   <div class="row">
     <a class="btn primary" href="/ai/app.html">Talk to Iris</a>
     <a class="btn" href="/payments.html">Back to Bind</a>
     <a class="btn" href="/">Home</a>
   </div>
-  <p class="foot">Medical / engineering depth rooms still require identity where IP-GATE says so. Pay opens settlement — not a securities offer.</p>
+  <p class="foot">Medical / engineering depth rooms still require identity where IP-GATE says so. Pay opens settlement — not a securities offer. authority_effect: NONE</p>
 </div>
 <script>
 (function(){
+  /* Display catalog only — never write sessionStorage Fuel from query params.
+   * ?sku= is CLIENT_HINT. Visiting ?sku=depth_l must not mint 320 Fuel. */
   var SKU = {
-    depth_s: { title: "40 Fuel credited", detail: "Trial pack. Iris SPARK tier unlocks when Fuel is on the session." },
-    depth_m: { title: "120 Fuel credited", detail: "Practice pack. Stronger Iris product answers when balance is applied." },
-    depth_l: { title: "320 Fuel credited", detail: "Retain pack. Depth-capable Iris path when balance is applied." },
-    leaf: { title: "Leaf seat (12 mo)", detail: "One gated room. Identity gate may still apply for sealed rooms." },
-    branch: { title: "Branch seat (12 mo)", detail: "One field. Identity gate may still apply for sealed rooms." },
-    library: { title: "Domain library (12 mo)", detail: "One domain class toolkit — not the full vault." }
+    depth_s: { title: "Hint: depth_s (40 Fuel product)", detail: "CLIENT_HINT only. Server D1 fulfill must credit; local storage is not a ledger." },
+    depth_m: { title: "Hint: depth_m (120 Fuel product)", detail: "CLIENT_HINT only. No Iris tier unlock from this page." },
+    depth_l: { title: "Hint: depth_l (320 Fuel product)", detail: "CLIENT_HINT only. No Iris tier unlock from this page." },
+    fuel_10: { title: "Hint: fuel_10", detail: "CLIENT_HINT only. No local Fuel mint." },
+    fuel_1000: { title: "Hint: fuel_1000", detail: "CLIENT_HINT only. Catalog label ULTIMATE is not AuthorityKernel AUTHORIZED." },
+    leaf: { title: "Hint: leaf seat", detail: "CLIENT_HINT only. Identity gate may still apply for sealed rooms." },
+    branch: { title: "Hint: branch seat", detail: "CLIENT_HINT only. Identity gate may still apply for sealed rooms." },
+    library: { title: "Hint: library seat", detail: "CLIENT_HINT only. Not the full vault." },
+    edu_leaf: { title: "Hint: edu_leaf", detail: "CLIENT_HINT only." },
+    trunk: { title: "Hint: trunk seat", detail: "CLIENT_HINT only." }
   };
   var q = new URLSearchParams(location.search);
   var sku = (q.get("sku") || q.get("dc_sku") || "").toLowerCase();
@@ -54,19 +60,17 @@ a.btn.primary{background:rgba(158,197,255,.15)}
   var detail = document.getElementById("detail");
   if (SKU[sku]) {
     title.textContent = SKU[sku].title;
-    detail.textContent = SKU[sku].detail;
-    if (SKU[sku].title.indexOf("Fuel") >= 0) {
-      try {
-        var units = { depth_s: 40, depth_m: 120, depth_l: 320 }[sku] || 0;
-        var prev = Number(sessionStorage.getItem("dc.fuel") || 0);
-        sessionStorage.setItem("dc.fuel", String(prev + units));
-        detail.textContent += " Local session Fuel now " + (prev + units) + " (until server ledger is authoritative).";
-      } catch (e) {}
-    }
+    detail.textContent = SKU[sku].detail + " authority_effect: NONE. iris_kernel_authorized: false.";
   } else {
-    title.textContent = "Payment recorded";
-    detail.textContent = "Webhook will match SKU by metadata or CAD amount. Check your email on the Stripe receipt.";
+    title.textContent = "Payment return recorded locally";
+    detail.textContent = "No sku hint, or unknown sku. Webhook must match SKU by metadata or CAD amount. This page writes nothing authoritative.";
   }
+  /* Explicitly refuse any local Fuel mint path that used to exist. */
+  try {
+    if (window.DC_BIND_SUCCESS_MINTED_FUEL) {
+      window.DC_BIND_SUCCESS_MINTED_FUEL = false;
+    }
+  } catch (e) {}
 })();
 </script>
 </body>
