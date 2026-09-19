@@ -3,6 +3,10 @@
 
     python -m engine.dclm.cli "Belleville overtime is $180000 and the pilot is time-boxed"
     python -m engine.dclm.cli --voice cfo --id BEL-OT-1 "..."
+
+--parent / --nonce are advertised historically but meter/kernel never
+bound them. Passing them fails closed with NOT_IMPLEMENTED rather than
+inventing commitment-chain semantics or crashing on unexpected kwargs.
 """
 from __future__ import annotations
 
@@ -23,10 +27,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("text", nargs="*", help="case text")
     p.add_argument("--voice", choices=("citizen", "cfo", "lab"), default="citizen")
     p.add_argument("--id", dest="case_id", default="anon")
-    p.add_argument("--nonce", default=None, help="write nonce; default is case id")
-    p.add_argument("--parent", dest="parent_c", default=None, help="parent receipt (64 hex)")
+    p.add_argument("--nonce", default=None, help="NOT_IMPLEMENTED — refused if set")
+    p.add_argument("--parent", dest="parent_c", default=None, help="NOT_IMPLEMENTED — refused if set")
     p.add_argument("--plain", action="store_true", help="print spoken sentence only")
     args = p.parse_args(argv)
+    if args.nonce is not None or args.parent_c is not None:
+        print(
+            "dclm: parent/nonce receipt chaining is NOT_IMPLEMENTED "
+            "(meter.chain never landed). Refusing rather than inventing DCLM semantics.",
+            file=sys.stderr,
+        )
+        return 3
     text = " ".join(args.text).strip()
     if not text:
         text = sys.stdin.read().strip()
@@ -37,8 +48,6 @@ def main(argv: list[str] | None = None) -> int:
         text,
         case_id=args.case_id,
         voice=args.voice,
-        nonce=args.nonce,
-        parent_c=args.parent_c,
     )
     if args.plain:
         print(rec.measure.sentence if rec.measure else rec.veto.reason)  # type: ignore[union-attr]

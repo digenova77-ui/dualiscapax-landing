@@ -177,7 +177,11 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
           atom: atom || null,
           record: claimed.entitlement || null,
           fuel: claimed.fuel || null,
-          grant: claimed.grant || null
+          grant: claimed.grant || null,
+          authority_effect: "NONE",
+          iris_kernel_authorized: false,
+          sku_catalog_label: grant.iris_tier_unlock || sku || null,
+          note: "D1 fulfill row is LEDGER_PRESENT; iris_tier_unlock is SKU catalog label, not AuthorityKernel AUTHORIZED"
         };
       }
     } catch (err) {
@@ -235,7 +239,7 @@ export default {
       const url = new URL(request.url);
       const path = url.pathname.replace(/\/$/, "") || "/";
       if (path === "/skus") {
-        return json({ service: "dualiscapax-stripe-fulfill", jacket: JACKET, skus: SKU_GRANT, amount_fallback_cad_cents: AMOUNT_CAD_CENTS_TO_SKU, rule: "metadata.sku preferred. $499 = trunk, not atlas." });
+        return json({ service: "dualiscapax-stripe-fulfill", jacket: JACKET, skus: SKU_GRANT, amount_fallback_cad_cents: AMOUNT_CAD_CENTS_TO_SKU, rule: "metadata.sku preferred. $499 = trunk, not atlas.", authority_effect: "NONE", note: "iris_tier_unlock values are SKU catalog labels, not Iris kernel AUTHORIZED" });
       }
       return json({
         service: "dualiscapax-stripe-fulfill",
