@@ -497,5 +497,143 @@ console.log('demote nested+VALIDATED ok');
 
 
 
+class TestSourceArtifactBoundary(unittest.TestCase):
+    """Bind deployable wrangler packages — source-only reads are insufficient.
+
+    Attack class: mutate/omit package while source tests still pass.
+    Permanent regression: dry-run package must retain security markers.
+    """
+
+    WORKERS = (
+        (
+            "dualiscapax-depth",
+            "server/wrangler.toml",
+            "worker.js",
+            (
+                "demoteForbiddenLabels",
+                "ANONYMOUS_OPEN_FLOOR",
+                "TEAMSNAP_REDIRECT_ALLOWLIST",
+                "redirect_uri_rejected",
+            ),
+            (),  # CONVERGED may appear only as demote ban target
+        ),
+        (
+            "iris-gateway",
+            "workers/iris-gateway/wrangler.toml",
+            "index.js",
+            (
+                "DCLM_L0_NOT_EXECUTED",
+                "DCLM_L0_PROMPT_APPLIED",
+                "CLAIM_ONLY",
+            ),
+            ("DCLM_L0_CONVERGED",),
+        ),
+        (
+            "dualis-gate",
+            "workers/dualis-gate/wrangler.toml",
+            "dualis-bc.js",
+            (
+                "canonicalize",
+                "PAYLOAD_HASH_COLLISION",
+                "kyc_written: false",
+            ),
+            ("INSERT INTO unity_kyc",),
+        ),
+        (
+            "stripe-fulfill",
+            "workers/stripe-fulfill/wrangler.toml",
+            "worker.js",
+            (
+                "KV_CANNOT_MINT_GRANT",
+                "demoteEntitlementRecord",
+                "CLAIM_ONLY",
+            ),
+            ("iris_tier_unlock",),
+        ),
+    )
+
+    def _pack(self, cfg: str, outdir: Path) -> subprocess.CompletedProcess:
+        outdir.mkdir(parents=True, exist_ok=True)
+        return subprocess.run(
+            [
+                "npx",
+                "wrangler",
+                "deploy",
+                "-c",
+                cfg,
+                "--dry-run",
+                "--outdir",
+                str(outdir),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+
+    def test_wrangler_mains_match_tested_entrypoints(self):
+        expected = {
+            "server/wrangler.toml": "worker.js",
+            "workers/dualis-gate/wrangler.toml": "dualis-bc.js",
+            "workers/iris-gateway/wrangler.toml": "index.js",
+            "workers/stripe-fulfill/wrangler.toml": "worker.js",
+        }
+        for rel, main in expected.items():
+            src = (ROOT / rel).read_text()
+            self.assertIn(f'main = "{main}"', src, rel)
+
+    def test_packaged_artifacts_retain_security_markers(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory(prefix="factory-art-") as tmp:
+            base = Path(tmp)
+            for name, cfg, main, must, forbid in self.WORKERS:
+                out = base / name
+                r = self._pack(cfg, out)
+                self.assertEqual(r.returncode, 0, f"{name}: {r.stdout}\n{r.stderr}")
+                art = out / main
+                self.assertTrue(art.is_file(), f"missing package main {art}")
+                body = art.read_text(errors="replace")
+                for needle in must:
+                    self.assertIn(needle, body, f"{name} package missing {needle}")
+                for needle in forbid:
+                    self.assertNotIn(needle, body, f"{name} package contains {needle}")
+                # Provenance gap remains: package hash != source hash by design (bundle).
+                # Require non-empty upload body so silent empty package fails closed.
+                self.assertGreater(art.stat().st_size, 500, name)
+
+
+class TestEngineImportSurfaceDivergence(unittest.TestCase):
+    """engine/dclm/kernel.py and src/engine/dclm/kernel.py are different programs.
+
+    Factory AuthorityKernel tests load src/ by file path. `import engine.dclm.kernel`
+    always resolves to repo-root engine/ (measure `run`). Same leaf name, different code.
+    """
+
+    def test_kernels_are_not_byte_equal(self):
+        a = (ROOT / "engine/dclm/kernel.py").read_bytes()
+        b = (ROOT / "src/engine/dclm/kernel.py").read_bytes()
+        self.assertNotEqual(a, b)
+        self.assertIn(b"def run", a)
+        self.assertNotIn(b"class AuthorityKernel", a)
+        self.assertIn(b"class AuthorityKernel", b)
+
+    def test_import_engine_dclm_kernel_is_measure_surface(self):
+        import importlib
+
+        for mod in list(sys.modules):
+            if mod == "engine" or mod.startswith("engine."):
+                del sys.modules[mod]
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        k = importlib.import_module("engine.dclm.kernel")
+        self.assertTrue(hasattr(k, "run"))
+        self.assertFalse(hasattr(k, "AuthorityKernel"))
+        # src/engine is not an importable package (no __init__.py) — file-path only.
+        self.assertFalse((ROOT / "src/engine/__init__.py").exists())
+
+
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

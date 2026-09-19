@@ -26,3 +26,12 @@ is itself an authorized transition.
 - identity/__init__.py exports match seat_law (HistoryEvent, SeatLaw).
 
 Twain: still STUB → independent replay UNKNOWN (not AGREE/CONVERGED).
+
+## Source→artifact boundary (2026-09-19)
+
+- Factory suite now dry-runs wrangler packages and asserts security markers
+  (`TestSourceArtifactBoundary`).
+- `engine/dclm/kernel.py` (measure `run`) and `src/engine/dclm/kernel.py`
+  (AuthorityKernel) remain divergent by design; import `engine` ≠ src file load
+  (`TestEngineImportSurfaceDivergence`).
+- Twain still STUB → UNKNOWN. Env/bindings still NOT_VERIFIED. No deploy.
