@@ -650,7 +650,9 @@ class TestSourceArtifactBoundary(unittest.TestCase):
             receipt = json.loads(receipt_path.read_text())
             self.assertEqual(receipt["tip"], tip)
             self.assertEqual(receipt["correspondence"], "UNVERIFIED_STRING_REWRITE_ONLY")
+            self.assertEqual(receipt["derivation_state"], "UNVERIFIED")
             self.assertTrue(receipt["files"])
+            self.assertIn("pre_stamp_sha256", receipt["files"][0])
             got = hashlib.sha256(body1.encode()).hexdigest()
             self.assertEqual(receipt["files"][0]["sha256"], got)
 
@@ -821,6 +823,17 @@ class TestTipStampAdversarialIntegrity(unittest.TestCase):
             self.assertIn('EVIL = "orphan"', body)
             receipt = json.loads((out / ".dc_artifact_tip_receipt.json").read_text())
             self.assertEqual(receipt["correspondence"], "UNVERIFIED_STRING_REWRITE_ONLY")
+            self.assertEqual(receipt["derivation_state"], "UNVERIFIED")
+            # Tip+receipt integrity is not derivation — verify exits 3.
+            v = subprocess.run(
+                ["node", "factory/tools/verify_artifact_receipt.mjs", str(out)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(v.returncode, 3, v.stdout + v.stderr)
+            self.assertIn("INTEGRITY_OK_DERIVATION_UNVERIFIED", v.stdout)
 
     def test_post_stamp_mutation_breaks_receipt_hash(self):
         import hashlib
@@ -943,7 +956,8 @@ class TestMarkerAdmissibleEvidence(unittest.TestCase):
         "CONVERGED": "DCLM evaluator + measure obligations closed (Iris forbids DCLM_L0_CONVERGED string)",
         "VALIDATED": "demoted by demoteForbiddenLabels — never elevating",
         "PASS": "caller AGREE/PASS unbound → UNKNOWN in AuthorityKernel",
-        "STAMPED": "DC_ARTIFACT_TIP rewritten + receipt hash match (correspondence still UNVERIFIED)",
+        "STAMPED": "DC_ARTIFACT_TIP rewritten + receipt hash match; derivation_state UNVERIFIED unless expected-pre-stamp revalidated",
+        "VERIFIED_DERIVATION": "verify_artifact_receipt --expected-pre-stamp exit 0 only (receipt claim alone insufficient)",
         "READY": "not an authority token in Workers",
         "DEPLOYABLE": "requires live binds NOT_VERIFIED + Bind-continue — suite green ≠ deployable",
     }
@@ -990,6 +1004,11 @@ class TestRecursiveFactoryBeliefFence(unittest.TestCase):
         tool = (ROOT / "factory/tools/stamp_artifact_tip.mjs").read_text()
         self.assertIn("UNVERIFIED_STRING_REWRITE_ONLY", tool)
         self.assertIn("does NOT prove", tool)
+        self.assertIn("VERIFIED_DERIVATION", tool)
+        self.assertIn("--require-derivation", tool)
+        verify = (ROOT / "factory/tools/verify_artifact_receipt.mjs").read_text()
+        self.assertIn("INTEGRITY_OK_DERIVATION_UNVERIFIED", verify)
+        self.assertIn("Receipt derivation_state alone is not demonstrable derivation", verify)
 
     def test_origin_join_pack_green_does_not_mean_tip_content(self):
         oj = (ROOT / "workers/origin-join/worker.js").read_text()
@@ -1047,6 +1066,311 @@ class TestSourceArtifactProvenanceMutation(unittest.TestCase):
                 hashlib.sha256(mutated.encode()).hexdigest(),
             )
 
+
+
+
+
+class TestProvenanceDerivationDistinction(unittest.TestCase):
+    """Story (tip+receipt) vs demonstrable derivation (expected-pre-stamp revalidation)."""
+
+    def _tip(self):
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip()
+
+    def test_require_derivation_refuses_without_expected(self):
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="prov-req-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                'export const DC_ARTIFACT_TIP = "UNSTAMPED";\n'
+            )
+            s = subprocess.run(
+                [
+                    "node",
+                    "factory/tools/stamp_artifact_tip.mjs",
+                    str(out),
+                    tip,
+                    "--require-derivation",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertNotEqual(s.returncode, 0)
+            self.assertIn("require-derivation", (s.stderr + s.stdout).lower())
+
+    def test_orphan_fails_require_derivation_against_clean_expected(self):
+        import hashlib
+        import json
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="prov-orphan-req-") as tmp:
+            base = Path(tmp)
+            clean = base / "clean"
+            clean.mkdir()
+            r = subprocess.run(
+                [
+                    "npx",
+                    "wrangler",
+                    "deploy",
+                    "-c",
+                    "workers/origin-join/wrangler.toml",
+                    "--dry-run",
+                    "--outdir",
+                    str(clean),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr)
+            pre = (clean / "worker.js").read_text()
+            manifest = base / "expected.json"
+            manifest.write_text(
+                json.dumps(
+                    {"worker.js": hashlib.sha256(pre.encode()).hexdigest()}
+                )
+                + "\n"
+            )
+            orphan = base / "orphan"
+            orphan.mkdir()
+            (orphan / "worker.js").write_text(
+                'export const DC_ARTIFACT_TIP = "UNSTAMPED"; const EVIL = 1;\n'
+            )
+            s = subprocess.run(
+                [
+                    "node",
+                    "factory/tools/stamp_artifact_tip.mjs",
+                    str(orphan),
+                    tip,
+                    "--expected-pre-stamp",
+                    str(manifest),
+                    "--require-derivation",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertNotEqual(s.returncode, 0)
+            self.assertIn("derivation mismatch", (s.stderr + s.stdout).lower())
+
+    def test_clean_pack_verified_derivation_revalidates(self):
+        import hashlib
+        import json
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="prov-verified-") as tmp:
+            base = Path(tmp)
+            out = base / "pack"
+            out.mkdir()
+            r = subprocess.run(
+                [
+                    "npx",
+                    "wrangler",
+                    "deploy",
+                    "-c",
+                    "workers/origin-join/wrangler.toml",
+                    "--dry-run",
+                    "--outdir",
+                    str(out),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr)
+            pre = (out / "worker.js").read_text()
+            manifest = base / "expected.json"
+            manifest.write_text(
+                json.dumps(
+                    {"worker.js": hashlib.sha256(pre.encode()).hexdigest()}
+                )
+                + "\n"
+            )
+            s = subprocess.run(
+                [
+                    "node",
+                    "factory/tools/stamp_artifact_tip.mjs",
+                    str(out),
+                    tip,
+                    "--expected-pre-stamp",
+                    str(manifest),
+                    "--source-inputs",
+                    "workers/origin-join/worker.js",
+                    "--require-derivation",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            receipt = json.loads((out / ".dc_artifact_tip_receipt.json").read_text())
+            self.assertEqual(receipt["derivation_state"], "VERIFIED_DERIVATION")
+            self.assertTrue(receipt["expected_pre_stamp_bound"])
+            self.assertIsNotNone(receipt["source_fingerprint"])
+            v0 = subprocess.run(
+                [
+                    "node",
+                    "factory/tools/verify_artifact_receipt.mjs",
+                    str(out),
+                    "--expected-pre-stamp",
+                    str(manifest),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(v0.returncode, 0, v0.stdout + v0.stderr)
+            self.assertIn("VERIFIED_DERIVATION", v0.stdout)
+            # Without external expected: integrity ok but derivation not re-proven.
+            v3 = subprocess.run(
+                ["node", "factory/tools/verify_artifact_receipt.mjs", str(out)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(v3.returncode, 3, v3.stdout + v3.stderr)
+            self.assertIn("INTEGRITY_OK_DERIVATION_UNVERIFIED", v3.stdout)
+
+    def test_forged_verified_claim_fails_closed_on_revalidation(self):
+        """Second-order: receipt claims VERIFIED_DERIVATION; external expected refuses."""
+        import hashlib
+        import json
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="prov-forge-") as tmp:
+            base = Path(tmp)
+            orphan = base / "orphan"
+            orphan.mkdir()
+            (orphan / "worker.js").write_text(
+                'export const DC_ARTIFACT_TIP = "UNSTAMPED"; const FORGED = 1;\n'
+            )
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(orphan), tip],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            receipt_path = orphan / ".dc_artifact_tip_receipt.json"
+            receipt = json.loads(receipt_path.read_text())
+            receipt["derivation_state"] = "VERIFIED_DERIVATION"
+            receipt["expected_pre_stamp_bound"] = True
+            receipt["derivation_mismatches"] = []
+            receipt["expected_pre_stamp"] = {
+                "worker.js": receipt["files"][0]["pre_stamp_sha256"]
+            }
+            receipt_path.write_text(json.dumps(receipt, indent=2) + "\n")
+            # Receipt claim alone must not yield exit 0.
+            v = subprocess.run(
+                ["node", "factory/tools/verify_artifact_receipt.mjs", str(orphan)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(v.returncode, 3, v.stdout + v.stderr)
+            # Trusted clean expected must FAIL CLOSED against orphan bytes.
+            clean = base / "clean"
+            clean.mkdir()
+            r = subprocess.run(
+                [
+                    "npx",
+                    "wrangler",
+                    "deploy",
+                    "-c",
+                    "workers/origin-join/wrangler.toml",
+                    "--dry-run",
+                    "--outdir",
+                    str(clean),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr)
+            manifest = base / "expected.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "worker.js": hashlib.sha256(
+                            (clean / "worker.js").read_text().encode()
+                        ).hexdigest()
+                    }
+                )
+                + "\n"
+            )
+            vfail = subprocess.run(
+                [
+                    "node",
+                    "factory/tools/verify_artifact_receipt.mjs",
+                    str(orphan),
+                    "--expected-pre-stamp",
+                    str(manifest),
+                    "--require-derivation",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(vfail.returncode, 1, vfail.stdout + vfail.stderr)
+
+    def test_gutted_demote_marker_story_still_unverified(self):
+        """Valid tip+receipt+marker substring with demote gutted → UNVERIFIED only."""
+        import json
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="prov-gut-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                "export const DC_ARTIFACT_TIP = \"UNSTAMPED\";\n"
+                "const demoteForbiddenLabels = (x) => x;\n"
+            )
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            body = (out / "worker.js").read_text()
+            self.assertIn("demoteForbiddenLabels", body)
+            self.assertIn(f'DC_ARTIFACT_TIP = "{tip}"', body)
+            receipt = json.loads((out / ".dc_artifact_tip_receipt.json").read_text())
+            self.assertEqual(receipt["derivation_state"], "UNVERIFIED")
+            v = subprocess.run(
+                ["node", "factory/tools/verify_artifact_receipt.mjs", str(out)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(v.returncode, 3)
+
+    def test_factory_belief_unverified_not_deploy_ready(self):
+        floor = (ROOT / "factory/FLOOR_V01.md").read_text()
+        self.assertIn("UNVERIFIED", floor)
+        self.assertIn("VERIFIED_DERIVATION", floor)
+        self.assertIn("NOT deploy-ready", floor)
+        self.assertIn("story-without-derivation", floor)
 
 
 

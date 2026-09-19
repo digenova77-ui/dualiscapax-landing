@@ -64,3 +64,20 @@ Repairs:
 
 Still NOT deploy-ready: live bindings/secrets NOT_VERIFIED, Stripe PARKED, Twain UNKNOWN,
 marker tests ≠ semantic proof, tip correspondence unverified, origin-join still proxies GitHub `main`.
+
+## Provenance egg (2026-09-19)
+
+Core question: can the system distinguish a valid-looking provenance *story*
+(tip string + matching receipt hashes) from *demonstrable derivation* from tip sources?
+
+Answer before repair: **NO** (orphan UNSTAMPED body stamped with tip + matching receipt).
+
+Minimal repair:
+- `stamp_artifact_tip.mjs` sets `derivation_state` = `UNVERIFIED` | `VERIFIED_DERIVATION`.
+- `--expected-pre-stamp` binds UNSTAMPED package body hashes; `--source-inputs` binds source fingerprint.
+- `--require-derivation` FAIL CLOSED on story-without-derivation.
+- `verify_artifact_receipt.mjs`: exit 0 only when `--expected-pre-stamp` revalidates;
+  tip+receipt alone → exit 3 `INTEGRITY_OK_DERIVATION_UNVERIFIED`; forged VERIFIED claim ≠ proof.
+
+Still NOT deploy-ready: live bindings/secrets NOT_VERIFIED, Stripe PARKED, Twain UNKNOWN,
+marker tests ≠ semantic proof, origin-join still proxies GitHub `main`.
