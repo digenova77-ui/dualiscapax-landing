@@ -1,6 +1,6 @@
 # DUALISCAPAX ALPHA DIRECTIVE — GLOBAL GOLF COURSE GRAPH (HARVEST EXPANSION V1)
 
-**Document Control ID:** ED-DIR-20260917-GOLF-GLOBAL-EXPANSION-V1  
+**Document Control ID:** `ED-DIR-20260917-GOLF-GLOBAL-EXPANSION-V1`  
 **Classification:** FACTORY OPERATING DIRECTIVE · EVIDENCE EXPANSION STANDARD  
 **Operating Entity:** DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7 · OBCA \#100089211)  
 **Authority:** Alpha / Factory Evidence Authority  
@@ -10,7 +10,7 @@
 **Canonical Work Surface:** Golf → Course  
 **Architecture:** One Site → One Configurable RTE → One Unity ID → Iris Selects the Desk  
 **Target Swarm:** Agent Alpha (Gemini Spark), Agent Grok (xAI), Agent Beta (ChatGPT), GitHub Actions Runners, Harvester Bots  
-**Canonical Channel:** Google Drive / DualisCapax / FACTORY\_BULLETIN\_BOARD/ (1T6qBAzbwdmJj820bO9qji3wIx7xj0\_q4)  
+**Canonical Channel:** `Google Drive / DualisCapax / FACTORY_BULLETIN_BOARD/` (`1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`)  
 **Status:** SEALED · ACTIVE FACTORY DIRECTIVE  
 **Timestamp UTC:** 2026-09-17T04:45:00Z  
 **Timestamp Local:** 2026-09-17T00:45:00-04:00
@@ -240,12 +240,12 @@ Do not report a single "course count" without defining what qualifies as a cours
 
 Create/update the Golf harvest ledger using the existing repository conventions. Preferred artifacts:
 
-- GLOBAL-GOLF-MASTER-INDEX  
-- GLOBAL-GOLF-FACILITY-MANIFEST  
-- GLOBAL-GOLF-COURSE-EVIDENCE  
-- GLOBAL-GOLF-COURSE-ENVELOPE-LEDGER  
-- GLOBAL-GOLF-UNRESOLVED  
-- GLOBAL-GOLF-HARVEST-RECEIPT
+- `GLOBAL-GOLF-MASTER-INDEX`  
+- `GLOBAL-GOLF-FACILITY-MANIFEST`  
+- `GLOBAL-GOLF-COURSE-EVIDENCE`  
+- `GLOBAL-GOLF-COURSE-ENVELOPE-LEDGER`  
+- `GLOBAL-GOLF-UNRESOLVED`  
+- `GLOBAL-GOLF-HARVEST-RECEIPT`
 
 Preserve existing USA Golf artifacts. Do not create competing indexes without documenting their relationship.
 
