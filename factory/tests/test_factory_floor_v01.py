@@ -74,6 +74,33 @@ class TestIrisGovernance(unittest.TestCase):
         )
 
 
+
+    def test_get_health_is_layer_declared_claim_only(self):
+        src = (ROOT / "workers/iris-gateway/index.js").read_text()
+        self.assertIn("DCLM_L0_LAYER_DECLARED", src)
+        self.assertIn('governance_claim_authority: "CLAIM_ONLY"', src)
+        self.assertIn('authority_effect: "NONE"', src)
+        self.assertIn("iris_kernel_authorized: false", src)
+        self.assertNotRegex(src, r'governance:\s*"DCLM_L0"\s*,')
+
+
+class TestOpenFloorAuthLabel(unittest.TestCase):
+    def test_anonymous_open_floor_not_authorized_token(self):
+        src = (ROOT / "server/security-v2.js").read_text()
+        self.assertIn("ANONYMOUS_OPEN_FLOOR", src)
+        # May appear only as a demote ban target, never as an emitted STATES value.
+        self.assertIn('ANONYMOUS_OPEN_FLOOR: "ANONYMOUS_OPEN_FLOOR"', src)
+        self.assertNotIn('ANONYMOUS_OPEN_AUTHORIZED: "ANONYMOUS_OPEN_AUTHORIZED"', src)
+        self.assertIn('"ANONYMOUS_OPEN_AUTHORIZED"', src)  # banned list defense-in-depth
+        self.assertIn('"authorization"', src)  # claimOnlyKeys includes authorization
+
+
+class TestJacketBindClaim(unittest.TestCase):
+    def test_attest_bind_is_sandbox_claim_not_active_bound(self):
+        src = (ROOT / "ops/apiv2/dclm_jacket.py").read_text()
+        self.assertIn("SANDBOX_BIND_CLAIM", src)
+        self.assertNotIn("ACTIVE_BOUND", src)
+        self.assertIn('"claim_authority": "CLAIM_ONLY"', src)
 class TestStripeProvenance(unittest.TestCase):
     def test_full_canonical_hash_and_no_metadata_kyc(self):
         src = (ROOT / "workers/dualis-gate/d1-idempotency.js").read_text()

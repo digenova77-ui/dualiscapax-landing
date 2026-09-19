@@ -46,7 +46,10 @@ class Jacket:
             return {"status": "FAIL_CLOSED_CIRCUIT_TRIPPED", "circuit_breaker_ms": round(ms, 3)}
         token = "DCLM_SESS_SANDBOX_" + digest[2:26]
         rec = {
-            "status": "ACTIVE_BOUND",
+            "status": "SANDBOX_BIND_CLAIM",
+            "claim_authority": "CLAIM_ONLY",
+            "authority_effect": "NONE",
+            "tee_is_authority": False,
             "upid": digest[:18],
             "bind_vector": "0x" + digest[18:34],
             "session_token": token,
@@ -92,7 +95,7 @@ class Jacket:
 def main() -> None:
     j = Jacket()
     bind = j.attest_bind("ops-test")
-    assert bind["status"] == "ACTIVE_BOUND", bind
+    assert bind["status"] == "SANDBOX_BIND_CLAIM", bind
     seed = j.sandbox_execute("", session_token=bind["session_token"])
     assert seed["grant"] in {"SEED", "MEASURE", "VETO"}, seed
     veto = j.sandbox_execute("this will cure and offering of securities")
