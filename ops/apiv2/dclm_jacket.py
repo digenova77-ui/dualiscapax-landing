@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""DCLM API jacket adapter — binds Drive ED-API-20260830-DCLM-V2 to engine.dclm.
-
-Current as of: 2026-08-30
-Mode: SANDBOX. No secret keys. Access closed.
-Run: python -m ops.apiv2.dclm_jacket
-"""
+"""DCLM API jacket adapter. SANDBOX. Upstream observation is not verification."""
 from __future__ import annotations
 
 import hashlib
@@ -67,19 +62,18 @@ class Jacket:
     def sandbox_execute(self, text: str, voice: str = "citizen", session_token: str | None = None) -> dict[str, Any]:
         t0 = time.perf_counter()
         if session_token and session_token not in self.sessions:
-            return {
-                "status": "FAIL_CLOSED_AUTH_ERROR",
-                "error": "Invalid or purged session.",
-            }
+            return {"status": "FAIL_CLOSED_AUTH_ERROR", "error": "Invalid or purged session."}
         rec = dclm_run(text, voice=voice)
         ms = (time.perf_counter() - t0) * 1000.0
         payload = rec.as_dict()
         payload.update(
             {
-                "status": "FAIL_CLOSED_LOGIC_DIVERGENCE" if rec.grant == "VETO" else "SUCCESS_VERIFIED",
+                "status": "FAIL_CLOSED_LOGIC_DIVERGENCE" if rec.grant == "VETO" else "UPSTREAM_OBSERVED",
                 "residual_effective_drag": RESIDUAL_FLOOR,
                 "circuit_breaker_latency_ms": round(ms, 3),
                 "jacket_mode": "SANDBOX",
+                "verification": "NOT_EXECUTED",
+                "authority_effect": "NONE",
                 "notice": NOTICE,
                 "access": "closed",
                 "earned_cad": 0,
@@ -92,7 +86,7 @@ class Jacket:
 
     def purge(self, session_token: str) -> dict[str, Any]:
         self.sessions.pop(session_token, None)
-        return {"status": "SESSION_MEMORY_PURGED", "jacket_mode": "SANDBOX"}
+        return {"status": "SESSION_DROP_LOCAL_ONLY", "jacket_mode": "SANDBOX"}
 
 
 def main() -> None:
@@ -104,7 +98,7 @@ def main() -> None:
     veto = j.sandbox_execute("this will cure and offering of securities")
     assert veto["grant"] == "VETO", veto
     gone = j.purge(bind["session_token"])
-    assert gone["status"] == "SESSION_MEMORY_PURGED"
+    assert gone["status"] == "SESSION_DROP_LOCAL_ONLY"
     print(json.dumps({"ok": True, "control": DOC_CONTROL_ID, "tests": 4}, indent=2))
 
 
