@@ -172,8 +172,45 @@ assert("hmac hex length", typeof hx === "string" && hx.length === 64, hx);
   };
   const acc = await acceptStripeEvent(env, event);
   assert("identity accept", acc.duplicate === false, JSON.stringify(acc));
+  assert("kyc_written false", acc.kyc_written === false, JSON.stringify(acc));
+  assert("authority_effect NONE", acc.authority_effect === "NONE", JSON.stringify(acc));
+  assert("unity_id claim recorded only", acc.unity_id_claim === "11111111-1111-1111-1111-111111111111", JSON.stringify(acc));
   const row = env.DB.kyc.get("11111111-1111-1111-1111-111111111111");
-  assert("unity_kyc folded", !!(row && Number(row.kyc) === 1), JSON.stringify(row));
+  assert("unity_kyc NOT minted from metadata", row == null, JSON.stringify(row));
+}
+
+{
+  // Same event_id, different payload body → PAYLOAD_HASH_COLLISION
+  const forged = {
+    id: "evt_id_1",
+    type: "identity.verification_session.verified",
+    data: { object: { metadata: { unity_id: "22222222-2222-2222-2222-222222222222" } } }
+  };
+  const acc = await acceptStripeEvent(env, forged);
+  assert("collision unresolved", acc.status === "UNRESOLVED" && acc.reason === "PAYLOAD_HASH_COLLISION", JSON.stringify(acc));
+  assert("collision kyc_written false", acc.kyc_written === false, JSON.stringify(acc));
+  assert("kyc map still empty", env.DB.kyc.size === 0, String(env.DB.kyc.size));
+}
+
+{
+  // Full canonical hash: id+type-identical but data differs must not share hash
+  const a = { id: "evt_hash_a", type: "ping", data: { object: { amount: 1 } } };
+  const b = { id: "evt_hash_b", type: "ping", data: { object: { amount: 2 } } };
+  const { canonicalize, sha256Hex } = await import("./d1-idempotency.js");
+  const ha = await sha256Hex(canonicalize(a));
+  const hb = await sha256Hex(canonicalize(b));
+  const weakA = await sha256Hex(JSON.stringify({ id: a.id, type: a.type }));
+  const weakB = await sha256Hex(JSON.stringify({ id: b.id, type: b.type }));
+  assert("full hash differs when data differs", ha !== hb, ha + " " + hb);
+  // Control: different ids so weak also differs; prove same id+type weak collision:
+  const c1 = { id: "evt_same", type: "ping", data: { x: 1 } };
+  const c2 = { id: "evt_same", type: "ping", data: { x: 2 } };
+  const full1 = await sha256Hex(canonicalize(c1));
+  const full2 = await sha256Hex(canonicalize(c2));
+  const w1 = await sha256Hex(JSON.stringify({ id: c1.id, type: c1.type }));
+  const w2 = await sha256Hex(JSON.stringify({ id: c2.id, type: c2.type }));
+  assert("weak hash would collide", w1 === w2, w1);
+  assert("full hash does not collide", full1 !== full2, full1 + " " + full2);
 }
 
 {

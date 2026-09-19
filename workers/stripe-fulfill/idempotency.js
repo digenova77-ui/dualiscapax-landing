@@ -173,36 +173,86 @@ export async function fuelBalanceD1(db, email) {
 }
 
 export async function claimKv(kv, key, record) {
-  if (!kv || !key) return { used: false };
+  // KV is observation/cache only. Cannot mint authoritative grant.
+  // Fail closed on first-write race: no put-if-absent primitive → refuse mint.
+  if (!kv || !key) {
+    return { used: false, authority_effect: "NONE", reason: "KV_UNBOUND" };
+  }
   const seen = await kv.get(key);
   if (seen) {
-    return { used: true, idempotent: true, record: parseRecord(seen) };
+    return {
+      used: true,
+      idempotent: true,
+      authoritative: false,
+      authority_effect: "NONE",
+      store: "kv",
+      record: parseRecord(seen),
+      note: "KV replay observation only — not an authoritative grant"
+    };
   }
-  const pending = Object.assign({}, record || {}, { status: "pending" });
-  await kv.put(key, JSON.stringify(pending), { expirationTtl: TTL });
-  return { used: true, idempotent: false, record: pending };
+  return {
+    used: false,
+    idempotent: false,
+    authoritative: false,
+    authority_effect: "NONE",
+    store: "kv",
+    reason: "KV_CANNOT_MINT_GRANT",
+    note: "Refuse independent KV mint; D1 claimGrant required"
+  };
 }
 
 /** Check event:evt_ and session:cs_ before any KV mutate.
  *  Replay if either key exists so completed + async_payment_succeeded share one grant.
  */
 export async function claimDualKv(kv, eventId, sessionId, record) {
-  if (!kv) return { used: false };
+  // Dual-key race (get-then-put) cannot be made atomic on KV alone.
+  // Fail closed: observe prior keys; never mint authoritative grant from KV.
+  if (!kv) {
+    return { used: false, authority_effect: "NONE", reason: "KV_UNBOUND" };
+  }
   const eventKey = eventId ? "event:" + eventId : null;
   const sessionKey = sessionId ? "session:" + sessionId : null;
   if (eventKey) {
     const ev = await kv.get(eventKey);
-    if (ev) return { used: true, idempotent: true, store: "kv", via: "event", record: parseRecord(ev) };
+    if (ev) {
+      return {
+        used: true,
+        idempotent: true,
+        authoritative: false,
+        authority_effect: "NONE",
+        store: "kv",
+        via: "event",
+        record: parseRecord(ev),
+        note: "KV observation only"
+      };
+    }
   }
   if (sessionKey) {
     const se = await kv.get(sessionKey);
-    if (se) return { used: true, idempotent: true, store: "kv", via: "session", record: parseRecord(se) };
+    if (se) {
+      return {
+        used: true,
+        idempotent: true,
+        authoritative: false,
+        authority_effect: "NONE",
+        store: "kv",
+        via: "session",
+        record: parseRecord(se),
+        note: "KV observation only"
+      };
+    }
   }
-  const pending = Object.assign({}, record || {}, { status: "pending" });
-  const body = JSON.stringify(pending);
-  if (eventKey) await kv.put(eventKey, body, { expirationTtl: TTL });
-  if (sessionKey) await kv.put(sessionKey, body, { expirationTtl: TTL });
-  return { used: true, idempotent: false, store: "kv", record: pending, eventKey: eventKey, sessionKey: sessionKey };
+  return {
+    used: false,
+    idempotent: false,
+    authoritative: false,
+    authority_effect: "NONE",
+    store: "kv",
+    reason: "KV_CANNOT_MINT_GRANT",
+    eventKey: eventKey,
+    sessionKey: sessionKey,
+    note: "Refuse KV first-write mint; require D1 atomic claimGrant"
+  };
 }
 
 export async function finalizeKv(kv, key, record) {
