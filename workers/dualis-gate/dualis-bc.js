@@ -1,6 +1,9 @@
 /* Dualis Phase B+C gate. Pages owns /. This Worker owns /u /hooks /pay only.
    Fail closed. CHECKOUT_OPEN stays false until Bind-continue. */
 
+/** Factory artifact tip — UNSTAMPED until factory/tools/stamp_artifact_tip.mjs runs. */
+export const DC_ARTIFACT_TIP = "UNSTAMPED";
+
 import { verifyStripeWebhook } from "./stripe-hmac-verify.js";
 import { acceptStripeEvent } from "./d1-idempotency.js";
 import { hmacSha256Hex } from "./timing-safe-equal.js";

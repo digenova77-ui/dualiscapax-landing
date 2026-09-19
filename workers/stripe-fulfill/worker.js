@@ -8,6 +8,9 @@
 import { merchSuperRefine, merchIssuesToFulfill } from "./merch-refine.js";
 import { claimGrantD1, claimDualKv, finalizeKv, dualisAtom } from "./idempotency.js";
 
+/** Factory artifact tip — UNSTAMPED until factory/tools/stamp_artifact_tip.mjs runs. */
+export const DC_ARTIFACT_TIP = "UNSTAMPED";
+
 const JACKET = "access.dual.v8";
 
 const SKU_GRANT = {

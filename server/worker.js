@@ -20,6 +20,9 @@ import {
 } from "./security-v2.js";
 import { handleTeamSnapToken } from "../cf-pages/workers/teamsnap-token-route.js";
 
+/** Factory artifact tip — UNSTAMPED until factory/tools/stamp_artifact_tip.mjs runs. */
+export const DC_ARTIFACT_TIP = "UNSTAMPED";
+
 const XAI_URL = "https://api.x.ai/v1/chat/completions";
 const API_VERSION = "2";
 const NOTICE =

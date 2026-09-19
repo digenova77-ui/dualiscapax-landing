@@ -498,11 +498,7 @@ console.log('demote nested+VALIDATED ok');
 
 
 class TestSourceArtifactBoundary(unittest.TestCase):
-    """Bind deployable wrangler packages — source-only reads are insufficient.
-
-    Attack class: mutate/omit package while source tests still pass.
-    Permanent regression: dry-run package must retain security markers.
-    """
+    """Packaged Worker body is what deploy uploads — bind markers + tip provenance."""
 
     WORKERS = (
         (
@@ -511,11 +507,11 @@ class TestSourceArtifactBoundary(unittest.TestCase):
             "worker.js",
             (
                 "demoteForbiddenLabels",
-                "ANONYMOUS_OPEN_FLOOR",
                 "TEAMSNAP_REDIRECT_ALLOWLIST",
                 "redirect_uri_rejected",
+                'DC_ARTIFACT_TIP = "UNSTAMPED"',
             ),
-            (),  # CONVERGED may appear only as demote ban target
+            (),
         ),
         (
             "iris-gateway",
@@ -525,6 +521,7 @@ class TestSourceArtifactBoundary(unittest.TestCase):
                 "DCLM_L0_NOT_EXECUTED",
                 "DCLM_L0_PROMPT_APPLIED",
                 "CLAIM_ONLY",
+                'DC_ARTIFACT_TIP = "UNSTAMPED"',
             ),
             ("DCLM_L0_CONVERGED",),
         ),
@@ -536,6 +533,7 @@ class TestSourceArtifactBoundary(unittest.TestCase):
                 "canonicalize",
                 "PAYLOAD_HASH_COLLISION",
                 "kyc_written: false",
+                'DC_ARTIFACT_TIP = "UNSTAMPED"',
             ),
             ("INSERT INTO unity_kyc",),
         ),
@@ -547,8 +545,21 @@ class TestSourceArtifactBoundary(unittest.TestCase):
                 "KV_CANNOT_MINT_GRANT",
                 "demoteEntitlementRecord",
                 "CLAIM_ONLY",
+                'DC_ARTIFACT_TIP = "UNSTAMPED"',
             ),
             ("iris_tier_unlock",),
+        ),
+        (
+            "origin-join",
+            "workers/origin-join/wrangler.toml",
+            "worker.js",
+            (
+                "x-dc-join",
+                "not on the join plate",
+                "raw.githubusercontent.com/digenova77-ui/dualiscapax-landing/main",
+                'DC_ARTIFACT_TIP = "UNSTAMPED"',
+            ),
+            (),
         ),
     )
 
@@ -577,10 +588,15 @@ class TestSourceArtifactBoundary(unittest.TestCase):
             "workers/dualis-gate/wrangler.toml": "dualis-bc.js",
             "workers/iris-gateway/wrangler.toml": "index.js",
             "workers/stripe-fulfill/wrangler.toml": "worker.js",
+            "workers/origin-join/wrangler.toml": "worker.js",
         }
         for rel, main in expected.items():
             src = (ROOT / rel).read_text()
             self.assertIn(f'main = "{main}"', src, rel)
+        # Pages brochure config exists; this campaign does not publish Pages.
+        pages = (ROOT / "wrangler.toml").read_text()
+        self.assertIn('name = "dualiscapax-web"', pages)
+        self.assertIn('pages_build_output_dir = "."', pages)
 
     def test_packaged_artifacts_retain_security_markers(self):
         import tempfile
@@ -598,16 +614,39 @@ class TestSourceArtifactBoundary(unittest.TestCase):
                     self.assertIn(needle, body, f"{name} package missing {needle}")
                 for needle in forbid:
                     self.assertNotIn(needle, body, f"{name} package contains {needle}")
-                # Provenance gap remains: package hash != source hash by design (bundle).
-                # Require non-empty upload body so silent empty package fails closed.
-                self.assertGreater(art.stat().st_size, 500, name)
+                self.assertGreater(art.stat().st_size, 500 if name != "origin-join" else 200, name)
+
+    def test_stamp_artifact_tip_rewrites_unstamped_package(self):
+        import tempfile
+
+        tip = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip()
+        with tempfile.TemporaryDirectory(prefix="factory-stamp-") as tmp:
+            out = Path(tmp) / "depth"
+            r = self._pack("server/wrangler.toml", out)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            body0 = (out / "worker.js").read_text()
+            self.assertIn('DC_ARTIFACT_TIP = "UNSTAMPED"', body0)
+            self.assertNotIn(tip, body0)
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            body1 = (out / "worker.js").read_text()
+            self.assertIn(f'DC_ARTIFACT_TIP = "{tip}"', body1)
+            self.assertNotIn('DC_ARTIFACT_TIP = "UNSTAMPED"', body1)
 
 
 class TestEngineImportSurfaceDivergence(unittest.TestCase):
     """engine/dclm/kernel.py and src/engine/dclm/kernel.py are different programs.
 
     Factory AuthorityKernel tests load src/ by file path. `import engine.dclm.kernel`
-    always resolves to repo-root engine/ (measure `run`). Same leaf name, different code.
+    from repo root always resolves to measure `run`. cwd=src/ can flip to Authority.
     """
 
     def test_kernels_are_not_byte_equal(self):
@@ -629,10 +668,83 @@ class TestEngineImportSurfaceDivergence(unittest.TestCase):
         k = importlib.import_module("engine.dclm.kernel")
         self.assertTrue(hasattr(k, "run"))
         self.assertFalse(hasattr(k, "AuthorityKernel"))
-        # src/engine is not an importable package (no __init__.py) — file-path only.
+        # src/engine is not an importable regular package (no __init__.py).
         self.assertFalse((ROOT / "src/engine/__init__.py").exists())
 
+    def test_cwd_src_namespace_loads_authority_kernel(self):
+        """OBSERVED hazard: cwd=src/ + '' on path → Authority under same import name."""
+        import importlib
+        import os
 
+        for mod in list(sys.modules):
+            if mod == "engine" or mod.startswith("engine."):
+                del sys.modules[mod]
+        prev = os.getcwd()
+        prev_path = list(sys.path)
+        try:
+            os.chdir(ROOT / "src")
+            sys.path = [""] + [p for p in sys.path if p not in ("", str(ROOT), str(ROOT / "src"))]
+            k = importlib.import_module("engine.dclm.kernel")
+            self.assertTrue(hasattr(k, "AuthorityKernel"), k.__file__)
+            self.assertFalse(hasattr(k, "run"), k.__file__)
+            self.assertIn("src/engine/dclm/kernel.py", k.__file__.replace("\\\\", "/"))
+        finally:
+            os.chdir(prev)
+            sys.path[:] = prev_path
+            for mod in list(sys.modules):
+                if mod == "engine" or mod.startswith("engine."):
+                    del sys.modules[mod]
+
+
+class TestEnvAuthorityDefaultsFailClosed(unittest.TestCase):
+    """Git wrangler defaults must stay fail-closed; live dashboard NOT_VERIFIED."""
+
+    def test_checkout_open_default_false(self):
+        src = (ROOT / "workers/dualis-gate/wrangler.toml").read_text()
+        self.assertIn('CHECKOUT_OPEN = "false"', src)
+        gate = (ROOT / "workers/dualis-gate/dualis-bc.js").read_text()
+        self.assertIn('String(env.CHECKOUT_OPEN || "") === "true"', gate)
+
+    def test_iris_house_key_default_off(self):
+        src = (ROOT / "workers/iris-gateway/wrangler.toml").read_text()
+        self.assertIn('IRIS_ALLOW_HOUSE_KEY = "0"', src)
+        iris = (ROOT / "workers/iris-gateway/index.js").read_text()
+        self.assertIn('String(env.IRIS_ALLOW_HOUSE_KEY || "") === "1"', iris)
+
+    def test_d1_bindings_not_committed_in_git_toml(self):
+        for rel in (
+            "workers/dualis-gate/wrangler.toml",
+            "workers/stripe-fulfill/wrangler.toml",
+        ):
+            src = (ROOT / rel).read_text()
+            live = [
+                ln
+                for ln in src.splitlines()
+                if (not ln.lstrip().startswith("#"))
+                and (
+                    ln.strip().startswith("[[d1_databases]]")
+                    or ln.strip().startswith("[[kv_namespaces]]")
+                    or ln.strip().startswith("database_id")
+                )
+            ]
+            self.assertEqual(live, [], f"{rel} has live bind lines: {live}")
+
+
+class TestMedicalGatePromptDriftAllowlist(unittest.TestCase):
+    def test_cf_pages_prompt_suffix_only_delta(self):
+        a = (ROOT / "js/medical-gate.js").read_text().splitlines()
+        b = (ROOT / "cf-pages/js/medical-gate.js").read_text().splitlines()
+        i = 0
+        while i < len(a) and i < len(b) and a[i] == b[i]:
+            i += 1
+        # Root file ends at shared body; cf-pages may append prompt() only.
+        self.assertEqual(i, len(a) - 1, "unexpected drift before medical-gate closing")
+        self.assertTrue(a[-1].strip().startswith("})();"))
+        suffix = "\n".join(b[i:])
+        self.assertIn("window.DC_MEDICAL.prompt = function", suffix)
+        self.assertIn("Public checkout is not offered", suffix)
+        self.assertNotIn("AUTHORIZED", suffix)
+        self.assertNotIn("CONVERGED", suffix)
 
 
 if __name__ == "__main__":

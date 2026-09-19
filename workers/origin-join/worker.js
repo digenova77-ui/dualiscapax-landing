@@ -1,3 +1,6 @@
+/** Factory artifact tip — UNSTAMPED until factory/tools/stamp_artifact_tip.mjs runs. */
+export const DC_ARTIFACT_TIP = "UNSTAMPED";
+
 const RAW = "https://raw.githubusercontent.com/digenova77-ui/dualiscapax-landing/main";
 const ALLOW = {
   "/why.html": [RAW + "/why.html", "text/html; charset=utf-8"],

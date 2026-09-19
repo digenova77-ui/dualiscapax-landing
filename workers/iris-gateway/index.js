@@ -7,6 +7,9 @@
  * No invented keys. Missing fallback secret = fail closed after webhook.
  */
 
+/** Factory artifact tip — UNSTAMPED until factory/tools/stamp_artifact_tip.mjs runs. */
+export const DC_ARTIFACT_TIP = "UNSTAMPED";
+
 const DCLM_L0 = Object.freeze({
   layer: "DCLM_L0",
   maxChars: 4000,
