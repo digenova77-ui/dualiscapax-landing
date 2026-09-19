@@ -3,10 +3,15 @@ name: stripe-fulfill-v2
 # DualisCapax — last mile before Cloudflare privilege.
 # This workflow is the deploy button. It cannot mint Cloudflare access.
 # Operator one-time: repo Settings → Secrets → Actions
-#   CLOUDFLARE_API_TOKEN   (template: Edit Cloudflare Workers)
+#   CLOUDFLARE_API_TOKEN   (narrow: Workers Scripts Edit/Read + Account Settings Read;
+#                           MUST NOT include D1 Edit — see docs/ops/RESIDUAL_R1_TOKEN_SCOPE.md)
 #   CLOUDFLARE_ACCOUNT_ID
 # Then Run workflow, or push under workers/stripe-fulfill/.
 # Webhook secret stays on the Worker (wrangler secret put / dashboard). Never git.
+#
+# CONSTRAINT (residual R3): admit via factory/tools/admit_stripe_fulfill_deploy.sh before deploy.
+# CONSTRAINT (residual R1): this workflow MUST NEVER run `wrangler d1 execute`.
+# CONSTRAINT: CHECKOUT_OPEN must remain "false"; do not open checkout here.
 
 on:
   workflow_dispatch:
@@ -15,6 +20,10 @@ on:
     paths:
       - "workers/stripe-fulfill/**"
       - ".github/workflows/stripe-fulfill.yml"
+      - "factory/tools/admit_artifact_authority.mjs"
+      - "factory/tools/admit_stripe_fulfill_deploy.sh"
+      - "factory/tools/stamp_artifact_tip.mjs"
+      - "factory/tools/verify_artifact_receipt.mjs"
 
 permissions:
   contents: read
@@ -25,9 +34,9 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy stripe-fulfill-v2
+    name: Admit + deploy stripe-fulfill-v2
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -41,7 +50,30 @@ jobs:
             exit 1
           fi
 
-      - name: wrangler deploy
+      - name: Forbid d1 execute in this workflow (residual R1)
+        run: |
+          set -euo pipefail
+          if grep -nE 'd1[[:space:]]+execute|wrangler[[:space:]]+d1[[:space:]]+execute' \
+              .github/workflows/stripe-fulfill.yml; then
+            echo "::error::d1 execute must not appear in stripe-fulfill workflow"
+            exit 1
+          fi
+          if [ "${CHECKOUT_OPEN:-}" = "true" ]; then
+            echo "::error::CHECKOUT_OPEN=true in runner env — refuse"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Admit artifact authority (SOLE deploy gate)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: bash factory/tools/admit_stripe_fulfill_deploy.sh
+
+      - name: wrangler deploy (post-admit only; park closed)
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
