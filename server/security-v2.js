@@ -205,17 +205,32 @@ export function demoteForbiddenLabels(obj) {
     "DCLM_L0_CONVERGED",
     "LAW_FLOOR_VERIFIED",
     "EXECUTED_CONSERVED",
+    "AUTHORIZED",
+    "SETTLED",
+    "GRANTED",
+    "CONVERGED",
+    "KYC_VERIFIED",
+    "ACTIVE_BOUND",
   ];
+  const claimOnlyKeys = new Set(["claim_authority", "tier", "status", "state", "governance", "verification", "dclm", "authority"]);
   const out = Object.assign({}, obj || {});
   for (const k of Object.keys(out)) {
-    if (banned.includes(String(out[k]))) {
-      out[k] = "FORBIDDEN_LABEL_REMOVED";
+    const v = String(out[k]);
+    if (banned.includes(v)) {
+      out[k] = claimOnlyKeys.has(k) ? "CLAIM_ONLY" : "FORBIDDEN_LABEL_REMOVED";
       out[k + "_demoted"] = true;
     }
     if (k === "convergence_met") {
       delete out[k];
       out.convergence = "NOT_EXECUTED";
     }
+  }
+  if ("iris_kernel_authorized" in out) out.iris_kernel_authorized = false;
+  if ("seat_authority" in out) out.seat_authority = false;
+  if ("economic_authority" in out) out.economic_authority = false;
+  if (out.authority_effect && ["AUTHORIZED", "GRANTED", "SETTLED", "CONVERGED"].includes(String(out.authority_effect))) {
+    out.authority_effect = "NONE";
+    out.authority_effect_demoted = true;
   }
   return out;
 }
