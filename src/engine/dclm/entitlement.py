@@ -13,7 +13,7 @@ class FuelProjection:
 
 
 class EntitlementMediator:
-    """Fail-closed: absent server ledger ⇒ no paid capability."""
+    """Fail-closed: a function argument named server_balance is not a D1 read."""
 
     def resolve(self, header_fuel, body_fuel, server_balance: Optional[float]):
         if header_fuel is not None and body_fuel is not None:
@@ -24,6 +24,7 @@ class EntitlementMediator:
                         "reason": "HEADER_BODY_FUEL_CONFLICT",
                         "tier": "OPEN",
                         "authoritative_balance": None,
+                        "authority_effect": "NONE",
                     }
             except (TypeError, ValueError):
                 return {
@@ -31,6 +32,7 @@ class EntitlementMediator:
                     "reason": "MALFORMED_FUEL",
                     "tier": "OPEN",
                     "authoritative_balance": None,
+                    "authority_effect": "NONE",
                 }
         if server_balance is None:
             return {
@@ -39,6 +41,7 @@ class EntitlementMediator:
                 "tier": "OPEN",
                 "authoritative_balance": 0.0,
                 "client_claim": body_fuel if body_fuel is not None else header_fuel,
+                "authority_effect": "NONE",
             }
         try:
             bal = float(server_balance)
@@ -48,6 +51,7 @@ class EntitlementMediator:
                 "reason": "MALFORMED_SERVER_BALANCE",
                 "tier": "OPEN",
                 "authoritative_balance": None,
+                "authority_effect": "NONE",
             }
         if bal != bal or bal in (float("inf"), float("-inf")):
             return {
@@ -55,6 +59,7 @@ class EntitlementMediator:
                 "reason": "NON_FINITE_SERVER_BALANCE",
                 "tier": "OPEN",
                 "authoritative_balance": None,
+                "authority_effect": "NONE",
             }
         if bal < 0:
             return {
@@ -62,10 +67,13 @@ class EntitlementMediator:
                 "reason": "NEGATIVE_FUEL",
                 "tier": "OPEN",
                 "authoritative_balance": None,
+                "authority_effect": "NONE",
             }
         return {
-            "decision": "AUTHORIZED" if bal > 0 else "INSUFFICIENT_EVIDENCE",
-            "reason": "SERVER_LEDGER",
-            "tier": "METERED" if bal > 0 else "OPEN",
-            "authoritative_balance": bal,
+            "decision": "LEDGER_PRESENT" if bal > 0 else "INSUFFICIENT_EVIDENCE",
+            "reason": "SERVER_LEDGER_UNVERIFIED_BY_KERNEL",
+            "tier": "OPEN",
+            "authoritative_balance": None,
+            "ledger_claim": bal,
+            "authority_effect": "NONE",
         }
