@@ -21,6 +21,44 @@ class Decision(str, Enum):
 
 StateAuthorityKernel = None
 
+def _load_twain_class():
+    try:
+        from engine.twain.counterexample import Twain  # type: ignore
+        return Twain
+    except Exception:
+        try:
+            import importlib.util
+            from pathlib import Path
+            path = Path(__file__).resolve().parents[1] / "twain" / "counterexample.py"
+            spec = importlib.util.spec_from_file_location("_twain_floor_bind", path)
+            if spec is None or spec.loader is None:
+                return None
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            return mod.Twain
+        except Exception:
+            return None
+
+
+def _twain_live_agree(claim) -> tuple[str, str]:
+    """Second-order safe: class attribute alone cannot mint AGREE.
+
+    Calls Twain.independent_replay / evaluate. Stub returns UNKNOWN.
+    Mutating Twain.implementation = 'FULL_EVALUATOR' does not confirm.
+    """
+    Twain = _load_twain_class()
+    if Twain is None:
+        return "MISSING", "UNKNOWN"
+    impl = str(getattr(Twain, "implementation", None) or "MISSING")
+    try:
+        result = Twain().independent_replay(claim)
+        replay = str(getattr(result, "independent_replay", None) or getattr(result, "status", "UNKNOWN"))
+    except Exception:
+        return impl, "UNKNOWN"
+    return impl, replay
+
+
+
 
 @dataclass
 class AuthorityEffect:
@@ -86,9 +124,28 @@ class AuthorityKernel:
             return AuthorityEffect(Decision.ORACLE_DISAGREEMENT, ["replay_disagree"], effect_class="NONE")
         if req.independent_replay not in ("AGREE", "PASS"):
             return AuthorityEffect(Decision.UNKNOWN, [f"replay_result={req.independent_replay}"], effect_class="NONE")
+        # Caller-supplied AGREE/PASS is not Twain agreement.
+        # Live probe required; stub returns UNKNOWN. Attribute forgery is insufficient.
+        twain_impl, twain_replay = _twain_live_agree({
+            "transition_id": req.transition_id,
+            "proof_id": req.evidence.proof_id,
+            "action": req.action,
+        })
+        if twain_impl != "FULL_EVALUATOR" or twain_replay not in ("AGREE", "PASS"):
+            return AuthorityEffect(
+                Decision.UNKNOWN,
+                [
+                    "independent_replay_agree_unbound",
+                    f"twain_implementation={twain_impl}",
+                    f"twain_live_replay={twain_replay}",
+                    "caller_agree_is_not_evaluator_agree",
+                ],
+                proof_id=req.evidence.proof_id,
+                effect_class="NONE",
+            )
         if not req.capability:
             return AuthorityEffect(Decision.DENIED, ["no_capability"], effect_class="NONE")
-        return AuthorityEffect(Decision.AUTHORIZED, ["proof_present", "replay_agree", "epoch_current"], proof_id=req.evidence.proof_id, effect_class="AUTHORITY_EFFECT")
+        return AuthorityEffect(Decision.AUTHORIZED, ["proof_present", "replay_agree", "epoch_current", "twain_live_agree"], proof_id=req.evidence.proof_id, effect_class="AUTHORITY_EFFECT")
 
 
 StateAuthorityKernel = AuthorityKernel

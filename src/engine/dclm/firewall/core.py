@@ -103,8 +103,15 @@ class ActionCapabilityTicket:
         return hmac.compare_digest(self.signature, expected)
 
     def is_sovereign_authorized(self) -> bool:
-        """DELTA-03: HMAC is never sovereign/root authorization."""
-        return self.scheme == TicketScheme.SOVEREIGN_ED25519_RFC8785 and bool(self.signature)
+        """DELTA-03: HMAC is never sovereign/root authorization.
+
+        A non-empty signature string is NOT Ed25519 verification. Until a real
+        SOVEREIGN_ED25519_RFC8785 verifier binds this ticket, always False.
+        """
+        if self.scheme != TicketScheme.SOVEREIGN_ED25519_RFC8785:
+            return False
+        # Presence of bytes ≠ cryptographic verification.
+        return False
 
 
 class EpistemicFirewall:
@@ -148,7 +155,13 @@ class EpistemicFirewall:
             )
 
         if c.operator_override and c.origin == "HUMAN_DERIVED":
-            return FirewallResult(c.claim_id, FirewallState.ALLOW, PermittedUse.PRODUCTION_CRITICAL, ["operator_override"])
+            # Operator override is a CLAIM, not PRODUCTION_CRITICAL authority.
+            return FirewallResult(
+                c.claim_id,
+                FirewallState.REQUIRES_AUTHORIZATION,
+                PermittedUse.NO_USE,
+                ["operator_override_is_claim_not_authority"],
+            )
 
         if state == FirewallState.ALLOW and use.value <= PermittedUse.MODEL_INPUT.value:
             pass
@@ -175,9 +188,11 @@ class EpistemicFirewall:
         if want_sovereign:
             if ticket.scheme == TicketScheme.LOCAL_IPC_HMAC:
                 return FirewallState.PERMISSION_ERROR
+            # Ed25519 verify not implemented — never ALLOW on scheme+sig presence.
             if not ticket.is_sovereign_authorized():
                 return FirewallState.REQUIRES_AUTHORIZATION
-            return FirewallState.ALLOW
+            return FirewallState.REQUIRES_AUTHORIZATION
         if not ticket.verify_hmac(self.LOCAL_SECRET):
             return FirewallState.SIGNATURE_INVALID
+        # Local IPC HMAC may proceed for non-sovereign IPC only — not production authority.
         return FirewallState.ALLOW

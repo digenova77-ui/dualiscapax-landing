@@ -15,3 +15,14 @@ Independent replay against Twain is therefore UNKNOWN, not AGREEMENT.
 Source patch of `server/worker.js` is not a Cloudflare deploy.
 LIVE dualiscapax-depth remains the HEAD worker until wrangler deploy
 is itself an authorized transition.
+
+## Campaign 2026-09-19 (self-attack)
+
+- AuthorityKernel refuses caller AGREE/PASS unless Twain live replay confirms (stub → UNKNOWN).
+- EpistemicFirewall: operator_override is CLAIM; sovereign ticket presence ≠ Ed25519 verify.
+- EffectBoundary: caller booleans never ADMITTED.
+- demoteForbiddenLabels: recursive; VALIDATED/PROMOTABLE banned.
+- SeatLaw: OBJECT/SEED/ALLOCATION_ID reserved — not seats.
+- identity/__init__.py exports match seat_law (HistoryEvent, SeatLaw).
+
+Twain: still STUB → independent replay UNKNOWN (not AGREE/CONVERGED).

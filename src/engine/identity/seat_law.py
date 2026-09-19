@@ -23,6 +23,12 @@ class HistoryEvent:
     epoch: int = 0
 
 
+RESERVED_SEAT_IDS = frozenset({
+    "OBJECT", "SEED", "PLAYER_OBJECT", "PLAYER_OBJECT_ID",
+    "ROSTER_SEAT", "ROSTER_SEAT_ID", "ALLOCATION", "ALLOCATION_ID",
+})
+
+
 class SeatLaw:
     def __init__(self) -> None:
         self.players: Dict[str, Dict[str, Any]] = {}
@@ -42,6 +48,8 @@ class SeatLaw:
     def create_seat(self, seat_id: str, label: str) -> Dict[str, Any]:
         if seat_id in self.seats:
             raise ValueError("seat_exists")
+        if str(seat_id).upper() in RESERVED_SEAT_IDS:
+            raise ValueError("reserved_id_is_not_a_seat")
         self.seats[seat_id] = {"seat_id": seat_id, "label": label, "occupant": None, "allocation_id": None}
         return dict(self.seats[seat_id])
 
