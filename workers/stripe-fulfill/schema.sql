@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS entitlements (
   session_id       TEXT PRIMARY KEY,
   token_id         TEXT NOT NULL UNIQUE,
   email            TEXT NOT NULL,
-  tier             TEXT NOT NULL DEFAULT 'UNRESOLVED',
+  -- tier column name is historical; values MUST be CLAIM_ONLY (not Iris AUTHORIZED / SPARK/…)
+  tier             TEXT NOT NULL DEFAULT 'CLAIM_ONLY',
   sku              TEXT NOT NULL DEFAULT 'unresolved',
   amount_cad_cents INTEGER,
   currency         TEXT,

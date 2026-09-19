@@ -11,11 +11,11 @@ import { claimGrantD1, claimDualKv, finalizeKv, dualisAtom } from "./idempotency
 const JACKET = "access.dual.v8";
 
 const SKU_GRANT = {
-  fuel_10: { kind: "fuel", units: 10, cad: 5, allowed_cents: [500], label: "10 Fuel", delivers: "fuel_credit", iris_tier_unlock: "SPARK", sku_code: "SKU-001" },
-  depth_s: { kind: "fuel", units: 40, cad: 20, allowed_cents: [2000], label: "40 Fuel (trial)", delivers: "fuel_credit", iris_tier_unlock: "SPARK", sku_code: "SKU-002" },
-  depth_m: { kind: "fuel", units: 120, cad: 50, allowed_cents: [5000], label: "120 Fuel (practice)", delivers: "fuel_credit", iris_tier_unlock: "BRANCH", sku_code: "SKU-003" },
-  depth_l: { kind: "fuel", units: 320, cad: 120, allowed_cents: [12000], label: "320 Fuel (retain)", delivers: "fuel_credit", iris_tier_unlock: "DEPTH", sku_code: "SKU-004" },
-  fuel_1000: { kind: "fuel", units: 1000, cad: 350, allowed_cents: [35000], label: "1,000 Fuel", delivers: "fuel_credit", iris_tier_unlock: "ULTIMATE", sku_code: "SKU-005" },
+  fuel_10: { kind: "fuel", units: 10, cad: 5, allowed_cents: [500], label: "10 Fuel", delivers: "fuel_credit", sku_catalog_label: "SPARK", sku_code: "SKU-001" },
+  depth_s: { kind: "fuel", units: 40, cad: 20, allowed_cents: [2000], label: "40 Fuel (trial)", delivers: "fuel_credit", sku_catalog_label: "SPARK", sku_code: "SKU-002" },
+  depth_m: { kind: "fuel", units: 120, cad: 50, allowed_cents: [5000], label: "120 Fuel (practice)", delivers: "fuel_credit", sku_catalog_label: "BRANCH", sku_code: "SKU-003" },
+  depth_l: { kind: "fuel", units: 320, cad: 120, allowed_cents: [12000], label: "320 Fuel (retain)", delivers: "fuel_credit", sku_catalog_label: "DEPTH", sku_code: "SKU-004" },
+  fuel_1000: { kind: "fuel", units: 1000, cad: 350, allowed_cents: [35000], label: "1,000 Fuel", delivers: "fuel_credit", sku_catalog_label: "ULTIMATE", sku_code: "SKU-005" },
   edu_leaf: { kind: "seat", term_months: 1, ip: "overview_30d", cad: 19, allowed_cents: [1900], label: "Educational indication leaf — 30 day", delivers: "seat_access", sku_code: "SKU-016" },
   leaf: { kind: "seat", term_months: 12, ip: "one_room", cad: 49, allowed_cents: [4900], label: "Leaf — one gated room, 12 mo", delivers: "seat_access", sku_code: "SKU-017" },
   branch: { kind: "seat", term_months: 12, ip: "one_field", cad: 299, allowed_cents: [29900, 14900], label: "Branch — subsystem clade, 12 mo", delivers: "seat_access", sku_code: "SKU-018" },
@@ -127,6 +127,24 @@ function atomFromSession(session, sku) {
   });
 }
 
+
+/** entitlements.tier column name is privileged-looking; values are CLAIM_ONLY.
+ *  Never echo legacy SPARK/BRANCH/DEPTH/ULTIMATE/GRANTED as Iris AUTHORIZED.
+ */
+function demoteEntitlementRecord(rec) {
+  if (!rec || typeof rec !== "object") return null;
+  const raw = rec.tier;
+  const out = Object.assign({}, rec);
+  out.tier = "CLAIM_ONLY";
+  out.tier_claim_authority = "CLAIM_ONLY";
+  out.sku_catalog_claim =
+    raw && !["CLAIM_ONLY", "GRANTED", "UNRESOLVED"].includes(String(raw))
+      ? String(raw)
+      : rec.sku || null;
+  out.iris_kernel_authorized = false;
+  return out;
+}
+
 async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amountTotal, currency, via, atom }) {
   const grant = sku ? SKU_GRANT[sku] : null;
   if (!grant) return { ok: false, reason: "unknown_sku", sku, via, amount_total: amountTotal, jacket: JACKET };
@@ -159,7 +177,8 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
           event_id: eventId,
           token_id: eventId,
           email: email || "unbound@local",
-          tier: grant.iris_tier_unlock || sku,
+          tier: "CLAIM_ONLY",  // column name residual; value is never Iris AUTHORIZED
+          tier_claim_authority: "CLAIM_ONLY",
           sku,
           amount_cad_cents: amountTotal,
           currency: currency || "cad",
@@ -175,13 +194,13 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
           jacket: claimed.idempotent ? "identity" : JACKET,
           store: "d1",
           atom: atom || null,
-          record: claimed.entitlement || null,
+          record: demoteEntitlementRecord(claimed.entitlement) || null,
           fuel: claimed.fuel || null,
           grant: claimed.grant || null,
           authority_effect: "NONE",
           iris_kernel_authorized: false,
-          sku_catalog_label: grant.iris_tier_unlock || sku || null,
-          note: "D1 fulfill row is LEDGER_PRESENT; iris_tier_unlock is SKU catalog label, not AuthorityKernel AUTHORIZED"
+          sku_catalog_label: grant.sku_catalog_label || sku || null,
+          note: "D1 fulfill row is LEDGER_PRESENT; entitlements.tier is CLAIM_ONLY (not Iris AUTHORIZED); sku_catalog_label is catalog only"
         };
       }
     } catch (err) {
@@ -239,7 +258,7 @@ export default {
       const url = new URL(request.url);
       const path = url.pathname.replace(/\/$/, "") || "/";
       if (path === "/skus") {
-        return json({ service: "dualiscapax-stripe-fulfill", jacket: JACKET, skus: SKU_GRANT, amount_fallback_cad_cents: AMOUNT_CAD_CENTS_TO_SKU, rule: "metadata.sku preferred. $499 = trunk, not atlas.", authority_effect: "NONE", note: "iris_tier_unlock values are SKU catalog labels, not Iris kernel AUTHORIZED" });
+        return json({ service: "dualiscapax-stripe-fulfill", jacket: JACKET, skus: SKU_GRANT, amount_fallback_cad_cents: AMOUNT_CAD_CENTS_TO_SKU, rule: "metadata.sku preferred. $499 = trunk, not atlas.", authority_effect: "NONE", note: "sku_catalog_label values are SKU catalog labels, not Iris kernel AUTHORIZED; D1 entitlements.tier is CLAIM_ONLY" });
       }
       return json({
         service: "dualiscapax-stripe-fulfill",

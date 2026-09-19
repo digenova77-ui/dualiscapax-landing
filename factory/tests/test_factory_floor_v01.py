@@ -94,10 +94,14 @@ class TestTeamSnapAllowlist(unittest.TestCase):
 
 class TestContractBind(unittest.TestCase):
     def test_client_local_simulation(self):
-        src = (ROOT / "cf-pages/js/contract-bind.js").read_text()
-        self.assertIn("CLIENT_LOCAL_SIMULATION", src)
-        self.assertIn('ok: false', src)
-        self.assertNotRegex(src, r'rec\.state\s*=\s*[^;\n]*SETTLED')
+        for rel in ("cf-pages/js/contract-bind.js", "js/contract-bind.js"):
+            src = (ROOT / rel).read_text()
+            self.assertIn("CLIENT_LOCAL_SIMULATION", src, rel)
+            self.assertIn("ok: false", src, rel)
+            self.assertNotRegex(src, r"rec\.state\s*=\s*[^;\n]*SETTLED")
+        a = (ROOT / "js/contract-bind.js").read_text()
+        b = (ROOT / "cf-pages/js/contract-bind.js").read_text()
+        self.assertEqual(a, b, "js/ and cf-pages/ contract-bind must stay byte-equal")
 
 
 class TestKvFailClosed(unittest.TestCase):
@@ -194,6 +198,23 @@ class TestFulfillLabelDemotion(unittest.TestCase):
         self.assertIn("iris_kernel_authorized: false", src)
         self.assertIn("sku_catalog_label", src)
         self.assertIn("KV_CANNOT_MINT_GRANT", src)
+
+    def test_d1_tier_column_is_claim_only_not_iris(self):
+        """PRODUCER must not write SPARK/BRANCH/DEPTH/ULTIMATE into entitlements.tier."""
+        src = (ROOT / "workers/stripe-fulfill/worker.js").read_text()
+        self.assertIn('tier: "CLAIM_ONLY"', src)
+        self.assertIn("demoteEntitlementRecord", src)
+        self.assertIn("tier_claim_authority", src)
+        self.assertNotIn("iris_tier_unlock", src)
+        self.assertNotRegex(
+            src,
+            r"tier:\s*grant\.(?:iris_tier_unlock|sku_catalog_label)",
+        )
+        idem = (ROOT / "workers/stripe-fulfill/idempotency.js").read_text()
+        self.assertIn('row.tier || "CLAIM_ONLY"', idem)
+        self.assertNotIn('row.tier || "GRANTED"', idem)
+        schema = (ROOT / "workers/stripe-fulfill/schema.sql").read_text()
+        self.assertIn("CLAIM_ONLY", schema)
 
 
 class TestReplayHarness(unittest.TestCase):
