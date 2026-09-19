@@ -70,10 +70,14 @@ function publicFields(row, kyc) {
     unityId: row.unity_id,
     declaredName: row.name_ok ? row.declared_name : null,
     nameOk: !!row.name_ok,
+    name_claim_authority: "CLAIM_ONLY",
+    name_verified_identity: false,
     locale: row.locale || null,
     lastRoom: row.last_room || null,
     kyc: !!kyc,
-    workAttested: !!row.work_attested
+    kyc_is_stripe_bound: !!kyc,
+    workAttested: !!row.work_attested,
+    authority_effect: "NONE"
   };
 }
 
@@ -137,7 +141,7 @@ export default {
       await env.DB.prepare(
         `UPDATE unity_fields SET declared_name = ?2, name_ok = ?3, updated_at = ?4 WHERE unity_id = ?1`
       ).bind(ses.unityId, name || null, nameOk ? 1 : 0, Date.now()).run();
-      return json({ ok: true, nameOk }, 200, origin);
+      return json({ ok: true, nameOk, name_claim_authority: "CLAIM_ONLY", name_verified_identity: false, kyc: false, authority_effect: "NONE" }, 200, origin);
     }
 
     if (path === "/hooks/identity" && request.method === "POST") {

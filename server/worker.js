@@ -18,6 +18,7 @@ import {
   demoteForbiddenLabels,
   isChatRoute,
 } from "./security-v2.js";
+import { handleTeamSnapToken } from "../cf-pages/workers/teamsnap-token-route.js";
 
 const XAI_URL = "https://api.x.ai/v1/chat/completions";
 const API_VERSION = "2";
@@ -60,8 +61,13 @@ export default {
           service: "dualiscapax-unified",
           has_key: Boolean(env && env.XAI_API_KEY),
           access: "open_floor_free",
+          access_claim: "OPEN_FLOOR_FREE_CLAIM",
           jacket: "SANDBOX",
+          jacket_is_authority: false,
+          iris_kernel_authorized: false,
+          authority_effect: "NONE",
           fuel_authority: "unbound_open_only",
+          note: "open_floor_free/SANDBOX are access claims, not Iris AUTHORIZED or economic settlement",
         },
         headers
       );
@@ -73,6 +79,9 @@ export default {
           api_version: API_VERSION,
           fuel: { client_fuel_is_claim: true, paid_tier: "FAIL_CLOSED_NO_LEDGER" },
           jacket_mode: "SANDBOX",
+          jacket_is_authority: false,
+          authority_effect: "NONE",
+          iris_kernel_authorized: false,
           notice: NOTICE,
         },
         headers
@@ -123,6 +132,10 @@ export default {
       );
     }
 
+
+    if (request.method === "POST" && path === "/v2/oauth/teamsnap/token") {
+      return handleTeamSnapToken(request, env);
+    }
     if (!(request.method === "POST" && isChatRoute(path))) {
       return json({ api_version: API_VERSION, ok: false, code: "NOT_FOUND", authority_effect: "NONE" }, headers, 404);
     }
