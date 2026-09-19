@@ -2,10 +2,23 @@
  * Drop into dualiscapax-depth worker:
  * POST /v2/oauth/teamsnap/token
  * Body: { code, client_id, redirect_uri, grant_type }
- * Env: TEAMSNAP_CLIENT_SECRET (and optional TEAMSNAP_CLIENT_ID allowlist)
+ * Env: TEAMSNAP_CLIENT_SECRET, TEAMSNAP_CLIENT_ID (required),
+ *      TEAMSNAP_REDIRECT_ALLOWLIST (comma-separated exact URIs; fail-closed if unset)
  *
  * Never log the secret or access_token.
  */
+function parseAllowlist(env) {
+  const raw = env && typeof env.TEAMSNAP_REDIRECT_ALLOWLIST === "string"
+    ? env.TEAMSNAP_REDIRECT_ALLOWLIST
+    : "";
+  return raw.split(",").map((s) => s.trim()).filter(Boolean);
+}
+
+function redirectAllowed(redirectUri, allowlist) {
+  if (!allowlist.length) return false;
+  return allowlist.includes(String(redirectUri || ""));
+}
+
 export async function handleTeamSnapToken(request, env) {
   if (request.method === "OPTIONS") {
     return new Response(null, {
@@ -27,8 +40,27 @@ export async function handleTeamSnapToken(request, env) {
   if (!code || !client_id || !redirect_uri) {
     return json({ error: "missing_params" }, 400, request);
   }
-  if (env.TEAMSNAP_CLIENT_ID && env.TEAMSNAP_CLIENT_ID !== client_id) {
+  // Fail closed: CLIENT_ID must be bound. Unset = confused-deputy open.
+  if (!env.TEAMSNAP_CLIENT_ID) {
+    return json({ error: "server_misconfigured", message: "TEAMSNAP_CLIENT_ID not set" }, 500, request);
+  }
+  if (env.TEAMSNAP_CLIENT_ID !== client_id) {
     return json({ error: "client_mismatch" }, 403, request);
+  }
+  const allowlist = parseAllowlist(env);
+  if (!allowlist.length) {
+    return json({
+      error: "redirect_allowlist_unbound",
+      message: "TEAMSNAP_REDIRECT_ALLOWLIST not set — fail closed",
+      authority_effect: "NONE"
+    }, 500, request);
+  }
+  if (!redirectAllowed(redirect_uri, allowlist)) {
+    return json({
+      error: "redirect_uri_rejected",
+      message: "redirect_uri not in TEAMSNAP_REDIRECT_ALLOWLIST",
+      authority_effect: "NONE"
+    }, 403, request);
   }
   if (!env.TEAMSNAP_CLIENT_SECRET) {
     return json({ error: "server_misconfigured", message: "TEAMSNAP_CLIENT_SECRET not set" }, 500, request);
@@ -73,3 +105,5 @@ function json(obj, status, request) {
     }
   });
 }
+
+export { parseAllowlist, redirectAllowed };

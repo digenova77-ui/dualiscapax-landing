@@ -187,6 +187,7 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
     }
   }
 
+  // KV cannot independently mint an authoritative grant (race + no ledger).
   const kvClaim = await claimDualKv(kv, eventId, sessionId, {
     event_id: eventId,
     session_id: sessionId,
@@ -195,38 +196,30 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
     status: "pending"
   });
   if (kvClaim.used && kvClaim.idempotent) {
-    return { ok: true, idempotent: true, jacket: "identity", store: "kv", via: kvClaim.via, record: kvClaim.record };
+    return {
+      ok: false,
+      idempotent: true,
+      authoritative: false,
+      authority_effect: "NONE",
+      jacket: "identity",
+      store: "kv",
+      via: kvClaim.via,
+      record: kvClaim.record,
+      reason: "KV_OBSERVATION_ONLY",
+      note: "Prior KV observation is not an authoritative grant"
+    };
   }
 
-  const record = {
-    at: new Date().toISOString(),
-    jacket: JACKET,
-    event_id: eventId,
-    session_id: sessionId,
-    atom: atom || null,
-    sku,
-    via,
-    grant,
-    email: email || null,
-    amount_total: amountTotal,
-    currency: currency || "cad",
-    status: "granted",
-    delivers: grant.delivers,
-    client_hint:
-      grant.kind === "fuel"
-        ? { action: "credit_fuel", units: grant.units, iris_tier: grant.iris_tier_unlock || null }
-        : { action: "open_seat", term_months: grant.term_months, perpetual: Boolean(grant.perpetual), ip: grant.ip, note: "Identity gate still applies for medical/engineering depth rooms" }
+  return {
+    ok: false,
+    idempotent: false,
+    authoritative: false,
+    authority_effect: "NONE",
+    jacket: "identity",
+    store: kv ? "kv" : "none",
+    reason: kvClaim.reason || "KV_CANNOT_MINT_GRANT",
+    note: "Fail closed: D1 claimGrant required; KV cannot mint grant"
   };
-
-  if (kv) {
-    if (email && grant.kind === "seat") {
-      await kv.put("seat:" + email.toLowerCase() + ":" + sku, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 400 });
-    }
-    await finalizeKv(kv, "event:" + eventId, record);
-    if (sessionId) await finalizeKv(kv, "session:" + sessionId, record);
-  }
-
-  return { ok: true, idempotent: false, jacket: JACKET, store: "kv", record };
 }
 
 function json(obj, status) {

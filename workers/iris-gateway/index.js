@@ -66,17 +66,31 @@ function json(body, status, request, env) {
 }
 
 function irisSuccess(output, request, env, railUsed) {
+  // Upstream LLM text observed. No DCLM evaluator ran — do not claim kernel convergence.
   return json({
     agent: "Iris",
     status: "SUCCESS",
-    governance: "DCLM_L0_CONVERGED",
+    governance: "DCLM_L0_PROMPT_APPLIED",
+    authority_effect: "NONE",
+    verification: "NOT_EXECUTED",
+    dclm: "NOT_EXECUTED",
+    evidence: "UPSTREAM_OBSERVED",
     rail: railUsed || "xai",
     output: String(output || "").trim(),
   }, 200, request, env);
 }
 
 function irisFail(statusCode, status, output, request, env) {
-  return json({ agent: "Iris", status, governance: "DCLM_L0_CONVERGED", output: String(output || "").trim() }, statusCode, request, env);
+  // Failure path never executed a DCLM evaluator.
+  return json({
+    agent: "Iris",
+    status,
+    governance: "DCLM_L0_NOT_EXECUTED",
+    authority_effect: "NONE",
+    verification: "NOT_EXECUTED",
+    dclm: "NOT_EXECUTED",
+    output: String(output || "").trim(),
+  }, statusCode, request, env);
 }
 
 const CONTROL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
