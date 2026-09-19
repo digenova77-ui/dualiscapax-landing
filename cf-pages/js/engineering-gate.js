@@ -35,6 +35,9 @@
     gnt.iris_kernel_authorized = false;
     gnt.economic_authority = false;
     gnt.state = 'CLIENT_LOCAL_UI_MARK';
+    var elev = ['AUTHORIZED', 'SETTLED', 'GRANTED', 'CONVERGED', 'DCLM_L0_CONVERGED', 'KYC_VERIFIED', 'ACTIVE_BOUND'];
+    if (gnt.tier != null && elev.indexOf(String(gnt.tier)) >= 0) gnt.tier = 'CLAIM_ONLY';
+    if (gnt.status != null && elev.indexOf(String(gnt.status)) >= 0) gnt.status = 'CLAIM_ONLY';
     return gnt;
   }
 
@@ -42,7 +45,10 @@
     try {
       var raw = localStorage.getItem(KEY);
       var gnt = raw ? JSON.parse(raw) : null;
-      if (gnt && gnt.ok) asClientLocalUiMark(gnt);
+      if (gnt && gnt.ok) {
+        asClientLocalUiMark(gnt);
+        write(gnt);
+      }
       return gnt;
     } catch (e) {
       return null;

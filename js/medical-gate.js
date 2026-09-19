@@ -56,6 +56,9 @@
     rec.iris_kernel_authorized = false;
     rec.economic_authority = false;
     rec.state = "CLIENT_LOCAL_UI_MARK";
+    var elev = ["AUTHORIZED", "SETTLED", "GRANTED", "CONVERGED", "DCLM_L0_CONVERGED", "KYC_VERIFIED", "ACTIVE_BOUND"];
+    if (rec.tier != null && elev.indexOf(String(rec.tier)) >= 0) rec.tier = "CLAIM_ONLY";
+    if (rec.status != null && elev.indexOf(String(rec.status)) >= 0) rec.status = "CLAIM_ONLY";
     return rec;
   }
 
@@ -63,7 +66,10 @@
     try {
       var raw = sessionStorage.getItem(KEY);
       var g = raw ? JSON.parse(raw) : null;
-      if (g && g.ok) asClientLocalUiMark(g);
+      if (g && g.ok) {
+        asClientLocalUiMark(g);
+        write(g);
+      }
       return g;
     } catch (e) {
       return null;

@@ -100,7 +100,7 @@
     opt = opt || {};
     var holes = missing(["L3"]);
     if (holes.length) {
-      return { ok: false, state: "HOLE", holes: holes, law: "TRUTH_OR_NOTHING" };
+      return { ok: false, state: "HOLE", holes: holes, law: "TRUTH_OR_NOTHING", economic_authority: false, authority_effect: "NONE" };
     }
     var row = onboardRow();
     var terms = await termsHash();
@@ -132,11 +132,11 @@
   async function settle(sku, sessionId) {
     var rec = current();
     if (!rec || !rec.contract_nullifier) {
-      return { ok: false, state: "HOLE", reason: "FAIL_CLOSED_ENCLAVE_ABSENT" };
+      return { ok: false, state: "HOLE", reason: "FAIL_CLOSED_ENCLAVE_ABSENT", economic_authority: false, authority_effect: "NONE" };
     }
     var used = usedMap();
     if (used[rec.contract_nullifier]) {
-      return { ok: false, state: "HOLE", reason: "FAIL_CLOSED_NULLIFIER_REPLAY" };
+      return { ok: false, state: "HOLE", reason: "FAIL_CLOSED_NULLIFIER_REPLAY", economic_authority: false, authority_effect: "NONE" };
     }
     var seatLike = /^(leaf|branch|trunk|library|edu_leaf)$/.test(String(sku || ""));
     if (seatLike && missing(["L4"]).length) {
