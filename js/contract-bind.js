@@ -100,7 +100,7 @@
     opt = opt || {};
     var holes = missing(["L3"]);
     if (holes.length) {
-      return { ok: false, state: "HOLE", holes: holes, law: "TRUTH_OR_NOTHING" };
+      return { ok: false, state: "HOLE", holes: holes, law: "TRUTH_OR_NOTHING", economic_authority: false, authority_effect: "NONE" };
     }
     var row = onboardRow();
     var terms = await termsHash();
@@ -132,11 +132,11 @@
   async function settle(sku, sessionId) {
     var rec = current();
     if (!rec || !rec.contract_nullifier) {
-      return { ok: false, state: "HOLE", reason: "FAIL_CLOSED_ENCLAVE_ABSENT" };
+      return { ok: false, state: "HOLE", reason: "FAIL_CLOSED_ENCLAVE_ABSENT", economic_authority: false, authority_effect: "NONE" };
     }
     var used = usedMap();
     if (used[rec.contract_nullifier]) {
-      return { ok: false, state: "HOLE", reason: "FAIL_CLOSED_NULLIFIER_REPLAY" };
+      return { ok: false, state: "HOLE", reason: "FAIL_CLOSED_NULLIFIER_REPLAY", economic_authority: false, authority_effect: "NONE" };
     }
     var seatLike = /^(leaf|branch|trunk|library|edu_leaf)$/.test(String(sku || ""));
     if (seatLike && missing(["L4"]).length) {
@@ -144,10 +144,21 @@
     }
     rec.sku = sku || rec.sku || null;
     rec.session_id = sessionId || rec.session_id || null;
-    rec.state = seatLike && !fuelOn() ? "HELD" : "SETTLED";
+    // Client-local only. SETTLED+ok is never economic authority.
+    rec.state = seatLike && !fuelOn() ? "HELD" : "CLIENT_LOCAL_SIMULATION";
+    rec.authority_effect = "NONE";
+    rec.economic_authority = false;
     rec.settled_at = new Date().toISOString();
     writeJSON(STORE, rec);
-    return { ok: true, record: rec, metadata: { sku: rec.sku, contract_nullifier: rec.contract_nullifier } };
+    return {
+      ok: false,
+      state: "CLIENT_LOCAL_SIMULATION",
+      authority_effect: "NONE",
+      economic_authority: false,
+      record: rec,
+      metadata: { sku: rec.sku, contract_nullifier: rec.contract_nullifier },
+      note: "Device-local bind simulation. Server ledger settlement required for economic effect."
+    };
   }
 
   function consume(nullifier) {
