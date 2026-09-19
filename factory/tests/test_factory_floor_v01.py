@@ -546,6 +546,8 @@ class TestSourceArtifactBoundary(unittest.TestCase):
                 "demoteEntitlementRecord",
                 "CLAIM_ONLY",
                 'DC_ARTIFACT_TIP = "UNSTAMPED"',
+                "binding_presence_claim_only",
+                "PARKED_UNTIL_BIND_CONTINUE",
             ),
             ("iris_tier_unlock",),
         ),
@@ -640,6 +642,17 @@ class TestSourceArtifactBoundary(unittest.TestCase):
             body1 = (out / "worker.js").read_text()
             self.assertIn(f'DC_ARTIFACT_TIP = "{tip}"', body1)
             self.assertNotIn('DC_ARTIFACT_TIP = "UNSTAMPED"', body1)
+            receipt_path = out / ".dc_artifact_tip_receipt.json"
+            self.assertTrue(receipt_path.is_file(), "stamp must write content-hash receipt")
+            import hashlib
+            import json
+
+            receipt = json.loads(receipt_path.read_text())
+            self.assertEqual(receipt["tip"], tip)
+            self.assertEqual(receipt["correspondence"], "UNVERIFIED_STRING_REWRITE_ONLY")
+            self.assertTrue(receipt["files"])
+            got = hashlib.sha256(body1.encode()).hexdigest()
+            self.assertEqual(receipt["files"][0]["sha256"], got)
 
 
 class TestEngineImportSurfaceDivergence(unittest.TestCase):
@@ -695,6 +708,36 @@ class TestEngineImportSurfaceDivergence(unittest.TestCase):
                 if mod == "engine" or mod.startswith("engine."):
                     del sys.modules[mod]
 
+    def test_semantic_api_divergence_measure_vs_authority(self):
+        """Not just import path: measure.run and AuthorityKernel.decide are different programs."""
+        import importlib
+
+        for mod in list(sys.modules):
+            if mod == "engine" or mod.startswith("engine."):
+                del sys.modules[mod]
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        measure = importlib.import_module("engine.dclm.kernel")
+        rec = measure.run("rabbit-hole residual probe")
+        self.assertEqual(type(rec).__name__, "Record")
+        self.assertIn(rec.grant, ("SEED", "MEASURE", "YES", "NO", "WAIT_GRANT", "VETO"))
+        self.assertFalse(hasattr(measure, "Decision"))
+        self.assertFalse(hasattr(measure, "AuthorityKernel"))
+        # Authority surface (src/) — different API; do not unify.
+        auth_src = (ROOT / "src/engine/dclm/kernel.py").read_text()
+        self.assertIn("class AuthorityKernel", auth_src)
+        self.assertIn("class Decision", auth_src)
+        self.assertIn("def decide(", auth_src)
+        self.assertNotIn("\ndef run(", auth_src)
+        self.assertIn('AUTHORIZED = "AUTHORIZED"', auth_src)
+        # Measure Record never emits Decision.AUTHORIZED
+        self.assertNotEqual(getattr(rec, "grant", None), "AUTHORIZED")
+        self.assertNotEqual(getattr(rec, "grant", None), "CONVERGED")
+        self.assertNotEqual(
+            (ROOT / "engine/dclm/kernel.py").read_bytes(),
+            (ROOT / "src/engine/dclm/kernel.py").read_bytes(),
+        )
+
 
 class TestEnvAuthorityDefaultsFailClosed(unittest.TestCase):
     """Git wrangler defaults must stay fail-closed; live dashboard NOT_VERIFIED."""
@@ -745,6 +788,266 @@ class TestMedicalGatePromptDriftAllowlist(unittest.TestCase):
         self.assertIn("Public checkout is not offered", suffix)
         self.assertNotIn("AUTHORIZED", suffix)
         self.assertNotIn("CONVERGED", suffix)
+
+
+class TestTipStampAdversarialIntegrity(unittest.TestCase):
+    """Tip stamp bypasses: correspondence unverified; receipt detects post-stamp mutate."""
+
+    def _tip(self):
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip()
+
+    def test_orphan_unstamped_body_stamps_without_source_correspondence(self):
+        import json
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="stamp-orphan-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                'export const DC_ARTIFACT_TIP = "UNSTAMPED"; const EVIL = "orphan";\n'
+            )
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            body = (out / "worker.js").read_text()
+            self.assertIn(f'DC_ARTIFACT_TIP = "{tip}"', body)
+            self.assertIn('EVIL = "orphan"', body)
+            receipt = json.loads((out / ".dc_artifact_tip_receipt.json").read_text())
+            self.assertEqual(receipt["correspondence"], "UNVERIFIED_STRING_REWRITE_ONLY")
+
+    def test_post_stamp_mutation_breaks_receipt_hash(self):
+        import hashlib
+        import json
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="stamp-mutate-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                'export const DC_ARTIFACT_TIP = "UNSTAMPED";\n'
+            )
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            receipt = json.loads((out / ".dc_artifact_tip_receipt.json").read_text())
+            art = out / "worker.js"
+            art.write_text(art.read_text() + "\n/* mutated after stamp */\n")
+            got = hashlib.sha256(art.read_bytes()).hexdigest()
+            self.assertNotEqual(receipt["files"][0]["sha256"], got)
+
+    def test_omit_tip_marker_refused(self):
+        import tempfile
+
+        tip = self._tip()
+        with tempfile.TemporaryDirectory(prefix="stamp-omit-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text("export default {};\n")
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertNotEqual(s.returncode, 0)
+
+    def test_foreign_tip_refused(self):
+        import tempfile
+
+        tip = self._tip()
+        foreign = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        with tempfile.TemporaryDirectory(prefix="stamp-foreign-") as tmp:
+            out = Path(tmp)
+            (out / "worker.js").write_text(
+                f'export const DC_ARTIFACT_TIP = "{foreign}";\n'
+            )
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertNotEqual(s.returncode, 0)
+            self.assertIn("foreign tip", s.stderr.lower() + s.stdout.lower())
+
+
+class TestStripeParkedState(unittest.TestCase):
+    """No test/fixture/env default converts parked into operational authority."""
+
+    def test_gate_closed_webhook_returns_applied_false(self):
+        gate = (ROOT / "workers/dualis-gate/dualis-bc.js").read_text()
+        self.assertIn('reason: "closed"', gate)
+        self.assertIn("applied: false", gate)
+        self.assertIn('CHECKOUT_OPEN = "false"', (ROOT / "workers/dualis-gate/wrangler.toml").read_text())
+        # No wrangler/fixture flips checkout open; compare is exact "true" only.
+        for rel in (
+            "workers/dualis-gate/wrangler.toml",
+            "workers/stripe-fulfill/wrangler.toml",
+            "workers/iris-gateway/wrangler.toml",
+            "server/wrangler.toml",
+        ):
+            self.assertNotIn('CHECKOUT_OPEN = "true"', (ROOT / rel).read_text(), rel)
+
+    def test_fulfill_health_binding_presence_is_claim_only(self):
+        fulfill = (ROOT / "workers/stripe-fulfill/worker.js").read_text()
+        self.assertIn("binding_presence_claim_only: true", fulfill)
+        self.assertIn('operational_authority: "NONE"', fulfill)
+        self.assertIn('stripe_process_state: "PARKED_UNTIL_BIND_CONTINUE"', fulfill)
+        self.assertIn("has_webhook_secret: Boolean(env && env.STRIPE_WEBHOOK_SECRET)", fulfill)
+
+    def test_accept_stripe_event_never_mints_kyc(self):
+        src = (ROOT / "workers/dualis-gate/d1-idempotency.js").read_text()
+        self.assertIn("kyc_written: false", src)
+        self.assertNotIn("INSERT INTO unity_kyc", src)
+        self.assertIn("authority_effect: \"NONE\"", src)
+
+
+class TestOriginJoinNotFactoryFloorArtifact(unittest.TestCase):
+    """origin-join stays on main; its output is not a verified factory-floor-v01 artifact."""
+
+    def test_raw_pin_is_main_not_factory_floor_branch(self):
+        oj = (ROOT / "workers/origin-join/worker.js").read_text()
+        self.assertIn(
+            "raw.githubusercontent.com/digenova77-ui/dualiscapax-landing/main", oj
+        )
+        self.assertNotIn("factory-floor-v01", oj)
+        self.assertIn('"x-dc-join":"origin-join"', oj.replace(" ", ""))
+        # Tip marker is worker build tip only — not content tip of proxied main files.
+        self.assertIn('DC_ARTIFACT_TIP = "UNSTAMPED"', oj)
+
+    def test_join_header_is_not_verified_tip_claim(self):
+        oj = (ROOT / "workers/origin-join/worker.js").read_text()
+        for banned in ("VERIFIED_FACTORY_FLOOR", "DEPLOYABLE", "TIP_VERIFIED_CONTENT"):
+            self.assertNotIn(banned, oj)
+
+
+class TestMarkerAdmissibleEvidence(unittest.TestCase):
+    """Marker strings are not semantic proof; lock admissible evidence fences."""
+
+    ADMISSIBLE = {
+        "AUTHORIZED": "AuthorityKernel.decide + live Twain AGREE + ProofObject (Twain stub → never)",
+        "AGREE": "Twain.independent_replay live result (stub → UNKNOWN)",
+        "CONVERGED": "DCLM evaluator + measure obligations closed (Iris forbids DCLM_L0_CONVERGED string)",
+        "VALIDATED": "demoted by demoteForbiddenLabels — never elevating",
+        "PASS": "caller AGREE/PASS unbound → UNKNOWN in AuthorityKernel",
+        "STAMPED": "DC_ARTIFACT_TIP rewritten + receipt hash match (correspondence still UNVERIFIED)",
+        "READY": "not an authority token in Workers",
+        "DEPLOYABLE": "requires live binds NOT_VERIFIED + Bind-continue — suite green ≠ deployable",
+    }
+
+    def test_demote_bans_elevating_markers(self):
+        sec = (ROOT / "server/security-v2.js").read_text()
+        for m in ("AUTHORIZED", "VALIDATED", "CONVERGED", "KYC_VERIFIED"):
+            self.assertIn(f'"{m}"', sec)
+        self.assertIn("function demoteForbiddenLabels", sec)
+
+    def test_admissible_evidence_table_documented(self):
+        # Fence: suite records what would be required — does not claim evidence exists.
+        for marker, evidence in self.ADMISSIBLE.items():
+            self.assertTrue(marker)
+            self.assertTrue(evidence)
+        floor = (ROOT / "factory/FLOOR_V01.md").read_text()
+        self.assertIn("marker tests ≠ semantic proof", floor)
+        self.assertIn("Twain", floor)
+
+
+class TestFulfillHealthNotProdReadiness(unittest.TestCase):
+    """Test env / health JSON must not establish prod readiness."""
+
+    def test_status_up_is_not_operational_authority(self):
+        fulfill = (ROOT / "workers/stripe-fulfill/worker.js").read_text()
+        self.assertIn('status: "up"', fulfill)
+        self.assertIn('operational_authority: "NONE"', fulfill)
+        self.assertIn("binding_presence_claim_only: true", fulfill)
+        # Health may report binding presence; must not elevate to AUTHORIZED/READY.
+        self.assertNotIn('operational_authority: "AUTHORIZED"', fulfill)
+        self.assertNotIn('stripe_process_state: "OPERATIONAL"', fulfill)
+
+
+class TestRecursiveFactoryBeliefFence(unittest.TestCase):
+    """(a) Factory must not believe Workers without evidence; (b) invert."""
+
+    def test_factory_does_not_claim_deploy_from_green_suite(self):
+        floor = (ROOT / "factory/FLOOR_V01.md").read_text()
+        self.assertIn("NOT deploy-ready", floor)
+        self.assertIn("Twain UNKNOWN", floor)
+        self.assertIn("Stripe PARKED", floor)
+
+    def test_artifact_tip_does_not_imply_source_correspondence(self):
+        tool = (ROOT / "factory/tools/stamp_artifact_tip.mjs").read_text()
+        self.assertIn("UNVERIFIED_STRING_REWRITE_ONLY", tool)
+        self.assertIn("does NOT prove", tool)
+
+    def test_origin_join_pack_green_does_not_mean_tip_content(self):
+        oj = (ROOT / "workers/origin-join/worker.js").read_text()
+        self.assertIn("/main", oj)
+
+
+class TestSourceArtifactProvenanceMutation(unittest.TestCase):
+    """Clean pack stamps; semantic mutation after stamp breaks receipt hash."""
+
+    def test_clean_pack_receipt_matches_bytes(self):
+        import hashlib
+        import json
+        import tempfile
+
+        tip = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip()
+        with tempfile.TemporaryDirectory(prefix="prov-clean-") as tmp:
+            out = Path(tmp) / "origin-join"
+            r = subprocess.run(
+                [
+                    "npx",
+                    "wrangler",
+                    "deploy",
+                    "-c",
+                    "workers/origin-join/wrangler.toml",
+                    "--dry-run",
+                    "--outdir",
+                    str(out),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=120,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr)
+            s = subprocess.run(
+                ["node", "factory/tools/stamp_artifact_tip.mjs", str(out), tip],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            self.assertEqual(s.returncode, 0, s.stderr)
+            body = (out / "worker.js").read_text()
+            receipt = json.loads((out / ".dc_artifact_tip_receipt.json").read_text())
+            self.assertEqual(
+                receipt["files"][0]["sha256"],
+                hashlib.sha256(body.encode()).hexdigest(),
+            )
+            # Semantic mutation must be detectable via receipt.
+            mutated = body + "\n;export const FORGED_AUTHORIZED = true;\n"
+            self.assertNotEqual(
+                receipt["files"][0]["sha256"],
+                hashlib.sha256(mutated.encode()).hexdigest(),
+            )
+
+
 
 
 if __name__ == "__main__":

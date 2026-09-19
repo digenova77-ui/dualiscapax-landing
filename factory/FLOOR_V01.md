@@ -48,3 +48,19 @@ Repairs in this campaign:
 
 Still NOT deploy-ready: live bindings/secrets NOT_VERIFIED, Stripe PARKED, Twain UNKNOWN,
 marker tests ≠ semantic proof, origin-join still proxies GitHub `main` (explicit).
+
+
+## Rabbit-hole hunt (2026-09-19)
+
+Attack log extension: `/workspace/BOUNDARY_RESIDUAL_ATTACK_LOG.md` + `/workspace/RABBIT_HOLE_REPORT.md`.
+
+Repairs:
+- Tip stamp writes `.dc_artifact_tip_receipt.json` (sha256 of stamped bytes); correspondence stays `UNVERIFIED_STRING_REWRITE_ONLY`.
+- Adversarial tip-stamp tests: orphan stamp, post-stamp mutate, omit marker, foreign tip.
+- Dual-kernel semantic API fence (measure `Record`/`grant` ≠ Authority `Decision`/`decide`); unification still speculative.
+- Stripe fulfill health: `binding_presence_claim_only` + `operational_authority: NONE` + `PARKED_UNTIL_BIND_CONTINUE`.
+- origin-join proof: RAW `/main` pin ≠ factory-floor-v01 verified artifact (left on main).
+- Marker admissible-evidence table + recursive Factory belief fences.
+
+Still NOT deploy-ready: live bindings/secrets NOT_VERIFIED, Stripe PARKED, Twain UNKNOWN,
+marker tests ≠ semantic proof, tip correspondence unverified, origin-join still proxies GitHub `main`.

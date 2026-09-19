@@ -270,9 +270,13 @@ export default {
         events: Object.keys(ALLOWED_EVENTS),
         skus: Object.keys(SKU_GRANT),
         jackets: ["cryptographic", "identity", "merchandise"],
+        // Binding presence ≠ operational authority. Stripe stays PARKED until Bind-continue.
         has_webhook_secret: Boolean(env && env.STRIPE_WEBHOOK_SECRET),
         has_kv: Boolean(env && env.FULFILL_KV),
         has_d1: Boolean(db(env)),
+        binding_presence_claim_only: true,
+        operational_authority: "NONE",
+        stripe_process_state: "PARKED_UNTIL_BIND_CONTINUE",
         idempotency: "evt_ plus cs_ plus atom; D1 write-once lots; no KV fuel +="
       });
     }
