@@ -134,7 +134,8 @@ produced `fulfill.ok:true` and wrote `events`/`entitlements`/`fuel_credits`/`gra
 while dualis-gate `CHECKOUT_OPEN=false`. Health claimed `PARKED_UNTIL_BIND_CONTINUE`
 but the grant path was not gated.
 
-**REPAIR:** After signature verify and merch refine, before `grantAccess`:
+**REPAIR:** After signature verify and paid check, **before** merch refine /
+`grantAccess` (park precedes merchandise jacket — not after merch):
 if `String(env.CHECKOUT_OPEN||'') !== 'true'`, return
 `{received:true, fulfill:{ok:false, reason:'closed', authority_effect:'NONE', ...}}`
 and do **not** write D1 grants/fuel/entitlements/events via `claimGrantD1`.
@@ -145,3 +146,23 @@ Git `workers/stripe-fulfill/wrangler.toml` `[vars] CHECKOUT_OPEN = "false"`
 `duplicate` / `collision` / `authority_effect` / `status` without promoting authority.
 
 Deploy readiness: **NO**. Do **not** set `CHECKOUT_OPEN=true`.
+
+## Parked residuals hit (2026-09-19)
+
+Campaign: `/workspace/PARKED_RESIDUALS_HIT_REPORT.md` (from
+`PARKED_BOUNDARY_ATTACK_REPORT.md` R1–R9).
+
+| ID | Disposition |
+|----|-------------|
+| R1 | Runbook `docs/ops/RESIDUAL_R1_TOKEN_SCOPE.md` + CI forbid `d1 execute`; user must rotate CF token (no D1 Edit) |
+| R2 | Listed pre-park versions; API DELETE → 405 unavailable; serving `5599c24d…` kept |
+| R3 | `.github/workflows/stripe-fulfill.yml` requires `admit_stripe_fulfill_deploy.sh` before deploy |
+| R4 | Live `/hooks/stripe` observability VERIFIED by parent after gate secret re-put; identity live still needs `STRIPE_IDENTITY_SECRET` on card; source `kyc_written` always false |
+| R5 | `docs/ops/FF3_FORENSIC_ROWS_QUARANTINE.md` — leave ff3 rows in place |
+| R6 | `docs/ops/ARTIFACT_TIP_UNSTAMPED.md` — UNSTAMPED in git intentional; CI stamps outdir |
+| R7 | `docs/ops/FULFILL_GATE_OPEN_COUPLING.md` — coupling absent; **no open** |
+| R8 | `docs/ops/CF_SCRIPT_SETTINGS_VS_VERSION.md` + `scripts/cf_worker_bindings_observe.mjs`; bare gate deploy without local D1 strips DB |
+| R9 | This section: park is **before** merch (code comment + gate order), not after |
+
+Twain: still STUB → **UNKNOWN**. DCLM: no fake **CONVERGED**. Deploy readiness: **NO**.
+Do **not** set `CHECKOUT_OPEN=true`. Do **not** Pages/apex deploy from this campaign.

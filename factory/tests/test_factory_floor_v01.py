@@ -1750,5 +1750,104 @@ class TestSemanticGutEgg(unittest.TestCase):
 
 
 
+
+class TestParkedResidualsHit(unittest.TestCase):
+    """Residuals R1–R9 repo hardeners (HIT campaign 2026-09-19)."""
+
+    def test_stripe_fulfill_workflow_requires_admit_gate(self):
+        """R3: deploy workflow must admit before wrangler deploy."""
+        wf = (ROOT / ".github/workflows/stripe-fulfill.yml").read_text()
+        self.assertIn("admit_stripe_fulfill_deploy.sh", wf)
+        self.assertIn("Admit artifact authority", wf)
+        # deploy step must appear after admit step in file order
+        self.assertLess(wf.find("admit_stripe_fulfill_deploy.sh"), wf.find("command: deploy"))
+        self.assertIn("MUST NEVER run", wf)
+        admit = (ROOT / "factory/tools/admit_stripe_fulfill_deploy.sh").read_text()
+        self.assertIn("admit_artifact_authority.mjs", admit)
+        self.assertIn("--semantic-profile stripe", admit)
+        self.assertIn("--require-derivation", admit)
+        self.assertIn('CHECKOUT_OPEN = "false"', admit)
+        # Comment may say "Does NOT run d1 execute"; forbid actual invoke.
+        for line in admit.splitlines():
+            s = line.strip()
+            if s.startswith("#"):
+                continue
+            self.assertNotRegex(s, r"wrangler\s+d1\s+execute")
+
+    def test_stripe_fulfill_workflow_forbids_d1_execute(self):
+        """R1: stripe-fulfill workflow must not invoke d1 execute."""
+        wf = (ROOT / ".github/workflows/stripe-fulfill.yml").read_text()
+        for line in wf.splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            if stripped.startswith("- name:"):
+                continue
+            if "grep" in stripped:
+                continue
+            if "Forbid d1" in stripped or "MUST NEVER" in stripped:
+                continue
+            self.assertNotRegex(
+                stripped,
+                r"wrangler\s+d1\s+execute",
+                msg=f"d1 execute invoke in workflow line: {stripped}",
+            )
+            # bare `d1 execute` as a shell command word (not prose)
+            if stripped.startswith("npx ") or stripped.startswith("wrangler "):
+                self.assertNotIn("d1 execute", stripped)
+        self.assertTrue(
+            (ROOT / "docs/ops/RESIDUAL_R1_TOKEN_SCOPE.md").is_file()
+        )
+
+    def test_park_gate_precedes_merch_in_fulfill_and_floor_doc(self):
+        """R9: park before merch in code; FLOOR must not say after merch refine."""
+        fulfill = (ROOT / "workers/stripe-fulfill/worker.js").read_text()
+        idx_gate = fulfill.find('String(env.CHECKOUT_OPEN || "") !== "true"')
+        idx_merch = fulfill.find("const merch = merchandiseJacket(session")
+        idx_grant = fulfill.find("await grantAccess(env,")
+        self.assertGreater(idx_gate, 0)
+        self.assertGreater(idx_merch, 0)
+        self.assertLess(idx_gate, idx_merch, "park must precede merch")
+        self.assertLess(idx_gate, idx_grant)
+        self.assertIn("before any merch/grant", fulfill)
+        floor = (ROOT / "factory/FLOOR_V01.md").read_text()
+        self.assertNotIn("After signature verify and merch refine, before", floor)
+        self.assertIn("park precedes merchandise", floor)
+        self.assertIn("Parked residuals hit", floor)
+
+    def test_artifact_tip_unstamped_in_git_sources(self):
+        """R6: git sources stay UNSTAMPED; doc explains CI stamp."""
+        for rel in (
+            "workers/stripe-fulfill/worker.js",
+            "workers/dualis-gate/dualis-bc.js",
+        ):
+            body = (ROOT / rel).read_text()
+            self.assertIn('DC_ARTIFACT_TIP = "UNSTAMPED"', body, rel)
+        self.assertTrue((ROOT / "docs/ops/ARTIFACT_TIP_UNSTAMPED.md").is_file())
+
+    def test_residual_docs_r5_r7_r8_present(self):
+        """R5/R7/R8 documentation surfaces exist."""
+        for rel in (
+            "docs/ops/FF3_FORENSIC_ROWS_QUARANTINE.md",
+            "docs/ops/FULFILL_GATE_OPEN_COUPLING.md",
+            "docs/ops/CF_SCRIPT_SETTINGS_VS_VERSION.md",
+            "docs/ops/RESIDUAL_R2_VERSION_RETENTION.md",
+            "scripts/cf_worker_bindings_observe.mjs",
+        ):
+            self.assertTrue((ROOT / rel).is_file(), rel)
+        obs = (ROOT / "scripts/cf_worker_bindings_observe.mjs").read_text()
+        self.assertIn("/versions/", obs)
+        self.assertIn("only_in_version_not_settings", obs)
+        r7 = (ROOT / "docs/ops/FULFILL_GATE_OPEN_COUPLING.md").read_text()
+        self.assertIn("Do not", r7)
+        self.assertIn("CHECKOUT_OPEN=true", r7)
+        r5 = (ROOT / "docs/ops/FF3_FORENSIC_ROWS_QUARANTINE.md").read_text()
+        self.assertIn("LEAVE IN PLACE", r5)
+        r8 = (ROOT / "docs/ops/CF_SCRIPT_SETTINGS_VS_VERSION.md").read_text()
+        self.assertIn("strips", r8.lower())
+        self.assertIn("wrangler.local.toml", r8)
+
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
