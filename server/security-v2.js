@@ -13,7 +13,7 @@ export const LIMITS = {
 export const STATES = {
   transport: { SUCCESS: "SUCCESS", FAILED: "FAILED", NOT_EXECUTED: "NOT_EXECUTED" },
   authorization: {
-    ANONYMOUS_OPEN_AUTHORIZED: "ANONYMOUS_OPEN_AUTHORIZED",
+    ANONYMOUS_OPEN_FLOOR: "ANONYMOUS_OPEN_FLOOR",
     INSUFFICIENT_EVIDENCE: "INSUFFICIENT_EVIDENCE",
     UNKNOWN: "UNKNOWN",
     DENIED: "DENIED",
@@ -135,7 +135,7 @@ export function authorizeChat({ serverLedgerBalance }) {
     };
   }
   return {
-    authorization: STATES.authorization.ANONYMOUS_OPEN_AUTHORIZED,
+    authorization: STATES.authorization.ANONYMOUS_OPEN_FLOOR,
     reason: "NO_SERVER_LEDGER_OPEN_FLOOR_ONLY",
     tier: "OPEN",
     model: "grok-4-fast",
@@ -211,11 +211,17 @@ export function demoteForbiddenLabels(obj) {
     "CONVERGED",
     "KYC_VERIFIED",
     "ACTIVE_BOUND",
+    "ANONYMOUS_OPEN_AUTHORIZED",
   ];
-  const claimOnlyKeys = new Set(["claim_authority", "tier", "status", "state", "governance", "verification", "dclm", "authority"]);
+  const claimOnlyKeys = new Set(["claim_authority", "tier", "status", "state", "governance", "verification", "dclm", "authority", "authorization"]);
   const out = Object.assign({}, obj || {});
   for (const k of Object.keys(out)) {
     const v = String(out[k]);
+    if (k === "authority_effect" && ["AUTHORIZED", "GRANTED", "SETTLED", "CONVERGED"].includes(v)) {
+      out.authority_effect = "NONE";
+      out.authority_effect_demoted = true;
+      continue;
+    }
     if (banned.includes(v)) {
       out[k] = claimOnlyKeys.has(k) ? "CLAIM_ONLY" : "FORBIDDEN_LABEL_REMOVED";
       out[k + "_demoted"] = true;
@@ -228,10 +234,6 @@ export function demoteForbiddenLabels(obj) {
   if ("iris_kernel_authorized" in out) out.iris_kernel_authorized = false;
   if ("seat_authority" in out) out.seat_authority = false;
   if ("economic_authority" in out) out.economic_authority = false;
-  if (out.authority_effect && ["AUTHORIZED", "GRANTED", "SETTLED", "CONVERGED"].includes(String(out.authority_effect))) {
-    out.authority_effect = "NONE";
-    out.authority_effect_demoted = true;
-  }
   return out;
 }
 

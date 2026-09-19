@@ -218,10 +218,16 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders(request, env) });
     }
     if (request.method === "GET") {
+      // Layer declaration only — not kernel convergence / Iris AUTHORIZED.
       return json({
         agent: "Iris",
         status: "UP",
-        governance: "DCLM_L0",
+        governance: "DCLM_L0_LAYER_DECLARED",
+        governance_claim_authority: "CLAIM_ONLY",
+        authority_effect: "NONE",
+        verification: "NOT_EXECUTED",
+        dclm: "NOT_EXECUTED",
+        iris_kernel_authorized: false,
         layer: DCLM_L0,
         route: "/api/iris",
         methods: ["OPTIONS", "POST"],
