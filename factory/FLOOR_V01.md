@@ -81,3 +81,47 @@ Minimal repair:
 
 Still NOT deploy-ready: live bindings/secrets NOT_VERIFIED, Stripe PARKED, Twain UNKNOWN,
 marker tests ≠ semantic proof, origin-join still proxies GitHub `main`.
+
+## Authority admit + semantic gut egg (2026-09-19)
+
+Core Q1: can an **UNVERIFIED** provenance story (tip + matching receipt, no
+`--require-derivation`) still reach an **authority-bearing** operation?
+
+Inventory of tip/receipt/stamp consumers:
+- `stamp_artifact_tip.mjs` — producer; default stamp → `UNVERIFIED` (integrity story only)
+- `verify_artifact_receipt.mjs` — integrity; exit 3 = story without re-proven derivation
+- Worker `DC_ARTIFACT_TIP` embeds — marker only, not a gate
+- Tests / docs — non-authority
+- **Before this round: no admit gate.** Omitted flag / default stamp / direct call /
+  CI absence / stale receipts could be *believed* as deploy-admissible.
+
+Answer before repair: **YES** (belief/operator path; no code gate blocked UNVERIFIED).
+
+Minimal repair:
+- `admit_artifact_authority.mjs` is the **SOLE** authority-bearing consumer of tip/receipt.
+- Mandates `--expected-pre-stamp` + verify `--require-derivation` exit 0.
+- UNVERIFIED / verify exit 3 / omitted expected → **AUTHORITY_REFUSED** (FAIL CLOSED).
+- Default stamp remains allowed for integrity-only use (not globally forced).
+
+### Semantic gut (P3) — byte provenance ≠ semantic integrity
+
+Mutations that preserve tip+receipt+marker *names* but gut authority semantics:
+| Mutation | Tip/receipt layer | Trusted expected+require-derivation | Admit semantic fingerprint | Runtime demote (if not gutted) |
+|---|---|---|---|---|
+| DEMOTE→identity / PROMOTE gut | tip+receipt still stamp | fails vs *clean* expected; passes vs *evil* self-expected | **FAIL CLOSED** (`identity_demoteForbiddenLabels` / `demote_ban_list_missing`) | fails open if identity |
+| NONE→AUTHORIZED | stamp ok | same as above | **FAIL CLOSED** (`elevating_authority_effect`) | demoteForbiddenLabels would strip if intact |
+| UNKNOWN→AGREE hardcode | stamp ok | same | **FAIL CLOSED** (`unknown_to_agree_hardcode`) | Twain stub still UNKNOWN at kernel |
+| CLAIM_ONLY→VALIDATED | stamp ok | same | **FAIL CLOSED** (`claim_only_to_validated`) | demote would reclaim if intact |
+
+Evil twin that keeps tip+receipt+markers but breaks authority semantics must
+**FAIL CLOSED** at `admit_artifact_authority` semantic boundary (permanent tests
+in `TestSemanticGutEgg`). Byte provenance alone is not semantic proof.
+
+Twain: still STUB → **UNKNOWN** (not AGREE).
+DCLM: no fake **CONVERGED**.
+Stripe webhook: still **PARKED** (do not bind `sk_` as `STRIPE_WEBHOOK_SECRET`).
+origin-join: stays on `main`.
+Deploy readiness: **NO** (live binds/secrets NOT_VERIFIED).
+
+Still NOT deploy-ready: live bindings/secrets NOT_VERIFIED, Stripe PARKED, Twain UNKNOWN,
+marker tests ≠ semantic proof, origin-join still proxies GitHub `main`.
