@@ -35,3 +35,16 @@ Twain: still STUB → independent replay UNKNOWN (not AGREE/CONVERGED).
   (AuthorityKernel) remain divergent by design; import `engine` ≠ src file load
   (`TestEngineImportSurfaceDivergence`).
 - Twain still STUB → UNKNOWN. Env/bindings still NOT_VERIFIED. No deploy.
+
+## Residual boundary attacks (2026-09-19)
+
+Attack log: `/workspace/BOUNDARY_RESIDUAL_ATTACK_LOG.md` (written before repairs).
+
+Repairs in this campaign:
+- `DC_ARTIFACT_TIP = "UNSTAMPED"` in Worker entrypoints; `factory/tools/stamp_artifact_tip.mjs` stamps tip into dry-run outdir.
+- Factory pins origin-join + fail-closed wrangler defaults (`CHECKOUT_OPEN`, `IRIS_ALLOW_HOUSE_KEY`).
+- Dual-kernel cwd=`src/` hazard locked; `src/engine/__init__.py` must stay absent.
+- medical-gate prompt() drift allowlisted as cf-pages suffix-only.
+
+Still NOT deploy-ready: live bindings/secrets NOT_VERIFIED, Stripe PARKED, Twain UNKNOWN,
+marker tests ≠ semantic proof, origin-join still proxies GitHub `main` (explicit).
