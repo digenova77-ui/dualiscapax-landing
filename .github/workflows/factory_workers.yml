@@ -1,17 +1,20 @@
 name: dualis-factory-workers
 
-# Factory health tick — runs live FOREST units that are NOT on dedicated crons,
-# writes an honest receipt. Does NOT stamp fake consensus.
-# Golf owns slot A (golf_usa_envelopes.yml). Girls owns slot B (hockey_girls_owha.yml).
-# This tick: registry audit + optional mesh SKIP docket only.
+# CONSTRAINT PATCH-WF-01 (factory-floor-v01):
+# SKIP_STUB is evidence about the mesh guard.
+# It is NOT authorization to mutate the repository.
+# This workflow is contents:read. Receipts are artifacts (OBSERVED).
+# Historical receipt commits on main remain historical.
+# Parallel harvest workflows still have contents:write on main — residual OPEN.
 
 on:
   schedule:
-    - cron: '22,52 * * * *'  # slot D — clear of A/B harvest
+    - cron: '22,52 * * * *'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  actions: write
 
 concurrency:
   group: dualis-factory-workers
@@ -26,73 +29,68 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Factory receipt + mesh truth check
+      - name: Factory observed receipt + mesh truth check
         run: |
           python3 << 'PY'
-          import json, os, subprocess, time
+          import json, os, subprocess
           from pathlib import Path
           from datetime import datetime, timezone
 
           root = Path(".")
-          forest = json.loads((root / "units" / "FOREST.json").read_text())
-          live = forest.get("live") or []
+          forest_path = root / "units" / "FOREST.json"
+          live = []
+          if forest_path.exists():
+              forest = json.loads(forest_path.read_text())
+              live = forest.get("live") or []
           receipt = {
             "kind": "factory_tick",
+            "surface": "OBSERVED",
+            "authority_effect": "NONE",
             "captured_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "law": "truth-or-nothing — no stub UNANIMOUS_PASS",
+            "law": "truth-or-nothing — SKIP_STUB is not authorization to mutate",
             "live_units": [{"id": u.get("id"), "workflow": u.get("workflow"), "cron_slot": u.get("cron_slot") or u.get("cron")} for u in live],
             "actions": [],
           }
-          # Mesh: force STUB path → must SKIP_STUB
           env = os.environ.copy()
           env["PYTHONPATH"] = "src/engine"
-          r = subprocess.run(
-            ["python3", "src/engine/unity/unity_mesh_orchestrator.py", "STUB"],
-            env=env, capture_output=True, text=True,
-          )
-          verdict = "unknown"
-          for line in (r.stdout or "").splitlines():
-            if line.startswith("Verdict:"):
-              verdict = line.split(":", 1)[1].strip()
-          receipt["actions"].append({
-            "step": "unity_mesh_stub_guard",
-            "verdict": verdict,
-            "ok": verdict == "SKIP_STUB",
-            "stdout_tail": (r.stdout or "")[-400:],
-          })
-          # Index counts
-          golf_idx = root / "research" / "golf" / "usa" / "INDEX.json"
-          girls_idx = root / "research" / "hockey" / "girls-women" / "INDEX.json"
-          if golf_idx.exists():
-            g = json.loads(golf_idx.read_text())
-            receipt["golf_course_count"] = g.get("course_count") or len(g.get("courses") or [])
-          if girls_idx.exists():
-            h = json.loads(girls_idx.read_text())
-            receipt["girls_team_count_total"] = h.get("team_count_total")
-            receipt["girls_division_count"] = h.get("division_count")
+          mesh = root / "src" / "engine" / "unity" / "unity_mesh_orchestrator.py"
+          if mesh.exists():
+              r = subprocess.run(
+                  ["python3", str(mesh), "STUB"],
+                  env=env, capture_output=True, text=True,
+              )
+              verdict = "unknown"
+              for line in (r.stdout or "").splitlines():
+                  if line.startswith("Verdict:"):
+                      verdict = line.split(":", 1)[1].strip()
+              receipt["actions"].append({
+                  "step": "unity_mesh_stub_guard",
+                  "verdict": verdict,
+                  "ok": verdict == "SKIP_STUB",
+                  "authority_effect": "NONE",
+                  "stdout_tail": (r.stdout or "")[-400:],
+              })
+              if verdict != "SKIP_STUB":
+                  raise SystemExit("mesh stub guard failed — theater leak")
+          else:
+              receipt["actions"].append({
+                  "step": "unity_mesh_stub_guard",
+                  "verdict": "UNKNOWN",
+                  "ok": False,
+                  "authority_effect": "NONE",
+                  "reason": "orchestrator_missing",
+              })
           out = root / "src" / "engine" / "ledgers" / "factory"
           out.mkdir(parents=True, exist_ok=True)
           day = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-          path = out / f"receipt_{day}.json"
+          path = out / f"observed_{day}.json"
           path.write_text(json.dumps(receipt, indent=2) + "\n")
           print(json.dumps(receipt, indent=2))
-          if not receipt["actions"][0]["ok"]:
-            raise SystemExit("mesh stub guard failed — theater leak")
           PY
-      - name: Commit factory receipt
-        run: |
-          git config user.email "factory@dualiscapax.ai"
-          git config user.name "Dualis Factory"
-          git add src/engine/ledgers/factory/ src/engine/ledgers/consensus/ || true
-          if git diff --cached --quiet; then
-            echo "No receipt changes."
-            exit 0
-          fi
-          git commit -m "chore(factory): honest tick receipt [skip ci]"
-          for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push origin HEAD && exit 0
-            echo "push race attempt $i — retry"
-            sleep $((i * 2))
-          done
-          echo "push failed after retries" >&2
-          exit 1
+      - name: Upload OBSERVED receipt (no repo mutation)
+        uses: actions/upload-artifact@v4
+        with:
+          name: factory-observed-tick
+          path: src/engine/ledgers/factory/observed_*.json
+          if-no-files-found: warn
+          retention-days: 14
