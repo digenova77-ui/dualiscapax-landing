@@ -1,4 +1,8 @@
-/** Preemptive local session — one click, no server required. */
+/** Client correlation stamp — NOT a server session.
+ *  CLIENT_CORRELATION_ID != SERVER_AUTHENTICATED_SESSION
+ *  localStorage here never establishes authentication, authorization,
+ *  Fuel, entitlement, or verification.
+ */
 (function (g) {
   var KEY = 'dc_session_v1';
 
@@ -8,6 +12,8 @@
   }
 
   g.DCSession = {
+    kind: 'CLIENT_CORRELATION_ID',
+    authoritative: false,
     read: function () {
       try {
         var raw = localStorage.getItem(KEY);
@@ -19,14 +25,18 @@
     stamp: function () {
       var prev = this.read();
       var s = {
+        kind: 'CLIENT_CORRELATION_ID',
+        authoritative: false,
+        authority_effect: 'NONE',
         id: (prev && prev.id) || uuid(),
         at: new Date().toISOString(),
-        v: 1,
+        v: 2,
       };
       try {
         localStorage.setItem(KEY, JSON.stringify(s));
       } catch (e) {}
       g.DC_SESSION = s.id;
+      g.DC_SESSION_KIND = 'CLIENT_CORRELATION_ID';
       return s;
     },
     id: function () {
@@ -36,5 +46,8 @@
   };
 
   var existing = g.DCSession.read();
-  if (existing) g.DC_SESSION = existing.id;
+  if (existing) {
+    g.DC_SESSION = existing.id;
+    g.DC_SESSION_KIND = 'CLIENT_CORRELATION_ID';
+  }
 })(typeof window !== 'undefined' ? window : globalThis);

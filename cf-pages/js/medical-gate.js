@@ -1,9 +1,14 @@
-/** DualisCapax medical door.
- *  Open to every qualifying house:
- *    — institutional email on .org
- *    — institutional email on .gov
- *    — ranking affiliate at top SEAL tier (Dualis-issued mark)
- *  Simulation is not treatment. Not a diagnosis. Not a cure.
+/**
+ * DualisCapax medical door.
+ * Open to every qualifying house:
+ *   — institutional email on .org
+ *   — institutional email on .gov
+ *   — ranking affiliate at top SEAL tier (Dualis-issued mark)
+ * Simulation is not treatment. Not a diagnosis. Not a cure.
+ *
+ * CLIENT_LOCAL_UI_MARK only — sessionStorage unlock for depth UI.
+ * NOT SeatLaw. NOT Iris AUTHORIZED. NOT economic authority.
+ * ok:true opens medical depth pages locally; claim_authority stays CLAIM_ONLY.
  */
 (function () {
   var KEY = "dc.medical.gate.v1";
@@ -41,10 +46,31 @@
     if (/^SEAL-?1/.test(m) || /^DC-SEAL-?1/.test(m) || /^SEAL-T1/.test(m)) return m;
     return "";
   }
+
+  /** Stamp / normalize: never elevate a local UI mark to seat/Iris/economic. */
+  function asClientLocalUiMark(rec) {
+    if (!rec || typeof rec !== "object") return rec;
+    rec.claim_authority = "CLAIM_ONLY";
+    rec.authority_effect = "NONE";
+    rec.seat_authority = false;
+    rec.iris_kernel_authorized = false;
+    rec.economic_authority = false;
+    rec.state = "CLIENT_LOCAL_UI_MARK";
+    var elev = ["AUTHORIZED", "SETTLED", "GRANTED", "CONVERGED", "DCLM_L0_CONVERGED", "KYC_VERIFIED", "ACTIVE_BOUND"];
+    if (rec.tier != null && elev.indexOf(String(rec.tier)) >= 0) rec.tier = "CLAIM_ONLY";
+    if (rec.status != null && elev.indexOf(String(rec.status)) >= 0) rec.status = "CLAIM_ONLY";
+    return rec;
+  }
+
   function read() {
     try {
       var raw = sessionStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : null;
+      var g = raw ? JSON.parse(raw) : null;
+      if (g && g.ok) {
+        asClientLocalUiMark(g);
+        write(g);
+      }
+      return g;
     } catch (e) {
       return null;
     }
@@ -60,10 +86,10 @@
   }
   function decide(email, mark) {
     var host = hostOf(email);
-    if (host && isGov(host)) return { ok: true, kind: "gov", host: host };
-    if (host && isOrg(host)) return { ok: true, kind: "org", host: host };
+    if (host && isGov(host)) return asClientLocalUiMark({ ok: true, kind: "gov", host: host });
+    if (host && isOrg(host)) return asClientLocalUiMark({ ok: true, kind: "org", host: host });
     var seal = rankingMark(mark);
-    if (seal) return { ok: true, kind: "affiliate", host: host || "rank", seal: seal };
+    if (seal) return asClientLocalUiMark({ ok: true, kind: "affiliate", host: host || "rank", seal: seal });
     return { ok: false, kind: "", host: host };
   }
 
@@ -77,6 +103,7 @@
       d.org = String(org || "").trim();
       d.email = norm(email);
       d.at = Date.now();
+      asClientLocalUiMark(d);
       write(d);
       document.documentElement.classList.add("is-med-open");
       return d;
