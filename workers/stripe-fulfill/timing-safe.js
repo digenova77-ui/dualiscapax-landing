@@ -1,4 +1,8 @@
-/** Constant-time compare. No early return on first mismatch. */
+/**
+ * DualisCapax — constant-time compare + HMAC-SHA256 hex (Egg #11 draft).
+ * In-tree copy of workers/_shared/timing-safe.js (wrangler package root).
+ * Keep byte-parity with CANONICAL shared module. Fail closed. HMAC ≠ authorization.
+ */
 
 export function timingSafeEqualBytes(a, b) {
   if (!(a instanceof Uint8Array) || !(b instanceof Uint8Array)) return false;
@@ -32,4 +36,20 @@ export function timingSafeEqualString(a, b) {
   if (typeof a !== "string" || typeof b !== "string") return false;
   var enc = new TextEncoder();
   return timingSafeEqualBytes(enc.encode(a), enc.encode(b));
+}
+
+export async function hmacSha256Hex(message, secret) {
+  if (typeof message !== "string" || typeof secret !== "string" || !secret) return "";
+  var enc = new TextEncoder();
+  var key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  var sig = await crypto.subtle.sign("HMAC", key, enc.encode(message));
+  return [...new Uint8Array(sig)].map(function (b) {
+    return b.toString(16).padStart(2, "0");
+  }).join("");
 }
