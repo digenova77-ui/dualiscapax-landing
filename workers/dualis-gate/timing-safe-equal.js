@@ -1,4 +1,8 @@
-/** Constant-time compare + HMAC-SHA256 hex. Fail closed. */
+/**
+ * DualisCapax — constant-time compare + HMAC-SHA256 hex (Egg #11 draft).
+ * In-tree copy of workers/_shared/timing-safe.js (wrangler package root).
+ * Keep byte-parity with CANONICAL shared module. Fail closed. HMAC ≠ authorization.
+ */
 
 export function timingSafeEqualBytes(a, b) {
   if (!(a instanceof Uint8Array) || !(b instanceof Uint8Array)) return false;
@@ -25,6 +29,13 @@ export function timingSafeEqualHex(a, b) {
   var right = hexToBytes(String(b || "").toLowerCase());
   if (!left || !right) return false;
   return timingSafeEqualBytes(left, right);
+}
+
+/** UTF-8 byte compare. Empty or non-strings fail closed. Length mismatch fails before the loop. */
+export function timingSafeEqualString(a, b) {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  var enc = new TextEncoder();
+  return timingSafeEqualBytes(enc.encode(a), enc.encode(b));
 }
 
 export async function hmacSha256Hex(message, secret) {
