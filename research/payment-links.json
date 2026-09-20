@@ -18,7 +18,10 @@
   },
   "webhook": {
     "worker_path": "workers/stripe-fulfill/",
-    "events": ["checkout.session.completed", "checkout.session.async_payment_succeeded"],
+    "events": [
+      "checkout.session.completed",
+      "checkout.session.async_payment_succeeded"
+    ],
     "deployed_url": "https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/",
     "status": "code_present_secrets_unbound"
   },
@@ -30,97 +33,428 @@
     "R-FLOOR": "now+30d"
   },
   "parallel_combos": {
-    "PAY-1": {"A": "Fiat CAD Stripe Payment Link", "B": "Equal-CAD BTC/ETH/SOL/USDC", "rule": "No exchange product"},
-    "SEAT-1": {"A": "Corporate residual seat", "B": "Grassroots residual seat", "rule": "Same peg"},
-    "ORDER-1": {"A": "Early residual founding window", "B": "Later residual", "rule": "Same product quality"},
-    "REWARD-1": {"A": "Plaque / early pricing / continuity", "B": "No equity-by-default", "rule": "Not securities"}
+    "PAY-1": {
+      "A": "Fiat CAD Stripe Payment Link",
+      "B": "Equal-CAD BTC/ETH/SOL/USDC",
+      "rule": "No exchange product"
+    },
+    "SEAT-1": {
+      "A": "Corporate residual seat",
+      "B": "Grassroots residual seat",
+      "rule": "Same peg"
+    },
+    "ORDER-1": {
+      "A": "Early residual founding window",
+      "B": "Later residual",
+      "rule": "Same product quality"
+    },
+    "REWARD-1": {
+      "A": "Plaque / early pricing / continuity",
+      "B": "No equity-by-default",
+      "rule": "Not securities"
+    }
   },
   "payment_links": {
     "test": {
       "account": "acct_1U88YYDqmjVPW2C0",
       "livemode": false,
       "fuel_10": null,
-      "fuel_40": "https://buy.stripe.com/test_7sY00j9Ea05p2klebz3ZK03",
-      "fuel_120": "https://buy.stripe.com/test_3cI00j7w24lF3op2sR3ZK04",
-      "fuel_320": "https://buy.stripe.com/test_8x200j2bI4lF2kl1oN3ZK05",
+      "fuel_40": null,
+      "fuel_120": null,
+      "fuel_320": null,
       "fuel_1000": null,
       "edu_leaf": null,
-      "leaf": "https://buy.stripe.com/test_aFaeVdcQm5pJ8IJ1oN3ZK00",
+      "leaf": null,
       "branch": null,
-      "trunk": "https://buy.stripe.com/test_5kQ14n6rYbO78IJ0kJ3ZK02",
+      "trunk": null,
       "library": null
     },
     "live": {
       "account": null,
       "livemode": true,
       "fuel_10": null,
-      "fuel_40": "https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05",
-      "fuel_120": "https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02",
-      "fuel_320": "https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01",
+      "fuel_40": null,
+      "fuel_120": null,
+      "fuel_320": null,
       "fuel_1000": null,
       "edu_leaf": null,
-      "leaf": "https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04",
+      "leaf": null,
       "branch": null,
-      "trunk": "https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00",
+      "trunk": null,
       "library": null,
-      "note": "Live URLs kept only where CAD amount still matches V8. Branch $149 URL retired (now $299). Old $499 library URL remapped to Super-Trunk. Atlas $1,499 has no link yet."
+      "note": "Egg #15 FREEZE: live buy.stripe.com URLs nulled under PRODUCTION FREEZE. Restore only under jacket reopen YES. Prior D4 plinks remain active=false at Stripe."
     }
   },
   "access_layers": {
-    "L0_LOOK": { "who": "anyone", "invoke": "read public residual prose", "cad": 0, "status": "open" },
-    "L1_MEASURE": { "who": "anyone", "invoke": "measure + crypto audit receipt", "cad": 0, "status": "open" },
-    "L2_EDU_LEAF": { "who": "prepaid seat", "invoke": "30-day educational indication overview", "cad": 19, "sku": "SKU-016", "status": "closed" },
-    "L2_LEAF": { "who": "prepaid seat", "invoke": "one gated room, 12 mo", "cad": 49, "sku": "SKU-017", "status": "closed" },
-    "L3_BRANCH": { "who": "prepaid seat", "invoke": "subsystem clade, 12 mo", "cad": 299, "sku": "SKU-018", "status": "closed" },
-    "L4_TRUNK": { "who": "prepaid seat", "invoke": "one super-trunk domain class, 12 mo", "cad": 499, "sku": "SKU-019", "status": "closed" },
-    "L4_LIBRARY": { "who": "prepaid seat", "invoke": "atlas / index, perpetual — not sealed bodies", "cad": 1499, "sku": "SKU-029", "status": "closed" },
-    "L5_FUEL_10": { "who": "prepaid fuel", "invoke": "10 Fuel depth run", "cad": 5, "sku": "SKU-001", "status": "closed" },
-    "L5_FUEL_40": { "who": "prepaid fuel", "invoke": "40 Fuel depth run", "cad": 20, "sku": "SKU-002", "status": "closed" },
-    "L5_FUEL_120": { "who": "prepaid fuel", "invoke": "120 Fuel depth run", "cad": 50, "sku": "SKU-003", "status": "closed" },
-    "L5_FUEL_320": { "who": "prepaid fuel", "invoke": "320 Fuel depth run", "cad": 120, "sku": "SKU-004", "status": "closed" },
-    "L5_FUEL_1000": { "who": "prepaid fuel", "invoke": "1,000 Fuel depth run", "cad": 350, "sku": "SKU-005", "status": "closed" },
-    "FOUNDING": { "who": "verified founding seat", "invoke": "plaque + residual order memory", "cad": "TBD · closed", "status": "priced_closed" },
-    "CROWN": { "who": "owner wet-ink only", "invoke": "owner-only cross-class, CRA, government", "cad": null, "status": "never_agent" },
-    "WAIT_GRANT": { "who": "owner yes/no", "invoke": "OAuth / token for a named realm", "cad": 0, "status": "slot" }
+    "L0_LOOK": {
+      "who": "anyone",
+      "invoke": "read public residual prose",
+      "cad": 0,
+      "status": "open"
+    },
+    "L1_MEASURE": {
+      "who": "anyone",
+      "invoke": "measure + crypto audit receipt",
+      "cad": 0,
+      "status": "open"
+    },
+    "L2_EDU_LEAF": {
+      "who": "prepaid seat",
+      "invoke": "30-day educational indication overview",
+      "cad": 19,
+      "sku": "SKU-016",
+      "status": "closed"
+    },
+    "L2_LEAF": {
+      "who": "prepaid seat",
+      "invoke": "one gated room, 12 mo",
+      "cad": 49,
+      "sku": "SKU-017",
+      "status": "closed"
+    },
+    "L3_BRANCH": {
+      "who": "prepaid seat",
+      "invoke": "subsystem clade, 12 mo",
+      "cad": 299,
+      "sku": "SKU-018",
+      "status": "closed"
+    },
+    "L4_TRUNK": {
+      "who": "prepaid seat",
+      "invoke": "one super-trunk domain class, 12 mo",
+      "cad": 499,
+      "sku": "SKU-019",
+      "status": "closed"
+    },
+    "L4_LIBRARY": {
+      "who": "prepaid seat",
+      "invoke": "atlas / index, perpetual \u2014 not sealed bodies",
+      "cad": 1499,
+      "sku": "SKU-029",
+      "status": "closed"
+    },
+    "L5_FUEL_10": {
+      "who": "prepaid fuel",
+      "invoke": "10 Fuel depth run",
+      "cad": 5,
+      "sku": "SKU-001",
+      "status": "closed"
+    },
+    "L5_FUEL_40": {
+      "who": "prepaid fuel",
+      "invoke": "40 Fuel depth run",
+      "cad": 20,
+      "sku": "SKU-002",
+      "status": "closed"
+    },
+    "L5_FUEL_120": {
+      "who": "prepaid fuel",
+      "invoke": "120 Fuel depth run",
+      "cad": 50,
+      "sku": "SKU-003",
+      "status": "closed"
+    },
+    "L5_FUEL_320": {
+      "who": "prepaid fuel",
+      "invoke": "320 Fuel depth run",
+      "cad": 120,
+      "sku": "SKU-004",
+      "status": "closed"
+    },
+    "L5_FUEL_1000": {
+      "who": "prepaid fuel",
+      "invoke": "1,000 Fuel depth run",
+      "cad": 350,
+      "sku": "SKU-005",
+      "status": "closed"
+    },
+    "FOUNDING": {
+      "who": "verified founding seat",
+      "invoke": "plaque + residual order memory",
+      "cad": "TBD \u00b7 closed",
+      "status": "priced_closed"
+    },
+    "CROWN": {
+      "who": "owner wet-ink only",
+      "invoke": "owner-only cross-class, CRA, government",
+      "cad": null,
+      "status": "never_agent"
+    },
+    "WAIT_GRANT": {
+      "who": "owner yes/no",
+      "invoke": "OAuth / token for a named realm",
+      "cad": 0,
+      "status": "slot"
+    }
   },
   "skus": {
-    "look": { "name": "Look", "cad": 0, "status": "open", "ip": "public_floor", "tab": "free" },
-    "basic": { "name": "Basic measure", "cad": 0, "status": "open", "ip": "public_floor", "tab": "free" },
-    "fuel_10": { "sku": "SKU-001", "name": "Fuel 10", "cad": 5, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "unit": "10 Runs", "live_url": null },
-    "depth_s": { "sku": "SKU-002", "name": "Fuel 40", "cad": 20, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "unit": "40 Runs", "live_url": "https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05" },
-    "depth_m": { "sku": "SKU-003", "name": "Fuel 120", "cad": 50, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "unit": "120 Runs", "live_url": "https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02" },
-    "depth_l": { "sku": "SKU-004", "name": "Fuel 320", "cad": 120, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "unit": "320 Runs", "live_url": "https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01" },
-    "fuel_1000": { "sku": "SKU-005", "name": "Fuel 1,000", "cad": 350, "crypto_equal_cad": true, "status": "closed", "ip": "fuel_time", "tab": "fuel", "unit": "1,000 Runs", "live_url": null },
-    "edu_leaf": { "sku": "SKU-016", "name": "Educational indication leaf", "cad": 19, "crypto_equal_cad": true, "status": "closed", "ip": "overview_30d", "tab": "seats", "unit": "30-Day Pass", "live_url": null },
-    "leaf": { "sku": "SKU-017", "name": "Single-room leaf", "cad": 49, "crypto_equal_cad": true, "status": "closed", "ip": "one_room", "tab": "seats", "unit": "12-Month Pass", "live_url": "https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04" },
-    "branch": { "sku": "SKU-018", "name": "Subsystem clade branch pack", "cad": 299, "crypto_equal_cad": true, "status": "closed", "ip": "one_field", "tab": "seats", "unit": "12-Month Pass", "live_url": null, "notes": "V8 list CAD $299. CAD $149 is legacy test-link only." },
-    "trunk": { "sku": "SKU-019", "name": "Super-Trunk domain pack", "cad": 499, "crypto_equal_cad": true, "status": "closed", "ip": "domain_class_toolkit", "tab": "seats", "unit": "12-Month Pass", "live_url": "https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00", "notes": "Live $499 link is Super-Trunk. Not atlas." },
-    "library": { "sku": "SKU-029", "name": "Atlas / index", "cad": 1499, "crypto_equal_cad": true, "status": "closed", "ip": "atlas_index", "tab": "seats", "unit": "Perpetual", "live_url": null, "notes": "CAD $1,499 atlas/index. Not a sealed-body dump. No live link until operator creates a $1,499 Payment Link." },
-    "hockey_game": { "sku": "SKU-081", "name": "Hockey matchup monograph", "cad": 19, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "tab": "alacarte" },
-    "hockey_season": { "sku": "SKU-083", "name": "Youth team season pacing pass", "cad": 149, "crypto_equal_cad": true, "status": "priced_closed", "hub": "hockey", "tab": "alacarte" },
-    "golf_round": { "sku": "SKU-079", "name": "Golf single-round pass", "cad": 9.99, "crypto_equal_cad": true, "status": "priced_closed", "hub": "golf", "tab": "alacarte" },
-    "golf_season": { "sku": "SKU-080", "name": "Golf full-season kinematic pass", "cad": 149, "crypto_equal_cad": true, "status": "priced_closed", "hub": "golf", "tab": "alacarte" },
-    "med_mono": { "sku": "SKU-017", "name": "Medical monograph", "cad": 49, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "tab": "alacarte" },
-    "med_lab": { "sku": "SKU-018", "name": "Medical clade branch", "cad": 299, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "tab": "alacarte" },
-    "med_compendium": { "sku": "SKU-029", "name": "Medical atlas / index", "cad": 1499, "crypto_equal_cad": true, "status": "priced_closed", "hub": "medical", "tab": "alacarte" },
-    "kitchen_mo": { "sku": "SKU-036", "name": "Kitchen 5-vector thermal pack", "cad": 79, "crypto_equal_cad": true, "status": "priced_closed", "hub": "kitchen", "tab": "alacarte" },
-    "kitchen_fleet": { "sku": "SKU-037", "name": "Restaurant fleet 10 units", "cad": 349, "crypto_equal_cad": true, "status": "priced_closed", "hub": "kitchen", "tab": "alacarte" },
-    "kitchen_year": { "sku": "SKU-038", "name": "Franchise kitchen mesh 50 units", "cad": 1299, "crypto_equal_cad": true, "status": "priced_closed", "hub": "kitchen", "tab": "alacarte" }
+    "look": {
+      "name": "Look",
+      "cad": 0,
+      "status": "open",
+      "ip": "public_floor",
+      "tab": "free"
+    },
+    "basic": {
+      "name": "Basic measure",
+      "cad": 0,
+      "status": "open",
+      "ip": "public_floor",
+      "tab": "free"
+    },
+    "fuel_10": {
+      "sku": "SKU-001",
+      "name": "Fuel 10",
+      "cad": 5,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "fuel_time",
+      "tab": "fuel",
+      "unit": "10 Runs",
+      "live_url": null
+    },
+    "depth_s": {
+      "sku": "SKU-002",
+      "name": "Fuel 40",
+      "cad": 20,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "fuel_time",
+      "tab": "fuel",
+      "unit": "40 Runs",
+      "live_url": null
+    },
+    "depth_m": {
+      "sku": "SKU-003",
+      "name": "Fuel 120",
+      "cad": 50,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "fuel_time",
+      "tab": "fuel",
+      "unit": "120 Runs",
+      "live_url": null
+    },
+    "depth_l": {
+      "sku": "SKU-004",
+      "name": "Fuel 320",
+      "cad": 120,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "fuel_time",
+      "tab": "fuel",
+      "unit": "320 Runs",
+      "live_url": null
+    },
+    "fuel_1000": {
+      "sku": "SKU-005",
+      "name": "Fuel 1,000",
+      "cad": 350,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "fuel_time",
+      "tab": "fuel",
+      "unit": "1,000 Runs",
+      "live_url": null
+    },
+    "edu_leaf": {
+      "sku": "SKU-016",
+      "name": "Educational indication leaf",
+      "cad": 19,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "overview_30d",
+      "tab": "seats",
+      "unit": "30-Day Pass",
+      "live_url": null
+    },
+    "leaf": {
+      "sku": "SKU-017",
+      "name": "Single-room leaf",
+      "cad": 49,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "one_room",
+      "tab": "seats",
+      "unit": "12-Month Pass",
+      "live_url": null
+    },
+    "branch": {
+      "sku": "SKU-018",
+      "name": "Subsystem clade branch pack",
+      "cad": 299,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "one_field",
+      "tab": "seats",
+      "unit": "12-Month Pass",
+      "live_url": null,
+      "notes": "V8 list CAD $299. CAD $149 is legacy test-link only."
+    },
+    "trunk": {
+      "sku": "SKU-019",
+      "name": "Super-Trunk domain pack",
+      "cad": 499,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "domain_class_toolkit",
+      "tab": "seats",
+      "unit": "12-Month Pass",
+      "live_url": null,
+      "notes": "Live $499 link is Super-Trunk. Not atlas."
+    },
+    "library": {
+      "sku": "SKU-029",
+      "name": "Atlas / index",
+      "cad": 1499,
+      "crypto_equal_cad": true,
+      "status": "closed",
+      "ip": "atlas_index",
+      "tab": "seats",
+      "unit": "Perpetual",
+      "live_url": null,
+      "notes": "CAD $1,499 atlas/index. Not a sealed-body dump. No live link until operator creates a $1,499 Payment Link."
+    },
+    "hockey_game": {
+      "sku": "SKU-081",
+      "name": "Hockey matchup monograph",
+      "cad": 19,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "hockey",
+      "tab": "alacarte"
+    },
+    "hockey_season": {
+      "sku": "SKU-083",
+      "name": "Youth team season pacing pass",
+      "cad": 149,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "hockey",
+      "tab": "alacarte"
+    },
+    "golf_round": {
+      "sku": "SKU-079",
+      "name": "Golf single-round pass",
+      "cad": 9.99,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "golf",
+      "tab": "alacarte"
+    },
+    "golf_season": {
+      "sku": "SKU-080",
+      "name": "Golf full-season kinematic pass",
+      "cad": 149,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "golf",
+      "tab": "alacarte"
+    },
+    "med_mono": {
+      "sku": "SKU-017",
+      "name": "Medical monograph",
+      "cad": 49,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "medical",
+      "tab": "alacarte"
+    },
+    "med_lab": {
+      "sku": "SKU-018",
+      "name": "Medical clade branch",
+      "cad": 299,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "medical",
+      "tab": "alacarte"
+    },
+    "med_compendium": {
+      "sku": "SKU-029",
+      "name": "Medical atlas / index",
+      "cad": 1499,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "medical",
+      "tab": "alacarte"
+    },
+    "kitchen_mo": {
+      "sku": "SKU-036",
+      "name": "Kitchen 5-vector thermal pack",
+      "cad": 79,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "kitchen",
+      "tab": "alacarte"
+    },
+    "kitchen_fleet": {
+      "sku": "SKU-037",
+      "name": "Restaurant fleet 10 units",
+      "cad": 349,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "kitchen",
+      "tab": "alacarte"
+    },
+    "kitchen_year": {
+      "sku": "SKU-038",
+      "name": "Franchise kitchen mesh 50 units",
+      "cad": 1299,
+      "crypto_equal_cad": true,
+      "status": "priced_closed",
+      "hub": "kitchen",
+      "tab": "alacarte"
+    }
   },
   "alacarte_hubs": {
-    "hockey": { "headline": "Stop 3rd-period fatigue collapses.", "cta": "Generate tonight's gameplan", "primary": "hockey_game" },
-    "golf": { "headline": "The caddie that knows the physics of every yard.", "cta": "Start 18-hole caddie pass", "primary": "golf_round" },
-    "medical": { "headline": "Depth rooms stay gated. This layer is Look + seat when open.", "cta": "Read the medical gate", "primary": "med_mono" },
-    "kitchen": { "headline": "Cut kitchen energy and food waste.", "cta": "Optimize kitchen operations", "primary": "kitchen_mo" }
+    "hockey": {
+      "headline": "Stop 3rd-period fatigue collapses.",
+      "cta": "Generate tonight's gameplan",
+      "primary": "hockey_game"
+    },
+    "golf": {
+      "headline": "The caddie that knows the physics of every yard.",
+      "cta": "Start 18-hole caddie pass",
+      "primary": "golf_round"
+    },
+    "medical": {
+      "headline": "Depth rooms stay gated. This layer is Look + seat when open.",
+      "cta": "Read the medical gate",
+      "primary": "med_mono"
+    },
+    "kitchen": {
+      "headline": "Cut kitchen energy and food waste.",
+      "cta": "Optimize kitchen operations",
+      "primary": "kitchen_mo"
+    }
   },
   "system_costs": {
-    "pages_host": { "cad_month": 0, "status": "defined", "note": "GitHub Pages" },
-    "stripe_fee_when_open": { "rate": "processor schedule", "status": "named_formula" },
-    "crypto_network_fee": { "payer": "sender or processor", "status": "named" },
-    "stripe_link": { "status": "LINKS_PRESENT_SALES_CLOSED", "note": "Amount-matched live buy.stripe.com URLs exist. Access sales flag is closed." },
-    "treasury_address": { "status": "WAIT_RAIL" },
-    "fiat_to_crypto_processor": { "status": "WAIT_RAIL" },
-    "webhook_worker": { "status": "url_present_cloudflare_secrets_unbound" }
+    "pages_host": {
+      "cad_month": 0,
+      "status": "defined",
+      "note": "GitHub Pages"
+    },
+    "stripe_fee_when_open": {
+      "rate": "processor schedule",
+      "status": "named_formula"
+    },
+    "crypto_network_fee": {
+      "payer": "sender or processor",
+      "status": "named"
+    },
+    "stripe_link": {
+      "status": "LINKS_PARKED_URLS_NULL_SALES_CLOSED",
+      "note": "Egg #15: apex-served buy.stripe.com strings removed from catalog. Jacket open=false. D4 Stripe plinks parked."
+    },
+    "treasury_address": {
+      "status": "WAIT_RAIL"
+    },
+    "fiat_to_crypto_processor": {
+      "status": "WAIT_RAIL"
+    },
+    "webhook_worker": {
+      "status": "url_present_cloudflare_secrets_unbound"
+    }
   },
   "ledger": {
     "LEDGER-EARNED": 0,
@@ -128,7 +462,11 @@
     "unit": "CAD",
     "status": "closed"
   },
-  "receive": { "usdc": null, "btc": null, "chain_usdc": null },
+  "receive": {
+    "usdc": null,
+    "btc": null,
+    "chain_usdc": null
+  },
   "ready_except": [
     "operator open:true after IP lock",
     "Stripe Payment Link for Fuel 10 CAD $5",
