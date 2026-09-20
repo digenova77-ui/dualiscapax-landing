@@ -7,6 +7,7 @@
 
 import { merchSuperRefine, merchIssuesToFulfill } from "./merch-refine.js";
 import { claimGrantD1, claimDualKv, finalizeKv, dualisAtom } from "./idempotency.js";
+import { timingSafeEqualHex, hmacSha256Hex } from "./timing-safe.js";
 
 /** Factory artifact tip — UNSTAMPED until factory/tools/stamp_artifact_tip.mjs runs. */
 export const DC_ARTIFACT_TIP = "UNSTAMPED";
@@ -40,14 +41,7 @@ function db(env) {
   return (env && (env.DB || env.FULFILL_DB || env.FULFILLMENTS)) || null;
 }
 
-function timingSafeEqualHex(a, b) {
-  if (typeof a !== "string" || typeof b !== "string") return false;
-  if (a.length !== b.length || a.length === 0) return false;
-  let out = 0;
-  for (let i = 0; i < a.length; i++) out |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return out === 0;
-}
-
+/** Stripe webhook MAC — uses shared hex→bytes timing-safe compare (Egg #11 draft). Boolean API preserved. */
 async function verifyStripeSignature(rawBody, header, secret) {
   if (!header || !secret) return false;
   const parts = { t: null, v1: [] };
@@ -62,9 +56,8 @@ async function verifyStripeSignature(rawBody, header, secret) {
   if (!parts.t || !parts.v1.length) return false;
   const age = Math.abs(Math.floor(Date.now() / 1000) - Number(parts.t));
   if (!Number.isFinite(age) || age > 300) return false;
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${parts.t}.${rawBody}`));
-  const hex = [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const hex = await hmacSha256Hex(`${parts.t}.${rawBody}`, secret);
+  if (!hex) return false;
   return parts.v1.some((v1) => timingSafeEqualHex(hex, v1));
 }
 

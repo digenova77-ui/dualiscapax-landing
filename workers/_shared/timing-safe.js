@@ -1,7 +1,8 @@
 /**
- * DualisCapax — constant-time compare + HMAC-SHA256 hex (Egg #11 draft).
- * In-tree copy of workers/_shared/timing-safe.js (wrangler package root).
- * Keep byte-parity with CANONICAL shared module. Fail closed. HMAC ≠ authorization.
+ * DualisCapax — shared constant-time compare + HMAC-SHA256 hex (Egg #11 draft).
+ * CANONICAL source for Worker hygiene. Worker packages keep in-tree copies
+ * (wrangler package root); keep byte-parity with this file's compare helpers.
+ * Fail closed. No secrets. HMAC ≠ authorization.
  */
 
 export function timingSafeEqualBytes(a, b) {
