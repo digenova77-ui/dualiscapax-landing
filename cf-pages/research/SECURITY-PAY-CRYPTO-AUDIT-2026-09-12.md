@@ -1,3 +1,4 @@
+<!-- Egg #15 FREEZE: concrete vault strings redacted on Absolute-served research surface. -->
 # Security · payment / pricing / crypto audit
 
 ED-COM-20260912-SEC-PAY · pages-slim scan
@@ -6,9 +7,9 @@ ED-COM-20260912-SEC-PAY · pages-slim scan
 
 | Chain | Field | Address | Format | Bound in `DC_PAYMENTS` | Shown on `hall/rails.html` |
 |---|---|---|---|---|---|
-| Bitcoin | `research_btc` | `bc1qy3wp4eky5ru08jyvp64ma6t8e0dvgpr0pvtrma` | bech32 OK | **was missing → fixed** | yes |
-| Ethereum | `research_eth` | `0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4` | 0x+40 hex OK | yes | yes |
-| Solana | `research_sol` | `Cus1pLggfxDJC8FJSQv1tRtzDanuzSxjWvSsKA12byDw` | base58 OK | yes | yes |
+| Bitcoin | `research_btc` | `[PARKED_BTC]` | bech32 OK | **was missing → fixed** | yes |
+| Ethereum | `research_eth` | `[PARKED_ETH]` | 0x+40 hex OK | yes | yes |
+| Solana | `research_sol` | `[PARKED_SOL]` | base58 OK | yes | yes |
 
 POL / LINK / BSC reuse the same ETH address (EVM). Confirm that is intentional for your wallets.
 
