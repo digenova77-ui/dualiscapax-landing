@@ -1,0 +1,38 @@
+name: dual-control-tipseal
+
+# Egg #7 / dual-control: TipSeal tooling must stay green on tip.
+# Does not deploy. Does not open checkout.
+
+on:
+  pull_request:
+    paths:
+      - "scripts/dual-control/**"
+      - "workers/dualis-gate/**"
+      - "workers/stripe-fulfill/**"
+      - ".github/workflows/dual-control-tipseal.yml"
+      - ".github/workflows/stripe-fulfill.yml"
+  push:
+    branches: [factory-floor-v01, main]
+    paths:
+      - "scripts/dual-control/**"
+      - ".github/workflows/dual-control-tipseal.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Dual-control DC dry verify
+        run: node scripts/dual-control/verify-dc.mjs
+      - name: TipSeal generates for stripe-fulfill
+        run: |
+          set -euo pipefail
+          node scripts/dual-control/generate-tipseal.mjs --worker stripe-fulfill --out /tmp/ts-ff.json
+          node -e "const s=require('/tmp/ts-ff.json'); if(s.worker!=='stripe-fulfill') process.exit(1); if(!/^[0-9a-f]{40}$/.test(s.tip_sha)) process.exit(2);"
