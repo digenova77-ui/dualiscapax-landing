@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- NON_ABSOLUTE_TIP_LAG Egg #14: scrub admin@ mailto / Interac send advertise (orphan tip-root; not Absolute). -->
 <!-- NON_ABSOLUTE_TIP_LAG: tip-root orphan copy; Absolute is cf-pages only. Card checkout closed 2026-09-20. -->
 <html lang="en" class="dualis-root">
 <head>
@@ -603,7 +604,7 @@
       </p>
 
       <div style="display:grid; grid-template-columns:1fr; gap:9px;">
-        <a class="onboard-action-tile" href="mailto:admin@dualiscapax.ai?subject=Schedule+Turnkey+$0+Fiduciary+Intake">
+        <a class="onboard-action-tile" href="bind.html" title="Gateways CLOSED — officer mailto parked">
           <div style="font-family:var(--font-mono); font-size:0.7rem; color:#ff2a5f; font-weight:700;">INTAKE // $0 UPFRONT FIDUCIARY</div>
           <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:#ffffff; margin-top:2px;">Schedule $0.00 Upfront Intake Meeting ✉️</div>
           <div style="font-size:0.8rem; color:#9ab5cf; margin-top:2px;">100% self-funded implementation under OBCA #100089211. If we don't save you money, you owe nothing. Client retains 81%–100%.</div>
@@ -1210,7 +1211,7 @@ const SectorDecks = {
           "\"DualisCapax Inc. \u00b7 535 Bridge St E, Belleville, ON \u00b7 Authorized under OBCA Corporation #100089211\""
         ],
         "deepDiveTitle": "Statutory Intake Protocol",
-        "deepDiveBody": "Direct Intake: admin@dualiscapax.ai \u2022 Office of the CAO & City Treasurer Briefing \u2022 100% Self-Funded Performance Alignment",
+        "deepDiveBody": "Direct Intake: Gateways CLOSED under freeze \u2022 Office of the CAO & City Treasurer Briefing \u2022 100% Self-Funded Performance Alignment",
         "btn": "SCHEDULE COUNCIL BRIEFING \u2709\ufe0f"
       }
     ]
@@ -1307,7 +1308,7 @@ const SectorDecks = {
         ],
         "boxHdr": "DIRECT BOARD ENGAGEMENT",
         "boxLines": [
-          "\"Contact: admin@dualiscapax.ai \u00b7 DualisCapax Inc. (OBCA #100089211) \u00b7 Belleville, Ontario\""
+          "\"Contact: Gateways CLOSED · DualisCapax Inc. (OBCA #100089211) · Belleville, Ontario\""
         ],
         "deepDiveTitle": "Board Statutory Memo Pack",
         "deepDiveBody": "Executive Statutory Memorandum Pack \u2022 Ministry of Education Alignment \u2022 100% Performance-Contingent Retainer",
@@ -1512,7 +1513,7 @@ const SectorDecks = {
         "boxHdr": "ENCLAVE PRIVACY LAW",
         "boxLines": [
           "\u2022 Ephemeral session binding with 0.00% retained PII",
-          "\u2022 Audit notifications issued from admin@dualiscapax.ai",
+          "\u2022 Audit notifications: officer mailbox advertise parked under freeze",
           "\u2022 Real-time verification without third-party tracking"
         ],
         "deepDiveTitle": "Hardware Enclave Specifications",
@@ -1533,7 +1534,7 @@ const SectorDecks = {
             "options": [
               "CAD Bank EFT / Direct Corporate Wire",
               "1:1 Equal-Crypto Parity (BTC / ETH / SOL / USDC)",
-              "Interac e-Transfer (admin@dualiscapax.ai)"
+              "Interac e-Transfer: PARKED (donate_open false)"
             ]
           },
           {
@@ -1859,7 +1860,7 @@ const SectorDecks = {
         if (currentSector === 'onboard' && currentCardIdx === 4) {
           var entity = sessionStorage.getItem('onboard-entity-name') || 'Authorized Entity';
           var officer = sessionStorage.getItem('onboard-officer-name') || 'Authorized Officer';
-          var officerId = sessionStorage.getItem('onboard-officer-id') || 'admin@dualiscapax.ai';
+          var officerId = sessionStorage.getItem('onboard-officer-id') || 'officer-parked@invalid.local';
           var sector = sessionStorage.getItem('onboard-sector') || 'Public Sector';
 
           if (window.DualisSeal && window.DualisSeal.sealFromModal) {
@@ -2009,7 +2010,7 @@ const SectorDecks = {
           `Please confirm receipt and dispatch the formal executive briefing docket.\n`
         );
 
-        window.location.href = `mailto:admin@dualiscapax.ai?subject=${subject}&body=${body}`;
+        /* Egg #14: officer mailto send parked */ alert('Gateways CLOSED — officer mailto parked under freeze.'); return;
         const st = document.getElementById('briefing-status');
         if (st) st.textContent = 'Opening email client with formatted docket...';
       };
@@ -2029,7 +2030,7 @@ const SectorDecks = {
           `4. Independent Audit Standard: Licensed 2-of-3 CPA LLP verification quorum.\n` +
           `5. Sovereign Autonomy: Sub-90s clean unplug SLA with zero vendor debt or equipment replacement.\n` +
           `--------------------------------------------------\n` +
-          `Contact: admin@dualiscapax.ai | OBCA #100089211 (Belleville, ON)`;
+          `Contact: Gateways CLOSED | OBCA #100089211 (Belleville, ON)`;
 
         if (navigator.clipboard) {
           navigator.clipboard.writeText(agenda).then(() => {
