@@ -9,13 +9,16 @@ on:
       - "scripts/dual-control/**"
       - "workers/dualis-gate/**"
       - "workers/stripe-fulfill/**"
+      - "cf-pages/**"
       - ".github/workflows/dual-control-tipseal.yml"
       - ".github/workflows/stripe-fulfill.yml"
+      - ".github/workflows/pages-direct-upload.yml"
   push:
     branches: [factory-floor-v01, main]
     paths:
       - "scripts/dual-control/**"
       - ".github/workflows/dual-control-tipseal.yml"
+      - ".github/workflows/pages-direct-upload.yml"
 
 permissions:
   contents: read
@@ -36,3 +39,32 @@ jobs:
           set -euo pipefail
           node scripts/dual-control/generate-tipseal.mjs --worker stripe-fulfill --out /tmp/ts-ff.json
           node -e "const s=require('/tmp/ts-ff.json'); if(s.worker!=='stripe-fulfill') process.exit(1); if(!/^[0-9a-f]{40}$/.test(s.tip_sha)) process.exit(2);"
+      - name: TipSeal generates for pages payload (cf-pages)
+        run: |
+          set -euo pipefail
+          if [ ! -d cf-pages ]; then
+            echo "::error::cf-pages missing — cannot verify pages TipSeal"
+            exit 1
+          fi
+          node scripts/dual-control/generate-tipseal.mjs \
+            --payload-dir cf-pages \
+            --worker pages \
+            --out /tmp/ts-pages.json
+          node -e "
+            const s=require('/tmp/ts-pages.json');
+            if(s.worker!=='pages') process.exit(1);
+            if(s.payload_mode!=='pages') process.exit(2);
+            if(!/^[0-9a-f]{40}$/.test(s.tip_sha)) process.exit(3);
+            if(!/^[0-9a-f]{64}$/.test(s.content_sha256)) process.exit(4);
+            if(!Array.isArray(s.manifest)||!s.manifest.length) process.exit(5);
+          "
+          # Fail-closed gate without YES
+          if node scripts/dual-control/gate-deploy.mjs --tipseal /tmp/ts-pages.json --expect-worker pages; then
+            echo "::error::gate should fail without DAVID_YES_TIP_SHA"
+            exit 1
+          fi
+          # Matching YES dry (no deploy)
+          TIP=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/ts-pages.json','utf8')).tip_sha")
+          DAVID_YES_TIP_SHA="$TIP" node scripts/dual-control/gate-deploy.mjs \
+            --tipseal /tmp/ts-pages.json --expect-worker pages
+          echo "PAGES_TIPSEAL_DRY_OK tip=$TIP"
