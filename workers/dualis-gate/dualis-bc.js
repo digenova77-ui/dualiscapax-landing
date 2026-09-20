@@ -36,6 +36,11 @@ function checkoutOpen(env) {
   return String(env.CHECKOUT_OPEN || "") === "true";
 }
 
+/** Lever-3 D1 / L3-9B: guest mint latch — independent of CHECKOUT_OPEN (pay park). Fail-closed. */
+function sessionMintOpen(env) {
+  return String(env.SESSION_MINT_OPEN || "") === "true";
+}
+
 async function sha256Hex(s) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, "0")).join("");
@@ -113,6 +118,9 @@ export default {
     }
 
     if (path === "/u/session" && request.method === "POST") {
+      if (!sessionMintOpen(env)) {
+        return json({ ok: false, reason: "session_mint_closed" }, 403, origin);
+      }
       const now = Date.now();
       const unityId = crypto.randomUUID();
       await env.DB.prepare(
