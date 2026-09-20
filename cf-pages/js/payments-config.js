@@ -1,7 +1,10 @@
 /** DualisCapax payment rails. Card = Stripe Payment Links. Never invent URLs. */
 window.DC_PAYMENTS = {
-  interac_enabled: true,
-  eft_enabled: true,
+  /* Option C sibling: DONATE_OPEN gates Interac/EFT/crypto advertise+pay.
+     CHECKOUT_OPEN / stripe_enabled gate Stripe grant. Both false under freeze. */
+  donate_open: false,
+  interac_enabled: false,
+  eft_enabled: false,
   sri_enabled: true,
   fuel_enabled: true,
   onboard_enabled: true,
@@ -24,10 +27,11 @@ window.DC_PAYMENTS = {
   branch: null,
   atlas: null,
   edu_leaf: null,
-  crypto_enabled: true,
+  crypto_enabled: false,
   fulfill_worker: "https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/",
   thanks: "/pay/thanks.html",
-  research_btc: "bc1qy3wp4eky5ru08jyvp64ma6t8e0dvgpr0pvtrma",
-  research_eth: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-  research_sol: "Cus1pLggfxDJC8FJSQv1tRtzDanuzSxjWvSsKA12byDw"
+  /* Addresses blanked while donate_open=false (Option C park). Restore only under DONATE_OPEN YES. */
+  research_btc: "",
+  research_eth: "",
+  research_sol: ""
 };

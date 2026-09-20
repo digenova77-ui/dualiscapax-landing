@@ -40,7 +40,8 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <p class="kicker">Donate</p>
   <h1 class="hero-title" style="font-size:clamp(1.75rem,5vw,2.6rem);margin:0.35rem 0 0.55rem;line-height:1.1;">Fuel the architects<span>.</span></h1>
   <p class="lede">If Bind is the transit counter, this room is the jar on the shelf. You put something in because the work should keep going. You do not get a pass, a seat, or a share in return. Addresses stay on the page so you can read them with your own eyes.</p>
-  <p class="lede">Each button opens a real path: your email app for Interac, or a wallet link for crypto. One method per send. Card checkout stays on Bind.</p>
+  <p class="lede" id="donate-lede-live">Each button opens a real path: your email app for Interac, or a wallet link for crypto. One method per send. Card checkout stays on Bind.</p>
+  <p class="lede" id="donate-lede-parked" hidden>Bank and crypto donate paths are parked while <code>DONATE_OPEN</code> is false (same freeze family as card checkout). No Interac, EFT, or wallet send from this page until a separate reopen YES.</p>
   <h2>Canada — bank</h2>
   <button type="button" class="go" id="interac">Open Interac e-Transfer</button>
   <button type="button" class="rail" id="eft">Open email for EFT instructions</button>
@@ -71,6 +72,20 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   var MAIL = 'donate@dualiscapax.ai';
   var pay = window.DC_PAYMENTS || {};
   var panel = document.getElementById('panel');
+  var donateOpen = pay.donate_open === true;
+  var liveLede = document.getElementById('donate-lede-live');
+  var parkLede = document.getElementById('donate-lede-parked');
+  if (!donateOpen) {
+    if (liveLede) liveLede.hidden = true;
+    if (parkLede) parkLede.hidden = false;
+    ['interac','eft','btc','xrp','zec','sol','eth','pol','bsc','link','dot','dgb','bch','doge'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
+    panel.hidden = false;
+    panel.innerHTML = '<strong>Donate parked</strong><p>Interac, EFT, and crypto sends are closed under freeze (<code>donate_open: false</code>). Card Bind stays on payments. Nothing here mints Fuel or a seat.</p>';
+    return;
+  }
   function show(html){
     panel.hidden = false;
     panel.innerHTML = html;
@@ -117,14 +132,20 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     var map = {btc:pay.research_btc,xrp:pay.research_xrp,zec:pay.research_zec,sol:pay.research_sol,eth:pay.research_eth,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,bch:pay.research_bch,doge:pay.ai_doge};
     return map[chain] || '';
   }
-  document.getElementById('interac').addEventListener('click', function(){
-    openUrl(interacMail());
-    show('<strong>Interac e-Transfer</strong><p>Your email app should open with <em>' + MAIL + '</em> ready. In your bank app, send Interac to that same Autodeposit address.</p><div class="addr">' + MAIL + '</div><p style="margin-top:.6rem">If email did not open: open your bank → Interac → send to the address above.</p>');
-  });
-  document.getElementById('eft').addEventListener('click', function(){
-    openUrl(eftMail());
-    show('<strong>EFT</strong><p>Email opened for the research desk. Prefer Interac Autodeposit when you can:</p><div class="addr">' + MAIL + '</div>');
-  });
+    var interacBtn = document.getElementById('interac');
+  var eftBtn = document.getElementById('eft');
+  if (pay.interac_enabled === true && interacBtn) {
+    interacBtn.addEventListener('click', function(){
+      openUrl(interacMail());
+      show('<strong>Interac e-Transfer</strong><p>Your email app should open with <em>' + MAIL + '</em> ready. In your bank app, send Interac to that same Autodeposit address.</p><div class="addr">' + MAIL + '</div><p style="margin-top:.6rem">If email did not open: open your bank → Interac → send to the address above.</p>');
+    });
+  } else if (interacBtn) { interacBtn.hidden = true; }
+  if (pay.eft_enabled === true && eftBtn) {
+    eftBtn.addEventListener('click', function(){
+      openUrl(eftMail());
+      show('<strong>EFT</strong><p>Email opened for the research desk. Prefer Interac Autodeposit when you can:</p><div class="addr">' + MAIL + '</div>');
+    });
+  } else if (eftBtn) { eftBtn.hidden = true; }
   ['btc','xrp','zec','sol','eth','pol','bsc','link','dot','dgb','bch','doge'].forEach(function(chain){
     var el = document.getElementById(chain);
     if (!el) return;
