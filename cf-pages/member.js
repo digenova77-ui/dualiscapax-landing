@@ -1,17 +1,17 @@
 (function () {
+  /* Egg #14 FREEZE: officer ALIAS allowlist parked — no admin@/ceo@/personal advertise. */
   var $ = function (id) { return document.getElementById(id); };
   var state = { phrase_sha256: null, passkey: null };
-  var ALIAS = [
-    "admin@dualiscapax.ai",
-    "ceo@dualiscapax.ai",
-    "digenova77@gmail.com",
-    "daviddigenova@gmail.com",
-    "zarkmuckerbarn@gmail.com"
-  ];
+  /* Was hardcoded officer allowlist; under freeze aliases = only the address the binder enters. */
+  var ALIAS = [];
 
   async function sha256hex(text) {
     var hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
     return Array.from(new Uint8Array(hash)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+  }
+
+  function validEmail(s) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || "").trim());
   }
 
   $("hashPhrase").onclick = async function () {
@@ -49,6 +49,7 @@
       $("log").textContent = "Number one is reserved for David John Di Genova."; return;
     }
     if (!muni) { $("log").textContent = "Need a town."; return; }
+    if (!validEmail(email)) { $("log").textContent = "Need a valid email you control (officer allowlist parked)."; return; }
 
     var unity = window.UnityID ? UnityID.mintU1() : { human: "U1", public: "DC1-H1-0001", serial: 1 };
     var look = {
@@ -88,6 +89,6 @@
     $("human").textContent = unity.human;
     $("pub").textContent = unity.public + (unity.check ? " · " + unity.check : "");
     $("iris").textContent = iris;
-    $("log").textContent = "U1 bound to " + email + ". Aliases stored. File: unity-U1.json.";
+    $("log").textContent = "U1 bound to " + email + ". Officer aliases not advertised. File: unity-U1.json.";
   };
 })();
