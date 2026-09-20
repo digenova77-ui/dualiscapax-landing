@@ -4,6 +4,13 @@ name: pages-direct-upload
 # Package cf-pages as a zero-nest zip, then deploy THAT artifact.
 # Secrets stay in the deploy job. Fail hard on missing creds or wrangler errors.
 # Dispatch-only so factory [skip ci] harvests do not publish apex.
+#
+# Egg #7: TipSeal + DAVID_YES_TIP_SHA gate before wrangler pages deploy (fail-closed).
+# TipSeal hashes the zip contents (not the raw cf-pages tree), so package and
+# deploy content_sha256 match after excludes (_peel-backup, data/matchups, …).
+# Residual: Cloudflare Pages has no workers/message annotation API — tip bind is
+# CI-gate + commit-hash flags only; see docs/ops/EGG7_TIP_BLIND_RESIDUAL.md.
+# PRODUCTION FROZEN: do not dispatch live Absolute Pages deploy without David YES.
 
 on:
   workflow_dispatch:
@@ -16,6 +23,10 @@ on:
         description: 'Optional note'
         required: false
         default: 'artifact-to-pages handoff'
+      david_yes_tip_sha:
+        description: 'Warrant-B: 40-hex tip_sha David YES (must match TipSeal / GITHUB_SHA). Leave empty to use GITHUB_SHA (dispatch-on-tip = YES).'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -73,6 +84,26 @@ jobs:
           fi
           unzip -Z1 cf-pages-production.zip | grep -qx 'index.html'
 
+      - name: TipSeal zip contents (egg #7 pages artifact)
+        run: |
+          set -euo pipefail
+          # Seal exactly what wrangler will upload (zip tree), not raw cf-pages.
+          rm -rf /tmp/tipseal-staging
+          mkdir -p /tmp/tipseal-staging
+          unzip -q cf-pages-production.zip -d /tmp/tipseal-staging
+          node scripts/dual-control/generate-tipseal.mjs \
+            --payload-dir /tmp/tipseal-staging \
+            --worker pages \
+            --out tipseal-pages.json \
+            --sealer "github-actions:${GITHUB_WORKFLOW}:package"
+          SEAL_TIP=$(node -p "JSON.parse(require('fs').readFileSync('tipseal-pages.json','utf8')).tip_sha")
+          SEAL_CONTENT=$(node -p "JSON.parse(require('fs').readFileSync('tipseal-pages.json','utf8')).content_sha256")
+          if [ "$SEAL_TIP" != "$GITHUB_SHA" ]; then
+            echo "::error::TipSeal tip_sha ($SEAL_TIP) != GITHUB_SHA ($GITHUB_SHA)"
+            exit 1
+          fi
+          echo "PACKAGE_TIPSEAL_OK tip=$SEAL_TIP content=$SEAL_CONTENT"
+
       - name: Upload production artifact
         uses: actions/upload-artifact@v4
         with:
@@ -80,6 +111,7 @@ jobs:
           path: |
             cf-pages-production.zip
             cf-pages-production.zip.sha256
+            tipseal-pages.json
           retention-days: 7
           if-no-files-found: error
 
@@ -90,6 +122,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Checkout TipSeal scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/dual-control
+          sparse-checkout-cone-mode: false
+
       - name: Download packaged artifact
         uses: actions/download-artifact@v4
         with:
@@ -105,6 +144,48 @@ jobs:
           unzip -q cf-pages-production.zip -d "$GITHUB_WORKSPACE/deploy-payload"
           test -f "$GITHUB_WORKSPACE/deploy-payload/index.html"
           echo "payload files: $(find "$GITHUB_WORKSPACE/deploy-payload" -type f | wc -l)"
+
+      - name: TipSeal + dual-control gate (egg #7 pages) — BEFORE wrangler
+        env:
+          INPUT_YES: ${{ github.event.inputs.david_yes_tip_sha }}
+        run: |
+          set -euo pipefail
+          # Re-seal extracted artifact; content_sha256 must equal package TipSeal.
+          node scripts/dual-control/generate-tipseal.mjs \
+            --payload-dir "$GITHUB_WORKSPACE/deploy-payload" \
+            --worker pages \
+            --out /tmp/tipseal-pages-deploy.json \
+            --sealer "github-actions:${GITHUB_WORKFLOW}:deploy"
+          SEAL_TIP=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/tipseal-pages-deploy.json','utf8')).tip_sha")
+          SEAL_CONTENT=$(node -p "JSON.parse(require('fs').readFileSync('/tmp/tipseal-pages-deploy.json','utf8')).content_sha256")
+          PKG_CONTENT=$(node -p "JSON.parse(require('fs').readFileSync('./downloaded_artifact/tipseal-pages.json','utf8')).content_sha256")
+          if [ "$SEAL_TIP" != "$GITHUB_SHA" ]; then
+            echo "::error::TipSeal tip_sha ($SEAL_TIP) != GITHUB_SHA ($GITHUB_SHA)"
+            exit 1
+          fi
+          if [ "$SEAL_CONTENT" != "$PKG_CONTENT" ]; then
+            echo "::error::Deploy payload content_sha256 ($SEAL_CONTENT) != package TipSeal ($PKG_CONTENT) — refuse"
+            exit 1
+          fi
+          YES="${INPUT_YES:-}"
+          if [ -z "$YES" ]; then
+            YES="$GITHUB_SHA"
+          fi
+          if [ "$YES" != "$GITHUB_SHA" ]; then
+            echo "::error::david_yes_tip_sha ($YES) != GITHUB_SHA ($GITHUB_SHA) — refuse"
+            exit 1
+          fi
+          DAVID_YES_TIP_SHA="$YES" node scripts/dual-control/gate-deploy.mjs \
+            --tipseal /tmp/tipseal-pages-deploy.json \
+            --expect-worker pages
+          {
+            echo "## TipSeal pages gate"
+            echo "- tip_sha: \`$SEAL_TIP\`"
+            echo "- content_sha256: \`$SEAL_CONTENT\`"
+            echo "- worker/rail: pages"
+            echo "- annotate: SKIPPED (Pages has no workers/message) — residual OPEN"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "TIPSEAL_GATE_OK tip=$SEAL_TIP"
 
       - name: Setup Node.js LTS
         uses: actions/setup-node@v4
@@ -127,11 +208,12 @@ jobs:
             echo "::error::CLOUDFLARE_ACCOUNT_ID missing in Actions secrets — refuse deploy"
             exit 1
           fi
+          # Gate already passed above — only then reach wrangler
           npx --yes wrangler@3.114.0 pages deploy ./deploy-payload \
             --project-name=dualiscapax-landing \
             --branch=main \
             --commit-hash="${GITHUB_SHA}" \
-            --commit-message="pages-direct-upload ${GITHUB_SHA}" \
+            --commit-message="pages-direct-upload tip_sha=${GITHUB_SHA}" \
             --commit-dirty=true
 
       - name: Post-deploy live HTTP check
