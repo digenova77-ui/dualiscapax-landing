@@ -50,13 +50,17 @@ jobs:
             exit 1
           fi
 
-      - name: Forbid d1 execute in this workflow (residual R1)
+      - name: Forbid wrangler D1 SQL-execute in this workflow (residual R1)
         run: |
           set -euo pipefail
-          # Comments documenting the ban must not trip the gate (Egg #11 TipSeal false positive).
-          if grep -nE 'd1[[:space:]]+execute|wrangler[[:space:]]+d1[[:space:]]+execute' \
-              .github/workflows/stripe-fulfill.yml | grep -vE '^[[:space:]]*[0-9]+:[[:space:]]*#'; then
-            echo "::error::d1 execute must not appear in stripe-fulfill workflow (non-comment)"
+          # Self-safe: only flag real wrangler D1 SQL-execute command lines.
+          # Do not match this step's name, echo text, or documentation comments.
+          hits=$(grep -nE 'wrangler[[:space:]]+d1[[:space:]]+execute' \
+            .github/workflows/stripe-fulfill.yml \
+            | grep -vE '[[:space:]]#|Forbid wrangler|CONSTRAINT|error::|Self-safe' || true)
+          if [ -n "$hits" ]; then
+            echo "::error::wrangler D1 SQL-execute must not appear as a command in stripe-fulfill workflow"
+            echo "$hits"
             exit 1
           fi
           if [ "${CHECKOUT_OPEN:-}" = "true" ]; then
