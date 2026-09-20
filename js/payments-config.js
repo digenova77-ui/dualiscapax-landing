@@ -1,28 +1,38 @@
-/** DualisCapax payment rails. Card = Stripe Payment Links. CAD = Interac. Else crypto. */
+/* NON_ABSOLUTE_TIP_LAG: tip-root aligned to cf-pages park 2026-09-20 */
+/** DualisCapax payment rails. Card = Stripe Payment Links. Never invent URLs. */
 window.DC_PAYMENTS = {
-  interac_enabled: true,
-  eft_enabled: true,
+  /* Option C sibling: DONATE_OPEN gates Interac/EFT/crypto advertise+pay.
+     CHECKOUT_OPEN / stripe_enabled gate Stripe grant. Both false under freeze. */
+  donate_open: false,
+  interac_enabled: false,
+  eft_enabled: false,
   sri_enabled: true,
   fuel_enabled: true,
   onboard_enabled: true,
-  stripe_enabled: true,
+  stripe_enabled: false,
+  jacket_open: false,
   research: "",
   cost_reduction: "",
   capacity: "",
   fuel: "",
-  ubi: "",
-  crypto_enabled: true,
+  fuel_links: {
+    fuel_10: null,
+    fuel_40: "",
+    fuel_120: "",
+    fuel_320: "",
+    fuel_1000: null
+  },
+  leaf: "",
+  field: "",
+  trunk: "",
+  branch: null,
+  atlas: null,
+  edu_leaf: null,
+  crypto_enabled: false,
   fulfill_worker: "https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/",
   thanks: "/pay/thanks.html",
-  ai_doge: "D92zKrKoBeUouG5Jqo96Q5DWZ4G7iU8JFK",
-  research_xrp: "rNbfUBt3vgUDu9kEL5TxbgLHxtKbyyKyRz",
-  research_zec: "t1XXgbcak1o85jd4PWwBzatqxbDSkuwSTaZ",
-  research_sol: "Cus1pLggfxDJC8FJSQv1tRtzDanuzSxjWvSsKA12byDw",
-  research_eth: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-  research_pol: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-  research_link: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-  research_bsc: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-  research_dot: "16946KsPFchfAEC7MNQNSLLJb1kUzBug1fbPqBtbfZtW7X6n",
-  research_dgb: "dgb1qegfaue6jd8msnlr7akr9ts0akgse6q4f4wgxec",
-  research_bch: "qqfh32qpv5glgdfy67laswwtjvwqdc0lese3t7vjfc"
+  /* Addresses blanked while donate_open=false (Option C park). Restore only under DONATE_OPEN YES. */
+  research_btc: "",
+  research_eth: "",
+  research_sol: ""
 };

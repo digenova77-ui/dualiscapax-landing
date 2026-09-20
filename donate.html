@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- NON_ABSOLUTE_TIP_LAG: tip-root donate aligned to cf-pages park 2026-09-20; not Pages zip root. -->
 <html lang="en-CA">
 <head>
 <meta charset="UTF-8"/>
@@ -33,107 +34,31 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
 <canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
 <div class="wrap">
   <div class="top">
-    <a href="/index.html?land=1">Home</a>
-    <a href="/payments.html">Card pay (Bind)</a>
-    <a href="/ai/app.html">Iris</a>
+    <a href="index.html?land=1">Home</a>
+    <a href="payments.html">Card pay (Bind)</a>
+    <a href="ai/app.html">Iris</a>
   </div>
   <p class="kicker">Donate</p>
-  <h1>A gift with no ticket back</h1>
-  <p class="lede">If Bind is the transit counter, this room is the jar on the shelf. You put something in because the work should keep going. You do not get a pass, a seat, or a share in return. Addresses stay on the page so you can read them with your own eyes.</p>
-  <p class="lede">Each button opens a real path: your email app for Interac, or a wallet link for crypto. One method per send. Card checkout stays on Bind.</p>
-  <h2>Canada — bank</h2>
-  <button type="button" class="go" id="interac">Open Interac e-Transfer</button>
-  <button type="button" class="rail" id="eft">Open email for EFT instructions</button>
-  <h2>Card (prepaid Fuel & seats)</h2>
-  <a class="go" href="/payments.html" style="text-decoration:none;display:flex;align-items:center">Open Bind — load the pass with a card</a>
-  <h2>Crypto — one chain per send</h2>
-  <button type="button" class="rail" id="xrp" data-chain="xrp">Open XRP send</button>
-  <button type="button" class="rail" id="zec" data-chain="zec">Open Zcash send</button>
-  <button type="button" class="rail" id="sol" data-chain="sol">Open Solana send</button>
-  <button type="button" class="rail" id="eth" data-chain="eth">Open Ethereum send</button>
-  <button type="button" class="rail" id="pol" data-chain="pol">Open Polygon send</button>
-  <button type="button" class="rail" id="bsc" data-chain="bsc">Open BNB Chain send</button>
-  <button type="button" class="rail" id="link" data-chain="link">Open LINK (Ethereum) send</button>
-  <button type="button" class="rail" id="dot" data-chain="dot">Open Polkadot send</button>
-  <button type="button" class="rail" id="dgb" data-chain="dgb">Open DigiByte send</button>
-  <button type="button" class="rail" id="bch" data-chain="bch">Open Bitcoin Cash send</button>
-  <button type="button" class="rail" id="doge" data-chain="doge">Open Dogecoin send (Iris time)</button>
-  <div class="panel" id="panel" hidden></div>
-  <p class="note">Voluntary gift. One method per send. If you want prepaid time for yourself, that is Bind, not this jar.</p>
+  <h1 class="hero-title" style="font-size:clamp(1.75rem,5vw,2.6rem);margin:0.35rem 0 0.55rem;line-height:1.1;">Fuel the architects<span>.</span></h1>
+  <p class="lede">If Bind is the transit counter, this room is the jar on the shelf. You put something in because the work should keep going. You do not get a pass, a seat, or a share in return.</p>
+  <p class="lede" id="donate-lede">Bank and crypto donate paths are parked while <code>DONATE_OPEN</code> is false (same freeze family as card checkout). No Interac, EFT, or wallet send from this page until a separate reopen YES.</p>
+  <h2>Card (prepaid Fuel &amp; seats)</h2>
+  <a class="go" href="payments.html" style="text-decoration:none;display:flex;align-items:center">Open Bind — load the pass with a card</a>
+  <div id="rails" hidden></div>
+  <div class="panel" id="panel"><strong>Donate parked</strong><p>Interac, EFT, and crypto sends are closed under freeze (<code>donate_open: false</code>). Card Bind stays on payments. Nothing here mints Fuel or a seat.</p></div>
+  <p class="note">Voluntary gift when open. If you want prepaid time for yourself, that is Bind, not this jar.</p>
   <p class="foot">DualisCapax · Truth Prevails</p>
 </div>
-<script src="/js/payments-config.js"></script>
-<script src="/js/home-quarks.js"></script>
-<script src="/js/no-select.js"></script>
+<script src="js/payments-config.js"></script>
+<script src="js/home-quarks.js"></script>
+<script src="js/no-select.js"></script>
 <script>
 (function(){
-  var MAIL = 'donate@dualiscapax.ai';
   var pay = window.DC_PAYMENTS || {};
-  var panel = document.getElementById('panel');
-  function show(html){
-    panel.hidden = false;
-    panel.innerHTML = html;
-    try { panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
-  }
-  function openUrl(url){
-    if (!url) return;
-    try {
-      var a = document.createElement('a');
-      a.href = url; a.rel = 'noopener'; a.target = '_blank';
-      document.body.appendChild(a); a.click(); a.remove();
-    } catch (e) { try { location.href = url; } catch (e2) {} }
-  }
-  function interacMail(){
-    var sub = encodeURIComponent('Interac e-Transfer · DualisCapax research');
-    var body = encodeURIComponent('Send Interac e-Transfer to this Autodeposit email:\n' + MAIL + '\n\nAmount: (you choose)\nMemo: DualisCapax research gift\n');
-    return 'mailto:' + MAIL + '?subject=' + sub + '&body=' + body;
-  }
-  function eftMail(){
-    var sub = encodeURIComponent('EFT · DualisCapax research');
-    var body = encodeURIComponent('Please reply with EFT instructions request, or send Interac to ' + MAIL + ' (Autodeposit).\n');
-    return 'mailto:' + MAIL + '?subject=' + sub + '&body=' + body;
-  }
-  function walletUri(chain, addr){
-    if (!addr) return null;
-    switch (chain) {
-      case 'eth': case 'link': return 'ethereum:' + addr;
-      case 'pol': return 'ethereum:' + addr + '@137';
-      case 'bsc': return 'ethereum:' + addr + '@56';
-      case 'sol': return 'solana:' + addr;
-      case 'bch': return 'bitcoincash:' + addr;
-      case 'doge': return 'dogecoin:' + addr;
-      case 'dgb': return 'digibyte:' + addr;
-      case 'zec': return 'zcash:' + addr;
-      case 'xrp': return 'ripple:' + addr;
-      default: return null;
-    }
-  }
-  function chainLabel(chain){
-    return ({xrp:'XRP',zec:'Zcash',sol:'Solana',eth:'Ethereum',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK (Ethereum)',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
-  }
-  function addrFor(chain){
-    var map = {xrp:pay.research_xrp,zec:pay.research_zec,sol:pay.research_sol,eth:pay.research_eth,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,bch:pay.research_bch,doge:pay.ai_doge};
-    return map[chain] || '';
-  }
-  document.getElementById('interac').addEventListener('click', function(){
-    openUrl(interacMail());
-    show('<strong>Interac e-Transfer</strong><p>Your email app should open with <em>' + MAIL + '</em> ready. In your bank app, send Interac to that same Autodeposit address.</p><div class="addr">' + MAIL + '</div><p style="margin-top:.6rem">If email did not open: open your bank → Interac → send to the address above.</p>');
-  });
-  document.getElementById('eft').addEventListener('click', function(){
-    openUrl(eftMail());
-    show('<strong>EFT</strong><p>Email opened for the research desk. Prefer Interac Autodeposit when you can:</p><div class="addr">' + MAIL + '</div>');
-  });
-  ['xrp','zec','sol','eth','pol','bsc','link','dot','dgb','bch','doge'].forEach(function(chain){
-    var el = document.getElementById(chain);
-    if (!el) return;
-    var addr = addrFor(chain);
-    if (!pay.crypto_enabled || !addr) { el.hidden = true; return; }
-    el.addEventListener('click', function(){
-      var uri = walletUri(chain, addr);
-      if (uri) openUrl(uri);
-      show('<strong>' + chainLabel(chain) + '</strong><p>' + (uri ? 'Tried to open your wallet app. If nothing opened, copy the address below into the wallet yourself.' : 'No automatic wallet link for this chain. Copy the address into your wallet and send on the correct network.') + '</p><div class="addr">' + addr + '</div><p style="margin-top:.6rem">Send only on <strong>' + chainLabel(chain) + '</strong>. Wrong network = lost funds.</p>');
-    });
-  });
+  if (pay.donate_open !== true) return;
+  var s = document.createElement('script');
+  s.src = 'js/donate-rails.js';
+  document.body.appendChild(s);
 })();
 </script>
 </body>
