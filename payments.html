@@ -42,67 +42,67 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(25
     <a href="index.html?land=1">Home</a>
     <a href="research/">Research</a>
     <a href="payments.html" class="on">Bind (card)</a>
-    <a href="donate.html">Donate (Interac / crypto)</a>
+    <a href="donate.html">Donate (parked)</a>
     <a href="ai/app.html">Iris</a>
   </nav>
 
   <p class="kicker">Bind · the counter</p>
-  <h1>Load the pass before the ride</h1>
+  <h1 class="hero-title" style="font-size:clamp(1.75rem,5vw,2.6rem);margin:0.35rem 0 0.55rem;line-height:1.1;">Pay only when savings are real<span>.</span></h1>
   <p class="lede">Fuel is prepaid time. It works like a transit pass: you load it here, then the ride does not stop to count change at every stop. Unused time stays on your card. This is not a share of the company and not a coin.</p>
-  <p class="lede">Each box opens Stripe for that exact pack. You leave this page, pay there, and come back. If you would rather send a gift with no ticket back, that is Donate — bank or crypto, no card.</p>
+  <p class="lede">Card checkout is currently closed. If you would rather send a gift with no ticket back, that is Donate — bank or crypto, no card.</p>
 
   <h2>Prepaid Fuel (time)</h2>
   <div class="packs">
-    <a class="pack" href="https://buy.stripe.com/fZu3cxcyj2jvfOV0RLffy05" target="_blank" rel="noopener">
+    <div class="pack" aria-disabled="true">
       <div class="cad">CAD $20</div>
       <div class="amt">40 Fuel</div>
       <div class="sub">A first real ride with Iris</div>
-      <div class="cta-line">Open Stripe → pay $20</div>
-    </a>
-    <a class="pack" href="https://buy.stripe.com/7sY28t1TF2jvdGNbwpffy02" target="_blank" rel="noopener">
+      <div class="cta-line">Checkout closed · $20</div>
+    </div>
+    <div class="pack" aria-disabled="true">
       <div class="cad">CAD $50</div>
       <div class="amt">120 Fuel</div>
       <div class="sub">Enough time to do the work</div>
-      <div class="cta-line">Open Stripe → pay $50</div>
-    </a>
-    <a class="pack" href="https://buy.stripe.com/14A6oJ2XJ0bngSZ581ffy01" target="_blank" rel="noopener">
+      <div class="cta-line">Checkout closed · $50</div>
+    </div>
+    <div class="pack" aria-disabled="true">
       <div class="cad">CAD $120</div>
       <div class="amt">320 Fuel</div>
       <div class="sub">Stay on the line without topping up every hour</div>
-      <div class="cta-line">Open Stripe → pay $120</div>
-    </a>
+      <div class="cta-line">Checkout closed · $120</div>
+    </div>
   </div>
 
   <h2>Document seats (12 months)</h2>
   <div class="packs">
-    <a class="pack" href="https://buy.stripe.com/8x2eVfbufe2d7ip9ohffy04" target="_blank" rel="noopener">
+    <div class="pack" aria-disabled="true">
       <div class="cad">CAD $49</div>
       <div class="amt">Leaf</div>
       <div class="sub">One gated room · 12 months</div>
-      <div class="cta-line">Open Stripe → pay $49</div>
-    </a>
-    <a class="pack" href="https://buy.stripe.com/00w5kF41NbU55ahaslffy03" target="_blank" rel="noopener">
+      <div class="cta-line">Checkout closed · $49</div>
+    </div>
+    <div class="pack" aria-disabled="true">
       <div class="cad">CAD $149</div>
       <div class="amt">Branch</div>
       <div class="sub">One field · 12 months</div>
-      <div class="cta-line">Open Stripe → pay $149</div>
-    </a>
-    <a class="pack" href="https://buy.stripe.com/7sY14p69VcY9cCJcAtffy00" target="_blank" rel="noopener">
+      <div class="cta-line">Checkout closed · $149</div>
+    </div>
+    <div class="pack" aria-disabled="true">
       <div class="cad">CAD $499</div>
       <div class="amt">Domain library</div>
       <div class="sub">One domain class toolkit · 12 months · not the full vault</div>
-      <div class="cta-line">Open Stripe → pay $499</div>
-    </a>
+      <div class="cta-line">Checkout closed · $499</div>
+    </div>
   </div>
 
-  <p class="hold">If the meter hits zero mid-ride, Iris will say we need more Fuel if you want to go further. She will not turn into a robot while you top up. Bank transfer or crypto with no card lives on <a href="donate.html" style="color:#9ec5ff">Donate</a>.</p>
+  <p class="hold">If the meter hits zero mid-ride, Iris will say we need more Fuel if you want to go further. She will not turn into a robot while you top up. Bank transfer or crypto is parked on <a href="donate.html" style="color:#9ec5ff">Donate</a> while donate_open is false.</p>
 
   <div class="cta-row">
     <a class="cta primary" href="ai/app.html">Talk to Iris</a>
-    <a class="cta" href="donate.html">Donate without card</a>
+    <a class="cta" href="donate.html">Donate (bank/crypto parked)</a>
     <a class="cta" href="research/access.html">Access list</a>
   </div>
-  <foot>DualisCapax · card checkout via Stripe · not securities</foot>
+  <foot>DualisCapax · card checkout closed · not securities</foot>
 </div>
 <script src="js/home-quarks.js"></script>
 </body>
