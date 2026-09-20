@@ -1,61 +1,26 @@
-/ice                         /ice.html                    200
-/ice/                        /ice.html                    200
-/rte                         /rte/index.html              200
-/rte/                        /rte/index.html              200
-/rte/sandbox                 /rte/sandbox/index.html      200
-/rte/sandbox/                /rte/sandbox/index.html      200
-/look                        /look.html                   200
-/look/                       /look.html                   200
-/iris                        /iris.html                   200
-/iris/                       /iris.html                   200
-/unity                       /unity.html                  200
-/unity/                      /unity.html                  200
-/portal                      /portal.html                 200
-/portal/                     /portal.html                 200
-/runtime                     /runtime.html                200
-/medical                     /medical.html                200
-/schools                     /schools.html                200
-/rtesimadclm                 /rtesimadclm/manifold.html   200
-/rtesimadclm/                /rtesimadclm/manifold.html   200
-/rte/sima-dclm               /rte/sima-dclm/index.html    200
-/rte/sima-dclm/              /rte/sima-dclm/index.html    200
-/rte/sima-dclm/iris          /rte/sima-dclm/iris.html     200
-/rte/sima-dclm/iris/         /rte/sima-dclm/iris.html     200
-/rte/easthill                /rte/easthill/index.html     200
-/rte/easthill/               /rte/easthill/index.html     200
+# DualisCapax Pages redirects — Option C loop fix 2026-09-20
+# Do NOT add same-stem /foo → /foo.html 200 rewrites (pretty-URL 308 loops).
+# Pretty URLs serve the .html / index.html directly.
+# Keep only: cross-path aliases + nested thanks.
+
+# Pay thanks (nested path needs explicit map)
+/pay/thanks                  /pay/thanks.html             200
+/pay/thanks/                 /pay/thanks.html             200
+
+# Cross-path aliases (from ≠ content stem)
+/leagues                     /ohf.html                    200
+/leagues/                    /ohf.html                    200
 /easthill                    /rte/easthill/index.html     200
 /easthill/                   /rte/easthill/index.html     200
 /grade2                      /rte/easthill/index.html     200
 /grade2/                     /rte/easthill/index.html     200
 /sara                        /rte/easthill/index.html     200
 /sara/                       /rte/easthill/index.html     200
-/rte/boards                  /rte/boards/index.html       200
-/rte/boards/                 /rte/boards/index.html       200
 /teacher                     /rte/boards/index.html       200
 /teacher/                    /rte/boards/index.html       200
 /teachers                    /rte/boards/index.html       200
 /hpedsb                      /rte/boards/index.html       200
 /alcdsb                      /rte/boards/index.html       200
 /limestone                   /rte/boards/index.html       200
-/ai/live                     /ai/live.html                200
-/alacarte                    /alacarte.html               200
-/alacarte/                   /alacarte.html               200
-/synapse                     /synapse.html                200
-/synapse/                    /synapse.html                200
-/manifold                    /manifold.html               200
-/manifold/                   /manifold.html               200
-/why                         /why.html                    200
-/why/                        /why.html                    200
-/pay/thanks                  /pay/thanks.html             200
-/pay/thanks/                 /pay/thanks.html             200
-/hockey                      /hockey.html                 200
-/hockey/                     /hockey.html                 200
-/ohf                         /ohf.html                    200
-/ohf/                        /ohf.html                    200
-/leagues                     /ohf.html                    200
-/leagues/                    /ohf.html                    200
-/sport                       /sport.html                  200
-/schedule                    /schedule.html               200
-/gameday                     /gameday.html                200
-/geodesic                    /geodesic.html               200
-/geodesic/                   /geodesic.html               200
+/rtesimadclm                 /rtesimadclm/manifold.html   200
+/rtesimadclm/                /rtesimadclm/manifold.html   200
