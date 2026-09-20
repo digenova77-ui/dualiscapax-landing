@@ -10,7 +10,7 @@ name: stripe-fulfill-v2
 # Webhook secret stays on the Worker (wrangler secret put / dashboard). Never git.
 #
 # CONSTRAINT (residual R3): admit via factory/tools/admit_stripe_fulfill_deploy.sh before deploy.
-# CONSTRAINT (residual R1): this workflow MUST NEVER run `wrangler d1 execute`.
+# CONSTRAINT (residual R1): this workflow MUST NEVER run wrangler D1 SQL execute.
 # CONSTRAINT: CHECKOUT_OPEN must remain "false"; do not open checkout here.
 
 on:
@@ -53,9 +53,10 @@ jobs:
       - name: Forbid d1 execute in this workflow (residual R1)
         run: |
           set -euo pipefail
+          # Comments documenting the ban must not trip the gate (Egg #11 TipSeal false positive).
           if grep -nE 'd1[[:space:]]+execute|wrangler[[:space:]]+d1[[:space:]]+execute' \
-              .github/workflows/stripe-fulfill.yml; then
-            echo "::error::d1 execute must not appear in stripe-fulfill workflow"
+              .github/workflows/stripe-fulfill.yml | grep -vE '^[[:space:]]*[0-9]+:[[:space:]]*#'; then
+            echo "::error::d1 execute must not appear in stripe-fulfill workflow (non-comment)"
             exit 1
           fi
           if [ "${CHECKOUT_OPEN:-}" = "true" ]; then
