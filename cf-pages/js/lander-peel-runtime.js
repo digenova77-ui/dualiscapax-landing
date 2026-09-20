@@ -840,7 +840,7 @@
 
     function openPharmaInquiry() {
       playIrisChime();
-      alert("🏛️ DualisCapax Executive C-Suite Gateway:\n\n• Target Primes: Merck, Biogen, BMS, Pfizer, AbbVie\n• Governance: Swiss Stiftung · Austrian Anstalt · Singapore Public Trust Triad\n• Commitment: $25.00M - $100.00M USD (100% Amortized Dollar-for-Dollar)\n\nDirect institutional dispatch initiated to admin@dualiscapax.ai.");
+      alert("🏛️ DualisCapax Executive C-Suite Gateway:\n\n• Target Primes: Merck, Biogen, BMS, Pfizer, AbbVie\n• Governance: Swiss Stiftung · Austrian Anstalt · Singapore Public Trust Triad\n• Commitment: $25.00M - $100.00M USD (100% Amortized Dollar-for-Dollar)\n\nInstitutional intake is parked under freeze (no live dispatch email advertised).");
       speakText("Big Pharma Institutional Gate opened. Connecting to the Swiss, Austrian, and Singapore Sovereign Trust Triad.");
     }
 
@@ -1104,7 +1104,7 @@
           "• ED-SPEC-20260903-MASTER-UNIFIED: Master Enterprise Fiduciary Architecture",
           "• ED-SLA-20260901-CLEAN-UNPLUG: Sub-90-Second Cryptographic Clean Unplug SLA"
         ],
-        statute: "Settlement Rails: Interac e-Transfer • Ethereum Vault 0x0adC...AFBBc4 • Bitcoin Taproot",
+        statute: "Settlement Rails: PARKED under freeze (Interac / crypto / card closed)",
         speech: "Sector Eight establishes our Sovereign Fiduciary Treasury: zero corporate token float, 100% CRA barter parity, and our five-year sunsetting model where clients retain eighty-one to one hundred percent of savings."
       }
     };
@@ -1154,7 +1154,7 @@
     function openSectorDeepDive() {
       playIrisChime();
       const data = CORE_8_SECTORS_DATA[currentEightSectorKey] || CORE_8_SECTORS_DATA.sec1;
-      alert(`🏛️ DUALISCAPAX SECTOR DEEP-DIVE:\\n\\n${data.badge}\\n\\nTitle: ${data.title}\\n\\n${data.desc}\\n\\n• Governance: ${data.statute}\\n• Watchdog SLA: ${data.watchdog}\\n\\nTo license canonical specifications or onboard a sector pilot, connect with: admin@dualiscapax.ai`);
+      alert(`🏛️ DUALISCAPAX SECTOR DEEP-DIVE:\\n\\n${data.badge}\\n\\nTitle: ${data.title}\\n\\n${data.desc}\\n\\n• Governance: ${data.statute}\\n• Watchdog SLA: ${data.watchdog}\\n\\nLicensing / sector pilot intake is parked under freeze (no live intake email advertised).`);
       speakText(`Deep dive opened for ${data.title}.`);
     }
   // export onclick targets used by peeled HTML
