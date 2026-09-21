@@ -5,7 +5,7 @@
  * Not a cloned voice. Not a codec.
  */
 (function (w) {
-  var VERSION = "iris-av-v2-2026-09-13-speak";
+  var VERSION = "iris-av-v2-2026-09-20-speak";
   var state = {
     cam: null,
     mic: null,
@@ -187,7 +187,8 @@
       u.onend = finish;
       u.onerror = function () { finish(); };
       try {
-        if (!android && (w.speechSynthesis.speaking || w.speechSynthesis.pending)) {
+        /* Clear prior utterance on all platforms — double-speak left Android silent. */
+        if (w.speechSynthesis.speaking || w.speechSynthesis.pending) {
           try { w.speechSynthesis.cancel(); } catch (c) {}
         }
         w.speechSynthesis.resume();
@@ -198,10 +199,10 @@
         /* If Android never starts utterance, we still showed text + DSAP felt — finish cleanly */
         setTimeout(function () {
           if (android && !started && !finished) {
-            err("Chrome on this phone stayed silent on TTS. Words are on-screen; DSAP felt still ran. Try typing, or another browser.");
+            err("Chrome on this phone stayed silent on TTS. Words are on-screen; DSAP felt still ran. Tap Speaker ON, then Ask again.");
             finish();
           }
-        }, 1200);
+        }, 1400);
       } catch (e) {
         finish();
       }
@@ -383,10 +384,24 @@
     }
   }
 
+  /* Call during a real user gesture so later async replies can speak aloud. */
+  function prime() {
+    unlockAudioSync();
+    if (!w.speechSynthesis) return;
+    try {
+      var u = new SpeechSynthesisUtterance(" ");
+      u.volume = 0;
+      u.rate = 2;
+      u.pitch = 1;
+      w.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
   w.IrisAV = {
     version: VERSION,
     state: state,
     speak: speak,
+    prime: prime,
     camera: camera,
     mic: mic,
     screen: screen,

@@ -164,7 +164,7 @@
               <span class="iris-orb-liquid" aria-hidden="true"><span class="iris-orb-puddle" id="irisOrbPuddle"></span></span>
               <span class="iris-orb-core">🎙️</span>
             </button>
-            <button type="button" class="iris-dock-btn" id="btnVoiceToggle" title="Iris voice replies" onclick="toggleSensor('voice')" aria-label="Voice out">🔊</button>
+            <button type="button" class="iris-dock-btn standby" id="btnVoiceToggle" title="Speaker ON — Iris talks back after replies" onclick="toggleSensor('voice')" aria-label="Speaker on" aria-pressed="true">🔊</button>
             <button type="button" class="iris-dock-btn" title="Clear chat" onclick="irisClearChat()" aria-label="Clear">✕</button>
           </div>
           <form class="iris-spark-composer" onsubmit="handleIrisUserPrompt(event)">
@@ -247,7 +247,6 @@
     var audioUnlocked = false;
 
     function unlockMobileAudio() {
-      if (audioUnlocked) return;
       try {
         if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
           var AudioCtor = window.AudioContext || window.webkitAudioContext;
@@ -270,8 +269,22 @@
       }
     }
 
+    /* Must run inside a real user gesture so later async Iris replies can speak. */
+    function primeIrisSpeechOut() {
+      unlockMobileAudio();
+      try {
+        if (window.IrisAV && typeof IrisAV.prime === 'function') IrisAV.prime();
+        else if (window.IrisAV && typeof IrisAV.unlock === 'function') IrisAV.unlock();
+        else if (window.DSAP && typeof DSAP.unlock === 'function') DSAP.unlock();
+      } catch (e) {}
+    }
+    try { window.primeIrisSpeechOut = primeIrisSpeechOut; } catch (eWin) {}
+
     ['click', 'touchstart', 'touchend', 'keydown'].forEach(function(evt) {
-      document.addEventListener(evt, unlockMobileAudio, { once: true, passive: true });
+      document.addEventListener(evt, function () {
+        unlockMobileAudio();
+        try { primeIrisSpeechOut(); } catch (e) {}
+      }, { once: true, passive: true });
     });
 
     // Voice Picker: Prioritize Natural / Studio / Neural voices across Android, iOS, Windows
@@ -404,8 +417,8 @@
       if (window.IrisAV && typeof IrisAV.speak === 'function') {
         try {
           unlockMobileAudio();
-          if (window.DSAP && typeof DSAP.unlock === 'function') DSAP.unlock().catch(function () {});
-          else if (typeof IrisAV.unlock === 'function') IrisAV.unlock();
+          if (typeof IrisAV.unlock === 'function') IrisAV.unlock();
+          else if (window.DSAP && typeof DSAP.unlock === 'function') DSAP.unlock().catch(function () {});
           markSpeaking(true);
           IrisAV.speak(cleanText, function () { markSpeaking(false); currentUtterance = null; });
           return;
@@ -591,8 +604,21 @@
         triggerMicVoiceInput();
       } else if (sensor === 'voice') {
         SENSOR_STATE.voice = !SENSOR_STATE.voice;
-        updateSensorVisual('voice', SENSOR_STATE.voice ? 'standby' : 'off', SENSOR_STATE.voice ? '🔊 Voice: ON' : '🔇 Voice: OFF');
-        if (SENSOR_STATE.voice) speakText("Voice output enabled.");
+        var voiceBtn = document.getElementById('btnVoiceToggle');
+        if (voiceBtn) {
+          voiceBtn.title = SENSOR_STATE.voice
+            ? 'Speaker ON — Iris talks back after replies'
+            : 'Speaker OFF — tap to enable Iris talk-back';
+          voiceBtn.setAttribute('aria-pressed', SENSOR_STATE.voice ? 'true' : 'false');
+          voiceBtn.setAttribute('aria-label', SENSOR_STATE.voice ? 'Speaker on' : 'Speaker off');
+        }
+        updateSensorVisual('voice', SENSOR_STATE.voice ? 'standby' : 'off', SENSOR_STATE.voice ? '🔊 Speaker: ON' : '🔇 Speaker: OFF');
+        if (SENSOR_STATE.voice) {
+          try { primeIrisSpeechOut(); } catch (ePrime) {}
+          speakText("Speaker on. I will talk back.");
+        } else {
+          try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (eOff) {}
+        }
       } else if (sensor === 'screen') {
         triggerScreenCapture();
       } else if (sensor === 'camera') {
@@ -929,6 +955,7 @@
     async function triggerMicVoiceInput() {
       // exposed for dock orb + permission retry
       // Voice-first STT wire: warm GUM then RELEASE before SpeechRecognition (Chrome Android).
+      try { primeIrisSpeechOut(); } catch (ePrime) {}
       try { if (typeof playIrisChime === 'function') playIrisChime(); } catch (e) {}
       const input = document.getElementById('irisInputBox');
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1408,10 +1435,7 @@
       if (!input) return false;
       const text = input.value.trim();
       if (!text) return false;
-      try {
-        if (window.IrisAV && IrisAV.unlock) IrisAV.unlock();
-        else if (window.DSAP && DSAP.unlock) DSAP.unlock();
-      } catch (e) {}
+      try { primeIrisSpeechOut(); } catch (e) {}
       void processIrisPrompt(text);
       input.value = '';
       return false;
@@ -1421,10 +1445,7 @@
       if (!promptText) return;
       var box = document.getElementById('irisInputBox');
       if (box) box.value = '';
-      try {
-        if (window.IrisAV && IrisAV.unlock) IrisAV.unlock();
-        else if (window.DSAP && DSAP.unlock) DSAP.unlock();
-      } catch (e) {}
+      try { primeIrisSpeechOut(); } catch (e) {}
       void processIrisPrompt(String(promptText));
     }
 
@@ -1728,11 +1749,22 @@ function resolveNaturalLanguageIntent(promptText) {
     function irisConnectGrok() { /* removed from public face */ }
     document.addEventListener('DOMContentLoaded', function () {
       try { irisRefreshGrokChip(); } catch (e) {}
+      try {
+        if (SENSOR_STATE && SENSOR_STATE.voice) {
+          updateSensorVisual('voice', 'standby', '🔊 Speaker: ON');
+          var vb = document.getElementById('btnVoiceToggle');
+          if (vb) {
+            vb.title = 'Speaker ON — Iris talks back after replies';
+            vb.setAttribute('aria-pressed', 'true');
+          }
+        }
+      } catch (eVoice) {}
     });
 
     let __irisLastUserPrompt = '';
 
     async function processIrisPrompt(promptText) {
+      try { primeIrisSpeechOut(); } catch (ePrime) {}
       playIrisChime();
       __irisLastUserPrompt = String(promptText || '');
       irisResetStreamForTurn();
@@ -1765,11 +1797,7 @@ function resolveNaturalLanguageIntent(promptText) {
       }
       if (thinkingRow && thinkingRow.parentNode) thinkingRow.parentNode.removeChild(thinkingRow);
       displayIrisResponseWithFollowUps(res.answer, res.followUps, null, res.badge, res.badgeColor);
-      try {
-        if (res && res.rail && res.rail.indexOf('grok') === 0 && typeof speakText === 'function') {
-          speakText(String(res.answer).slice(0, 280));
-        }
-      } catch (eSpeak) {}
+      /* Speak-back is solely via displayIrisResponseWithFollowUps → speakText (no grok slice double-speak). */
       try { irisRefreshGrokChip(); } catch (eChip) {}
     }
 
@@ -1818,10 +1846,7 @@ function resolveNaturalLanguageIntent(promptText) {
       if (!text) return;
       var box = document.getElementById('irisInputBox');
       if (box) box.value = text;
-      try {
-        if (window.IrisAV && IrisAV.unlock) IrisAV.unlock();
-        else if (window.DSAP && DSAP.unlock) DSAP.unlock();
-      } catch (e) {}
+      try { primeIrisSpeechOut(); } catch (e) {}
       void processIrisPrompt(text);
       if (box) box.value = '';
     }
