@@ -29,7 +29,7 @@ window.DC_PAYMENTS = {
   edu_leaf: null,
   crypto_enabled: false,
   fulfill_worker: "https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/",
-  thanks: "/pay/thanks.html",
+  thanks: "/pay-thanks.html",
   /* Addresses blanked while donate_open=false (Option C park). Restore only under DONATE_OPEN YES. */
   research_btc: "",
   research_eth: "",
