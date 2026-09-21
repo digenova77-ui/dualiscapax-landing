@@ -6,7 +6,7 @@
 (function (w) {
   "use strict";
 
-  var VERSION = "iris-sensors-2026-09-12";
+  var VERSION = "iris-sensors-2026-09-20-voice";
   var facingMode = "user"; // user = front, environment = back
   var cameraStream = null;
   var screenStream = null;
@@ -244,9 +244,17 @@
       cameraStream = prevStream;
       if (prevStream) attachVideo(prevStream);
       var name = (err && (err.name || err.message)) || "";
+      // Never open the mic #permissionGuidanceModal for camera failures.
       if (/NotAllowed|PermissionDenied|security/i.test(String(name))) {
         status(permissionDeniedMessage("Camera", err));
-        if (typeof w.showPermissionModal === "function") w.showPermissionModal();
+        if (typeof w.irisSoftNotice === "function") {
+          w.irisSoftNotice("Camera permission blocked. Tap lock/tune → Camera Allow, then retry.");
+        }
+      } else if (/NotReadable|TrackStart|Abort|Overconstrained|NotFound/i.test(String(name))) {
+        status(permissionDeniedMessage("Camera", err));
+        if (typeof w.irisSoftNotice === "function") {
+          w.irisSoftNotice("Camera busy or unavailable (" + name + "). Staying on " + (prevMode === "user" ? "front" : "rear") + ".");
+        }
       } else {
         status("That lens isn’t available on this phone. Staying on " + (prevMode === "user" ? "front" : "rear") + ".");
       }
@@ -267,7 +275,13 @@
       return true;
     } catch (err) {
       status(permissionDeniedMessage("Microphone", err));
-      if (typeof w.showPermissionModal === "function") w.showPermissionModal();
+      var name = (err && (err.name || err.message)) || "";
+      // Only real site-permission deny opens the walkthrough modal.
+      if (/NotAllowed|PermissionDenied|security/i.test(String(name))) {
+        if (typeof w.showPermissionModal === "function") w.showPermissionModal();
+      } else if (typeof w.irisSoftNotice === "function") {
+        w.irisSoftNotice(permissionDeniedMessage("Microphone", err));
+      }
       return false;
     }
   };
@@ -277,6 +291,7 @@
     version: VERSION,
     isSecure: isSecure,
     ensureMediaDevices: ensureMediaDevices,
+    permissionDeniedMessage: permissionDeniedMessage,
     requestMicStream: requestMicStream,
     requestCameraStream: requestCameraStream,
     requestScreenStream: requestScreenStream,
