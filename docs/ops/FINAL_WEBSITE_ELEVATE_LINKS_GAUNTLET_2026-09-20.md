@@ -69,7 +69,7 @@
 | Field | Value |
 |-------|-------|
 | tip mutate | **Y** (cf-pages HTML only) |
-| tip_sha | *(post-merge tip SHA — fill after merge; parent TipSeal)* |
+| tip_sha | `74e7669a42813c1ece1a02fb987f9eb55f3ae594` (PR #37 squash merge; **parent TipSeal needed**) |
 | TipSeal | **parent only** — executor did **not** TipSeal |
 | PATH_ALLOWLIST | `cf-pages/**` only |
 
