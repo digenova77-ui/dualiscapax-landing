@@ -18,6 +18,40 @@
       --text-muted: #64748B;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      /* Style Unify fold aliases (theme/styles → lander) */
+      --bg: var(--bg-main);
+      --void: var(--bg-main);
+      --void-deep: #020308;
+      --fg: var(--text-primary);
+      --text: var(--text-primary);
+      --muted: var(--text-secondary);
+      --mute: var(--text-secondary);
+      --faint: var(--text-muted);
+      --line: var(--border-subtle);
+      --line-dim: color-mix(in srgb, var(--border-subtle) 55%, transparent);
+      --blue: var(--accent-cyan);
+      --blue-dim: color-mix(in srgb, var(--accent-cyan) 72%, transparent);
+      --accent-blue-soft: #9ec5ff;
+      --iris: var(--iris-teal);
+      --iris-deep: color-mix(in srgb, var(--iris-teal) 55%, #0B0E14);
+      --warn: var(--accent-orange);
+      --glass: color-mix(in srgb, var(--bg-surface) 62%, transparent);
+      --glow: var(--accent-cyan-glow);
+      --warm: #f3e6d0;
+      --pad: clamp(.8rem, 2.4vw, 1.4rem);
+      --max: 740px;
+      --blur: 14px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+      /* glass-tiers z-depth */
+      --z-void: 0;
+      --z-field: 1;
+      --z-copy: 8;
+      --z-hall: 60;
+      --z-card: 180;
+      --z-door: 260;
+      /* IBM Plex stacks — opt-in via html.font-plex */
+      --font-plex-sans: "IBM Plex Sans", var(--font-sans);
+      --font-plex-mono: "IBM Plex Mono", var(--font-mono);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -698,6 +732,487 @@
 }
 .subpage-main { max-width: 920px; margin: 0 auto; padding: 1.25rem 1.25rem 6rem; }
 .subpage-back { font-size: 0.8rem; color: var(--accent-cyan); text-decoration: none; font-family: var(--font-mono); }
+
+
+    /* ==========================================================================
+       Style Unify — door compat (CSS-only lander fold 2026-09-20)
+       Aliases + look/pay/donate/gates plates. No ice/holo module imports.
+       ========================================================================== */
+
+    /* Plex opt-in — inert unless html.font-plex (look/donate) */
+    html.font-plex {
+      --font-sans: var(--font-plex-sans);
+      --font-mono: var(--font-plex-mono);
+    }
+
+    /* ---------- look-compat (theme plate without holo/quarks @imports) ---------- */
+    canvas.quarks,
+    .quarks {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-void);
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      display: block;
+      opacity: .42;
+      filter: blur(.35px) saturate(.7) brightness(.55);
+    }
+    .site {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+      position: relative;
+      z-index: var(--z-copy);
+    }
+    .site::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 40% at 50% 0%, var(--glow), transparent 62%),
+        linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.46) 88%);
+      z-index: 0;
+    }
+    .site > * { position: relative; z-index: 1; }
+    .site header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.35rem 0;
+      border-bottom: 1px solid var(--line);
+      gap: 1rem;
+      background: linear-gradient(180deg, rgba(255,255,255,.045), transparent);
+      backdrop-filter: blur(var(--blur)) saturate(1.2);
+      -webkit-backdrop-filter: blur(var(--blur)) saturate(1.2);
+    }
+    .site .mark {
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: -.03em;
+      color: var(--fg);
+      text-decoration: none;
+    }
+    .site nav {
+      display: flex;
+      gap: 1.05rem;
+      flex-wrap: wrap;
+    }
+    .site nav a {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      text-decoration: none;
+    }
+    .site nav a:hover,
+    .site nav a.on { color: var(--fg); }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      font-weight: 500;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--blue-dim);
+      margin: 2.1rem 0 1rem;
+    }
+    .site h1,
+    .site .hero-title {
+      font-size: clamp(2.05rem, 8.6vw, 3.15rem);
+      font-weight: 600;
+      line-height: .94;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      color: var(--fg);
+    }
+    .site h2 {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin: 0 0 .8rem;
+    }
+    .site p,
+    .site li { font-size: 1.04rem; color: var(--muted); }
+    .site p + p { margin-top: .85rem; }
+    .lede {
+      font-size: 1.12rem;
+      line-height: 1.64;
+      color: var(--muted);
+      margin: 0 0 1.15rem;
+    }
+    .site section {
+      padding: 2.15rem 0;
+      border-top: 1px solid var(--line-dim);
+    }
+    .row {
+      border: 1px solid var(--line);
+      padding: .95rem 1.05rem;
+      margin: 0 0 .65rem;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-cyan) 8%, transparent), rgba(0,0,0,.2));
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+    a.row:hover,
+    .row:hover { border-color: color-mix(in srgb, var(--accent-cyan) 45%, transparent); }
+    .row strong {
+      display: block;
+      color: var(--fg);
+      margin-bottom: .25rem;
+    }
+    .sec-break {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem .7rem;
+      align-items: center;
+      margin-top: 1.15rem;
+      padding-top: .85rem;
+      border-top: 1px dashed color-mix(in srgb, var(--accent-cyan) 28%, transparent);
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+    .sec-break a { color: var(--blue); text-decoration: none; }
+    .sec-break .dim { color: var(--faint); letter-spacing: .08em; }
+    .site footer,
+    .site foot {
+      display: block;
+      padding: 2rem 0;
+      border-top: 1px solid var(--line-dim);
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+    .iris-mark {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: var(--z-door);
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+    .hud {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-cyan) 8%, transparent), rgba(0,0,0,.28));
+      padding: .9rem 1rem;
+      margin: 1.2rem 0 0;
+      font-family: var(--font-mono);
+    }
+    .door {
+      display: inline-block;
+      margin-top: 1rem;
+      margin-right: 1.1rem;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-family: var(--font-mono);
+    }
+    .layer {
+      border: 1px solid var(--line);
+      padding: .95rem 1rem;
+      margin: 0 0 .7rem;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--accent-cyan) 5%, transparent), rgba(0,0,0,.22));
+    }
+    .seat-stage {
+      position: relative;
+      z-index: var(--z-hall);
+      perspective: 1600px;
+      perspective-origin: 50% 20%;
+      transform-style: preserve-3d;
+    }
+    .seat-table,
+    .seat-row {
+      transform-style: preserve-3d;
+      position: relative;
+      z-index: var(--z-card);
+    }
+    .seat-card { z-index: var(--z-card); }
+    .seat-door,
+    .seat-deep,
+    #seat-deep {
+      position: relative;
+      z-index: var(--z-door);
+    }
+    @media (max-width: 40rem) {
+      .site { padding: 0 1.1rem 2.4rem; }
+      .site header { padding: 1.05rem 0; }
+      .site nav { gap: .75rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .seat-stage { perspective: none; }
+      canvas.quarks,
+      .quarks { filter: none; opacity: .28; }
+    }
+
+    /* ---------- pay-compat (styles.css plate → lander tokens; no Fraunces/Figtree) ---------- */
+    body:has(> header .brand) header,
+    header:has(.brand) {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem 1rem;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(.55rem + env(safe-area-inset-top, 0px)) var(--pad) .55rem;
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(var(--blur)) saturate(1.15);
+      backdrop-filter: blur(var(--blur)) saturate(1.15);
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      letter-spacing: .2em;
+      font-size: .78rem;
+      color: var(--text);
+    }
+    header:has(.brand) nav,
+    body:has(> header .brand) nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .85rem;
+      font-size: .85rem;
+    }
+    header:has(.brand) nav a,
+    body:has(> header .brand) nav a {
+      color: var(--iris);
+      text-decoration: none;
+    }
+    header:has(.brand) nav a:hover,
+    body:has(> header .brand) nav a:hover { text-decoration: underline; }
+    body:has(> header .brand) main,
+    main:has(.lead) {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: clamp(1.6rem, 5vw, 2.8rem) var(--pad) 4rem;
+      text-align: center;
+    }
+    main:has(.lead) h1 {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: clamp(2rem, 7.2vw, 3.35rem);
+      line-height: 1.04;
+      letter-spacing: -.02em;
+      margin: .35rem 0;
+      color: var(--text);
+    }
+    .lead {
+      color: var(--mute);
+      font-size: 1.02rem;
+      max-width: 36rem;
+      margin: .45rem auto 0;
+      line-height: 1.45;
+    }
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      padding: 1rem 1.15rem;
+      -webkit-backdrop-filter: blur(var(--blur));
+      backdrop-filter: blur(var(--blur));
+      text-align: left;
+    }
+    .card h2 {
+      margin: .08rem 0 .35rem;
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--iris);
+      font-weight: 600;
+    }
+    .card p {
+      margin: 0;
+      color: var(--mute);
+      font-size: .92rem;
+    }
+    .btn,
+    .pay a.btn {
+      display: inline-block;
+      margin: .4rem .2rem 0 0;
+      padding: .58rem 1.05rem;
+      border: 1px solid var(--iris);
+      border-radius: 999px;
+      color: #061018;
+      background: var(--iris);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: .9rem;
+    }
+    .btn.ghost,
+    .pay a.btn.ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--line);
+    }
+    .chip {
+      font-size: .66rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border: 1px solid var(--line);
+      padding: .22rem .55rem;
+      border-radius: 999px;
+      color: var(--mute);
+      background: color-mix(in srgb, var(--bg) 55%, transparent);
+    }
+    .chip.warn {
+      border-color: color-mix(in srgb, var(--warn) 45%, var(--line));
+      color: #e6d3a2;
+    }
+    main:has(.lead) a { color: var(--iris); }
+
+    /* ---------- donate-compat (moved from donate.html inline <style>) ---------- */
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 34rem;
+      margin: 0 auto;
+      padding: max(1rem, env(safe-area-inset-top)) 1.1rem max(2.4rem, env(safe-area-inset-bottom));
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .top a { color: var(--accent-blue-soft); text-decoration: none; }
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--accent-blue-soft);
+    }
+    .wrap h1,
+    .wrap .hero-title {
+      font-size: clamp(1.7rem, 7vw, 2.35rem);
+      font-weight: 700;
+      margin: .4rem 0 .65rem;
+      color: var(--fg);
+    }
+    .wrap .lede {
+      font-size: 1.08rem;
+      line-height: 1.55;
+      color: color-mix(in srgb, var(--fg) 78%, transparent);
+      margin-bottom: 1rem;
+    }
+    .wrap h2 {
+      font-size: .78rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      color: var(--accent-blue-soft);
+      margin: 1.35rem 0 .55rem;
+    }
+    .go,
+    .rail {
+      display: block;
+      width: 100%;
+      min-height: 2.85rem;
+      margin: 0 0 .5rem;
+      padding: .75rem .9rem;
+      border: 1px solid color-mix(in srgb, var(--accent-blue-soft) 35%, transparent);
+      background: color-mix(in srgb, var(--accent-blue-soft) 10%, transparent);
+      color: #e8f1ff;
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-align: left;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+    .go {
+      border-color: color-mix(in srgb, var(--accent-blue-soft) 65%, transparent);
+      background: color-mix(in srgb, var(--accent-blue-soft) 18%, transparent);
+      font-size: .85rem;
+    }
+    .rail {
+      background: rgba(255, 255, 255, .03);
+      color: var(--accent-blue-soft);
+    }
+    .panel {
+      border: 1px solid color-mix(in srgb, var(--accent-blue-soft) 25%, transparent);
+      padding: .9rem 1rem;
+      margin: .35rem 0 1rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: color-mix(in srgb, var(--fg) 82%, transparent);
+    }
+    .panel strong {
+      display: block;
+      color: #fff;
+      margin-bottom: .4rem;
+    }
+    .addr {
+      margin-top: .55rem;
+      padding: .65rem .7rem;
+      border: 1px solid color-mix(in srgb, var(--accent-blue-soft) 20%, transparent);
+      background: #0a0b10;
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      word-break: break-all;
+      -webkit-user-select: text !important;
+      user-select: text !important;
+    }
+    .note {
+      font-size: .92rem;
+      color: color-mix(in srgb, var(--fg) 55%, transparent);
+      margin: 1rem 0;
+      line-height: 1.55;
+    }
+    .foot {
+      margin-top: 1.6rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, .1);
+      font-size: .8rem;
+      color: color-mix(in srgb, var(--fg) 40%, transparent);
+    }
+    body:has(> .wrap) {
+      background: var(--bg-main);
+      color: var(--fg);
+      min-height: 100dvh;
+    }
+    body:has(> .wrap) a { color: var(--accent-blue-soft); text-decoration: none; }
+    body:has(> .wrap) button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+
+    /* ---------- gates-compat (override Georgia; leave body style attrs alone) ---------- */
+    body {
+      font-family: var(--font-sans) !important;
+    }
 
 /* =========================================================================
    ICE PORTAL — rink chrome + one-stage ice (teen-simple)
