@@ -1,0 +1,103 @@
+/* Iris mini guide orb — Absolute hard plates only.
+   Visual: RTE-style matte soft-blue 3D sphere + Iris glow. Not a flat button.
+   Link target: /iris?path=<plate> (page-aware room seed). No pay thaw. */
+.iris-mini-guide {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.85rem 0 1rem;
+  max-width: 100%;
+  position: relative;
+  z-index: 2;
+}
+.iris-mini-guide-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.iris-mini-guide-link:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.65);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+.iris-mini-orb {
+  position: relative;
+  width: 2.15rem;
+  height: 2.15rem;
+  flex: 0 0 auto;
+  display: inline-block;
+}
+.iris-mini-orb-glow {
+  position: absolute;
+  inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(126, 184, 255, 0.55) 0%,
+    rgba(56, 189, 248, 0.22) 42%,
+    transparent 72%);
+  filter: blur(1.2px);
+  opacity: 0.9;
+  pointer-events: none;
+  animation: irisMiniGlow 3.6s ease-in-out infinite alternate;
+}
+.iris-mini-orb-sphere {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%,
+    #c8e4ff 0%,
+    #4a8fd4 38%,
+    #16324f 72%,
+    #070b12 100%);
+  box-shadow:
+    inset -6px -8px 14px rgba(0, 0, 0, 0.55),
+    0 6px 14px rgba(0, 20, 40, 0.45),
+    0 0 0 1px rgba(126, 184, 255, 0.18);
+}
+/* Tiny cluster satellites — RTE vibe, mobile-tight */
+.iris-mini-orb-sat {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%,
+    #b8d9f5 0%,
+    #3a7ab8 55%,
+    #0a1520 100%);
+  box-shadow: inset -2px -3px 5px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  opacity: 0.85;
+}
+.iris-mini-orb-sat.s1 {
+  width: 0.55rem;
+  height: 0.55rem;
+  left: -0.22rem;
+  top: 0.95rem;
+}
+.iris-mini-orb-sat.s2 {
+  width: 0.42rem;
+  height: 0.42rem;
+  right: -0.18rem;
+  top: 0.15rem;
+  opacity: 0.7;
+}
+.iris-mini-guide-copy {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #7eb8ff;
+  line-height: 1.25;
+  max-width: 11rem;
+}
+@media (min-width: 480px) {
+  .iris-mini-guide-copy { max-width: none; }
+}
+@keyframes irisMiniGlow {
+  from { opacity: 0.72; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .iris-mini-orb-glow { animation: none; }
+}
