@@ -218,7 +218,7 @@
             <label>Single Payment Wallet (ERC-4337)</label>
             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family: var(--font-mono); margin: 6px 0;">
               <span style="color: var(--text-muted);">Account:</span>
-              <span style="color: var(--accent-cyan);">0x20e01879...6ee7</span>
+              <span style="color: var(--accent-cyan);">[PARKED_ACCOUNT]</span>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family: var(--font-mono); margin: 6px 0;">
               <span style="color: var(--text-muted);">1:1 CAD Balance:</span>
@@ -268,7 +268,7 @@
   "caller_type": "autonomous_software_agent",
   "L1_code_integrity": "91d3f347c20136a40f68ecdec011d40974ae073f449bad6300d8851404128b9e",
   "L2_enclave_anchor": "TPM2.0_SECURE_HARDWARE_ENCLAVE_ONTARIO",
-  "L3_smart_account": "0x20e01879528bab5e6ba3ee538ef7417454906ee7",
+  "L3_smart_account": "[PARKED_ACCOUNT]",
   "L4_session_token": "sess_5d1f4233b9d762d84f0cdaf7770962f7",
   "L5_ledger_lease": "0x4b09bef984afed35391389e18b824ef78c01b2a",
   "derivation_latency_ms": 0.1512,
@@ -625,7 +625,7 @@ SYMPLECTIC_VOLUME_DETERMINANT: det(M) = 1.000000000000 | RESIDUAL_FLOOR: R_eff =
 INFORMATION_THEORETIC_SECURITY: Carter-Wegman BN254 (Pr[forgery] < 10^-74 | I(M; Tag | S) = 0.0000 bits)
 RETAINED_PII_PHI: 0.00% (Client-Side Ephemeral HMAC-SHA256 Salt Redacted)
 ORACLE_CAD_PARITY: BTC: $88,400.00 CAD | ETH: $3,650.00 CAD | SOL: $210.00 CAD
-CRYPTO_VAULT_SETTLEMENT: 0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4
+CRYPTO_VAULT_SETTLEMENT: [PARKED_VAULT]  /* Egg #16 FREEZE: tip-root orphan vault advertise parked */
 SOVEREIGN_ROOT_SEAL: 0xDUALIS_CAPAX_SOVEREIGN_ED25519_KEY_ROOT_ONTARIO_CA
 </div>
     </div>
@@ -723,9 +723,10 @@ python3 dclm_runtime_sleeve.py --runtime-id=${rtId} --sector=${sec}`;
     }
 
     function openCrypto(sku, priceCad) {
-      document.getElementById('modalTitle').innerText = 'Equal-Crypto Settlement: ' + sku;
-      document.getElementById('modalBody').innerText = 'Pay using Bitcoin (BTC), Ethereum (ETH), or Solana (SOL) with 1:1 CAD Parity. Vault: 0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4';
-      document.getElementById('modalPrice').innerHTML = '<strong>CAD Equivalent:</strong> CAD $' + priceCad;
+      /* Egg #16 FREEZE: tip-root orphan Equal-Crypto CTA parked — no vault/send advertise. */
+      document.getElementById('modalTitle').innerText = 'Equal-Crypto PARKED: ' + sku;
+      document.getElementById('modalBody').innerText = 'Gateways CLOSED / PRODUCTION FREEZE — Equal-Crypto vault advertise parked. No receive address on this orphan tip-root page.';
+      document.getElementById('modalPrice').innerHTML = '<strong>CAD Equivalent (info only):</strong> CAD $' + priceCad + ' · pay path closed';
       document.getElementById('checkoutModal').style.display = 'flex';
     }
 
