@@ -48,7 +48,22 @@
     return "";
   }
 
-  async function tryDepthWorker(prompt) {
+  function pageAwareSystem(opts) {
+    opts = opts || {};
+    var path = String(opts.path || "").trim();
+    var label = String(opts.plateLabel || "").trim();
+    if (!path) return IRIS_SYS;
+    var room = label ? (path + " (" + label + ")") : path;
+    // Ephemeral room cue only — no PE invent, no Absolute crowning.
+    return (
+      IRIS_SYS +
+      " User is viewing DualisCapax plate: " +
+      room +
+      ". Fit answers to that room. Do not invent Product Entities or crown Absolute."
+    );
+  }
+
+  async function tryDepthWorker(prompt, pageOpts) {
     // Same-origin first = native on dualiscapax.ai (no visitor key).
     var urls = [
       "/api/v2/chat",
@@ -59,7 +74,7 @@
       world: 0,
       api_version: "2",
       messages: [
-        { role: "system", content: IRIS_SYS },
+        { role: "system", content: pageAwareSystem(pageOpts) },
         { role: "user", content: String(prompt).slice(0, 2000) }
       ],
       max_tokens: 420
@@ -116,12 +131,18 @@
       : null;
   }
 
-  async function tryByok(prompt) {
+  async function tryByok(prompt, pageOpts) {
     if (!(w.DCByok && typeof w.DCByok.present === "function" && w.DCByok.present())) {
       return null;
     }
     try {
-      var r = await w.DCByok.chat([{ role: "user", content: String(prompt) }], {
+      var msgs = [];
+      var sys = pageAwareSystem(pageOpts);
+      if (sys && sys !== IRIS_SYS) {
+        msgs.push({ role: "system", content: sys });
+      }
+      msgs.push({ role: "user", content: String(prompt) });
+      var r = await w.DCByok.chat(msgs, {
         model: "grok-4-fast",
         max_tokens: 420
       });
@@ -135,6 +156,10 @@
   async function ask(prompt, opts) {
     opts = opts || {};
     var house = opts.house || null;
+    var pageOpts = {
+      path: opts.path || (opts.pageContext && opts.pageContext.path) || "",
+      plateLabel: opts.plateLabel || (opts.pageContext && opts.pageContext.plateLabel) || ""
+    };
 
     var triage =
       typeof w.evaluateComputationalComplexity === "function"
@@ -159,10 +184,10 @@
       );
     }
 
-    var depth = await tryDepthWorker(prompt);
+    var depth = await tryDepthWorker(prompt, pageOpts);
     if (depth) return depth;
 
-    var byok = await tryByok(prompt);
+    var byok = await tryByok(prompt, pageOpts);
     if (byok) return byok;
 
     return shape(
