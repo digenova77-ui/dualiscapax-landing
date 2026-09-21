@@ -171,7 +171,7 @@
       </div>
 
       <p style="font-size:0.86rem; color:var(--text-primary); font-weight:600; margin-bottom:0.75rem;">
-        Mic didn’t open this tap. On Chrome Android that is often the <strong>site</strong> permission (or a failed start), not that “Android blocked Dualis.”
+        Site microphone permission looks blocked (or still needs Allow). This walkthrough is only for a real permission deny — not speech-engine failures when Chrome already says Allow.
       </p>
 
       <!-- Step-by-Step Instructions -->
@@ -543,6 +543,176 @@
     let micAnalyserNode = null;
     let waveAnimFrameId = null;
 
+    // --- Mic honesty helpers (Permissions API + error taxonomy) ---
+    let __irisMicGumOk = false;
+
+    async function queryMicPermissionState() {
+      try {
+        if (!navigator.permissions || !navigator.permissions.query) return 'unknown';
+        const st = await navigator.permissions.query({ name: 'microphone' });
+        return (st && st.state) || 'unknown';
+      } catch (e) {
+        return 'unknown';
+      }
+    }
+
+    function showListeningWaveCosmetic(msg) {
+      const waveBox = document.getElementById('irisAudioWaveContainer');
+      if (waveBox) {
+        waveBox.removeAttribute('hidden');
+        waveBox.style.display = 'flex';
+      }
+      const gainText = document.getElementById('irisAudioGainText');
+      if (gainText) {
+        gainText.innerText = msg || 'Listening… speak clearly';
+        gainText.style.color = 'var(--accent-mint)';
+      }
+      for (let b = 0; b < 9; b++) {
+        const barEl = document.getElementById('wb' + b);
+        if (barEl) {
+          barEl.style.height = (6 + (b % 3) * 4) + 'px';
+          barEl.style.background = 'var(--accent-mint)';
+          barEl.style.boxShadow = '0 0 4px var(--accent-mint)';
+        }
+      }
+    }
+
+    function handleMicGumFailure(err) {
+      const name = (err && (err.name || err.message)) || 'unknown';
+      console.warn('[Iris Mic] GUM failure classified:', name, err);
+      if (/NotAllowed|PermissionDenied|security/i.test(String(name))) {
+        if (typeof showPermissionModal === 'function') showPermissionModal();
+        else alert('Microphone blocked. Allow mic in site settings, then retry.');
+        return;
+      }
+      if (/NotReadable|TrackStart|Abort/i.test(String(name))) {
+        if (typeof irisSoftNotice === 'function') {
+          irisSoftNotice('Microphone is busy or unavailable. Close other apps using the mic, then retry — or type to Iris.');
+        } else {
+          alert('Microphone busy/unavailable. Close other apps using the mic, then retry.');
+        }
+        return;
+      }
+      if (/Overconstrained/i.test(String(name))) {
+        if (typeof irisSoftNotice === 'function') {
+          irisSoftNotice('This device could not open the mic with the requested settings. Try again, or type to Iris.');
+        } else {
+          alert('Mic settings not supported on this device. Try again or type.');
+        }
+        return;
+      }
+      if (/NotFound|DevicesNotFound/i.test(String(name))) {
+        if (typeof irisSoftNotice === 'function') {
+          irisSoftNotice('No microphone found on this device. Type your question to Iris.');
+        } else {
+          alert('No microphone found.');
+        }
+        return;
+      }
+      if (typeof irisSoftNotice === 'function') {
+        irisSoftNotice('Microphone failed to open (' + name + '). You can type to Iris.');
+      } else {
+        alert('Microphone failed: ' + name);
+      }
+    }
+
+    async function handleSttError(errorCode) {
+      const code = String(errorCode || '');
+      if (code === 'aborted' || code === 'no-speech') return;
+      const perm = await queryMicPermissionState();
+      console.warn('[Iris Mic] STT error:', code, 'permissions.query=', perm, 'gumOk=', __irisMicGumOk);
+
+      if (code === 'not-allowed' || code === 'service-not-allowed' || code === 'audio-capture') {
+        // Real site deny → walkthrough. Granted (or GUM already succeeded) → honest STT/service copy.
+        if (perm === 'granted' || __irisMicGumOk) {
+          if (typeof irisSoftNotice === 'function') {
+            irisSoftNotice(
+              code === 'service-not-allowed'
+                ? 'Speech engine blocked (service), not site mic permission — Chrome already Allowed. Tap the orb again, or type your question.'
+                : 'Speech recognition failed even though microphone is Allowed. Try the orb again, or type to Iris.'
+            );
+          } else {
+            alert('Speech recognition failed (mic permission looks OK). Try again or type.');
+          }
+          return;
+        }
+        if (perm === 'denied') {
+          if (typeof showPermissionModal === 'function') showPermissionModal();
+          else alert('Microphone blocked. Allow mic in site settings, then retry.');
+          return;
+        }
+        // prompt / unknown without prior GUM success → permission walkthrough is still reasonable
+        if (!__irisMicGumOk && (perm === 'prompt' || perm === 'unknown')) {
+          if (typeof showPermissionModal === 'function') showPermissionModal();
+          else alert('Microphone may be blocked. Allow mic in site settings, then retry.');
+          return;
+        }
+        if (typeof irisSoftNotice === 'function') {
+          irisSoftNotice('Speech recognition could not start. Mic permission looks OK — try again or type.');
+        }
+        return;
+      }
+
+      if (typeof irisSoftNotice === 'function') {
+        irisSoftNotice('Microphone/speech error: ' + code + '. You can type to Iris.');
+      } else if (code) {
+        alert('Microphone error: ' + code);
+      }
+    }
+
+    function handleCameraFailure(err) {
+      const name = (err && (err.name || err.message)) || 'unknown';
+      console.warn('[Iris Camera] failure classified:', name, err);
+      // Never open the mic permission modal for camera failures.
+      if (/NotAllowed|PermissionDenied|security/i.test(String(name))) {
+        if (typeof irisSoftNotice === 'function') {
+          irisSoftNotice('Camera permission blocked. Tap lock/tune → Camera Allow, then retry.');
+        } else {
+          alert('Camera blocked. Allow camera in site settings, then retry.');
+        }
+        return;
+      }
+      if (/NotReadable|TrackStart|Abort/i.test(String(name))) {
+        if (typeof irisSoftNotice === 'function') {
+          irisSoftNotice('Camera is busy or unavailable. Close other apps using the camera, then retry.');
+        } else {
+          alert('Camera busy/unavailable.');
+        }
+        return;
+      }
+      if (/Overconstrained|NotFound|DevicesNotFound/i.test(String(name))) {
+        if (typeof irisSoftNotice === 'function') {
+          irisSoftNotice('Camera hardware unavailable on this device (' + name + ').');
+        } else {
+          alert('Camera unavailable: ' + name);
+        }
+        return;
+      }
+      if (typeof irisSoftNotice === 'function') {
+        irisSoftNotice('Camera could not open (' + name + ').');
+      }
+    }
+
+    /** Brief GUM grant then release — warms permission without holding exclusive lock for STT. */
+    async function warmMicPermissionThenRelease() {
+      __irisMicGumOk = false;
+      let stream = null;
+      if (window.IrisSensors && IrisSensors.requestMicStream) {
+        stream = await IrisSensors.requestMicStream();
+      } else if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true }
+        });
+      } else {
+        throw new Error('getUserMedia unavailable');
+      }
+      __irisMicGumOk = true;
+      try {
+        stream.getTracks().forEach(function (t) { t.stop(); });
+      } catch (e) {}
+      return true;
+    }
+
     async function startLiveAudioMeasurement() {
       const waveBox = document.getElementById('irisAudioWaveContainer');
       if (waveBox) {
@@ -568,6 +738,7 @@
         } else {
           throw new Error('getUserMedia unavailable');
         }
+        __irisMicGumOk = true;
 
         micAudioSource = audioCtx.createMediaStreamSource(micStream);
         micAnalyserNode = audioCtx.createAnalyser();
@@ -580,6 +751,8 @@
         throw err;
       }
     }
+
+
 
     function runWaveformRenderLoop() {
       if (!micAnalyserNode) return;
@@ -664,9 +837,9 @@
 
     async function triggerMicVoiceInput() {
       // exposed for dock orb + permission retry
+      // Voice-first STT wire: warm GUM then RELEASE before SpeechRecognition (Chrome Android).
       try { if (typeof playIrisChime === 'function') playIrisChime(); } catch (e) {}
       const input = document.getElementById('irisInputBox');
-      const micBtn = irisOrbEl();
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!(window.isSecureContext || location.hostname === 'localhost')) {
@@ -683,25 +856,43 @@
         return;
       }
 
-      // 1) Explicit getUserMedia first (required on many mobile browsers before SpeechRecognition)
-      try {
-        await startLiveAudioMeasurement();
-      } catch (err) {
-        console.warn('[Iris Mic] permission/stream failed', err);
-        stopLiveAudioMeasurement();
-        resetMicVisuals();
+      // Permissions API short-circuit: known denied → honest walkthrough (no false STT blame later)
+      const permState = await queryMicPermissionState();
+      if (permState === 'denied') {
+        console.warn('[Iris Mic] permissions.query=denied — showing site permission guidance');
         if (typeof showPermissionModal === 'function') showPermissionModal();
         else alert('Microphone blocked. Allow mic in the site settings, then retry.');
         return;
       }
 
-      if (!SpeechRecognition) {
-        // Mic stream works; STT unavailable (Firefox etc.) — keep waveform briefly then stop
-        updateSensorVisual('mic', 'standby', '🎙️ Mic OK (no speech-to-text)');
-        if (input) input.placeholder = 'Mic works — type your question (speech-to-text not on this browser)';
-        setTimeout(function(){ stopLiveAudioMeasurement(); resetMicVisuals(); }, 2500);
+      // Warm permission with brief GUM, then release tracks BEFORE STT (no exclusive analyser hold).
+      showListeningWaveCosmetic('Preparing microphone…');
+      try {
+        await warmMicPermissionThenRelease();
+      } catch (err) {
+        console.warn('[Iris Mic] permission/stream failed', err);
+        stopLiveAudioMeasurement();
+        resetMicVisuals();
+        handleMicGumFailure(err);
         return;
       }
+
+      if (!SpeechRecognition) {
+        // Mic permission OK; STT unavailable (Firefox etc.) — optional brief analyser then stop
+        updateSensorVisual('mic', 'standby', '🎙️ Mic OK (no speech-to-text)');
+        if (input) input.placeholder = 'Mic works — type your question (speech-to-text not on this browser)';
+        try {
+          await startLiveAudioMeasurement();
+          setTimeout(function(){ stopLiveAudioMeasurement(); resetMicVisuals(); }, 2500);
+        } catch (e2) {
+          stopLiveAudioMeasurement();
+          resetMicVisuals();
+        }
+        return;
+      }
+
+      // Cosmetic listening UI only — do NOT hold MediaStream across recognition.start()
+      showListeningWaveCosmetic('Listening… speak now');
 
       try {
         const recognition = new SpeechRecognition();
@@ -712,11 +903,12 @@
         activeSpeechRecognition = recognition;
 
         recognition.onstart = () => {
-          console.log('[Iris Mic] Active listening started.');
+          console.log('[Iris Mic] Active listening started (no exclusive GUM hold).');
           irisSetOrbMode('listening');
           updateSensorVisual('mic', 'active-live', '🎙️ Listening...');
           SENSOR_STATE.mic = true;
           if (input) input.placeholder = '🎙️ Microphone ACTIVE — Speak now.';
+          showListeningWaveCosmetic('Listening… speak clearly');
         };
 
         recognition.onresult = (event) => {
@@ -737,11 +929,7 @@
           console.warn('[Iris Mic] Error:', e.error);
           stopLiveAudioMeasurement();
           resetMicVisuals();
-          if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-            if (typeof showPermissionModal === 'function') showPermissionModal();
-          } else if (e.error !== 'aborted' && e.error !== 'no-speech') {
-            alert('Microphone error: ' + e.error);
-          }
+          handleSttError(e.error);
         };
 
         recognition.onend = () => {
@@ -755,7 +943,8 @@
         console.warn('[Iris Mic] Launch error:', err);
         stopLiveAudioMeasurement();
         resetMicVisuals();
-        if (typeof showPermissionModal === 'function') showPermissionModal();
+        // Sync throw on start is not automatically a site-permission deny
+        handleSttError((err && err.name === 'NotAllowedError') ? 'not-allowed' : 'audio-capture');
       }
     }
 
@@ -869,7 +1058,7 @@
         console.warn('Camera dismissed:', e);
         SENSOR_STATE.camera = false;
         updateSensorVisual('camera', 'off', '📷 Camera: OFF');
-        if (typeof showPermissionModal === 'function') showPermissionModal();
+        handleCameraFailure(e);
       }
     }
 
