@@ -1,0 +1,51 @@
+/* Architecture chrome tokens. Preview only. Not linked from apex.
+   Five-room identity law. Transport accents stay separate. */
+:root {
+  --dc-fiduciary: #ffb830;
+  --dc-edge: #3b82f6;
+  --dc-iris: #00e5ff;
+  --dc-research: #c084fc;
+  --dc-unity: #00ffaa;
+  --dc-bg: #04060c;
+  --dc-paper: #f4f6fb;
+  --dc-mute: #8b93a7;
+  --dc-transport: #38bdf8;
+  --dc-state-open: var(--dc-unity);
+  --dc-state-parked: #64748b;
+  --dc-state-denied: #f43f5e;
+  --dc-state-unknown: var(--dc-fiduciary);
+}
+
+.dc-grains {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+.dc-grains span {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dc-grains .g1 { background: var(--dc-fiduciary); }
+.dc-grains .g2 { background: var(--dc-edge); }
+.dc-grains .g3 { background: var(--dc-iris); }
+.dc-grains .g4 { background: var(--dc-research); }
+.dc-grains .g5 { background: var(--dc-unity); }
+
+.dc-state[data-state="NOT_EXECUTED"],
+.dc-state[data-state="PARKED"] { color: var(--dc-state-parked); }
+.dc-state[data-state="DENIED"] { color: var(--dc-state-denied); }
+.dc-state[data-state="UNKNOWN"],
+.dc-state[data-state="INSUFFICIENT_EVIDENCE"] { color: var(--dc-state-unknown); }
+.dc-state[data-state="LOOK"] { color: var(--dc-state-open); }
+
+/* Never stamp proof on a look. */
+.dc-state[data-state="SUCCESS_VERIFIED"] {
+  color: var(--dc-state-denied);
+}
+.dc-state[data-state="SUCCESS_VERIFIED"]::after {
+  content: " · not a proof";
+  font-size: 0.75em;
+  color: var(--dc-mute);
+}
