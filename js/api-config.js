@@ -2,17 +2,42 @@
  * DualisCapax API client config
  * World 0 Ground Zero → API v1. World 1 One → API v2.
  * Secret stays on the worker only.
+ * ?api= may only select an allowlisted origin. Anything else is ignored.
  */
 (function (g) {
+  var ALLOW = {
+    'https://dualiscapax-depth.digenova77.workers.dev': 1,
+    'https://dualiscapax.ai': 1,
+    'https://www.dualiscapax.ai': 1,
+    'https://digenova77-ui.github.io': 1
+  };
+  g.DC_API_ALLOW = ALLOW;
+
+  function normalizeBase(raw) {
+    if (!raw || typeof raw !== 'string') return '';
+    var s = raw.trim().replace(/\/$/, '');
+    if (!s) return '';
+    try {
+      var u = new URL(s, (g.location && g.location.origin) || 'https://dualiscapax.ai');
+      if (u.protocol !== 'https:') return '';
+      var origin = u.origin;
+      if (!ALLOW[origin]) return '';
+      return origin + (u.pathname === '/' ? '' : u.pathname.replace(/\/$/, ''));
+    } catch (e) {
+      return '';
+    }
+  }
+
   var world = g.DC_WORLD === 1 ? 1 : 0;
   g.DC_WORLD = world;
   g.DC_WORLD_NAME = world === 1 ? 'ONE' : 'GROUND_ZERO';
   g.DC_API_VERSION = world === 1 ? '2' : '1';
   g.DC_API_PATH = world === 1 ? '/v2/chat' : '/v1/chat';
-  g.DC_API_BASE = g.DC_API_BASE || 'https://dualiscapax-depth.digenova77.workers.dev';
+  g.DC_API_BASE = normalizeBase(g.DC_API_BASE) || 'https://dualiscapax-depth.digenova77.workers.dev';
   try {
     var q = new URLSearchParams(location.search).get('api');
-    if (q) g.DC_API_BASE = q.replace(/\/$/, '');
+    var allowed = normalizeBase(q);
+    if (allowed) g.DC_API_BASE = allowed;
     var wq = new URLSearchParams(location.search).get('world');
     if (wq === '1' || /^one$/i.test(wq)) {
       g.DC_WORLD = 1; g.DC_WORLD_NAME = 'ONE'; g.DC_API_VERSION = '2'; g.DC_API_PATH = '/v2/chat';
@@ -24,8 +49,8 @@
 
   g.dcChatV2 = async function dcChatV2(messages, opts) {
     opts = opts || {};
-    var base = (g.DC_API_BASE || '').replace(/\/$/, '');
-    if (!base) throw new Error('DC_API_BASE not set');
+    var base = normalizeBase(g.DC_API_BASE);
+    if (!base) throw new Error('DC_API_BASE not allowlisted');
     if (g.DCWorld && typeof g.DCWorld.chat === 'function') return g.DCWorld.chat(messages, opts);
     var fuelBal = opts.fuelBalance;
     if (typeof fuelBal !== 'number' && g.DCFuel) fuelBal = g.DCFuel.balance();

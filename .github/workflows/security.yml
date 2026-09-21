@@ -1,0 +1,37 @@
+name: security
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  headers-and-invariants:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: header floor
+        run: |
+          set -e
+          for f in _headers cf-pages/_headers; do
+            test -f "$f"
+            grep -q 'Strict-Transport-Security' "$f"
+            grep -q 'X-Frame-Options: DENY' "$f"
+            grep -q "frame-ancestors 'none'" "$f"
+            grep -q 'Cross-Origin-Opener-Policy: same-origin' "$f"
+            if grep -q 'api.teamsnap.com\|auth.teamsnap.com\|text.pollinations.ai\|api.x.ai' "$f"; then
+              echo "Refuse: $f still allows a dropped third-party in CSP"
+              exit 1
+            fi
+          done
+          echo 'Header floor ok'
+      - name: vault stays closed in gate
+        run: |
+          set -e
+          grep -q 'CHECKOUT_OPEN = "false"' workers/dualis-gate/wrangler.toml
+          grep -q 'Never bind this worker to /\*' workers/dualis-gate/wrangler.toml
+          echo 'Gate invariants ok'
+      - name: no client API override except allowlist
+        run: |
+          set -e
+          grep -q 'DC_API_ALLOW' js/api-config.js
+          echo 'API allowlist present'
