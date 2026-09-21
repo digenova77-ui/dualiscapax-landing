@@ -17,6 +17,46 @@
   .how-where-card.how h3{color:var(--accent-cyan);}
   .how-where-card.where h3{color:var(--accent-mint);}
   .how-where-card.not h3{color:var(--accent-orange);}
+  /* Cascade: one soft deepen chip under last Iris reply only */
+  .iris-cascade-wrap{margin-top:0.7rem;}
+  .iris-cascade-chip{
+    display:inline-flex;align-items:center;gap:0.35rem;max-width:100%;
+    border:1px solid rgba(56,189,248,0.28);background:rgba(56,189,248,0.08);
+    color:var(--accent-cyan);border-radius:999px;padding:0.48rem 0.85rem;
+    font-size:0.74rem;font-family:var(--font-mono);font-weight:700;
+    cursor:pointer;text-align:left;line-height:1.35;white-space:normal;
+  }
+  .iris-cascade-chip:active{border-color:var(--accent-mint);color:var(--accent-mint);}
+  .iris-cascade-chip::before{content:"↳";opacity:0.7;flex:0 0 auto;}
+  /* Liquid listening puddle inside center orb (idle = calm) */
+  .iris-orb-liquid{
+    position:absolute;inset:7px;border-radius:50%;overflow:hidden;z-index:0;
+    pointer-events:none;opacity:0;transition:opacity 0.25s ease;
+  }
+  .iris-dock-orb.listening .iris-orb-liquid{opacity:1;}
+  .iris-orb-puddle{
+    position:absolute;left:50%;bottom:8%;width:78%;height:55%;
+    transform:translateX(-50%) scale(0.55);transform-origin:50% 100%;
+    border-radius:42% 48% 45% 55% / 55% 42% 58% 45%;
+    background:
+      radial-gradient(ellipse at 35% 30%, rgba(167,243,208,0.85), transparent 55%),
+      radial-gradient(ellipse at 70% 60%, rgba(56,189,248,0.75), transparent 60%),
+      linear-gradient(180deg, rgba(52,211,153,0.55), rgba(56,189,248,0.35));
+    filter:blur(0.4px);opacity:0.4;
+    transition:transform 0.08s linear, opacity 0.12s linear;
+    will-change:transform,opacity;
+  }
+  .iris-dock-orb.listening .iris-orb-puddle{
+    animation:irisPuddleIdle 1.8s ease-in-out infinite alternate;
+  }
+  @keyframes irisPuddleIdle{
+    from{border-radius:42% 48% 45% 55% / 55% 42% 58% 45%;}
+    to{border-radius:48% 42% 55% 45% / 45% 55% 42% 58%;}
+  }
+  .iris-dock-orb{--iris-level:0;}
+  .iris-dock-orb.listening .iris-orb-glow{
+    filter:blur(calc(0.8px + (var(--iris-level) * 1.4px))) brightness(calc(1.08 + (var(--iris-level) * 0.35)));
+  }
 </style>
 
 </head>
@@ -121,6 +161,7 @@
             <button type="button" class="iris-dock-btn" id="btnScreenToggle" title="Screen / files" onclick="toggleSensor('screen')" aria-label="Screen">🖥️</button>
             <button type="button" class="iris-dock-orb" id="irisOrb" data-role="mic" title="Talk to Iris" onclick="triggerMicVoiceInput()" aria-label="Voice ask">
               <span class="iris-orb-glow"></span>
+              <span class="iris-orb-liquid" aria-hidden="true"><span class="iris-orb-puddle" id="irisOrbPuddle"></span></span>
               <span class="iris-orb-core">🎙️</span>
             </button>
             <button type="button" class="iris-dock-btn" id="btnVoiceToggle" title="Iris voice replies" onclick="toggleSensor('voice')" aria-label="Voice out">🔊</button>
@@ -130,21 +171,8 @@
             <input type="text" class="omnibox-input iris-spark-input" id="irisInputBox" placeholder="Message Iris…" autocomplete="off">
             <button type="submit" class="nav-btn-solid iris-spark-send">Ask</button>
           </form>
-          <div class="iris-spark-tools" id="irisToolRow" role="toolbar" aria-label="Iris shortcuts">
-            <button type="button" class="iris-tool-chip" id="btnMicToggle" onclick="toggleSensor('mic')">Mic</button>
-            <button type="button" class="iris-tool-chip" onclick="location.href='ice.html?pack=hockey#seat'">Ice</button>
-            <button type="button" class="iris-tool-chip" onclick="location.href='alacarte.html'">À La Carte</button>
-            <button type="button" class="iris-tool-chip" onclick="location.href='measure.html'">Leak</button>
-            <button type="button" class="iris-tool-chip" onclick="location.href='runtime.html'">Runtime</button>
-          </div>
-          <div class="iris-spark-starters" id="irisPillContainer">
-            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('How much can my municipality or business save with off-peak load shifting?')">Money leak</button>
-            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('How deep is the DualisCapax engineering and medical model census across each discipline?')">Census</button>
-            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('Can Iris solve my differential equation or verify my math homework?')">Math</button>
-            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('What à la carte hockey ice portal can I open and how do I claim a seat?')">Hockey ice</button>
-            <button type="button" class="iris-starter" onclick="submitSuggestedPrompt('What is the DualisCapax core philosophy and the Unity Framework vision?')">Unity</button>
-          </div>
-          <p class="iris-spark-privacy">Center orb = talk. ✕ clears. Screen often blocked on iPhone — Iris notices quietly.</p>
+          <!-- Static topic tag cloud demoted (cascade chip lives under last Iris reply) -->
+          <p class="iris-spark-privacy">Center orb = talk. Ask always on. ✕ clears. One deepen chip appears under Iris’s last reply.</p>
         </div>
       </div>
     </section>
@@ -296,6 +324,63 @@
         status.style.display = mode === 'idle' ? 'none' : 'inline-flex';
       }
     }
+
+    // Liquid listening orb — speech-activity / analyser levels; idle stays calm.
+    // Does NOT hold GUM across STT (preserves warm+release wire from tip 021938e6).
+    let __irisSpeechLevel = 0;
+    let __irisListeningLiquid = false;
+    let __irisLiquidRaf = null;
+    let __irisLastSpeechLen = 0;
+
+    function irisSetOrbLevel(level01) {
+      var orb = irisOrbEl();
+      if (!orb) return;
+      var lvl = Math.max(0, Math.min(1, Number(level01) || 0));
+      orb.style.setProperty('--iris-level', String(lvl.toFixed(3)));
+      var puddle = document.getElementById('irisOrbPuddle');
+      if (puddle) {
+        var scale = 0.52 + lvl * 0.72;
+        var lift = 10 - lvl * 16;
+        puddle.style.transform = 'translateX(-50%) scale(' + scale.toFixed(3) + ') translateY(' + lift.toFixed(1) + '%)';
+        puddle.style.opacity = String((0.32 + lvl * 0.58).toFixed(3));
+      }
+    }
+
+    function irisNoteSpeechActivity(transcript) {
+      var s = String(transcript || '');
+      var n = s.length;
+      var delta = Math.max(0, n - __irisLastSpeechLen);
+      __irisLastSpeechLen = n;
+      var bump = Math.min(1, 0.22 + (n ? 0.18 : 0) + Math.min(0.55, delta / 12));
+      __irisSpeechLevel = Math.max(__irisSpeechLevel * 0.55, bump);
+    }
+
+    function irisStartLiquidListening() {
+      __irisListeningLiquid = true;
+      __irisLastSpeechLen = 0;
+      irisSetOrbMode('listening');
+      if (__irisLiquidRaf) cancelAnimationFrame(__irisLiquidRaf);
+      function tick() {
+        if (!__irisListeningLiquid) return;
+        __irisSpeechLevel *= 0.9;
+        var base = 0.1 + 0.07 * Math.sin(Date.now() / 430);
+        irisSetOrbLevel(Math.max(base, __irisSpeechLevel));
+        __irisLiquidRaf = requestAnimationFrame(tick);
+      }
+      __irisLiquidRaf = requestAnimationFrame(tick);
+    }
+
+    function irisStopLiquidListening() {
+      __irisListeningLiquid = false;
+      if (__irisLiquidRaf) {
+        try { cancelAnimationFrame(__irisLiquidRaf); } catch (e) {}
+        __irisLiquidRaf = null;
+      }
+      __irisSpeechLevel = 0;
+      __irisLastSpeechLen = 0;
+      irisSetOrbLevel(0);
+    }
+
 
     function speakText(text) {
       if (SENSOR_STATE && SENSOR_STATE.voice === false) return;
@@ -575,6 +660,8 @@
           barEl.style.boxShadow = '0 0 4px var(--accent-mint)';
         }
       }
+      // Cosmetic liquid puddle — no exclusive GUM hold
+      if (typeof irisStartLiquidListening === 'function') irisStartLiquidListening();
     }
 
     function handleMicGumFailure(err) {
@@ -764,6 +851,10 @@
         for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
         const avg = sum / dataArray.length;
         const gainPct = Math.min(100, Math.round((avg / 128) * 100));
+        // Analyser-driven liquid level (only while this measurement loop holds a stream)
+        if (typeof irisSetOrbLevel === 'function') {
+          irisSetOrbLevel(Math.min(1, avg / 110));
+        }
 
         const gainText = document.getElementById('irisAudioGainText');
         if (gainText) {
@@ -917,6 +1008,8 @@
             transcript += event.results[i][0].transcript;
           }
           if (input) input.value = transcript.trim();
+          // Speech-activity liquid (no GUM hold) — interim + final
+          if (typeof irisNoteSpeechActivity === 'function') irisNoteSpeechActivity(transcript);
           // Final result → process
           if (event.results[event.results.length - 1].isFinal) {
             stopLiveAudioMeasurement();
@@ -951,6 +1044,7 @@
     window.triggerMicVoiceInput = triggerMicVoiceInput;
 
     function resetMicVisuals() {
+      if (typeof irisStopLiquidListening === 'function') irisStopLiquidListening();
       irisSetOrbMode('idle');
       updateSensorVisual('mic', 'standby', '🎙️ Mic: Standby');
       const input = document.getElementById('irisInputBox');
@@ -1636,8 +1730,11 @@ function resolveNaturalLanguageIntent(promptText) {
       try { irisRefreshGrokChip(); } catch (e) {}
     });
 
+    let __irisLastUserPrompt = '';
+
     async function processIrisPrompt(promptText) {
       playIrisChime();
+      __irisLastUserPrompt = String(promptText || '');
       irisResetStreamForTurn();
       const stream = document.getElementById('irisChatStream');
       if (stream && promptText) {
@@ -1676,6 +1773,64 @@ function resolveNaturalLanguageIntent(promptText) {
       try { irisRefreshGrokChip(); } catch (eChip) {}
     }
 
+
+    // --- One-chip cascade deepen (deterministic if model suggest missing) ---
+    function irisDeepenHeuristic(answerText, userPrompt) {
+      var answer = String(answerText || '').replace(/\s+/g, ' ').trim();
+      var user = String(userPrompt || '').replace(/\s+/g, ' ').trim();
+      if (answer.length < 48) return '';
+      // Prefer a concrete noun-ish phrase from the answer (avoid payment/checkout thaw language)
+      var banned = /\b(buy|checkout|stripe|payment|pay now|purchase|card)\b/i;
+      var m = answer.match(/\b([A-Z][a-zA-Z0-9-]{2,}(?:\s+[A-Z][a-zA-Z0-9-]{2,}){0,3})\b/);
+      var topic = '';
+      if (m && m[1] && !banned.test(m[1]) && m[1].length < 48) topic = m[1];
+      if (!topic) {
+        var words = answer.split(' ').filter(function (w) {
+          return w.length > 4 && !/^(Iris|Agent|with|that|this|from|your|have|will|into|about|their)$/i.test(w);
+        });
+        if (words.length) topic = words[0].replace(/[^a-zA-Z0-9\-]/g, '');
+      }
+      if (topic && topic.length > 2 && !banned.test(topic)) {
+        return 'Go deeper on ' + topic + ' — what should I try next at my seat?';
+      }
+      if (user && user.length > 8 && !banned.test(user)) {
+        var shortUser = user.length > 72 ? user.slice(0, 69) + '…' : user;
+        return 'What is the next concrete step after: ' + shortUser + '?';
+      }
+      return 'What is the one next step I should take from that answer?';
+    }
+
+    function irisPickCascadeChip(followUps, answerText, userPrompt) {
+      if (followUps && followUps.length) {
+        for (var i = 0; i < followUps.length; i++) {
+          var fu = String(followUps[i] || '').trim();
+          if (!fu) continue;
+          // Skip pure nav spam that only redirects; prefer in-chat deepen
+          if (/^(Claim open Slot|View Eastern|Open the)/i.test(fu)) continue;
+          return fu;
+        }
+      }
+      return irisDeepenHeuristic(answerText, userPrompt);
+    }
+
+    function irisCascadeTap(q) {
+      var text = String(q || '').trim();
+      if (!text) return;
+      var box = document.getElementById('irisInputBox');
+      if (box) box.value = text;
+      try {
+        if (window.IrisAV && IrisAV.unlock) IrisAV.unlock();
+        else if (window.DSAP && DSAP.unlock) DSAP.unlock();
+      } catch (e) {}
+      void processIrisPrompt(text);
+      if (box) box.value = '';
+    }
+    try {
+      window.irisCascadeTap = irisCascadeTap;
+      window.irisPickCascadeChip = irisPickCascadeChip;
+    } catch (eWin) {}
+
+
     // =========================================================================
     // THREADED CHAT STREAM LOGIC (CONVERSATIONAL FLOW)
     // =========================================================================
@@ -1699,14 +1854,22 @@ function resolveNaturalLanguageIntent(promptText) {
       const irisRow = document.createElement('div');
       irisRow.style.cssText = "display:flex; gap:0.75rem; align-items:flex-start; width:100%; animation:fadeIn 0.25s ease-out;";
       
+      // ONE cascading deepen chip under last Iris reply (not a 2–3 branch menu)
       let followUpHtml = '';
-      if (followUps && followUps.length > 0) {
-        followUpHtml = `<div style="margin-top:0.75rem; display:flex; gap:0.4rem; flex-wrap:wrap;">`;
-        followUps.forEach((fu) => {
-          const cleanFu = fu.replace(/'/g, "\'");
-          followUpHtml += `<button type="button" class="iris-starter" onclick="handleFollowUpClick('${cleanFu}')">${fu}</button>`;
-        });
-        followUpHtml += `</div>`;
+      const cascadeQ = (typeof irisPickCascadeChip === 'function')
+        ? irisPickCascadeChip(followUps, answerText, userPrompt || __irisLastUserPrompt)
+        : ((followUps && followUps[0]) ? String(followUps[0]) : '');
+      if (cascadeQ) {
+        const safeLabel = String(cascadeQ)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+        const safeAttr = String(cascadeQ)
+          .replace(/\\/g, '\\\\')
+          .replace(/'/g, "\\'")
+          .replace(/\n/g, ' ');
+        followUpHtml = `<div class="iris-cascade-wrap"><button type="button" class="iris-cascade-chip" onclick="irisCascadeTap('${safeAttr}')">${safeLabel}</button></div>`;
       }
 
       const badgeMarkup = badgeText ? `<span style="font-size:0.68rem; font-family:var(--font-mono); color:${badgeColor || 'var(--accent-mint)'}; background:rgba(255,255,255,0.05); padding:0.15rem 0.45rem; border-radius:4px; margin-left:0.5rem; font-weight:700;">${badgeText}</span>` : '';
