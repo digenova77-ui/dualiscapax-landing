@@ -109,6 +109,7 @@
       <p class="section-body" style="margin-bottom:0.85rem;">
         One chat. Local RAM only. Tap a starter or a tool — she answers here.
       </p>
+      <p id="irisPlateContextLine" hidden style="margin:0 0 0.75rem;font-size:0.72rem;font-family:var(--font-mono);color:var(--text-muted);" aria-live="polite"></p>
 
       <div class="iris-spark-shell">
         <div id="irisChatStream" class="iris-spark-stream" aria-live="polite">
@@ -233,7 +234,7 @@
   <script src="js/api-config.js"></script>
   <script src="js/dsap-engine.js"></script>
   <script src="js/iris-av.js"></script>
-  <script src="js/iris-handoff.js?v=native3"></script>
+  <script src="js/iris-handoff.js?v=pageaware1"></script>
   <script src="js/iris-sensors.js"></script>
     <script>
     // =========================================================================
@@ -1749,6 +1750,7 @@ function resolveNaturalLanguageIntent(promptText) {
     function irisConnectGrok() { /* removed from public face */ }
     document.addEventListener('DOMContentLoaded', function () {
       try { irisRefreshGrokChip(); } catch (e) {}
+      try { irisRefreshPlateContextLine(); } catch (ePlate) {}
       try {
         if (SENSOR_STATE && SENSOR_STATE.voice) {
           updateSensorVisual('voice', 'standby', '🔊 Speaker: ON');
@@ -1762,6 +1764,128 @@ function resolveNaturalLanguageIntent(promptText) {
     });
 
     let __irisLastUserPrompt = '';
+
+    // Page-aware Iris — which Absolute plate the user is in (ephemeral ask context).
+    var IRIS_PLATE_LABELS = {
+      '/': 'Home',
+      '/index': 'Home',
+      '/iris': 'Ask Iris',
+      '/pay': 'Pay',
+      '/pay-thanks': 'Pay · Thanks',
+      '/donate': 'Donate',
+      '/payments': 'Payments',
+      '/ice': 'Ice',
+      '/hockey': 'Hockey',
+      '/gates': 'Gates',
+      '/why': 'Why',
+      '/id': 'ID',
+      '/sport': 'Sport',
+      '/look': 'Look',
+      '/hall': 'Hall',
+      '/hall/rails': 'Hall · Rails',
+      '/residual': 'Residual',
+      '/edge': 'Edge',
+      '/research': 'Research',
+      '/alacarte': 'À La Carte',
+      '/runtime': 'Runtime',
+      '/onboard': 'Onboard',
+      '/faq': 'FAQ',
+      '/fuel': 'Fuel',
+      '/ohf': 'OHF',
+      '/gameday': 'Gameday',
+      '/coach': 'Coach',
+      '/manager': 'Manager',
+      '/schools': 'Schools',
+      '/sectors': 'Sectors',
+      '/manifold': 'Manifold',
+      '/geodesic': 'Geodesic',
+      '/bind': 'Bind',
+      '/access': 'Access',
+      '/wallet-advice': 'Wallet advice',
+      '/sounds': 'Sounds',
+      '/unity': 'Unity',
+      '/physics': 'Physics',
+      '/mechanics': 'Mechanics',
+      '/measure': 'Measure',
+      '/medical': 'Medical',
+      '/purity': 'Purity',
+      '/synapse': 'Synapse',
+      '/curtain': 'Curtain',
+      '/portal': 'Portal',
+      '/sandbox': 'Sandbox',
+      '/schedule': 'Schedule',
+      '/rink': 'Rink',
+      '/sitemap': 'Sitemap'
+    };
+
+    function irisNormalizePlatePath(raw) {
+      if (!raw) return '';
+      var p = String(raw).trim();
+      try {
+        if (/^https?:\/\//i.test(p)) p = new URL(p).pathname;
+      } catch (eUrl) {}
+      p = p.split('?')[0].split('#')[0];
+      p = p.replace(/\.html$/i, '');
+      if (p.charAt(0) !== '/') p = '/' + p;
+      if (p.length > 1 && p.charAt(p.length - 1) === '/') p = p.slice(0, -1);
+      if (p === '/index') p = '/';
+      // Allow only Absolute-ish path segments (no protocol tricks)
+      if (!/^\/[A-Za-z0-9._\/\-]*$/.test(p)) return '';
+      if (p.length > 96) return '';
+      return p;
+    }
+
+    function irisPlateLabelFor(path) {
+      var p = irisNormalizePlatePath(path);
+      if (!p) return '';
+      if (IRIS_PLATE_LABELS[p]) return IRIS_PLATE_LABELS[p];
+      var parts = p.split('/').filter(Boolean);
+      if (!parts.length) return 'Home';
+      var last = parts[parts.length - 1].replace(/[-_]+/g, ' ');
+      return last.charAt(0).toUpperCase() + last.slice(1);
+    }
+
+    function resolveIrisViewPlate() {
+      var qs = null;
+      try { qs = new URLSearchParams(window.location.search || ''); } catch (eQs) { qs = null; }
+      var fromQ = '';
+      if (qs) fromQ = qs.get('path') || qs.get('page') || '';
+      if (fromQ) {
+        var nq = irisNormalizePlatePath(fromQ);
+        if (nq) return nq;
+      }
+      try {
+        if (document.referrer) {
+          var u = new URL(document.referrer);
+          if (u.origin === window.location.origin) {
+            var rp = irisNormalizePlatePath(u.pathname);
+            if (rp && rp !== '/iris') return rp;
+          }
+        }
+      } catch (eRef) {}
+      return irisNormalizePlatePath(window.location.pathname) || '/iris';
+    }
+
+    function irisPageContext() {
+      var path = resolveIrisViewPlate();
+      var plateLabel = irisPlateLabelFor(path);
+      return { path: path, plateLabel: plateLabel };
+    }
+
+    function irisRefreshPlateContextLine() {
+      var el = document.getElementById('irisPlateContextLine');
+      if (!el) return;
+      var ctx = irisPageContext();
+      if (!ctx.path) { el.hidden = true; return; }
+      el.textContent = 'Viewing plate: ' + ctx.path + ' (' + ctx.plateLabel + ') — answers fit this room.';
+      el.hidden = false;
+    }
+
+    try {
+      window.irisPageContext = irisPageContext;
+      window.resolveIrisViewPlate = resolveIrisViewPlate;
+      window.irisPlateLabelFor = irisPlateLabelFor;
+    } catch (eWinPlate) {}
 
     async function processIrisPrompt(promptText) {
       try { primeIrisSpeechOut(); } catch (ePrime) {}
@@ -1787,9 +1911,15 @@ function resolveNaturalLanguageIntent(promptText) {
       }
       const house = resolveNaturalLanguageIntent(promptText);
       let res = house;
+      var pageCtx = irisPageContext();
       try {
         if (window.IrisHandoff && typeof IrisHandoff.ask === 'function') {
-          res = await IrisHandoff.ask(promptText, { house: house });
+          res = await IrisHandoff.ask(promptText, {
+            house: house,
+            path: pageCtx.path,
+            plateLabel: pageCtx.plateLabel,
+            pageContext: pageCtx
+          });
         }
       } catch (handoffErr) {
         console.warn('[IrisHandoff]', handoffErr);

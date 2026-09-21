@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let badge = '⚪ Connect Grok';
     try {
       if (window.IrisHandoff && IrisHandoff.ask) {
-        const res = await IrisHandoff.ask(text, {});
+        const pageCtx = (typeof window.irisPageContext === 'function') ? window.irisPageContext() : null;
+        const res = await IrisHandoff.ask(text, pageCtx ? { path: pageCtx.path, plateLabel: pageCtx.plateLabel, pageContext: pageCtx } : {});
         answer = res.answer || answer;
         badge = res.badge || badge;
       }
