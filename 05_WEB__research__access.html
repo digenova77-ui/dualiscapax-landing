@@ -484,7 +484,7 @@ SYMPLECTIC_VOLUME_DETERMINANT: det(M) = 1.000000000000 | RESIDUAL_FLOOR: R_eff =
 INFORMATION_THEORETIC_SECURITY: Carter-Wegman BN254 (Pr[forgery] < 10^-74 | I(M; Tag | S) = 0.0000 bits)
 RETAINED_PII_PHI: 0.00% (Client-Side Ephemeral HMAC-SHA256 Salt Redacted)
 ORACLE_CAD_PARITY: BTC: $88,400.00 CAD | ETH: $3,650.00 CAD | SOL: $210.00 CAD
-CRYPTO_VAULT_SETTLEMENT: 0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4
+CRYPTO_VAULT_SETTLEMENT: [PARKED_VAULT]  /* Egg #16 FREEZE: tip-root orphan vault advertise parked */
 SOVEREIGN_ROOT_SEAL: 0xDUALIS_CAPAX_SOVEREIGN_ED25519_KEY_ROOT_ONTARIO_CA
 </div>
     </div>
@@ -582,9 +582,10 @@ python3 dclm_runtime_sleeve.py --runtime-id=${rtId} --sector=${sec}`;
     }
 
     function openCrypto(sku, priceCad) {
-      document.getElementById('modalTitle').innerText = 'Equal-Crypto Settlement: ' + sku;
-      document.getElementById('modalBody').innerText = 'Pay using Bitcoin (BTC), Ethereum (ETH), or Solana (SOL) with 1:1 CAD Parity. Vault: 0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4';
-      document.getElementById('modalPrice').innerHTML = '<strong>CAD Equivalent:</strong> CAD $' + priceCad;
+      /* Egg #16 FREEZE: tip-root orphan Equal-Crypto CTA parked — no vault/send advertise. */
+      document.getElementById('modalTitle').innerText = 'Equal-Crypto PARKED: ' + sku;
+      document.getElementById('modalBody').innerText = 'Gateways CLOSED / PRODUCTION FREEZE — Equal-Crypto vault advertise parked. No receive address on this orphan tip-root page.';
+      document.getElementById('modalPrice').innerHTML = '<strong>CAD Equivalent (info only):</strong> CAD $' + priceCad + ' · pay path closed';
       document.getElementById('checkoutModal').style.display = 'flex';
     }
 

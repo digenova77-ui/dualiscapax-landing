@@ -1,15 +1,19 @@
 {
   "jacket": "treasury.split.v1",
   "as_of": "2026-08-27T04:23:00-04:00",
-  "hold_target": { "btc": 0.5, "eth": 0.5 },
+  "hold_target": {
+    "btc": 0.5,
+    "eth": 0.5
+  },
   "hold_target_scope": "book_not_each_ticket",
   "transit_and_park": "USDC",
   "receive": {
-    "usdc": "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
+    "usdc": null,
     "usdc_format": "EVM",
-    "usdc_chain": "WAIT_OWNER — Ethereum mainnet assumed until you say Base or other",
+    "usdc_chain": "WAIT_OWNER \u2014 Ethereum mainnet assumed until you say Base or other",
     "btc": null,
-    "eth": null
+    "eth": null,
+    "usdc_park_note": "Egg #16 FREEZE: tip-root receive.usdc blanked (PRODUCTION FREEZE). Restore only under donate/reopen YES."
   },
   "rule": "Do not buy BTC or ETH on a ticket if that hop fails invert. Both legs have fees.",
   "invert_fail": "(network_fee + spread) / notional > 0.02 OR notional_cad < 200",
