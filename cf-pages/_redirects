@@ -1,11 +1,12 @@
 # DualisCapax Pages redirects — Option C loop fix 2026-09-20
 # Do NOT add same-stem /foo → /foo.html 200 rewrites (pretty-URL 308 loops).
 # Pretty URLs serve the .html / index.html directly.
-# Keep only: cross-path aliases + nested thanks.
+# Keep only: cross-path aliases + pay thanks → root Absolute plate.
 
-# Pay thanks (nested path needs explicit map)
-/pay/thanks                  /pay/thanks.html             200
-/pay/thanks/                 /pay/thanks.html             200
+# Pay thanks (root plate; nested pay/thanks.html cannot publish beside pay.html)
+/pay/thanks                  /pay-thanks.html             200
+/pay/thanks/                 /pay-thanks.html             200
+/pay/thanks.html              /pay-thanks.html             200
 
 # Cross-path aliases (from ≠ content stem)
 /leagues                     /ohf.html                    200
