@@ -11,15 +11,21 @@ const ALLOW_ORIGINS = [
 ];
 
 function cors(origin) {
-  const allow = ALLOW_ORIGINS.includes(origin) ? origin : ALLOW_ORIGINS[0];
-  return {
-    "access-control-allow-origin": allow,
-    "access-control-allow-credentials": "true",
+  const allowed = ALLOW_ORIGINS.includes(origin);
+  const headers = {
     "access-control-allow-headers": "content-type, stripe-signature",
     "access-control-allow-methods": "GET,POST,OPTIONS",
     "cache-control": "no-store",
-    "x-content-type-options": "nosniff"
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "no-referrer",
+    "x-frame-options": "DENY",
+    "vary": "Origin"
   };
+  if (allowed) {
+    headers["access-control-allow-origin"] = origin;
+    headers["access-control-allow-credentials"] = "true";
+  }
+  return headers;
 }
 
 function json(body, status, origin) {
@@ -31,6 +37,10 @@ function json(body, status, origin) {
 
 function checkoutOpen(env) {
   return String(env.CHECKOUT_OPEN || "") === "true";
+}
+
+function normalizePath(pathname) {
+  return String(pathname || "/").replace(/\/+$/, "") || "/";
 }
 
 async function sha256Hex(s) {
@@ -77,11 +87,23 @@ function publicFields(row, kyc) {
   };
 }
 
+function closedEnvelope(env) {
+  return {
+    open: checkoutOpen(env),
+    checkout: checkoutOpen(env),
+    intent: checkoutOpen(env) ? "not-wired" : "closed",
+    identity: "unvalidated",
+    rails: ["/pay/quote", "/pay/intent", "/hooks/stripe", "/hooks/identity"],
+    settle: "parked",
+    reason: "CHECKOUT_OPEN false + Stripe identity not validated"
+  };
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
-    const path = url.pathname;
+    const path = normalizePath(url.pathname);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors(origin) });
@@ -90,7 +112,13 @@ export default {
     if (!env.DB) return json({ ok: false, reason: "no-db" }, 500, origin);
 
     if (path === "/u/health" && request.method === "GET") {
-      return json({ ok: true, phase: "B+C", checkout: checkoutOpen(env) }, 200, origin);
+      return json({
+        ok: true,
+        phase: "B+C",
+        checkout: checkoutOpen(env),
+        rails: "parked",
+        identity: "unvalidated"
+      }, 200, origin);
     }
 
     if (path === "/u/fields" && request.method === "GET") {
@@ -107,6 +135,12 @@ export default {
 
     if (path === "/u/session" && request.method === "POST") {
       const now = Date.now();
+      const recent = await env.DB.prepare(
+        `SELECT COUNT(*) AS n FROM unity_session WHERE created_at > ?1`
+      ).bind(now - 600000).first();
+      if (recent && Number(recent.n) > 60) {
+        return json({ ok: false, reason: "session-cap" }, 429, origin);
+      }
       const unityId = crypto.randomUUID();
       await env.DB.prepare(
         `INSERT INTO unity (unity_id, created_at, role) VALUES (?1, ?2, 'person')`
@@ -152,6 +186,10 @@ export default {
         { open: checkoutOpen(env), residual: "unpublished", rails: "/hall/rails.html" },
         200, origin
       );
+    }
+
+    if ((path === "/pay/dry-run" || path === "/pay/dry-run/") && request.method === "GET") {
+      return json({ ok: true, ...closedEnvelope(env) }, 200, origin);
     }
 
     if (path === "/pay/intent" && request.method === "POST") {
