@@ -1,5 +1,6 @@
 /* Iris mini guide orb — Absolute hard plates only.
-   Visual: RTE-style matte soft-blue 3D sphere + Iris glow. Not a flat button.
+   Visual: RTE-style matte soft-blue 3D sphere + Iris glow.
+   Cluster: core + 3 satellites that ORBIT. Chat does not open until tap.
    Link target: /iris?path=<plate> (page-aware room seed). No pay thaw. */
 .iris-mini-guide {
   display: flex;
@@ -9,6 +10,7 @@
   max-width: 100%;
   position: relative;
   z-index: 2;
+  --iris-phase: 0deg;
 }
 .iris-mini-guide-link {
   display: inline-flex;
@@ -57,9 +59,10 @@
     0 6px 14px rgba(0, 20, 40, 0.45),
     0 0 0 1px rgba(126, 184, 255, 0.18);
 }
-/* Tiny cluster satellites — RTE vibe, mobile-tight */
 .iris-mini-orb-sat {
   position: absolute;
+  left: 50%;
+  top: 50%;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%,
     #b8d9f5 0%,
@@ -68,19 +71,35 @@
   box-shadow: inset -2px -3px 5px rgba(0, 0, 0, 0.45);
   pointer-events: none;
   opacity: 0.85;
+  transform-origin: 0 0;
+  animation: irisSatOrbit 7.2s linear infinite;
+  animation-delay: calc(var(--iris-sat-delay, 0s) + var(--iris-phase, 0deg) * 0s);
 }
 .iris-mini-orb-sat.s1 {
   width: 0.55rem;
   height: 0.55rem;
-  left: -0.22rem;
-  top: 0.95rem;
+  margin: -0.275rem 0 0 -0.275rem;
+  --iris-orbit: 1.15rem;
+  --iris-sat-delay: 0s;
 }
 .iris-mini-orb-sat.s2 {
   width: 0.42rem;
   height: 0.42rem;
-  right: -0.18rem;
-  top: 0.15rem;
+  margin: -0.21rem 0 0 -0.21rem;
+  --iris-orbit: 1.35rem;
+  --iris-sat-delay: -2.4s;
   opacity: 0.7;
+  animation-duration: 9.4s;
+  animation-direction: reverse;
+}
+.iris-mini-orb-sat.s3 {
+  width: 0.32rem;
+  height: 0.32rem;
+  margin: -0.16rem 0 0 -0.16rem;
+  --iris-orbit: 0.92rem;
+  --iris-sat-delay: -4.8s;
+  opacity: 0.6;
+  animation-duration: 5.6s;
 }
 .iris-mini-guide-copy {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -98,6 +117,20 @@
   from { opacity: 0.72; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1.04); }
 }
+@keyframes irisSatOrbit {
+  from {
+    transform: rotate(var(--iris-phase, 0deg)) translateX(var(--iris-orbit, 1.1rem)) rotate(calc(0deg - var(--iris-phase, 0deg)));
+  }
+  to {
+    transform: rotate(calc(360deg + var(--iris-phase, 0deg))) translateX(var(--iris-orbit, 1.1rem)) rotate(calc(-360deg - var(--iris-phase, 0deg)));
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .iris-mini-orb-glow { animation: none; }
+  .iris-mini-orb-glow,
+  .iris-mini-orb-sat {
+    animation: none;
+  }
+  .iris-mini-orb-sat.s1 { left: -0.22rem; top: 0.95rem; margin: 0; }
+  .iris-mini-orb-sat.s2 { right: -0.18rem; top: 0.15rem; left: auto; margin: 0; }
+  .iris-mini-orb-sat.s3 { left: 1.6rem; top: 1.35rem; margin: 0; }
 }
