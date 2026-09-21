@@ -1,5 +1,7 @@
 -- dualis-unity  DCLM Layer [0]  CHECKOUT_OPEN stays false
 -- Append-only webhook_event. No entitlements. No fuel. No Dualis coin.
+-- Projection law: unity_fields / unity_kyc are FOLDS of webhook_event + /u/name.
+-- Rebuild must match live fold (WATCHDOGS floor 6). Compensate is a new event.
 
 CREATE TABLE IF NOT EXISTS unity (
   unity_id   TEXT PRIMARY KEY,
@@ -44,3 +46,11 @@ CREATE INDEX IF NOT EXISTS idx_session_unity ON unity_session(unity_id);
 CREATE INDEX IF NOT EXISTS idx_session_exp ON unity_session(expires_at);
 CREATE INDEX IF NOT EXISTS idx_webhook_type ON webhook_event(event_type);
 CREATE INDEX IF NOT EXISTS idx_webhook_unity ON webhook_event(unity_id);
+
+-- Floor 6 probe (read-only). KYC fold = identity.verification_session.verified rows.
+-- SELECT k.unity_id, k.kyc,
+--        (SELECT COUNT(*) FROM webhook_event e
+--          WHERE e.unity_id = k.unity_id
+--            AND e.event_type = 'identity.verification_session.verified') AS verified_events
+-- FROM unity_kyc k;
+-- Mismatch (kyc=1 with 0 events, or events>0 with kyc=0) = handler bug, not a rewrite.
