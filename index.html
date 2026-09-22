@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>DualisCapax — Iris</title>
   <meta name="theme-color" content="#07090d">
-  <meta name="description" content="Talk to Iris. Looking is free.">
+  <meta name="description" content="Talk to Iris. Asking is free.">
   <link rel="manifest" href="manifest.json">
   <style>
     :root{--bg:#07090d;--card:#10151c;--line:#243040;--cyan:#38BDF8;--mint:#34D399;--text:#F8FAFC;--mute:#94A3B8;--dim:#64748B;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
@@ -61,41 +61,41 @@
       <div id="presence"></div>
       <video id="you" autoplay muted playsinline aria-label="Your camera"></video>
     </div>
-    <p class="hint" id="hint">Meet Iris. Looking is free.</p>
+    <p class="hint" id="hint">Hey. That's Iris.</p>
     <h1>Meet Iris<span>.</span></h1>
-    <p class="lead">She is on this plate. Voice starts on. Mute her if you want silence. Camera stays off until you ask.</p>
+    <p class="lead">She'll say hello. Mute her if you'd rather just read. Camera stays off unless you tap it.</p>
     <div class="actions">
-      <button class="primary" type="button" id="talk">Talk on this page</button>
-      <a class="btn primary" href="ai/app.html">Open lab</a>
-      <button class="ghost" type="button" id="cam">Use camera here</button>
+      <button class="primary" type="button" id="talk">Talk here</button>
+      <a class="btn primary" href="ai/app.html">Sit in the lab</a>
+      <button class="ghost" type="button" id="cam">Turn on camera</button>
     </div>
     <section class="rooms">
-      <a class="room" href="ai/app.html"><b>Iris lab</b><span>Talk. Camera if you want.</span></a>
-      <a class="room" href="hall/"><b>Hall</b><span>Five rooms. One gate.</span></a>
-      <a class="room" href="research/"><b>Research</b><span>Class, then study.</span></a>
-      <a class="room" href="residual.html"><b>Residual</b><span>How look stays $0.</span></a>
+      <a class="room" href="ai/app.html"><b>The lab</b><span>Same conversation, a bit quieter. Camera only if you feel like it.</span></a>
+      <a class="room" href="hall/"><b>The hall</b><span>A map of the other rooms, so you don't wander.</span></a>
+      <a class="room" href="research/"><b>The reading pile</b><span>Notes and papers. Nobody here is treating you.</span></a>
+      <a class="room" href="residual.html"><b>What it costs</b><span>Asking is free. The long computer jobs are a prepaid pack. She'll say so first.</span></a>
     </section>
-    <p class="fine">Simulation is not treatment. Checkout stays closed.</p>
+    <p class="fine">This is not a clinic. Payment links on the public site may still be closed.</p>
   </main>
   <nav class="dock">
     <a href="#top">Home</a>
     <a class="go" href="ai/app.html">Iris</a>
     <a href="hall/">Hall</a>
-    <a href="research/">Research</a>
+    <a href="research/">Reading</a>
   </nav>
   <div class="veil" id="veil" role="dialog" aria-labelledby="veil-title">
     <div class="card">
-      <h2 id="veil-title">You landed on Dualis home.</h2>
-      <p>I'm Iris. This plate is me. Looking is free. Engine time is Fuel.</p>
+      <h2 id="veil-title">Hey — you just walked in.</h2>
+      <p>That's Iris. Ask her what this place is. Quick questions don't cost anything. If you want the heavy computer work, she'll tell you the price before she starts.</p>
       <ul>
-        <li>Stay — talk on this page.</li>
-        <li>Lab — same mouth, camera if you want.</li>
-        <li>Hall — rooms of the house.</li>
-        <li>Research — class, then study. Not treatment.</li>
+        <li>Stay and talk right here.</li>
+        <li>The lab is the same chat if you want her to see you.</li>
+        <li>The hall is the rest of the rooms.</li>
+        <li>The reading pile is research. Not a doctor's office.</li>
       </ul>
       <div class="row">
-        <button class="primary" type="button" id="meet">Meet me</button>
-        <button class="ghost" type="button" id="skip">Skip voice</button>
+        <button class="primary" type="button" id="meet">I'll listen</button>
+        <button class="ghost" type="button" id="skip">I'll just read</button>
       </div>
     </div>
   </div>
@@ -115,7 +115,7 @@
       var muted = false;
       try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
 
-      var LINE = "I'm Iris. You are on Dualis home. Looking is free. Lab is talk and camera. Hall is the rooms. Research is study, not treatment.";
+      var LINE = "Hey. I'm Iris. You walked into Dualis. Ask me anything small for free. If you want the heavy work, I'll tell you what it costs before I start. Lab is if you want the camera. Hall is the other rooms. Research is reading, not a clinic.";
 
       if (window.IrisSphere && IrisSphere.mount) IrisSphere.mount("#presence");
       if (window.IrisSphere && IrisSphere.setWoken) IrisSphere.setWoken(true);
@@ -137,7 +137,7 @@
           } catch (e) {}
           setTimeout(function () {
             if (window.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false);
-          }, 4200);
+          }, 5200);
         }
       }
 
@@ -145,7 +145,7 @@
         if (greeted || muted) return;
         greeted = true;
         try { if (window.DSAP && DSAP.unlock) DSAP.unlock(); } catch (e) {}
-        hint.textContent = "Iris is on this plate.";
+        hint.textContent = "That's Iris.";
         speak(LINE);
         veil.hidden = true;
       }
@@ -155,7 +155,7 @@
         try { localStorage.setItem(MUTE, "1"); } catch (e) {}
         paintMute();
         veil.hidden = true;
-        hint.textContent = "Voice off. Tap Voice on when you want her.";
+        hint.textContent = "Voice off. Turn it on when you want her.";
         if (window.speechSynthesis) speechSynthesis.cancel();
       }
 
@@ -176,7 +176,6 @@
       document.getElementById("talk").addEventListener("click", greet);
       document.getElementById("iris-plate").addEventListener("pointerdown", greet);
 
-      // Try to meet them immediately. Phones often block it until Meet me / first tap.
       if (!muted) {
         setTimeout(function () {
           try {
@@ -210,7 +209,7 @@
           video.srcObject = stream;
           video.style.display = "block";
           camOn = true;
-          hint.textContent = "Camera is local.";
+          hint.textContent = "Camera is just on this phone.";
           greet();
         }).catch(function () {
           hint.textContent = "Camera blocked.";
