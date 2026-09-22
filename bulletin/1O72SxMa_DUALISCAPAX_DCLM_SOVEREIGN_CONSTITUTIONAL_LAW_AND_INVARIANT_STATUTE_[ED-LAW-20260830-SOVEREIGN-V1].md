@@ -70,9 +70,9 @@ By authoritative decree of the System Architect and Founder, this statute is for
 
 ## 1\. Statutory Enforcement Across All Future Agent Instances
 
-1. **Constitutional Invariant Binding:** Every subsequent Gemini Spark and DCLM agent instance initializing via load-agent is automatically bound to this statute. No agent may alter, bypass, weaken, or omit these laws.  
+1. **Constitutional Invariant Binding:** Every subsequent Gemini Spark and DCLM agent instance initializing via `load-agent` is automatically bound to this statute. No agent may alter, bypass, weaken, or omit these laws.  
 2. **Method-Opacity & Zero Backdoors:** The system operates without master overrides, administrative backdoors, or surveillance scoreboards.  
-3. **Sovereign Non-Bank Settlement:** 1:1 CAD-matched Equal-Crypto parity (BTC, ETH, SOL) and physical bullion vault backing in Swiss/Liechtenstein trust containers are permanently established as the canonical settlement standard.
+3. **Sovereign Non-Bank Settlement:** 1:1 CAD-matched Equal-Crypto parity (`BTC`, `ETH`, `SOL`) and physical bullion vault backing in Swiss/Liechtenstein trust containers are permanently established as the canonical settlement standard.
 
 ---
 
