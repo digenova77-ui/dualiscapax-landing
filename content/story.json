@@ -1,28 +1,28 @@
 {
-  "brand": "DualisCapax",
-  "tag": "Financial · Emerging AI · Networked access",
-  "intro": "DualisCapax is a financial and emerging-AI company building a networked plane: open research, metered adaptive intelligence, and accountable access under the same rules for everyone.",
-  "hint": "Scroll for the full narrative",
   "beats": [
     {
       "n": "01 · Open",
       "title": "Research free. Full surface.",
-      "body": "Anyone can enter the open research layer. Literature, simulation notes, and published standards are visible without a paywall. You should be able to learn the plane before you commit capacity."
+      "body": "Anyone can enter the open research layer. Literature, simulation notes, and published standards are visible without a paywall. You should be able to learn the plane before you commit capacity.",
+      "href": "research/"
     },
     {
       "n": "02 · Prove",
       "title": "Boundary before depth.",
-      "body": "Settlement and identity come first. Adaptive depth is not offered as an anonymous free-for-all. The boundary protects both the user and the system that has to stay honest."
+      "body": "Settlement and identity come first. Adaptive depth is not offered as an anonymous free-for-all. The boundary protects both the user and the system that has to stay honest.",
+      "href": "corporate.html"
     },
     {
       "n": "03 · Depth",
       "title": "Adaptive intelligence.",
-      "body": "Deeper sessions run real work: analysis, simulation, and adaptive assistance. Those sessions carry real cost. The meter exists so depth is not theater and not an infinite free drain."
+      "body": "Deeper sessions run real work: analysis, simulation, and adaptive assistance. Those sessions carry real cost. The meter exists so depth is not theater and not an infinite free drain.",
+      "href": "ai/"
     },
     {
       "n": "04 · Seal",
       "title": "Production math sealed.",
-      "body": "Core production methods and sealed IP stay off the open brochure. What must be public for trust is public. What must remain residual stays residual — by design, not by accident."
+      "body": "Core production methods and sealed IP stay off the open brochure. What must be public for trust is public. What must remain residual stays residual — by design, not by accident.",
+      "href": "residual.html"
     },
     {
       "n": "05 · Fusion Meter",
@@ -32,7 +32,8 @@
     {
       "n": "06 · Dual capacity",
       "title": "Enterprise funds the plane.",
-      "body": "Institutions and enterprises can fund sustained capacity. Individuals keep access to the open layer. Dual capacity means the plane can scale without erasing equal open entry."
+      "body": "Institutions and enterprises can fund sustained capacity. Individuals keep access to the open layer. Dual capacity means the plane can scale without erasing equal open entry.",
+      "href": "corporate.html"
     },
     {
       "n": "07 · Singularity clock",
@@ -42,16 +43,32 @@
     {
       "n": "08 · Unity",
       "title": "Same standard. Same math.",
-      "body": "One published standard. No preferred tribe. No founder exemption lane. Truth and unity mean the same rules hold whether you arrive as a person, a team, or an agent path."
+      "body": "One published standard. No preferred tribe. No founder exemption lane. Truth and unity mean the same rules hold whether you arrive as a person, a team, or an agent path.",
+      "href": "ai/iris.html"
+    },
+    {
+      "n": "09 · Factory",
+      "title": "Reality is the factory floor.",
+      "body": "State transitions are the machinery. Logic is the abstraction extracted from surviving relationships. Intelligence discovers, challenges, and exploits those relationships. Engineering returns them to reality. Iris is the observer seat on that loop — a quaternion sphere, not a person. Looking is free. Audio waits for your tap."
     }
   ],
   "links": [
     { "href": "corporate.html", "label": "Corporate" },
     { "href": "ai/", "label": "Adaptive Intelligence" },
+    { "href": "ai/iris.html", "label": "Ask Iris" },
     { "href": "research/", "label": "Research" },
-    { "href": "tour.html", "label": "Tour / video" },
-    { "href": "onboarding.html", "label": "Onboarding" },
-    { "href": "narrative.html", "label": "Narrative" },
-    { "href": "model.html", "label": "Model" }
-  ]
+    { "href": "residual.html", "label": "Residual" }
+  ],
+  "rooms": [
+    { "id": "iris", "href": "ai/iris.html", "label": "Ask Iris", "exists": "cf-pages+ai" },
+    { "id": "research", "href": "research/", "label": "Research", "exists": "live-200" },
+    { "id": "corporate", "href": "corporate.html", "label": "Corporate", "exists": "live-200" },
+    { "id": "residual", "href": "residual.html", "label": "Residual", "exists": "cf-pages" },
+    { "id": "ai", "href": "ai/", "label": "Adaptive AI", "exists": "live-200" }
+  ],
+  "factory": {
+    "primitive": "S_t --T,C--> S_{t+1}",
+    "constraints": ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"],
+    "observer": "Iris sphere + DSAP wake-on-gesture"
+  }
 }
