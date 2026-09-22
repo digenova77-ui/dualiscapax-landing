@@ -3,10 +3,11 @@
  * Spec: encyclopedia/governance_and_protocols/dclm_dsap_holographic_spatial_audio_protocol_and_engine_spec.md
  *
  * Felt layer: proximity bass under 0.4 m while speaking. Word pulses on the ring.
- * Not a codec. Not KEMAR. Not WebTransport.
+ * Analyser tap on master: wave() is time-domain Uint8Array for IrisSphere.
+ * attach(media|node) feeds owned audio into dry. speechSynthesis cannot join.
  */
 (function (w) {
-  var VERSION = "dsap-1.0-felt-2026-09-01";
+  var VERSION = "dsap-1.0-felt-2026-09-22-wave";
   var SPEAKERS = 64;
   var STEP = 360 / SPEAKERS;
   var ALPHA = 0.998;
@@ -20,11 +21,14 @@
   var dry = null;
   var bass = null;
   var bassGain = null;
+  var analyser = null;
+  var timeBuf = null;
   var ring = [];
   var ready = false;
   var lastAz = 0;
   var lastDist = 1.6;
   var felt = false;
+  var attached = [];
 
   function lawFloor() {
     return Object.freeze({
@@ -35,8 +39,25 @@
     });
   }
 
+  function tapAnalyser() {
+    if (!ctx || !master) return;
+    if (analyser) return;
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.55;
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -20;
+    timeBuf = new Uint8Array(analyser.fftSize);
+    try { master.disconnect(); } catch (e) {}
+    master.connect(analyser);
+    analyser.connect(ctx.destination);
+  }
+
   function ensure() {
-    if (ready && ctx && ctx.state !== "closed") return Promise.resolve(ctx);
+    if (ready && ctx && ctx.state !== "closed") {
+      tapAnalyser();
+      return Promise.resolve(ctx);
+    }
     var AC = w.AudioContext || w.webkitAudioContext;
     if (!AC) return Promise.reject(new Error("NO_AUDIO"));
     ctx = ctx || new AC({ latencyHint: "interactive" });
@@ -60,7 +81,7 @@
     convolver.connect(wet);
     bass.connect(bassGain);
     bassGain.connect(master);
-    master.connect(ctx.destination);
+    tapAnalyser();
 
     ring = [];
     for (var i = 0; i < SPEAKERS; i++) {
@@ -186,6 +207,45 @@
     }
   }
 
+  function wave() {
+    if (!analyser || !timeBuf) return null;
+    analyser.getByteTimeDomainData(timeBuf);
+    return timeBuf;
+  }
+
+  function energy() {
+    var bins = wave();
+    if (!bins || !bins.length) return 0;
+    var i, sum = 0;
+    for (i = 0; i < bins.length; i++) sum += Math.abs(bins[i] - 128);
+    return Math.min(1, (sum / bins.length) / 64);
+  }
+
+  function isMedia(node) {
+    return !!(node && typeof node.play === "function" && node.tagName);
+  }
+
+  function attach(node) {
+    if (!node || !ctx || !dry) return null;
+    if (node instanceof (w.AudioContext || w.webkitAudioContext || function () {})) return null;
+    if (node === ctx || node === analyser) return analyser;
+    var src = node._dsapSrc;
+    if (!src && isMedia(node)) {
+      try {
+        src = ctx.createMediaElementSource(node);
+        node._dsapSrc = src;
+      } catch (e) {
+        return null;
+      }
+    } else if (!src && node.connect) {
+      src = node;
+    }
+    if (!src || !src.connect) return null;
+    try { src.connect(dry); } catch (e2) { return null; }
+    if (attached.indexOf(src) < 0) attached.push(src);
+    return src;
+  }
+
   function unlock() {
     return ensure();
   }
@@ -217,6 +277,12 @@
     roar: roar,
     setFelt: setFelt,
     setProximity: setProximity,
+    wave: wave,
+    energy: energy,
+    attach: attach,
+    context: function () { return ctx; },
+    dry: function () { return dry; },
+    analyser: function () { return analyser; },
     stop: stop,
     cleanup: cleanup,
     state: function () {
@@ -226,7 +292,9 @@
         az: lastAz,
         dist: lastDist,
         felt: felt,
-        speakers: SPEAKERS
+        speakers: SPEAKERS,
+        wave: !!(analyser && timeBuf),
+        version: VERSION
       };
     }
   };
