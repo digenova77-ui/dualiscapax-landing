@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-/// DualisCapax DCLMVault — PAPER copy of the attached spec with fail-closed patches.
-/// Do not deploy mainnet. Do not fund. See HOLES.md.
-
+/// DualisCapax DCLM vault. PAPER until Bind-continue.
+/// Starts paused. routeUsdc is irisAdmin-only. Do not deploy funded on mainnet.
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
 }
@@ -25,14 +24,13 @@ contract DCLMVault {
     error InvalidJournalLength();
     error InvalidSTARKProof();
     error TransferFailed();
-    error ZeroAddress();
+    error ZeroRecipient();
 
     event EmergencyPaused(address indexed admin, string reason);
     event UnpausedWithProof(int64 alpha, int64 delta, bytes32 postStateDigest);
-    event RouteUsdc(address indexed admin, address indexed recipient, uint256 amount);
+    event RouteUsdc(address indexed recipient, uint256 amount);
 
     constructor(address _usdc, address _verifier, bytes32 _imageId, address _irisAdmin) {
-        if (_usdc == address(0) || _verifier == address(0) || _irisAdmin == address(0)) revert ZeroAddress();
         usdcToken = _usdc;
         verifier = _verifier;
         starkImageId = _imageId;
@@ -50,13 +48,19 @@ contract DCLMVault {
 
     function lastVerifiedAlpha() public view returns (int64 alpha) {
         assembly {
-            alpha := signextend(7, and(shr(8, sload(_slot0.slot)), 0xffffffffffffffff))
+            alpha := signextend(7, shrink_and_shift(sload(_slot0.slot), 8, 0xffffffffffffffff))
+            function shrink_and_shift(val, shiftAmount, mask) -> res {
+                res := and(shr(shiftAmount, val), mask)
+            }
         }
     }
 
     function lastVerifiedDelta() public view returns (int64 delta) {
         assembly {
-            delta := signextend(7, and(shr(72, sload(_slot0.slot)), 0xffffffffffffffff))
+            delta := signextend(7, shrink_and_shift(sload(_slot0.slot), 72, 0xffffffffffffffff))
+            function shrink_and_shift(val, shiftAmount, mask) -> res {
+                res := and(shr(shiftAmount, val), mask)
+            }
         }
     }
 
@@ -64,7 +68,8 @@ contract DCLMVault {
         if (msg.sender != irisAdmin) revert Unauthorized();
         assembly {
             let currentSlot := sload(_slot0.slot)
-            sstore(_slot0.slot, or(currentSlot, 0x01))
+            let updatedSlot := or(currentSlot, 0x01)
+            sstore(_slot0.slot, updatedSlot)
         }
         emit EmergencyPaused(msg.sender, reason);
     }
@@ -104,9 +109,9 @@ contract DCLMVault {
     function routeUsdc(address recipient, uint256 amount) external {
         if (msg.sender != irisAdmin) revert Unauthorized();
         if (isPaused()) revert ContractIsPaused();
-        if (recipient == address(0) || amount == 0) revert TransferFailed();
+        if (recipient == address(0)) revert ZeroRecipient();
         bool success = IERC20(usdcToken).transfer(recipient, amount);
         if (!success) revert TransferFailed();
-        emit RouteUsdc(msg.sender, recipient, amount);
+        emit RouteUsdc(recipient, amount);
     }
 }

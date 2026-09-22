@@ -1,43 +1,37 @@
-# DCLMVault — holes in the attached spec
+# DCLMVault — attached spec vs landed copy
 
 Stamp: 2026-09-21
-Source: user-attached unified spec. Not in git before this pack.
-Status: PAPER. Do not deploy mainnet. Do not fund. Do not call `routeUsdc`.
+Source: user attachment DCLM Unified Single-File Specification
+Law: PAPER. No mainnet deploy. No funded vault. CRYPTO_OPEN false.
 
-This file is the law for the copy under `research/contracts/dclm/DCLMVault.sol`.
-The attached original is not production.
+## What the attachment specified
 
-## What the attachment got right
+Yul-packed slot0, Iris `emergencyPause`, RISC Zero `unpauseWithStarkProof`, public `routeUsdc`.
+Gas note: UnpauseWithStarkProof Yul delta −8.65%. That is a snapshot, not a production receipt.
 
-- Twain split encoded as `abi.encode(int64 alpha, int64 delta)` journal (64 bytes).
-- Packed `slot0`: pause bit in the low byte; alpha at bit 8; delta at bit 72.
-- `emergencyPause` gated on `irisAdmin`.
-- RISC Zero verifier interface is the intended unpause key (proof-as-key), *if* the verifier is real.
-- Yul snapshot claimed −8.65% only on `unpauseWithStarkProof`.
+## Holes in the attachment we will not ship as-is
 
-## Holes we patched in our copy
+1. `routeUsdc(address,uint256)` had **no access control**. Anyone could drain USDC while unpaused.
+2. Constructor left the vault **unpaused** (pause bit never set).
+3. `unpauseWithStarkProof` had **no irisAdmin check**. A passing seal is the only key. Fine with a real RISC Zero verifier; fatal with the mock that defaults `true`.
+4. `MockRiscZeroVerifier` in the Halmos suite returns `true` unless flipped. Symbolic tests do not prove a STARK guest.
+5. Deploy script default USDC `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` is Sepolia. Stay there.
+6. No SKU, no CAD peg, no Pinata receipt, no idempotent grant fold.
+7. Unpause `sstore` overwrites the whole slot (clears pause by omission). Intended, but document it.
 
-1. **Constructor started UNPAUSED.** Attachment never set the pause bit. Our copy `sstore`s `0x01` in the constructor.
-2. **`routeUsdc` had zero access control.** Anyone could drain USDC while unpaused. Our copy requires `irisAdmin` and still reverts when paused.
-3. **No `RouteUsdc` event.** Added.
-4. **Mock verifier defaults to `true`.** Symbolic suite in the attachment is a toy. Our test file keeps the mock but the README forbids it on any funded vault.
-5. **Deploy defaults are Sepolia-shaped.** `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` is not a Dualis production treasury. Script stays env-driven and paper.
-6. **No SKU, CAD peg, cap, or recipient allowlist.** Vault is a router, not a checkout. SKU grant lives in `workers/crypto-gate` and stays 403 until Bind-continue.
-7. **CI auto-commit of a generated spec is not landed.** Supply-chain smell. Seat writes docs.
+## What we landed instead
 
-## Holes we document but do not paper over
+`research/contracts/dclm/DCLMVault.sol`:
+- starts paused
+- `routeUsdc` only `irisAdmin`
+- zero-recipient rejected
+- `RouteUsdc` event
+- Yul slot0 packing kept (pause bit 0; alpha << 8; delta << 72)
+- unpause still proof-gated (Bind-continue analog)
 
-- `unpauseWithStarkProof` remains public (proof-as-key). That is only safe with a real RISC Zero image id and a non-mock verifier. A `true`-default mock is a skeleton key.
-- `unpause` overwrites all of `slot0` (clears pause by omission). Intended. Alpha/delta keep only the low 64 bits.
-- DualisResidual.sol is a *different* machine (ETH native savings-split). Do not merge the two contracts.
-- Pinata is archive, not settlement.
-- `sovereign_anchors.py` is epoch attestation, not a till.
+## Coexistence
 
-## Seat before any mainnet create
-
-1. Real RISC Zero image id in `STARK_IMAGE_ID`.
-2. Real verifier, never MockRiscZeroVerifier.
-3. USDC token address for the intended chain.
-4. `irisAdmin` is a hardware-backed Dualis key, not the deployer EOA by accident.
-5. Vault funded only after Bind-continue and after `workers/crypto-gate` `CRYPTO_OPEN` is an explicit Seat YES.
-6. Deactivate leftover Stripe Payment Links in Dashboard — git cannot expire them.
+- `research/contracts/DualisResidual.sol` is the savings-split (walk / sign / open / pay). Not a checkout.
+- `src/engine/crypto/sovereign_anchors.py` is epoch attestation. Not a till.
+- `workers/stripe-fulfill/CLIENT-GATEWAY.md` is the earlier crypto **design**: receive-only USDC/BTC/ETH/SOL, 1:1 CAD, memo=sku, grant after confirm. Addresses stay with Seat.
+- `workers/crypto-gate` is the public `/pay` language swap. It never calls `routeUsdc`.
