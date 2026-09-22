@@ -1,11 +1,9 @@
 /**
  * Iris AV — camera, mic, device voice, optional xAI TTS.
- * Step 1: one gesture can arm cam + mic + hear.
- * Step 3: DCByok.tts if a tab key exists, else speechSynthesis.
- * Not a cloned voice. No key in this file.
+ * Locale from IrisVoice / navigator.language. Not locked to en-CA.
  */
 (function (w) {
-  var VERSION = "iris-av-v3-2026-09-22-arm";
+  var VERSION = "iris-av-v4-2026-09-22-locale";
   var state = {
     cam: null,
     mic: null,
@@ -40,6 +38,11 @@
     return hear.classList.contains("on") || state.armed;
   }
 
+  function loc() {
+    if (w.IrisVoice && IrisVoice.locale) return IrisVoice.locale();
+    return String((w.navigator && (navigator.languages && navigator.languages[0] || navigator.language)) || "en");
+  }
+
   function enableHear() {
     state.armed = true;
     setToggle("hear", true, "Voice on", "Voice off. Tap to hear Iris.");
@@ -50,15 +53,17 @@
   }
 
   function pickVoice() {
+    if (w.IrisVoice && IrisVoice.pickDevice) {
+      state.voice = IrisVoice.pickDevice();
+      return state.voice;
+    }
     if (!w.speechSynthesis) return null;
     var list = w.speechSynthesis.getVoices() || [];
     if (!list.length) return null;
-    var want = list.filter(function (v) {
-      var n = (v.name || "").toLowerCase();
-      var lang = (v.lang || "").toLowerCase();
-      return /en/.test(lang) && /(natural|premium|samantha|daniel|karen|moira|google uk|google us|microsoft aria|neural)/.test(n);
-    });
-    state.voice = want[0] || list.filter(function (v) { return /^en/.test(v.lang || ""); })[0] || list[0] || null;
+    var tag = loc().toLowerCase();
+    var pre = tag.split("-")[0];
+    var hit = list.filter(function (v) { return String(v.lang || "").toLowerCase().indexOf(pre) === 0; });
+    state.voice = hit[0] || list[0] || null;
     return state.voice;
   }
 
@@ -68,12 +73,16 @@
       return;
     }
     var u = new SpeechSynthesisUtterance(String(text).slice(0, 900));
-    var voice = state.voice || pickVoice();
-    if (voice) u.voice = voice;
-    u.lang = (voice && voice.lang) || "en-CA";
-    u.rate = 0.98;
-    u.pitch = 0.96;
-    u.volume = 1;
+    if (w.IrisVoice && IrisVoice.applyUtterance) {
+      IrisVoice.applyUtterance(u);
+      state.voice = u.voice || state.voice;
+    } else {
+      var voice = state.voice || pickVoice();
+      if (voice) u.voice = voice;
+      u.lang = (voice && voice.lang) || loc();
+      u.rate = 0.98;
+      u.pitch = 1;
+    }
     state.speaking = true;
     state.lastKind = "device";
     u.onend = function () { state.speaking = false; if (done) done(); };
@@ -88,13 +97,17 @@
   async function neuralSpeak(text) {
     if (!(w.DCByok && DCByok.tts)) return false;
     if (!(DCByok.present && DCByok.present())) return false;
+    var opts = (w.IrisVoice && IrisVoice.ttsOpts) ? IrisVoice.ttsOpts() : { voice_id: "iris", language: "auto" };
     try {
-      var rec = await DCByok.tts(String(text).slice(0, 1200), { voice_id: "eve", language: "en" });
+      var rec = await DCByok.tts(String(text).slice(0, 1200), opts);
       if (!rec || !rec.ok || !rec.blob) return false;
       var url = URL.createObjectURL(rec.blob);
       var audio = new Audio(url);
       state.speaking = true;
       state.lastKind = "xai-tts";
+      if (w.DSAP && DSAP.attach && audio.captureStream) {
+        try { DSAP.attach(w.DSAP.context && DSAP.context()); } catch (e0) {}
+      }
       await new Promise(function (resolve) {
         audio.onended = resolve;
         audio.onerror = resolve;
@@ -171,7 +184,7 @@
     var SR = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (SR) {
       var rec = new SR();
-      rec.lang = "en-CA";
+      rec.lang = loc();
       rec.interimResults = false;
       rec.maxAlternatives = 1;
       rec.onresult = function (e) {
@@ -181,17 +194,20 @@
           box.value = said;
           box.dispatchEvent(new Event("input"));
         }
+        if (said && w.IrisSession && IrisSession.say && !box) {
+          IrisSession.say(said);
+        }
       };
-      rec.onerror = function () { err("Mic heard nothing. Type if you want."); };
+      rec.onerror = function () { err("Mic heard nothing."); };
       rec.onend = function () { setToggle("talk", false, "Talk", "Talk"); };
       state.rec = rec;
       rec.start();
       err("");
-      return { live: true, kind: "mic-speech" };
+      return { live: true, kind: "mic-speech", lang: rec.lang };
     }
     if (state.cam && state.cam.getAudioTracks && state.cam.getAudioTracks().length) {
       state.mic = state.cam;
-      err("Mic is live. Speech-to-text is not on this browser — type the words.");
+      err("Mic is live. Speech-to-text is not on this browser.");
       return { live: true, kind: "mic-from-camera" };
     }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -199,7 +215,7 @@
       return { live: false, kind: "mic" };
     }
     state.mic = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-    err("Mic is live. Speech-to-text is not on this browser — type the words.");
+    err("Mic is live. Speech-to-text is not on this browser.");
     return { live: true, kind: "mic-stream" };
   }
 
@@ -268,9 +284,6 @@
     if (w.IrisSphere && IrisSphere.mount) {
       var host = document.getElementById("presence");
       if (host) {
-        host.style.width = "min(46vw,12rem)";
-        host.style.height = "min(46vw,12rem)";
-        host.style.borderRadius = "50%";
         IrisSphere.mount(host);
         if (IrisSphere.setWoken) IrisSphere.setWoken(true);
       }
@@ -306,9 +319,12 @@
     hearOn: hearOn,
     greet: function (line) { var t = line || "I'm Iris. Looking is free."; speak(t); return t; },
     unlock: function () { return enableHear(); },
+    locale: loc,
     selftest: function () {
       return {
         version: VERSION,
+        locale: loc(),
+        voice: state.voice && (state.voice.lang + " " + state.voice.name),
         hasArm: typeof arm === "function",
         hasSpeak: typeof speak === "function",
         hasByokTts: !!(w.DCByok && DCByok.tts),
