@@ -15,6 +15,8 @@
     header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.2rem;background:rgba(7,9,13,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
     .brand{color:var(--text);text-decoration:none;font-weight:800;letter-spacing:.02em}
     .lab{background:var(--mint);color:#064E3B;text-decoration:none;font-weight:800;font-size:.82rem;padding:.45rem .9rem;border-radius:999px}
+    .quiet{margin-left:.5rem;background:transparent;color:var(--mute);border:1px solid var(--line);border-radius:999px;font:700 .72rem var(--sans);padding:.35rem .7rem;cursor:pointer}
+    .quiet.on{color:#082F49;background:var(--cyan);border-color:var(--cyan)}
     .stage{max-width:820px;margin:0 auto;padding:.6rem 1.1rem 2rem;display:flex;flex-direction:column;align-items:center;gap:.65rem}
     .orb-wrap{position:relative;width:min(92vw,28rem);height:min(92vw,28rem);max-height:58dvh;display:grid;place-items:center}
     #presence{width:100%;height:100%;position:relative}
@@ -36,34 +38,44 @@
     .dock a{color:var(--mute);text-decoration:none;font-size:.76rem;font-weight:700;padding:.5rem .7rem;border-radius:20px}
     .dock .go{background:var(--mint);color:#064E3B}
     .fine{font-family:var(--mono);font-size:.62rem;color:var(--dim);text-align:center;margin-top:.4rem}
+    .veil{position:fixed;inset:0;z-index:50;background:rgba(7,9,13,.72);display:grid;place-items:end center;padding:0 1rem 6.5rem;pointer-events:auto}
+    .veil[hidden]{display:none}
+    .card{width:min(92vw,26rem);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1rem 1.05rem 1.1rem}
+    .card h2{font-size:1.05rem;margin-bottom:.35rem}
+    .card p{color:var(--mute);font-size:.88rem;line-height:1.45;margin-bottom:.7rem}
+    .card ul{margin:0 0 .85rem 1.1rem;color:var(--text);font-size:.86rem;line-height:1.55}
+    .card .row{display:flex;gap:.45rem;flex-wrap:wrap}
     @media (max-width:560px){.rooms{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <header>
     <a class="brand" href="#top">Dualiscapax</a>
-    <a class="lab" href="ai/app.html">Iris lab</a>
+    <div>
+      <button type="button" class="quiet" id="voice" aria-pressed="true">Voice on</button>
+      <a class="lab" href="ai/app.html">Iris lab</a>
+    </div>
   </header>
   <main class="stage" id="top">
     <div class="orb-wrap" id="iris-plate" aria-label="Iris">
       <div id="presence"></div>
       <video id="you" autoplay muted playsinline aria-label="Your camera"></video>
     </div>
-    <p class="hint" id="hint">Tap her. Looking is free.</p>
+    <p class="hint" id="hint">Meet Iris. Looking is free.</p>
     <h1>Meet Iris<span>.</span></h1>
-    <p class="lead">She is on this plate. Talk here. The lab is the same mouth with camera. Checkout stays closed.</p>
+    <p class="lead">She is on this plate. Voice starts on. Mute her if you want silence. Camera stays off until you ask.</p>
     <div class="actions">
       <button class="primary" type="button" id="talk">Talk on this page</button>
       <a class="btn primary" href="ai/app.html">Open lab</a>
       <button class="ghost" type="button" id="cam">Use camera here</button>
     </div>
     <section class="rooms">
-      <a class="room" href="ai/app.html"><b>Iris lab</b><span>Talk. Camera if you want. No chat box.</span></a>
+      <a class="room" href="ai/app.html"><b>Iris lab</b><span>Talk. Camera if you want.</span></a>
       <a class="room" href="hall/"><b>Hall</b><span>Five rooms. One gate.</span></a>
       <a class="room" href="research/"><b>Research</b><span>Class, then study.</span></a>
       <a class="room" href="residual.html"><b>Residual</b><span>How look stays $0.</span></a>
     </section>
-    <p class="fine">No autoplay. Simulation is not treatment.</p>
+    <p class="fine">Simulation is not treatment. Checkout stays closed.</p>
   </main>
   <nav class="dock">
     <a href="#top">Home</a>
@@ -71,6 +83,22 @@
     <a href="hall/">Hall</a>
     <a href="research/">Research</a>
   </nav>
+  <div class="veil" id="veil" role="dialog" aria-labelledby="veil-title">
+    <div class="card">
+      <h2 id="veil-title">You landed on Dualis home.</h2>
+      <p>I'm Iris. This plate is me. Looking is free. Engine time is Fuel.</p>
+      <ul>
+        <li>Stay — talk on this page.</li>
+        <li>Lab — same mouth, camera if you want.</li>
+        <li>Hall — rooms of the house.</li>
+        <li>Research — class, then study. Not treatment.</li>
+      </ul>
+      <div class="row">
+        <button class="primary" type="button" id="meet">Meet me</button>
+        <button class="ghost" type="button" id="skip">Skip voice</button>
+      </div>
+    </div>
+  </div>
   <script src="js/iris-sphere.js"></script>
   <script src="js/dsap-engine.js"></script>
   <script src="js/dsap.js"></script>
@@ -78,11 +106,30 @@
   <script src="js/iris-av.js"></script>
   <script>
     (function () {
+      var MUTE = "dc-iris-mute";
       var hint = document.getElementById("hint");
       var video = document.getElementById("you");
-      var camOn = false, woke = false;
+      var voiceBtn = document.getElementById("voice");
+      var veil = document.getElementById("veil");
+      var camOn = false, greeted = false;
+      var muted = false;
+      try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
+
+      var LINE = "I'm Iris. You are on Dualis home. Looking is free. Lab is talk and camera. Hall is the rooms. Research is study, not treatment.";
+
       if (window.IrisSphere && IrisSphere.mount) IrisSphere.mount("#presence");
+      if (window.IrisSphere && IrisSphere.setWoken) IrisSphere.setWoken(true);
+
+      function paintMute() {
+        voiceBtn.textContent = muted ? "Voice off" : "Voice on";
+        voiceBtn.classList.toggle("on", !muted);
+        voiceBtn.setAttribute("aria-pressed", muted ? "false" : "true");
+      }
+      paintMute();
+      if (muted) veil.hidden = true;
+
       function speak(line) {
+        if (muted) return;
         if (window.IrisAV && IrisAV.speak) {
           try {
             IrisAV.speak(line);
@@ -90,26 +137,61 @@
           } catch (e) {}
           setTimeout(function () {
             if (window.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false);
-          }, 2400);
+          }, 4200);
         }
       }
-      function wake() {
-        if (woke) return;
-        woke = true;
-        try {
-          if (window.DSAP && DSAP.unlock) DSAP.unlock();
-        } catch (e) {}
-        if (window.IrisSphere && IrisSphere.setWoken) IrisSphere.setWoken(true);
+
+      function greet() {
+        if (greeted || muted) return;
+        greeted = true;
+        try { if (window.DSAP && DSAP.unlock) DSAP.unlock(); } catch (e) {}
         hint.textContent = "Iris is on this plate.";
-        speak("I'm Iris. Looking is free.");
+        speak(LINE);
+        veil.hidden = true;
       }
-      document.getElementById("talk").addEventListener("click", wake);
-      document.getElementById("iris-plate").addEventListener("pointerdown", wake);
+
+      function skip() {
+        muted = true;
+        try { localStorage.setItem(MUTE, "1"); } catch (e) {}
+        paintMute();
+        veil.hidden = true;
+        hint.textContent = "Voice off. Tap Voice on when you want her.";
+        if (window.speechSynthesis) speechSynthesis.cancel();
+      }
+
+      voiceBtn.addEventListener("click", function () {
+        muted = !muted;
+        try { localStorage.setItem(MUTE, muted ? "1" : "0"); } catch (e) {}
+        paintMute();
+        if (muted) {
+          if (window.speechSynthesis) speechSynthesis.cancel();
+          hint.textContent = "Voice off.";
+        } else {
+          greeted = false;
+          greet();
+        }
+      });
+      document.getElementById("meet").addEventListener("click", greet);
+      document.getElementById("skip").addEventListener("click", skip);
+      document.getElementById("talk").addEventListener("click", greet);
+      document.getElementById("iris-plate").addEventListener("pointerdown", greet);
+
+      // Try to meet them immediately. Phones often block it until Meet me / first tap.
+      if (!muted) {
+        setTimeout(function () {
+          try {
+            if (window.DSAP && DSAP.unlock) DSAP.unlock().then(function () { greet(); }).catch(function () {});
+            else greet();
+          } catch (e) {}
+        }, 240);
+      }
+
       window.addEventListener("pointermove", function (e) {
         var x = (e.clientX / Math.max(1, window.innerWidth) - 0.5) * 2;
         var y = (e.clientY / Math.max(1, window.innerHeight) - 0.5) * 2;
         if (window.IrisSphere && IrisSphere.lookAt) IrisSphere.lookAt(x, y);
       }, { passive: true });
+
       document.getElementById("cam").addEventListener("click", function () {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
           hint.textContent = "This browser has no camera.";
@@ -129,7 +211,7 @@
           video.style.display = "block";
           camOn = true;
           hint.textContent = "Camera is local.";
-          wake();
+          greet();
         }).catch(function () {
           hint.textContent = "Camera blocked.";
         });
