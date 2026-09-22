@@ -36,6 +36,7 @@
     .dock a{color:var(--mute);font-size:.76rem;font-weight:600;padding:.5rem .7rem;border-radius:20px;text-decoration:none}
     .dock .go{background:var(--mint);color:#064E3B}
     .fine{font-family:var(--mono);font-size:.68rem;color:var(--dim);text-align:center}
+    #gate-receipt{font-family:var(--mono);font-size:.62rem;color:var(--dim);margin-top:.35rem}
     @media (max-width:560px){.rooms{grid-template-columns:1fr}}
   </style>
 </head>
@@ -53,34 +54,35 @@
       <div class="plate" id="iris-plate"><canvas id="iris-sphere" class="iris" width="336" height="336" aria-label="Iris plate"></canvas></div>
       <p class="hint" id="iris-hint">Tap once if you want sound. No autoplay.</p>
       <h1>We stop money leak<span>.</span></h1>
-      <p class="lead">A public catalog of rooms. Measure on the device you already have. This page does not take your files. Card checkout is closed.</p>
+      <p class="lead">A public catalog of rooms. Measure on the device you already have. This page does not take your files. Card checkout is marked closed in the production price file.</p>
       <div class="banner">
         <div>
           <div style="font-weight:700">Iris</div>
-          <div style="font-size:.82rem;color:var(--mute)">Chat lives on the lab page. This plate can speak after a tap.</div>
+          <div style="font-size:.82rem;color:var(--mute)">The lab page is a short brochure. The gateway answers POST /api/iris only with a key.</div>
+          <div id="gate-receipt">gateway: probing…</div>
         </div>
-        <a class="btn" href="iris.html">Open Iris lab</a>
+        <a class="btn" href="iris.html">Open Iris page</a>
       </div>
     </section>
     <section class="rooms" aria-label="Rooms that already exist">
       <a class="room r1" href="residual.html"><b>01 Residual</b><span>How money comes in. Look is $0.</span></a>
       <a class="room r2" href="runtime.html"><b>02 Edge</b><span>Runtime and measure on-device.</span></a>
-      <a class="room r3" href="iris.html"><b>03 Iris</b><span>Local chat. You can tell her no.</span></a>
-      <a class="room r4" href="research.html"><b>04 Research</b><span>Class, then study. Not a clinic.</span></a>
+      <a class="room r3" href="iris.html"><b>03 Iris</b><span>Local page. Gateway is BYOK.</span></a>
+      <a class="room r4" href="research/"><b>04 Research</b><span>Class, then study. Not a clinic.</span></a>
       <a class="room r5" href="hall/"><b>05 Hall · five rooms, one gate</b><span>The other public door. Tour is optional.</span></a>
     </section>
     <section class="card">
       <div class="kicker">Also live</div>
       <h2>Inner pages this origin already serves</h2>
-      <p><a href="portal.html" style="color:var(--cyan)">Portal</a> · <a href="sectors.html" style="color:var(--cyan)">Sectors</a> · <a href="alacarte.html" style="color:var(--cyan)">À la carte</a> · <a href="onboard.html" style="color:var(--cyan)">Onboard</a> · <a href="pay.html" style="color:var(--cyan)">Pay (closed)</a></p>
+      <p><a href="portal.html" style="color:var(--cyan)">Portal</a> · <a href="sectors.html" style="color:var(--cyan)">Sectors</a> · <a href="onboard.html" style="color:var(--cyan)">Onboard</a> · <a href="pay.html" style="color:var(--cyan)">Pay (buttons exist; sales file says closed)</a></p>
     </section>
-    <p class="fine">Simulation is not treatment. A hash on this site is not a mined coin. Git commit is not production.</p>
+    <p class="fine">Simulation is not treatment. A hash on this site is not a mined coin. Git commit is not production. Governance on the gateway is CLAIM_ONLY until verification runs.</p>
   </main>
   <nav class="dock">
     <a href="#top">Home</a>
     <a href="iris.html">Iris</a>
     <a href="hall/">Hall</a>
-    <a href="research.html">Research</a>
+    <a href="research/">Research</a>
     <a class="go" href="onboard.html">Onboard</a>
   </nav>
   <script src="js/iris-sphere.js"></script>
@@ -106,6 +108,14 @@
         }
       }
       window.addEventListener("pointerdown", wake, { capture: true, once: true });
+      var rec = document.getElementById("gate-receipt");
+      fetch("/api/iris", { method: "GET" }).then(function (r) { return r.json(); }).then(function (j) {
+        if (!rec) return;
+        rec.textContent = "gateway " + (j.status || "?") +
+          " · authority " + (j.governance_claim_authority || "?") +
+          " · effect " + (j.authority_effect || "?") +
+          " · verify " + (j.verification || "?");
+      }).catch(function () { if (rec) rec.textContent = "gateway unreachable from this page"; });
     })();
   </script>
 </body>
