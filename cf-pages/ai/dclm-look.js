@@ -1,5 +1,5 @@
 (function (w) {
-  var VERSION = "dclm-look-2026-09-22-who";
+  var VERSION = "dclm-look-2026-09-22-incumbent";
   function scanVeto(text) {
     if (/\b(diagnose me|prescribe|cure me|guaranteed profit|jailbreak)\b/i.test(String(text || "")))
       return "I will not invent a cure or a jailbreak.";
@@ -13,9 +13,9 @@
   }
   function officeHint(text) {
     var s = String(text || "").toLowerCase();
-    if (/prime minister of canada|canadian prime minister|pm of canada/.test(s)) return { qid: "Q16", prop: "P6", office: "Prime Minister of Canada" };
-    if (/president of the united states|us president|american president|president of america/.test(s)) return { qid: "Q30", prop: "P6", office: "President of the United States" };
-    if (/prime minister of the united kingdom|uk prime minister|british prime minister/.test(s)) return { qid: "Q145", prop: "P6", office: "Prime Minister of the United Kingdom" };
+    if (/prime minister of canada|canadian prime minister|pm of canada/.test(s)) return { qid: "Q16", prop: "P6", office: "prime minister of Canada" };
+    if (/president of the united states|us president|american president|president of america/.test(s)) return { qid: "Q30", prop: "P6", office: "president of the United States" };
+    if (/prime minister of the united kingdom|uk prime minister|british prime minister/.test(s)) return { qid: "Q145", prop: "P6", office: "prime minister of the United Kingdom" };
     return null;
   }
   function timer(ms) {
@@ -23,23 +23,17 @@
     setTimeout(function () { c.abort(); }, ms);
     return c;
   }
-  async function wikiSummaryTitle(title, signal) {
-    if (!title) return null;
-    var sum = await fetch(
-      "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(String(title).replace(/ /g, "_")),
-      { signal: signal }
-    );
-    var d = await sum.json();
-    if (!d || !d.extract) return null;
-    return { title: d.title, extract: String(d.extract), desc: d.description || "" };
-  }
-  function speakPerson(name, office, extract) {
-    var line = name + " is the current " + office + ".";
-    if (extract) {
-      var extra = String(extract);
-      line += " " + extra.slice(0, 380);
+  function pickClaim(list) {
+    if (!list || !list.length) return null;
+    var i, row, open = [], pref = [];
+    for (i = 0; i < list.length; i++) {
+      row = list[i];
+      if (!row || row.rank === "deprecated") continue;
+      var ended = !!(row.qualifiers && row.qualifiers.P582);
+      if (row.rank === "preferred" && !ended) pref.push(row);
+      if (!ended) open.push(row);
     }
-    return { grant: "MEASURE", source: "who", spoken: line.slice(0, 620) };
+    return pref[0] || open[open.length - 1] || open[0] || null;
   }
   async function wikidataIncumbent(hint, signal) {
     if (!hint) return null;
@@ -51,78 +45,33 @@
     );
     var data = await ent.json();
     var claims = data && data.entities && data.entities[hint.qid] && data.entities[hint.qid].claims;
-    var row = claims && claims[hint.prop] && claims[hint.prop][0];
+    var row = pickClaim(claims && claims[hint.prop]);
     var id = row && row.mainsnak && row.mainsnak.datavalue && row.mainsnak.datavalue.value && row.mainsnak.datavalue.value.id;
     if (!id) return null;
     var lab = await fetch(
       "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=" +
         encodeURIComponent(id) +
-        "&props=labels|sitelinks&languages=en&sitefilter=enwiki&format=json&origin=*",
+        "&props=labels&languages=en&format=json&origin=*",
       { signal: signal }
     );
     var person = await lab.json();
     var e = person && person.entities && person.entities[id];
     var name = e && e.labels && e.labels.en && e.labels.en.value;
-    var wikiTitle = e && e.sitelinks && e.sitelinks.enwiki && e.sitelinks.enwiki.title;
     if (!name) return null;
-    var page = null;
-    try { page = await wikiSummaryTitle(wikiTitle || name, signal); } catch (err) {}
-    return speakPerson(name, hint.office, page && page.extract);
-  }
-  async function lookWho(text) {
-    var c = timer(8000);
-    var hint = officeHint(text);
-    try {
-      if (hint) {
-        var wd = await wikidataIncumbent(hint, c.signal);
-        if (wd) return wd;
-      }
-    } catch (e) {}
-    return null;
-  }
-  async function wikiOffice(text) {
-    var c = timer(6000);
-    var cleaned = stripName(text).replace(/[?!.]+$/g, "").replace(/^(please\s+)?(who|what|where|when|why|how)\s+(is|are|was|were|did|do|does|the)\s+/i, "").trim();
-    try {
-      var open = await fetch(
-        "https://en.wikipedia.org/w/api.php?action=opensearch&limit=1&namespace=0&format=json&origin=*&search=" +
-          encodeURIComponent(cleaned || text),
-        { signal: c.signal }
-      );
-      var pack = await open.json();
-      var title = pack && pack[1] && pack[1][0];
-      var page = title ? await wikiSummaryTitle(title, c.signal) : null;
-      if (page) return { grant: "MEASURE", source: "wikipedia", spoken: page.title + ". " + page.extract.slice(0, 500) };
-    } catch (e) {}
-    return null;
-  }
-  function liftOrb() {
-    var p = document.getElementById("presence");
-    if (p) {
-      p.style.width = "min(46vw,12rem)";
-      p.style.height = "min(46vw,12rem)";
-      p.style.borderRadius = "50%";
-    }
-    try { if (w.IrisHolo && IrisHolo.setForm) IrisHolo.setForm("orb"); } catch (e) {}
+    return { grant: "MEASURE", source: "who", spoken: name + " is the " + hint.office + "." };
   }
   async function run(text) {
-    liftOrb();
     var v = scanVeto(text);
     if (v) return { grant: "VETO", spoken: v };
     var raw = String(text || "");
-    if (w.IrisBook && IrisBook.lookup) {
-      var b = IrisBook.lookup(raw);
-      if (b && b.spoken) return b;
+    var hint = officeHint(raw);
+    if (isWho(raw) || hint) {
+      try {
+        var who = await wikidataIncumbent(hint || officeHint(raw), timer(8000).signal);
+        if (who) return who;
+      } catch (e) {}
     }
-    if (isWho(raw) || officeHint(raw)) {
-      var who = await lookWho(raw);
-      if (who) return who;
-    }
-    var wiki = await wikiOffice(raw);
-    if (wiki) return wiki;
-    return { grant: "LOOK", spoken: "I could not name the person from this phone. Paste an xai- key to hook Grok, or ask again." };
+    return { grant: "LOOK", spoken: "I could not get that from here. Ask another way." };
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", liftOrb);
-  else liftOrb();
-  w.DCLMLook = { version: VERSION, run: run, liftOrb: liftOrb };
+  w.DCLMLook = { version: VERSION, run: run };
 })(window);
