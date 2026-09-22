@@ -2,6 +2,10 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
-  Permissions-Policy: camera=(self), microphone=(self), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https://en.wikipedia.org https://text.pollinations.ai https://*.digenova77.workers.dev https://buy.stripe.com; media-src 'self' blob:; base-uri 'self'; form-action 'self' https://buy.stripe.com; frame-ancestors 'none'
+  Permissions-Policy: camera=(self), microphone=(self), display-capture=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://dualiscapax.ai https://www.dualiscapax.ai https://dualiscapax-depth.digenova77.workers.dev https://buy.stripe.com; worker-src 'self' blob:; media-src 'self' blob:; base-uri 'self'; form-action 'self' https://buy.stripe.com; frame-ancestors 'none'; object-src 'none'
   Cache-Control: public, max-age=60
