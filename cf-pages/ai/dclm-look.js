@@ -15,8 +15,21 @@
       .replace(/^(tell me (about|who|what)\s+)/i, "")
       .trim();
   }
-  function wikiTitle(pack) {
-    return pack && pack[1] && pack[1][0] ? pack[1][0] : "";
+  function queriesFor(text) {
+    var raw = stripName(text);
+    var cleaned = cleanQuery(text);
+    var out = [];
+    function add(q) { if (q && out.indexOf(q) < 0) out.push(q); }
+    add(cleaned);
+    add(raw);
+    if (/prime minister of canada/i.test(text)) add("Prime Minister of Canada");
+    if (/president of the united states|us president|american president/i.test(text)) add("President of the United States");
+    return out;
+  }
+  function timer(ms) {
+    var c = new AbortController();
+    setTimeout(function () { c.abort(); }, ms);
+    return c;
   }
   async function wikiSummary(query, signal) {
     if (!query) return null;
@@ -26,7 +39,7 @@
       { signal: signal }
     );
     var pack = await open.json();
-    var title = wikiTitle(pack);
+    var title = pack && pack[1] && pack[1][0];
     if (!title) return null;
     var sum = await fetch(
       "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_")),
@@ -35,6 +48,17 @@
     var d = await sum.json();
     if (!d || !d.extract) return null;
     return { grant: "MEASURE", spoken: d.title + ". " + String(d.extract).slice(0, 500), source: "wikipedia" };
+  }
+  async function lookWiki(text) {
+    var c = timer(7000);
+    var qs = queriesFor(text);
+    for (var i = 0; i < qs.length; i++) {
+      try {
+        var hit = await wikiSummary(qs[i], c.signal);
+        if (hit) return hit;
+      } catch (e) {}
+    }
+    return null;
   }
   async function ensureByok() {
     if (w.DCByok) return w.DCByok;
@@ -58,7 +82,8 @@
     } catch (e) {}
     return null;
   }
-  async function irisGate(text, signal) {
+  async function irisGate(text) {
+    var c = timer(5000);
     try {
       var headers = { "content-type": "application/json" };
       var api = w.DCByok;
@@ -68,7 +93,7 @@
         method: "POST",
         headers: headers,
         body: JSON.stringify({ prompt: text, mode: "look" }),
-        signal: signal
+        signal: c.signal
       });
       if (!res.ok) return null;
       var j = await res.json();
@@ -77,7 +102,21 @@
     } catch (e) {}
     return null;
   }
+  function liftOrb() {
+    var p = document.getElementById("presence");
+    if (p) {
+      p.style.width = "min(46vw,12rem)";
+      p.style.height = "min(46vw,12rem)";
+      p.style.borderRadius = "50%";
+      p.style.overflow = "hidden";
+      p.style.margin = "0.4rem auto";
+    }
+    try {
+      if (w.IrisHolo && IrisHolo.setForm) IrisHolo.setForm("orb");
+    } catch (e) {}
+  }
   async function run(text) {
+    liftOrb();
     var v = scanVeto(text);
     if (v) return { grant: "VETO", spoken: v };
     if (w.IrisGo && IrisGo.parse) {
@@ -92,23 +131,22 @@
       var b = IrisBook.lookup(raw);
       if (b && b.spoken) return b;
     }
-    var c = new AbortController();
-    setTimeout(function () { c.abort(); }, 8000);
-    var xai = await xaiByok(raw);
-    if (xai) return xai;
-    var gated = await irisGate(raw, c.signal);
+    var byok = await ensureByok();
+    if (byok && byok.present && byok.present()) {
+      var xai = await xaiByok(raw);
+      if (xai) return xai;
+    }
+    var gated = await irisGate(raw);
     if (gated) return gated;
-    try {
-      var cleaned = cleanQuery(raw);
-      var hit = await wikiSummary(cleaned, c.signal);
-      if (!hit && cleaned !== raw) hit = await wikiSummary(stripName(raw), c.signal);
-      if (hit) return hit;
-    } catch (e) {}
+    var wiki = await lookWiki(raw);
+    if (wiki) return wiki;
     return {
       grant: "LOOK",
       spoken:
-        "No xAI key in this tab and the house rail did not answer. I also missed a public summary. Add a key on the lab, or ask another way. Dualis rooms: pay, law, compute, study."
+        "I could not reach xAI or a public summary from this phone. Open the key pad if you have an xai- key, or ask another way."
     };
   }
-  w.DCLMLook = { run: run, cleanQuery: cleanQuery };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", liftOrb);
+  else liftOrb();
+  w.DCLMLook = { run: run, cleanQuery: cleanQuery, liftOrb: liftOrb };
 })(window);
