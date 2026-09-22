@@ -1,5 +1,11 @@
-/** DSAP-1.2 client ring. Loaded only if the page includes this file. */
+/** DSAP-1.2 sleeve. Must not erase dsap-engine.js (1.0-felt). */
 (function (w) {
+  if (w.DSAP && w.DSAP.speakField) {
+    if (!w.DSAP.wave && w.DSAP.unlock) {
+      w.DSAP.unlock().then(function () {}).catch(function () {});
+    }
+    return;
+  }
   if (w.DSAP && w.DSAP.version === "DSAP-1.2") return;
   var ctx, ring = [], woken = false, ears = [], master, analyser, bins;
   function ac() {
