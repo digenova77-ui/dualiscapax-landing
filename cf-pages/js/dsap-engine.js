@@ -3,15 +3,17 @@
  * Spec: encyclopedia/governance_and_protocols/dclm_dsap_holographic_spatial_audio_protocol_and_engine_spec.md
  *
  * Felt layer: proximity bass under 0.4 m while speaking. Word pulses on the ring.
- * Not a codec. Not KEMAR. Not WebTransport.
+ * Wave tap: AnalyserNode on master. Only media we own can light the orb.
+ * speechSynthesis stays on the OS mixer and cannot enter this graph.
  */
 (function (w) {
-  var VERSION = "dsap-1.0-felt-2026-09-01";
+  var VERSION = "dsap-1.0-wave-2026-09-22";
   var SPEAKERS = 64;
   var STEP = 360 / SPEAKERS;
   var ALPHA = 0.998;
   var PROX_M = 1.2;
   var R_EFF = 4.18e-13;
+  var FFT = 256;
 
   var ctx = null;
   var master = null;
@@ -20,6 +22,8 @@
   var dry = null;
   var bass = null;
   var bassGain = null;
+  var analyser = null;
+  var bins = null;
   var ring = [];
   var ready = false;
   var lastAz = 0;
@@ -55,11 +59,17 @@
     bassGain.gain.value = 0;
     try { bass.start(); } catch (e) {}
 
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = FFT;
+    analyser.smoothingTimeConstant = 0.45;
+    bins = new Uint8Array(analyser.fftSize);
+
     dry.connect(master);
     wet.connect(master);
     convolver.connect(wet);
     bass.connect(bassGain);
     bassGain.connect(master);
+    master.connect(analyser);
     master.connect(ctx.destination);
 
     ring = [];
@@ -186,6 +196,37 @@
     }
   }
 
+  function wave() {
+    if (!analyser || !bins) return null;
+    try { analyser.getByteTimeDomainData(bins); } catch (e) { return null; }
+    return bins;
+  }
+
+  function attach(src) {
+    return ensure().then(function () {
+      if (!src || !ctx || !dry) return null;
+      var node = src;
+      var el = null;
+      if (typeof HTMLMediaElement !== "undefined" && src instanceof HTMLMediaElement) el = src;
+      if (el) {
+        if (el._dsapSrc) node = el._dsapSrc;
+        else {
+          try {
+            node = ctx.createMediaElementSource(el);
+            el._dsapSrc = node;
+          } catch (e) {
+            return el._dsapSrc || null;
+          }
+        }
+      }
+      if (node && typeof node.connect === "function") {
+        try { node.connect(dry); } catch (e2) {}
+        return node;
+      }
+      return null;
+    });
+  }
+
   function unlock() {
     return ensure();
   }
@@ -215,6 +256,10 @@
     tone: tone,
     speakField: speakField,
     roar: roar,
+    wave: wave,
+    attach: attach,
+    dry: function () { return dry; },
+    context: function () { return ctx; },
     setFelt: setFelt,
     setProximity: setProximity,
     stop: stop,
@@ -226,7 +271,9 @@
         az: lastAz,
         dist: lastDist,
         felt: felt,
-        speakers: SPEAKERS
+        speakers: SPEAKERS,
+        wave: !!(analyser && bins),
+        version: VERSION
       };
     }
   };

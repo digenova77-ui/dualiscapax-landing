@@ -3,16 +3,17 @@
  * Spec: encyclopedia/governance_and_protocols/dclm_dsap_holographic_spatial_audio_protocol_and_engine_spec.md
  *
  * Felt layer: proximity bass under 0.4 m while speaking. Word pulses on the ring.
- * Analyser tap on master: wave() is time-domain Uint8Array for IrisSphere.
- * attach(media|node) feeds owned audio into dry. speechSynthesis cannot join.
+ * Wave tap: AnalyserNode on master. Only media we own can light the orb.
+ * speechSynthesis stays on the OS mixer and cannot enter this graph.
  */
 (function (w) {
-  var VERSION = "dsap-1.0-felt-2026-09-22-wave";
+  var VERSION = "dsap-1.0-wave-2026-09-22";
   var SPEAKERS = 64;
   var STEP = 360 / SPEAKERS;
   var ALPHA = 0.998;
   var PROX_M = 1.2;
   var R_EFF = 4.18e-13;
+  var FFT = 256;
 
   var ctx = null;
   var master = null;
@@ -22,13 +23,12 @@
   var bass = null;
   var bassGain = null;
   var analyser = null;
-  var timeBuf = null;
+  var bins = null;
   var ring = [];
   var ready = false;
   var lastAz = 0;
   var lastDist = 1.6;
   var felt = false;
-  var attached = [];
 
   function lawFloor() {
     return Object.freeze({
@@ -39,25 +39,8 @@
     });
   }
 
-  function tapAnalyser() {
-    if (!ctx || !master) return;
-    if (analyser) return;
-    analyser = ctx.createAnalyser();
-    analyser.fftSize = 256;
-    analyser.smoothingTimeConstant = 0.55;
-    analyser.minDecibels = -90;
-    analyser.maxDecibels = -20;
-    timeBuf = new Uint8Array(analyser.fftSize);
-    try { master.disconnect(); } catch (e) {}
-    master.connect(analyser);
-    analyser.connect(ctx.destination);
-  }
-
   function ensure() {
-    if (ready && ctx && ctx.state !== "closed") {
-      tapAnalyser();
-      return Promise.resolve(ctx);
-    }
+    if (ready && ctx && ctx.state !== "closed") return Promise.resolve(ctx);
     var AC = w.AudioContext || w.webkitAudioContext;
     if (!AC) return Promise.reject(new Error("NO_AUDIO"));
     ctx = ctx || new AC({ latencyHint: "interactive" });
@@ -76,12 +59,18 @@
     bassGain.gain.value = 0;
     try { bass.start(); } catch (e) {}
 
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = FFT;
+    analyser.smoothingTimeConstant = 0.45;
+    bins = new Uint8Array(analyser.fftSize);
+
     dry.connect(master);
     wet.connect(master);
     convolver.connect(wet);
     bass.connect(bassGain);
     bassGain.connect(master);
-    tapAnalyser();
+    master.connect(analyser);
+    master.connect(ctx.destination);
 
     ring = [];
     for (var i = 0; i < SPEAKERS; i++) {
@@ -208,42 +197,35 @@
   }
 
   function wave() {
-    if (!analyser || !timeBuf) return null;
-    analyser.getByteTimeDomainData(timeBuf);
-    return timeBuf;
+    if (!analyser || !bins) return null;
+    try { analyser.getByteTimeDomainData(bins); } catch (e) { return null; }
+    return bins;
   }
 
-  function energy() {
-    var bins = wave();
-    if (!bins || !bins.length) return 0;
-    var i, sum = 0;
-    for (i = 0; i < bins.length; i++) sum += Math.abs(bins[i] - 128);
-    return Math.min(1, (sum / bins.length) / 64);
-  }
-
-  function isMedia(node) {
-    return !!(node && typeof node.play === "function" && node.tagName);
-  }
-
-  function attach(node) {
-    if (!node || !ctx || !dry) return null;
-    if (node instanceof (w.AudioContext || w.webkitAudioContext || function () {})) return null;
-    if (node === ctx || node === analyser) return analyser;
-    var src = node._dsapSrc;
-    if (!src && isMedia(node)) {
-      try {
-        src = ctx.createMediaElementSource(node);
-        node._dsapSrc = src;
-      } catch (e) {
-        return null;
+  function attach(src) {
+    return ensure().then(function () {
+      if (!src || !ctx || !dry) return null;
+      var node = src;
+      var el = null;
+      if (typeof HTMLMediaElement !== "undefined" && src instanceof HTMLMediaElement) el = src;
+      else if (src && (src.tagName === "AUDIO" || src.tagName === "VIDEO")) el = src;
+      if (el) {
+        if (el._dsapSrc) node = el._dsapSrc;
+        else {
+          try {
+            node = ctx.createMediaElementSource(el);
+            el._dsapSrc = node;
+          } catch (e) {
+            return el._dsapSrc || null;
+          }
+        }
       }
-    } else if (!src && node.connect) {
-      src = node;
-    }
-    if (!src || !src.connect) return null;
-    try { src.connect(dry); } catch (e2) { return null; }
-    if (attached.indexOf(src) < 0) attached.push(src);
-    return src;
+      if (node && typeof node.connect === "function") {
+        try { node.connect(dry); } catch (e2) {}
+        return node;
+      }
+      return null;
+    });
   }
 
   function unlock() {
@@ -275,14 +257,12 @@
     tone: tone,
     speakField: speakField,
     roar: roar,
+    wave: wave,
+    attach: attach,
+    dry: function () { return dry; },
+    context: function () { return ctx; },
     setFelt: setFelt,
     setProximity: setProximity,
-    wave: wave,
-    energy: energy,
-    attach: attach,
-    context: function () { return ctx; },
-    dry: function () { return dry; },
-    analyser: function () { return analyser; },
     stop: stop,
     cleanup: cleanup,
     state: function () {
@@ -293,7 +273,7 @@
         dist: lastDist,
         felt: felt,
         speakers: SPEAKERS,
-        wave: !!(analyser && timeBuf),
+        wave: !!(analyser && bins),
         version: VERSION
       };
     }
