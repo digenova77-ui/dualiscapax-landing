@@ -1,3 +1,7 @@
+/**
+ * Iris look. Public questions must work with no key.
+ * Wiki has its own clock. xAI is an upgrade when a tab key exists.
+ */
 (function (w) {
   function scanVeto(text) {
     if (/\b(diagnose|prescribe|cure me|guaranteed profit|jailbreak)\b/i.test(String(text || "")))
@@ -5,7 +9,9 @@
     return null;
   }
   function stripName(text) {
-    return String(text || "").replace(/^(hey\s+|hi\s+|iris[,:\s]+)+/i, "").trim();
+    return String(text || "")
+      .replace(/^(hey\s+|hi\s+|hello\s+|iris)\s*[,:\-]?\s+/i, "")
+      .trim();
   }
   function cleanQuery(text) {
     return stripName(text)
@@ -15,100 +21,108 @@
       .replace(/^(tell me (about|who|what)\s+)/i, "")
       .trim();
   }
+  function clock(ms) {
+    var c = new AbortController();
+    setTimeout(function () { try { c.abort(); } catch (e) {} }, ms);
+    return c;
+  }
   function wikiTitle(pack) {
     return pack && pack[1] && pack[1][0] ? pack[1][0] : "";
   }
-  async function wikiSummary(query, signal) {
+  async function wikiSummary(query) {
     if (!query) return null;
+    var c = clock(8000);
     var open = await fetch(
       "https://en.wikipedia.org/w/api.php?action=opensearch&limit=1&namespace=0&format=json&origin=*&search=" +
         encodeURIComponent(query),
-      { signal: signal }
+      { signal: c.signal }
     );
     var pack = await open.json();
     var title = wikiTitle(pack);
     if (!title) return null;
     var sum = await fetch(
       "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_")),
-      { signal: signal }
+      { signal: c.signal }
     );
     var d = await sum.json();
     if (!d || !d.extract) return null;
-    return { grant: "MEASURE", spoken: d.title + ". " + String(d.extract).slice(0, 500), source: "wikipedia" };
+    return { grant: "MEASURE", spoken: d.title + ". " + String(d.extract).slice(0, 520), source: "wikipedia" };
   }
-  async function ensureByok() {
-    if (w.DCByok) return w.DCByok;
-    return new Promise(function (resolve) {
-      var s = document.createElement("script");
-      s.src = "/js/byok.js";
-      s.onload = function () { resolve(w.DCByok || null); };
-      s.onerror = function () { resolve(null); };
-      document.head.appendChild(s);
-    });
+  async function lookPublic(raw) {
+    var cleaned = cleanQuery(raw);
+    var tries = [];
+    if (cleaned) tries.push(cleaned);
+    var stripped = stripName(raw);
+    if (stripped && tries.indexOf(stripped) < 0) tries.push(stripped);
+    if (/prime minister/i.test(raw) && /canada/i.test(raw)) tries.unshift("Prime Minister of Canada");
+    for (var i = 0; i < tries.length; i++) {
+      try {
+        var hit = await wikiSummary(tries[i]);
+        if (hit) return hit;
+      } catch (e) {}
+    }
+    return null;
   }
   async function xaiByok(text) {
-    var api = await ensureByok();
-    if (!api || !api.present || !api.present()) return null;
+    if (!(w.DCByok && DCByok.present && DCByok.present())) return null;
     try {
-      var rec = await api.chat([
-        { role: "system", content: "You are Iris, public face of DualisCapax. First person. Short. No medical cures, no coins, no securities." },
-        { role: "user", content: text }
-      ]);
+      var rec = await DCByok.chat([{ role: "user", content: text }], { max_tokens: 400 });
       if (rec && rec.ok && rec.content) return { grant: "XAI", spoken: String(rec.content).slice(0, 800), source: "byok" };
     } catch (e) {}
     return null;
   }
-  async function irisGate(text, signal) {
+  async function irisGate(text) {
     try {
-      var headers = { "content-type": "application/json" };
-      var api = w.DCByok;
-      var k = api && api.read ? api.read() : "";
-      if (k) headers["X-DC-XAI-Key"] = k;
+      var headers = { "content-type": "application/json", "X-DC-Client": "iris-lab" };
+      var k = w.DCByok && DCByok.read ? DCByok.read() : "";
+      if (k) headers.Authorization = "Bearer " + k;
+      var c = clock(2500);
       var res = await fetch("/api/iris", {
         method: "POST",
         headers: headers,
-        body: JSON.stringify({ prompt: text, mode: "look" }),
-        signal: signal
+        body: JSON.stringify({ prompt: text }),
+        signal: c.signal
       });
       if (!res.ok) return null;
       var j = await res.json();
-      var spoken = j && (j.spoken || j.answer || j.text || (j.message && j.message.text));
-      if (spoken) return { grant: "IRIS", spoken: String(spoken).slice(0, 800), source: "api" };
+      var spoken = (j && (j.output || j.spoken || j.answer || j.text)) || "";
+      if (spoken) return { grant: "IRIS", spoken: String(spoken).slice(0, 800), source: "api.iris" };
     } catch (e) {}
     return null;
   }
   async function run(text) {
     var v = scanVeto(text);
     if (v) return { grant: "VETO", spoken: v };
-    if (w.IrisGo && IrisGo.parse) {
-      var g = IrisGo.parse(text);
+    var raw = String(text || "");
+    var asked = stripName(raw);
+    var isNav = /\b(go to|take me to|open|show)\s+[a-z]+/i.test(asked) || /^[a-z]+$/.test(asked.toLowerCase());
+    if (isNav && w.IrisGo && IrisGo.parse) {
+      var g = IrisGo.parse(asked);
       if (g && g.href) {
         setTimeout(function () { location.href = g.href; }, 600);
         return { grant: "MEASURE", spoken: g.spoken };
       }
     }
-    var raw = String(text || "");
     if (w.IrisBook && IrisBook.lookup) {
-      var b = IrisBook.lookup(raw);
+      var b = IrisBook.lookup(asked);
       if (b && b.spoken) return b;
     }
-    var c = new AbortController();
-    setTimeout(function () { c.abort(); }, 8000);
-    var xai = await xaiByok(raw);
-    if (xai) return xai;
-    var gated = await irisGate(raw, c.signal);
-    if (gated) return gated;
     try {
-      var cleaned = cleanQuery(raw);
-      var hit = await wikiSummary(cleaned, c.signal);
-      if (!hit && cleaned !== raw) hit = await wikiSummary(stripName(raw), c.signal);
-      if (hit) return hit;
-    } catch (e) {}
+      var fromXai = await xaiByok(asked);
+      if (fromXai) return fromXai;
+    } catch (e0) {}
+    try {
+      var fromGate = await irisGate(asked);
+      if (fromGate) return fromGate;
+    } catch (e1) {}
+    try {
+      var fromWiki = await lookPublic(raw);
+      if (fromWiki) return fromWiki;
+    } catch (e2) {}
     return {
       grant: "LOOK",
-      spoken:
-        "No xAI key in this tab and the house rail did not answer. I also missed a public summary. Add a key on the lab, or ask another way. Dualis rooms: pay, law, compute, study."
+      spoken: "I could not reach Wikipedia from this phone and no xAI key is in this tab. Open wifi, or tap Key to paste an xai- key that stays in the browser."
     };
   }
-  w.DCLMLook = { run: run, cleanQuery: cleanQuery };
+  w.DCLMLook = { run: run, cleanQuery: cleanQuery, stripName: stripName, version: "look-wiki-first-2026-09-22" };
 })(window);
