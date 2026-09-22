@@ -10,290 +10,197 @@
 <link rel="manifest" href="manifest-dclm.json"/>
 <link rel="icon" href="icon.svg"/>
 <link rel="apple-touch-icon" href="icon.svg"/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#050508;--fg:#f4f4f5;--muted:rgba(244,244,245,.55);--line:rgba(158,197,255,.18);--blue:#9ec5ff;--you:rgba(158,197,255,.14)}
+:root{--bg:#050508;--fg:#f4f4f5;--muted:rgba(244,244,245,.62);--line:rgba(158,197,255,.18);--blue:#9ec5ff}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
-body{height:100dvh;display:grid;grid-template-rows:auto auto 1fr auto}
-.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-header{display:flex;align-items:center;gap:.6rem;min-height:3rem;padding:env(safe-area-inset-top) max(.85rem,env(safe-area-inset-right)) 0 max(.85rem,env(safe-area-inset-left));border-bottom:1px solid var(--line);background:#050508}
-.brand{display:flex;align-items:center;min-width:0;text-decoration:none;color:inherit}
-.brand img{height:1.2rem;width:auto;display:block}
-.who{margin-left:.2rem;font:600 .68rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+html,body{height:100%;background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,sans-serif;overflow:hidden}
+body{height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(safe-area-inset-top) max(.8rem,env(safe-area-inset-right)) 0 max(.8rem,env(safe-area-inset-left))}
+.brand{display:flex;align-items:center;text-decoration:none;color:inherit}
+.brand img{height:1.15rem;width:auto}
+.who{margin-left:.35rem;font:600 .68rem/1 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .tools{margin-left:auto;display:flex;gap:.35rem}
-.tools button{width:2.2rem;height:2.2rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .72rem "IBM Plex Mono",ui-monospace,monospace}
+.tools button{width:2.4rem;height:2.4rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .78rem ui-monospace,monospace}
 .tools button.on{border-color:var(--blue);color:var(--blue)}
-.feel{display:grid;grid-template-columns:5.6rem 1fr;gap:.7rem;align-items:center;min-height:4.4rem;padding:.4rem max(1rem,env(safe-area-inset-right)) .45rem max(1rem,env(safe-area-inset-left));border-bottom:1px solid var(--line);background:#050508}
-.presence{width:5.6rem;height:4rem;border:1px solid var(--line);overflow:hidden;background:#000}
+.plate{position:relative;min-height:0;display:grid;place-items:center}
+.presence{width:min(86vw,28rem);height:min(86vw,28rem);max-height:62dvh}
 .presence canvas{display:block;width:100%;height:100%}
-.caption{min-width:0;font:500 .84rem/1.4 "IBM Plex Sans",system-ui,sans-serif;color:var(--muted);max-height:3.6rem;overflow:hidden}
-.caption[hidden]{display:none}
-.log{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:1rem max(1rem,env(safe-area-inset-right)) 1rem max(1rem,env(safe-area-inset-left));display:flex;flex-direction:column;gap:.65rem}
-.bubble{max-width:min(34rem,92%);padding:.85rem 1rem;font-size:1.12rem;line-height:1.55}
-.bubble.them{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid var(--line)}
-.bubble.you{align-self:flex-end;background:var(--you);border:1px solid rgba(158,197,255,.28)}
-.bubble a{display:inline-block;margin-top:.45rem;color:var(--blue);font:600 .8rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
-.stage{display:none;margin-bottom:.5rem}
-.stage.on{display:block}
-.stage video{width:min(100%,16rem);max-height:12rem;border:1px solid var(--line);background:#000}
-.chips{display:flex;gap:.4rem;overflow-x:auto;padding:0 0 .45rem;scrollbar-width:none}
-.chips button{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:var(--blue);font:600 .68rem/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .75rem}
-.dock{border-top:1px solid var(--line);padding:.45rem max(.75rem,env(safe-area-inset-right)) calc(.5rem + env(safe-area-inset-bottom)) max(.75rem,env(safe-area-inset-left));background:#050508}
-.err{font-size:.78rem;color:#f87171;margin-bottom:.3rem}
-form{display:grid;grid-template-columns:auto auto 1fr auto;gap:.35rem;align-items:end}
-form button{width:44px;height:44px;border:1px solid var(--line);background:transparent;color:var(--fg);font-size:1rem}
-form button.on{background:var(--blue);color:#050508;border-color:var(--blue)}
-form button.send{border:0;background:#fff;color:#050508;font-weight:800}
-textarea{width:100%;min-height:48px;max-height:120px;resize:none;padding:.75rem .85rem;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-size:1.1rem;line-height:1.4}
-@media (max-width:40rem){
-  .bubble{font-size:1.18rem;line-height:1.58;padding:.95rem 1.05rem}
-  .bubble a{font-size:.85rem}
-  textarea{font-size:1.14rem;min-height:52px}
-  form button{width:48px;height:48px}
-  .tools button{width:2.4rem;height:2.4rem}
-  .who{font-size:.78rem}
-  .chips button{font-size:.85rem;padding:.55rem .8rem}
-  .caption{font-size:.9rem}
-}
+.pip{position:absolute;right:max(.7rem,env(safe-area-inset-right));bottom:.7rem;width:min(34vw,9.5rem);border:1px solid var(--line);background:#000;display:none}
+.pip.on{display:block}
+.pip video{display:block;width:100%;height:auto}
+.dock{padding:.4rem max(.8rem,env(safe-area-inset-right)) calc(.7rem + env(safe-area-inset-bottom)) max(.8rem,env(safe-area-inset-left));text-align:center}
+.caption{min-height:2.4rem;font:500 .92rem/1.4 system-ui,sans-serif;color:var(--muted)}
+.talk{width:5.4rem;height:5.4rem;margin:.35rem auto 0;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);font:700 .72rem/1 ui-monospace,monospace;letter-spacing:.14em}
+.talk.on{border-color:var(--blue);color:#050508;background:var(--blue)}
+.err{color:#f87171;font-size:.78rem;min-height:1rem;margin-top:.25rem}
 @media (prefers-reduced-motion:reduce){
-  .presence{display:none}
-  .feel{grid-template-columns:1fr;min-height:0}
+  .presence{width:min(70vw,16rem);height:8rem}
 }
 </style>
 </head>
 <body>
-<a class="sr" href="#input">Skip to message</a>
 <header>
-  <a class="brand" href="/index.html?land=1"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who" id="who">Iris</span></a>
+  <a class="brand" href="/index.html?land=1"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who">Iris</span></a>
   <div class="tools">
-    <button type="button" id="hear" aria-pressed="false" aria-label="Voice off. Tap to hear Iris.">♪</button>
-    <button type="button" id="cam" aria-pressed="false" aria-label="Open camera">□</button>
-    <button type="button" id="wipe" aria-label="Clear chat">×</button>
+    <button type="button" id="cam" aria-pressed="false" aria-label="Camera">cam</button>
+    <button type="button" id="screen" aria-pressed="false" aria-label="Share screen">scr</button>
+    <button type="button" id="hang" aria-label="Hang up">×</button>
   </div>
 </header>
-<div class="feel" id="feel">
-  <div class="presence" id="presence" aria-hidden="true" title="Voice as a wave. Not a person."></div>
-  <p class="caption" id="caption" hidden></p>
-</div>
-<div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions" aria-label="Iris conversation">
-  <div class="stage" id="stage"><video id="you" autoplay muted playsinline aria-label="Live camera"></video></div>
+<main class="plate">
+  <div class="presence" id="presence" aria-label="Iris"></div>
+  <div class="pip" id="pip"><video id="you" autoplay muted playsinline></video></div>
+</main>
+<div class="dock">
+  <p class="caption" id="caption">Tap TALK. She hears. She answers. No typing.</p>
+  <button type="button" class="talk" id="talk" aria-pressed="false">TALK</button>
+  <p class="err" id="err" hidden role="alert"></p>
 </div>
 <p class="sr" id="announce" aria-live="assertive"></p>
-<div class="dock">
-  <div class="chips" id="chips" aria-label="Suggested questions">
-    <button type="button" data-q="What can you do?">Help</button>
-    <button type="button" data-q="company versus corporation versus individual">Seats</button>
-    <button type="button" data-q="How do I pay?">Bind</button>
-    <button type="button" data-q="Ontario measure sheet">Bill</button>
-  </div>
-  <p class="err" id="err" hidden role="alert"></p>
-  <form id="form" aria-label="Message Iris">
-    <button type="button" id="filebtn" aria-label="Attach a file">+</button>
-    <button type="button" id="talk" aria-pressed="false" aria-label="Talk">●</button>
-    <textarea id="input" rows="1" placeholder="Ask Iris" aria-label="Message"></textarea>
-    <button class="send" type="submit" aria-label="Send">↑</button>
-  </form>
-  <input id="file" type="file" hidden accept="image/jpeg,image/png,image/webp,text/plain,text/markdown,text/csv,application/json,application/pdf,.txt,.md,.csv,.json,.pdf"/>
-</div>
 <script src="/js/no-select.js"></script>
-<script src="/assets/haptic.js"></script>
-<script src="/js/api-config.js?v=32a"></script>
-<script src="/js/api-unified.js?v=32a"></script>
-<script src="iris-book.js?v=32a"></script>
-<script src="dclm-look.js?v=32a"></script>
-<script src="iris-live.js?v=32a"></script>
-<script src="/js/dsap-engine.js?v=32a"></script>
-<script src="/js/iris-av.js?v=32a"></script>
-<script src="/js/iris-hologram.js?v=32a"></script>
+<script src="/js/dsap-engine.js?v=33a"></script>
+<script src="/js/iris-sphere.js?v=33a"></script>
+<script src="/js/iris-av.js?v=33a"></script>
+<script src="/js/iris-session.js?v=33a"></script>
+<script src="dclm-look.js?v=33a"></script>
+<script src="iris-live.js?v=33a"></script>
 <script>
 (function(){
-  if(navigator.serviceWorker){
-    navigator.serviceWorker.register("./sw.js",{scope:"./"}).then(function(r){if(r.waiting)r.waiting.postMessage("SKIP_WAITING");}).catch(function(){});
-  }
-  var log=document.getElementById("log");
-  var errEl=document.getElementById("err");
-  var input=document.getElementById("input");
-  var chips=document.getElementById("chips");
   var cap=document.getElementById("caption");
-  var feel=document.getElementById("feel");
-  var lastSpoken="";
-  var vision={live:false};
-  var stream=null;
+  var errEl=document.getElementById("err");
+  var talk=document.getElementById("talk");
+  var pip=document.getElementById("pip");
+  var vid=document.getElementById("you");
   var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  try{
-    var lock={rate:0.98,pitch:0.96,kind:"device-voice"};
-    localStorage.setItem("dc-iris-voice",JSON.stringify(lock));
-  }catch(e){}
-  if(!reduce && window.IrisHolo && IrisHolo.mount){
-    IrisHolo.mount("#presence");
-    IrisHolo.setForm("orb");
-    IrisHolo.setObserver("person");
-    IrisHolo.setMood("rest");
-  }
-  function hearOn(){
-    var hear=document.getElementById("hear");
-    return !!(hear&&hear.classList.contains("on"));
-  }
+  var rec=null, screenStream=null, busy=false;
+
   function showErr(m){ if(!m){errEl.hidden=true;errEl.textContent="";return;} errEl.hidden=false;errEl.textContent=m; }
-  function feelVoice(on,text){
-    var line=String(text||lastSpoken||"");
-    if(cap){
-      if(on&&line){ cap.hidden=false; cap.textContent=line; }
-      else if(!line){ cap.hidden=true; cap.textContent=""; }
-    }
-    var ann=document.getElementById("announce");
-    if(ann&&on&&line) ann.textContent=line;
-    if(window.IrisHolo){
-      IrisHolo.setForm(on?"wave":"orb");
-      IrisHolo.setSpeaking(!!on);
-      IrisHolo.setEnergy(on?Math.min(0.92,0.38+line.length/280):0.22);
-      IrisHolo.setMood(on?"intend":"rest");
-    }
-    if(window.DSAP){
-      if(DSAP.setProximity) DSAP.setProximity(on?0.42:1.6);
-      if(on&&DSAP.pulse) DSAP.pulse(0,0.42,220);
-      if(!on&&DSAP.stop) DSAP.stop();
-    }
-    if(on&&!reduce&&navigator.vibrate){
-      try{ navigator.vibrate([16,28,16,40,22]); }catch(e){}
-    }
+  function line(t){
+    cap.textContent=t||"";
+    document.getElementById("announce").textContent=t||"";
   }
-  function voiceOut(text){
-    if(!text||!hearOn()) return;
-    feelVoice(true,text);
-    if(window.IrisAV&&IrisAV.unlock) IrisAV.unlock();
-    if(window.IrisAV&&IrisAV.speak){
-      IrisAV.speak(text,function(){ feelVoice(false); });
-      return;
-    }
-    if(window.speechSynthesis){
-      var u=new SpeechSynthesisUtterance(String(text).slice(0,900));
-      u.rate=0.98; u.pitch=0.96;
-      u.onend=function(){ feelVoice(false); };
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(u);
-      return;
-    }
-    setTimeout(function(){ feelVoice(false); }, Math.min(8000,400+String(text).length*40));
-  }
-  function addBubble(who,text,href,label){
-    var d=document.createElement("div");
-    d.className="bubble "+who;
-    d.setAttribute("data-text",text||"");
-    d.textContent=text||"";
-    if(href){ var a=document.createElement("a"); a.href=href; a.textContent=label||"Open"; d.appendChild(document.createElement("br")); d.appendChild(a); }
-    log.appendChild(d);
-    log.scrollTop=log.scrollHeight;
-    if(who==="them") lastSpoken=text||"";
-    return d;
-  }
-  function fitBox(){ input.style.height="48px"; input.style.height=Math.min(120,input.scrollHeight)+"px"; }
-  async function send(text){
+  if(window.IrisSphere&&IrisSphere.mount&&!reduce) IrisSphere.mount("#presence");
+  if(window.IrisSession&&IrisSession.attach) IrisSession.attach("#presence");
+  if(window.IrisAV&&IrisAV.arm) IrisAV.arm();
+  if(window.IrisAV&&IrisAV.unlock) IrisAV.unlock();
+
+  async function hear(text){
     text=String(text||"").trim();
-    if(!text) return;
-    addBubble("you",text);
-    input.value=""; fitBox();
-    showErr("");
-    if(chips) chips.style.display="none";
+    if(!text||busy) return;
+    busy=true;
+    line("…");
     try{
-      var recu = (window.IrisLive && window.IrisLive.run)
-        ? await window.IrisLive.run(text,{log:log,voice:"you",vision:vision,last:lastSpoken})
-        : (window.DCLMLook && window.DCLMLook.run)
-          ? await window.DCLMLook.run(text,{voice:"you",vision:vision,last:lastSpoken})
-          : {spoken:"I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure."};
-      var spoken=(recu&&recu.spoken)?recu.spoken:"I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure.";
-      addBubble("them",spoken,recu&&recu.href,recu&&recu.label);
-      voiceOut(spoken);
-    }catch(e){
-      showErr("Send failed.");
-      addBubble("them","I'm Iris. Ask about DualisCapax, Fuel, Donate, Bind, or Measure.");
-    }
+      var recu = window.IrisSession&&IrisSession.say
+        ? await IrisSession.say(text)
+        : window.IrisLive&&IrisLive.run
+          ? await IrisLive.run(text)
+          : window.DCLMLook&&DCLMLook.run
+            ? await DCLMLook.run(text)
+            : {spoken:"I'm Iris."};
+      var spoken=(recu&&recu.spoken)||"I'm Iris.";
+      line(spoken);
+      if(!(window.IrisSession&&IrisSession.say)){
+        if(window.IrisAV&&IrisAV.speak) IrisAV.speak(spoken);
+        else if(window.speechSynthesis){
+          var u=new SpeechSynthesisUtterance(spoken.slice(0,900));
+          u.rate=0.98; u.pitch=0.96;
+          speechSynthesis.cancel(); speechSynthesis.speak(u);
+        }
+      }
+    }catch(e){ showErr("She could not answer."); line("Say that again."); }
+    busy=false;
   }
-  document.getElementById("form").addEventListener("submit",function(e){e.preventDefault();send(input.value);});
-  input.addEventListener("input",fitBox);
-  input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send(input.value);}});
-  if(chips) chips.querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){send(b.getAttribute("data-q"));});});
-  document.getElementById("wipe").addEventListener("click",function(){
-    log.querySelectorAll(".bubble").forEach(function(b){b.remove();});
-    lastSpoken=""; showErr(""); if(chips) chips.style.display="";
-    if(window.speechSynthesis) window.speechSynthesis.cancel();
-    if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
-    feelVoice(false);
-    if(cap){ cap.hidden=true; cap.textContent=""; }
-  });
-  document.getElementById("hear").addEventListener("click",function(){
-    var b=document.getElementById("hear");
-    var on=b.classList.toggle("on");
-    b.setAttribute("aria-pressed",on?"true":"false");
-    b.setAttribute("aria-label",on?"Voice on":"Voice off. Tap to hear Iris.");
+
+  function startRec(){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){ showErr("This browser cannot hear."); return false; }
+    rec=new SR();
+    rec.lang="en-CA"; rec.continuous=false; rec.interimResults=true;
+    rec.onresult=function(ev){
+      var t="";
+      for(var i=ev.resultIndex;i<ev.results.length;i++) t+=ev.results[i][0].transcript;
+      line(t||"…");
+      if(ev.results[ev.results.length-1].isFinal) hear(t);
+    };
+    rec.onerror=function(){ talk.classList.remove("on"); talk.setAttribute("aria-pressed","false"); };
+    rec.onend=function(){ talk.classList.remove("on"); talk.setAttribute("aria-pressed","false"); if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(false); };
+    rec.start();
+    return true;
+  }
+
+  talk.addEventListener("click",function(){
+    var on=!talk.classList.contains("on");
+    showErr("");
     if(on){
       if(window.IrisAV&&IrisAV.unlock) IrisAV.unlock();
-      voiceOut(lastSpoken||"I'm Iris. Looking is free.");
+      if(window.IrisAV&&IrisAV.mic) IrisAV.mic(true).catch(function(){});
+      if(!startRec()) return;
+      talk.classList.add("on"); talk.setAttribute("aria-pressed","true");
+      if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(true);
+      if(window.IrisSession&&IrisSession.listen) IrisSession.listen();
+      line("Listening.");
     }else{
-      if(window.speechSynthesis) window.speechSynthesis.cancel();
-      if(window.DSAP&&DSAP.stop) DSAP.stop();
-      feelVoice(false);
+      if(rec) try{rec.stop();}catch(e){}
+      if(window.IrisAV&&IrisAV.mic) IrisAV.mic(false).catch(function(){});
+      talk.classList.remove("on"); talk.setAttribute("aria-pressed","false");
+      if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(false);
     }
   });
+
   document.getElementById("cam").addEventListener("click",function(){
     var btn=document.getElementById("cam");
     var on=!btn.classList.contains("on");
     if(window.IrisAV&&IrisAV.camera){
       IrisAV.camera(on).then(function(res){
         var live=!!(res&&res.live);
-        vision.live=live;
         btn.classList.toggle("on",live);
         btn.setAttribute("aria-pressed",live?"true":"false");
-        if(!live) showErr("");
+        pip.classList.toggle("on",live);
+        if(res&&res.stream) vid.srcObject=res.stream;
       }).catch(function(){ showErr("Camera blocked."); });
       return;
     }
-    var stage=document.getElementById("stage");
-    var vid=document.getElementById("you");
-    if(stream){
-      stream.getTracks().forEach(function(t){t.stop();}); stream=null; vision.live=false;
-      stage.classList.remove("on"); btn.classList.remove("on"); btn.setAttribute("aria-pressed","false"); return;
+    if(!on){
+      if(vid.srcObject) vid.srcObject.getTracks().forEach(function(t){t.stop();});
+      vid.srcObject=null; pip.classList.remove("on"); btn.classList.remove("on"); return;
     }
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){showErr("Camera did not open.");return;}
-    navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false}).then(function(s){
-      stream=s; vision.live=true; vid.srcObject=s; stage.classList.add("on");
-      btn.classList.add("on"); btn.setAttribute("aria-pressed","true"); showErr("");
-    }).catch(function(){showErr("Camera blocked.");});
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){showErr("No camera.");return;}
+    navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:true}).then(function(s){
+      vid.srcObject=s; pip.classList.add("on"); btn.classList.add("on"); btn.setAttribute("aria-pressed","true");
+    }).catch(function(){ showErr("Camera blocked."); });
   });
-  document.getElementById("talk").addEventListener("click",function(){
-    var btn=document.getElementById("talk");
-    var on=!btn.classList.contains("on");
-    if(!(window.IrisAV&&IrisAV.mic)){
-      showErr("Talk needs a browser that can hear.");
+
+  document.getElementById("screen").addEventListener("click",function(){
+    var btn=document.getElementById("screen");
+    if(screenStream){
+      screenStream.getTracks().forEach(function(t){t.stop();});
+      screenStream=null; btn.classList.remove("on"); btn.setAttribute("aria-pressed","false");
+      if(!document.getElementById("cam").classList.contains("on")) pip.classList.remove("on");
       return;
     }
-    IrisAV.mic(on).then(function(res){
-      var live=!!(res&&res.live);
-      btn.classList.toggle("on",live);
-      btn.setAttribute("aria-pressed",live?"true":"false");
-      if(window.IrisHolo){
-        IrisHolo.setListening(live);
-        IrisHolo.setMood(live?"listen":"rest");
-        IrisHolo.setForm(live?"wave":"orb");
-      }
-    }).catch(function(){ showErr("Mic blocked."); });
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){ showErr("Screen share needs a desktop browser."); return; }
+    navigator.mediaDevices.getDisplayMedia({video:true,audio:false}).then(function(s){
+      screenStream=s; vid.srcObject=s; pip.classList.add("on");
+      btn.classList.add("on"); btn.setAttribute("aria-pressed","true");
+      s.getVideoTracks()[0].addEventListener("ended",function(){
+        screenStream=null; btn.classList.remove("on");
+      });
+    }).catch(function(){ showErr("Screen share blocked."); });
   });
-  if(feel){
-    feel.addEventListener("pointermove",function(e){
-      if(!window.IrisHolo||!IrisHolo.lookAt) return;
-      var r=feel.getBoundingClientRect();
-      var x=((e.clientX-r.left)/Math.max(1,r.width))*2-1;
-      var y=((e.clientY-r.top)/Math.max(1,r.height))*2-1;
-      IrisHolo.lookAt(x,y);
-    },{passive:true});
-  }
-  window.addEventListener("pagehide",function(){
+
+  document.getElementById("hang").addEventListener("click",function(){
+    if(rec) try{rec.stop();}catch(e){}
+    if(screenStream) screenStream.getTracks().forEach(function(t){t.stop();});
+    screenStream=null;
     if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
-    if(window.IrisHolo&&IrisHolo.stop) IrisHolo.stop();
+    if(window.speechSynthesis) speechSynthesis.cancel();
+    talk.classList.remove("on");
+    document.getElementById("cam").classList.remove("on");
+    document.getElementById("screen").classList.remove("on");
+    pip.classList.remove("on");
+    line("Tap TALK.");
   });
-  document.getElementById("filebtn").addEventListener("click",function(){document.getElementById("file").click();});
-  addBubble("them","Hi. I'm Iris. Tap the note if you want to feel the voice. Ask about DualisCapax, seats, Fuel, Donate, Bind, or research.");
 })();
 </script>
 </body>
