@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abstract layer — how the engine steps — DualisCapax</title>
+  <meta name="description" content="Runnable abstract layer: symplectic step, dual smash, hash receipt, gateway status. Not a clinic. Not optical hardware.">
+  <style>
+    :root{--bg:#0B0E14;--card:#121721;--elev:#18202E;--line:#242E3F;--cyan:#38BDF8;--mint:#34D399;--text:#F8FAFC;--mute:#94A3B8;--dim:#64748B;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;padding-bottom:4rem}
+    header{padding:1rem 1.2rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+    header a{color:var(--cyan);text-decoration:none;font-size:.85rem}
+    main{max-width:820px;margin:0 auto;padding:1.5rem 1.2rem;display:flex;flex-direction:column;gap:1.1rem}
+    h1{font-size:1.6rem}
+    .lead{color:var(--mute)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.05rem}
+    .kicker{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan);font-weight:700}
+    pre{background:#080a0e;border:1px solid var(--line);border-radius:10px;padding:.75rem;overflow:auto;font-family:var(--mono);font-size:.72rem;color:#d1e8f5;max-height:220px}
+    button,.btn{background:var(--cyan);color:#082F49;border:0;font-weight:700;padding:.5rem .85rem;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-block;margin:.2rem .2rem 0 0}
+    button.ghost,.btn.ghost{background:transparent;color:var(--cyan);border:1px solid var(--line)}
+    input,textarea{width:100%;background:#080a0e;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:.55rem;margin:.4rem 0;font-family:var(--mono)}
+    .row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+    .links a{color:var(--cyan);margin-right:.7rem;font-size:.85rem}
+    .warn{color:#fbbf24;font-size:.8rem}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html">← DualisCapax</a>
+  <span class="kicker">Abstract layer · look $0</span>
+</header>
+<main>
+  <section>
+    <div class="kicker">What this page is</div>
+    <h1>The engine you can run in this browser.</h1>
+    <p class="lead">Claims on other pages are only as good as a path you can press. This room steps a harmonic oscillator, seals a SHA-256 receipt, runs the dual friction/affinity smash, reads the live gateway, and shows the fuel number as localStorage. It is not a clinic, not FPGA silicon, not a mined coin, not autoplay audio.</p>
+  </section>
+
+  <section class="card" id="step-card">
+    <div class="kicker">1 · Symplectic step</div>
+    <p>q' = q + dt·p, p' = p − dt·q'. H = ½(p²+q²). Residual = |H'−H|·dt. Same rule as <code>01_CORE__dclm_singularity_kernel.py</code>.</p>
+    <div class="row">
+      <button type="button" id="btn-step">Step once</button>
+      <button type="button" id="btn-run" class="ghost">Run 40</button>
+      <button type="button" id="btn-reset" class="ghost">Reset q=1,p=0</button>
+    </div>
+    <pre id="step-out">press Step</pre>
+  </section>
+
+  <section class="card">
+    <div class="kicker">2 · Dual smash</div>
+    <p>Friction vetoes bad jobs. Affinity needs a directive. Smash is F⊗A or HOLE.</p>
+    <input id="directive" value="LOOK" maxlength="240">
+    <button type="button" id="btn-smash">Smash this job</button>
+    <pre id="smash-out">needs js/dclm-dual.js</pre>
+  </section>
+
+  <section class="card">
+    <div class="kicker">3 · Hash receipt</div>
+    <p>Client SHA-256 of your text. Not a public chain. Secrets-looking input should hole.</p>
+    <textarea id="hash-in" rows="3">we stop money leak</textarea>
+    <button type="button" id="btn-hash">Hash</button>
+    <pre id="hash-out">press Hash</pre>
+  </section>
+
+  <section class="card">
+    <div class="kicker">4 · Live gateway</div>
+    <p>GET /api/iris. The process tells you whether governance ran. Do not upgrade CLAIM_ONLY into executed law.</p>
+    <pre id="gate-out">probing…</pre>
+  </section>
+
+  <section class="card">
+    <div class="kicker">5 · Fuel number</div>
+    <p>localStorage key dc_fuel_balance_v1. A browser integer. Not a ledger.</p>
+    <div class="row">
+      <button type="button" id="btn-fuel">Read fuel</button>
+      <button type="button" class="ghost" id="btn-grant">Grant +0 (no mint)</button>
+    </div>
+    <pre id="fuel-out">press Read</pre>
+  </section>
+
+  <section class="card">
+    <div class="kicker">Linked depth that already exists</div>
+    <p class="links">
+      <a href="engine.html">/engine residual field</a>
+      <a href="runtime.html">/runtime workbench</a>
+      <a href="measure.html">/measure Ontario TOU invert</a>
+      <a href="research/">/research class→study</a>
+      <a href="iris.html">/iris page</a>
+      <a href="hall/">/hall</a>
+    </p>
+    <p class="warn">Sectors copy that names femtosecond optical gates is documentation. This page does not execute that hardware.</p>
+  </section>
+</main>
+<script src="js/cosmic-factory.js"></script>
+<script src="js/cosmic-runtime.js"></script>
+<script src="js/dclm-dual.js"></script>
+<script src="js/dualis-hash.js"></script>
+<script src="js/fuel-ledger.js"></script>
+<script>
+(function () {
+  var q = 1, p = 0;
+  function showStep(rec) {
+    document.getElementById("step-out").textContent = JSON.stringify(rec, null, 2);
+  }
+  document.getElementById("btn-step").onclick = function () {
+    if (!window.CosmicRuntime) { showStep({ error: "cosmic-runtime.js missing" }); return; }
+    var rec = CosmicRuntime.step(q, p, 0.05);
+    q = rec.q; p = rec.p;
+    CosmicRuntime.seal(rec).then(function (s) { showStep(s.rec || rec); });
+    showStep(rec);
+  };
+  document.getElementById("btn-run").onclick = function () {
+    if (!window.CosmicRuntime) return;
+    var rec;
+    for (var i = 0; i < 40; i++) { rec = CosmicRuntime.step(q, p, 0.05); q = rec.q; p = rec.p; }
+    CosmicRuntime.seal(rec).then(function (s) { showStep(s.rec || rec); });
+    showStep(rec);
+  };
+  document.getElementById("btn-reset").onclick = function () {
+    q = 1; p = 0;
+    if (window.CosmicRuntime) showStep(CosmicRuntime.reset());
+  };
+  document.getElementById("btn-smash").onclick = function () {
+    var out = document.getElementById("smash-out");
+    if (!window.DCDual || !DCDual.smash) { out.textContent = "dclm-dual.js not loaded"; return; }
+    var job = { directive: document.getElementById("directive").value || "LOOK", refuse: true, axioms: { NO_FORCE: true, HOST_SAFE: true, CLEANUP_FIRST: true, TRUTH_OR_NOTHING: true }, faces: { L1: true } };
+    out.textContent = JSON.stringify(DCDual.smash(job), null, 2);
+  };
+  document.getElementById("btn-hash").onclick = function () {
+    var text = document.getElementById("hash-in").value || "";
+    var out = document.getElementById("hash-out");
+    if (window.DualisHash && DualisHash.tagged) {
+      var t = DualisHash.tagged("abstract", text);
+      if (t && t.then) t.then(function (x) { out.textContent = JSON.stringify(x, null, 2); });
+      else out.textContent = JSON.stringify(t, null, 2);
+      return;
+    }
+    if (!crypto.subtle) { out.textContent = "no WebCrypto"; return; }
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (d) {
+      var b = new Uint8Array(d), s = "";
+      for (var i = 0; i < b.length; i++) s += (b[i] < 16 ? "0" : "") + b[i].toString(16);
+      out.textContent = JSON.stringify({ hex: s, note: "browser digest; not a chain" }, null, 2);
+    });
+  };
+  fetch("/api/iris").then(function (r) { return r.json(); }).then(function (j) {
+    document.getElementById("gate-out").textContent = JSON.stringify(j, null, 2);
+  }).catch(function (e) {
+    document.getElementById("gate-out").textContent = "unreachable: " + e;
+  });
+  function fuelRead() {
+    var out = document.getElementById("fuel-out");
+    if (window.FuelLedger && FuelLedger.balance) out.textContent = JSON.stringify({ balance: FuelLedger.balance(), store: "localStorage", ledger: false }, null, 2);
+    else {
+      var n = 0;
+      try { n = Number(localStorage.getItem("dc_fuel_balance_v1") || 0); } catch (e) {}
+      out.textContent = JSON.stringify({ balance: n, store: "localStorage", ledger: false }, null, 2);
+    }
+  }
+  document.getElementById("btn-fuel").onclick = fuelRead;
+  document.getElementById("btn-grant").onclick = function () {
+    if (window.FuelLedger && FuelLedger.grant) FuelLedger.grant(0);
+    fuelRead();
+  };
+})();
+</script>
+</body>
+</html>
