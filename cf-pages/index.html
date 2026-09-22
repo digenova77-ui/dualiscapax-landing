@@ -9,20 +9,10 @@
   <link rel="stylesheet" href="lander.css">
 </head>
 <body id="top">
-
-  <!-- Top Sticky Navigation -->
   <header class="top-nav">
     <a href="#top" class="brand-group">
       <svg class="brand-icon brand-icon-spin" viewBox="0 0 40 40" fill="none" aria-hidden="true">
         <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
-        <path d="M 20.00 6.00 L 20.95 6.58 L 21.79 7.17 L 22.43 7.75 L 22.79 8.33 L 22.83 8.92 L 22.54 9.50 L 21.96 10.08 L 21.16 10.67 L 20.22 11.25 L 19.26 11.83 L 18.39 12.42 L 17.69 13.00 L 17.27 13.58 L 17.15 14.17 L 17.37 14.75 L 17.88 15.33 L 18.64 15.92 L 19.55 16.50 L 20.52 17.08 L 21.43 17.67 L 22.17 18.25 L 22.66 18.83 L 22.85 19.42 L 22.71 20.00 L 22.26 20.58 L 21.55 21.17 L 20.67 21.75 L 19.70 22.33 L 18.77 22.92 L 17.98 23.50 L 17.43 24.08 L 17.17 24.67 L 17.23 25.25 L 17.61 25.83 L 18.27 26.42 L 19.12 27.00 L 20.07 27.58 L 21.02 28.17 L 21.85 28.75 L 22.47 29.33 L 22.80 29.92 L 22.81 30.50 L 22.50 31.08 L 21.91 31.67 L 21.09 32.25 L 20.15 32.83 L 19.19 33.42 L 18.32 34.00" stroke="#38BDF8" stroke-width="1.35" fill="none" stroke-linecap="round"/>
-        <path d="M 20.00 6.00 L 19.05 6.58 L 18.21 7.17 L 17.57 7.75 L 17.21 8.33 L 17.17 8.92 L 17.46 9.50 L 18.04 10.08 L 18.84 10.67 L 19.78 11.25 L 20.74 11.83 L 21.61 12.42 L 22.31 13.00 L 22.73 13.58 L 22.85 14.17 L 22.63 14.75 L 22.12 15.33 L 21.36 15.92 L 20.45 16.50 L 19.48 17.08 L 18.58 17.67 L 17.83 18.25 L 17.34 18.83 L 17.15 19.42 L 17.29 20.00 L 17.74 20.58 L 18.45 21.17 L 19.33 21.75 L 20.30 22.33 L 21.23 22.92 L 22.02 23.50 L 22.57 24.08 L 22.83 24.67 L 22.77 25.25 L 22.39 25.83 L 21.73 26.42 L 20.88 27.00 L 19.93 27.58 L 18.98 28.17 L 18.15 28.75 L 17.53 29.33 L 17.20 29.92 L 17.19 30.50 L 17.50 31.08 L 18.09 31.67 L 18.91 32.25 L 19.85 32.83 L 20.81 33.42 L 21.68 34.00" stroke="#A78BFA" stroke-width="1.35" fill="none" stroke-linecap="round"/>
-        <line x1="22.79" y1="8.33" x2="17.21" y2="8.33" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="17.69" y1="13.00" x2="22.31" y2="13.00" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="21.43" y1="17.67" x2="18.58" y2="17.67" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="19.70" y1="22.33" x2="20.30" y2="22.33" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="19.12" y1="27.00" x2="20.88" y2="27.00" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="21.91" y1="31.67" x2="18.09" y2="31.67" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
         <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
         <circle cx="35" cy="14" r="2.5" fill="#34D399"/>
         <circle cx="35" cy="30" r="2.5" fill="#F59E0B"/>
@@ -34,195 +24,58 @@
     </a>
     <a href="onboard.html" class="nav-btn-solid" style="text-decoration:none;display:inline-flex;align-items:center;">Start $0 Simulation</a>
   </header>
-
   <main class="page-wrapper">
-
-    <!-- DualisCapax logo — slow spin + wide wordmark -->
-    <div class="lander-mark" aria-hidden="true">
-      <div class="lander-geo-wrap">
-        <svg class="lander-geo brand-icon-spin" viewBox="0 0 40 40" fill="none" width="104" height="104">
-          <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
-          <path d="M 20.00 6.00 L 20.95 6.58 L 21.79 7.17 L 22.43 7.75 L 22.79 8.33 L 22.83 8.92 L 22.54 9.50 L 21.96 10.08 L 21.16 10.67 L 20.22 11.25 L 19.26 11.83 L 18.39 12.42 L 17.69 13.00 L 17.27 13.58 L 17.15 14.17 L 17.37 14.75 L 17.88 15.33 L 18.64 15.92 L 19.55 16.50 L 20.52 17.08 L 21.43 17.67 L 22.17 18.25 L 22.66 18.83 L 22.85 19.42 L 22.71 20.00 L 22.26 20.58 L 21.55 21.17 L 20.67 21.75 L 19.70 22.33 L 18.77 22.92 L 17.98 23.50 L 17.43 24.08 L 17.17 24.67 L 17.23 25.25 L 17.61 25.83 L 18.27 26.42 L 19.12 27.00 L 20.07 27.58 L 21.02 28.17 L 21.85 28.75 L 22.47 29.33 L 22.80 29.92 L 22.81 30.50 L 22.50 31.08 L 21.91 31.67 L 21.09 32.25 L 20.15 32.83 L 19.19 33.42 L 18.32 34.00" stroke="#38BDF8" stroke-width="1.35" fill="none" stroke-linecap="round"/>
-        <path d="M 20.00 6.00 L 19.05 6.58 L 18.21 7.17 L 17.57 7.75 L 17.21 8.33 L 17.17 8.92 L 17.46 9.50 L 18.04 10.08 L 18.84 10.67 L 19.78 11.25 L 20.74 11.83 L 21.61 12.42 L 22.31 13.00 L 22.73 13.58 L 22.85 14.17 L 22.63 14.75 L 22.12 15.33 L 21.36 15.92 L 20.45 16.50 L 19.48 17.08 L 18.58 17.67 L 17.83 18.25 L 17.34 18.83 L 17.15 19.42 L 17.29 20.00 L 17.74 20.58 L 18.45 21.17 L 19.33 21.75 L 20.30 22.33 L 21.23 22.92 L 22.02 23.50 L 22.57 24.08 L 22.83 24.67 L 22.77 25.25 L 22.39 25.83 L 21.73 26.42 L 20.88 27.00 L 19.93 27.58 L 18.98 28.17 L 18.15 28.75 L 17.53 29.33 L 17.20 29.92 L 17.19 30.50 L 17.50 31.08 L 18.09 31.67 L 18.91 32.25 L 19.85 32.83 L 20.81 33.42 L 21.68 34.00" stroke="#A78BFA" stroke-width="1.35" fill="none" stroke-linecap="round"/>
-        <line x1="22.79" y1="8.33" x2="17.21" y2="8.33" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="17.69" y1="13.00" x2="22.31" y2="13.00" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="21.43" y1="17.67" x2="18.58" y2="17.67" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="19.70" y1="22.33" x2="20.30" y2="22.33" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="19.12" y1="27.00" x2="20.88" y2="27.00" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-        <line x1="21.91" y1="31.67" x2="18.09" y2="31.67" stroke="#7DD3FC" stroke-width="0.55" opacity="0.55"/>
-          <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
-          <circle cx="35" cy="14" r="2.5" fill="#34D399"/>
-          <circle cx="35" cy="30" r="2.5" fill="#F59E0B"/>
-          <circle cx="20" cy="38" r="2.5" fill="#A855F7"/>
-          <circle cx="5" cy="30" r="2.5" fill="#F59E0B"/>
-          <circle cx="5" cy="14" r="2.5" fill="#34D399"/>
-        </svg>
+    <div class="lander-mark">
+      <div class="lander-geo-wrap" id="iris-plate">
+        <canvas id="iris-sphere" class="iris-sphere-plate" width="336" height="336" aria-label="Iris sphere — tap to hear a seat"></canvas>
       </div>
+      <p class="iris-plate-hint">Tap the sphere. Audio first. No autoplay.</p>
       <img class="lander-mark-word" src="logo-dark.svg" alt="DualisCapax" width="280" height="44">
       <div class="lander-core-badge">AI · Residual · Edge · Research</div>
       <p class="lander-subslogan">We stop the leak.</p>
     </div>
     <style>
-      .lander-mark{
-        display:flex;flex-direction:column;align-items:center;justify-content:center;
-        gap:0.65rem;margin:0.55rem 0 0.35rem;padding:0.35rem 0.75rem;
-      }
-      .lander-geo-wrap{
-        width:104px;height:104px;
-        perspective:420px;
-        display:grid;place-items:center;
-      }
-      .brand-icon-spin{
-        transform-origin:50% 50%;
-        animation: dcGeoSpin 14s linear infinite;
-        filter: drop-shadow(0 0 12px rgba(56,189,248,0.45));
-      }
-      .lander-geo.brand-icon-spin{
-        width:104px;height:104px;
-        animation-duration: 18s;
-        filter: drop-shadow(0 0 16px rgba(56,189,248,0.55));
-      }
-      .top-nav .brand-icon-spin{
-        width:28px;height:28px;
-        animation-duration: 22s;
-      }
-      @keyframes dcGeoSpin {
-        from { transform: rotateY(0deg) rotateZ(0deg); }
-        to { transform: rotateY(360deg) rotateZ(360deg); }
-      }
-      .lander-mark-word{
-        width:min(92vw, 460px);height:auto;display:block;opacity:0.92;
-      }
-      .lander-core-badge{
-        margin:0.35rem 0 0.1rem;
-        font-family:var(--font-mono);
-        font-size:0.68rem;
-        font-weight:700;
-        letter-spacing:0.06em;
-        text-transform:uppercase;
-        color:var(--accent-cyan, #38BDF8);
-        opacity:0.95;
-        text-align:center;
-      }
-      .lander-subslogan{
-        margin:0.15rem 0 0;
-        font-size:clamp(0.95rem,2.6vw,1.15rem);
-        font-weight:600;
-        letter-spacing:0.01em;
-        color:var(--text-muted, #94A3B8);
-        opacity:0.9;
-        text-align:center;
-      }
-      @media (prefers-reduced-motion: reduce){
-        .brand-icon-spin{ animation: none !important; }
-      }
+      .lander-mark{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.65rem;margin:0.55rem 0 0.35rem;padding:0.35rem 0.75rem;}
+      .lander-geo-wrap{width:min(72vw,220px);height:min(72vw,220px);display:grid;place-items:center;cursor:pointer;}
+      .iris-sphere-plate{width:100%;height:100%;display:block;filter:drop-shadow(0 0 16px rgba(56,189,248,0.45));}
+      .iris-plate-hint{margin:0;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.04em;color:var(--accent-cyan,#38BDF8);opacity:0.85;text-align:center;}
+      .lander-mark-word{width:min(92vw,460px);height:auto;display:block;opacity:0.92;}
+      .lander-core-badge{margin:0.35rem 0 0.1rem;font-family:var(--font-mono);font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent-cyan,#38BDF8);text-align:center;}
+      .lander-subslogan{margin:0.15rem 0 0;font-size:clamp(0.95rem,2.6vw,1.15rem);font-weight:600;color:var(--text-muted,#94A3B8);text-align:center;}
+      .brand-icon-spin{transform-origin:50% 50%;animation:dcGeoSpin 22s linear infinite;}
+      @keyframes dcGeoSpin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+      @media (prefers-reduced-motion:reduce){.brand-icon-spin{animation:none!important}}
     </style>
-
-    <!-- Core ops: 01–04 in 2×2, À La Carte full-width banner underneath -->
     <nav id="core-ops" class="core-ops" aria-label="Core operations">
-      <a class="core-ops-card" href="residual.html">
-        <div class="core-ops-k" style="color:var(--accent-mint)">01</div>
-        <div class="core-ops-title">Residual Law</div>
-        <div class="core-ops-sub">Finance</div>
-      </a>
-      <a class="core-ops-card" href="iris.html">
-        <div class="core-ops-k" style="color:var(--accent-cyan)">02</div>
-        <div class="core-ops-title">Agent Iris</div>
-        <div class="core-ops-sub">AI · ask · lab</div>
-      </a>
-      <a class="core-ops-card" href="edge.html">
-        <div class="core-ops-k" style="color:var(--accent-orange)">03</div>
-        <div class="core-ops-title">Edge Computing</div>
-        <div class="core-ops-sub">On-device runtime</div>
-      </a>
-      <a class="core-ops-card" href="research.html">
-        <div class="core-ops-k" style="color:var(--accent-pink)">04</div>
-        <div class="core-ops-title">Research</div>
-        <div class="core-ops-sub">Class → study</div>
-      </a>
-      <a class="core-ops-alc" href="alacarte.html">
-        <div class="core-ops-alc-left">
-          <div class="core-ops-k" style="color:var(--accent-cyan)">ALC</div>
-          <div class="core-ops-title">À La Carte</div>
-          <div class="core-ops-sub">Modular seats · ice portal · apps — pick what you need</div>
-        </div>
-        <div class="core-ops-alc-cta">Open seats →</div>
-      </a>
+      <a class="core-ops-card" href="residual.html"><div class="core-ops-k" style="color:var(--accent-mint)">01</div><div class="core-ops-title">Residual Law</div><div class="core-ops-sub">Finance</div></a>
+      <a class="core-ops-card" href="iris.html"><div class="core-ops-k" style="color:var(--accent-cyan)">02</div><div class="core-ops-title">Agent Iris</div><div class="core-ops-sub">AI · ask · lab</div></a>
+      <a class="core-ops-card" href="edge.html"><div class="core-ops-k" style="color:var(--accent-orange)">03</div><div class="core-ops-title">Edge Computing</div><div class="core-ops-sub">On-device runtime</div></a>
+      <a class="core-ops-card" href="research.html"><div class="core-ops-k" style="color:var(--accent-pink)">04</div><div class="core-ops-title">Research</div><div class="core-ops-sub">Class → study</div></a>
+      <a class="core-ops-alc" href="alacarte.html"><div class="core-ops-alc-left"><div class="core-ops-k" style="color:var(--accent-cyan)">ALC</div><div class="core-ops-title">À La Carte</div><div class="core-ops-sub">Modular seats · ice portal · apps — pick what you need</div></div><div class="core-ops-alc-cta">Open seats →</div></a>
     </nav>
     <style>
-      .core-ops{
-        display:grid;
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:0.55rem;
-        margin:0.75rem 0 1.25rem;
-      }
-      .core-ops-card{
-        text-decoration:none;
-        background:var(--bg-surface);
-        border:1px solid var(--border-subtle);
-        border-radius:12px;
-        padding:0.75rem 0.65rem;
-        text-align:center;
-      }
-      .core-ops-k{
-        font-family:var(--font-mono);
-        font-size:0.65rem;
-        font-weight:800;
-        letter-spacing:0.04em;
-      }
-      .core-ops-title{
-        font-size:0.82rem;
-        font-weight:800;
-        color:var(--text-primary);
-        margin-top:0.2rem;
-        line-height:1.25;
-      }
-      .core-ops-sub{
-        font-size:0.68rem;
-        color:var(--text-muted);
-        margin-top:0.2rem;
-      }
-      /* Full-width different door — horizontal banner */
-      .core-ops-alc{
-        grid-column:1 / -1;
-        text-decoration:none;
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:0.75rem;
-        padding:0.95rem 1rem;
-        border-radius:14px;
-        border:1px solid rgba(56,189,248,0.45);
-        background:
-          linear-gradient(105deg, rgba(56,189,248,0.14), rgba(18,23,33,0.92) 42%, rgba(167,139,250,0.12));
-        box-shadow:0 0 0 1px rgba(56,189,248,0.08) inset;
-        text-align:left;
-      }
-      .core-ops-alc-left{ min-width:0; }
-      .core-ops-alc .core-ops-title{ font-size:0.95rem; }
-      .core-ops-alc .core-ops-sub{ margin-top:0.25rem; line-height:1.35; }
-      .core-ops-alc-cta{
-        flex:0 0 auto;
-        font-size:0.78rem;
-        font-weight:800;
-        color:var(--accent-cyan);
-        white-space:nowrap;
-        padding:0.45rem 0.7rem;
-        border-radius:999px;
-        border:1px solid rgba(56,189,248,0.4);
-        background:rgba(56,189,248,0.1);
-      }
+      .core-ops{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0.55rem;margin:0.75rem 0 1.25rem;}
+      .core-ops-card{text-decoration:none;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:12px;padding:0.75rem 0.65rem;text-align:center;}
+      .core-ops-k{font-family:var(--font-mono);font-size:0.65rem;font-weight:800;}
+      .core-ops-title{font-size:0.82rem;font-weight:800;color:var(--text-primary);margin-top:0.2rem;}
+      .core-ops-sub{font-size:0.68rem;color:var(--text-muted);margin-top:0.2rem;}
+      .core-ops-alc{grid-column:1/-1;text-decoration:none;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.95rem 1rem;border-radius:14px;border:1px solid rgba(56,189,248,0.45);background:linear-gradient(105deg,rgba(56,189,248,0.14),rgba(18,23,33,0.92) 42%,rgba(167,139,250,0.12));text-align:left;}
+      .core-ops-alc .core-ops-title{font-size:0.95rem;}
+      .core-ops-alc-cta{flex:0 0 auto;font-size:0.78rem;font-weight:800;color:var(--accent-cyan);padding:0.45rem 0.7rem;border-radius:999px;border:1px solid rgba(56,189,248,0.4);background:rgba(56,189,248,0.1);}
     </style>
-
-
   </main>
-
   <footer style="padding:1.25rem;text-align:center;border-top:1px solid var(--border-subtle);font-size:0.72rem;color:var(--text-muted);font-family:var(--font-mono);">
     DualisCapax · Look &amp; measure free · Paid only from verified walk-back
-    <div style="margin-top:0.55rem;opacity:0.75;">
-      <a href="sitemap.html" style="color:var(--text-muted);">Site map</a>
-      · <a href="iris.html" style="color:var(--text-muted);">Ask Iris (lab)</a>
-    </div>
+    <div style="margin-top:0.55rem;opacity:0.75;"><a href="sitemap.html" style="color:var(--text-muted);">Site map</a> · <a href="iris.html" style="color:var(--text-muted);">Ask Iris (lab)</a></div>
   </footer>
+  <script src="js/iris-layer0.js"></script>
+  <script src="js/dsap.js"></script>
+  <script src="js/dvp.js"></script>
+  <script src="js/dc-av.js"></script>
+  <script src="js/iris-av.js"></script>
+  <script src="js/iris-page-voice.js"></script>
+  <script src="js/iris-page-hook.js"></script>
+  <script src="js/iris-sphere.js"></script>
+  <script src="js/iris-apex-bind.js"></script>
 </body>
 </html>
