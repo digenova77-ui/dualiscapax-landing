@@ -3,119 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DualisCapax — We stop money leak.</title>
-  <meta name="theme-color" content="#0B0E14">
+  <title>DualisCapax — Iris</title>
+  <meta name="theme-color" content="#07090d">
+  <meta name="description" content="Talk to Iris. Orb on the plate. Camera and chat in the lab. Look is free.">
   <link rel="manifest" href="manifest.json">
   <style>
-    :root{--bg-main:#0B0E14;--bg-surface:#121721;--bg-elev:#18202E;--line:#242E3F;--cyan:#38BDF8;--mint:#34D399;--gold:#ffb830;--blue:#3b82f6;--ice:#00e5ff;--violet:#c084fc;--leaf:#00ffaa;--text:#F8FAFC;--mute:#94A3B8;--dim:#64748B;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    :root{--bg:#07090d;--card:#10151c;--line:#243040;--cyan:#38BDF8;--mint:#34D399;--text:#F8FAFC;--mute:#94A3B8;--dim:#64748B;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg-main);color:var(--text);font-family:var(--sans);line-height:1.6;padding-bottom:120px}
-    .top-nav{position:sticky;top:0;z-index:40;background:rgba(11,14,20,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:.85rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
-    .brand-group{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:var(--text);font-weight:700}
-    .brand-icon{width:28px;height:28px}
-    .nav-btn{background:var(--mint);color:#064E3B;font-size:.82rem;font-weight:700;padding:.45rem .95rem;border-radius:8px;text-decoration:none}
-    .wrap{max-width:740px;margin:0 auto;padding:2.2rem 1.25rem 3rem;display:flex;flex-direction:column;gap:1.6rem}
-    .kicker{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan)}
-    h1{font-size:clamp(1.8rem,6vw,2.4rem);font-weight:900;line-height:1.15}
+    html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100%}
+    body{padding-bottom:96px}
+    header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.2rem;background:rgba(7,9,13,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .brand{color:var(--text);text-decoration:none;font-weight:800;letter-spacing:.02em}
+    .lab{background:var(--mint);color:#064E3B;text-decoration:none;font-weight:800;font-size:.82rem;padding:.45rem .9rem;border-radius:999px}
+    .stage{max-width:820px;margin:0 auto;padding:1.2rem 1.1rem 2rem;display:flex;flex-direction:column;align-items:center;gap:.7rem}
+    .orb-wrap{position:relative;width:min(86vw,320px);height:min(86vw,320px);display:grid;place-items:center}
+    #presence{position:absolute;inset:0;border-radius:50%;overflow:hidden}
+    #presence canvas{width:100%;height:100%;display:block}
+    #iris-sphere{position:relative;z-index:2;width:72%;height:72%;filter:drop-shadow(0 0 28px rgba(56,189,248,.55))}
+    #you{position:absolute;right:8%;bottom:8%;z-index:3;width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);background:#000;display:none}
+    h1{font-size:clamp(1.7rem,5.5vw,2.5rem);font-weight:900;text-align:center;line-height:1.12}
     h1 span{color:var(--mint)}
-    .lead{color:var(--mute);font-size:1.02rem}
-    .plate{width:min(72vw,200px);height:min(72vw,200px);margin:.4rem auto;display:grid;place-items:center}
-    canvas.iris{width:100%;height:100%;display:block;filter:drop-shadow(0 0 16px rgba(56,189,248,.4))}
-    .hint{text-align:center;font-family:var(--mono);font-size:.68rem;color:var(--cyan)}
-    .banner{background:var(--bg-elev);border:1px solid var(--cyan);border-radius:14px;padding:1rem 1.1rem;display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    .btn{background:var(--cyan);color:#082F49;border:0;font-weight:700;padding:.6rem 1rem;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-block}
-    .card{background:var(--bg-surface);border:1px solid var(--line);border-radius:16px;padding:1.25rem 1.2rem}
-    .card h2{font-size:1.15rem;margin:.25rem 0 .4rem}
-    .card p{color:var(--mute);font-size:.95rem}
-    .rooms{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
-    .room{text-decoration:none;color:inherit;background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;padding:.8rem .75rem}
-    .room b{display:block;font-size:.82rem}
-    .room span{display:block;font-size:.7rem;color:var(--dim);margin-top:.2rem}
-    .r1{border-left:4px solid var(--gold)}.r2{border-left:4px solid var(--blue)}.r3{border-left:4px solid var(--ice)}.r4{border-left:4px solid var(--violet)}.r5{border-left:4px solid var(--leaf);grid-column:1/-1}
-    .dock{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;background:rgba(18,23,33,.95);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.15);border-radius:28px;padding:.4rem .7rem;display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;max-width:94vw}
-    .dock a{color:var(--mute);font-size:.76rem;font-weight:600;padding:.5rem .7rem;border-radius:20px;text-decoration:none}
+    .lead{color:var(--mute);text-align:center;max-width:34rem;font-size:.98rem}
+    .hint{font-family:var(--mono);font-size:.68rem;color:var(--cyan);text-align:center}
+    .actions{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:.35rem}
+    button,.btn{border:0;border-radius:999px;font-weight:800;padding:.7rem 1.05rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;font-size:.88rem}
+    .primary{background:var(--cyan);color:#082F49}
+    .ghost{background:transparent;color:var(--cyan);border:1px solid rgba(56,189,248,.45)}
+    .rooms{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.6rem}
+    .room{text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem .8rem}
+    .room b{display:block;font-size:.84rem}
+    .room span{display:block;margin-top:.2rem;font-size:.72rem;color:var(--dim)}
+    .dock{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;background:rgba(16,21,28,.94);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);border-radius:28px;padding:.35rem .55rem;display:flex;gap:.25rem}
+    .dock a{color:var(--mute);text-decoration:none;font-size:.76rem;font-weight:700;padding:.5rem .7rem;border-radius:20px}
     .dock .go{background:var(--mint);color:#064E3B}
-    .fine{font-family:var(--mono);font-size:.68rem;color:var(--dim);text-align:center}
-    #gate-receipt{font-family:var(--mono);font-size:.62rem;color:var(--dim);margin-top:.35rem}
+    .fine{font-family:var(--mono);font-size:.62rem;color:var(--dim);text-align:center;margin-top:.4rem}
     @media (max-width:560px){.rooms{grid-template-columns:1fr}}
   </style>
 </head>
-<body id="top">
-  <header class="top-nav">
-    <a class="brand-group" href="#top">
-      <svg class="brand-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/><circle cx="20" cy="4" r="2.5" fill="#38BDF8"/></svg>
-      Dualiscapax
-    </a>
-    <a class="nav-btn" href="hall/">Five rooms</a>
+<body>
+  <header>
+    <a class="brand" href="#top">Dualiscapax</a>
+    <a class="lab" href="ai/app.html">Iris lab</a>
   </header>
-  <main class="wrap">
-    <section>
-      <div class="kicker">Look is free · checkout closed</div>
-      <div class="plate" id="iris-plate"><canvas id="iris-sphere" class="iris" width="336" height="336" aria-label="Iris plate"></canvas></div>
-      <p class="hint" id="iris-hint">Tap once if you want sound. No autoplay.</p>
-      <h1>We stop money leak<span>.</span></h1>
-      <p class="lead">A public catalog of rooms. Measure on the device you already have. This page does not take your files. Card checkout is marked closed in the production price file.</p>
-      <div class="banner">
-        <div>
-          <div style="font-weight:700">Iris</div>
-          <div style="font-size:.82rem;color:var(--mute)">The lab page is a short brochure. The gateway answers POST /api/iris only with a key.</div>
-          <div id="gate-receipt">gateway: probing…</div>
-        </div>
-        <a class="btn" href="iris.html">Open Iris page</a>
-      </div>
+  <main class="stage" id="top">
+    <div class="orb-wrap" id="iris-plate" aria-label="Iris orb">
+      <div id="presence"></div>
+      <canvas id="iris-sphere" width="336" height="336" aria-label="Iris sphere"></canvas>
+      <video id="you" autoplay muted playsinline aria-label="Your camera"></video>
+    </div>
+    <p class="hint" id="hint">Tap the orb for sound. Camera stays off until you ask.</p>
+    <h1>Meet Iris<span>.</span></h1>
+    <p class="lead">The plate is live on this page. The lab opens camera, mic, and chat on your device. Look is free. Checkout stays closed.</p>
+    <div class="actions">
+      <button class="primary" type="button" id="talk">Talk on this page</button>
+      <a class="btn primary" href="ai/app.html">Open lab · camera + chat</a>
+      <button class="ghost" type="button" id="cam">Use camera here</button>
+    </div>
+    <section class="rooms">
+      <a class="room" href="ai/app.html"><b>Iris lab</b><span>Camera, hologram, chat, voice.</span></a>
+      <a class="room" href="hall/"><b>Hall</b><span>Five rooms. One gate.</span></a>
+      <a class="room" href="research/"><b>Research</b><span>Class, then study.</span></a>
+      <a class="room" href="residual.html"><b>Residual</b><span>How look stays $0.</span></a>
     </section>
-    <section class="rooms" aria-label="Rooms that already exist">
-      <a class="room r1" href="residual.html"><b>01 Residual</b><span>How money comes in. Look is $0.</span></a>
-      <a class="room r2" href="runtime.html"><b>02 Edge</b><span>Runtime and measure on-device.</span></a>
-      <a class="room r3" href="iris.html"><b>03 Iris</b><span>Local page. Gateway is BYOK.</span></a>
-      <a class="room r4" href="research/"><b>04 Research</b><span>Class, then study. Not a clinic.</span></a>
-      <a class="room r5" href="hall/"><b>05 Hall · five rooms, one gate</b><span>The other public door. Tour is optional.</span></a>
-    </section>
-    <section class="card">
-      <div class="kicker">Also live</div>
-      <h2>Inner pages this origin already serves</h2>
-      <p><a href="portal.html" style="color:var(--cyan)">Portal</a> · <a href="sectors.html" style="color:var(--cyan)">Sectors</a> · <a href="onboard.html" style="color:var(--cyan)">Onboard</a> · <a href="pay.html" style="color:var(--cyan)">Pay (buttons exist; sales file says closed)</a></p>
-    </section>
-    <p class="fine">Simulation is not treatment. A hash on this site is not a mined coin. Git commit is not production. Governance on the gateway is CLAIM_ONLY until verification runs.</p>
+    <p class="fine">No autoplay. Simulation is not treatment. The brochure at iris.html is not the lab.</p>
   </main>
   <nav class="dock">
     <a href="#top">Home</a>
-    <a href="iris.html">Iris</a>
+    <a class="go" href="ai/app.html">Iris</a>
     <a href="hall/">Hall</a>
     <a href="research/">Research</a>
-    <a class="go" href="onboard.html">Onboard</a>
   </nav>
+  <script src="js/iris-hologram.js"></script>
   <script src="js/iris-sphere.js"></script>
   <script src="js/dsap-engine.js"></script>
+  <script src="js/dsap.js"></script>
   <script src="js/iris-av.js"></script>
   <script>
     (function () {
+      var hint = document.getElementById("hint");
+      var video = document.getElementById("you");
+      var camOn = false, woke = false;
+      if (window.IrisHolo && IrisHolo.mount) {
+        try { IrisHolo.mount("#presence"); if (IrisHolo.setForm) IrisHolo.setForm("orb"); } catch (e) {}
+      }
       var c = document.getElementById("iris-sphere");
       if (window.IrisSphere && IrisSphere.mount && c) IrisSphere.mount(c);
-      var woke = false;
+      function speak(line) {
+        if (window.IrisAV && IrisAV.speak) {
+          try { IrisAV.speak(line); if (IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(true); } catch (e) {}
+          setTimeout(function () { if (window.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false); }, 2400);
+        }
+      }
       function wake() {
         if (woke) return;
         woke = true;
         try {
           if (window.DSAP && DSAP.unlock) DSAP.unlock();
           else if (window.DSAP && DSAP.wake) DSAP.wake();
+          if (window.DSAP && DSAP.place) DSAP.place("whistle", 0);
         } catch (e) {}
         if (window.IrisSphere && IrisSphere.setWoken) IrisSphere.setWoken(true);
-        var line = "Looking is free. Checkout is closed.";
-        if (window.IrisAV && IrisAV.speak) {
-          try { IrisAV.speak(line); if (IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(true); } catch (e2) {}
-          setTimeout(function () { if (window.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false); }, 2200);
-        }
+        if (window.IrisHolo && IrisHolo.setMood) try { IrisHolo.setMood("awake"); } catch (e2) {}
+        hint.textContent = "Iris is on this plate. Lab opens camera and chat.";
+        speak("I'm Iris. Looking is free. Open the lab if you want the camera.");
       }
-      window.addEventListener("pointerdown", wake, { capture: true, once: true });
-      var rec = document.getElementById("gate-receipt");
-      fetch("/api/iris", { method: "GET" }).then(function (r) { return r.json(); }).then(function (j) {
-        if (!rec) return;
-        rec.textContent = "gateway " + (j.status || "?") +
-          " · authority " + (j.governance_claim_authority || "?") +
-          " · effect " + (j.authority_effect || "?") +
-          " · verify " + (j.verification || "?");
-      }).catch(function () { if (rec) rec.textContent = "gateway unreachable from this page"; });
+      document.getElementById("talk").addEventListener("click", wake);
+      document.getElementById("iris-plate").addEventListener("pointerdown", wake);
+      window.addEventListener("pointermove", function (e) {
+        var x = (e.clientX / Math.max(1, window.innerWidth) - 0.5) * 2;
+        var y = (e.clientY / Math.max(1, window.innerHeight) - 0.5) * 2;
+        if (window.IrisSphere && IrisSphere.lookAt) IrisSphere.lookAt(x, y);
+        if (window.IrisHolo && IrisHolo.lookAt) IrisHolo.lookAt(x, y);
+      }, { passive: true });
+      document.getElementById("cam").addEventListener("click", function () {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          hint.textContent = "This browser has no camera API. Use the lab on a phone.";
+          return;
+        }
+        if (camOn) {
+          var s = video.srcObject;
+          if (s && s.getTracks) s.getTracks().forEach(function (t) { t.stop(); });
+          video.srcObject = null;
+          video.style.display = "none";
+          camOn = false;
+          hint.textContent = "Camera off.";
+          return;
+        }
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }).then(function (stream) {
+          video.srcObject = stream;
+          video.style.display = "block";
+          camOn = true;
+          hint.textContent = "Camera is local. Nothing is uploaded from this page.";
+          wake();
+        }).catch(function () {
+          hint.textContent = "Camera blocked. Allow it, or open the lab.";
+        });
+      });
     })();
   </script>
 </body>
