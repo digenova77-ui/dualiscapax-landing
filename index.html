@@ -7,219 +7,106 @@
   <meta name="theme-color" content="#0B0E14">
   <link rel="manifest" href="manifest.json">
   <style>
-    :root {
-      --bg-main: #0B0E14;
-      --bg-surface: #121721;
-      --bg-surface-elevated: #18202E;
-      --border-subtle: #242E3F;
-      --accent-cyan: #38BDF8;
-      --accent-cyan-glow: rgba(56, 189, 248, 0.35);
-      --accent-mint: #34D399;
-      --accent-mint-hover: #10B981;
-      --accent-mint-bg: rgba(52, 211, 153, 0.12);
-      --accent-orange: #F59E0B;
-      --accent-purple: #A855F7;
-      --accent-pink: #F43F5E;
-      --iris-teal: #8EB4C8;
-      --text-primary: #F8FAFC;
-      --text-secondary: #94A3B8;
-      --text-muted: #64748B;
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; scroll-padding-top: 72px; }
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      padding-bottom: 120px;
-    }
-    .top-nav {
-      position: sticky; top: 0; z-index: 40;
-      background: rgba(11, 14, 20, 0.94);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 0.85rem 1.25rem;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .brand-group { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-    .brand-icon { width: 28px; height: 28px; }
-    .brand-name { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
-    .nav-btn-solid {
-      background: var(--accent-mint); color: #064E3B;
-      font-size: 0.82rem; font-weight: 700; padding: 0.45rem 0.95rem;
-      border-radius: 8px; text-decoration: none;
-    }
-    .page-wrapper { max-width: 740px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; display: flex; flex-direction: column; gap: 2.75rem; }
-    .badge-pill { display: inline-flex; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; }
-    .badge-cyan { color: var(--accent-cyan); }
-    .badge-green { color: var(--accent-mint); }
-    .badge-orange { color: var(--accent-orange); }
-    .badge-pink { color: var(--accent-pink); }
-    .badge-purple { color: var(--accent-purple); }
-    .hero-title { font-size: 2.4rem; font-weight: 900; line-height: 1.15; margin-bottom: 0.75rem; }
-    .hero-title span { color: var(--accent-mint); }
-    .lead-text { font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
-    .voice-activation-banner {
-      background: var(--bg-surface-elevated); border: 1px solid var(--accent-cyan);
-      border-radius: 14px; padding: 1.15rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    }
-    .btn-voice-hero { background: var(--accent-cyan); color: #082F49; border: none; font-weight: 700; padding: 0.65rem 1.15rem; border-radius: 8px; cursor: pointer; }
-    .dropzone-box { background: var(--bg-surface-elevated); border: 2px dashed var(--accent-cyan); border-radius: 18px; padding: 2rem 1.5rem; text-align: center; cursor: pointer; }
-    .pillar-section { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 18px; padding: 2rem 1.5rem; }
-    .pillar-section.border-green { border-left: 4px solid var(--accent-mint); }
-    .pillar-section.border-orange { border-left: 4px solid var(--accent-orange); }
-    .pillar-section.border-pink { border-left: 4px solid var(--accent-pink); }
-    .pillar-section.border-purple { border-left: 4px solid var(--accent-purple); }
-    .pillar-section.border-cyan { border-left: 4px solid var(--accent-cyan); }
-    .section-headline { font-size: 1.45rem; font-weight: 700; margin-bottom: 0.65rem; }
-    .section-body { font-size: 0.98rem; color: var(--text-secondary); }
-    .iris-role-callout { margin-top: 1.15rem; background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1rem 1.15rem; font-size: 0.86rem; }
-    .stat-huge { font-size: 2.2rem; font-weight: 800; color: var(--accent-mint); }
-    .trust-card { background-color: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.15rem; margin-top: 1rem; }
-    .founder-roster-box { margin-top: 1.25rem; background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
-    .roster-item { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .roster-item:last-child { border-bottom: none; }
-    .roster-slot { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); font-weight: 700; width: 65px; }
-    .roster-name { font-weight: 700; font-size: 0.92rem; }
-    .roster-detail { font-size: 0.78rem; color: var(--text-secondary); }
-    .roster-badge { font-size: 0.72rem; font-family: var(--font-mono); padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 700; white-space: nowrap; flex: 0 0 auto; }
-    .badge-bound { background: rgba(52,211,153,0.15); color: var(--accent-mint); border: 1px solid rgba(52,211,153,0.3); }
-    .badge-open { background: rgba(56,189,248,0.15); color: var(--accent-cyan); border: 1px dashed var(--accent-cyan); cursor: pointer; }
-    .sunset-tracker { margin-top: 1.25rem; padding: 1rem; background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 12px; }
-    .year-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; text-align: center; margin-top: 0.5rem; }
-    .year-item { background: var(--bg-surface-elevated); padding: 0.6rem 0.3rem; border-radius: 8px; border: 1px solid var(--border-subtle); }
-    .year-item.final { border-color: var(--accent-mint); background: var(--accent-mint-bg); }
-    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1.25rem 0; }
-    @media (max-width: 600px) { .filter-grid { grid-template-columns: 1fr; } .year-grid { grid-template-columns: repeat(3, 1fr); } }
-    .styled-select { width: 100%; background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.75rem 0.9rem; color: var(--text-primary); }
-    .omnibox-input { width: 100%; background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 0.95rem 1.15rem; color: var(--text-primary); margin-bottom: 0.75rem; }
-    .quick-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .action-pill { background: var(--bg-main); border: 1px solid var(--border-subtle); color: var(--text-secondary); font-size: 0.78rem; padding: 0.45rem 0.85rem; border-radius: 20px; cursor: pointer; }
-    .bottom-dock {
-      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 100;
-      background: rgba(18, 23, 33, 0.95); backdrop-filter: blur(18px);
-      border: 1px solid rgba(255,255,255,0.15); border-radius: 28px; padding: 0.45rem 0.75rem;
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem; max-width: 94vw;
-    }
-    .dock-btn { color: var(--text-secondary); font-size: 0.78rem; font-weight: 600; padding: 0.55rem 0.85rem; border-radius: 20px; text-decoration: none; white-space: nowrap; }
-    .dock-btn.btn-trial { background: var(--accent-mint); color: #064E3B; font-weight: 700; }
-    @media (max-width: 640px) {
-      .bottom-dock { padding: 0.35rem 0.45rem; gap: 0.2rem; }
-      .dock-btn { font-size: 0.72rem; padding: 0.45rem 0.55rem; }
-    }
+    :root{--bg-main:#0B0E14;--bg-surface:#121721;--bg-elev:#18202E;--line:#242E3F;--cyan:#38BDF8;--mint:#34D399;--gold:#ffb830;--blue:#3b82f6;--ice:#00e5ff;--violet:#c084fc;--leaf:#00ffaa;--text:#F8FAFC;--mute:#94A3B8;--dim:#64748B;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg-main);color:var(--text);font-family:var(--sans);line-height:1.6;padding-bottom:120px}
+    .top-nav{position:sticky;top:0;z-index:40;background:rgba(11,14,20,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:.85rem 1.25rem;display:flex;align-items:center;justify-content:space-between}
+    .brand-group{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:var(--text);font-weight:700}
+    .brand-icon{width:28px;height:28px}
+    .nav-btn{background:var(--mint);color:#064E3B;font-size:.82rem;font-weight:700;padding:.45rem .95rem;border-radius:8px;text-decoration:none}
+    .wrap{max-width:740px;margin:0 auto;padding:2.2rem 1.25rem 3rem;display:flex;flex-direction:column;gap:1.6rem}
+    .kicker{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan)}
+    h1{font-size:clamp(1.8rem,6vw,2.4rem);font-weight:900;line-height:1.15}
+    h1 span{color:var(--mint)}
+    .lead{color:var(--mute);font-size:1.02rem}
+    .plate{width:min(72vw,200px);height:min(72vw,200px);margin:.4rem auto;display:grid;place-items:center}
+    canvas.iris{width:100%;height:100%;display:block;filter:drop-shadow(0 0 16px rgba(56,189,248,.4))}
+    .hint{text-align:center;font-family:var(--mono);font-size:.68rem;color:var(--cyan)}
+    .banner{background:var(--bg-elev);border:1px solid var(--cyan);border-radius:14px;padding:1rem 1.1rem;display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .btn{background:var(--cyan);color:#082F49;border:0;font-weight:700;padding:.6rem 1rem;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-block}
+    .card{background:var(--bg-surface);border:1px solid var(--line);border-radius:16px;padding:1.25rem 1.2rem}
+    .card h2{font-size:1.15rem;margin:.25rem 0 .4rem}
+    .card p{color:var(--mute);font-size:.95rem}
+    .rooms{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+    .room{text-decoration:none;color:inherit;background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;padding:.8rem .75rem}
+    .room b{display:block;font-size:.82rem}
+    .room span{display:block;font-size:.7rem;color:var(--dim);margin-top:.2rem}
+    .r1{border-left:4px solid var(--gold)}.r2{border-left:4px solid var(--blue)}.r3{border-left:4px solid var(--ice)}.r4{border-left:4px solid var(--violet)}.r5{border-left:4px solid var(--leaf);grid-column:1/-1}
+    .dock{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;background:rgba(18,23,33,.95);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.15);border-radius:28px;padding:.4rem .7rem;display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;max-width:94vw}
+    .dock a{color:var(--mute);font-size:.76rem;font-weight:600;padding:.5rem .7rem;border-radius:20px;text-decoration:none}
+    .dock .go{background:var(--mint);color:#064E3B}
+    .fine{font-family:var(--mono);font-size:.68rem;color:var(--dim);text-align:center}
+    @media (max-width:560px){.rooms{grid-template-columns:1fr}}
   </style>
 </head>
 <body id="top">
   <header class="top-nav">
-    <a href="#top" class="brand-group">
-      <svg class="brand-icon" viewBox="0 0 40 40" fill="none">
-        <polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/>
-        <line x1="20" y1="4" x2="20" y2="38" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="2 2"/>
-        <circle cx="20" cy="4" r="2.5" fill="#38BDF8"/>
-        <circle cx="35" cy="14" r="2.5" fill="#34D399"/>
-        <circle cx="35" cy="30" r="2.5" fill="#F59E0B"/>
-        <circle cx="20" cy="38" r="2.5" fill="#A855F7"/>
-        <circle cx="5" cy="30" r="2.5" fill="#F59E0B"/>
-        <circle cx="5" cy="14" r="2.5" fill="#34D399"/>
-      </svg>
-      <span class="brand-name">Dualiscapax</span>
+    <a class="brand-group" href="#top">
+      <svg class="brand-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><polygon points="20,4 35,14 35,30 20,38 5,30 5,14" stroke="#38BDF8" stroke-width="2.5" fill="none"/><circle cx="20" cy="4" r="2.5" fill="#38BDF8"/></svg>
+      Dualiscapax
     </a>
-    <a href="#onboard" class="nav-btn-solid">Start $0 Simulation</a>
+    <a class="nav-btn" href="hall/">Five rooms</a>
   </header>
-  <main class="page-wrapper">
+  <main class="wrap">
     <section>
-      <div class="badge-pill badge-cyan">Sovereign Operational Intelligence</div>
-      <h1 class="hero-title">We stop money leak<span>.</span></h1>
-      <p class="lead-text">From municipal water utilities and district bus fleets to commercial kitchens, households, and biophysical research. DualisCapax eliminates friction at the point of production. <strong>Look and measure is 100% free ($0.00). We only get paid from verified savings we actually deliver.</strong></p>
-      <div class="voice-activation-banner">
+      <div class="kicker">Look is free · checkout closed</div>
+      <div class="plate" id="iris-plate"><canvas id="iris-sphere" class="iris" width="336" height="336" aria-label="Iris plate"></canvas></div>
+      <p class="hint" id="iris-hint">Tap once if you want sound. No autoplay.</p>
+      <h1>We stop money leak<span>.</span></h1>
+      <p class="lead">A public catalog of rooms. Measure on the device you already have. This page does not take your files. Card checkout is closed.</p>
+      <div class="banner">
         <div>
-          <div style="font-weight:700; font-size:0.95rem;">Hear Agent Iris Speak</div>
-          <div style="font-size:0.82rem; color:var(--text-secondary);">48kHz studio acoustic synthesis running in local memory.</div>
+          <div style="font-weight:700">Iris</div>
+          <div style="font-size:.82rem;color:var(--mute)">Chat lives on the lab page. This plate can speak after a tap.</div>
         </div>
-        <button class="btn-voice-hero" onclick="playIrisIntro()">Speak with Iris</button>
+        <a class="btn" href="iris.html">Open Iris lab</a>
       </div>
     </section>
-    <section id="dropzone">
-      <div class="dropzone-box" onclick="runSampleDrop()">
-        <h2 style="font-size:1.25rem; font-weight:700; margin-bottom:0.35rem;">Instant Operational Leak Scan (In Local RAM)</h2>
-        <p style="font-size:0.88rem; color:var(--text-secondary);">Drag & drop an Ontario Hydro utility bill or delivery app statement (PDF/CSV). <strong>Zero data uploaded or stored.</strong></p>
-      </div>
+    <section class="rooms" aria-label="Rooms that already exist">
+      <a class="room r1" href="residual.html"><b>01 Residual</b><span>How money comes in. Look is $0.</span></a>
+      <a class="room r2" href="runtime.html"><b>02 Edge</b><span>Runtime and measure on-device.</span></a>
+      <a class="room r3" href="iris.html"><b>03 Iris</b><span>Local chat. You can tell her no.</span></a>
+      <a class="room r4" href="research.html"><b>04 Research</b><span>Class, then study. Not a clinic.</span></a>
+      <a class="room r5" href="hall/"><b>05 Hall · five rooms, one gate</b><span>The other public door. Tour is optional.</span></a>
     </section>
-    <section id="founder-wall" class="pillar-section border-purple">
-      <div class="badge-pill badge-purple">Universal Wall of Record</div>
-      <h2 class="section-headline">The Founder Wall of Record</h2>
-      <p class="section-body">Every organization onboarding under the 90-day $0.00 trial is cryptographically bound in sequential order to the immutable ledger.</p>
-      <div class="founder-roster-box">
-        <div class="roster-item">
-          <div style="display:flex; align-items:center; gap:0.75rem;">
-            <span class="roster-slot">SLOT 00</span>
-            <div>
-              <div class="roster-name">Patriarch Lineage Anchor</div>
-              <div class="roster-detail">Founding Family Root • Immutable Genesis Reserve</div>
-            </div>
-          </div>
-          <span class="roster-badge" style="color:var(--accent-purple); border:1px solid rgba(168,85,247,0.3);">IMMUTABLE SEAT</span>
-        </div>
-        <div class="roster-item">
-          <div style="display:flex; align-items:center; gap:0.75rem;">
-            <span class="roster-slot">SLOT 01</span>
-            <div>
-              <div class="roster-name">David John Di Genova</div>
-              <div class="roster-detail">Founder of DualisCapax • Unity ID: <span style="color:var(--accent-cyan);">uid_77_sovereign_ontario</span></div>
-            </div>
-          </div>
-          <span class="roster-badge badge-bound">FOUNDER ROOT</span>
-        </div>
-        <div class="roster-item" onclick="location.href='#onboard'">
-          <div style="display:flex; align-items:center; gap:0.75rem;">
-            <span class="roster-slot" style="color:var(--accent-cyan);">SLOT 02</span>
-            <div>
-              <div class="roster-name" style="color:var(--accent-cyan);">Open Founding Partner Slot</div>
-              <div class="roster-detail">Claim with 90-day evaluation trial (Municipality, School Board, or Commercial)</div>
-            </div>
-          </div>
-          <span class="roster-badge badge-open">CLAIM SLOT 02 →</span>
-        </div>
-      </div>
+    <section class="card">
+      <div class="kicker">Also live</div>
+      <h2>Inner pages this origin already serves</h2>
+      <p><a href="portal.html" style="color:var(--cyan)">Portal</a> · <a href="sectors.html" style="color:var(--cyan)">Sectors</a> · <a href="alacarte.html" style="color:var(--cyan)">À la carte</a> · <a href="onboard.html" style="color:var(--cyan)">Onboard</a> · <a href="pay.html" style="color:var(--cyan)">Pay (closed)</a></p>
     </section>
-    <section id="sector-municipal" class="pillar-section border-green">
-      <div class="badge-pill badge-green">Pillar 1 // Municipal SCADA & Fleets</div>
-      <h2 class="section-headline">Cheaper power and shorter routes.</h2>
-    </section>
-    <section id="ask-iris" class="pillar-section border-cyan">
-      <div class="badge-pill badge-cyan">Sovereign Conductor & Secretary</div>
-      <h2 class="section-headline">Ask Agent Iris</h2>
-    </section>
-    <section id="sandbox" class="pillar-section border-green">
-      <div class="badge-pill badge-green">Air-Gapped Simulation Engine</div>
-      <h2 class="section-headline">Offline Sovereign Sandbox</h2>
-    </section>
-    <section id="onboard" class="pillar-section" style="border:1px solid var(--accent-cyan);">
-      <div class="badge-pill badge-cyan">Sovereign Onboarding & Unity ID</div>
-      <h2 class="section-headline">Claim Pilot Slot & Launch Your 90-Day Simulation.</h2>
-      <button class="nav-btn-solid" style="margin-top:1rem;" onclick="launchSlot10()">Initialize 90-Day Live Simulation ($0 Upfront)</button>
-    </section>
+    <p class="fine">Simulation is not treatment. A hash on this site is not a mined coin. Git commit is not production.</p>
   </main>
-  <nav class="bottom-dock">
-    <a href="#top" class="dock-btn">Home</a>
-    <a href="#ask-iris" class="dock-btn">Ask Iris</a>
-    <a href="#sandbox" class="dock-btn">Sandbox</a>
-    <a href="#sector-municipal" class="dock-btn">Sectors</a>
-    <a href="#onboard" class="dock-btn btn-trial">Claim Pilot ($0)</a>
+  <nav class="dock">
+    <a href="#top">Home</a>
+    <a href="iris.html">Iris</a>
+    <a href="hall/">Hall</a>
+    <a href="research.html">Research</a>
+    <a class="go" href="onboard.html">Onboard</a>
   </nav>
+  <script src="js/iris-sphere.js"></script>
+  <script src="js/dsap-engine.js"></script>
+  <script src="js/iris-av.js"></script>
   <script>
-    function playIrisIntro() {
-      if (!window.speechSynthesis) return;
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance("Dualiscapax. We stop money leak.");
-      window.speechSynthesis.speak(utter);
-    }
-    function runSampleDrop() { alert("Operational Telemetry Ingested in Local RAM. Zero data retained."); }
-    function launchSlot10() { alert("Pilot Slot Reserved."); }
+    (function () {
+      var c = document.getElementById("iris-sphere");
+      if (window.IrisSphere && IrisSphere.mount && c) IrisSphere.mount(c);
+      var woke = false;
+      function wake() {
+        if (woke) return;
+        woke = true;
+        try {
+          if (window.DSAP && DSAP.unlock) DSAP.unlock();
+          else if (window.DSAP && DSAP.wake) DSAP.wake();
+        } catch (e) {}
+        if (window.IrisSphere && IrisSphere.setWoken) IrisSphere.setWoken(true);
+        var line = "Looking is free. Checkout is closed.";
+        if (window.IrisAV && IrisAV.speak) {
+          try { IrisAV.speak(line); if (IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(true); } catch (e2) {}
+          setTimeout(function () { if (window.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false); }, 2200);
+        }
+      }
+      window.addEventListener("pointerdown", wake, { capture: true, once: true });
+    })();
   </script>
 </body>
 </html>
