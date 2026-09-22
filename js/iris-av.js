@@ -1,11 +1,11 @@
 /**
- * Iris AV V2 sleeve — camera, mic, screen, DSAP unlock.
- * Jacket only. Does not replace IrisLive / DCLMLook.
- * Dry words: speechSynthesis only. Felt layer is the house's job, once.
- * Not a cloned voice. Not a codec.
+ * Iris AV — camera, mic, device voice, optional xAI TTS.
+ * Step 1: one gesture can arm cam + mic + hear.
+ * Step 3: DCByok.tts if a tab key exists, else speechSynthesis.
+ * Not a cloned voice. No key in this file.
  */
 (function (w) {
-  var VERSION = "iris-av-v2-2026-09-01-dry";
+  var VERSION = "iris-av-v3-2026-09-22-arm";
   var state = {
     cam: null,
     mic: null,
@@ -13,7 +13,9 @@
     rec: null,
     speaking: false,
     spatial: false,
-    voice: null
+    voice: null,
+    armed: false,
+    lastKind: "device"
   };
 
   function err(msg) {
@@ -22,6 +24,29 @@
     if (!msg) { el.hidden = true; el.textContent = ""; return; }
     el.hidden = false;
     el.textContent = msg;
+  }
+
+  function setToggle(id, on, onLabel, offLabel) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle("on", !!on);
+    el.setAttribute("aria-pressed", on ? "true" : "false");
+    if (onLabel || offLabel) el.setAttribute("aria-label", on ? (onLabel || "on") : (offLabel || "off"));
+  }
+
+  function hearOn() {
+    var hear = document.getElementById("hear");
+    if (!hear) return true;
+    return hear.classList.contains("on") || state.armed;
+  }
+
+  function enableHear() {
+    state.armed = true;
+    setToggle("hear", true, "Voice on", "Voice off. Tap to hear Iris.");
+    if (w.DSAP && DSAP.unlock) {
+      return DSAP.unlock().then(function () { state.spatial = true; }).catch(function () { return null; });
+    }
+    return Promise.resolve(null);
   }
 
   function pickVoice() {
@@ -37,25 +62,8 @@
     return state.voice;
   }
 
-  function hearOn() {
-    var hear = document.getElementById("hear");
-    if (!hear) return true;
-    return hear.classList.contains("on");
-  }
-
-  function speak(text, done) {
-    if (!text) {
-      if (done) done();
-      return;
-    }
-    if (w.DSAP && DSAP.unlock) {
-      DSAP.unlock().then(function () { state.spatial = true; }).catch(function () {});
-    }
+  function deviceSpeak(text, done) {
     if (!w.speechSynthesis) {
-      if (done) done();
-      return;
-    }
-    if (!hearOn()) {
       if (done) done();
       return;
     }
@@ -67,19 +75,53 @@
     u.pitch = 0.96;
     u.volume = 1;
     state.speaking = true;
-    u.onend = function () {
-      state.speaking = false;
-      if (done) done();
-    };
-    u.onerror = function () {
-      state.speaking = false;
-      if (done) done();
-    };
+    state.lastKind = "device";
+    u.onend = function () { state.speaking = false; if (done) done(); };
+    u.onerror = function () { state.speaking = false; if (done) done(); };
     w.speechSynthesis.cancel();
     try { w.speechSynthesis.speak(u); } catch (e) {
       state.speaking = false;
       if (done) done();
     }
+  }
+
+  async function neuralSpeak(text) {
+    if (!(w.DCByok && DCByok.tts)) return false;
+    if (!(DCByok.present && DCByok.present())) return false;
+    try {
+      var rec = await DCByok.tts(String(text).slice(0, 1200), { voice_id: "eve", language: "en" });
+      if (!rec || !rec.ok || !rec.blob) return false;
+      var url = URL.createObjectURL(rec.blob);
+      var audio = new Audio(url);
+      state.speaking = true;
+      state.lastKind = "xai-tts";
+      await new Promise(function (resolve) {
+        audio.onended = resolve;
+        audio.onerror = resolve;
+        audio.play().catch(resolve);
+      });
+      state.speaking = false;
+      try { URL.revokeObjectURL(url); } catch (e) {}
+      return true;
+    } catch (e) {
+      state.speaking = false;
+      return false;
+    }
+  }
+
+  function speak(text, done) {
+    if (!text) { if (done) done(); return; }
+    enableHear();
+    if (w.DSAP) {
+      if (DSAP.unlock) DSAP.unlock().catch(function () {});
+      if (DSAP.speakField) DSAP.speakField(String(text).slice(0, 180));
+      else if (DSAP.pulse) DSAP.pulse(0, 0.42, 220);
+    }
+    neuralSpeak(text).then(function (ok) {
+      if (ok) { if (done) done(); return; }
+      if (!w.speechSynthesis) { if (done) done(); return; }
+      deviceSpeak(text, done);
+    });
   }
 
   async function camera(on) {
@@ -96,23 +138,34 @@
       err("Camera did not open on this device.");
       return { live: false, kind: "camera" };
     }
-    var stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
-      audio: false
-    });
+    var stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: true
+      });
+    } catch (e) {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" },
+        audio: false
+      });
+    }
     state.cam = stream;
     if (vid) vid.srcObject = stream;
     if (stage) stage.classList.add("on");
+    if (stream.getAudioTracks && stream.getAudioTracks().length) state.mic = stream;
     err("");
-    return { live: true, kind: "camera" };
+    return { live: true, kind: "camera", audio: !!(stream.getAudioTracks && stream.getAudioTracks().length) };
   }
 
   async function mic(on) {
     if (!on) {
       if (state.rec && state.rec.stop) try { state.rec.stop(); } catch (e) {}
       state.rec = null;
-      if (state.mic) state.mic.getTracks().forEach(function (t) { t.stop(); });
-      state.mic = null;
+      if (state.mic && state.mic !== state.cam) state.mic.getTracks().forEach(function (t) {
+        if (t.kind === "audio") t.stop();
+      });
+      if (state.mic !== state.cam) state.mic = null;
       return { live: false, kind: "mic" };
     }
     var SR = w.SpeechRecognition || w.webkitSpeechRecognition;
@@ -130,17 +183,16 @@
         }
       };
       rec.onerror = function () { err("Mic heard nothing. Type if you want."); };
-      rec.onend = function () {
-        var talk = document.getElementById("talk");
-        if (talk) {
-          talk.classList.remove("on");
-          talk.setAttribute("aria-pressed", "false");
-        }
-      };
+      rec.onend = function () { setToggle("talk", false, "Talk", "Talk"); };
       state.rec = rec;
       rec.start();
       err("");
       return { live: true, kind: "mic-speech" };
+    }
+    if (state.cam && state.cam.getAudioTracks && state.cam.getAudioTracks().length) {
+      state.mic = state.cam;
+      err("Mic is live. Speech-to-text is not on this browser — type the words.");
+      return { live: true, kind: "mic-from-camera" };
     }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       err("Mic did not open on this device.");
@@ -149,6 +201,27 @@
     state.mic = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
     err("Mic is live. Speech-to-text is not on this browser — type the words.");
     return { live: true, kind: "mic-stream" };
+  }
+
+  async function arm(on) {
+    if (!on) {
+      await camera(false);
+      await mic(false);
+      setToggle("cam", false, "Open camera", "Open camera");
+      setToggle("talk", false, "Talk", "Talk");
+      return { live: false, kind: "arm" };
+    }
+    await enableHear();
+    var cam = await camera(true);
+    var micr = { live: false };
+    try { micr = await mic(true); } catch (e) { micr = { live: false, kind: "mic-blocked" }; }
+    setToggle("cam", !!cam.live, "Camera on", "Open camera");
+    setToggle("talk", !!micr.live, "Talk", "Talk");
+    if (w.IrisSphere) {
+      if (IrisSphere.setListening) IrisSphere.setListening(!!micr.live);
+      if (IrisSphere.setWoken) IrisSphere.setWoken(true);
+    }
+    return { live: !!(cam.live || micr.live), cam: cam, mic: micr, kind: "arm" };
   }
 
   async function screen(on) {
@@ -165,24 +238,10 @@
       err("Screen share is not on this device.");
       return { live: false, kind: "screen" };
     }
-    var stream = await navigator.mediaDevices.getDisplayMedia({
-      video: { frameRate: 15 },
-      audio: false
-    });
+    var stream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 15 }, audio: false });
     state.screen = stream;
-    stream.getVideoTracks().forEach(function (t) {
-      t.addEventListener("ended", function () {
-        screen(false);
-        var btn = document.getElementById("screen") || document.getElementById("field");
-        if (btn) {
-          btn.classList.remove("on");
-          btn.setAttribute("aria-pressed", "false");
-        }
-      });
-    });
     if (vid) vid.srcObject = stream;
     if (stage) stage.classList.add("on");
-    err("");
     return { live: true, kind: "screen" };
   }
 
@@ -192,8 +251,7 @@
     var c = document.createElement("canvas");
     c.width = vid.videoWidth || 640;
     c.height = vid.videoHeight || 360;
-    var ctx = c.getContext("2d");
-    ctx.drawImage(vid, 0, 0, c.width, c.height);
+    c.getContext("2d").drawImage(vid, 0, 0, c.width, c.height);
     return c.toDataURL("image/jpeg", 0.72);
   }
 
@@ -206,20 +264,33 @@
     state.speaking = false;
   }
 
-  function greet(line) {
-    var text = line || "I'm Iris. Looking is free. A seat hash stays on this device.";
-    speak(text);
-    return text;
+  function loadSphere() {
+    if (w.IrisSphere && IrisSphere.mount) {
+      var host = document.getElementById("presence");
+      if (host) {
+        host.style.width = "min(46vw,12rem)";
+        host.style.height = "min(46vw,12rem)";
+        host.style.borderRadius = "50%";
+        IrisSphere.mount(host);
+        if (IrisSphere.setWoken) IrisSphere.setWoken(true);
+      }
+      return;
+    }
+    if (document.getElementById("dc-iris-sphere-src")) return;
+    var s = document.createElement("script");
+    s.id = "dc-iris-sphere-src";
+    s.src = "/js/iris-sphere.js?v=35a";
+    s.onload = function () { loadSphere(); };
+    document.head.appendChild(s);
   }
 
   if (w.speechSynthesis) {
     pickVoice();
-    if (w.speechSynthesis.addEventListener) {
-      w.speechSynthesis.addEventListener("voiceschanged", pickVoice);
-    } else {
-      w.speechSynthesis.onvoiceschanged = pickVoice;
-    }
+    if (w.speechSynthesis.addEventListener) w.speechSynthesis.addEventListener("voiceschanged", pickVoice);
+    else w.speechSynthesis.onvoiceschanged = pickVoice;
   }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", loadSphere);
+  else loadSphere();
 
   w.IrisAV = {
     version: VERSION,
@@ -227,19 +298,26 @@
     speak: speak,
     camera: camera,
     mic: mic,
+    arm: arm,
     screen: screen,
     snapshot: snapshot,
     stopAll: stopAll,
-    greet: greet,
-    unlock: function () { return w.DSAP && DSAP.unlock ? DSAP.unlock() : Promise.resolve(null); }
+    enableHear: enableHear,
+    hearOn: hearOn,
+    greet: function (line) { var t = line || "I'm Iris. Looking is free."; speak(t); return t; },
+    unlock: function () { return enableHear(); },
+    selftest: function () {
+      return {
+        version: VERSION,
+        hasArm: typeof arm === "function",
+        hasSpeak: typeof speak === "function",
+        hasByokTts: !!(w.DCByok && DCByok.tts),
+        byokPresent: !!(w.DCByok && DCByok.present && DCByok.present()),
+        hasSphere: !!(w.IrisSphere && IrisSphere.mount),
+        lastKind: state.lastKind
+      };
+    }
   };
 
   w.addEventListener("pagehide", function () { stopAll(); });
-  w.addEventListener("visibilitychange", function () {
-    if (document.visibilityState === "hidden") {
-      if (w.speechSynthesis) w.speechSynthesis.cancel();
-      if (w.DSAP && DSAP.stop) DSAP.stop();
-      state.speaking = false;
-    }
-  });
 })(window);
