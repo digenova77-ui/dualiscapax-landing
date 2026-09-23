@@ -1,0 +1,147 @@
+/**
+ * Iris ring — foundation to orbit on one loop.
+ * greet → listen → think → speak → listen.
+ * Mute breaks the ring. Camera is not the ring.
+ */
+(function (w) {
+  var VERSION = "iris-ring-2026-09-23";
+  var MUTE = "dc-iris-mute";
+  var running = false;
+  var muted = false;
+  var greeted = false;
+  var hint;
+
+  try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
+
+  function roomLine() {
+    if (w.IRIS_ROOM && IRIS_ROOM.iris) return IRIS_ROOM.iris;
+    return "You walked into Dualis. That's Iris. Ask anything small for free. Heavy work I'll price first. Lab is camera. Hall is the other rooms.";
+  }
+
+  function think(said) {
+    var t = String(said || "").toLowerCase();
+    if (!t) return "I didn't catch that. Say it again.";
+    if (/\b(hall|rooms|map)\b/.test(t)) return "The hall is the map of the other rooms. Look is free. Functions wait on a Unity sitting.";
+    if (/\b(lab|camera|see me)\b/.test(t)) return "The lab is the same conversation. Camera only if you tap it. I don't watch the rest of your phone.";
+    if (/\b(cost|price|pay|fuel|money)\b/.test(t)) return "Asking is free. A fuel pack is prepaid compute. Look stays zero. I won't sell you a medical notebook.";
+    if (/\b(ice|hockey|rink)\b/.test(t)) return "Ice is a room in the hall. If the door fails to open, it isn't open. We don't sell a broken door.";
+    if (/\b(coin|efuse|token)\b/.test(t)) return "eFuse is the protocol in the repo. This site points at it. It is not a checkout button.";
+    if (/\b(who are you|your name|iris)\b/.test(t)) return "I'm Iris. I live on this site. Coffee-shop talk. I know these rooms.";
+    if (/\b(david|founder|ceo)\b/.test(t)) return "David Di Genova founded DualisCapax. Canadian. The site is the pointer. I don't hand out a home address.";
+    if (/\b(hello|hi|hey)\b/.test(t)) return "Hey. I'm here. What do you want to look at first — hall, lab, or what it costs?";
+    if (w.DCLMLook && DCLMLook.run) {
+      try {
+        var rec = DCLMLook.run(said);
+        if (rec && (rec.spoken || rec.text)) return rec.spoken || rec.text;
+      } catch (e) {}
+    }
+    return "This page is the front door. Hall is the map. Lab is if you want the camera. Reading pile is papers, not a clinic. What do you want to open?";
+  }
+
+  function paint(msg) {
+    hint = hint || document.getElementById("hint");
+    if (hint && msg) hint.textContent = msg;
+  }
+
+  function isMuted() {
+    try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
+    return muted;
+  }
+
+  function speak(line) {
+    paint(line);
+    if (isMuted()) return Promise.resolve(false);
+    if (w.IrisAV && IrisAV.speak) return IrisAV.speak(line);
+    if (w.speechSynthesis) {
+      var u = new SpeechSynthesisUtterance(line);
+      if (w.IrisVoice && IrisVoice.applyUtterance) IrisVoice.applyUtterance(u);
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    }
+    return Promise.resolve(true);
+  }
+
+  function listenTurn() {
+    if (isMuted() || !running) return Promise.resolve();
+    paint("Listening.");
+    if (!w.IrisAV || !IrisAV.listen) {
+      paint("This browser has no listen. Tap Talk and I'll still speak.");
+      return Promise.resolve();
+    }
+    return IrisAV.listen().then(function (said) {
+      if (!running || isMuted()) return;
+      if (!said) {
+        paint("I didn't catch that.");
+        return;
+      }
+      paint(said);
+      return speak(think(said)).then(function () {
+        if (running && !isMuted()) return listenTurn();
+      });
+    });
+  }
+
+  function kick() {
+    running = true;
+    try {
+      if (w.IrisAV && IrisAV.arm) IrisAV.arm();
+      if (w.DSAP && DSAP.unlock) DSAP.unlock();
+    } catch (e) {}
+    var line = greeted ? "I'm listening." : roomLine();
+    greeted = true;
+    paint(line);
+    return speak(line).then(function () {
+      if (running && !isMuted()) return listenTurn();
+    });
+  }
+
+  function stop() {
+    running = false;
+    if (w.IrisAV && IrisAV.stop) IrisAV.stop();
+    paint(isMuted() ? "Voice off." : "Ring paused.");
+  }
+
+  function bind() {
+    hint = document.getElementById("hint");
+    function tap(el, fn) {
+      if (!el || el.dataset.irisRing) return;
+      el.dataset.irisRing = "1";
+      el.addEventListener("click", function (e) {
+        e.stopImmediatePropagation();
+        fn();
+      }, true);
+    }
+    tap(document.getElementById("talk"), kick);
+    tap(document.getElementById("meet"), kick);
+    var plate = document.getElementById("iris-plate");
+    if (plate && !plate.dataset.irisRing) {
+      plate.dataset.irisRing = "1";
+      plate.addEventListener("pointerdown", function (e) {
+        e.stopImmediatePropagation();
+        kick();
+      }, true);
+    }
+    var voice = document.getElementById("voice");
+    if (voice && !voice.dataset.irisRingWatch) {
+      voice.dataset.irisRingWatch = "1";
+      voice.addEventListener("click", function () {
+        setTimeout(function () {
+          if (isMuted()) stop();
+        }, 0);
+      });
+    }
+    var skip = document.getElementById("skip");
+    if (skip) skip.addEventListener("click", stop);
+  }
+
+  w.IrisRing = {
+    version: VERSION,
+    kick: kick,
+    stop: stop,
+    think: think,
+    running: function () { return running; }
+  };
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+  else bind();
+})(window);
