@@ -1,13 +1,9 @@
 /**
  * DSAP-1.0 holographic spatial audio engine — browser sleeve + felt roar.
- * Spec: encyclopedia/governance_and_protocols/dclm_dsap_holographic_spatial_audio_protocol_and_engine_spec.md
- *
- * Felt layer: proximity bass under 0.4 m while speaking. Word pulses on the ring.
- * Wave tap: AnalyserNode on master. Only media we own can light the orb.
- * speechSynthesis stays on the OS mixer and cannot enter this graph.
+ * Wave tap + energy() so the cluster can use Bridson A(x) = voice amplitude.
  */
 (function (w) {
-  var VERSION = "dsap-1.0-wave-2026-09-22";
+  var VERSION = "dsap-1.0-energy-2026-09-22";
   var SPEAKERS = 64;
   var STEP = 360 / SPEAKERS;
   var ALPHA = 0.998;
@@ -202,6 +198,14 @@
     return bins;
   }
 
+  function energy() {
+    var b = wave();
+    if (!b || !b.length) return 0;
+    var s = 0, i;
+    for (i = 0; i < b.length; i++) s += Math.abs(b[i] - 128) / 128;
+    return Math.max(0, Math.min(1, (s / b.length) * 2.4));
+  }
+
   function attach(src) {
     return ensure().then(function () {
       if (!src || !ctx || !dry) return null;
@@ -258,6 +262,7 @@
     speakField: speakField,
     roar: roar,
     wave: wave,
+    energy: energy,
     attach: attach,
     dry: function () { return dry; },
     context: function () { return ctx; },
@@ -274,6 +279,7 @@
         felt: felt,
         speakers: SPEAKERS,
         wave: !!(analyser && bins),
+        energy: energy(),
         version: VERSION
       };
     }
