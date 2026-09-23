@@ -1,32 +1,47 @@
 /**
- * Unity framework law is published, not a privilege of U1.
- * DEMO: U1 may test packs. LIVE: U1 cannot flip core procedure alone.
- * Consensus before a change. Not a Dualis coin. Pay stays Stripe CAD.
+ * BETA: U1 may amend published Unity law while the house is still forming.
+ * PROTOCOL LIVE (coin architecture / autonomous company): no ID amends alone.
+ * Not a till. Pay stays Stripe CAD until that protocol actually exists.
  */
 (function (w) {
-  var VERSION = "unity-law-2026-09-22";
+  var VERSION = "unity-law-2026-09-22-beta";
   var LAW = ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"];
 
-  function isLive() {
-    if (w.DC_LIVE === true) return true;
-    try { return w.localStorage.getItem("dc.unity.live") === "1"; } catch (e) { return false; }
+  function isU1() {
+    if (w.UnityBind && UnityBind.isU1) return !!UnityBind.isU1();
+    try {
+      var id = JSON.parse(w.localStorage.getItem("dc.unity.id") || "null");
+      return !!(id && (id.human === "U1" || id.public === "DC1-H1-0001" || id.seat === "operator_first"));
+    } catch (e) { return false; }
+  }
+
+  function isProtocolLive() {
+    if (w.DC_PROTOCOL === true) return true;
+    try { return w.localStorage.getItem("dc.unity.protocol") === "1"; } catch (e) { return false; }
+  }
+
+  function isBeta() {
+    return !isProtocolLive();
   }
 
   function canAmend() {
-    return false;
+    if (isProtocolLive()) return false;
+    return isU1();
   }
 
   function spoken() {
-    if (!isLive()) {
-      return "Demo: this tag can test rooms. It cannot rewrite Unity law.";
+    if (isProtocolLive()) {
+      return "Protocol is live. Unity law doesn't move on one ID — including the founder tag. A core change needs consensus.";
     }
-    return "Unity rules don't move on one ID. A core change needs consensus. I don't flip house law from a tag.";
+    return "Beta: the founder tag can still set house law. That ends when the protocol is live.";
   }
 
   w.UnityLaw = {
     version: VERSION,
     law: LAW,
-    isLive: isLive,
+    isU1: isU1,
+    isBeta: isBeta,
+    isProtocolLive: isProtocolLive,
     canAmend: canAmend,
     spoken: spoken
   };
