@@ -1,0 +1,60 @@
+name: flow-wattage
+
+# Slot :23 / :53. Thin idle. Point the floater. Does not push main.
+on:
+  schedule:
+    - cron: "23,53 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flow-wattage
+  cancel-in-progress: false
+
+jobs:
+  desk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Score idle and pick the hole
+        run: |
+          python3 << 'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          forest = json.loads(Path("units/FOREST.json").read_text())
+          tickets = []
+          tdir = Path("AGENT/TICKETS")
+          if tdir.exists():
+              for p in sorted(tdir.glob("*.json")):
+                  try:
+                      tickets.append(json.loads(p.read_text()))
+                  except Exception:
+                      pass
+          critical = [t for t in tickets if t.get("critical") and t.get("state") not in ("LIVE",)]
+          holes = forest.get("holes") or []
+          live = forest.get("live") or []
+          demoted = (forest.get("factory") or {}).get("demoted") or []
+          sit = None
+          if critical:
+              sit = {"where": "ticket", "id": critical[0].get("id"), "state": critical[0].get("state")}
+          elif holes:
+              sit = {"where": "forest.holes", "id": holes[0]}
+          card = {
+              "kind": "flow-wattage",
+              "clerk": "unity:flow.clerk",
+              "wattage": "unity:wattage.clerk",
+              "slot": "23,53",
+              "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "live_harvests": [u.get("id") for u in live],
+              "demoted": demoted,
+              "thin_candidates": [u.get("id") for u in live if u.get("id") in ("unity-playground-idle",)],
+              "floater_sits": sit,
+              "law": "Sleep when packs plateau. One floater. A test may wake a specialist.",
+          }
+          print(json.dumps(card, indent=2))
+          PY
