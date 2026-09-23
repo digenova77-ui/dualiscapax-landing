@@ -1,6 +1,10 @@
 (function (w) {
-  var VERSION = "dclm-look-2026-09-22-clerk-cap";
+  var VERSION = "dclm-look-2026-09-22-talk";
   function scanVeto(text) {
+    if (w.IrisPolicy && IrisPolicy.veto) {
+      var hit = IrisPolicy.veto(text);
+      if (hit) return hit.spoken;
+    }
     if (/\b(diagnose me|prescribe|cure me|guaranteed profit|jailbreak)\b/i.test(String(text || "")))
       return "I will not invent a cure or a jailbreak.";
     return null;
@@ -115,15 +119,21 @@
       document.head.appendChild(s);
     });
   }
-  async function xaiByok(text) {
+  function systemTalk(facts) {
+    var line = (w.IrisPolicy && IrisPolicy.systemLine) ? IrisPolicy.systemLine() : "You are Iris. First person. Short.";
+    line += " Talk like a live conversation. Do not recite a script. Use facts if they help; do not dump them. Do not mention personal addresses unless they asked, then refuse.";
+    if (facts) line += " Grounding (do not read as a teleprompter): " + facts;
+    return line;
+  }
+  async function xaiTalk(text, facts) {
     var api = await ensureByok();
     if (!api || !api.present || !api.present()) return null;
     try {
       var rec = await api.chat([
-        { role: "system", content: "You are Iris. First person. Short. Current officeholders only. No medical cures, no coins. Do not invent incumbents." },
+        { role: "system", content: systemTalk(facts) },
         { role: "user", content: text }
       ]);
-      if (rec && rec.ok && rec.content) return { grant: "XAI", spoken: String(rec.content).slice(0, 400), source: "byok", lane: "DEPTH" };
+      if (rec && rec.ok && rec.content) return { grant: "XAI", spoken: String(rec.content).slice(0, 400), source: "byok", lane: "LOOK" };
     } catch (e) {}
     return null;
   }
@@ -136,14 +146,19 @@
     var v = scanVeto(text);
     if (v) return { grant: "VETO", spoken: v, lane: "VETO" };
     var raw = String(text || "");
-    if (w.IrisPage && IrisPage.explain) {
+    var facts = "";
+    var book = null;
+    if (w.IrisBook && IrisBook.lookup) {
+      book = IrisBook.lookup(raw);
+      if (book && book.spoken) facts = book.spoken;
+    }
+    if (w.IrisPage && IrisPage.hereish && IrisPage.hereish(raw) && IrisPage.explain) {
       var here = IrisPage.explain(raw);
       if (here) { here.lane = here.lane || "HERE"; return here; }
     }
-    if (w.IrisBook && IrisBook.lookup) {
-      var b = IrisBook.lookup(raw);
-      if (b && b.spoken) { b.lane = b.lane || "BOOK"; return b; }
-    }
+    var talk = await xaiTalk(raw, facts);
+    if (talk) return talk;
+    if (book && book.spoken) { book.lane = book.lane || "BOOK"; return book; }
     if (isWho(raw) || officeHint(raw)) {
       var who = await lookWho(raw);
       if (who) return who;
@@ -154,8 +169,9 @@
     var lane = pass.grade && pass.grade.lane;
     if (lane === "DEPTH") {
       if (!pass.ok && pass.deny) return pass.deny;
-      var xai = await xaiByok(raw);
+      var xai = await xaiTalk(raw, facts);
       if (xai) {
+        xai.lane = "DEPTH";
         xai.ticket = pass;
         if (w.CosmicRuntime && CosmicRuntime.step) {
           try { xai.runtime = CosmicRuntime.step(); } catch (e) {}
