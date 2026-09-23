@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LicenseRef-Dualis-Residual-Draft
+// SPDX-License-Identifier: LicenseRef-eFuse-Sandbox
 pragma solidity ^0.8.24;
 
 /// eFuse sandbox token. Not issued. Not listed. Not a mainnet address.
@@ -37,7 +37,11 @@ contract EFuseToken {
     function transferFrom(address from, address to, uint256 value) external returns (bool) {
         uint256 allowed = allowance[from][msg.sender];
         require(allowed >= value, "allowance");
-        if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - value;
+        if (allowed != type(uint256).max) {
+            unchecked {
+                allowance[from][msg.sender] = allowed - value;
+            }
+        }
         return _move(from, to, value);
     }
 
@@ -46,13 +50,19 @@ contract EFuseToken {
         require(to != address(this), "no pot");
         uint256 have = balanceOf[from];
         require(have >= value, "balance");
-        balanceOf[from] = have - value;
-        balanceOf[to] += value;
+        unchecked {
+            balanceOf[from] = have - value;
+            balanceOf[to] += value;
+        }
         emit Transfer(from, to, value);
         return true;
     }
 
     receive() external payable {
+        revert("no pot");
+    }
+
+    fallback() external payable {
         revert("no pot");
     }
 }
