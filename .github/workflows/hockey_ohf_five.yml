@@ -1,12 +1,12 @@
 name: hockey-ohf-five
 
 # Five OHF youth members: OMHA ALLIANCE GTHL NOHA OWHA.
-# Org indexes + official cites only. No named minors. No helix.
-# Time-splice: :09/:39 — golf keeps slot A :07/:37.
+# Homepage ping only. Roster work lives on other units.
+# Thinned off :09/:39 — those minutes were wattage after cites plateaued.
 
 on:
   schedule:
-    - cron: '9,39 * * * *'
+    - cron: "18 12 * * *"
   workflow_dispatch:
 
 permissions:
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - name: Harvest five OHF youth league indexes
         run: python3 scripts/harvest_hockey_ohf_five.py
       - name: Commit indexes
