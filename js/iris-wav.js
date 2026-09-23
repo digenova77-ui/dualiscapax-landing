@@ -1,8 +1,9 @@
-/** Greet WAV on top of TTS. Replies stay speechSynthesis. */
+/** Greet WAV first. TTS is a mute-guard and a hole. */
 (function (w) {
   var FILES = ["audio/iris-greet.wav", "audio/iris-greet.mp3"];
   var el = null;
   var chimeEl = null;
+  var hole = true;
 
   function jewel(text) {
     try {
@@ -97,6 +98,7 @@
     }
     return next().then(function (ok) {
       mark(false);
+      hole = !ok;
       return ok;
     });
   }
@@ -115,7 +117,12 @@
     var inner = IrisAV.speak;
     IrisAV.speakGreet = function (line) {
       return greetWav().then(function (ok) {
-        if (ok) return true;
+        if (ok) {
+          hole = false;
+          return true;
+        }
+        hole = true;
+        try { console.warn("IrisWav HOLE: greet take missing — mute-guard TTS"); } catch (e) {}
         if (typeof inner === "function") return inner.call(IrisAV, line);
         return false;
       });
@@ -126,7 +133,13 @@
     };
   }
 
-  w.IrisWav = { greet: greetWav, stop: stop, src: FILES, hook: hook };
+  w.IrisWav = {
+    greet: greetWav,
+    stop: stop,
+    src: FILES,
+    hook: hook,
+    get hole() { return hole; }
+  };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", hook);
   else hook();
 })(window);
