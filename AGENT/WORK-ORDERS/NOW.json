@@ -1,0 +1,34 @@
+{
+  "kind": "work-orders",
+  "clerk": "unity:order.clerk",
+  "watch": "unity:order.watch",
+  "at": "2026-09-23T14:42:00Z",
+  "law": "Every HOLE is an order. Tick on drop. Redeploy is push main + curl.",
+  "open": [
+    {
+      "id": "L-WAV",
+      "class": "MUTE",
+      "critical": true,
+      "state": "DEVELOP",
+      "expect": "apex /audio/iris-greet.wav 200 audio/* >= 50KB and index loads js/iris-wav.js",
+      "got": "wav 404; audio/ README only; lander missing iris-wav.js"
+    },
+    {
+      "id": "L-003",
+      "class": "HOLE",
+      "critical": true,
+      "state": "DEVELOP",
+      "expect": "lander loads js/engine-link.js",
+      "got": "scripts stop at iris-ring.js on live apex"
+    },
+    {
+      "id": "L-ICE",
+      "class": "ICE_NOT_OPEN",
+      "critical": true,
+      "state": "DEVELOP",
+      "expect": "GET /ice 200",
+      "got": "403 or 308"
+    }
+  ],
+  "closed": []
+}

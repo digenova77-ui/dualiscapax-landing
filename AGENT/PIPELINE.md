@@ -1,10 +1,14 @@
 # Handoff chain — error to live face
 
-Stamp: 2026-09-23T14:28Z
+Stamp: 2026-09-23T14:42Z
 This file wins any chat memory about departments.
-Four desks. Eight Unity IDs. No buildings.
+Four desks. Work-order desk sits on top. Eight+ Unity IDs. No buildings.
 
 ## Desks
+
+0. `unity:order.clerk` / `unity:order.watch`
+   Every fail is a work order. Stamp the ticket. Keep NOW.json honest.
+   Do not wait for the wheel.
 
 1. `unity:forensics.clerk` / `unity:forensics.watch`
    Name the bot. Name the class. Write the lesson.
@@ -12,36 +16,29 @@ Four desks. Eight Unity IDs. No buildings.
    Do not guess a root cause to look finished.
 
 2. `unity:design.clerk` / `unity:design.watch`
-   Website design and analysis.
    Write `AGENT/BLUEPRINTS/<id>.md`.
-   The blueprint must say:
-   - whether the fix already exists in this repo or must be invented
-   - backward compatible (old lander still boots)
-   - forward compatible (next splice can land on the same face)
-   Watch holes a blueprint that breaks the current root `index.html` contract.
+   Backward compatible. Forward compatible. One lander.
 
 3. `unity:develop.clerk` / `unity:develop.watch`
-   Website development.
    Implement the blueprint on **root** files the lander actually loads.
    Watch holes a patch that only landed in `cf-pages/` or a zip.
 
 4. `unity:publisher.clerk` / `unity:publisher.watch`
-   Live update. See `AGENT/PUBLISH-LAW.md` and `AGENT/TICK.md`.
    Push `main`. Curl the apex. Diff to root `index.html`.
    Watch holes “live” without that curl.
 
 ## Ticket states
 
-`OPEN → FORENSICS → DESIGN → DEVELOP → PUBLISH → LIVE | HOLE`
+`FAIL → ORDER → FORENSICS → DESIGN → DEVELOP → PUBLISH → LIVE | HOLE`
 
 A ticket may skip DESIGN only when forensics already has a cite and a one-line fix that exists on disk.
-L-003 is that case: scripts exist, lander does not import them.
 
 ## Clocks
 
-Routine tickets ride forensics / residual-ring.
-Critical tickets (`"critical": true`) tick **on drop** — same minute as the push.
-See `AGENT/TICK.md`. Workflow: `.github/workflows/critical-drop.yml`.
+Routine tickets ride the five-clerk wheel.
+Every street FAIL is critical and ticks **on drop**.
+See `AGENT/TICK.md` and `AGENT/WORK-ORDER.md`.
+Workflows: `critical-drop.yml`, `escalate.yml`, `fail-order.yml`.
 
 ## Compat law
 

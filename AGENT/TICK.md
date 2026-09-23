@@ -1,8 +1,9 @@
 # Tick clocks
 
-Stamp: 2026-09-23T14:32Z
+Stamp: 2026-09-23T14:42Z
 Clerk: `unity:publisher.clerk`
 Watch: `unity:publisher.watch`
+Order: `unity:order.clerk`
 
 Three clocks. Do not mix them.
 
@@ -13,23 +14,32 @@ See `AGENT/SLOTS.md`.
 Same five again at +30.
 They never share a minute with FOREST harvests.
 Research does not ship a face.
+Lesson lines and score rows ride this wheel.
 
 ## Critical — on drop
 
-If a ticket has `"critical": true` the tick is the same minute the splice lands on `main`.
+Every street FAIL is critical until the curl matches.
+The tick is the same minute the watch sees HOLE.
 No wait for the wheel. No wait for noon.
+See `AGENT/WORK-ORDER.md`.
 
 Drop means:
-1. `unity:develop.clerk` writes the named root files.
-2. `unity:publisher.clerk` pushes `main` immediately.
-3. `unity:publisher.watch` curls the apex (`critical-drop.yml`).
-4. That job finishes → escalate wakes forensics + audit now (`AGENT/ESCALATE.md`).
-5. Live only if curl matches the file just pushed.
+1. Watch writes or refreshes `AGENT/TICKETS/<id>.json` + `AGENT/WORK-ORDERS/NOW.json`.
+2. `unity:develop.clerk` writes the named root files.
+3. `unity:publisher.clerk` pushes `main` immediately.
+4. `unity:publisher.watch` curls the apex (`critical-drop.yml`).
+5. That job finishes → escalate wakes forensics + audit now.
+6. If HOLE remains → `fail-order.yml` keeps the order open and the loop repeats.
+7. Live only if curl matches the file just pushed.
 
-If Pages is repo-connected, the push *is* the deploy. The watch still curls. A green Actions run is not the street.
+If Pages is repo-connected, the push *is* the deploy. The watch still curls.
+This factory does not hold `CLOUDFLARE_API_TOKEN`. We do not pretend the apex flipped.
 
 ## What is critical
 
-The street is wrong right now. L-003 is critical until `engine-link.js` appears on `https://dualiscapax.ai/`.
+The street is wrong right now.
+L-WAV (greet take 404).
+L-003 (engine-link.js not on the lander).
+L-ICE (`/ice` not 200).
 
 What is not critical: a new lesson line, a golf envelope, a score row. Those ride the wheel.

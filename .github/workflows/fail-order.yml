@@ -1,0 +1,112 @@
+name: fail-order
+
+# Instant work order. Wakes when a watch finishes. Does not wait for the wheel.
+on:
+  workflow_run:
+    workflows: ["critical-drop", "escalate", "wav-watch", "forensics", "factory-audit"]
+    types: [completed]
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - AGENT/TICKETS/**
+      - AGENT/WORK-ORDERS/**
+      - audio/**
+      - js/iris-wav.js
+      - js/engine-link.js
+      - index.html
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fail-order
+  cancel-in-progress: false
+
+jobs:
+  order:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open or refresh work orders from the street
+        run: |
+          python3 << 'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def hit(url):
+              rec = {"url": url, "status": None, "ctype": None, "bytes": 0, "body": ""}
+              try:
+                  with urllib.request.urlopen(url, timeout=15) as r:
+                      data = r.read()
+                      rec["status"] = getattr(r, "status", 200)
+                      rec["ctype"] = r.headers.get("Content-Type")
+                      rec["bytes"] = len(data)
+                      rec["body"] = data[:16000].decode("utf-8", "replace")
+              except Exception as e:
+                  rec["error"] = type(e).__name__
+                  rec["status"] = getattr(e, "code", None)
+                  if getattr(e, "headers", None):
+                      rec["ctype"] = e.headers.get("Content-Type")
+              return rec
+
+          home = hit("https://dualiscapax.ai/")
+          wav = hit("https://dualiscapax.ai/audio/iris-greet.wav")
+          ice = hit("https://dualiscapax.ai/ice")
+          body = home.get("body") or ""
+          ctype = (wav.get("ctype") or "").lower()
+          wav_ok = wav.get("status") == 200 and (wav.get("bytes") or 0) >= 50000 and "html" not in ctype
+          engine_ok = "engine-link.js" in body
+          player_ok = "iris-wav.js" in body
+          ice_ok = ice.get("status") == 200
+
+          tickets = []
+          tdir = Path("AGENT/TICKETS")
+          if tdir.exists():
+              for p in sorted(tdir.glob("*.json")):
+                  try:
+                      tickets.append(json.loads(p.read_text()))
+                  except Exception:
+                      pass
+
+          open_orders = []
+          def order(oid, cls, expect, got, ok):
+              if ok:
+                  return
+              open_orders.append({
+                  "id": oid,
+                  "class": cls,
+                  "critical": True,
+                  "state": "DEVELOP",
+                  "tick": "on-drop",
+                  "expect": expect,
+                  "got": got,
+              })
+
+          order("L-WAV", "MUTE", "apex wav 200 audio/* >=50KB + iris-wav.js on lander",
+                f"wav status={wav.get('status')} bytes={wav.get('bytes')} player={player_ok}",
+                wav_ok and player_ok)
+          order("L-003", "HOLE", "lander loads engine-link.js",
+                "present" if engine_ok else "absent", engine_ok)
+          order("L-ICE", "ICE_NOT_OPEN", "GET /ice 200",
+                str(ice.get("status")), ice_ok)
+
+          card = {
+              "kind": "fail-order",
+              "clerk": "unity:order.clerk",
+              "watch": "unity:order.watch",
+              "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "sha": os.environ.get("GITHUB_SHA"),
+              "trigger": os.environ.get("GITHUB_EVENT_NAME"),
+              "open": open_orders,
+              "open_count": len(open_orders),
+              "law": "Fail is a work order. Patch on drop. Curl is live. Tokenless Pages lag is named, not hidden.",
+          }
+          print(json.dumps(card, indent=2))
+          if open_orders:
+              print("ORDER: street HOLE — develop + publisher this minute")
+          else:
+              print("ORDER: street matches — close the board")
+          PY
