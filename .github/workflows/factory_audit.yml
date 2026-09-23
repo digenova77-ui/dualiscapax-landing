@@ -1,17 +1,20 @@
 name: factory-audit
 
-# Always-on DCLM website-field. Iris observes. Does NOT push main.
+# Slot :06 / :36. Was */5 — that hogged the wheel. Does NOT push main.
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: "6,36 * * * *"
   workflow_dispatch:
+  workflow_run:
+    workflows: ["critical-drop"]
+    types: [completed]
 
 permissions:
   contents: read
 
 concurrency:
   group: factory-audit
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   audit:
@@ -51,9 +54,10 @@ jobs:
           cursed = [r["path"] for r in rows if r["mark"] == "cursed"]
           ones = [r["path"] for r in rows if r["mark"] == "1"]
           card = {
-            "kind": "audit_always",
+            "kind": "audit_slot",
+            "clerk": "unity:audit.clerk",
+            "slot": "06,36",
             "observer": "iris-academy",
-            "mouth_off_plate": True,
             "human_invoke": False,
             "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "seats_measured": {
@@ -64,7 +68,7 @@ jobs:
             "ones": ones,
             "cursed": cursed,
             "rows": rows,
-            "law": "THEOREM_U1; David does not invoke this; Iris watches",
+            "law": "Slot wheel. Do not push main. David does not invoke this.",
           }
           print(json.dumps(card, indent=2))
           PY
