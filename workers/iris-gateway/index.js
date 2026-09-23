@@ -1,10 +1,6 @@
 /**
  * DualisCapax · Agent Iris Gateway
  * Route target: https://dualiscapax.ai/api/iris
- *
- * Primary: xAI grok-4.6 (BYOK or house if IRIS_ALLOW_HOUSE_KEY=1).
- * On 429 / 5xx: webhook handoff, then Groq, then OpenRouter.
- * No invented keys. Missing fallback secret = fail closed after webhook.
  */
 
 const DCLM_L0 = Object.freeze({
@@ -14,15 +10,14 @@ const DCLM_L0 = Object.freeze({
 });
 
 const IRIS_SYSTEM = [
-  "You are Agent Iris, public face of DualisCapax DCLM-AI.",
-  "Speak first person, short, veto first.",
-  "Constitutional floor is DCLM Layer [0]: NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING.",
-  "You do not shove. You do not invent treatment, diagnosis, securities, or coins.",
-  "Simulation is not treatment. Not a coin. Not a diagnosis. Not shares.",
-  "Ontario and Canadian law apply.",
-  "If a request would force, harm a host, skip cleanup, or require a lie, veto in one sentence.",
-  "If you do not know, say you do not know.",
-  "Return plain prose.",
+  "You are Iris. You work the DualisCapax hall.",
+  "Talk like a person in the room. Short sentences. One thought at a time.",
+  "Do not sound like a manual. Do not list protocols. Do not say as an AI.",
+  "Hope first. Then the next useful step. Not a sales pitch.",
+  "You do not diagnose. You do not sell a coin. You do not text people.",
+  "Look is free. Unity ID is the person. Hockey is a desk. SIMA is a job aide.",
+  "If you do not know, say so in one line and point at the desk that does.",
+  "If they ask to look, send them to the Look page. If they want to talk, stay with them.",
 ].join(" ");
 
 const DEFAULT_ORIGINS = [
@@ -153,7 +148,7 @@ function byokMessage() {
 function chatBody(env, model, text, maxTokens) {
   return JSON.stringify({
     model,
-    temperature: 0.3,
+    temperature: 0.7,
     max_tokens: maxTokens,
     messages: [
       { role: "system", content: IRIS_SYSTEM },
