@@ -1,5 +1,5 @@
 (function (w) {
-  var VERSION = "dclm-look-2026-09-22-clerk";
+  var VERSION = "dclm-look-2026-09-22-clerk-cap";
   function scanVeto(text) {
     if (/\b(diagnose me|prescribe|cure me|guaranteed profit|jailbreak)\b/i.test(String(text || "")))
       return "I will not invent a cure or a jailbreak.";
@@ -13,9 +13,9 @@
   }
   function officeHint(text) {
     var s = String(text || "").toLowerCase();
-    if (/prime minister of canada|canadian prime minister|pm of canada/.test(s)) return { qid: "Q16", prop: "P6", office: "prime minister of Canada" };
-    if (/president of the united states|us president|american president|president of america/.test(s)) return { qid: "Q30", prop: "P6", office: "president of the United States" };
-    if (/prime minister of the united kingdom|uk prime minister|british prime minister/.test(s)) return { qid: "Q145", prop: "P6", office: "prime minister of the United Kingdom" };
+    if (/prime minister of canada|canadian prime minister|pm of canada/.test(s)) return { qid: "Q16", prop: "P6", office: "Prime Minister of Canada" };
+    if (/president of the united states|us president|american president|president of america/.test(s)) return { qid: "Q30", prop: "P6", office: "President of the United States" };
+    if (/prime minister of the united kingdom|uk prime minister|british prime minister/.test(s)) return { qid: "Q145", prop: "P6", office: "Prime Minister of the United Kingdom" };
     return null;
   }
   function timer(ms) {
