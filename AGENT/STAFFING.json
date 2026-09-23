@@ -1,0 +1,23 @@
+{
+  "kind": "staffing",
+  "stamp": "2026-09-23T14:52Z",
+  "clerk": "unity:flow.clerk",
+  "watch": "unity:wattage.clerk",
+  "formula": {
+    "clerks": "1 if need>0; +1 if need>12; +1 if need>40; cap 3",
+    "watches": "1 per writing clerk",
+    "managers": "1 of each",
+    "floaters": "1, cap 2 if two CRITICAL"
+  },
+  "desks": [
+    {"id": "unity:publisher.clerk", "skill": "L4", "min": 1, "now": 1, "target": 1, "cap": 1},
+    {"id": "unity:order.clerk", "skill": "L4", "min": 1, "now": 1, "target": 1, "cap": 1},
+    {"id": "unity:develop.clerk", "skill": "L3", "min": 1, "now": 1, "target": 1, "cap": 2},
+    {"id": "unity:forensics.clerk", "skill": "L2", "min": 1, "now": 1, "target": 1, "cap": 3},
+    {"id": "unity:harvest.omha-u16", "skill": "L2", "min": 1, "now": 1, "target": 2, "cap": 3, "need": 12, "note": "empty named boards"},
+    {"id": "unity:harvest.owha", "skill": "L2", "min": 1, "now": 1, "target": 2, "cap": 3, "need": 70, "note": "stubs, walk club boards"},
+    {"id": "unity:harvest.ohf-five", "skill": "L1", "min": 0, "now": 1, "target": 0, "cap": 1, "state": "THIN"},
+    {"id": "unity:harvest.golf", "skill": "L1", "min": 0, "now": 1, "target": 0, "cap": 1, "state": "THIN"},
+    {"id": "unity:flow.clerk", "skill": "L4", "min": 1, "now": 1, "target": 1, "cap": 1, "floaters": 1}
+  ]
+}
