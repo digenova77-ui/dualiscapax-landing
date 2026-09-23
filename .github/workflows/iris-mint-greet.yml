@@ -1,0 +1,47 @@
+name: iris-mint-greet
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/iris-mint-greet.yml"
+      - "AGENT/IRIS-WAV.md"
+concurrency:
+  group: iris-mint-greet
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  mint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: mint Sonia take
+        run: |
+          pip install -q edge-tts
+          python - <<'PY'
+          import asyncio, pathlib
+          import edge_tts
+          text = "Hey. I'm Iris. Talk. That's the whole interface."
+          voice = "en-GB-SoniaNeural"
+          out = pathlib.Path("audio")
+          out.mkdir(exist_ok=True)
+          async def main():
+              c = edge_tts.Communicate(text, voice)
+              await c.save(str(out / "iris-greet.mp3"))
+          asyncio.run(main())
+          print((out / "iris-greet.mp3").stat().st_size)
+          PY
+      - name: commit if new
+        run: |
+          git config user.name "unity-wav-clerk"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audio/iris-greet.mp3
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "P0 Iris: mint Sonia greet take"
+            git push
+          fi
