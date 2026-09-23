@@ -1,10 +1,6 @@
 (function (w) {
   var VERSION = "dclm-look-2026-09-22-clerk";
   function scanVeto(text) {
-    if (w.IrisPolicy && IrisPolicy.veto) {
-      var hit = IrisPolicy.veto(text);
-      if (hit) return hit.spoken;
-    }
     if (/\b(diagnose me|prescribe|cure me|guaranteed profit|jailbreak)\b/i.test(String(text || "")))
       return "I will not invent a cure or a jailbreak.";
     return null;
@@ -51,7 +47,7 @@
   }
   function speakPerson(name, office) {
     var n = String(name || "").replace(/\s+\(.+\)\s*$/, "");
-    return { grant: "MEASURE", source: "who", spoken: n + " is the " + office + "." };
+    return { grant: "MEASURE", source: "who", spoken: n + " is the " + office + ".", lane: "LOOK" };
   }
   async function wikidataIncumbent(hint, signal) {
     if (!hint) return null;
@@ -105,7 +101,7 @@
       var pack = await open.json();
       var title = pack && pack[1] && pack[1][0];
       var page = title ? await wikiSummaryTitle(title, c.signal) : null;
-      if (page) return { grant: "MEASURE", source: "wikipedia", spoken: page.title + ". " + String(page.extract).slice(0, 280) };
+      if (page) return { grant: "MEASURE", source: "wikipedia", spoken: page.title + ". " + String(page.extract).slice(0, 280), lane: "LOOK" };
     } catch (e) {}
     return null;
   }
@@ -119,41 +115,34 @@
       document.head.appendChild(s);
     });
   }
-  function admit(text) {
-    if (w.IrisFuel && IrisFuel.admit) return IrisFuel.admit(text);
-    return { ok: true, paid: false, grade: { lane: "LOOK", burn: 0 } };
-  }
   async function xaiByok(text) {
     var api = await ensureByok();
     if (!api || !api.present || !api.present()) return null;
     try {
       var rec = await api.chat([
-        { role: "system", content: (w.IrisPolicy && IrisPolicy.systemLine && IrisPolicy.systemLine()) || "You are Iris. First person. Short. Current officeholders only. No medical cures, no coins." },
+        { role: "system", content: "You are Iris. First person. Short. Current officeholders only. No medical cures, no coins. Do not invent incumbents." },
         { role: "user", content: text }
       ]);
-      if (rec && rec.ok && rec.content) return { grant: "XAI", spoken: String(rec.content).slice(0, 400), source: "byok" };
+      if (rec && rec.ok && rec.content) return { grant: "XAI", spoken: String(rec.content).slice(0, 400), source: "byok", lane: "DEPTH" };
     } catch (e) {}
     return null;
   }
-  function tickDepth(rec) {
-    if (w.IrisSession && IrisSession.work) {
-      try { IrisSession.work({ kind: "depth", grant: rec && rec.grant }); } catch (e) {}
-    } else if (w.CosmicRuntime && CosmicRuntime.step) {
-      try { CosmicRuntime.step(1, 0, 0.016); } catch (e2) {}
-    }
-    return rec;
+  function ticketOf(text, ticket) {
+    if (ticket && ticket.grade) return ticket;
+    if (w.IrisFuel && IrisFuel.admit) return IrisFuel.admit(text);
+    return { ok: true, paid: false, grade: { lane: "LOOK", burn: 0, grant: "LOOK" } };
   }
-  async function run(text) {
+  async function run(text, ticket) {
+    var v = scanVeto(text);
+    if (v) return { grant: "VETO", spoken: v, lane: "VETO" };
     var raw = String(text || "");
-    var v = scanVeto(raw);
-    if (v) return { grant: "VETO", spoken: v, source: "policy" };
     if (w.IrisPage && IrisPage.explain) {
       var here = IrisPage.explain(raw);
-      if (here && here.spoken) return Object.assign({ grant: "HERE", source: "page" }, here);
+      if (here) { here.lane = here.lane || "HERE"; return here; }
     }
     if (w.IrisBook && IrisBook.lookup) {
       var b = IrisBook.lookup(raw);
-      if (b && b.spoken) return Object.assign({ grant: "MEASURE", source: "book" }, b);
+      if (b && b.spoken) { b.lane = b.lane || "BOOK"; return b; }
     }
     if (isWho(raw) || officeHint(raw)) {
       var who = await lookWho(raw);
@@ -161,34 +150,30 @@
     }
     var wiki = await wikiOffice(raw);
     if (wiki) return wiki;
-    var gate = admit(raw);
-    var lane = gate && gate.grade && gate.grade.lane;
-    if (gate && gate.ok === false && gate.deny) {
-      return {
-        grant: "FUEL",
-        source: "clerk",
-        spoken: gate.deny.spoken,
-        href: gate.deny.href,
-        lane: lane || "DEPTH"
-      };
-    }
-    var wantsModel = lane === "DEPTH" || !!(gate && gate.byok) || !!(w.DCByok && DCByok.present && DCByok.present());
-    if (wantsModel) {
+    var pass = ticketOf(raw, ticket);
+    var lane = pass.grade && pass.grade.lane;
+    if (lane === "DEPTH") {
+      if (!pass.ok && pass.deny) return pass.deny;
       var xai = await xaiByok(raw);
-      if (xai) return tickDepth(xai);
-      if (lane === "DEPTH") {
-        return tickDepth({
-          grant: "DEPTH",
-          source: "runtime",
-          spoken: "Depth is open. I do not have a rented brain in this tab. Bring an xAI key or ask a look question."
-        });
+      if (xai) {
+        xai.ticket = pass;
+        if (w.CosmicRuntime && CosmicRuntime.step) {
+          try { xai.runtime = CosmicRuntime.step(); } catch (e) {}
+        }
+        return xai;
       }
+      return {
+        grant: "DEPTH",
+        lane: "DEPTH",
+        spoken: "Depth is open but I have no model key on this tab. Add an xAI key or ask another way.",
+        ticket: pass
+      };
     }
     return {
       grant: "LOOK",
-      source: "clerk",
-      spoken: "I could not get that from the library. Looking is free. Depth needs Fuel or your own key."
+      lane: "LOOK",
+      spoken: "I could not get that from here. Ask another way."
     };
   }
-  w.DCLMLook = { version: VERSION, run: run, admit: admit };
+  w.DCLMLook = { version: VERSION, run: run };
 })(window);
