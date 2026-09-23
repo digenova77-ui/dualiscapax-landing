@@ -1,0 +1,17 @@
+{
+  "id": "L-WAV",
+  "state": "DEVELOP",
+  "cause": "KNOWN",
+  "class": "MUTE",
+  "critical": true,
+  "tick": "on-drop",
+  "bot": "unity:wav.watch",
+  "forensics": "unity:forensics.clerk",
+  "design": "unity:design.clerk",
+  "develop": "unity:develop.clerk",
+  "publish": "unity:publisher.clerk",
+  "watch": "unity:wav.watch",
+  "expect": "apex /audio/iris-greet.wav 200 audio/* >= 50KB and index loads js/iris-wav.js",
+  "got": "wav 404 on dualiscapax.ai; audio/ on main has README only; lander does not load iris-wav.js",
+  "blueprint": "AGENT/BLUEPRINTS/L-WAV-greet.md"
+}

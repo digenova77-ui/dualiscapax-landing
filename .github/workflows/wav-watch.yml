@@ -1,0 +1,91 @@
+name: wav-watch
+
+# Voice hole. Critical. TTS is not success.
+on:
+  schedule:
+    - cron: "8,38 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - audio/**
+      - js/iris-wav.js
+      - index.html
+      - AGENT/TICKETS/L-WAV.json
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["critical-drop"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wav-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe the take on disk and on the street
+        run: |
+          python3 << 'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def probe(url):
+              rec = {"url": url, "status": None, "ctype": None, "bytes": 0}
+              try:
+                  req = urllib.request.Request(url, method="GET")
+                  with urllib.request.urlopen(req, timeout=15) as r:
+                      data = r.read()
+                      rec["status"] = getattr(r, "status", 200)
+                      rec["ctype"] = r.headers.get("Content-Type")
+                      rec["bytes"] = len(data)
+              except Exception as e:
+                  rec["error"] = type(e).__name__
+                  rec["status"] = getattr(e, "code", None)
+                  if getattr(e, "headers", None):
+                      rec["ctype"] = e.headers.get("Content-Type")
+              return rec
+
+          apex = probe("https://dualiscapax.ai/audio/iris-greet.wav")
+          mp3 = probe("https://dualiscapax.ai/audio/iris-greet.mp3")
+          lander = probe("https://dualiscapax.ai/")
+          html = ""
+          try:
+              with urllib.request.urlopen("https://dualiscapax.ai/", timeout=15) as r:
+                  html = r.read(20000).decode("utf-8", "replace")
+          except Exception:
+              pass
+          on_disk_wav = Path("audio/iris-greet.wav").is_file()
+          on_disk_mp3 = Path("audio/iris-greet.mp3").is_file()
+          player = Path("js/iris-wav.js").is_file()
+          loaded = "iris-wav.js" in html
+          wav_ok = (
+              apex.get("status") == 200
+              and (apex.get("bytes") or 0) >= 50000
+              and "html" not in (apex.get("ctype") or "").lower()
+          )
+          card = {
+              "kind": "wav-watch",
+              "clerk": "unity:wav.clerk",
+              "watch": "unity:wav.watch",
+              "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "sha": os.environ.get("GITHUB_SHA"),
+              "on_disk_wav": on_disk_wav,
+              "on_disk_mp3": on_disk_mp3,
+              "player_on_disk": player,
+              "lander_loads_player": loaded,
+              "apex_wav": {k: apex.get(k) for k in ("status", "ctype", "bytes", "error")},
+              "apex_mp3": {k: mp3.get(k) for k in ("status", "ctype", "bytes", "error")},
+              "verdict": "LIVE" if wav_ok and loaded else "HOLE",
+              "law": "TTS is a mute-guard. TTS is not success. Patch through publisher.clerk on-drop.",
+          }
+          print(json.dumps(card, indent=2))
+          if card["verdict"] != "LIVE":
+              print("WATCH: WAV HOLE — ticket L-WAV stays CRITICAL")
+          PY

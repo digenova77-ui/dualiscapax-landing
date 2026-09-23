@@ -13,7 +13,7 @@ Every unit reads this file before work. Append-only. Tune in place when the same
 ## L-002 308 — ice door
 - Bot: `unity:rte.ice`
 - Class: 308
-- Cite: `GET https://dualiscapax.ai/ice` self-named 308 / 503
+- Cite: `GET https://dualiscapax.ai/ice` self-named 308 / 503 / 403
 - Avoid: do not sell a room whose door loops
 - Tune: Iris says the door is not open. Fix the rewrite or take the link off the hall
 
@@ -37,3 +37,10 @@ Every unit reads this file before work. Append-only. Tune in place when the same
 - Cite: `/hooks` 404; checkout_open false
 - Avoid: do not say a paid pack lands a seat
 - Tune: Buy Buttons may sit on `/pay`. Fulfill waits on a signed worker
+
+## L-WAV MUTE — greet take missing
+- Bot: `unity:wav.watch`
+- Class: MUTE
+- Cite: `https://dualiscapax.ai/audio/iris-greet.wav` 404; `audio/` on main is README only
+- Avoid: do not call TTS a successful greet. TTS is a mute-guard and a hole.
+- Tune: drop a ≥50KB speech take on root `audio/`, load `js/iris-wav.js`, curl until 200
