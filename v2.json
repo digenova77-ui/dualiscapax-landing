@@ -1,0 +1,24 @@
+{
+  "api_version": "2",
+  "ok": true,
+  "jacket": "AV V2",
+  "street": "https://dualiscapax.ai/",
+  "live_pipe": "https://dualiscapax.ai/api/iris",
+  "methods": ["GET", "POST", "OPTIONS"],
+  "aliases": {
+    "/v2/chat": "not_found",
+    "/api/v2/chat": "not_found"
+  },
+  "envelope": {
+    "v": 2,
+    "type": "chat.completion",
+    "messages": [{"role": "user", "content": "..."}],
+    "prompt": "optional string alias",
+    "capabilities": {"want": ["text", "audio", "vision"], "have": ["text"]}
+  },
+  "auth": "BYOK. Authorization: Bearer xai-YOUR_KEY. House key off.",
+  "caps": ["text"],
+  "client": ["/js/api-v2.js", "/js/av-bridge.js"],
+  "fuel": "Look is free. Depth burns a pack. Seals not for sale.",
+  "note": "Pages is the face. /api/iris is the pipe. Missing alias is not an open API."
+}
