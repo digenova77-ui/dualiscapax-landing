@@ -1,12 +1,14 @@
 # PUBLISH LAW — live face of dualiscapax.ai
 
-Stamp: 2026-09-23T13:42Z
+Stamp: 2026-09-23T13:43Z
 Owner unit: `unity:publisher.clerk` (software agent, not a human login)
-Kind: bot
+Watch unit: `unity:publisher.watch` (software agent — amnesia guard)
+Kind: bot / bot
 Seat: factory desk — publish-face
 
 This file wins any chat memory about “how we publish.”
 If an agency forgets this, it failed the job.
+If the clerk forgets this, the watch holes the clerk.
 
 ## What is live
 
@@ -43,10 +45,14 @@ No new Cloudflare API token. No dashboard. No officer tap.
 4. If they do not match: push the intended face onto root `index.html` on `main`. That is the repair.
 5. Do not ask David for a Cloudflare key. Do not send him to the dashboard. That path is closed.
 
-## Unity ID
+## Unity IDs
 
 `unity:publisher.clerk`
 Entity: software agent
 Job: own this law. Before any agency says “deployed” or “live,” this unit must produce the curl + root hash. No hash, no claim.
 
-Human officer (David) does not mint deploy keys for this unit.
+`unity:publisher.watch`
+Entity: software agent
+Job: watch the clerk for amnesia. If the clerk claims live without the curl, or cites Wrangler 10000 / a zip as the street, flag AMNESIA and hole the clerk. The watch does not publish.
+
+Human officer (David) does not mint deploy keys for either unit.
