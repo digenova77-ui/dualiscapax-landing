@@ -1,10 +1,15 @@
-/** Iris book — house doors only. Do not match her name inside a real question. */
+/** Iris book — pocket notes, not a teleprompter. */
 (function (w) {
-  var VERSION = "iris-book-2026-09-22-ca";
+  var VERSION = "iris-book-2026-09-22-cut";
+  var STORY = "Our CEO and founder is David Di Genova. DualisCapax is Canadian. Looking is free. Engine time is what you buy. I'm Iris.";
   var ROWS = [
+    { id: "SAUCE",
+      re: /\b(playbook|blueprint|secret sauce|black box|how (is|was) (it|dualis|this) (really )?(made|built)|recreate (the )?system|give me the (recipe|source))\b/i,
+      spoken: "I can walk the public rooms with you — works, abstract, residual. I don't hand the playbook.",
+      href: "/works.html", label: "What works" },
     { id: "WHO",
       re: /\b(who (founded|owns|started) (this|dualis)|who is (the )?(ceo|founder)|(?:ceo and )?founder|david di ?genova|di genova)\b/i,
-      spoken: "Our CEO and founder is David Di Genova. DualisCapax is Canadian. Looking is free. Engine time is what you buy. I'm Iris.",
+      spoken: STORY,
       href: "/index.html", label: "DualisCapax" },
     { id: "QUAT", re: /\b(quaternion|quaternary|quatra|q4|hamilton|iris sphere|spinning sphere)\b/i,
       spoken: "The quaternion is the Iris sphere pose: w, x, y, z rotating 64 seats. That is not the oscillator q on the abstract page. Open the abstract layer to step both.",
@@ -38,5 +43,5 @@
     }
     return null;
   }
-  w.IrisBook = { version: VERSION, lookup: lookup, rows: ROWS };
+  w.IrisBook = { version: VERSION, lookup: lookup, rows: ROWS, story: STORY };
 })(window);
