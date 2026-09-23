@@ -21,7 +21,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
 .brand img{height:1.15rem;width:auto}
 .who{margin-left:.35rem;font:600 .68rem/1 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,244,245,.62)}
 .tools{margin-left:auto;display:flex;gap:.35rem}
-.tools button{width:2.4rem;height:2.4rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .78rem ui-monospace,monospace}
+.tools button{min-width:2.4rem;height:2.4rem;padding:0 .4rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .72rem ui-monospace,monospace}
 .tools button.on{border-color:var(--blue);color:var(--blue)}
 .plate{position:relative;min-height:0;display:grid;place-items:center}
 .presence{width:min(86vw,28rem);height:min(86vw,28rem);max-height:56dvh}
@@ -54,7 +54,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   <a class="brand" href="/index.html"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who">Iris</span></a>
   <div class="tools">
     <button type="button" id="cam" aria-pressed="false" aria-label="Camera">cam</button>
-    <button type="button" id="screen" aria-pressed="false" aria-label="Share screen">scr</button>
+    <button type="button" id="screen" aria-pressed="false" aria-label="This page">here</button>
     <button type="button" id="hang" aria-label="Hang up">×</button>
   </div>
 </header>
@@ -68,20 +68,20 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   <p class="err" id="err" hidden role="alert"></p>
 </div>
 <p class="sr" id="announce" aria-live="assertive"></p>
-<script src="/js/dsap-engine.js?v=51"></script>
-<script src="/js/iris-sphere.js?v=51"></script>
-<script src="/js/iris-voice.js?v=51"></script>
-<script src="/js/iris-av.js?v=51"></script>
-<script src="/js/iris-session.js?v=51"></script>
-<script src="dclm-look.js?v=51"></script>
+<script src="/js/dsap-engine.js?v=52"></script>
+<script src="/js/iris-sphere.js?v=52"></script>
+<script src="/js/iris-voice.js?v=52"></script>
+<script src="/js/iris-av.js?v=52"></script>
+<script src="/js/iris-session.js?v=52"></script>
+<script src="/js/iris-page.js?v=52"></script>
+<script src="dclm-look.js?v=52"></script>
 <script>
 (function(){
   var cap=document.getElementById("caption");
   var errEl=document.getElementById("err");
   var talk=document.getElementById("talk");
   var pip=document.getElementById("pip");
-  var vid=document.getElementById("you");
-  var rec=null, screenStream=null, busy=false, primed=false, synthWatch=0;
+  var rec=null, busy=false, primed=false, synthWatch=0;
 
   function showErr(m){ if(!m){errEl.hidden=true;errEl.textContent="";return;} errEl.hidden=false;errEl.textContent=m; }
   function line(t){
@@ -131,7 +131,6 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   }
   if(window.IrisSphere&&IrisSphere.mount) IrisSphere.mount("#presence");
   if(window.IrisSphere&&IrisSphere.setWoken) IrisSphere.setWoken(true);
-  if(window.IrisAV&&IrisAV.unlock) IrisAV.unlock();
 
   async function hear(text){
     text=String(text||"").trim();
@@ -173,6 +172,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     var on=!talk.classList.contains("on");
     showErr("");
     primeVoice();
+    if(window.IrisAV&&IrisAV.releaseMicTracks) IrisAV.releaseMicTracks();
     if(on){
       if(!startRec()) return;
       talk.classList.add("on"); talk.setAttribute("aria-pressed","true");
@@ -201,24 +201,16 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   });
 
   document.getElementById("screen").addEventListener("click",function(){
-    var btn=document.getElementById("screen");
-    if(screenStream){
-      screenStream.getTracks().forEach(function(t){t.stop();});
-      screenStream=null; btn.classList.remove("on");
-      pip.classList.remove("on");
-      return;
-    }
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){ showErr("Screen share needs a desktop browser."); return; }
-    navigator.mediaDevices.getDisplayMedia({video:true,audio:false}).then(function(s){
-      screenStream=s; vid.srcObject=s; pip.classList.add("on");
-      btn.classList.add("on");
-    }).catch(function(){ showErr("Screen share blocked."); });
+    showErr("");
+    primeVoice();
+    var spoken = (window.IrisPage && IrisPage.here && IrisPage.here().spoken)
+      || "This is the Iris lab. Talk. I answer. Camera is optional. There is no chat box on purpose.";
+    line(spoken);
+    speakNow(spoken);
   });
 
   document.getElementById("hang").addEventListener("click",function(){
     if(rec) try{rec.stop();}catch(e){}
-    if(screenStream) screenStream.getTracks().forEach(function(t){t.stop();});
-    screenStream=null;
     if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
     if(window.speechSynthesis) speechSynthesis.cancel();
     talk.classList.remove("on");
