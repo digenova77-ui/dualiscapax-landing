@@ -1,10 +1,9 @@
 /**
  * Iris AV — camera, mic, device voice, optional xAI TTS.
- * Locale from IrisVoice / navigator.language.
- * Neural TTS Audio() attaches to DSAP dry so wave() lights the cluster.
+ * Lens is video-only. SpeechRecognition owns the mic on TALK.
  */
 (function (w) {
-  var VERSION = "iris-av-v4-2026-09-22-attach";
+  var VERSION = "iris-av-v4-2026-09-22-lens";
   var state = {
     cam: null,
     mic: null,
@@ -47,6 +46,26 @@
   function markSpeaking(on) {
     state.speaking = !!on;
     if (w.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(!!on);
+  }
+
+  function dropAudio(stream) {
+    if (!stream || !stream.getAudioTracks) return;
+    stream.getAudioTracks().forEach(function (t) {
+      try { t.stop(); stream.removeTrack(t); } catch (e) { try { t.stop(); } catch (e2) {} }
+    });
+  }
+
+  function releaseMic() {
+    dropAudio(state.cam);
+    dropAudio(state.screen);
+    if (state.mic && state.mic !== state.cam && state.mic !== state.screen) {
+      try { state.mic.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+    }
+    state.mic = null;
+    if (state.rec && state.rec.stop) {
+      try { state.rec.stop(); } catch (e2) {}
+    }
+    state.rec = null;
   }
 
   function enableHear() {
@@ -93,7 +112,7 @@
     state.lastKind = "device";
     u.onend = function () { markSpeaking(false); if (done) done(); };
     u.onerror = function () { markSpeaking(false); if (done) done(); };
-    w.speechSynthesis.cancel();
+    try { w.speechSynthesis.resume(); } catch (e0) {}
     try { w.speechSynthesis.speak(u); } catch (e) {
       markSpeaking(false);
       if (done) done();
@@ -144,6 +163,12 @@
       else if (DSAP.pulse) DSAP.pulse(0, 0.42, 220);
     }
     if (w.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(true);
+    var android = false;
+    try { android = /Android/i.test(navigator.userAgent || ""); } catch (eA) {}
+    if (android) {
+      deviceSpeak(text, done);
+      return;
+    }
     neuralSpeak(text).then(function (ok) {
       if (ok) { if (done) done(); return; }
       if (!w.speechSynthesis) {
@@ -156,7 +181,7 @@
   }
 
   async function camera(on) {
-    var stage = document.getElementById("stage");
+    var stage = document.getElementById("stage") || document.getElementById("pip");
     var vid = document.getElementById("you");
     if (!on) {
       if (state.cam) state.cam.getTracks().forEach(function (t) { t.stop(); });
@@ -173,32 +198,32 @@
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: true
-      });
-    } catch (e) {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
         audio: false
       });
+    } catch (e) {
+      err("Camera blocked.");
+      return { live: false, kind: "camera" };
     }
+    dropAudio(stream);
     state.cam = stream;
     if (vid) vid.srcObject = stream;
     if (stage) stage.classList.add("on");
-    if (stream.getAudioTracks && stream.getAudioTracks().length) state.mic = stream;
     err("");
-    return { live: true, kind: "camera", audio: !!(stream.getAudioTracks && stream.getAudioTracks().length) };
+    return { live: true, kind: "camera", audio: false };
   }
 
   async function mic(on) {
     if (!on) {
       if (state.rec && state.rec.stop) try { state.rec.stop(); } catch (e) {}
       state.rec = null;
-      if (state.mic && state.mic !== state.cam) state.mic.getTracks().forEach(function (t) {
-        if (t.kind === "audio") t.stop();
-      });
-      if (state.mic !== state.cam) state.mic = null;
+      if (state.mic && state.mic !== state.cam) {
+        try { state.mic.getTracks().forEach(function (t) { if (t.kind === "audio") t.stop(); }); } catch (e2) {}
+      }
+      state.mic = null;
       return { live: false, kind: "mic" };
     }
+    dropAudio(state.cam);
+    dropAudio(state.screen);
     var SR = w.SpeechRecognition || w.webkitSpeechRecognition;
     if (SR) {
       var rec = new SR();
@@ -222,11 +247,6 @@
       rec.start();
       err("");
       return { live: true, kind: "mic-speech", lang: rec.lang };
-    }
-    if (state.cam && state.cam.getAudioTracks && state.cam.getAudioTracks().length) {
-      state.mic = state.cam;
-      err("Mic is live. Speech-to-text is not on this browser.");
-      return { live: true, kind: "mic-from-camera" };
     }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       err("Mic did not open on this device.");
@@ -259,7 +279,7 @@
   }
 
   async function screen(on) {
-    var stage = document.getElementById("stage");
+    var stage = document.getElementById("stage") || document.getElementById("pip");
     var vid = document.getElementById("you");
     if (!on) {
       if (state.screen) state.screen.getTracks().forEach(function (t) { t.stop(); });
@@ -273,6 +293,7 @@
       return { live: false, kind: "screen" };
     }
     var stream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 15 }, audio: false });
+    dropAudio(stream);
     state.screen = stream;
     if (vid) vid.srcObject = stream;
     if (stage) stage.classList.add("on");
@@ -293,6 +314,7 @@
     camera(false);
     mic(false);
     screen(false);
+    releaseMic();
     if (w.speechSynthesis) w.speechSynthesis.cancel();
     if (w.DSAP && DSAP.cleanup) DSAP.cleanup();
     markSpeaking(false);
@@ -310,7 +332,7 @@
     if (document.getElementById("dc-iris-sphere-src")) return;
     var s = document.createElement("script");
     s.id = "dc-iris-sphere-src";
-    s.src = "/js/iris-sphere.js?v=50";
+    s.src = "/js/iris-sphere.js?v=53";
     s.onload = function () { loadSphere(); };
     document.head.appendChild(s);
   }
@@ -333,6 +355,7 @@
     screen: screen,
     snapshot: snapshot,
     stopAll: stopAll,
+    releaseMic: releaseMic,
     enableHear: enableHear,
     hearOn: hearOn,
     greet: function (line) { var t = line || "I'm Iris. Looking is free."; speak(t); return t; },
