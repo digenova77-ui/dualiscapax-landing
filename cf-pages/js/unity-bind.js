@@ -1,143 +1,101 @@
-/* Unity bind — one seat, many doors.
-   Phrase = DCVault (Ice words). Session = DC_UNITY. Number = UnityID.
-   Ice / teacher / SIMA hatch off the same U1. No student names. Look $0. */
-(function (g) {
-  var KEY = 'dc.unity.seats';
+/**
+ * Unity bind — local tag + room hook.
+ * Look is free. Invoke after a tag is on this device and bound to the pack.
+ * Not a government ID. Not Fuel. Not globally unique until a later hatch desk.
+ */
+(function (w) {
+  var VERSION = "unity-bind-2026-09-22";
+  var ID_KEY = "dc.unity.id";
+  var BIND_KEY = "dc.unity.bind";
 
-  function ls(k) {
-    try {
-      var raw = localStorage.getItem(k);
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) {
-      return null;
-    }
+  function read(key) {
+    try { return JSON.parse(w.localStorage.getItem(key) || "null"); } catch (e) { return null; }
   }
-  function save(k, v) {
-    try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
-    return v;
-  }
-
-  function phraseOpen() {
-    try { return !!(g.DCVault && DCVault.session && DCVault.session()); }
-    catch (e) { return false; }
+  function write(key, val) {
+    try { w.localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+    return val;
   }
 
-  function session() {
-    if (g.DC_UNITY && DC_UNITY.read) return DC_UNITY.read();
-    return ls('dc.unity.session');
+  function current() {
+    return read(ID_KEY);
   }
 
-  function ensureSession() {
-    var s = session();
-    if (s && s.unity_id) return s;
-    if (g.DC_UNITY && DC_UNITY.mint) return DC_UNITY.mint({ jx: 'WORLD' });
-    return null;
+  function binds() {
+    return read(BIND_KEY) || {};
   }
 
-  function rootNumber() {
-    if (g.UnityID && UnityID.mintU1) return UnityID.mintU1();
-    return { schema: 'unity.id.v1', human: 'U1', public: 'DC1-H1-0001', seat: 'operator_first' };
+  function hasId() {
+    var id = current();
+    return !!(id && (id.public || id.human));
   }
 
-  function readSeats() {
-    return ls(KEY) || { schema: 'unity.seats.v1', doors: {}, at: null };
-  }
-
-  function hatch(kind, extra) {
-    if (!phraseOpen()) return { ok: false, hole: 'awaiting_phrase' };
-    var sess = ensureSession();
-    if (!sess) return { ok: false, hole: 'awaiting_unity_session' };
-    var parent = rootNumber();
-    var book = readSeats();
-    var idx = { ice: 1, teacher: 2, sima: 3, visitor: 4 }[kind] || 9;
-    var child = (g.UnityID && UnityID.hatch) ? UnityID.hatch(parent, 1, idx) : {
-      human: parent.human + '.' + String(idx).padStart(2, '0'),
-      public: parent.public + '.' + String(idx).padStart(2, '0'),
-      seat: kind
-    };
-    var door = {
-      kind: kind,
-      human: child.human,
-      public: child.public,
-      parent: parent.public,
-      unity_id: sess.unity_id,
-      confirmed: !!(extra && extra.confirmed),
-      status: (extra && extra.status) || 'CLAIMED',
-      board: (extra && extra.board) || null,
-      school: (extra && extra.school) || null,
-      grade: (extra && extra.grade) || null,
+  function mintVisitor() {
+    var exist = current();
+    if (exist && exist.public) return exist;
+    var serial = 1000 + Math.floor(Math.random() * 8999);
+    var unity = (w.UnityID && UnityID.publicOf)
+      ? UnityID.publicOf(1, 2, serial)
+      : { public: "DC1-H2-" + String(serial).padStart(4, "0"), check: "00", human: "U" + serial };
+    var packet = {
+      schema: "unity.id.v1",
+      version: VERSION,
+      human: unity.human || ("U" + serial),
+      public: unity.public,
+      check: unity.check,
+      seat: "visitor",
+      seed: 2,
+      serial: serial,
+      parent: "DC1-H1-0001",
+      can_hatch: true,
+      kyc: "SELF_DECLARED",
       at: new Date().toISOString()
     };
-    book.unity_id = sess.unity_id;
-    book.root = parent.public;
-    book.human = parent.human;
-    book.doors[kind] = door;
-    book.at = door.at;
-    save(KEY, book);
-    return { ok: true, door: door, seats: book };
+    return write(ID_KEY, packet);
   }
 
-  function attachTeacher() {
-    var bind = ls('dc.teacher.bind') || ls('dc.teacher.seat');
-    if (!bind) return { ok: false, hole: 'awaiting_teacher_bind' };
-    if (!bind.confirmed) return { ok: false, hole: 'awaiting_teacher_confirm' };
-    return hatch('teacher', {
-      confirmed: true,
-      status: 'CONFIRMED',
-      board: bind.board || null,
-      school: bind.school || null,
-      grade: bind.grade || null
-    });
+  function bind(pack) {
+    var id = current() || mintVisitor();
+    var room = String(pack || "house");
+    var map = binds();
+    map[room] = { public: id.public, human: id.human, at: Date.now() };
+    write(BIND_KEY, map);
+    return { ok: true, id: id, pack: room, bound: true };
   }
 
-  function attachIce() {
-    return hatch('ice', { confirmed: false, status: 'CLAIMED' });
+  function bound(pack) {
+    if (!hasId()) return false;
+    var room = String(pack || "");
+    if (!room) return false;
+    var map = binds();
+    return !!(map[room] && map[room].public);
   }
 
-  function attachSima() {
-    return hatch('sima', { confirmed: false, status: 'ARCHITECTURE' });
+  function canLook() {
+    return true;
+  }
+
+  function canInvoke(pack) {
+    return hasId() && bound(pack);
   }
 
   function snapshot() {
     return {
-      phrase: phraseOpen(),
-      session: session(),
-      seats: readSeats(),
-      teacher: ls('dc.teacher.bind') || ls('dc.teacher.seat'),
-      vault: !!(g.DCVault && DCVault.hasVault && DCVault.hasVault())
+      version: VERSION,
+      hasId: hasId(),
+      id: current(),
+      binds: binds()
     };
   }
 
-  function paint(el) {
-    if (!el) return;
-    var snap = snapshot();
-    var doors = (snap.seats && snap.seats.doors) || {};
-    var lines = [];
-    lines.push(snap.phrase ? 'Phrase open on this phone.' : 'Phrase locked. Same eight words as Ice.');
-    lines.push(snap.session && snap.session.unity_id
-      ? ('Unity ID ' + String(snap.session.unity_id).slice(0, 8))
-      : 'Unity session awaiting_phrase');
-    ['ice', 'teacher', 'sima'].forEach(function (k) {
-      var d = doors[k];
-      lines.push(d
-        ? (k + ' · ' + d.human + ' · ' + d.status)
-        : (k + ' · hole'));
-    });
-    if (snap.teacher && snap.teacher.confirmed) {
-      lines.push('Room: ' + (snap.teacher.school || 'named') + ' / ' + (snap.teacher.grade || 'grade'));
-    }
-    el.textContent = lines.join('\n');
-  }
-
-  g.UnityBind = {
-    phraseOpen: phraseOpen,
-    session: session,
-    hatch: hatch,
-    attachTeacher: attachTeacher,
-    attachIce: attachIce,
-    attachSima: attachSima,
-    snapshot: snapshot,
-    seats: readSeats,
-    paint: paint
+  w.UnityBind = {
+    version: VERSION,
+    current: current,
+    hasId: hasId,
+    mint: mintVisitor,
+    bind: bind,
+    bound: bound,
+    canLook: canLook,
+    canInvoke: canInvoke,
+    snapshot: snapshot
   };
-})(typeof window !== 'undefined' ? window : globalThis);
+})(window);
