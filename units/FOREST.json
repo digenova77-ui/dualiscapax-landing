@@ -1,6 +1,13 @@
 {
   "title": "DualisCapax unit forest",
   "law": "Cite-or-hole. One writer per minute. Plate is Merge. Book is Swarm. Never invent.",
+  "thin_law": "Sleep when packs plateau. Keep data. Drop the twice-an-hour cron. A test may wake one clerk.",
+  "flow": {
+    "id": "unity:flow.clerk",
+    "watch": "unity:flow.watch",
+    "picks": "hottest HOLE ticket any sector",
+    "lock": "one floater at a time"
+  },
   "conductor": {
     "id": "merge-plate",
     "owns": "cf-pages/",
@@ -24,10 +31,11 @@
     {"id": "factory-workers", "workflow": "factory_workers.yml", "cron": "22,52 * * * *"},
     {"id": "ice-session-bot", "workflow": "ice_session_bot.yml", "cron": "27,57 * * * *"}
   ],
-  "holes": ["rte-stream-rights", "family-schedule-bind", "signed-contracts"],
+  "holes": ["rte-stream-rights", "family-schedule-bind", "signed-contracts", "L-003-engine-unlink", "ice-door"],
   "hashtags_when_ice_200": ["#DualisCapax", "#citeorhole", "#OMHA", "#OWHA", "#OHF"],
   "factory": {
-    "demoted": ["swarm_bot_fleet.yml", "swarm_runner.yml"]
+    "demoted": ["swarm_bot_fleet.yml", "swarm_runner.yml"],
+    "sleep_when": "packs plateau and no driving test"
   },
   "anti_circle": {
     "closed_paths": ["cloudflare_api_token_wrangler_pages_deploy", "apex_chase_same_dashboard_loop", "ask_user_for_api_tokens"]
