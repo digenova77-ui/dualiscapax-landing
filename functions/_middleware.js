@@ -1,17 +1,19 @@
-/* Serve pretty-stems as 200 assets. No Location. Home passes through. ICE → RINK. */
+/* Pretty stems as 200 assets. No Location. Home passes through. Hockey is the product. */
 const MAP = {
-  "/ice": "/rink.html",
-  "/ice/": "/rink.html",
-  "/ice.html": "/rink.html",
+  "/ice": "/hockey.html",
+  "/ice/": "/hockey.html",
+  "/ice.html": "/hockey.html",
   "/look": "/look.html",
   "/look/": "/look.html",
   "/look.html": "/look.html",
   "/hockey": "/hockey.html",
   "/hockey/": "/hockey.html",
   "/hockey.html": "/hockey.html",
-  "/rink": "/rink.html",
-  "/rink/": "/rink.html",
-  "/rink.html": "/rink.html",
+  "/rink": "/hockey.html",
+  "/rink/": "/hockey.html",
+  "/rink.html": "/hockey.html",
+  "/barn": "/hockey.html",
+  "/barn/": "/hockey.html",
   "/alacarte": "/alacarte.html",
   "/alacarte/": "/alacarte.html",
   "/alacarte.html": "/alacarte.html",
@@ -33,9 +35,7 @@ const MAP = {
   "/rte/easthill/class": "/rte/easthill/class.html",
   "/rte/easthill/class.html": "/rte/easthill/class.html",
   "/rte/easthill/share": "/rte/easthill/share.html",
-  "/rte/easthill/share.html": "/rte/easthill/share.html",
-  "/ice-desk": "/ice-desk/index.html",
-  "/ice-desk/": "/ice-desk/index.html"
+  "/rte/easthill/share.html": "/rte/easthill/share.html"
 };
 
 export async function onRequest(context) {
