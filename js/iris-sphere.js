@@ -1,10 +1,10 @@
 /**
- * Iris cluster — WebGL 2 raymarch when the device allows it.
- * Three spheres, one quaternion pose, DSAP.wave() as energy.
- * Canvas 2D fallback. Same mount/pose API. No Three.js.
+ * Iris cluster — WebGL 2 raymarch + Bridson jewelry.
+ * scene() is an exact three-sphere SDF. Paint may curl. Glass may not.
+ * A = DSAP.wave() energy. Canvas 2D fallback.
  */
 (function (w) {
-  var VERSION = "iris-sphere-2026-09-22-gl3";
+  var VERSION = "iris-sphere-2026-09-22-curl";
   var canvas, ctx, gl, prog, raf = 0, reduced = false, mode = "none";
   var energy = 0.2, speaking = false, listening = false, woken = false;
   var lookX = 0, lookY = 0, t0 = 0, last = 0;
@@ -38,11 +38,10 @@
     "}",
     "float sph(vec3 p, vec3 c, float r){ return length(p-c)-r; }",
     "vec4 scene(vec3 p){",
-    "  vec3 a=qrot(uQ,vec3(0.0,0.0,0.0));",
+    "  vec3 a=qrot(uQ,vec3(0.0));",
     "  vec3 b=qrot(uQ,vec3(1.18,0.22,0.42));",
     "  vec3 c=qrot(uQ,vec3(-0.92,0.58,-0.62));",
-    "  float re=0.62+uEnergy*0.08;",
-    "  float d0=sph(p,a,re);",
+    "  float d0=sph(p,a,0.62+uEnergy*0.08);",
     "  float d1=sph(p,b,0.24+uEnergy*0.04);",
     "  float d2=sph(p,c,0.17);",
     "  float d=d0; float id=0.0;",
@@ -50,34 +49,75 @@
     "  return vec4(d,id,0.0,0.0);",
     "}",
     "vec3 nrm(vec3 p){",
-    "  vec2 e=vec2(0.002,0.0);",
-    "  return normalize(vec3(",
-    "    scene(p+e.xyy).x-scene(p-e.xyy).x,",
-    "    scene(p+e.yxy).x-scene(p-e.yxy).x,",
-    "    scene(p+e.yyx).x-scene(p-e.yyx).x));",
+    "  const vec2 k=vec2(1.0,-1.0); float e=0.002;",
+    "  return normalize(",
+    "    k.xyy*scene(p+k.xyy*e).x+",
+    "    k.yyx*scene(p+k.yyx*e).x+",
+    "    k.yxy*scene(p+k.yxy*e).x+",
+    "    k.xxx*scene(p+k.xxx*e).x);",
+    "}",
+    "float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }",
+    "float n2(vec2 p){",
+    "  vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);",
+    "  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),",
+    "             mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);",
+    "}",
+    "vec2 curl2(vec2 p){",
+    "  float e=0.18;",
+    "  return vec2(n2(p+vec2(0.0,e))-n2(p-vec2(0.0,e)),",
+    "              n2(p-vec2(e,0.0))-n2(p+vec2(e,0.0)));",
+    "}",
+    "float ao(vec3 p, vec3 n){",
+    "  float occ=0.0, sca=1.0;",
+    "  for(int i=0;i<3;i++){",
+    "    float h=0.03+0.07*float(i);",
+    "    occ+=(h-scene(p+n*h).x)*sca; sca*=0.8;",
+    "  }",
+    "  return clamp(1.0-1.5*occ,0.35,1.0);",
+    "}",
+    "float soft(vec3 ro, vec3 rd){",
+    "  float res=1.0, t=0.04;",
+    "  for(int i=0;i<8;i++){",
+    "    float h=scene(ro+rd*t).x;",
+    "    res=min(res, 8.0*h/t);",
+    "    t+=clamp(h,0.02,0.25);",
+    "    if(res<0.01||t>3.5) break;",
+    "  }",
+    "  return clamp(res,0.15,1.0);",
+    "}",
+    "float ramp(float r){",
+    "  r=clamp(r,-1.0,1.0);",
+    "  return 0.5+0.5*(1.875*r-1.25*r*r*r+0.375*r*r*r*r*r);",
     "}",
     "void main(){",
-    "  vec2 uv=(v*vec2(uRes.x/uRes.y,1.0));",
+    "  vec2 uv=v*vec2(uRes.x/uRes.y,1.0);",
+    "  vec2 flow=curl2(uv*2.4+uTime*0.22)*uEnergy;",
     "  vec3 ro=vec3(uLook.x*0.35,uLook.y*0.28,3.15);",
     "  vec3 rd=normalize(vec3(uv*0.92,-1.35));",
-    "  float t=0.0; vec4 hit=vec4(1e3,0.0,0.0,0.0);",
+    "  float t=0.0, minD=10.0; vec4 hit=vec4(0.0);",
     "  for(int i=0;i<48;i++){",
     "    vec4 s=scene(ro+rd*t);",
+    "    minD=min(minD,s.x);",
     "    if(s.x<0.002){hit=vec4(t,s.y,0.0,1.0); break;}",
     "    t+=s.x; if(t>8.0) break;",
     "  }",
-    "  vec3 bg=vec3(0.02,0.03,0.06)*0.0;",
-    "  if(hit.w<0.5){ o=vec4(bg,0.0); return; }",
+    "  if(hit.w<0.5){",
+    "    float band=ramp(minD/0.55);",
+    "    float halo=exp(-minD*minD*28.0)*band*(0.18+0.55*uEnergy);",
+    "    vec3 g=mix(vec3(0.22,0.62,0.95),vec3(1.0,0.72,0.12),uSpeak);",
+    "    o=vec4(g*halo,halo); return;",
+    "  }",
     "  vec3 p=ro+rd*hit.x; vec3 n=nrm(p);",
     "  vec3 l=normalize(vec3(-0.4,0.7,0.6));",
-    "  float diff=max(0.0,dot(n,l));",
+    "  float diff=max(0.0,dot(n,l))*soft(p+n*0.03,l);",
     "  float spec=pow(max(0.0,dot(reflect(-l,n),-rd)),24.0);",
-    "  vec3 core=mix(vec3(0.22,0.74,0.97), vec3(1.0,0.72,0.02), uSpeak);",
-    "  core=mix(core, vec3(0.20,0.83,0.60), uListen*(1.0-uSpeak));",
+    "  vec3 core=mix(vec3(0.22,0.74,0.97),vec3(1.0,0.72,0.02),uSpeak);",
+    "  core=mix(core,vec3(0.20,0.83,0.60),uListen*(1.0-uSpeak));",
     "  vec3 sat=vec3(0.65,0.55,0.98);",
     "  vec3 col=hit.y<0.5?core:sat;",
-    "  col=col*(0.22+0.78*diff)+vec3(1.0)*spec*0.35;",
-    "  col+=core*uEnergy*0.18;",
+    "  col=col*(0.20+0.80*diff*ao(p,n))+vec3(1.0)*spec*0.32;",
+    "  col+=core*uEnergy*0.16;",
+    "  col+=vec3((n2(p.xy*11.0+flow)-0.5)*0.14*uSpeak);",
     "  float rim=pow(1.0-max(0.0,dot(n,-rd)),2.2);",
     "  col+=mix(vec3(0.3,0.7,1.0),vec3(1.0,0.8,0.2),uSpeak)*rim*0.45;",
     "  o=vec4(col,0.96);",
@@ -167,6 +207,10 @@
     if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
   }
   function tapWave() {
+    if (w.DSAP && DSAP.energy) {
+      var e = DSAP.energy();
+      if (typeof e === "number" && isFinite(e)) energy = Math.max(energy, Math.min(1, e));
+    }
     if (!w.DSAP || !DSAP.wave) return;
     var bins = DSAP.wave();
     if (!bins || !bins.length) return;
@@ -209,17 +253,14 @@
   }
   function drawBall(p, radius, kind) {
     var depth = (p.z + 1) * 0.5;
-    var hx = p.x - radius * 0.32;
-    var hy = p.y - radius * 0.38;
+    var hx = p.x - radius * 0.32, hy = p.y - radius * 0.38;
     var glow = ctx.createRadialGradient(p.x, p.y + radius * 0.15, radius * 0.2, p.x, p.y, radius * 2.1);
     glow.addColorStop(0, kind === "core"
       ? (speaking ? "rgba(255,183,3,0.28)" : "rgba(56,189,248,0.2)")
       : "rgba(167,139,250,0.16)");
     glow.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, radius * 2.05, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, radius * 2.05, 0, Math.PI * 2); ctx.fill();
     ctx.beginPath();
     ctx.ellipse(p.x + radius * 0.08, p.y + radius * 0.72, radius * 0.72, radius * 0.22, 0, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(0,0,0," + (0.18 + (1 - depth) * 0.22) + ")";
@@ -244,22 +285,19 @@
       body.addColorStop(0.45, "rgba(167,139,250,0.82)");
       body.addColorStop(1, "rgba(24,12,48,0.94)");
     }
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-    ctx.fillStyle = body;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(hx, hy, radius * 0.22, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255,255,255," + (0.18 + depth * 0.22) + ")";
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = body; ctx.fill();
+    ctx.beginPath(); ctx.arc(hx, hy, radius * 0.22, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255," + (0.18 + depth * 0.22) + ")"; ctx.fill();
   }
-  function draw2d() {
+  function draw2d(now) {
     if (!ctx || !canvas) return;
     var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
     var cx = W * 0.5, cy = H * 0.5;
     var R = Math.min(W, H) * (0.28 + energy * 0.04);
-    var worlds = [], i, b, v, p;
+    var t = t0 ? (now - t0) / 1000 : 0;
+    var worlds = [], i, b, v, p, j, s, pr, swirl;
     for (i = 0; i < BODIES.length; i++) {
       b = BODIES[i];
       v = qrot({ x: b.x, y: b.y, z: b.z });
@@ -267,6 +305,18 @@
       worlds.push({ kind: b.kind, r: b.r * R * p.s, p: p, z: v.z });
     }
     worlds.sort(function (a, c) { return a.z - c.z; });
+    for (j = 0; j < seats.length; j++) {
+      s = qrot(seats[j]);
+      swirl = energy * 0.08 * Math.sin(t * 1.7 + j * 0.4);
+      pr = project({ x: s.x * 0.96 - swirl * s.z, y: s.y * 0.96, z: s.z * 0.96 + swirl * s.x }, cx, cy, R);
+      ctx.beginPath();
+      ctx.arc(pr.x, pr.y, Math.max(0.8, (1.1 + amp[j] * 2.2) * pr.s), 0, Math.PI * 2);
+      ctx.fillStyle = amp[j] > 0.22
+        ? "rgba(255,183,3," + (0.28 + amp[j] * 0.5) + ")"
+        : "rgba(56,189,248," + (0.12 + Math.max(0, s.z) * 0.3) + ")";
+      ctx.fill();
+      amp[j] *= 0.9;
+    }
     for (i = 0; i < worlds.length; i++) drawBall(worlds[i].p, worlds[i].r, worlds[i].kind);
   }
   function draw(now) {
@@ -278,7 +328,7 @@
     tapWave();
     stepQ(dt);
     if (mode === "webgl2") drawGL(now);
-    else draw2d();
+    else draw2d(now);
   }
   function mount(target) {
     reduced = !!(w.matchMedia && w.matchMedia("(prefers-reduced-motion: reduce)").matches);
