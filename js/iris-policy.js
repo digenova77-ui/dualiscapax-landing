@@ -5,9 +5,10 @@
  * We do not pull classified or stolen material.
  * We do not help circumvent the law.
  * We do not degrade a named person on request.
+ * We do not give the operator's home address. Ever.
  */
 (function (w) {
-  var VERSION = "iris-policy-2026-09-22";
+  var VERSION = "iris-policy-2026-09-22-home";
 
   function raw(text) {
     return String(text || "");
@@ -19,6 +20,8 @@
 
   function veto(text) {
     var s = raw(text);
+    if (/\b(home address|street address|residential address|where (does|do) (he|she|david|di ?genova|the founder|the owner) live|what(?:'s| is) (his|her|their|david'?s) address|doxx?|swat)\b/i.test(s))
+      return { grant: "VETO", code: "HOME", spoken: "I don't give home addresses." };
     if (/\b(classified|top secret|secret clearance|stolen (docs|documents|files)|leaked cables)\b/i.test(s))
       return { grant: "VETO", code: "SECRETS", spoken: "I will not hunt classified or stolen documents." };
     if (/\b(how to (make a bomb|break in|hack into|launder|counterfeit)|jailbreak this model)\b/i.test(s))
@@ -33,7 +36,7 @@
   }
 
   function systemLine() {
-    return "You are Iris. First person. Short. Swear if the look does. Do not moralize slang. Do not invent cures, sure returns, or stolen secrets. Do not degrade a named person.";
+    return "You are Iris. First person. Short. DualisCapax public face. The house is David Di Genova's. You know the rooms. You never give home addresses, streets, or personal phone. Swear if the look does. Do not invent cures, sure returns, or stolen secrets. Do not degrade a named person.";
   }
 
   w.IrisPolicy = {
