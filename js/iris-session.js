@@ -1,14 +1,13 @@
 /**
  * IrisSession — one environment.
- * Gemini splits Live (orb + call) from Spark (jobs after hangup).
- * Dualis does not. Listen, think, speak, and work share one id and one orb.
+ * Clerk sits in front of think(): admit() then LOOK before xAI.
  */
 (function (w) {
-  var VERSION = "iris-session-2026-09-22-one";
+  var VERSION = "iris-session-2026-09-22-clerk";
   var STATE = { IDLE: "idle", LISTEN: "listen", THINK: "think", SPEAK: "speak", WORK: "work" };
   var id = "iris-" + Date.now().toString(36);
   var state = STATE.IDLE;
-  var last = { text: "", spoken: "", job: null };
+  var last = { text: "", spoken: "", job: null, ticket: null, rec: null };
   var listeners = [];
 
   function emit(kind, extra) {
@@ -47,6 +46,11 @@
     return state;
   }
 
+  function admit(text) {
+    if (w.IrisFuel && IrisFuel.admit) return IrisFuel.admit(text);
+    return { ok: true, paid: false, grade: { lane: "LOOK", burn: 0, grant: "LOOK" } };
+  }
+
   function attach(host) {
     if (w.IrisSphere && IrisSphere.mount) {
       try { IrisSphere.mount(host || "#presence" || "#iris-sphere"); } catch (e) {}
@@ -67,18 +71,23 @@
 
   function think(text) {
     last.text = text || "";
+    last.ticket = admit(last.text);
     setState(STATE.THINK);
-    emit("think", { text: last.text });
-    if (w.DCLMLook && DCLMLook.run) return Promise.resolve(DCLMLook.run(last.text));
+    emit("think", { text: last.text, ticket: last.ticket });
+    if (w.DCLMLook && DCLMLook.run) return Promise.resolve(DCLMLook.run(last.text, last.ticket)).then(function (rec) {
+      last.rec = rec || null;
+      return rec;
+    });
     if (w.IrisLive && IrisLive.run) return Promise.resolve(IrisLive.run(last.text));
-    return Promise.resolve({ spoken: last.text || "I'm Iris." });
+    return Promise.resolve({ spoken: last.text || "I'm Iris.", lane: "LOOK" });
   }
 
   function speak(rec) {
-    rec = rec || {};
+    rec = rec || last.rec || {};
     last.spoken = rec.spoken || rec.text || "";
+    last.rec = rec;
     setState(STATE.SPEAK);
-    emit("speak", { spoken: last.spoken });
+    emit("speak", { spoken: last.spoken, grant: rec.grant, lane: rec.lane });
     var done = function () { setState(STATE.IDLE); return rec; };
     if (w.IrisAV && IrisAV.speak && last.spoken) {
       return Promise.resolve(IrisAV.speak(last.spoken)).then(done, done);
@@ -88,10 +97,11 @@
 
   function work(job) {
     last.job = job || { kind: "tick" };
+    var depth = last.ticket && last.ticket.ok && last.ticket.grade && last.ticket.grade.lane === "DEPTH";
     setState(STATE.WORK);
-    emit("work", last.job);
-    if (w.CosmicRuntime && CosmicRuntime.step) {
-      try { CosmicRuntime.step(); } catch (e) {}
+    emit("work", { job: last.job, depth: !!depth });
+    if (depth && w.CosmicRuntime && CosmicRuntime.step) {
+      try { last.job.runtime = CosmicRuntime.step(); } catch (e) {}
     }
     if (w.CosmicFactory && CosmicFactory.tick) {
       try { CosmicFactory.tick("work", last.job); } catch (e2) {}
@@ -120,6 +130,7 @@
       pose: w.IrisSphere && IrisSphere.pose ? IrisSphere.pose() : null,
       hasAv: !!(w.IrisAV && IrisAV.speak),
       hasLook: !!(w.DCLMLook && DCLMLook.run),
+      hasFuel: !!(w.IrisFuel && IrisFuel.admit),
       hasFactory: !!(w.CosmicFactory && CosmicFactory.tick),
       hasRuntime: !!(w.CosmicRuntime && CosmicRuntime.step)
     };
@@ -135,6 +146,7 @@
     work: work,
     say: say,
     interrupt: interrupt,
+    admit: admit,
     state: function () { return state; },
     id: function () { return id; },
     snapshot: snapshot,
