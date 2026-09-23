@@ -1,0 +1,91 @@
+name: forensics
+
+# Research desk. Identifies the hole. Does not push main.
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: forensics
+  cancel-in-progress: true
+
+jobs:
+  desk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe street and name the bot
+        run: |
+          python3 << 'PY'
+          import json, urllib.request
+          from datetime import datetime, timezone
+
+          def hit(path):
+              rec = {"path": path, "status": None}
+              try:
+                  req = urllib.request.Request("https://dualiscapax.ai" + path, method="GET")
+                  with urllib.request.urlopen(req, timeout=12) as r:
+                      rec["status"] = getattr(r, "status", 200)
+                      rec["body"] = r.read(8000).decode("utf-8", "replace")
+              except Exception as e:
+                  rec["error"] = type(e).__name__
+                  rec["status"] = getattr(e, "code", None)
+                  rec["body"] = ""
+              return rec
+
+          home = hit("/")
+          ice = hit("/ice")
+          jacket = hit("/api/v2/chat")
+          iris = hit("/api/iris")
+          body = home.get("body") or ""
+          rows = []
+
+          def add(bot, floor, cls, expect, got, lesson):
+              rows.append({
+                  "ts": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                  "bot": bot,
+                  "kind": "bot",
+                  "floor": floor,
+                  "class": cls,
+                  "expect": expect,
+                  "got": got,
+                  "lesson": lesson,
+              })
+
+          if "engine-link.js" not in body and "engine-runtime.js" not in body:
+              add("unity:publisher.clerk", "engine", "HOLE",
+                  "lander loads engine-runtime + engine-link",
+                  "scripts missing from apex HTML",
+                  "L-003: do not claim the engine is on the site")
+          if ice.get("status") in (308, 503):
+              add("unity:rte.ice", "ice", "308",
+                  "/ice 200",
+                  str(ice.get("status")),
+                  "L-002: do not sell a looping door")
+          if jacket.get("status") == 404:
+              add("unity:jacket.watch", "jacket", "NOT_FOUND",
+                  "/api/v2/chat 200",
+                  "404",
+                  "L-004: V2 is a plate until a worker exists")
+          if iris.get("status") == 200:
+              add("unity:jacket.watch", "jacket", "OK",
+                  "/api/iris up",
+                  "200",
+                  "live pipe is /api/iris BYOK")
+
+          card = {
+              "kind": "forensics",
+              "clerk": "unity:forensics.clerk",
+              "watch": "unity:forensics.watch",
+              "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "lessons_file": "AGENT/LESSONS.md",
+              "rows": rows,
+              "law": "Name the bot. Write the lesson. Do not push main from this job.",
+          }
+          print(json.dumps(card, indent=2))
+          PY
