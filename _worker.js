@@ -1,16 +1,19 @@
-/* Pages Advanced Mode. Fail-open to ASSETS. Home never mapped. */
+/* Pages Advanced Mode. Fail-open to ASSETS. Home never mapped. Hockey is the product. */
 const MAP = {
-  "/ice": "/rink.html",
-  "/ice/": "/rink.html",
-  "/ice.html": "/rink.html",
+  "/ice": "/hockey.html",
+  "/ice/": "/hockey.html",
+  "/ice.html": "/hockey.html",
   "/look": "/look.html",
   "/look/": "/look.html",
   "/look.html": "/look.html",
-  "/rink": "/rink.html",
-  "/rink/": "/rink.html",
-  "/rink.html": "/rink.html",
-  "/hockey": "/rink.html",
-  "/hockey/": "/rink.html",
+  "/rink": "/hockey.html",
+  "/rink/": "/hockey.html",
+  "/rink.html": "/hockey.html",
+  "/hockey": "/hockey.html",
+  "/hockey/": "/hockey.html",
+  "/hockey.html": "/hockey.html",
+  "/barn": "/hockey.html",
+  "/barn/": "/hockey.html",
   "/alacarte": "/alacarte.html",
   "/alacarte/": "/alacarte.html",
   "/alacarte.html": "/alacarte.html",
@@ -26,16 +29,20 @@ const MAP = {
 
 export default {
   async fetch(request, env) {
+    const assets = env && env.ASSETS;
+    if (!assets || !assets.fetch) {
+      return new Response("assets unbound", { status: 503 });
+    }
     const url = new URL(request.url);
     const dest = MAP[url.pathname];
     try {
-      if (dest && env.ASSETS) {
+      if (dest) {
         url.pathname = dest;
-        return env.ASSETS.fetch(new Request(url.toString(), request));
+        return assets.fetch(new Request(url.toString(), request));
       }
     } catch (e) {
       /* fail-open */
     }
-    return env.ASSETS.fetch(request);
+    return assets.fetch(request);
   }
 };
