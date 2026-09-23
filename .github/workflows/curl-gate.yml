@@ -1,0 +1,33 @@
+name: curl-gate
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe live seats
+        run: |
+          set +e
+          fail=0
+          check() {
+            path="$1"
+            want="$2"
+            code=$(curl -sS -o /dev/null -w "%{http_code}" --max-redirs 0 "https://dualiscapax.ai$path" || echo 000)
+            loc=$(curl -sS -D - -o /dev/null --max-redirs 0 "https://dualiscapax.ai$path" | awk 'tolower($1)=="location:"{print $2}' | tr -d '\r')
+            echo "$code $path loc=$loc want=$want"
+            if [ "$code" != "$want" ]; then fail=1; fi
+            if [ "$loc" = "$path" ] || [ "$loc" = "${path}/" ]; then
+              echo "FAIL 308-self $path"
+              fail=1
+            fi
+          }
+          check / 200
+          check /unity 200
+          check /dash 200
+          check /rte/sima-dclm/ 200
+          check /sima 200
+          check /ice 200
+          check /look 200
+          check /rte 200
+          exit $fail
