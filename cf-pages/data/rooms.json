@@ -1,0 +1,98 @@
+{
+  "schema": "dualis.rooms.v1",
+  "note": "One shell. Rooms change clothes. Look is free. Functions wait on Unity ID. Checkout closed.",
+  "gate": {
+    "look": "free",
+    "functions": "unity-id",
+    "checkout": "closed",
+    "iris": "bolt"
+  },
+  "default": "home",
+  "rooms": [
+    {
+      "id": "home",
+      "path": "/",
+      "match": ["/", "/index.html"],
+      "title": "Front door",
+      "cafe": "You just walked in. That's Iris. Ask her what this place is.",
+      "theme": "home",
+      "look": true,
+      "fn": false
+    },
+    {
+      "id": "iris",
+      "path": "/ai/app.html",
+      "match": ["/ai/", "/ai/app.html", "/iris.html"],
+      "title": "Talk to Iris",
+      "cafe": "Same conversation as the front door, with the lights on. Camera stays off until you ask. She talks back.",
+      "theme": "iris",
+      "look": true,
+      "fn": false
+    },
+    {
+      "id": "residual",
+      "path": "/residual.html",
+      "match": ["/residual.html", "/fuel.html"],
+      "kicker": "01",
+      "title": "Money that already left",
+      "cafe": "You already paid somebody. This room is about leftover that should have come home. Looking is free. Nobody here is treating you.",
+      "theme": "gold",
+      "look": true,
+      "fn": false
+    },
+    {
+      "id": "edge",
+      "path": "/edge.html",
+      "match": ["/edge.html"],
+      "kicker": "02",
+      "title": "Where the computers sit",
+      "cafe": "The work runs close to you, not in a costume cloud. You can look at the catalog. Turning the knobs waits on an ID.",
+      "theme": "cobalt",
+      "look": true,
+      "fn": true
+    },
+    {
+      "id": "research",
+      "path": "/research/",
+      "match": ["/research/", "/research/index.html"],
+      "kicker": "04",
+      "title": "The reading pile",
+      "cafe": "Notes and papers. Look all you want. Long computer jobs are a prepaid pack. She'll say the price as a sentence first.",
+      "theme": "violet",
+      "look": true,
+      "fn": true
+    },
+    {
+      "id": "unity",
+      "path": "/bind.html",
+      "match": ["/bind.html", "/access.html"],
+      "kicker": "05",
+      "title": "One name",
+      "cafe": "If you want to do more than look, you need one ID so you are not ten logins. You can walk away after. Sales stay closed.",
+      "theme": "mint",
+      "look": true,
+      "fn": true
+    },
+    {
+      "id": "hockey",
+      "path": "/hockey.html",
+      "match": ["/hockey.html", "/gameday.html"],
+      "title": "Rink (look)",
+      "cafe": "A rink-shaped room so you can see the idea. Hockey is a room, not the company. No plays fire without an ID.",
+      "theme": "ice",
+      "look": true,
+      "fn": true,
+      "demo": true
+    },
+    {
+      "id": "hall",
+      "path": "/hall/",
+      "match": ["/hall/", "/hall/index.html", "/deck/", "/deck/index.html"],
+      "title": "Mission control",
+      "cafe": "Pick a room. Same building. Different clothes.",
+      "theme": "deck",
+      "look": true,
+      "fn": false
+    }
+  ]
+}
