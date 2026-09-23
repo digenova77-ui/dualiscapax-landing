@@ -1,10 +1,10 @@
 /**
  * DualisCapax API client config
- * World 0 Ground Zero → API v1. World 1 One → API v2.
+ * Default World 1 One → API v2. World 0 only if explicitly set.
  * Secret stays on the worker only.
  */
 (function (g) {
-  var world = g.DC_WORLD === 1 ? 1 : 0;
+  var world = g.DC_WORLD === 0 ? 0 : 1;
   g.DC_WORLD = world;
   g.DC_WORLD_NAME = world === 1 ? 'ONE' : 'GROUND_ZERO';
   g.DC_API_VERSION = world === 1 ? '2' : '1';
@@ -35,12 +35,12 @@
       headers: {
         'Content-Type': 'application/json',
         'X-DC-Fuel': String(fuelBal != null ? fuelBal : ''),
-        'X-DC-World': String(g.DC_WORLD || 0),
-        'X-DC-API-Version': String(g.DC_API_VERSION || '1')
+        'X-DC-World': String(g.DC_WORLD || 1),
+        'X-DC-API-Version': String(g.DC_API_VERSION || '2')
       },
       body: JSON.stringify({
-        world: g.DC_WORLD || 0,
-        api_version: String(g.DC_API_VERSION || '1'),
+        world: g.DC_WORLD || 1,
+        api_version: String(g.DC_API_VERSION || '2'),
         messages: messages,
         fuel: { balance: fuelBal, burn: opts.burn || 1 },
         session_id: opts.session_id || null,
