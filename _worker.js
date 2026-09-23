@@ -1,19 +1,8 @@
-/* Pages Advanced Mode. Fail-open to ASSETS. Home never mapped. Hockey is the product. */
+/* Pages Advanced Mode. Fail-open to ASSETS. Home never mapped. Hockey folder is unmapped so Pages can serve hockey/index.html. */
 const MAP = {
-  "/ice": "/hockey.html",
-  "/ice/": "/hockey.html",
-  "/ice.html": "/hockey.html",
   "/look": "/look.html",
   "/look/": "/look.html",
   "/look.html": "/look.html",
-  "/rink": "/hockey.html",
-  "/rink/": "/hockey.html",
-  "/rink.html": "/hockey.html",
-  "/hockey": "/hockey.html",
-  "/hockey/": "/hockey.html",
-  "/hockey.html": "/hockey.html",
-  "/barn": "/hockey.html",
-  "/barn/": "/hockey.html",
   "/alacarte": "/alacarte.html",
   "/alacarte/": "/alacarte.html",
   "/alacarte.html": "/alacarte.html",
