@@ -21,11 +21,11 @@
     .orb-wrap{position:relative;width:min(92vw,28rem);height:min(92vw,28rem);max-height:58dvh;display:grid;place-items:center}
     #presence{width:100%;height:100%;position:relative}
     #presence canvas{display:block;width:100%;height:100%}
-    #you{position:absolute;right:6%;bottom:6%;z-index:3;width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);background:#000;display:none}
+    #you{position:absolute;right:6%;bottom:6%;z-index:3;width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);background:#000;display:none}
     h1{font-size:clamp(1.7rem,5.5vw,2.5rem);font-weight:900;text-align:center;line-height:1.12}
     h1 span{color:var(--mint)}
     .lead{color:var(--mute);text-align:center;max-width:34rem;font-size:.98rem}
-    .hint{font-family:var(--mono);font-size:.68rem;color:var(--cyan);text-align:center}
+    .hint{font-family:var(--mono);font-size:.68rem;color:var(--cyan);text-align:center;min-height:1.1rem}
     .actions{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:.35rem}
     button,.btn{border:0;border-radius:999px;font-weight:800;padding:.7rem 1.05rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;font-size:.88rem}
     .primary{background:var(--cyan);color:#082F49}
@@ -75,40 +75,31 @@
     <a class="brand" href="#top">Dualiscapax</a>
     <div>
       <button type="button" class="quiet" id="voice" aria-pressed="true">Voice on</button>
-      <a class="lab" href="ai/app.html">Iris lab</a>
     </div>
   </header>
   <main class="stage" id="top">
     <div class="orb-wrap" id="iris-plate" aria-label="Iris"><div id="presence"></div><video id="you" autoplay muted playsinline aria-label="Your camera"></video></div>
     <p class="hint" id="hint">Hey. That's Iris.</p>
     <h1>Meet Iris<span>.</span></h1>
-    <p class="lead">She'll say hello. Mute her if you'd rather just read. Camera stays off unless you tap it.</p>
+    <p class="lead">Talk. That's the whole interface. Camera if you want her to see. Flip for the other lens.</p>
     <div class="actions">
-      <button class="primary" type="button" id="talk">Talk here</button>
-      <a class="btn primary" href="ai/app.html">Sit in the lab</a>
-      <button class="ghost" type="button" id="cam">Turn on camera</button>
+      <button class="primary" type="button" id="talk">Talk</button>
+      <button class="ghost" type="button" id="cam">Camera</button>
+      <button class="ghost" type="button" id="flip" hidden>Flip</button>
     </div>
     <section class="rooms">
-      <a class="room" href="ai/app.html"><b>The lab</b><span>Same conversation, a bit quieter. Camera only if you feel like it.</span></a>
-      <a class="room" href="hall/"><b>The hall</b><span>A map of the other rooms, so you don't wander.</span></a>
-      <a class="room" href="research/"><b>The reading pile</b><span>Notes and papers. Nobody here is treating you.</span></a>
-      <a class="room" href="residual.html"><b>What it costs</b><span>Asking is free. The long computer jobs are a prepaid pack. She'll say so first.</span></a>
+      <a class="room" href="hall/"><b>Hall</b><span>The other rooms.</span></a>
+      <a class="room" href="research/"><b>Reading</b><span>Papers. Not a clinic.</span></a>
     </section>
-    <p class="fine">This is not a clinic. Payment links on the public site may still be closed.</p>
+    <p class="fine">Asking is free. This is not a clinic.</p>
   </main>
   <nav class="dock">
-    <a href="#top">Home</a><a class="go" href="ai/app.html">Iris</a><a href="hall/">Hall</a><a href="research/">Reading</a>
+    <a class="go" href="#top">Iris</a><a href="hall/">Hall</a><a href="research/">Reading</a>
   </nav>
-  <div class="veil" id="veil" role="dialog" aria-labelledby="veil-title">
+  <div class="veil" id="veil" role="dialog" aria-labelledby="veil-title" hidden>
     <div class="card">
       <h2 id="veil-title">Hey — you just walked in.</h2>
-      <p>That's Iris. Ask her what this place is. Quick questions don't cost anything. If you want the heavy computer work, she'll tell you the price before she starts.</p>
-      <ul>
-        <li>Stay and talk right here.</li>
-        <li>The lab is the same chat if you want her to see you.</li>
-        <li>The hall is the rest of the rooms.</li>
-        <li>The reading pile is research. Not a doctor's office.</li>
-      </ul>
+      <p>That's Iris. Talk. Mute if you only want to read.</p>
       <div class="row">
         <button class="primary" type="button" id="meet">I'll listen</button>
         <button class="ghost" type="button" id="skip">I'll just read</button>
@@ -127,9 +118,9 @@
     (function () {
       var MUTE = "dc-iris-mute";
       var hint = document.getElementById("hint");
-      var video = document.getElementById("you");
       var voiceBtn = document.getElementById("voice");
-      var veil = document.getElementById("veil");
+      var camBtn = document.getElementById("cam");
+      var flipBtn = document.getElementById("flip");
       var camOn = false, muted = false;
       try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
       if (window.IrisSphere && IrisSphere.mount) IrisSphere.mount("#presence");
@@ -140,32 +131,22 @@
         voiceBtn.setAttribute("aria-pressed", muted ? "false" : "true");
       }
       paintMute();
-      if (muted) veil.hidden = true;
-      if (document.documentElement.getAttribute("data-boot") !== "base") veil.hidden = true;
       function skip() {
         muted = true;
         try { localStorage.setItem(MUTE, "1"); } catch (e) {}
-        paintMute(); veil.hidden = true;
-        hint.textContent = "Voice off. Turn it on when you want her.";
+        paintMute();
         if (window.IrisRing) IrisRing.stop();
-        if (window.speechSynthesis) speechSynthesis.cancel();
       }
       voiceBtn.addEventListener("click", function () {
         muted = !muted;
         try { localStorage.setItem(MUTE, muted ? "1" : "0"); } catch (e) {}
         paintMute();
-        if (muted) {
-          if (window.IrisRing) IrisRing.stop();
-          if (window.speechSynthesis) speechSynthesis.cancel();
-          hint.textContent = "Voice off.";
-        } else if (window.IrisRing) {
-          IrisRing.kick();
-        }
+        if (muted) { if (window.IrisRing) IrisRing.stop(); hint.textContent = "Voice off."; }
+        else if (window.IrisRing) IrisRing.kick();
       });
       document.getElementById("skip").addEventListener("click", skip);
       function afterBoot() {
-        if (muted) return;
-        if (window.IrisRing) IrisRing.kick();
+        if (!muted && window.IrisRing) IrisRing.kick();
       }
       if (document.documentElement.getAttribute("data-boot") === "base") afterBoot();
       else window.addEventListener("iris:boot", afterBoot, { once: true });
@@ -174,16 +155,27 @@
         var y = (e.clientY / Math.max(1, window.innerHeight) - 0.5) * 2;
         if (window.IrisSphere && IrisSphere.lookAt) IrisSphere.lookAt(x, y);
       }, { passive: true });
-      document.getElementById("cam").addEventListener("click", function () {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { hint.textContent = "This browser has no camera."; return; }
+      camBtn.addEventListener("click", function () {
+        if (!window.IrisAV || !IrisAV.camera) { hint.textContent = "Camera not wired."; return; }
         if (camOn) {
-          var s = video.srcObject; if (s && s.getTracks) s.getTracks().forEach(function (t) { t.stop(); });
-          video.srcObject = null; video.style.display = "none"; camOn = false; hint.textContent = "Camera off."; return;
+          IrisAV.camera(false).then(function () {
+            camOn = false; flipBtn.hidden = true; camBtn.textContent = "Camera"; hint.textContent = "Camera off.";
+          });
+          return;
         }
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }).then(function (stream) {
-          video.srcObject = stream; video.style.display = "block"; camOn = true; hint.textContent = "Camera is just on this phone.";
-          if (window.IrisRing && !muted) IrisRing.kick();
+        IrisAV.camera(true, { facing: "user" }).then(function () {
+          camOn = true; flipBtn.hidden = false; camBtn.textContent = "Camera off";
+          hint.textContent = "Front camera. Flip for the other lens. Speak — she replies.";
+          if (!muted && window.IrisRing) IrisRing.kick();
         }).catch(function () { hint.textContent = "Camera blocked."; });
+      });
+      flipBtn.addEventListener("click", function () {
+        if (!window.IrisAV || !IrisAV.flip) return;
+        IrisAV.flip().then(function (res) {
+          var face = res && res.facing === "environment" ? "Rear" : "Front";
+          hint.textContent = face + " camera. Speak — she replies.";
+          if (!muted && window.IrisRing) IrisRing.kick();
+        }).catch(function () { hint.textContent = "That lens is not available."; });
       });
     })();
   </script>
