@@ -1,27 +1,23 @@
 /**
- * IrisAV — speak path for the street.
- * Foundation: Web Speech + IrisVoice picker. DSAP is spatial jewelry, not words.
- * Do not claim this is a custom codec or xAI TTS unless a key is present.
+ * IrisAV — speak / listen / camera.
+ * Camera is video only. Mic is SpeechRecognition so the two don't fight.
+ * Front and rear via facingMode.
  */
 (function (w) {
-  var VERSION = "iris-av-2026-09-23-speak";
+  var VERSION = "iris-av-2026-09-23-camflip";
   var speaking = false;
   var listening = false;
   var rec = null;
   var camStream = null;
+  var facing = "user";
   var lastText = "";
 
   function voicesReady() {
     return new Promise(function (resolve) {
       if (!w.speechSynthesis) return resolve(false);
-      var list = speechSynthesis.getVoices() || [];
-      if (list.length) return resolve(true);
+      if ((speechSynthesis.getVoices() || []).length) return resolve(true);
       var done = false;
-      function ok() {
-        if (done) return;
-        done = true;
-        resolve(true);
-      }
+      function ok() { if (!done) { done = true; resolve(true); } }
       if (speechSynthesis.addEventListener) speechSynthesis.addEventListener("voiceschanged", ok, { once: true });
       else speechSynthesis.onvoiceschanged = ok;
       setTimeout(ok, 700);
@@ -39,10 +35,8 @@
         var bits = p.split(/,\s+/);
         var acc = "";
         for (var j = 0; j < bits.length; j++) {
-          if ((acc + bits[j]).length > 240 && acc) {
-            out.push(acc);
-            acc = bits[j];
-          } else acc = acc ? acc + ", " + bits[j] : bits[j];
+          if ((acc + bits[j]).length > 240 && acc) { out.push(acc); acc = bits[j]; }
+          else acc = acc ? acc + ", " + bits[j] : bits[j];
         }
         if (acc) out.push(acc);
       } else if (p) out.push(p);
@@ -63,10 +57,7 @@
         if (!w.speechSynthesis) return resolve(false);
         var u = new SpeechSynthesisUtterance(line);
         if (w.IrisVoice && IrisVoice.applyUtterance) IrisVoice.applyUtterance(u);
-        else {
-          u.rate = 0.96;
-          u.pitch = 1.02;
-        }
+        else { u.rate = 0.96; u.pitch = 1.02; }
         u.onend = function () { resolve(true); };
         u.onerror = function () { resolve(false); };
         speechSynthesis.speak(u);
@@ -92,17 +83,13 @@
       }
       return speakOne(parts[i++]).then(next);
     }
-    try {
-      if (w.speechSynthesis) speechSynthesis.cancel();
-    } catch (e) {}
+    try { if (w.speechSynthesis) speechSynthesis.cancel(); } catch (e) {}
     return next();
   }
 
   function stopTalk() {
     speaking = false;
-    try {
-      if (w.speechSynthesis) speechSynthesis.cancel();
-    } catch (e) {}
+    try { if (w.speechSynthesis) speechSynthesis.cancel(); } catch (e) {}
     if (w.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false);
   }
 
@@ -120,16 +107,8 @@
         stopListen();
         resolve(said || null);
       };
-      rec.onerror = function () {
-        stopListen();
-        resolve(null);
-      };
-      rec.onend = function () {
-        if (listening) {
-          listening = false;
-          resolve(null);
-        }
-      };
+      rec.onerror = function () { stopListen(); resolve(null); };
+      rec.onend = function () { if (listening) { listening = false; resolve(null); } };
       listening = true;
       if (w.IrisSphere && IrisSphere.setListening) IrisSphere.setListening(true);
       try { rec.start(); } catch (e) { stopListen(); resolve(null); }
@@ -143,31 +122,57 @@
     rec = null;
   }
 
-  function camera(on, video) {
-    var el = video || document.getElementById("you");
+  function stopCam() {
+    if (camStream && camStream.getTracks) camStream.getTracks().forEach(function (t) { t.stop(); });
+    camStream = null;
+    var el = document.getElementById("you");
+    if (el) { el.srcObject = null; el.style.display = "none"; }
+  }
+
+  function camera(on, opts) {
+    opts = opts || {};
+    var el = opts.video || document.getElementById("you");
+    if (opts.facing === "environment" || opts.facing === "user") facing = opts.facing;
     if (!on) {
-      if (camStream && camStream.getTracks) camStream.getTracks().forEach(function (t) { t.stop(); });
-      camStream = null;
-      if (el) { el.srcObject = null; el.style.display = "none"; }
-      return Promise.resolve({ live: false });
+      stopCam();
+      return Promise.resolve({ live: false, facing: facing });
     }
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       return Promise.reject(new Error("NO_CAM"));
     }
-    return navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }).then(function (stream) {
+    stopCam();
+    var constraints = {
+      video: { facingMode: { ideal: facing } },
+      audio: false
+    };
+    return navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
       camStream = stream;
       if (el) {
         el.srcObject = stream;
         el.style.display = "block";
+        el.style.transform = facing === "user" ? "scaleX(-1)" : "none";
       }
-      return { live: true };
+      return { live: true, facing: facing };
+    }).catch(function () {
+      return navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then(function (stream) {
+        camStream = stream;
+        if (el) {
+          el.srcObject = stream;
+          el.style.display = "block";
+        }
+        return { live: true, facing: facing, fallback: true };
+      });
     });
   }
 
+  function flip() {
+    facing = facing === "user" ? "environment" : "user";
+    if (!camStream) return Promise.resolve({ live: false, facing: facing });
+    return camera(true, { facing: facing });
+  }
+
   function arm() {
-    try {
-      if (w.DSAP && DSAP.unlock) DSAP.unlock();
-    } catch (e) {}
+    try { if (w.DSAP && DSAP.unlock) DSAP.unlock(); } catch (e) {}
     return voicesReady();
   }
 
@@ -177,6 +182,8 @@
     listen: listen,
     stop: function () { stopTalk(); stopListen(); },
     camera: camera,
+    flip: flip,
+    facing: function () { return facing; },
     mic: function (on) { return on ? listen() : (stopListen(), Promise.resolve({ live: false })); },
     arm: arm,
     last: function () { return lastText; },
@@ -185,10 +192,10 @@
         speaking: speaking,
         listening: listening,
         cam: !!camStream,
+        facing: facing,
         rec: listening,
         hasSpeech: !!w.speechSynthesis,
         hasListen: !!(w.SpeechRecognition || w.webkitSpeechRecognition),
-        voice: w.IrisVoice && IrisVoice.pickDevice ? (IrisVoice.pickDevice() && IrisVoice.pickDevice().name) : null,
         version: VERSION
       };
     }
