@@ -1,0 +1,56 @@
+{
+  "stamp": "2026-09-23T14:57Z",
+  "law": "SEALED is git hash. LIVE is curl. Next piece waits on SEALED.",
+  "pieces": [
+    {
+      "id": "P1-HOOK",
+      "path": "js/iris-wav.js",
+      "blob": "6a3f3871549ce785e7718dbe95ca40096d8310a8",
+      "expect": "index.html contains js/iris-wav.js",
+      "state": "SEALED",
+      "live": "UNKNOWN"
+    },
+    {
+      "id": "P2-RING",
+      "path": "js/iris-ring.js",
+      "blob": "029cfa2452a228b758a0bd25ddc412874a689ce2",
+      "expect": "file contains iris-ring-2026-09-23-keep and listenTurn restarts on empty said",
+      "state": "SEALED",
+      "live": "UNKNOWN"
+    },
+    {
+      "id": "P3-AV",
+      "path": "js/iris-av.js",
+      "blob": "4f588c68e1592704759f59aaece1808ee6528dab",
+      "expect": "file contains iris-av-2026-09-23-keep and audio: false on camera",
+      "state": "SEALED",
+      "live": "UNKNOWN"
+    },
+    {
+      "id": "P4-TAKE",
+      "path": "audio/iris-greet.mp3",
+      "blob": "45938e97114e1117df55c9c08c5d00bee563357d",
+      "sha256": "9bd6910bddf932225a450ec0c4ee5ea2765b35fc4e44113a4fc7a7f22a4e5809",
+      "bytes": 30672,
+      "expect": "GET https://dualiscapax.ai/audio/iris-greet.mp3 200 audio/* >= 20KB",
+      "state": "SEALED",
+      "live": "UNKNOWN"
+    },
+    {
+      "id": "P5-STREET",
+      "path": "https://dualiscapax.ai/",
+      "after": ["P1-HOOK", "P2-RING", "P3-AV", "P4-TAKE"],
+      "expect": "apex 200, /js/iris-wav.js 200, /audio/iris-greet.mp3 200",
+      "state": "OPEN",
+      "live": "HOLE"
+    },
+    {
+      "id": "P6-STREAM",
+      "path": "workers/iris-speak",
+      "after": ["P5-STREET"],
+      "expect": "POST /speak returns audio; secret not in git",
+      "state": "PARKED",
+      "live": "PARKED"
+    }
+  ]
+}
