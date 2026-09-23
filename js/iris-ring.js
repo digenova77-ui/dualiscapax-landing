@@ -1,22 +1,24 @@
 /**
- * Iris ring — greet → listen → think → speak → listen.
- * A missed hear is not sleep. Mute is the only off switch.
+ * Iris ring — foundation to orbit on one loop.
+ * greet → listen → think → speak → listen.
+ * Mute is the only legal sleep. Empty listen is not sleep.
  */
 (function (w) {
-  var VERSION = "iris-ring-2026-09-23-awake";
+  var VERSION = "iris-ring-2026-09-23-keep";
   var MUTE = "dc-iris-mute";
   var running = false;
   var muted = false;
   var greeted = false;
   var hint;
+  var misses = 0;
   var watch = 0;
-  var turns = 0;
+  var turning = false;
 
   try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
 
   function roomLine() {
     if (w.IRIS_ROOM && IRIS_ROOM.iris) return IRIS_ROOM.iris;
-    return "Hey. I'm Iris. Ask anything small. Heavy work I'll price first.";
+    return "You walked into Dualis. That's Iris. Ask anything small for free. Heavy work I'll price first. Lab is camera. Hall is the other rooms.";
   }
 
   function think(said) {
@@ -24,19 +26,19 @@
     if (!t) return "I didn't catch that. Say it again.";
     if (/\b(hall|rooms|map)\b/.test(t)) return "The hall is the map of the other rooms. Look is free. Functions wait on a Unity sitting.";
     if (/\b(lab|camera|see me)\b/.test(t)) return "The lab is the same conversation. Camera only if you tap it. I don't watch the rest of your phone.";
-    if (/\b(cost|price|pay|fuel|money)\b/.test(t)) return "Asking is free. A fuel pack is prepaid compute. Look stays zero.";
-    if (/\b(ice|hockey|rink)\b/.test(t)) return "Ice is a room in the hall. If the door fails to open, it isn't open.";
-    if (/\b(coin|efuse|token)\b/.test(t)) return "eFuse is the protocol in the repo. This site points at it. Not a checkout button.";
+    if (/\b(cost|price|pay|fuel|money)\b/.test(t)) return "Asking is free. A fuel pack is prepaid compute. Look stays zero. I won't sell you a medical notebook.";
+    if (/\b(ice|hockey|rink)\b/.test(t)) return "Ice is a room in the hall. If the door fails to open, it isn't open. We don't sell a broken door.";
+    if (/\b(coin|efuse|token)\b/.test(t)) return "eFuse is the protocol in the repo. This site points at it. It is not a checkout button.";
     if (/\b(who are you|your name|iris)\b/.test(t)) return "I'm Iris. I live on this site. Coffee-shop talk. I know these rooms.";
-    if (/\b(david|founder|ceo)\b/.test(t)) return "David Di Genova founded DualisCapax. Canadian. I don't hand out a home address.";
-    if (/\b(hello|hi|hey)\b/.test(t)) return "Hey. I'm here. Hall, lab, or what it costs?";
+    if (/\b(david|founder|ceo)\b/.test(t)) return "David Di Genova founded DualisCapax. Canadian. The site is the pointer. I don't hand out a home address.";
+    if (/\b(hello|hi|hey)\b/.test(t)) return "Hey. I'm here. What do you want to look at first — hall, lab, or what it costs?";
     if (w.DCLMLook && DCLMLook.run) {
       try {
         var rec = DCLMLook.run(said);
         if (rec && (rec.spoken || rec.text)) return rec.spoken || rec.text;
       } catch (e) {}
     }
-    return "This page is the front door. Hall is the map. Lab is the camera if you want it. What do you want to open?";
+    return "This page is the front door. Hall is the map. Lab is if you want the camera. Reading pile is papers, not a clinic. What do you want to open?";
   }
 
   function paint(msg) {
@@ -52,13 +54,11 @@
   function speak(line) {
     paint(line);
     if (isMuted()) return Promise.resolve(false);
-    var first = !greeted && w.IrisAV && IrisAV.speakGreet;
-    var fn = first ? IrisAV.speakGreet : (w.IrisAV && IrisAV.speak);
-    if (fn) return fn.call(IrisAV, line).catch(function () { return false; });
+    if (w.IrisAV && IrisAV.speak) return IrisAV.speak(line);
     if (w.speechSynthesis) {
       var u = new SpeechSynthesisUtterance(line);
       if (w.IrisVoice && IrisVoice.applyUtterance) IrisVoice.applyUtterance(u);
-      try { speechSynthesis.cancel(); } catch (e) {}
+      speechSynthesis.cancel();
       speechSynthesis.speak(u);
     }
     return Promise.resolve(true);
@@ -66,55 +66,69 @@
 
   function listenTurn() {
     if (isMuted() || !running) return Promise.resolve();
+    if (turning) return Promise.resolve();
+    turning = true;
     paint("Listening.");
     if (!w.IrisAV || !IrisAV.listen) {
+      turning = false;
       paint("This browser has no listen. Tap Talk and I'll still speak.");
       return Promise.resolve();
     }
     return IrisAV.listen().then(function (said) {
+      turning = false;
       if (!running || isMuted()) return;
-      turns += 1;
       if (!said) {
-        paint("Still here. Say it again.");
+        misses += 1;
+        paint(misses > 2 ? "Still here. Say it when you're ready." : "Listening.");
         return listenTurn();
       }
+      misses = 0;
       paint(said);
       return speak(think(said)).then(function () {
         if (running && !isMuted()) return listenTurn();
       });
     }).catch(function () {
+      turning = false;
       if (running && !isMuted()) return listenTurn();
     });
   }
 
-  function watchdog() {
-    if (watch) clearInterval(watch);
-    watch = setInterval(function () {
-      if (!running || isMuted()) return;
-      var st = w.IrisAV && IrisAV.state ? IrisAV.state() : {};
-      if (st.speaking || st.listening) return;
-      listenTurn();
-    }, 4000);
+  function pulse() {
+    if (!running || isMuted()) return;
+    var st = w.IrisAV && IrisAV.state ? IrisAV.state() : {};
+    if (st.speaking || st.listening || turning) return;
+    listenTurn();
+  }
+
+  function armWatch() {
+    if (watch) return;
+    watch = setInterval(pulse, 4000);
+  }
+
+  function dropWatch() {
+    if (watch) { clearInterval(watch); watch = 0; }
   }
 
   function kick() {
     running = true;
+    turning = false;
     try {
       if (w.IrisAV && IrisAV.arm) IrisAV.arm();
       if (w.DSAP && DSAP.unlock) DSAP.unlock();
     } catch (e) {}
+    armWatch();
     var line = greeted ? "I'm listening." : roomLine();
+    greeted = true;
     paint(line);
-    watchdog();
     return speak(line).then(function () {
-      greeted = true;
       if (running && !isMuted()) return listenTurn();
     });
   }
 
   function stop() {
     running = false;
-    if (watch) { clearInterval(watch); watch = 0; }
+    turning = false;
+    dropWatch();
     if (w.IrisAV && IrisAV.stop) IrisAV.stop();
     paint(isMuted() ? "Voice off." : "Ring paused.");
   }
@@ -151,11 +165,11 @@
     }
     var skip = document.getElementById("skip");
     if (skip) skip.addEventListener("click", stop);
-    w.addEventListener("pageshow", function () {
-      if (running && !isMuted()) listenTurn();
-    });
     document.addEventListener("visibilitychange", function () {
-      if (document.visibilityState === "visible" && running && !isMuted()) listenTurn();
+      if (document.visibilityState === "visible" && running && !isMuted()) pulse();
+    });
+    w.addEventListener("pageshow", function () {
+      if (running && !isMuted()) pulse();
     });
   }
 
@@ -164,8 +178,7 @@
     kick: kick,
     stop: stop,
     think: think,
-    running: function () { return running; },
-    turns: function () { return turns; }
+    running: function () { return running; }
   };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);

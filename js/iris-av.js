@@ -1,16 +1,17 @@
 /**
  * IrisAV — speak / listen / camera.
  * Camera is video only. Mic is SpeechRecognition so the two don't fight.
- * Front and rear via facingMode.
+ * Listen always settles. no-speech is not a crash.
  */
 (function (w) {
-  var VERSION = "iris-av-2026-09-23-camflip";
+  var VERSION = "iris-av-2026-09-23-keep";
   var speaking = false;
   var listening = false;
   var rec = null;
   var camStream = null;
   var facing = "user";
   var lastText = "";
+  var listenTimer = 0;
 
   function voicesReady() {
     return new Promise(function (resolve) {
@@ -58,8 +59,11 @@
         var u = new SpeechSynthesisUtterance(line);
         if (w.IrisVoice && IrisVoice.applyUtterance) IrisVoice.applyUtterance(u);
         else { u.rate = 0.96; u.pitch = 1.02; }
-        u.onend = function () { resolve(true); };
-        u.onerror = function () { resolve(false); };
+        var done = false;
+        function fin(v) { if (!done) { done = true; resolve(!!v); } }
+        u.onend = function () { fin(true); };
+        u.onerror = function () { fin(false); };
+        setTimeout(function () { fin(true); }, Math.min(12000, 800 + line.length * 80));
         speechSynthesis.speak(u);
       });
     });
@@ -98,25 +102,39 @@
     if (!SR) return Promise.resolve(null);
     stopListen();
     return new Promise(function (resolve) {
+      var settled = false;
+      function fin(v) {
+        if (settled) return;
+        settled = true;
+        if (listenTimer) { clearTimeout(listenTimer); listenTimer = 0; }
+        stopListen();
+        resolve(v || null);
+      }
       rec = new SR();
       rec.lang = (w.IrisVoice && IrisVoice.locale && IrisVoice.locale()) || (navigator.language || "en-US");
       rec.interimResults = false;
       rec.maxAlternatives = 1;
+      rec.continuous = false;
       rec.onresult = function (ev) {
         var said = ev.results && ev.results[0] && ev.results[0][0] && ev.results[0][0].transcript;
-        stopListen();
-        resolve(said || null);
+        fin(said || null);
       };
-      rec.onerror = function () { stopListen(); resolve(null); };
-      rec.onend = function () { if (listening) { listening = false; resolve(null); } };
+      rec.onerror = function (ev) {
+        var err = ev && ev.error;
+        if (err === "no-speech" || err === "aborted") return fin(null);
+        fin(null);
+      };
+      rec.onend = function () { fin(null); };
       listening = true;
       if (w.IrisSphere && IrisSphere.setListening) IrisSphere.setListening(true);
-      try { rec.start(); } catch (e) { stopListen(); resolve(null); }
+      listenTimer = setTimeout(function () { fin(null); }, 8000);
+      try { rec.start(); } catch (e) { fin(null); }
     });
   }
 
   function stopListen() {
     listening = false;
+    if (listenTimer) { clearTimeout(listenTimer); listenTimer = 0; }
     if (w.IrisSphere && IrisSphere.setListening) IrisSphere.setListening(false);
     try { if (rec) rec.stop(); } catch (e) {}
     rec = null;
