@@ -68,13 +68,15 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   <p class="err" id="err" hidden role="alert"></p>
 </div>
 <p class="sr" id="announce" aria-live="assertive"></p>
-<script src="/js/dsap-engine.js?v=52"></script>
-<script src="/js/iris-sphere.js?v=52"></script>
-<script src="/js/iris-voice.js?v=52"></script>
-<script src="/js/iris-av.js?v=52"></script>
-<script src="/js/iris-session.js?v=52"></script>
-<script src="/js/iris-page.js?v=52"></script>
-<script src="dclm-look.js?v=52"></script>
+<script src="/js/dsap-engine.js?v=53"></script>
+<script src="/js/iris-sphere.js?v=53"></script>
+<script src="/js/iris-voice.js?v=53"></script>
+<script src="/js/iris-av.js?v=53"></script>
+<script src="/js/iris-page.js?v=53"></script>
+<script src="iris-book.js?v=53"></script>
+<script src="/js/iris-fuel-gate.js?v=53"></script>
+<script src="/js/iris-session.js?v=53"></script>
+<script src="dclm-look.js?v=53"></script>
 <script>
 (function(){
   var cap=document.getElementById("caption");
@@ -151,6 +153,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   }
 
   function startRec(){
+    if(window.IrisAV&&IrisAV.releaseMicTracks) IrisAV.releaseMicTracks();
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(!SR){ showErr("This browser cannot hear. That's okay — tap TALK still unlocks her mouth."); return false; }
     rec=new SR();
