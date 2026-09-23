@@ -1,10 +1,9 @@
 /**
- * Iris ring — foundation to orbit on one loop.
- * greet → listen → think → speak → listen.
+ * Iris ring — greet → listen → think → speak → listen.
  * Mute is the only legal sleep. Empty listen is not sleep.
  */
 (function (w) {
-  var VERSION = "iris-ring-2026-09-23-keep";
+  var VERSION = "iris-ring-2026-09-23-desk";
   var MUTE = "dc-iris-mute";
   var running = false;
   var muted = false;
@@ -18,27 +17,31 @@
 
   function roomLine() {
     if (w.IRIS_ROOM && IRIS_ROOM.iris) return IRIS_ROOM.iris;
-    return "You walked into Dualis. That's Iris. Ask anything small for free. Heavy work I'll price first. Lab is camera. Hall is the other rooms.";
+    return "Hey. DualisCapax is a media desk. I point at the rooms and the protocol. No phone. Mail is automation.";
   }
 
   function think(said) {
     var t = String(said || "").toLowerCase();
     if (!t) return "I didn't catch that. Say it again.";
+    if (/\b(phone|call|telephone|fax)\b/.test(t)) return "There isn't a phone. DualisCapax is a media desk. Talk here, or mail hits automation.";
+    if (/\b(email|e-mail|inbox|contact)\b/.test(t)) return "Mail is handled by automation. Nobody sitting on a switchboard. If you write, a clerk reads it. There is no phone.";
+    if (/\b(media company|what is dualis|who owns|company)\b/.test(t)) return "DualisCapax is a media company. We explain the Unity framework and point at the repo. We are not a bank and we are not the coin.";
+    if (/\b(own the coin|own efuse|your coin|company.?s coin)\b/.test(t)) return "This company does not own the coin. eFuse is the protocol in the repo. The site points. It is not a treasury desk.";
     if (/\b(hall|rooms|map)\b/.test(t)) return "The hall is the map of the other rooms. Look is free. Functions wait on a Unity sitting.";
     if (/\b(lab|camera|see me)\b/.test(t)) return "The lab is the same conversation. Camera only if you tap it. I don't watch the rest of your phone.";
-    if (/\b(cost|price|pay|fuel|money)\b/.test(t)) return "Asking is free. A fuel pack is prepaid compute. Look stays zero. I won't sell you a medical notebook.";
-    if (/\b(ice|hockey|rink)\b/.test(t)) return "Ice is a room in the hall. If the door fails to open, it isn't open. We don't sell a broken door.";
-    if (/\b(coin|efuse|token)\b/.test(t)) return "eFuse is the protocol in the repo. This site points at it. It is not a checkout button.";
-    if (/\b(who are you|your name|iris)\b/.test(t)) return "I'm Iris. I live on this site. Coffee-shop talk. I know these rooms.";
-    if (/\b(david|founder|ceo)\b/.test(t)) return "David Di Genova founded DualisCapax. Canadian. The site is the pointer. I don't hand out a home address.";
-    if (/\b(hello|hi|hey)\b/.test(t)) return "Hey. I'm here. What do you want to look at first — hall, lab, or what it costs?";
+    if (/\b(cost|price|pay|fuel|money)\b/.test(t)) return "Asking is free. A fuel pack is prepaid compute. Look stays zero.";
+    if (/\b(ice|hockey|rink)\b/.test(t)) return "Ice is a room in the hall. If the door fails to open, it isn't open.";
+    if (/\b(coin|efuse|token)\b/.test(t)) return "eFuse is the protocol in the repo. This media site points at it. DualisCapax does not own it.";
+    if (/\b(who are you|your name|iris)\b/.test(t)) return "I'm Iris. I live on this media desk. Coffee-shop talk. I know these rooms.";
+    if (/\b(david|founder|ceo)\b/.test(t)) return "David Di Genova founded DualisCapax. Canadian. Media desk. I don't hand out a home address.";
+    if (/\b(hello|hi|hey)\b/.test(t)) return "Hey. Media desk. No phone. What do you want to look at — hall, reading, or the protocol?";
     if (w.DCLMLook && DCLMLook.run) {
       try {
         var rec = DCLMLook.run(said);
         if (rec && (rec.spoken || rec.text)) return rec.spoken || rec.text;
       } catch (e) {}
     }
-    return "This page is the front door. Hall is the map. Lab is if you want the camera. Reading pile is papers, not a clinic. What do you want to open?";
+    return "This page is a media front door. Hall is the map. Reading is papers. The coin is not ours to sell. What do you want to open?";
   }
 
   function paint(msg) {
