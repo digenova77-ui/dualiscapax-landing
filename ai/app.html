@@ -54,6 +54,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   <a class="brand" href="/index.html"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who">Iris</span></a>
   <div class="tools">
     <button type="button" id="cam" aria-pressed="false" aria-label="Camera">cam</button>
+    <button type="button" id="filebtn" aria-label="Show her a file">file</button>
     <button type="button" id="screen" aria-pressed="false" aria-label="This page">here</button>
     <button type="button" id="hang" aria-label="Hang up">×</button>
   </div>
@@ -63,27 +64,30 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   <div class="pip" id="pip"><video id="you" autoplay muted playsinline></video></div>
 </main>
 <div class="dock">
-  <p class="caption" id="caption">Tap TALK. She hears. She answers.</p>
+  <p class="caption" id="caption"></p>
   <button type="button" class="talk" id="talk" aria-pressed="false">TALK</button>
   <p class="err" id="err" hidden role="alert"></p>
 </div>
+<input id="irisLocalFile" type="file" hidden accept="image/jpeg,image/png,image/webp,text/plain,text/markdown,text/csv,application/json,application/pdf,.txt,.md,.csv,.json,.pdf"/>
 <p class="sr" id="announce" aria-live="assertive"></p>
-<script src="/js/dsap-engine.js?v=53"></script>
-<script src="/js/iris-sphere.js?v=53"></script>
-<script src="/js/iris-voice.js?v=53"></script>
-<script src="/js/iris-av.js?v=53"></script>
-<script src="/js/iris-page.js?v=53"></script>
-<script src="iris-book.js?v=53"></script>
-<script src="/js/iris-fuel-gate.js?v=53"></script>
-<script src="/js/iris-session.js?v=53"></script>
-<script src="dclm-look.js?v=53"></script>
+<script src="/js/dsap-engine.js?v=54"></script>
+<script src="/js/iris-sphere.js?v=54"></script>
+<script src="/js/iris-voice.js?v=54"></script>
+<script src="/js/iris-av.js?v=54"></script>
+<script src="/js/iris-policy.js?v=54"></script>
+<script src="/js/iris-page.js?v=54"></script>
+<script src="/js/iris-guest.js?v=54"></script>
+<script src="iris-book.js?v=54"></script>
+<script src="/js/iris-fuel-gate.js?v=54"></script>
+<script src="/js/iris-session.js?v=54"></script>
+<script src="dclm-look.js?v=54"></script>
 <script>
 (function(){
   var cap=document.getElementById("caption");
   var errEl=document.getElementById("err");
   var talk=document.getElementById("talk");
   var pip=document.getElementById("pip");
-  var rec=null, busy=false, primed=false, synthWatch=0;
+  var rec=null, busy=false, primed=false, synthWatch=0, greeted=false;
 
   function showErr(m){ if(!m){errEl.hidden=true;errEl.textContent="";return;} errEl.hidden=false;errEl.textContent=m; }
   function line(t){
@@ -92,6 +96,9 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     cap.classList.toggle("long", s.length>88);
     cap.scrollTop=0;
     document.getElementById("announce").textContent=s;
+  }
+  function greetText(){
+    return (window.IrisGuest && IrisGuest.greetLine) ? IrisGuest.greetLine() : "Hey. I'm Iris. What should I call you? Tap Talk if you want to say it.";
   }
   function primeVoice(){
     primed=true;
@@ -131,8 +138,20 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
       speechSynthesis.speak(u);
     }
   }
+  function meet(){
+    if(greeted) return;
+    greeted=true;
+    primeVoice();
+    var spoken=greetText();
+    if(window.IrisGuest&&IrisGuest.markAsked) IrisGuest.markAsked();
+    line(spoken);
+    speakNow(spoken);
+  }
   if(window.IrisSphere&&IrisSphere.mount) IrisSphere.mount("#presence");
   if(window.IrisSphere&&IrisSphere.setWoken) IrisSphere.setWoken(true);
+  line(greetText());
+  window.addEventListener("pointerdown", meet, { capture: true, once: true });
+  window.addEventListener("keydown", meet, { capture: true, once: true });
 
   async function hear(text){
     text=String(text||"").trim();
@@ -140,6 +159,14 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     busy=true;
     line("…");
     try{
+      var guest = window.IrisGuest ? IrisGuest.rememberFrom(text) : null;
+      if(guest && guest.name && window.IrisGuest.parseName && IrisGuest.parseName(text)){
+        var hello = "Good to meet you, " + guest.name + ". I'm the person at this table for DualisCapax. What do you want to know?";
+        line(hello);
+        speakNow(hello);
+        busy=false;
+        return;
+      }
       var recu = window.IrisSession&&IrisSession.think
         ? await IrisSession.think(text)
         : window.DCLMLook&&DCLMLook.run
@@ -174,13 +201,14 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   talk.addEventListener("click",function(){
     var on=!talk.classList.contains("on");
     showErr("");
+    meet();
     primeVoice();
     if(window.IrisAV&&IrisAV.releaseMicTracks) IrisAV.releaseMicTracks();
     if(on){
       if(!startRec()) return;
       talk.classList.add("on"); talk.setAttribute("aria-pressed","true");
       if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(true);
-      line("Listening.");
+      line("I'm listening.");
     }else{
       if(rec) try{rec.stop();}catch(e){}
       talk.classList.remove("on"); talk.setAttribute("aria-pressed","false");
@@ -191,6 +219,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   document.getElementById("cam").addEventListener("click",function(){
     var btn=document.getElementById("cam");
     var on=!btn.classList.contains("on");
+    meet();
     primeVoice();
     if(window.IrisAV&&IrisAV.camera){
       IrisAV.camera(on).then(function(res){
@@ -201,15 +230,39 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
       }).catch(function(){ showErr("Camera blocked."); });
       return;
     }
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ showErr("Camera did not open."); return; }
+    if(!on){
+      var vid=document.getElementById("you");
+      if(vid && vid.srcObject){ vid.srcObject.getTracks().forEach(function(t){t.stop();}); vid.srcObject=null; }
+      pip.classList.remove("on"); btn.classList.remove("on"); return;
+    }
+    navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false}).then(function(s){
+      document.getElementById("you").srcObject=s;
+      pip.classList.add("on"); btn.classList.add("on"); btn.setAttribute("aria-pressed","true");
+    }).catch(function(){ showErr("Camera blocked."); });
   });
 
   document.getElementById("screen").addEventListener("click",function(){
     showErr("");
+    meet();
     primeVoice();
     var spoken = (window.IrisPage && IrisPage.here && IrisPage.here().spoken)
-      || "This is the Iris lab. Talk. I answer. Camera is optional. There is no chat box on purpose.";
+      || "You're with me in the lab. I already know this page.";
     line(spoken);
     speakNow(spoken);
+  });
+
+  document.getElementById("filebtn").addEventListener("click",function(){
+    meet();
+    document.getElementById("irisLocalFile").click();
+  });
+  document.getElementById("irisLocalFile").addEventListener("change",function(ev){
+    var f = ev.target.files && ev.target.files[0];
+    ev.target.value = "";
+    if(!f) return;
+    var note = "Got " + f.name + ". I'll look at it here on this device. What do you want to know about it?";
+    line(note);
+    speakNow(note);
   });
 
   document.getElementById("hang").addEventListener("click",function(){
@@ -220,7 +273,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     document.getElementById("cam").classList.remove("on");
     document.getElementById("screen").classList.remove("on");
     pip.classList.remove("on");
-    line("Tap TALK.");
+    line("Whenever you're ready.");
   });
 })();
 </script>
