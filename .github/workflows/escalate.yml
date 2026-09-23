@@ -1,0 +1,68 @@
+name: escalate
+
+# Wakes the second critical-drop finishes. Not :17. Not */5.
+# Research + street audit only. Does not push main.
+on:
+  workflow_run:
+    workflows: ["critical-drop"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: escalate
+  cancel-in-progress: false
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Forensics now + factory audit now
+        run: |
+          python3 << 'PY'
+          import json, urllib.request
+          from datetime import datetime, timezone
+
+          def hit(path, method="GET"):
+              rec = {"path": path, "status": None, "location": None, "body": ""}
+              try:
+                  req = urllib.request.Request("https://dualiscapax.ai" + path, method=method)
+                  with urllib.request.urlopen(req, timeout=15) as r:
+                      rec["status"] = getattr(r, "status", 200)
+                      rec["location"] = r.headers.get("Location")
+                      if method == "GET":
+                          rec["body"] = r.read(8000).decode("utf-8", "replace")
+              except Exception as e:
+                  rec["error"] = type(e).__name__
+                  rec["status"] = getattr(e, "code", None)
+                  if getattr(e, "headers", None):
+                      rec["location"] = e.headers.get("Location")
+              return rec
+
+          home = hit("/")
+          ice = hit("/ice")
+          iris = hit("/api/iris")
+          v2 = hit("/api/v2/chat")
+          body = home.get("body") or ""
+          rows = []
+          def add(bot, floor, cls, expect, got, lesson, hole):
+              rows.append({"bot": bot, "floor": floor, "class": cls, "expect": expect, "got": got, "lesson": lesson, "hole": hole})
+          add("unity:publisher.clerk", "engine", "HOLE" if "engine-link.js" not in body else "OK", "lander loads engine-link.js", "present" if "engine-link.js" in body else "absent", "L-003", "engine-link.js" not in body)
+          add("unity:rte.ice", "ice", "ICE_NOT_OPEN" if ice.get("status") != 200 else "OK", "/ice 200", str(ice.get("status")), "L-002", ice.get("status") != 200)
+          add("unity:jacket.watch", "jacket", "OK" if iris.get("status") == 200 else "HOLE", "/api/iris 200", str(iris.get("status")), "L-004", iris.get("status") != 200)
+          holes = [r for r in rows if r.get("hole")]
+          paths = ["/", "/hockey", "/ice", "/look", "/alacarte", "/iris"]
+          audit = []
+          for p in paths:
+              rec = hit(p, method="HEAD")
+              st, loc = rec.get("status"), (rec.get("location") or "")
+              mark = "1" if st == 200 else ("cursed" if st == 308 and loc.rstrip("/") == p.rstrip("/") else "hole")
+              audit.append({"path": p, "status": st, "mark": mark})
+          card = {"kind": "escalate", "trigger": "critical-drop completed", "clerk": "unity:forensics.clerk", "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "rows": rows, "audit_rows": audit, "next": "DESIGN or DEVELOP" if holes else "LIVE — routine clock resumes", "law": "Critical drop wakes research now. Research does not push."}
+          print(json.dumps(card, indent=2))
+          if holes:
+              print("ESCALATE: street still HOLE — ticket stays CRITICAL")
+          PY
