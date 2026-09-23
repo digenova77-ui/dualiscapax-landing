@@ -1,9 +1,10 @@
 /**
  * Iris AV — camera, mic, device voice, optional xAI TTS.
- * Locale from IrisVoice / navigator.language. Not locked to en-CA.
+ * Locale from IrisVoice / navigator.language.
+ * Neural TTS Audio() attaches to DSAP dry so wave() lights the cluster.
  */
 (function (w) {
-  var VERSION = "iris-av-v4-2026-09-22-locale";
+  var VERSION = "iris-av-v4-2026-09-22-attach";
   var state = {
     cam: null,
     mic: null,
@@ -41,6 +42,11 @@
   function loc() {
     if (w.IrisVoice && IrisVoice.locale) return IrisVoice.locale();
     return String((w.navigator && (navigator.languages && navigator.languages[0] || navigator.language)) || "en");
+  }
+
+  function markSpeaking(on) {
+    state.speaking = !!on;
+    if (w.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(!!on);
   }
 
   function enableHear() {
@@ -83,13 +89,13 @@
       u.rate = 0.98;
       u.pitch = 1;
     }
-    state.speaking = true;
+    markSpeaking(true);
     state.lastKind = "device";
-    u.onend = function () { state.speaking = false; if (done) done(); };
-    u.onerror = function () { state.speaking = false; if (done) done(); };
+    u.onend = function () { markSpeaking(false); if (done) done(); };
+    u.onerror = function () { markSpeaking(false); if (done) done(); };
     w.speechSynthesis.cancel();
     try { w.speechSynthesis.speak(u); } catch (e) {
-      state.speaking = false;
+      markSpeaking(false);
       if (done) done();
     }
   }
@@ -103,21 +109,28 @@
       if (!rec || !rec.ok || !rec.blob) return false;
       var url = URL.createObjectURL(rec.blob);
       var audio = new Audio(url);
-      state.speaking = true;
+      audio.crossOrigin = "anonymous";
+      markSpeaking(true);
       state.lastKind = "xai-tts";
-      if (w.DSAP && DSAP.attach && audio.captureStream) {
-        try { DSAP.attach(w.DSAP.context && DSAP.context()); } catch (e0) {}
+      if (w.DSAP && DSAP.unlock) {
+        try { await DSAP.unlock(); } catch (eU) {}
+      }
+      if (w.DSAP && DSAP.attach) {
+        try {
+          var hooked = DSAP.attach(audio);
+          if (hooked && hooked.then) await hooked;
+        } catch (e0) {}
       }
       await new Promise(function (resolve) {
         audio.onended = resolve;
         audio.onerror = resolve;
         audio.play().catch(resolve);
       });
-      state.speaking = false;
+      markSpeaking(false);
       try { URL.revokeObjectURL(url); } catch (e) {}
       return true;
     } catch (e) {
-      state.speaking = false;
+      markSpeaking(false);
       return false;
     }
   }
@@ -130,9 +143,14 @@
       if (DSAP.speakField) DSAP.speakField(String(text).slice(0, 180));
       else if (DSAP.pulse) DSAP.pulse(0, 0.42, 220);
     }
+    if (w.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(true);
     neuralSpeak(text).then(function (ok) {
       if (ok) { if (done) done(); return; }
-      if (!w.speechSynthesis) { if (done) done(); return; }
+      if (!w.speechSynthesis) {
+        if (w.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false);
+        if (done) done();
+        return;
+      }
       deviceSpeak(text, done);
     });
   }
@@ -277,7 +295,7 @@
     screen(false);
     if (w.speechSynthesis) w.speechSynthesis.cancel();
     if (w.DSAP && DSAP.cleanup) DSAP.cleanup();
-    state.speaking = false;
+    markSpeaking(false);
   }
 
   function loadSphere() {
@@ -292,7 +310,7 @@
     if (document.getElementById("dc-iris-sphere-src")) return;
     var s = document.createElement("script");
     s.id = "dc-iris-sphere-src";
-    s.src = "/js/iris-sphere.js?v=35a";
+    s.src = "/js/iris-sphere.js?v=50";
     s.onload = function () { loadSphere(); };
     document.head.appendChild(s);
   }
@@ -330,7 +348,10 @@
         hasByokTts: !!(w.DCByok && DCByok.tts),
         byokPresent: !!(w.DCByok && DCByok.present && DCByok.present()),
         hasSphere: !!(w.IrisSphere && IrisSphere.mount),
-        lastKind: state.lastKind
+        lastKind: state.lastKind,
+        dsapWave: !!(w.DSAP && typeof DSAP.wave === "function"),
+        dsapAttach: !!(w.DSAP && typeof DSAP.attach === "function"),
+        dsapEnergy: !!(w.DSAP && typeof DSAP.energy === "function")
       };
     }
   };
