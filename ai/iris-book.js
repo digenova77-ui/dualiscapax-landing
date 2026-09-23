@@ -1,11 +1,11 @@
 /** Iris book — pocket notes, not a teleprompter. */
 (function (w) {
-  var VERSION = "iris-book-2026-09-22-dclm";
+  var VERSION = "iris-book-2026-09-22-eyes";
   var STORY = "Our CEO and founder is David Di Genova. DualisCapax is Canadian. Looking is free. Engine time is what you buy. I'm Iris.";
-  var DCLM = "DCLM is DualisCapax's custom model. It puts more than one set of eyes on a decision. I can walk what we publish. I don't hand the playbook.";
+  var DCLM = "DCLM is DualisCapax's custom model. More than one set of eyes on a decision — dual poles, layers of check. I can walk what we publish. I don't hand how it's applied.";
   var ROWS = [
     { id: "DCLM",
-      re: /\b(what is dclm|what's dclm|dclm model|dclm matrix|dualis custom|more than one set of eyes)\b/i,
+      re: /\b(what is dclm|what's dclm|dclm model|dclm matrix|dualis custom|more than one set of eyes|dual poles)\b/i,
       spoken: DCLM,
       href: "/works.html", label: "What works" },
     { id: "SAUCE",
