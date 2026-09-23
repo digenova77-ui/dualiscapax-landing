@@ -38,17 +38,39 @@
     .dock a{color:var(--mute);text-decoration:none;font-size:.76rem;font-weight:700;padding:.5rem .7rem;border-radius:20px}
     .dock .go{background:var(--mint);color:#064E3B}
     .fine{font-family:var(--mono);font-size:.62rem;color:var(--dim);text-align:center;margin-top:.4rem}
-    .veil{position:fixed;inset:0;z-index:50;background:rgba(7,9,13,.72);display:grid;place-items:end center;padding:0 1rem 6.5rem;pointer-events:auto}
+    .veil{position:fixed;inset:0;z-index:50;background:rgba(7,9,13,.72);display:grid;place-items:end center;padding:0 1rem 6.5rem}
     .veil[hidden]{display:none}
     .card{width:min(92vw,26rem);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1rem 1.05rem 1.1rem}
     .card h2{font-size:1.05rem;margin-bottom:.35rem}
     .card p{color:var(--mute);font-size:.88rem;line-height:1.45;margin-bottom:.7rem}
     .card ul{margin:0 0 .85rem 1.1rem;color:var(--text);font-size:.86rem;line-height:1.55}
     .card .row{display:flex;gap:.45rem;flex-wrap:wrap}
+    #boot{position:fixed;inset:0;z-index:80;background:#07090d;display:grid;place-items:center;color:#F8FAFC}
+    #boot[hidden],#boot[data-phase="base"]{display:none}
+    #boot-splash{text-align:center}
+    #boot-splash .mark{width:120px;height:120px;margin:0 auto 1rem;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7dd3fc,#0ea5e9 42%,#082f49 78%);box-shadow:18px -28px 0 -64px #c084fc, 22px 26px 0 -70px #a78bfa, 0 0 48px rgba(56,189,248,.35)}
+    #boot-splash b{display:block;letter-spacing:.08em;font-size:1.15rem}
+    #boot-splash span{display:block;margin-top:.45rem;color:#94A3B8;font-size:.82rem}
+    #boot-stage{position:absolute;inset:0;width:100%;height:100%}
+    #boot-reel{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    #boot-caption{position:absolute;left:0;right:0;bottom:5.2rem;text-align:center;font-weight:700;font-size:1.05rem;padding:0 1.2rem}
+    #boot-skip,#boot-enter{position:absolute;z-index:2;border:1px solid #243040;background:transparent;color:#94A3B8;border-radius:999px;font:700 .72rem var(--sans);padding:.45rem .8rem;cursor:pointer}
+    #boot-skip{top:1rem;right:1rem}
+    #boot-enter{bottom:1.4rem;left:50%;transform:translateX(-50%);color:#082F49;background:#38BDF8;border:0}
+    html[data-boot="splash"] #boot-stage,html[data-boot="splash"] #boot-reel,html[data-boot="splash"] #boot-caption{display:none}
+    html[data-boot="reel"] #boot-splash{display:none}
     @media (max-width:560px){.rooms{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
+  <div id="boot" data-phase="splash" role="dialog" aria-label="Welcome">
+    <button type="button" id="boot-skip">Skip</button>
+    <div id="boot-splash"><div class="mark" aria-hidden="true"></div><b>DualisCapax</b><span>You just walked in.</span></div>
+    <canvas id="boot-stage" hidden></canvas>
+    <video id="boot-reel" muted playsinline preload="none" hidden></video>
+    <div id="boot-caption"></div>
+    <button type="button" id="boot-enter">Continue</button>
+  </div>
   <header>
     <a class="brand" href="#top">Dualiscapax</a>
     <div>
@@ -57,10 +79,7 @@
     </div>
   </header>
   <main class="stage" id="top">
-    <div class="orb-wrap" id="iris-plate" aria-label="Iris">
-      <div id="presence"></div>
-      <video id="you" autoplay muted playsinline aria-label="Your camera"></video>
-    </div>
+    <div class="orb-wrap" id="iris-plate" aria-label="Iris"><div id="presence"></div><video id="you" autoplay muted playsinline aria-label="Your camera"></video></div>
     <p class="hint" id="hint">Hey. That's Iris.</p>
     <h1>Meet Iris<span>.</span></h1>
     <p class="lead">She'll say hello. Mute her if you'd rather just read. Camera stays off unless you tap it.</p>
@@ -78,10 +97,7 @@
     <p class="fine">This is not a clinic. Payment links on the public site may still be closed.</p>
   </main>
   <nav class="dock">
-    <a href="#top">Home</a>
-    <a class="go" href="ai/app.html">Iris</a>
-    <a href="hall/">Hall</a>
-    <a href="research/">Reading</a>
+    <a href="#top">Home</a><a class="go" href="ai/app.html">Iris</a><a href="hall/">Hall</a><a href="research/">Reading</a>
   </nav>
   <div class="veil" id="veil" role="dialog" aria-labelledby="veil-title">
     <div class="card">
@@ -99,6 +115,8 @@
       </div>
     </div>
   </div>
+  <script src="js/iris-boot.js"></script>
+  <script src="js/iris-realm.js"></script>
   <script src="js/iris-sphere.js"></script>
   <script src="js/dsap-engine.js"></script>
   <script src="js/dsap.js"></script>
@@ -111,15 +129,11 @@
       var video = document.getElementById("you");
       var voiceBtn = document.getElementById("voice");
       var veil = document.getElementById("veil");
-      var camOn = false, greeted = false;
-      var muted = false;
+      var camOn = false, greeted = false, muted = false;
       try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
-
       var LINE = "Hey. I'm Iris. You walked into Dualis. Ask me anything small for free. If you want the heavy work, I'll tell you what it costs before I start. Lab is if you want the camera. Hall is the other rooms. Research is reading, not a clinic.";
-
       if (window.IrisSphere && IrisSphere.mount) IrisSphere.mount("#presence");
       if (window.IrisSphere && IrisSphere.setWoken) IrisSphere.setWoken(true);
-
       function paintMute() {
         voiceBtn.textContent = muted ? "Voice off" : "Voice on";
         voiceBtn.classList.toggle("on", !muted);
@@ -127,20 +141,14 @@
       }
       paintMute();
       if (muted) veil.hidden = true;
-
+      if (document.documentElement.getAttribute("data-boot") !== "base") veil.hidden = true;
       function speak(line) {
         if (muted) return;
         if (window.IrisAV && IrisAV.speak) {
-          try {
-            IrisAV.speak(line);
-            if (IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(true);
-          } catch (e) {}
-          setTimeout(function () {
-            if (window.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false);
-          }, 5200);
+          try { IrisAV.speak(line); if (IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(true); } catch (e) {}
+          setTimeout(function () { if (window.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false); }, 5200);
         }
       }
-
       function greet() {
         if (greeted || muted) return;
         greeted = true;
@@ -149,71 +157,47 @@
         speak(LINE);
         veil.hidden = true;
       }
-
       function skip() {
         muted = true;
         try { localStorage.setItem(MUTE, "1"); } catch (e) {}
-        paintMute();
-        veil.hidden = true;
+        paintMute(); veil.hidden = true;
         hint.textContent = "Voice off. Turn it on when you want her.";
         if (window.speechSynthesis) speechSynthesis.cancel();
       }
-
       voiceBtn.addEventListener("click", function () {
         muted = !muted;
         try { localStorage.setItem(MUTE, muted ? "1" : "0"); } catch (e) {}
         paintMute();
-        if (muted) {
-          if (window.speechSynthesis) speechSynthesis.cancel();
-          hint.textContent = "Voice off.";
-        } else {
-          greeted = false;
-          greet();
-        }
+        if (muted) { if (window.speechSynthesis) speechSynthesis.cancel(); hint.textContent = "Voice off."; }
+        else { greeted = false; greet(); }
       });
       document.getElementById("meet").addEventListener("click", greet);
       document.getElementById("skip").addEventListener("click", skip);
       document.getElementById("talk").addEventListener("click", greet);
       document.getElementById("iris-plate").addEventListener("pointerdown", greet);
-
-      if (!muted) {
-        setTimeout(function () {
-          try {
-            if (window.DSAP && DSAP.unlock) DSAP.unlock().then(function () { greet(); }).catch(function () {});
-            else greet();
-          } catch (e) {}
-        }, 240);
+      function afterBoot() {
+        if (muted) return;
+        try {
+          if (window.DSAP && DSAP.unlock) DSAP.unlock().then(function () { greet(); }).catch(function () {});
+          else greet();
+        } catch (e) {}
       }
-
+      if (document.documentElement.getAttribute("data-boot") === "base") afterBoot();
+      else window.addEventListener("iris:boot", afterBoot, { once: true });
       window.addEventListener("pointermove", function (e) {
         var x = (e.clientX / Math.max(1, window.innerWidth) - 0.5) * 2;
         var y = (e.clientY / Math.max(1, window.innerHeight) - 0.5) * 2;
         if (window.IrisSphere && IrisSphere.lookAt) IrisSphere.lookAt(x, y);
       }, { passive: true });
-
       document.getElementById("cam").addEventListener("click", function () {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          hint.textContent = "This browser has no camera.";
-          return;
-        }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { hint.textContent = "This browser has no camera."; return; }
         if (camOn) {
-          var s = video.srcObject;
-          if (s && s.getTracks) s.getTracks().forEach(function (t) { t.stop(); });
-          video.srcObject = null;
-          video.style.display = "none";
-          camOn = false;
-          hint.textContent = "Camera off.";
-          return;
+          var s = video.srcObject; if (s && s.getTracks) s.getTracks().forEach(function (t) { t.stop(); });
+          video.srcObject = null; video.style.display = "none"; camOn = false; hint.textContent = "Camera off."; return;
         }
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }).then(function (stream) {
-          video.srcObject = stream;
-          video.style.display = "block";
-          camOn = true;
-          hint.textContent = "Camera is just on this phone.";
-          greet();
-        }).catch(function () {
-          hint.textContent = "Camera blocked.";
-        });
+          video.srcObject = stream; video.style.display = "block"; camOn = true; hint.textContent = "Camera is just on this phone."; greet();
+        }).catch(function () { hint.textContent = "Camera blocked."; });
       });
     })();
   </script>
