@@ -1,0 +1,68 @@
+name: iris-greet-mint
+
+# One mint clerk. Not a parade.
+# Writes audio/iris-greet.wav + .mp3 with SoniaNeural, then publisher can ship.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "8,38 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: iris-greet-mint
+  cancel-in-progress: false
+
+jobs:
+  mint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Skip if take already sits
+        id: have
+        run: |
+          if [ -f audio/iris-greet.wav ] && [ "$(wc -c < audio/iris-greet.wav)" -ge 50000 ]; then
+            echo "have=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "have=0" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Mint Sonia take
+        if: steps.have.outputs.have != '1'
+        run: |
+          pip install -q edge-tts
+          mkdir -p audio
+          python3 << 'PY'
+          import asyncio, os
+          TEXT = "Hey. I'm Iris. You walked into Dualis. Ask anything small for free. If you want the heavy work, I'll say the price first."
+          VOICE = "en-GB-SoniaNeural"
+          async def main():
+              import edge_tts
+              comm = edge_tts.Communicate(TEXT, VOICE)
+              await comm.save("audio/iris-greet.mp3")
+              # wav via ffmpeg if present, else keep mp3 only
+              print("mp3", os.path.getsize("audio/iris-greet.mp3"))
+          asyncio.run(main())
+          PY
+          if command -v ffmpeg >/dev/null; then
+            ffmpeg -y -i audio/iris-greet.mp3 -ar 22050 -ac 1 audio/iris-greet.wav
+          fi
+          ls -la audio/iris-greet.*
+      - name: Commit take
+        if: steps.have.outputs.have != '1'
+        run: |
+          git config user.name "unity-wav-clerk"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audio/iris-greet.mp3 audio/iris-greet.wav || true
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git commit -m "feat(iris): Sonia greet take (IRIS-CRITICAL L-WAV)"
+          git push
