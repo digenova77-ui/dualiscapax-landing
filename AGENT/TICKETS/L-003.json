@@ -1,0 +1,16 @@
+{
+  "id": "L-003",
+  "state": "DEVELOP",
+  "cause": "KNOWN",
+  "class": "HOLE",
+  "bot": "unity:publisher.clerk",
+  "forensics": "unity:forensics.clerk",
+  "design": "unity:design.clerk",
+  "develop": "unity:develop.clerk",
+  "publish": "unity:publisher.clerk",
+  "watch": "unity:publisher.watch",
+  "expect": "apex HTML contains engine-link.js",
+  "got": "scripts on main, not imported by root index.html",
+  "blueprint": "AGENT/BLUEPRINTS/L-003-engine-unlink.md",
+  "critical": true
+}
