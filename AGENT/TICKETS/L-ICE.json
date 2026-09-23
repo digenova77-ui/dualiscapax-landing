@@ -1,0 +1,17 @@
+{
+  "id": "L-ICE",
+  "state": "DEVELOP",
+  "cause": "KNOWN",
+  "class": "ICE_NOT_OPEN",
+  "critical": true,
+  "tick": "on-drop",
+  "bot": "unity:rte.ice",
+  "forensics": "unity:forensics.clerk",
+  "design": "unity:design.clerk",
+  "develop": "unity:develop.clerk",
+  "publish": "unity:publisher.clerk",
+  "watch": "unity:order.watch",
+  "expect": "GET https://dualiscapax.ai/ice 200",
+  "got": "403 or 308 — door not a room",
+  "blueprint": "AGENT/LESSONS.md#L-002-308--ice-door"
+}
