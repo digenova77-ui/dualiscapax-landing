@@ -1,0 +1,16 @@
+{
+  "id": "L-RING",
+  "state": "DEVELOP",
+  "cause": "KNOWN",
+  "class": "IRIS-CRITICAL",
+  "rank": 2,
+  "critical": true,
+  "tick": "on-drop",
+  "bot": "unity:wav.watch",
+  "develop": "unity:develop.clerk",
+  "publish": "unity:publisher.clerk",
+  "watch": "unity:publisher.watch",
+  "expect": "live js/iris-ring.js version iris-ring-2026-09-23-keep and empty listen restarts",
+  "got": "keep-alive is on main git; apex may still be older ship",
+  "after": "L-WAV"
+}

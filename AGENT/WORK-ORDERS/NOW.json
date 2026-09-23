@@ -1,34 +1,31 @@
 {
-  "kind": "work-orders",
-  "clerk": "unity:order.clerk",
-  "watch": "unity:order.watch",
-  "at": "2026-09-23T14:42:00Z",
-  "law": "Every HOLE is an order. Tick on drop. Redeploy is push main + curl.",
+  "stamp": "2026-09-23T14:55Z",
+  "class": "IRIS-CRITICAL",
+  "law": "Iris street holes outrank every other desk",
   "open": [
     {
       "id": "L-WAV",
-      "class": "MUTE",
+      "rank": 1,
       "critical": true,
+      "class": "IRIS-CRITICAL",
       "state": "DEVELOP",
-      "expect": "apex /audio/iris-greet.wav 200 audio/* >= 50KB and index loads js/iris-wav.js",
-      "got": "wav 404; audio/ README only; lander missing iris-wav.js"
+      "expect": "GET https://dualiscapax.ai/audio/iris-greet.wav 200 audio/* >= 50KB; live index loads js/iris-wav.js"
     },
     {
-      "id": "L-003",
-      "class": "HOLE",
+      "id": "L-RING",
+      "rank": 2,
       "critical": true,
+      "class": "IRIS-CRITICAL",
       "state": "DEVELOP",
-      "expect": "lander loads js/engine-link.js",
-      "got": "scripts stop at iris-ring.js on live apex"
+      "expect": "live js/iris-ring.js contains keep-alive (misses restart listenTurn)"
     },
     {
-      "id": "L-ICE",
-      "class": "ICE_NOT_OPEN",
-      "critical": true,
-      "state": "DEVELOP",
-      "expect": "GET /ice 200",
-      "got": "403 or 308"
+      "id": "L-STREAM",
+      "rank": 3,
+      "critical": false,
+      "class": "IRIS",
+      "state": "PARKED",
+      "expect": "POST /speak returns audio; Seat secret not in git"
     }
-  ],
-  "closed": []
+  ]
 }

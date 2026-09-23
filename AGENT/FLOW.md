@@ -1,11 +1,13 @@
 # Flow to work — thin idle, float to the hole
 
-Stamp: 2026-09-23T14:34Z
+Stamp: 2026-09-23T14:55Z
 Clerk: `unity:flow.clerk`
 Watch: `unity:flow.watch`
 Wattage: `unity:wattage.clerk` (slot :23 / :53)
+Iris first: `AGENT/IRIS-PRIORITY.md`
 
 This is not fifteen new people. It is one floater and a sleep rule.
+Iris street holes outrank every other pile.
 
 ## Sleep / thin
 
@@ -25,7 +27,8 @@ A driving test (`workflow_dispatch`, a signed ticket, a failing probe) keeps tha
 
 `unity:flow.clerk` reads, in order:
 
-1. `AGENT/TICKETS/*` with `critical: true` and state not LIVE
+0. `IRIS-CRITICAL` tickets (`L-WAV`, `L-RING`) until LIVE
+1. other `AGENT/TICKETS/*` with `critical: true` and state not LIVE
 2. `AGENT/LESSONS.md` classes still HOLE on the street
 3. FOREST `holes[]`
 4. Any kind whose last harvest added zero new cites
@@ -33,17 +36,18 @@ A driving test (`workflow_dispatch`, a signed ticket, a failing probe) keeps tha
 It parks on the first one that is not `used[unit]=true`.
 `unity:flow.watch` holes two floaters on the same desk.
 
-The floater does that sector's *next* job (forensics, blueprint, splice, or curl) then leaves. It does not move in.
+While an `IRIS-CRITICAL` ticket is open, the floater does not sit on OMHA boards, golf envelopes, or OHF homepage pings.
 
-Harvest specialists (hockey, golf, ice-session) keep their own minutes while they are still adding cites. The floater does not steal those minutes.
+Harvest specialists keep their own minutes only while they are still adding cites **and** no IRIS-CRITICAL is open. If Iris is on fire, harvest thins to weekly watch.
 
 ## Wattage score
 
 At :23 / :53 `wattage.clerk` prints:
 
+- IRIS-CRITICAL open → floater MUST show L-WAV or L-RING
 - live units with a cron and no new cite → `THIN`
 - units on `workflow_dispatch` only → `SLEEP`
 - units with a driving test → `AWAKE`
 - floater sitting → which ticket
 
-Empty folders with no queue are theater. Demote them the way `swarm_bot_fleet` already was.
+Empty folders with no queue are theater.
