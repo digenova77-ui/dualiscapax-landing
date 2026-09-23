@@ -122,6 +122,7 @@
   <script src="js/dsap.js"></script>
   <script src="js/iris-voice.js"></script>
   <script src="js/iris-av.js"></script>
+  <script src="js/iris-ring.js"></script>
   <script>
     (function () {
       var MUTE = "dc-iris-mute";
@@ -129,9 +130,8 @@
       var video = document.getElementById("you");
       var voiceBtn = document.getElementById("voice");
       var veil = document.getElementById("veil");
-      var camOn = false, greeted = false, muted = false;
+      var camOn = false, muted = false;
       try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
-      var LINE = "Hey. I'm Iris. You walked into Dualis. Ask me anything small for free. If you want the heavy work, I'll tell you what it costs before I start. Lab is if you want the camera. Hall is the other rooms. Research is reading, not a clinic.";
       if (window.IrisSphere && IrisSphere.mount) IrisSphere.mount("#presence");
       if (window.IrisSphere && IrisSphere.setWoken) IrisSphere.setWoken(true);
       function paintMute() {
@@ -142,45 +142,30 @@
       paintMute();
       if (muted) veil.hidden = true;
       if (document.documentElement.getAttribute("data-boot") !== "base") veil.hidden = true;
-      function speak(line) {
-        if (muted) return;
-        if (window.IrisAV && IrisAV.speak) {
-          try { IrisAV.speak(line); if (IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(true); } catch (e) {}
-          setTimeout(function () { if (window.IrisSphere && IrisSphere.setSpeaking) IrisSphere.setSpeaking(false); }, 5200);
-        }
-      }
-      function greet() {
-        if (greeted || muted) return;
-        greeted = true;
-        try { if (window.DSAP && DSAP.unlock) DSAP.unlock(); } catch (e) {}
-        hint.textContent = "That's Iris.";
-        speak(LINE);
-        veil.hidden = true;
-      }
       function skip() {
         muted = true;
         try { localStorage.setItem(MUTE, "1"); } catch (e) {}
         paintMute(); veil.hidden = true;
         hint.textContent = "Voice off. Turn it on when you want her.";
+        if (window.IrisRing) IrisRing.stop();
         if (window.speechSynthesis) speechSynthesis.cancel();
       }
       voiceBtn.addEventListener("click", function () {
         muted = !muted;
         try { localStorage.setItem(MUTE, muted ? "1" : "0"); } catch (e) {}
         paintMute();
-        if (muted) { if (window.speechSynthesis) speechSynthesis.cancel(); hint.textContent = "Voice off."; }
-        else { greeted = false; greet(); }
+        if (muted) {
+          if (window.IrisRing) IrisRing.stop();
+          if (window.speechSynthesis) speechSynthesis.cancel();
+          hint.textContent = "Voice off.";
+        } else if (window.IrisRing) {
+          IrisRing.kick();
+        }
       });
-      document.getElementById("meet").addEventListener("click", greet);
       document.getElementById("skip").addEventListener("click", skip);
-      document.getElementById("talk").addEventListener("click", greet);
-      document.getElementById("iris-plate").addEventListener("pointerdown", greet);
       function afterBoot() {
         if (muted) return;
-        try {
-          if (window.DSAP && DSAP.unlock) DSAP.unlock().then(function () { greet(); }).catch(function () {});
-          else greet();
-        } catch (e) {}
+        if (window.IrisRing) IrisRing.kick();
       }
       if (document.documentElement.getAttribute("data-boot") === "base") afterBoot();
       else window.addEventListener("iris:boot", afterBoot, { once: true });
@@ -196,7 +181,8 @@
           video.srcObject = null; video.style.display = "none"; camOn = false; hint.textContent = "Camera off."; return;
         }
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }).then(function (stream) {
-          video.srcObject = stream; video.style.display = "block"; camOn = true; hint.textContent = "Camera is just on this phone."; greet();
+          video.srcObject = stream; video.style.display = "block"; camOn = true; hint.textContent = "Camera is just on this phone.";
+          if (window.IrisRing && !muted) IrisRing.kick();
         }).catch(function () { hint.textContent = "Camera blocked."; });
       });
     })();
