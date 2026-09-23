@@ -6,12 +6,15 @@
     }
     return;
   }
-  if (w.DSAP && w.DSAP.version === "DSAP-1.2") return;
+  if (w.DSAP && w.DSAP.version === "DSAP-1.2-awake") return;
   var ctx, ring = [], woken = false, ears = [], master, analyser, bins;
   function ac() {
     if (!ctx) ctx = new (w.AudioContext || w.webkitAudioContext)();
     if (ctx.state === "suspended") ctx.resume();
     return ctx;
+  }
+  function ringOn() {
+    return !!(w.IrisRing && IrisRing.running && IrisRing.running());
   }
   function wake() {
     var c = ac();
@@ -41,7 +44,13 @@
     o.connect(g); g.connect(ring[i]); o.start(t);
     for (var n = 0; n < ears.length; n++) { try { ears[n](kind, i); } catch (e) {} }
   }
-  function sleep() { if (ctx && ctx.state === "running") ctx.suspend(); }
-  document.addEventListener("visibilitychange", function () { if (document.hidden) sleep(); });
-  w.DSAP = { wake: wake, unlock: wake, place: place, sleep: sleep, listen: function (fn) { if (typeof fn === "function") ears.push(fn); }, wave: wave, version: "DSAP-1.2" };
+  function sleep() {
+    if (ringOn()) return;
+    if (ctx && ctx.state === "running") ctx.suspend();
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) sleep();
+    else wake();
+  });
+  w.DSAP = { wake: wake, unlock: wake, place: place, sleep: sleep, listen: function (fn) { if (typeof fn === "function") ears.push(fn); }, wave: wave, version: "DSAP-1.2-awake" };
 })(window);
