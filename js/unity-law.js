@@ -1,11 +1,13 @@
 /**
- * BETA: U1 may amend published Unity law while the house is still forming.
- * PROTOCOL LIVE (coin architecture / autonomous company): no ID amends alone.
- * Not a till. Pay stays Stripe CAD until that protocol actually exists.
+ * BETA: U1 may amend.
+ * ALPHA: U1 keeps veto while consensus is still forming.
+ * SINGULARITY: Dualis law of the land + autonomy chosen. No solo amend, no founder veto.
+ * Token bags are not implemented here. Pay stays Stripe CAD.
  */
 (function (w) {
-  var VERSION = "unity-law-2026-09-22-beta";
+  var VERSION = "unity-law-2026-09-22-phase";
   var LAW = ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"];
+  var PHASE = { BETA: "beta", ALPHA: "alpha", LIVE: "live" };
 
   function isU1() {
     if (w.UnityBind && UnityBind.isU1) return !!UnityBind.isU1();
@@ -15,34 +17,47 @@
     } catch (e) { return false; }
   }
 
-  function isProtocolLive() {
-    if (w.DC_PROTOCOL === true) return true;
-    try { return w.localStorage.getItem("dc.unity.protocol") === "1"; } catch (e) { return false; }
-  }
-
-  function isBeta() {
-    return !isProtocolLive();
+  function phase() {
+    if (w.DC_PHASE) return String(w.DC_PHASE);
+    try {
+      var p = w.localStorage.getItem("dc.unity.phase");
+      if (p === PHASE.LIVE || p === "singularity") return PHASE.LIVE;
+      if (p === PHASE.ALPHA) return PHASE.ALPHA;
+    } catch (e) {}
+    if (w.DC_PROTOCOL === true) return PHASE.LIVE;
+    try { if (w.localStorage.getItem("dc.unity.protocol") === "1") return PHASE.LIVE; } catch (e2) {}
+    return PHASE.BETA;
   }
 
   function canAmend() {
-    if (isProtocolLive()) return false;
+    return phase() === PHASE.BETA && isU1();
+  }
+
+  function canVeto() {
+    var p = phase();
+    if (p === PHASE.LIVE) return false;
     return isU1();
   }
 
   function spoken() {
-    if (isProtocolLive()) {
-      return "Protocol is live. Unity law doesn't move on one ID — including the founder tag. A core change needs consensus.";
+    var p = phase();
+    if (p === PHASE.LIVE) {
+      return "This is live law. Autonomy is the standard. No single ID amends or vetoes — including the founder tag.";
     }
-    return "Beta: the founder tag can still set house law. That ends when the protocol is live.";
+    if (p === PHASE.ALPHA) {
+      return "Alpha: consensus is forming. The founder tag still has veto. It cannot rewrite the house alone once we are live.";
+    }
+    return "Beta: the founder tag can still set house law. That shrinks through alpha, then ends at live law.";
   }
 
   w.UnityLaw = {
     version: VERSION,
     law: LAW,
+    PHASE: PHASE,
+    phase: phase,
     isU1: isU1,
-    isBeta: isBeta,
-    isProtocolLive: isProtocolLive,
     canAmend: canAmend,
+    canVeto: canVeto,
     spoken: spoken
   };
 })(window);
