@@ -1,11 +1,18 @@
 # Iris greet take
 
-Drop the real hello here as `iris-greet.wav` (or `.mp3`).
+Hello only. Replies stay TTS.
 
-The lander plays this file first on Voice-on / Talk / orb. If the file is missing or blocked, she falls back to the phone TTS. Replies always use TTS until a renderer writes a new wav per sentence.
+Play order on Voice-on / Talk / orb:
 
-Line to record, coffee-shop, not a slogan:
+1. `audio/iris-greet.wav` if the file is on the rail
+2. `audio/iris-greet.mp3` if the wav is missing
+3. Embedded SoniaNeural take in `js/iris-greet.js`
+4. Phone TTS of the same line
 
-> Hey. I'm Iris. You walked into Dualis. Ask me anything small for free.
+A short jewelry WAV sits on top of that hello. It is not speech.
 
-Not ElevenLabs. Not xAI TTS. A take you like.
+Line on the take:
+
+> Hey. I'm Iris. You walked into Dualis. Ask anything small for free. If you want the heavy work, I'll say the price first.
+
+Voice: en-GB-SoniaNeural. Replacing TTS with WAV for every sentence would mute her on anything she has not already recorded.
