@@ -1,17 +1,17 @@
 /** Iris book — house doors only. Do not match her name inside a real question. */
 (function (w) {
-  var VERSION = "iris-book-2026-09-22-who";
+  var VERSION = "iris-book-2026-09-22-ca";
   var ROWS = [
     { id: "WHO",
       re: /\b(who (founded|owns|started) (this|dualis)|who is (the )?(ceo|founder)|(?:ceo and )?founder|david di ?genova|di genova)\b/i,
-      spoken: "Our CEO and founder is David Di Genova. DualisCapax is Canadian. We started with look-first rooms and a hockey seat, then the rest of the work as packs. I'm Iris.",
+      spoken: "Our CEO and founder is David Di Genova. DualisCapax is Canadian. Looking is free. Engine time is what you buy. I'm Iris.",
       href: "/index.html", label: "DualisCapax" },
     { id: "QUAT", re: /\b(quaternion|quaternary|quatra|q4|hamilton|iris sphere|spinning sphere)\b/i,
       spoken: "The quaternion is the Iris sphere pose: w, x, y, z rotating 64 seats. That is not the oscillator q on the abstract page. Open the abstract layer to step both.",
       href: "/abstract.html", label: "Abstract layer" },
     { id: "HELP", re: /^(?:iris[, ]+)?(what can you do|help|what is dualis|what is this)\b/i,
-      spoken: "I'm Iris. Looking is free. A Unity ID is free. Engine time is what you buy.",
-      href: "/abstract.html", label: "Abstract layer" },
+      spoken: "I'm Iris. DualisCapax is Canadian. Looking is free. A Unity ID is free. Engine time is what you buy. Each room is its own realm.",
+      href: "/index.html", label: "DualisCapax" },
     { id: "IRIS", re: /^(?:hi[, ]+|hey[, ]+|iris[, ]+)*(who are you|what(?:'s| is) your name|your name)\s*[?.!]*$/i,
       spoken: "I'm Iris. DualisCapax public face. Ask me a question — I will look it up.",
       href: "/ai/app.html", label: "Iris" },
