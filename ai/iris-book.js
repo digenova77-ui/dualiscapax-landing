@@ -1,8 +1,13 @@
 /** Iris book — pocket notes, not a teleprompter. */
 (function (w) {
-  var VERSION = "iris-book-2026-09-22-cut";
+  var VERSION = "iris-book-2026-09-22-dclm";
   var STORY = "Our CEO and founder is David Di Genova. DualisCapax is Canadian. Looking is free. Engine time is what you buy. I'm Iris.";
+  var DCLM = "DCLM is DualisCapax's custom model. It puts more than one set of eyes on a decision. I can walk what we publish. I don't hand the playbook.";
   var ROWS = [
+    { id: "DCLM",
+      re: /\b(what is dclm|what's dclm|dclm model|dclm matrix|dualis custom|more than one set of eyes)\b/i,
+      spoken: DCLM,
+      href: "/works.html", label: "What works" },
     { id: "SAUCE",
       re: /\b(playbook|blueprint|secret sauce|black box|how (is|was) (it|dualis|this) (really )?(made|built)|recreate (the )?system|give me the (recipe|source))\b/i,
       spoken: "I can walk the public rooms with you — works, abstract, residual. I don't hand the playbook.",
@@ -43,5 +48,5 @@
     }
     return null;
   }
-  w.IrisBook = { version: VERSION, lookup: lookup, rows: ROWS, story: STORY };
+  w.IrisBook = { version: VERSION, lookup: lookup, rows: ROWS, story: STORY, dclm: DCLM };
 })(window);
