@@ -6,17 +6,17 @@ Do not mint until this file is true.
 
 The address that receives 100% of genesis.
 
-It is not the published gift address unless you prove you control that address and you still want it as the vault. A gift address is a public drop box. A founder vault holds the whole supply. Those are different jobs.
+It is bound to a Unity ID. The ID is the name. The wallet is the hand. They are not the same key. The website must never derive the chain key from a passphrase.
 
-It is not a Unity ID. A Unity ID may later bind to this public address. The website must never derive the EVM key from a passphrase.
+It is not the published gift address unless you prove you control that address and you still want it as the vault. A gift address is a public drop box. A founder vault holds the whole supply. Those are different jobs.
 
 ## How it is created
 
 You create it. We do not.
 
 1. On a device that is not a browser tab, make a new wallet. Hardware first. Paper backup of the seed stays offline. Nobody pastes the seed into Grok, GitHub, email, or the hall.
-2. Write the public address on this plate. That is the only thing the factory is allowed to see.
-3. Prove control: sign the sentence `eFuse founder vault` from that address. The signature is the first check. A screenshot of the address is not.
+2. Open the Unity Network glass. Write the Unity public sitting. Connect the device. Sign `Unity bind <sitting> eFuse <address>`.
+3. The plate stores the Unity public, the address, and the proof. That is the only thing the factory is allowed to see.
 
 ## How it is tested before mint
 
@@ -30,12 +30,13 @@ The suite must pass:
 - a transfer to the token contract is refused
 - sending ETH to the token is refused
 - no private key file exists under `research/coin/`
+- a bind record has no seed field
 
-Only after that suite is green, and after your public address is on the plate with a signature, may a testnet mint send 100% to that address.
+Only after that suite is green, and after the Unity bind proof is on the plate, may a testnet mint send 100% to that address.
 
 ## What mint means
 
-Testnet: the constructor argument `founder` is your published vault address. That is the one mint. There is no second mint function.
+Testnet: the constructor argument `founder` is the bound public address. That is the one mint. There is no second mint function.
 
 Mainnet: later. Same bytecode. Same two checks. `issued` stays no until then.
 
@@ -45,4 +46,4 @@ Mainnet: later. Same bytecode. Same two checks. `issued` stays no until then.
 - Ethereum `0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4`
 - Solana `Cus1pLggfxDJC8FJSQv1tRtzDanuzSxjWvSsKA12byDw`
 
-Those are receive-only gifts. They are not the vault until you say so and sign.
+Those are receive-only gifts. They can bind to a Unity ID as a drop box. They are not the vault until you say so and sign.
