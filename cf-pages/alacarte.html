@@ -1,43 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>À la carte — DualisCapax</title>
-<meta name="theme-color" content="#0B0E14">
-<link rel="stylesheet" href="lander.css">
 <style>
-body{margin:0;background:#0B0E14;color:#eef4f8;font:18px/1.55 Georgia,serif}
-.wrap{max-width:40rem;margin:0 auto;padding:1.2rem 1.1rem 5rem}
-.brand{font:11px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:#8b9caa}
-h1{font-size:clamp(2rem,8vw,3rem);line-height:1;margin:1rem 0 .7rem}
-h1 em{font-style:italic;color:#38BDF8}
-.lede{color:#c9d6df}
-.card{border:1px solid rgba(56,189,248,.2);border-radius:16px;padding:1rem;margin:0 0 .75rem;background:rgba(8,14,22,.7)}
-.card h2{margin:0 0 .35rem;font-size:1.05rem}
-.card p{margin:0;color:#8b9caa;font-size:.95rem}
-a.card{display:block;color:inherit;text-decoration:none}
-a.card:hover{border-color:#38BDF8}
-.nav{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.2rem;font:13px ui-monospace,monospace}
-.nav a{color:#38BDF8}
+:root{--bg:#070b12;--card:#0e1622;--ink:#e8eef8;--mute:#8b9bb0;--line:#1c2a3d;--ice:#7eb8ff;--warn:#e8c36a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui;min-height:100dvh}
+header{padding:1.1rem 1.2rem .4rem}.badge{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ice)}
+h1{font-size:1.55rem;margin:.25rem 0 .4rem}.lede{color:var(--mute);margin:0 0 1rem}
+main{max-width:26rem;margin:0 auto;padding:0 1rem 5.4rem}
+.sec{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:1.15rem 0 .45rem}
+.grid{display:grid;gap:.7rem}
+a.card, .card{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.05rem;color:inherit;text-decoration:none}
+.card b{display:block}.card span{display:block;color:var(--mute);font-size:.88rem;margin-top:.2rem}
+.row{display:flex;justify-content:space-between;gap:.6rem}.pill{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--warn);white-space:nowrap}
+footer{position:fixed;left:0;right:0;bottom:0;background:#0a1018;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:.55rem .4rem calc(.55rem + env(safe-area-inset-bottom));font-size:.72rem}
+footer a{color:var(--mute);text-decoration:none}footer a.on{color:var(--ice)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="brand">DualisCapax · À la carte</div>
-  <h1>Hockey first.<br><em>One seat.</em></h1>
-  <p class="lede">Claim who you are on the roster. Then the next game. Other sports wait until they are real. Nothing here is a $499 solver.</p>
-  <a class="card" href="ice.html"><h2>Ice</h2><p>The rink. Claim seat. TeamSnap if you have it. Empty roster is honest.</p></a>
-  <a class="card" href="rte/sima-dclm/"><h2>Job aide</h2><p>Implement. Upgrade. Integrate. Her desk. Not a hospital volume counter.</p></a>
-  <a class="card" href="rte/sima-dclm/implement.html"><h2>Implement</h2><p>Stand the book up.</p></a>
-  <a class="card" href="rte/sima-dclm/integrate.html"><h2>Integrate</h2><p>Two books already paid for. They still do not talk.</p></a>
-  <a class="card" href="index.html"><h2>Home</h2><p>The lander.</p></a>
-  <nav class="nav">
-    <a href="index.html">Home</a>
-    <a href="ice.html">Ice</a>
-    <a href="rte/sima-dclm/">SIMA</a>
-    <a href="hockey.html">Hockey</a>
-  </nav>
+<header>
+  <div class="badge">À la carte · DualisCapax</div>
+  <h1>Pick a room.</h1>
+  <p class="lede">Look is free. A room is an RTE we already built. Nothing is first. Till closed until Bind-continue.</p>
+</header>
+<main>
+<p class="sec">Rooms</p>
+<div class="grid">
+<a class="card" href="/ice"><div class="row"><b>Ice</b><span class="pill">look $0</span></div><span>Hockey seat. TeamSnap phrase when that door is bound.</span></a>
+<a class="card" href="/rte/sima-dclm/"><div class="row"><b>SIMA desk</b><span class="pill">look $0</span></div><span>Job aide. Connect, upgrade, stand up, pair.</span></a>
+<a class="card" href="/rte/boards/"><div class="row"><b>School boards</b><span class="pill">look $0</span></div><span>Ontario boards. Phrase bind. Not a government throne.</span></a>
+<a class="card" href="/rte/easthill/"><div class="row"><b>Classroom</b><span class="pill">look $0</span></div><span>Easthill desk. Week, plan, report.</span></a>
+<a class="card" href="/rte/sandbox/"><div class="row"><b>Sandbox map</b><span class="pill">look $0</span></div><span>All factory rooms on one list.</span></a>
+<a class="card" href="/look"><div class="row"><b>Look cards</b><span class="pill">look $0</span></div><span>Country, room, line.</span></a>
+<a class="card" href="/ohf"><div class="row"><b>OHF / leagues</b><span class="pill">look $0</span></div><span>Pathways. Not invented rosters.</span></a>
 </div>
+<p class="sec">Fuel · parked</p>
+<div class="grid">
+<div class="card"><b>Talk</b><span>Iris hello and reading pages. $0.</span></div>
+<div class="card"><div class="row"><b>Small pack</b><span class="pill">parked</span></div><span>40 fuel · $20 CAD. Heavy jobs only.</span></div>
+<div class="card"><div class="row"><b>Medium pack</b><span class="pill">parked</span></div><span>120 fuel · $50 CAD.</span></div>
+<div class="card"><div class="row"><b>Large pack</b><span class="pill">parked</span></div><span>320 fuel · $120 CAD.</span></div>
+</div>
+<p class="sec">Year in a room · parked</p>
+<div class="grid">
+<div class="card"><div class="row"><b>Leaf</b><span class="pill">parked</span></div><span>$49 CAD · 12 months. One room.</span></div>
+<div class="card"><div class="row"><b>Field</b><span class="pill">parked</span></div><span>$149 CAD · 12 months. A few rooms.</span></div>
+<div class="card"><div class="row"><b>Library</b><span class="pill">parked</span></div><span>$499 CAD · 12 months. The desk.</span></div>
+</div>
+<p class="lede">Parked means written, not a live button. Checkout stays closed.</p>
+</main>
+<footer>
+  <a href="/">Home</a>
+  <a class="on" href="/alacarte">Menu</a>
+  <a href="/hall/">Hall</a>
+  <a href="/rte">RTE</a>
+</footer>
 </body>
 </html>
