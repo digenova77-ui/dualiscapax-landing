@@ -1,0 +1,84 @@
+name: critical-drop
+
+# On-drop clock. Same minute as the splice. Does not wait for :17.
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - js/**
+      - AGENT/TICKETS/**
+      - AGENT/TICK.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: critical-drop
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Curl the street now
+        run: |
+          python3 << 'PY'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          tickets = []
+          root = Path("AGENT/TICKETS")
+          if root.exists():
+              for p in sorted(root.glob("*.json")):
+                  try:
+                      tickets.append(json.loads(p.read_text()))
+                  except Exception:
+                      pass
+          critical = [t for t in tickets if t.get("critical")]
+
+          def hit(url):
+              rec = {"url": url, "status": None, "body": ""}
+              try:
+                  with urllib.request.urlopen(url, timeout=15) as r:
+                      rec["status"] = getattr(r, "status", 200)
+                      rec["body"] = r.read(12000).decode("utf-8", "replace")
+              except Exception as e:
+                  rec["error"] = type(e).__name__
+                  rec["status"] = getattr(e, "code", None)
+              return rec
+
+          apex = hit("https://dualiscapax.ai/")
+          body = apex.get("body") or ""
+          rows = []
+          for t in critical:
+              expect = t.get("expect") or ""
+              needle = "engine-link.js" if "engine-link" in expect else None
+              got = (needle in body) if needle else None
+              rows.append({
+                  "id": t.get("id"),
+                  "state": t.get("state"),
+                  "tick": "on-drop",
+                  "expect": expect,
+                  "live_status": apex.get("status"),
+                  "needle_hit": got,
+                  "verdict": "LIVE" if got else "HOLE",
+              })
+          card = {
+              "kind": "critical-drop",
+              "clerk": "unity:publisher.clerk",
+              "watch": "unity:publisher.watch",
+              "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "sha": os.environ.get("GITHUB_SHA"),
+              "critical": [t.get("id") for t in critical],
+              "rows": rows,
+              "law": "Critical ticks on drop. A green job is not the street. Curl is.",
+          }
+          print(json.dumps(card, indent=2))
+          if any(r["verdict"] == "HOLE" for r in rows):
+              print("WATCH: street still HOLE — ticket stays DEVELOP/PUBLISH")
+          PY

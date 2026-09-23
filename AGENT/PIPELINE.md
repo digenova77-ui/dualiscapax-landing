@@ -1,6 +1,6 @@
 # Handoff chain — error to live face
 
-Stamp: 2026-09-23T14:25Z
+Stamp: 2026-09-23T14:28Z
 This file wins any chat memory about departments.
 Four desks. Eight Unity IDs. No buildings.
 
@@ -26,7 +26,7 @@ Four desks. Eight Unity IDs. No buildings.
    Watch holes a patch that only landed in `cf-pages/` or a zip.
 
 4. `unity:publisher.clerk` / `unity:publisher.watch`
-   Critical live update. See `AGENT/PUBLISH-LAW.md`.
+   Live update. See `AGENT/PUBLISH-LAW.md` and `AGENT/TICK.md`.
    Push `main`. Curl the apex. Diff to root `index.html`.
    Watch holes “live” without that curl.
 
@@ -36,6 +36,12 @@ Four desks. Eight Unity IDs. No buildings.
 
 A ticket may skip DESIGN only when forensics already has a cite and a one-line fix that exists on disk.
 L-003 is that case: scripts exist, lander does not import them.
+
+## Clocks
+
+Routine tickets ride forensics / residual-ring.
+Critical tickets (`"critical": true`) tick **on drop** — same minute as the push.
+See `AGENT/TICK.md`. Workflow: `.github/workflows/critical-drop.yml`.
 
 ## Compat law
 
