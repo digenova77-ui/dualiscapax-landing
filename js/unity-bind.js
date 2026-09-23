@@ -1,10 +1,11 @@
 /**
  * Unity bind — local tag + room hook.
- * Look is free. Invoke after a tag is on this device and bound to the pack.
- * Not a government ID. Not Fuel. Not globally unique until a later hatch desk.
+ * Look is free. Invoke after bind.
+ * DEMO: U1 may invoke every house pack on this device (test).
+ * LIVE: U1 is a member. Rink creator-comp only. No god mode. No other people's seats.
  */
 (function (w) {
-  var VERSION = "unity-bind-2026-09-22";
+  var VERSION = "unity-bind-2026-09-22-grant";
   var ID_KEY = "dc.unity.id";
   var BIND_KEY = "dc.unity.bind";
 
@@ -27,6 +28,21 @@
   function hasId() {
     var id = current();
     return !!(id && (id.public || id.human));
+  }
+
+  function isU1() {
+    var id = current();
+    if (!id) return false;
+    return id.human === "U1" || id.public === "DC1-H1-0001" || id.seat === "operator_first";
+  }
+
+  function isLive() {
+    if (w.DC_LIVE === true) return true;
+    try { return w.localStorage.getItem("dc.unity.live") === "1"; } catch (e) { return false; }
+  }
+
+  function isDemo() {
+    return !isLive();
   }
 
   function mintVisitor() {
@@ -75,13 +91,19 @@
   }
 
   function canInvoke(pack) {
-    return hasId() && bound(pack);
+    if (!hasId()) return false;
+    var room = String(pack || "house");
+    if (isDemo() && isU1()) return true;
+    if (isLive() && isU1() && room === "rink") return true;
+    return bound(room);
   }
 
   function snapshot() {
     return {
       version: VERSION,
       hasId: hasId(),
+      demo: isDemo(),
+      u1: isU1(),
       id: current(),
       binds: binds()
     };
@@ -91,6 +113,8 @@
     version: VERSION,
     current: current,
     hasId: hasId,
+    isU1: isU1,
+    isDemo: isDemo,
     mint: mintVisitor,
     bind: bind,
     bound: bound,
