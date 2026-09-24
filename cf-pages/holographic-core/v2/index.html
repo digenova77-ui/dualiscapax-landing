@@ -3,167 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DCLM-RTE-V2.0.4 — DualisCapax</title>
-<meta name="description" content="Isolated DualisCapax DCLM Real-Time Engine. Mill-native double helix (friction || affinity). Ordinary browser. Does not overwrite the old landing.">
+<title>RTE Desk — DualisCapax</title>
+<meta name="theme-color" content="#070b12">
+<meta name="description" content="Isolated DualisCapax RTE desk. Mill helix. Hostess-40. Not the live apex.">
 <style>
-:root{--bg:#05070c;--card:#0b1220;--teal:#14b8a6;--purple:#a855f7;--text:#f8fafc;--muted:#94a3b8;--line:rgba(20,184,166,.28)}
+:root{--bg:#070b12;--panel:#0b1220;--line:rgba(20,184,166,.22);--teal:#14b8a6;--purple:#a855f7;--text:#e8eef6;--muted:#8b9caa}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);color:var(--text);font:15px/1.45 ui-sans-serif,system-ui,sans-serif;min-height:100%}
-body{overflow-x:hidden}
-.field{position:fixed;inset:0;pointer-events:none;background:radial-gradient(900px 420px at 18% 82%,rgba(20,184,166,.16),transparent 60%),radial-gradient(700px 380px at 86% 18%,rgba(168,85,247,.14),transparent 62%)}
-.ticker{position:sticky;top:0;z-index:50;overflow:hidden;border-bottom:1px solid var(--line);background:rgba(5,7,12,.92);padding:10px 0}
-.ticker span{display:inline-block;white-space:nowrap;color:var(--teal);font:700 12px/1 ui-monospace,monospace;letter-spacing:.06em;animation:marquee 22s linear infinite;padding-left:100%}
-@keyframes marquee{to{transform:translateX(-100%)}}
-.wrap{width:min(1080px,calc(100% - 32px));margin:24px auto 80px}
-.kicker{color:var(--purple);font:700 11px/1 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase}
-h1{font-size:clamp(1.6rem,3vw,2.2rem);margin:.35rem 0 .5rem}
-.lede{color:var(--muted);max-width:46rem}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 28px}
-button,.btn{appearance:none;border:1px solid var(--teal);background:rgba(20,184,166,.12);color:var(--text);padding:10px 14px;border-radius:10px;font:600 13px/1 ui-sans-serif,system-ui;cursor:pointer;text-decoration:none}
-button.ghost,.btn.ghost{border-color:rgba(168,85,247,.55);background:rgba(168,85,247,.1)}
-.rte-stage{position:relative;min-height:430px;margin:8px 0 28px;padding:18px 18px 0;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(11,18,32,.92),rgba(5,7,12,.96));overflow:hidden}
-.helix{position:absolute;inset:12px 8px auto;height:118px;z-index:0;opacity:.9;pointer-events:none}
-.helix svg{width:100%;height:100%;display:block}
-.deck{position:relative;z-index:1;height:210px;margin:70px auto 0;width:min(720px,100%)}
-.top{position:absolute;left:8%;right:8%;top:0;height:18px;border-radius:8px;background:linear-gradient(90deg,rgba(20,184,166,.55),rgba(168,85,247,.5));box-shadow:0 0 24px rgba(20,184,166,.25)}
-.slab{position:absolute;left:10%;right:10%;top:16px;height:88px;border-radius:0 0 14px 14px;background:#0f172a;border:1px solid var(--line);border-top:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px}
-.slab b{display:block;font-size:12px;letter-spacing:.08em;color:var(--teal)}
-.slab small{color:var(--muted)}
-.leg{position:absolute;top:104px;width:18px;height:96px;background:linear-gradient(#14b8a6,#0b3d38);border-radius:0 0 6px 6px}
-.leg.right{right:16%}
-.foot{position:absolute;bottom:-10px;width:54px;height:12px;border-radius:8px;background:#14b8a6;opacity:.85}
-.leg.right .foot{right:-18px}
-#rte_primary_support_left_foot{position:absolute;left:16%;top:104px;width:18px;height:96px;background:linear-gradient(#14b8a6,#0b3d38);border-radius:0 0 6px 6px}
-#rte_primary_support_left_foot .foot{left:-18px}
-#hostess{position:absolute;left:50%;bottom:0;transform:translate(-50%,-42.5px);z-index:99999;width:128px;height:224px;pointer-events:none}
-#hostess svg{width:100%;height:100%;filter:drop-shadow(0 0 16px rgba(20,184,166,.45))}
-.pulse{position:absolute;left:50%;bottom:8px;width:70px;height:16px;transform:translateX(-50%);border-radius:50%;background:rgba(20,184,166,.22);animation:breathe 2.8s ease-in-out infinite}
-@keyframes breathe{50%{transform:translateX(-50%) scale(1.18);opacity:.45}}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
-.card h2{color:var(--teal);font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
-table{width:100%;border-collapse:collapse;font-size:.9rem}
-th,td{text-align:left;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-th{color:var(--teal);font-weight:600}
-code,pre{font-family:ui-monospace,monospace;color:var(--purple)}
-pre{background:#05070c;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;font-size:12px}
-.ok{color:var(--teal)}
-.warn{color:#fbbf24}
-footer{margin-top:28px;color:var(--muted);font-size:12px}
+html,body{height:100%;background:var(--bg);color:var(--text);font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
+body{display:flex;min-height:100vh}
+a{color:var(--teal);text-decoration:none}
+.nav{width:220px;flex:none;background:#080d16;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:8px}
+.brand{display:flex;align-items:center;gap:8px;font:700 13px/1 ui-sans-serif;letter-spacing:.04em;margin-bottom:12px}
+.brand i{width:18px;height:18px;border:2px solid var(--teal);border-radius:5px;display:inline-block}
+.nav a,.nav span{display:block;padding:8px 10px;border-radius:8px;color:var(--muted);font:600 13px/1.2 ui-sans-serif}
+.nav a.on,.nav span.on{background:rgba(20,184,166,.12);color:var(--text)}
+.sys{margin-top:auto;font:12px/1.4 ui-monospace,monospace;color:var(--muted)}
+.sys b{color:var(--teal);font-weight:700}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line)}
+.top h1{font-size:1.15rem}
+.top small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
+.hold{font:700 11px/1 ui-monospace,monospace;letter-spacing:.08em;color:#fbbf24;border:1px solid rgba(251,191,36,.4);padding:6px 10px;border-radius:999px}
+.stage{padding:18px 22px 8px;flex:1;display:flex;flex-direction:column;gap:14px}
+.field{position:relative;flex:1;min-height:280px;border:1px solid var(--line);border-radius:16px;background:radial-gradient(800px 280px at 50% 120%,rgba(20,184,166,.08),transparent 55%),#080d16;overflow:hidden}
+.helix{position:absolute;left:8%;right:8%;top:18px;height:90px}
+.helix svg{width:100%;height:100%}
+.slab{position:absolute;left:12%;right:12%;bottom:36px;height:54px;border-radius:8px;background:linear-gradient(90deg,rgba(20,184,166,.28),rgba(168,85,247,.28));box-shadow:0 0 40px rgba(20,184,166,.12)}
+.hostess{position:absolute;left:22%;bottom:58px;width:92px;height:160px;pointer-events:none}
+.hostess svg{width:100%;height:100%;filter:drop-shadow(0 0 14px rgba(20,184,166,.4))}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.card h2{font:700 11px/1 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.card .n{font-size:1.35rem;font-weight:700}
+.card p{color:var(--muted);font-size:.88rem;margin-top:4px}
+@media(max-width:900px){body{flex-direction:column}.nav{width:auto;flex-direction:row;flex-wrap:wrap}.sys{margin:0}.cards{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-<div class="field"></div>
-<div class="ticker"><span>SYSTEM ACTIVE: DCLM-RTE-V2.0.4 // OWN HELIX FRICTION || AFFINITY // RUNGS = ENG-INT LOOK // IRIS AI EDGE // HOSTESS LEFT FOOT // NO PIPE-3D // NO WEBGL // PATH /holographic-core/v2 // APEX UNTOUCHED</span></div>
-<main class="wrap">
-<p class="kicker">DualisCapax · mill-native double helix · isolated path</p>
-<h1>DCLM-RTE-V2.0.4</h1>
-<p class="lede">Permanent Real-Time Engine for Sima on Oracle Health Cerner. Two strands: affinity (what already binds) and friction (named holes). Rungs are measured joins, not a ride. Live at /holographic-core/v2 only. Apex / is not this page. Ordinary browser.</p>
-<div class="actions">
-<button type="button" id="dl">Download RTE permanently</button>
-<a class="btn ghost" href="/">Apex (unchanged)</a>
-<a class="btn ghost" href="/rte/sima-dclm/">SIMA desk</a>
+<aside class="nav">
+  <div class="brand"><i></i> DualisCapax</div>
+  <span class="on">RTE Desk</span>
+  <a href="/encyclopedia.html">Encyclopedia</a>
+  <a href="/rte/sima-dclm/">SIMA desk</a>
+  <a href="/ice">Ice</a>
+  <a href="/">Street apex</a>
+  <div class="sys">STATUS <b>HOLD</b><br>PATH isolated v2<br>APEX cafe until four GO</div>
+</aside>
+<div class="main">
+  <header class="top">
+    <div>
+      <h1>RTE Desk</h1>
+      <small>Affinity ∥ friction · rungs are looks · dualiscapax.ai · not a pipe ride</small>
+    </div>
+    <div class="hold">HOLD DISPATCH</div>
+  </header>
+  <section class="stage">
+    <div class="field" aria-label="HUD field">
+      <div class="helix">
+        <svg viewBox="0 0 1000 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <text x="0" y="14" fill="#14b8a6" font-size="12" font-family="ui-monospace,monospace">AFFINITY</text>
+          <text x="920" y="14" fill="#a855f7" font-size="12" font-family="ui-monospace,monospace">FRICTION</text>
+          <text x="210" y="14" fill="#8b9caa" font-size="11" font-family="ui-monospace,monospace">LOOK</text>
+          <text x="430" y="14" fill="#8b9caa" font-size="11" font-family="ui-monospace,monospace">LOOK</text>
+          <text x="650" y="14" fill="#8b9caa" font-size="11" font-family="ui-monospace,monospace">LOOK</text>
+          <text x="820" y="14" fill="#8b9caa" font-size="11" font-family="ui-monospace,monospace">LOOK</text>
+          <path d="M40 50 C 140 18, 200 82, 280 50 S 440 18, 520 50 S 680 82, 760 50 S 900 18, 960 50" fill="none" stroke="#14b8a6" stroke-width="2.6"/>
+          <path d="M40 50 C 140 82, 200 18, 280 50 S 440 82, 520 50 S 680 18, 760 50 S 900 82, 960 50" fill="none" stroke="#a855f7" stroke-width="2.6"/>
+          <g stroke="#8b9caa" stroke-width="1.1">
+            <line x1="280" y1="22" x2="280" y2="78"/>
+            <line x1="520" y1="22" x2="520" y2="78"/>
+            <line x1="760" y1="22" x2="760" y2="78"/>
+            <line x1="900" y1="22" x2="900" y2="78"/>
+          </g>
+        </svg>
+      </div>
+      <div class="slab"></div>
+      <div class="hostess">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 280" role="img" aria-label="hostess 40">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
+          <ellipse cx="80" cy="268" rx="42" ry="8" fill="#14b8a6" opacity=".28"/>
+          <path d="M68 118 C60 150 62 198 58 236 L74 236 C76 198 76 154 80 132 C84 154 84 198 86 236 L102 236 C98 198 100 150 92 118Z" fill="#0b1220" stroke="url(#g)" stroke-width="1.4"/>
+          <path d="M80 70 C62 78 52 108 56 132 L80 126 L104 132 C108 108 98 78 80 70Z" fill="#14b8a6" opacity=".55"/>
+          <circle cx="80" cy="52" r="20" fill="#cbd5e1" stroke="url(#g)" stroke-width="1.6"/>
+          <path d="M62 50 Q80 20 98 50 Q96 34 80 30 Q64 34 62 50Z" fill="#0b1220"/>
+          <circle cx="73" cy="52" r="2.1" fill="#14b8a6"/>
+          <circle cx="87" cy="52" r="2.1" fill="#a855f7"/>
+          <circle cx="80" cy="96" r="11" fill="#05070c" stroke="url(#g)"/>
+          <text x="80" y="100" text-anchor="middle" font-family="ui-monospace,monospace" font-size="10" fill="#14b8a6">40</text>
+          <path d="M56 132 C40 148 34 176 38 204" fill="none" stroke="url(#g)" stroke-width="3.2" stroke-linecap="round"/>
+          <path d="M104 132 C120 148 126 176 122 204" fill="none" stroke="url(#g)" stroke-width="3.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="cards">
+      <article class="card"><h2>Affinity</h2><div class="n">binds</div><p>Encyclopedia, hostess-40, Sima, ice, easthill.</p></article>
+      <article class="card"><h2>Friction</h2><div class="n">open</div><p>Cafe on / · HUD path 404 · token 10000 · till fight.</p></article>
+      <article class="card"><h2>Look</h2><div class="n">4 · 0</div><p>Four joins named. HUD-on-/ still 0.</p></article>
+      <article class="card"><h2>Insight</h2><div class="n">HOLD</div><p>Picture is the field. HUD is the desk. Street is cafe.</p></article>
+    </div>
+  </section>
 </div>
-<section class="rte-stage" aria-label="RTE desk with mill helix and hostess">
-<div class="helix" aria-hidden="true">
-<svg viewBox="0 0 1000 120" xmlns="http://www.w3.org/2000/svg">
-<title>Dualis own double helix — friction and affinity</title>
-<path d="M20 60 C 90 10, 160 110, 230 60 S 370 10, 440 60 S 580 110, 650 60 S 790 10, 860 60 S 940 110, 980 60" fill="none" stroke="#14b8a6" stroke-width="3" stroke-linecap="round"/>
-<path d="M20 60 C 90 110, 160 10, 230 60 S 370 110, 440 60 S 580 10, 650 60 S 790 110, 860 60 S 940 10, 980 60" fill="none" stroke="#a855f7" stroke-width="3" stroke-linecap="round"/>
-<g stroke="#94a3b8" stroke-width="1.2" opacity=".85">
-<line x1="230" y1="28" x2="230" y2="92"/>
-<line x1="440" y1="28" x2="440" y2="92"/>
-<line x1="650" y1="28" x2="650" y2="92"/>
-<line x1="860" y1="28" x2="860" y2="92"/>
-</g>
-<text x="20" y="16" fill="#14b8a6" font-size="11" font-family="ui-monospace,monospace">AFFINITY</text>
-<text x="20" y="114" fill="#a855f7" font-size="11" font-family="ui-monospace,monospace">FRICTION</text>
-<text x="420" y="16" fill="#94a3b8" font-size="10" font-family="ui-monospace,monospace">RUNGS = LOOK</text>
-</svg>
-</div>
-<div class="deck">
-<div class="top"></div>
-<div class="slab">
-<div><b>RTE DESK</b><small>Sima · Cerner · 14-day velocity</small></div>
-<div><b>GATES</b><small>Biz APPROVED · Dev APPROVED · Test MONITORING</small></div>
-</div>
-<div class="leg right"><i class="foot"></i></div>
-<div id="rte_primary_support_left_foot">
-<i class="foot"></i>
-<div id="hostess">
-<div class="pulse"></div>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 280" role="img" aria-label="40 holographic hostess">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
-<ellipse cx="80" cy="268" rx="42" ry="8" fill="#14b8a6" opacity=".28"/>
-<path d="M68 118 C60 150 62 198 58 236 L74 236 C76 198 76 154 80 132 C84 154 84 198 86 236 L102 236 C98 198 100 150 92 118Z" fill="#0b1220" stroke="url(#g)" stroke-width="1.4"/>
-<path d="M80 70 C62 78 52 108 56 132 L80 126 L104 132 C108 108 98 78 80 70Z" fill="#14b8a6" opacity=".55"/>
-<circle cx="80" cy="52" r="20" fill="#cbd5e1" stroke="url(#g)" stroke-width="1.6"/>
-<path d="M62 50 Q80 20 98 50 Q96 34 80 30 Q64 34 62 50Z" fill="#0b1220"/>
-<circle cx="73" cy="52" r="2.1" fill="#14b8a6"/>
-<circle cx="87" cy="52" r="2.1" fill="#a855f7"/>
-<path d="M74 60 Q80 64 86 60" fill="none" stroke="#14b8a6" stroke-width="1.1"/>
-<circle cx="80" cy="96" r="11" fill="#05070c" stroke="url(#g)"/>
-<text x="80" y="100" text-anchor="middle" font-family="ui-monospace,monospace" font-size="10" fill="#14b8a6">40</text>
-<path d="M56 132 C40 148 34 176 38 204" fill="none" stroke="url(#g)" stroke-width="3.2" stroke-linecap="round"/>
-<path d="M104 132 C120 148 126 176 122 204" fill="none" stroke="url(#g)" stroke-width="3.2" stroke-linecap="round"/>
-</svg>
-</div>
-</div>
-</div>
-</section>
-<div class="grid">
-<section class="card"><h2>Own helix</h2>
-<table>
-<tr><th>Strand A</th><td>Affinity — kit, hostess-40, desks that bind</td></tr>
-<tr><th>Strand B</th><td>Friction — LOSS ledger, floor 0 holes</td></tr>
-<tr><th>Rungs</th><td>ENG-INT look + trio + CROSSCHECK</td></tr>
-<tr><th>Form</th><td>SVG. No WebGL. No pipe ride.</td></tr>
-</table></section>
-<section class="card"><h2>System</h2>
-<table>
-<tr><th>ID</th><td>DCLM-RTE-V2.0.4</td></tr>
-<tr><th>Company</th><td>DualisCapax</td></tr>
-<tr><th>Consultant</th><td>Sima</td></tr>
-<tr><th>Primary system</th><td>Oracle Health Cerner</td></tr>
-</table></section>
-<section class="card"><h2>Hostess lock</h2>
-<table>
-<tr><th>Path</th><td><code>/holographic-core/v2</code></td></tr>
-<tr><th>Anchor</th><td><code>rte_primary_support_left_foot</code></td></tr>
-<tr><th>Apex</th><td>untouched</td></tr>
-</table></section>
-</div>
-<section class="card" style="margin-top:12px">
-<h2>Iris between Cloudflare and GitHub</h2>
-<pre>{
-  "infrastructure_bridge": {
-    "edge_provider": "Cloudflare",
-    "source_repository": "GitHub-Pages-Main",
-    "routing_middleware": "Iris-AI",
-    "apex_overwrite": false,
-    "live_path": "/holographic-core/v2",
-    "helix": "friction||affinity SVG — not pipe-3D"
-  }
-}</pre>
-</section>
-<footer>DualisCapax Inc. · isolated path /holographic-core/v2 · own helix · apex / not this file</footer>
-</main>
-<script>
-(function(){
-  var btn=document.getElementById('dl');
-  if(!btn)return;
-  btn.addEventListener('click',function(){
-    var html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
-    var blob=new Blob([html],{type:'text/html;charset=utf-8'});
-    var a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='DCLM-RTE-V2.0.4.html';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(function(){URL.revokeObjectURL(a.href)},1500);
-  });
-})();
-</script>
 </body>
 </html>
