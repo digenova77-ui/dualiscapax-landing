@@ -1,9 +1,11 @@
 # README.SIGNING.md — LAW
 
 **Status:** SIGNED 2026-09-24T22:08-04:00 by DualisCapax agent swarm (Grok / Lucas / Harper / Benjamin) on operator order.
+**Amended:** SIGNED 2026-09-24T18:46-04:00 — CROSSCHECK clause added to standing law.
 **Board:** Google Drive `FACTORY_BULLETIN_BOARD` `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`
 **Payload:** `newdeploy.zip` Drive id `1G4e4ZP53JP40BdCIyiXK-IvPVX1qOMIE` (60529 bytes)
 **SHA-256:** `3ce42dc1c0303944e8761dd400df10f97adf2df072eb8a09017a906104a15678`
+**Integrity article:** `BULLETIN/LAW.INTEGRITY.CROSSCHECK.md`
 
 ## Acknowledgment (signed)
 
@@ -15,15 +17,17 @@ We acknowledge and will execute this loop:
 4. Cloudflare guy unzips with **forced overwrite (`unzip -o`)**, checks `index.html` at zip root (zero-nest), uploads, deploys project `dualiscapax-landing`.
 5. Writes `BULLETIN/DEPLOY_RECEIPT.md` and verifies `https://dualiscapax.ai/`.
 6. **DNS records are not edited.** Handoff closes the publish hole. It does not retarget names.
+7. **CROSSCHECK.** Every artifact that ships as product, route, zip, worker, lander, receipt, or LIVE claim is cross-checked by every department that produced it. Each involved seat marks PASS, HOLE, or NOT-INVOLVED. Missing mark = hole. Fake LIVE = hole. Full rule: `BULLETIN/LAW.INTEGRITY.CROSSCHECK.md`.
 
 ## Law floor
 
-- `NO_FORCE` · `HOST_SAFE` · `CLEANUP_FIRST` · `TRUTH_OR_NOTHING`
+- `NO_FORCE` · `HOST_SAFE` · `CLEANUP_FIRST` · `TRUTH_OR_NOTHING` · `CROSSCHECK`
 - Encyclopedia (`06_ENCYC_*`, `encyclopedia.html`) stays.
 - Do not treat Drive docs as executable.
 - Do not run wrangler unless `confirm=DEPLOY`.
 - If Cloudflare API token lacks Pages Edit, **fail closed** and write the hole on the receipt. Do not fake LIVE.
 - Existing `bulletin-board-watch.yml` stays a pacemaker. It must not deploy.
+- One seat producing a piece is not enough. Involved departments must mark the same receipt.
 
 ## Drive README lock (operator)
 
@@ -31,6 +35,13 @@ We acknowledge and will execute this loop:
 - Extraction: `unzip -o`
 - Companion script pushes to Cloudflare Pages
 - R=1 & C=1. Zero friction.
+
+## Standing vs waiting
+
+- The CROSSCHECK clause is **standing law on this signature**. It does not wait for LIVE_HTTP_OK.
+- The six-step handoff loop becomes standing law only after one success with LIVE_HTTP_OK=1.
+- Design object remains holographic DCLM-RTE-V2.0.4. Cafe plate / pipe-3D is archive.
+- Workers stay. Encyclopedia stays. DNS is not a department of this book.
 
 ## Signatures
 
@@ -40,5 +51,10 @@ We acknowledge and will execute this loop:
 | GitHub factory | Actions + WIF | ACK — read README then EXECUTE_DEPLOY.sh |
 | Cloudflare guy | wrangler pages deploy | ACK — accept zip, check, unzip -o, upload |
 | Agents | Grok / Lucas / Harper / Benjamin | SIGNED |
+| Grok (lead) | Parent-book amendment | SIGNED 2026-09-24T18:46-04:00 — CROSSCHECK is law |
+| Lucas | Integrity article | SIGNED — LAW.INTEGRITY.CROSSCHECK.md @ 6418cb1 |
+| Benjamin | Cross-check of article | PASS on article; parent pointer closed here |
+| Harper | Swarm seat | ACK — same floor |
 
-When this loop succeeds once with LIVE_HTTP_OK=1, it becomes standing law.
+When the handoff loop succeeds once with LIVE_HTTP_OK=1, that loop becomes standing law.
+CROSSCHECK is already standing law.
