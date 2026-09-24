@@ -1,0 +1,49 @@
+name: purge-pages-deployments
+
+# Deletes Cloudflare Pages deployments for dualiscapax-landing.
+# Does not delete Workers. Does not edit DNS. Does not touch encyclopedia source.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: PURGE = previews only. PURGE_ALL = also production (blanks apex).
+        required: true
+        default: HOLD
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: purge-pages-deployments
+  cancel-in-progress: true
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guard — never delete workers
+        run: |
+          set -euo pipefail
+          test -d workers
+          test -f workers/iris-gateway/wrangler.toml
+          test -f workers/stripe-fulfill/wrangler.toml
+          echo "Workers source present. This job will not wrangler delete a Worker."
+      - name: Purge Pages deployments
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          chmod +x BULLETIN/PURGE_PAGES_DEPLOYMENTS.sh
+          bash BULLETIN/PURGE_PAGES_DEPLOYMENTS.sh "${{ github.event.inputs.confirm }}"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: purge-pages-receipt
+          path: |
+            BULLETIN/PURGE_RECEIPT.md
+            BULLETIN/PURGE_PAGES_DEPLOYMENTS.sh
+          if-no-files-found: warn
