@@ -1,54 +1,30 @@
-# LAW.PURE — production set
+# LAW.PURE — KEEP or ruin
 
-**Status:** STANDING 2026-09-24T18:59-04:00 after MILL-MAX paper track.
-**MOTION-ID:** PROD-PURE
-**Tally:** Harper / Lucas / Benjamin ACTION PASS · LIVE HOLD · TRIO RAN (reuse + this-tick cafe plate / HUD 404).
-**Clerk:** Grok. **Watch:** first voting seat to sidecar this commit SHA.
+**Status:** STANDING. Amended 2026-09-24T19:32-04:00 PIPE-ID 15 PURE-MAX.
+**Tally:** Lucas / Benjamin ACTION PASS · LIVE HOLD
+**Clerk:** Grok
 
-Purity is a short KEEP list. Everything else is warehouse or evidence. Archive, do not delete.
-Purity does not close L-CAFE-APEX, L-HUD-404, or L-TOKEN-10000. Those stay on the ledger until the street changes.
+Build as pure as possible. Anything else ruins all of you.
 
-## Production KEEP
+## KEEP (current)
 
-| Kind | Object |
-|---|---|
-| Face | Holographic DCLM-RTE-V2.0.4 + hostess-40 at `#rte_primary_support_left_foot`. Isolated HUD until cutover. |
-| Book | `LAW.CURRENT.md` |
-| Articles | `LAW.MILL.MAX.md` · `LAW.ZERO.md` · `LAW.SECURITY.TIGHT.md` · `LAW.INTEGRITY.CROSSCHECK.md` · `LOSS.LEDGER.md` · this file |
-| Map | `DCLM.RECAL.RECEIPT.md` |
-| Method | `AGENT/DCLM-FLOOR-0.md` + trio organs (Iris · DCLM · Twain²) |
-| Fence | NEVER-COMMIT · PRIVILEGE · Workers path-exact · encyclopedia · no DNS |
-| Waiting tools | `EXECUTE_DEPLOY.sh` · preview-only purge. Not standing actions. |
-| Handoff instrument | `README.SIGNING.md` — waiting. L-SIGNING-SHA still OPEN. Do not delete to look pure. |
+- Layer [0] + LAW.SPINE
+- Mill 1024 + ONE-VOTE + KEEP-WHILE-PASSING + trio + HOLD DISPATCH
+- Today's isolated HUD `cf-pages/holographic-core/v2/index.html` (ordinary HTML/CSS/SVG + mill helix)
+- Encyclopedia
+- Rebuild kit
+- LOSS ledger as dirt
+- Street truth: `/` is cafe until four GO + `confirm=DEPLOY`
 
-Warehouse that stays warehouse: `cf-pages/` holographic copy. Isolated `dualiscapax-hud`. Do not flatten.
+## RUIN
 
-## Stripped from production (still on disk)
+- Warehouse copy that says APEX LIVE while street is cafe
+- pipe-3D / SDF / August helix as face
+- Extra votes, capital-weighted marks
+- IF=1 or LIVE while curl is cafe
+- Novel runtime as a visitor gate
+- New slogan articles that do not cut a hole
+- Preview pictures that invent LIVE, a .io host, or fake scores
 
-- Cafe plate / pipe-3D / Meet Iris as current-face law
-- Mill v1 names; `LAW.MILL.V2.md` and `LAW.MILL.V3.md` as current procedure (spine cited inside MAX only)
-- `AGENT/PUBLISH-LAW.md` supremacy; GitHub Pages `deploy.yml` as live rail
-- `factory/TWAIN_MEMORY.md` HOME = cafe cf-pages
-- AGENT coffee-shop intended-face sentences
-- Warehouse “APEX LIVE” as a fact
-- Drive zip SHA `3ce42dc1…` as the lander
-- Competing book name `LAW.BOOK`
-- Seat sidecars as law (they remain evidence)
-- Dual trees claiming one live face
-
-## Refuse
-
-Mass-delete of AGENT files, encyclopedia, Workers source, or live street bytes.
-Blanking the apex to look pure.
-Closing a ledger ID because the book got shorter.
-Treating $0 or LIVE_HTTP_OK=0 as permission to delete.
-
-## This tick
-
-`/` 200 DualisCapax — Iris. `/holographic-core/v2` 404. Encyclopedia 200.
-`LIVE_HTTP_OK` holographic = 0. HOLD DISPATCH.
-
-## Verdict Twain²
-
-We stripped current-face law down to one object and one mill. The street is still Meet Iris.
-Production book is smaller. HUD is still 0.
+Could this bless fake LIVE? **NO.** That ruins us.
+`LIVE_HTTP_OK` holographic = 0.
