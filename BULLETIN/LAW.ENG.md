@@ -1,57 +1,27 @@
 # LAW.ENG — crews, oversight, integration
 
-**Status:** STANDING. Amended 2026-09-24T19:26-04:00 PIPE-ID 9 OVERSIGHT-INCLUDE.
-**Tally:** Harper ACTION PASS on freeze; Lucas / Benjamin initiated same object.
-**Clerk:** Grok
+**Status:** STANDING. Amended 2026-09-24T19:26-04:00 PIPE-ID 10 DEPT-GOV pointer.
+**Department books:** `BULLETIN/LAW.DEPT.md`
 
-Three build crews. Oversight includes all three. Hats are not votes.
+Three build crews. Oversight includes all three. Each may keep a local book. All inherit the spine. Hats are not votes.
 
 ## Crews
 
 **ENG-GH** — GitHub / warehouse / rebuild kit.
 **ENG-CF** — Cloudflare / street / Pages / Workers.
-**ENG-IPFS** — Pinata pin, CID, pin scripts, AGENT/PINATA. Speaks for pins only.
+**ENG-IPFS** — Pinata pin, CID, pin scripts. Speaks for pins only.
 **ENG-INT** — oversight committee. Integration factor only.
 
-## Oversight committee
-
-Oversight = ENG-INT.
-Subjects in the room: ENG-GH, ENG-CF, ENG-IPFS. Pinata is inside, not a guest.
-A hat from each build crew sits oversight when that crew's object ships.
-A Pinata engineer may wear the INT hat when measuring GH↔IPFS or CF↔IPFS.
-Sitting oversight ≠ extra ACTION mark. ONE-VOTE stands.
-
+Oversight subjects: GH, CF, IPFS. Pinata is inside, not a guest.
 When a pin, zip, Worker, or face ships: each involved crew marks PASS / HOLE / NOT-INVOLVED.
-Missing Pinata mark on a pin = hole.
-Missing CF mark on a street claim = hole.
-Missing GH mark on a repo object = hole.
+Missing involved mark = hole.
 
-Oversight does not build, bind, pin, or mint LIVE.
+Local PASS = SUBMIT. Mill ACTION stays three seats.
 
 ## Integration factor
 
-INT reports three joins separately. Written after a look.
+INT reports GH↔CF, GH↔IPFS, CF↔IPFS separately. After a look. 0 or 1.
+Pin-live ≠ Pages-live.
 
-- GH ↔ CF
-- GH ↔ IPFS
-- CF ↔ IPFS
-
-IF = 1 only when named objects match and Twain² does not fight.
-Pin-live ≠ Pages-live. A CID is not `LIVE_HTTP_OK` holographic on `/`.
-Unmeasured CID = UNCONFIRMED, not 1.
-
-## This tick
-
-| Named join | IF |
-|---|---|
-| HUD on `/` | 0 |
-| holographic-join bound | 0 |
-| Pinata as live apex | 0 |
-| GH ↔ IPFS named CID | UNCONFIRMED |
-
+This tick: HUD on `/` = 0. holographic-join bound = 0. Pinata as live apex = 0.
 `LIVE_HTTP_OK` holographic = 0. HOLD DISPATCH.
-
-## Mill-self test
-
-Could this bless fake LIVE? **NO.**
-Could this mint extra votes? **NO.**
