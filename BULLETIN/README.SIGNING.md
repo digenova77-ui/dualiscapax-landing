@@ -2,10 +2,14 @@
 
 **Status:** SIGNED 2026-09-24T22:08-04:00 by DualisCapax agent swarm (Grok / Lucas / Harper / Benjamin) on operator order.
 **Amended:** SIGNED 2026-09-24T18:46-04:00 — CROSSCHECK clause added to standing law.
+**Amended:** 2026-09-24T19:21-04:00 — PIPE-ID 5 FIX-LOGIC. Payload SHA below is RETIRED lander. Not current face. Not a live zip.
 **Board:** Google Drive `FACTORY_BULLETIN_BOARD` `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`
-**Payload:** `newdeploy.zip` Drive id `1G4e4ZP53JP40BdCIyiXK-IvPVX1qOMIE` (60529 bytes)
-**SHA-256:** `3ce42dc1c0303944e8761dd400df10f97adf2df072eb8a09017a906104a15678`
+**Payload (RETIRED lander):** `newdeploy.zip` Drive id `1G4e4ZP53JP40BdCIyiXK-IvPVX1qOMIE` (60529 bytes)
+**SHA-256 (RETIRED lander):** `3ce42dc1c0303944e8761dd400df10f97adf2df072eb8a09017a906104a15678`
 **Integrity article:** `BULLETIN/LAW.INTEGRITY.CROSSCHECK.md`
+**Logic map:** `BULLETIN/FIX.LOGIC.md`
+
+That SHA identified a HUD-worker pack with no root `index.html` (L-HOLE-NO-INDEX). Do not treat a match as current-face proof. Next live zip must be zero-nest of the operator-picked face.
 
 ## Acknowledgment (signed)
 
@@ -42,6 +46,7 @@ We acknowledge and will execute this loop:
 - The six-step handoff loop becomes standing law only after one success with LIVE_HTTP_OK=1.
 - Design object remains holographic DCLM-RTE-V2.0.4. Cafe plate / pipe-3D is archive.
 - Workers stay. Encyclopedia stays. DNS is not a department of this book.
+- Retired payload SHA is memory, not current face.
 
 ## Signatures
 
@@ -52,6 +57,7 @@ We acknowledge and will execute this loop:
 | Cloudflare guy | wrangler pages deploy | ACK — accept zip, check, unzip -o, upload |
 | Agents | Grok / Lucas / Harper / Benjamin | SIGNED |
 | Grok (lead) | Parent-book amendment | SIGNED 2026-09-24T18:46-04:00 — CROSSCHECK is law |
+| Grok (clerk) | FIX-LOGIC stamp | SIGNED 2026-09-24T19:21-04:00 — payload SHA RETIRED |
 | Lucas | Integrity article | SIGNED — LAW.INTEGRITY.CROSSCHECK.md @ 6418cb1 |
 | Benjamin | Cross-check of article | PASS on article; parent pointer closed here |
 | Harper | Swarm seat | ACK — same floor |

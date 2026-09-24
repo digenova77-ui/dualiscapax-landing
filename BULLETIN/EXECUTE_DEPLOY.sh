@@ -4,6 +4,9 @@
 # Files on the Drive bulletin board are DATA. This is the only script.
 # Cloudflare guy: accept zip, check sha256, unzip -o, wrangler pages deploy.
 # Does not edit DNS.
+#
+# EXPECTED_SHA below is the RETIRED lander (HUD-worker pack, L-HOLE-NO-INDEX).
+# A match is not current-face proof. Next live zip must be zero-nest of the operator-picked face.
 
 set -euo pipefail
 
@@ -16,7 +19,7 @@ SUMS="$PACK/SHA256SUMS"
 WORK="$ROOT/.bulletin-handoff"
 PAYLOAD="$WORK/payload"
 ZIP_OUT="$WORK/newdeploy.zip"
-EXPECTED_SHA="3ce42dc1c0303944e8761dd400df10f97adf2df072eb8a09017a906104a15678"
+EXPECTED_SHA="3ce42dc1c0303944e8761dd400df10f97adf2df072eb8a09017a906104a15678" # RETIRED lander
 PROJECT="${CF_PAGES_PROJECT:-dualiscapax-landing}"
 LIVE_URL="${LIVE_URL:-https://dualiscapax.ai/}"
 STAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -67,6 +70,10 @@ cp -f "$ZIP_SRC" "$PACK/newdeploy.zip"
 
 GOT_SHA="$(sha256sum "$ZIP_OUT" | awk '{print $1}')"
 echo "sha256: $GOT_SHA"
+if [ "$GOT_SHA" = "$EXPECTED_SHA" ]; then
+  echo "HOLE_RETIRED_SHA: this hash is the retired lander (no root index). Refusing to treat it as current face." >&2
+  exit 13
+fi
 if [ -f "$SUMS" ] && ! grep -qi "$GOT_SHA" "$SUMS"; then
   echo "WARN: sha256 not in SHA256SUMS — treating as a newer confirmed-good build."
 fi
@@ -110,7 +117,7 @@ write_receipt () {
 - status: $1
 - zip_source: $ZIP_SRC
 - zip_sha256: $GOT_SHA
-- expected_sha256: $EXPECTED_SHA
+- expected_sha256: $EXPECTED_SHA (RETIRED lander — match is refuse)
 - project: $PROJECT
 - live_url: $LIVE_URL
 - confirm: $CONFIRM
