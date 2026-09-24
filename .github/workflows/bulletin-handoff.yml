@@ -1,0 +1,54 @@
+name: bulletin-handoff
+
+# Factory reads BULLETIN/README.SIGNING.md first, then EXECUTE_DEPLOY.sh.
+# Drive bulletin files are DATA. DNS is never edited.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type DEPLOY to hand newdeploy.zip to Cloudflare
+        required: true
+        default: HOLD
+
+permissions:
+  contents: write
+  id-token: write
+  actions: write
+
+concurrency:
+  group: bulletin-handoff
+  cancel-in-progress: true
+
+jobs:
+  handoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read LAW first
+        run: |
+          set -euo pipefail
+          test -f BULLETIN/README.SIGNING.md
+          test -f BULLETIN/EXECUTE_DEPLOY.sh
+          echo "== LAW =="
+          cat BULLETIN/README.SIGNING.md
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Execute companion script
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          chmod +x BULLETIN/EXECUTE_DEPLOY.sh
+          bash BULLETIN/EXECUTE_DEPLOY.sh "${{ github.event.inputs.confirm }}"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bulletin-deploy-receipt
+          path: |
+            BULLETIN/DEPLOY_RECEIPT.md
+            BULLETIN/README.SIGNING.md
+            BULLETIN/SHA256SUMS
+            BULLETIN/EXECUTE_DEPLOY.sh
