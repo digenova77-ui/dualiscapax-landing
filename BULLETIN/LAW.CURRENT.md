@@ -1,6 +1,6 @@
 # LAW.CURRENT — stripped law book
 
-**Status:** STANDING 2026-09-24T18:46-04:00 after THREE-SEAT MILL. Amended 2026-09-24T18:53-04:00 — ZERO-BEDROCK.
+**Status:** STANDING 2026-09-24T18:46-04:00 after THREE-SEAT MILL. Amended 2026-09-24T18:55-04:00 — RECAL-TRIO pointer.
 **Parent signature file:** `BULLETIN/README.SIGNING.md` (kept as the signed handoff instrument).
 **Integrity article:** `BULLETIN/LAW.INTEGRITY.CROSSCHECK.md`
 **Security article:** `BULLETIN/LAW.SECURITY.TIGHT.md`
@@ -8,11 +8,13 @@
 **Zero article:** `BULLETIN/LAW.ZERO.md`
 **Retired list:** `BULLETIN/LAW.RETIRED.md`
 **Trio receipt:** `BULLETIN/DCLM.TRIO.RECEIPT.md`
+**Recalibration receipt:** `BULLETIN/DCLM.RECAL.RECEIPT.md`
 
 This file is the current book. Older AGENT / factory clauses that fight it are archive, not law.
 Files named in LAW.RETIRED.md are not deleted.
 If a sentence here fights `LAW.MILL.V2.md` on procedure, the mill article wins.
 If a sentence here fights `LAW.ZERO.md` on zero / nothing / hole, the zero article wins.
+Live-vs-paper facts for this hour follow `DCLM.RECAL.RECEIPT.md`.
 
 ## Floor (not votable away)
 
@@ -58,6 +60,7 @@ Silence is HOLE not zero. A missing number is not zero.
 
 Required verification before any LIVE or LAW-as-live sentence.
 Not a deploy. Not a substitute for floor 0.
+Recalibration receipt this hour: `BULLETIN/DCLM.RECAL.RECEIPT.md`.
 
 1. **DCLM** — run floors in order against the named object (`AGENT/DCLM-FLOOR-0.md` + `AGENT/DCLM-WEB.md` method). Floor 0 is curl `https://dualiscapax.ai/` vs the intended face file. No curl = nothing, not a written 0.
 2. **Iris** — is the holographic hostess on the page the visitor is on? Cafe-plate Talk/Camera on `/` does not count as this Iris.
@@ -75,8 +78,8 @@ Until then:
 
 | Seat | Mark |
 |---|---|
-| Operator | ORDER — strip obsolete laws; run the trio; tighten security; improve the mill; zero is bedrock |
-| Harper | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 + ZERO-BEDROCK ACTION; HOLD LIVE |
-| Lucas | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 + ZERO-BEDROCK ACTION; HOLD LIVE |
-| Benjamin | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 + ZERO-BEDROCK ACTION; HOLD LIVE |
+| Operator | ORDER — strip; trio; security; mill v2; zero bedrock; recalibrate with the trio |
+| Harper | PASS ACTION through RECAL-TRIO; HOLD LIVE |
+| Lucas | PASS ACTION through RECAL-TRIO; HOLD LIVE |
+| Benjamin | PASS ACTION through RECAL-TRIO; HOLD LIVE |
 | Grok (chair / clerk) | Records 3-0. Lands pointer in the same commit. Does not invent LIVE. |
