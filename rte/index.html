@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="en-CA">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>RTE hall — DualisCapax</title>
-  <meta name="description" content="Runtime desks that landed. Look is free. Pay is closed.">
-  <style>
-    body{margin:0;font:16px/1.45 system-ui,sans-serif;background:#0B0E14;color:#E7ECF3}
-    main{max-width:40rem;margin:0 auto;padding:1.25rem}
-    a{color:#38BDF8}
-    .pill{font:11px ui-monospace,monospace;color:#FBBF24}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RTE hall — DualisCapax</title>
+<meta name="description" content="Themed runtime desks that exist. Look $0. Pay closed. Holes stay holes.">
+<meta name="theme-color" content="#070b12">
+<style>
+:root{--bg:#070b12;--ink:#e8eef6;--mute:#8b9caa;--teal:#14b8a6;--gold:#fbbf24;--line:rgba(20,184,166,.22);--card:#0b1220}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.5 ui-sans-serif,system-ui,sans-serif}
+.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 4rem}
+.brand{font:11px/1 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.pill{font:10px/1 ui-monospace,monospace;color:var(--gold);border:1px solid rgba(251,191,36,.4);padding:.3rem .6rem;border-radius:999px;float:right}
+h1{font-size:clamp(1.8rem,6vw,2.6rem);margin:.8rem 0 .4rem}
+.lede{color:#c9d6df;margin:0 0 1rem}
+a.row{display:block;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:.8rem .95rem;margin:.45rem 0}
+a.row strong{display:block}a.row span{color:var(--mute);font-size:.88rem}
+.hole{opacity:.7;border-style:dashed}
+</style>
 </head>
 <body>
-  <main>
-    <p class="pill">Look $0 · pay closed</p>
-    <h1>RTE hall</h1>
-    <p>Desks that have a page. Not every short name on the internet.</p>
-    <p>
-      <a href="/rte/ice/">Ice desk</a> ·
-      <a href="/rte/sima-dclm/">SIMA job aide</a> ·
-      <a href="/rte/easthill/">Easthill</a>
-    </p>
-    <p><a href="/">Home</a></p>
-  </main>
+<main class="wrap">
+  <span class="pill">Look $0 · pay closed</span>
+  <p class="brand">DualisCapax · RTE hall</p>
+  <h1>Desks that exist.</h1>
+  <p class="lede">Every modeled RTE. Granular next only when a sentence exists. Empty sky stays off this hall. Apex `/` is cafe until four GO.</p>
+  <a class="row" href="/rte/sima-dclm/"><strong>SIMA · CARE</strong><span>Job aide. Implement / upgrade / integrate. Till closed.</span></a>
+  <a class="row" href="/hockey/"><strong>Hockey · SPORT</strong><span>League door. Look $0. Working sheet on ice.</span></a>
+  <a class="row" href="/rte/ice/"><strong>Ice · SPORT</strong><span>Skills / gameday sheet. Pay closed.</span></a>
+  <a class="row" href="/rte/easthill/"><strong>Easthill · FAMILY</strong><span>Grade-2 evening. Class / bind / capture / share.</span></a>
+  <a class="row" href="/encyclopedia.html"><strong>Encyclopedia · HALL</strong><span>Bind. Stays.</span></a>
+  <a class="row hole" href="/look"><strong>Look · HOLE</strong><span>404. Not a room until a file exists.</span></a>
+  <a class="row" href="/">Street apex · cafe until four GO</a>
+</main>
 </body>
 </html>
