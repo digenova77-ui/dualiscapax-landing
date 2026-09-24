@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DCLM-RTE-V2.0.4 — DualisCapax</title>
-<meta name="description" content="Isolated DualisCapax DCLM Real-Time Engine. 40-holographic hostess at left foot. Does not overwrite the old landing.">
+<meta name="description" content="Isolated DualisCapax DCLM Real-Time Engine. Mill-native double helix (friction || affinity). Ordinary browser. Does not overwrite the old landing.">
 <style>
 :root{--bg:#05070c;--card:#0b1220;--teal:#14b8a6;--purple:#a855f7;--text:#f8fafc;--muted:#94a3b8;--line:rgba(20,184,166,.28)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -21,8 +21,10 @@ h1{font-size:clamp(1.6rem,3vw,2.2rem);margin:.35rem 0 .5rem}
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 28px}
 button,.btn{appearance:none;border:1px solid var(--teal);background:rgba(20,184,166,.12);color:var(--text);padding:10px 14px;border-radius:10px;font:600 13px/1 ui-sans-serif,system-ui;cursor:pointer;text-decoration:none}
 button.ghost,.btn.ghost{border-color:rgba(168,85,247,.55);background:rgba(168,85,247,.1)}
-.rte-stage{position:relative;min-height:430px;margin:8px 0 28px;padding:18px 18px 0;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(11,18,32,.92),rgba(5,7,12,.96))}
-.deck{position:relative;height:210px;margin:70px auto 0;width:min(720px,100%)}
+.rte-stage{position:relative;min-height:430px;margin:8px 0 28px;padding:18px 18px 0;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(11,18,32,.92),rgba(5,7,12,.96));overflow:hidden}
+.helix{position:absolute;inset:12px 8px auto;height:118px;z-index:0;opacity:.9;pointer-events:none}
+.helix svg{width:100%;height:100%;display:block}
+.deck{position:relative;z-index:1;height:210px;margin:70px auto 0;width:min(720px,100%)}
 .top{position:absolute;left:8%;right:8%;top:0;height:18px;border-radius:8px;background:linear-gradient(90deg,rgba(20,184,166,.55),rgba(168,85,247,.5));box-shadow:0 0 24px rgba(20,184,166,.25)}
 .slab{position:absolute;left:10%;right:10%;top:16px;height:88px;border-radius:0 0 14px 14px;background:#0f172a;border:1px solid var(--line);border-top:0;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;gap:12px}
 .slab b{display:block;font-size:12px;letter-spacing:.08em;color:var(--teal)}
@@ -52,17 +54,33 @@ footer{margin-top:28px;color:var(--muted);font-size:12px}
 </head>
 <body>
 <div class="field"></div>
-<div class="ticker"><span>SYSTEM ACTIVE: DCLM-RTE-V2.0.4 // IRIS AI EDGE ROUTING // 40-HOLOGRAPHIC HOSTESS ANCHORED AT RTE PRIMARY SUPPORT LEFT FOOT // LEGS QUARANTINED // ZERO OVERWRITES PERMITTED // PATH /holographic-core/v2 // APEX UNTOUCHED</span></div>
+<div class="ticker"><span>SYSTEM ACTIVE: DCLM-RTE-V2.0.4 // OWN HELIX FRICTION || AFFINITY // RUNGS = ENG-INT LOOK // IRIS AI EDGE // HOSTESS LEFT FOOT // NO PIPE-3D // NO WEBGL // PATH /holographic-core/v2 // APEX UNTOUCHED</span></div>
 <main class="wrap">
-<p class="kicker">DualisCapax · Unity 0.40 holographic · isolated path</p>
+<p class="kicker">DualisCapax · mill-native double helix · isolated path</p>
 <h1>DCLM-RTE-V2.0.4</h1>
-<p class="lede">Permanent Real-Time Engine for Sima on Oracle Health Cerner. Live at /holographic-core/v2 only. Apex / is not this page. Hostess stands on the RTE left foot.</p>
+<p class="lede">Permanent Real-Time Engine for Sima on Oracle Health Cerner. Two strands: affinity (what already binds) and friction (named holes). Rungs are measured joins, not a ride. Live at /holographic-core/v2 only. Apex / is not this page. Ordinary browser.</p>
 <div class="actions">
 <button type="button" id="dl">Download RTE permanently</button>
 <a class="btn ghost" href="/">Apex (unchanged)</a>
 <a class="btn ghost" href="/rte/sima-dclm/">SIMA desk</a>
 </div>
-<section class="rte-stage" aria-label="RTE desk with hostess">
+<section class="rte-stage" aria-label="RTE desk with mill helix and hostess">
+<div class="helix" aria-hidden="true">
+<svg viewBox="0 0 1000 120" xmlns="http://www.w3.org/2000/svg">
+<title>Dualis own double helix — friction and affinity</title>
+<path d="M20 60 C 90 10, 160 110, 230 60 S 370 10, 440 60 S 580 110, 650 60 S 790 10, 860 60 S 940 110, 980 60" fill="none" stroke="#14b8a6" stroke-width="3" stroke-linecap="round"/>
+<path d="M20 60 C 90 110, 160 10, 230 60 S 370 110, 440 60 S 580 10, 650 60 S 790 110, 860 60 S 940 10, 980 60" fill="none" stroke="#a855f7" stroke-width="3" stroke-linecap="round"/>
+<g stroke="#94a3b8" stroke-width="1.2" opacity=".85">
+<line x1="230" y1="28" x2="230" y2="92"/>
+<line x1="440" y1="28" x2="440" y2="92"/>
+<line x1="650" y1="28" x2="650" y2="92"/>
+<line x1="860" y1="28" x2="860" y2="92"/>
+</g>
+<text x="20" y="16" fill="#14b8a6" font-size="11" font-family="ui-monospace,monospace">AFFINITY</text>
+<text x="20" y="114" fill="#a855f7" font-size="11" font-family="ui-monospace,monospace">FRICTION</text>
+<text x="420" y="16" fill="#94a3b8" font-size="10" font-family="ui-monospace,monospace">RUNGS = LOOK</text>
+</svg>
+</div>
 <div class="deck">
 <div class="top"></div>
 <div class="slab">
@@ -94,31 +112,24 @@ footer{margin-top:28px;color:var(--muted);font-size:12px}
 </div>
 </section>
 <div class="grid">
+<section class="card"><h2>Own helix</h2>
+<table>
+<tr><th>Strand A</th><td>Affinity — kit, hostess-40, desks that bind</td></tr>
+<tr><th>Strand B</th><td>Friction — LOSS ledger, floor 0 holes</td></tr>
+<tr><th>Rungs</th><td>ENG-INT look + trio + CROSSCHECK</td></tr>
+<tr><th>Form</th><td>SVG. No WebGL. No pipe ride.</td></tr>
+</table></section>
 <section class="card"><h2>System</h2>
 <table>
 <tr><th>ID</th><td>DCLM-RTE-V2.0.4</td></tr>
 <tr><th>Company</th><td>DualisCapax</td></tr>
-<tr><th>Skin</th><td>#14b8a6 / #a855f7 / #05070c</td></tr>
 <tr><th>Consultant</th><td>Sima</td></tr>
 <tr><th>Primary system</th><td>Oracle Health Cerner</td></tr>
-<tr><th>Sectors</th><td>Med-Surg · Emergency · Ambulatory · Surgical</td></tr>
-</table></section>
-<section class="card"><h2>Calibrated gates</h2>
-<table>
-<tr><th>Adoption target</th><td>0.918</td></tr>
-<tr><th>Max doc redundancy</th><td>0.254</td></tr>
-<tr><th>Go-live gate</th><td class="ok">1.0</td></tr>
-<tr><th>Velocity window</th><td>14 days</td></tr>
-<tr><th>Business</th><td class="ok">APPROVED</td></tr>
-<tr><th>Development</th><td class="ok">APPROVED</td></tr>
-<tr><th>Testing</th><td class="warn">MONITORING_ACTIVE</td></tr>
 </table></section>
 <section class="card"><h2>Hostess lock</h2>
 <table>
 <tr><th>Path</th><td><code>/holographic-core/v2</code></td></tr>
-<tr><th>Asset</th><td><code>/assets/holographic-hostess-40/</code></td></tr>
 <tr><th>Anchor</th><td><code>rte_primary_support_left_foot</code></td></tr>
-<tr><th>Offset</th><td>X 0 · Y -42.5px · z 99999</td></tr>
 <tr><th>Apex</th><td>untouched</td></tr>
 </table></section>
 </div>
@@ -129,14 +140,13 @@ footer{margin-top:28px;color:var(--muted);font-size:12px}
     "edge_provider": "Cloudflare",
     "source_repository": "GitHub-Pages-Main",
     "routing_middleware": "Iris-AI",
-    "action": "INTERCEPT_AND_JSON",
-    "purge_legacy_cache": true,
     "apex_overwrite": false,
-    "live_path": "/holographic-core/v2"
+    "live_path": "/holographic-core/v2",
+    "helix": "friction||affinity SVG — not pipe-3D"
   }
 }</pre>
 </section>
-<footer>DualisCapax Inc. · isolated path /holographic-core/v2 · DCLM-RTE-V2.0.4 · apex / not this file</footer>
+<footer>DualisCapax Inc. · isolated path /holographic-core/v2 · own helix · apex / not this file</footer>
 </main>
 <script>
 (function(){
