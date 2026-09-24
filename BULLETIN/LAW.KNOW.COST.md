@@ -1,19 +1,24 @@
 # LAW.KNOW.COST
 
-**Status:** STANDING 2026-09-24T19:59-04:00. Amended same hour: they will find a way to pay.
-**Till:** closed tonight. Principle standing.
+**Status:** STANDING 2026-09-24T20:00-04:00
+**Till:** closed tonight.
 
-Anything humans already know on the internet is Look — CAD $0.
-Anything they do not starts to get proportionally expensive to find out with Dualis.
+Look ($0) = already on the internet.
+Depth = not on the internet. They will find a way to pay. One meter.
 
-Information is power. They will find a way to pay. Dualis does not chase. Dualis keeps one meter so the way they find is the same rail — equal-CAD crypto when open, no side till, no Dualis coin.
+## Profound scarcity
 
-## Proportion
+If the missing information is scarce and profound and it helps, it is priced as such.
+Not a vibe. Three questions the engine can answer:
 
-Distance from an indexed public sentence → Fuel then Leaf then Branch then Trunk then Atlas.
-V8: 0 · 0 · 49 · 299 · 499 · 1,499 + Fuel packs.
+1. Is it already on the net with a date? → Look $0.
+2. Does a run of Dualis change a decision a person can name? → it helps.
+3. How far from an indexed sentence, and how few other places hold it? → scarcity.
 
-Look stays free so public knowledge is not a wall.
-Depth is the power they buy.
+Price = V8 ladder applied to that distance, to the **cent** in CAD, equal-CAD on chain when open.
+Leaf 49.00 · Branch 299.00 · Trunk 499.00 · Atlas 1,499.00 · Fuel 5.00 / 20.00 / 50.00 / 120.00 / 350.00.
+Rabbit hole each idea: one named object, one KEEP-TEST, Fuel by the run, seats by the year.
+Good enough system = those questions + that ladder + a receipt. Not a 12-decimal peacock.
+
 Could this open the till tonight? **NO.**
-Could a second door be "the way they found"? **NO.**
+Could profound be a second door? **NO.**
