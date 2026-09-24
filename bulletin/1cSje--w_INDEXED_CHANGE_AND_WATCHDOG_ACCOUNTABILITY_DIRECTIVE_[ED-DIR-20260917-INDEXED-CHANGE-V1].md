@@ -32,7 +32,7 @@ Every change across codebase, web assets, workflows, infrastructure, or data mus
 
 ### Article 2: Universal Change Indexing (`CHANGE_ID`)
 
-Every modification must be assigned a unique `CHANGE_ID` following the deterministic chain: $$\\text{CHANGE\_ID} \\longrightarrow \\text{EDITOR\_ID} \\longrightarrow \\text{EDITOR\_VERSION} \\longrightarrow \\text{WATCHDOG\_ID} \\longrightarrow \\text{TARGET} \\longrightarrow \\text{BEFORE\_STATE} \\longrightarrow \\text{CHANGE} \\longrightarrow \\text{AFTER\_STATE} \\longrightarrow \\text{VERIFICATION} \\longrightarrow \\text{FINAL\_STATE}$$
+Every modification must be assigned a unique `CHANGE_ID` following the deterministic chain: \$\$\\text{CHANGE\_ID} \\longrightarrow \\text{EDITOR\_ID} \\longrightarrow \\text{EDITOR\_VERSION} \\longrightarrow \\text{WATCHDOG\_ID} \\longrightarrow \\text{TARGET} \\longrightarrow \\text{BEFORE\_STATE} \\longrightarrow \\text{CHANGE} \\longrightarrow \\text{AFTER\_STATE} \\longrightarrow \\text{VERIFICATION} \\longrightarrow \\text{FINAL\_STATE}\$\$
 
 ### Article 3: Mandatory Editor Identification
 
@@ -72,11 +72,11 @@ Before touching any file, selector, component, or configuration:
 Do not merely state the intent. Record the precise physical changes:
 
 - Affected files, HTML structure, CSS rules, JavaScript routines, dependencies, workflows, or routing rules.  
-- If environmental variables were untouched, explicitly record: $$\\text{ENVIRONMENTAL\_CHANGE} \= \\text{NONE}$$
+- If environmental variables were untouched, explicitly record: \$\$\\text{ENVIRONMENTAL\_CHANGE} \= \\text{NONE}\$\$
 
 ### Article 7: Derivative Effects Metrology
 
-A bug fix is not validated merely because the targeted defect disappeared. $$\\text{FIXED ORIGINAL DEFECT} \\neq \\text{VALIDATED CHANGE}$$ Acceptance strictly requires: $$\\text{ORIGINAL DEFECT FIXED} \+ \\text{DERIVATIVE SURFACES VERIFIED} \+ \\text{NO UNACCEPTABLE REGRESSION}$$ The editor and independent verifier must audit cascading impacts: $$\\text{padding} \\longrightarrow \\text{dimensions} \\longrightarrow \\text{wrapping} \\longrightarrow \\text{height} \\longrightarrow \\text{alignment} \\longrightarrow \\text{neighboring elements} \\longrightarrow \\text{breakpoint behavior} \\longrightarrow \\text{downstream sections}$$
+A bug fix is not validated merely because the targeted defect disappeared. \$\$\\text{FIXED ORIGINAL DEFECT} \\neq \\text{VALIDATED CHANGE}\$\$ Acceptance strictly requires: \$\$\\text{ORIGINAL DEFECT FIXED} \+ \\text{DERIVATIVE SURFACES VERIFIED} \+ \\text{NO UNACCEPTABLE REGRESSION}\$\$ The editor and independent verifier must audit cascading impacts: \$\$\\text{padding} \\longrightarrow \\text{dimensions} \\longrightarrow \\text{wrapping} \\longrightarrow \\text{height} \\longrightarrow \\text{alignment} \\longrightarrow \\text{neighboring elements} \\longrightarrow \\text{breakpoint behavior} \\longrightarrow \\text{downstream sections}\$\$
 
 ### Article 8: Watchdog Independence
 
@@ -84,7 +84,7 @@ The editor is never its own final authority. The editor reports the modification
 
 ### Article 9: Environment Preservation Invariant
 
-Bots must not delete workers, disable workflows, remove environment variables, weaken security gates, alter factory infrastructure, or restructure environments merely to force a test or build to pass. If environmental changes are required: $$\\text{OBSERVE} \\longrightarrow \\text{PROPOSE} \\longrightarrow \\text{INDEX} \\longrightarrow \\text{AUTHORIZE} \\longrightarrow \\text{CHANGE} \\longrightarrow \\text{VERIFY}$$
+Bots must not delete workers, disable workflows, remove environment variables, weaken security gates, alter factory infrastructure, or restructure environments merely to force a test or build to pass. If environmental changes are required: \$\$\\text{OBSERVE} \\longrightarrow \\text{PROPOSE} \\longrightarrow \\text{INDEX} \\longrightarrow \\text{AUTHORIZE} \\longrightarrow \\text{CHANGE} \\longrightarrow \\text{VERIFY}\$\$
 
 ### Article 10: Live Website Stewardship
 

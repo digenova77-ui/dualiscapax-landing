@@ -56,13 +56,13 @@ By authoritative decree of the System Architect and Founder, this statute is for
 
 │                                                                                        │
 
-│ LAW 5: THE FIDUCIARY INVERSION & ZERO ECONOMIC RENT ($0 UPFRONT / R \-\> 0\)              │
+│ LAW 5: THE FIDUCIARY INVERSION & ZERO ECONOMIC RENT (\$0 UPFRONT / R \-\> 0\)              │
 
 │        \- Institutional partnerships are self-funded from verified operational friction.│
 
 │        \- Client retains 81.0% Year 1 \-\> 100.0% permanent retention in Year 5\.          │
 
-│        \- Sub-90-second emergency clean unplug guarantee with $0.00 asset leakage.      │
+│        \- Sub-90-second emergency clean unplug guarantee with \$0.00 asset leakage.      │
 
 └────────────────────────────────────────────────────────────────────────────────────────┘
 

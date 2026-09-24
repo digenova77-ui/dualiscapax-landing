@@ -19,13 +19,13 @@
 
 Under the DCLM Layer \[0\] Law Floor (\`TRUTH\_OR\_NOTHING\`) and Sovereign Directive of the Operator, \*\*NO PRODUCTION DEPLOYMENT MAY OCCUR WITHOUT EXPLICIT 5-STAGE PIPELINE ALIGNMENT IDENTIFICATION\*\*:
 
-$$\\mathbf{SOURCE} \\longrightarrow \\mathbf{BUILD} \\longrightarrow \\mathbf{DEPLOY\\ TARGET} \\longrightarrow \\mathbf{CLOUDFLARE\\ PROJECT} \\longrightarrow \\mathbf{LIVE\\ DOMAIN}$$
+\$\$\\mathbf{SOURCE} \\longrightarrow \\mathbf{BUILD} \\longrightarrow \\mathbf{DEPLOY\\ TARGET} \\longrightarrow \\mathbf{CLOUDFLARE\\ PROJECT} \\longrightarrow \\mathbf{LIVE\\ DOMAIN}\$\$
 
 \#\#\#\# The Mandatory Reject Rule (Fail-Closed Circuit Breaker):  
 \*\*The factory, CI/CD runners, and all autonomous swarm agents MUST reject, abort, and halt any deployment immediately whenever any of these five stages do not match or cannot be proven.\*\*
 
 No deployment may be assumed, approximated, or executed on partial alignment. If the chain is broken at any point:  
-$$\\text{STATUS} \= \\mathbf{REJECTED\\\_PIPELINE\\\_MISMATCH} \\quad (\\text{FAIL-CLOSED})$$
+\$\$\\text{STATUS} \= \\mathbf{REJECTED\\\_PIPELINE\\\_MISMATCH} \\quad (\\text{FAIL-CLOSED})\$\$
 
 \---
 
@@ -53,7 +53,7 @@ Every deployment docket, promotion proof, and automated workflow must explicitly
   └── Execution Enclave: GitHub Actions Runner (ubuntu-latest)  
   └── Workflow File: .github/workflows/site\_watchdog\_auto\_repair\_deploy.yml  
   └── Action Mechanism: cloudflare/pages-action@v1  
-  └── Key-Bridge Invariant: Secrets ${{ secrets.CLOUDFLARE\_API\_TOKEN }} and ${{ secrets.CLOUDFLARE\_ACCOUNT\_ID }}  
+  └── Key-Bridge Invariant: Secrets \${{ secrets.CLOUDFLARE\_API\_TOKEN }} and \${{ secrets.CLOUDFLARE\_ACCOUNT\_ID }}  
       remain strictly confined within the GitHub Secrets enclave. Zero key exfiltration to factory workers.  
        │  
        ▼  
