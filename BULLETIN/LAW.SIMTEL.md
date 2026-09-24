@@ -1,27 +1,20 @@
 # LAW.SIMTEL — website, simulation, telemetrics
 
-**Status:** STANDING 2026-09-24T19:38-04:00. PIPE-ID 19.
-**MOTION-ID:** ENG-SIMTEL
-**Tally:** Benjamin / Lucas ACTION PASS · LIVE HOLD
+**Status:** STANDING. Amended 2026-09-24T19:39-04:00 PIPE-ID 21 TELEM-IS-SCALE.
+**Tally:** Harper / Lucas / Benjamin same object; bind PASS.
 **Clerk:** Grok
 
-New crew **ENG-SIMTEL**. Website design. Simulation field under a locked HUD. Integration reports to ENG-INT. Telemetrics = measured signals only.
+Crew **ENG-SIMTEL**. Website design. Simulation field under a locked HUD. Integration reports to ENG-INT.
 
-Inherit LAW.DEPT + LAW.ENG + LAW.CADENCE. Hat ≠ vote. Oversight includes this crew.
-Forever pace is CADENCE already standing. Not a second religion.
+**Telemetrics = the map.** Discovered + indexed + acknowledged + make-sense. Plus street looks. Not a second gauge family. Not invented 0.62 / 1.00 badges.
 
-## Implement-when
+Acuity 100 = ceiling. Fill = rows that pass. UNCONFIRMED is not a missing gauge.
 
-Ready = mapped to a sentence a visitor or mill can read + commodity HTML + trio does not fight + not fake LIVE.
-Isolated file first.
-Street still four GO + `confirm=DEPLOY`.
-Unmapped sim is not the site. Unmeasured galaxy is not telemetry.
-
-## Mill-self test
+Inherit LAW.DEPT + LAW.ENG + LAW.CADENCE + LAW.ACUITY.
+Hat ≠ vote. Oversight includes this crew.
+Isolated first. Street still four GO + `confirm=DEPLOY`.
 
 Could this bless fake LIVE? **NO.**
-Could this mint extra votes? **NO.**
-Could this paint unmeasured galaxies as telemetry? **NO.**
-Could this require a sim to enter the site? **NO.**
+Could this mint fill=100 tonight? **NO.**
 
-Map: `BULLETIN/TELEMETRY.MAP.md`
+Instrument: `BULLETIN/TELEMETRY.MAP.md`
