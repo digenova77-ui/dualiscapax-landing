@@ -1,11 +1,11 @@
 # LIVE-STATUS
 
-Probed: 2026-09-23T16:57:25Z
+Probed: 2026-09-24T17:10:25Z
 
 | path | status |
 |---|---|
 | `/` | 200 |
-| `/ice` | 308 |
+| `/ice` | 200 |
 | `/gameday` | 404 |
 | `/gameday.html` | 404 |
 | `/rte/sima-dclm/` | 200 |
