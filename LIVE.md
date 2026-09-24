@@ -1,15 +1,14 @@
-# Live 2026-09-04 22:20 EDT
+# Live 2026-09-24 00:30 EDT
 
-Public files are on GitHub Pages. Keep shipping on main. Do not rebuild the host tonight.
+Apex is the holographic Iris field. The talk-only cafe plate no longer owns `/`.
 
 ## Use these
-- Home: https://digenova77-ui.github.io/dualiscapax-landing/index.html
-- Get ID: https://digenova77-ui.github.io/dualiscapax-landing/member.html
-- Pay: https://digenova77-ui.github.io/dualiscapax-landing/pay.html
-- Iris: https://digenova77-ui.github.io/dualiscapax-landing/ai/app.html
-- Engine: https://digenova77-ui.github.io/dualiscapax-landing/compute.html
-- What works: https://digenova77-ui.github.io/dualiscapax-landing/works.html
+- Home / field: https://dualiscapax.ai/
+- Lab: https://dualiscapax.ai/ai/app.html
+- Hall: https://dualiscapax.ai/hall/
+- Reading: https://dualiscapax.ai/research/
 
-Stripe CAD $20 / $50 / $120 is live. Fulfill worker is up. Depth worker may still show Access; Iris answers on the page without it.
+Until Cloudflare cache/purge after pages-direct-upload, share:
+https://digenova77-ui.github.io/dualiscapax-landing/
 
-Apex dualiscapax.ai can still show an older gateway. Until DNS/Pages cutover finishes, share the github.io links.
+Old talk-only markup lives at `index.talk-only.html` in git. Do not restore it to `/`.
