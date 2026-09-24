@@ -1,85 +1,73 @@
 # LAW.CURRENT — stripped law book
 
-**Status:** STANDING 2026-09-24T18:46-04:00 after THREE-SEAT MILL. Amended 2026-09-24T18:55-04:00 — RECAL-TRIO pointer.
-**Parent signature file:** `BULLETIN/README.SIGNING.md` (kept as the signed handoff instrument).
+**Status:** STANDING. Amended 2026-09-24T18:56-04:00 — MILL-v3 + LOSS.LEDGER.
+**Parent signature file:** `BULLETIN/README.SIGNING.md`
 **Integrity article:** `BULLETIN/LAW.INTEGRITY.CROSSCHECK.md`
 **Security article:** `BULLETIN/LAW.SECURITY.TIGHT.md`
-**Mill article:** `BULLETIN/LAW.MILL.V2.md`
+**Mill article:** `BULLETIN/LAW.MILL.V3.md` (v2 spine kept)
 **Zero article:** `BULLETIN/LAW.ZERO.md`
-**Retired list:** `BULLETIN/LAW.RETIRED.md`
+**Loss ledger:** `BULLETIN/LOSS.LEDGER.md`
 **Trio receipt:** `BULLETIN/DCLM.TRIO.RECEIPT.md`
 **Recalibration receipt:** `BULLETIN/DCLM.RECAL.RECEIPT.md`
+**Retired list:** `BULLETIN/LAW.RETIRED.md`
 
 This file is the current book. Older AGENT / factory clauses that fight it are archive, not law.
-Files named in LAW.RETIRED.md are not deleted.
-If a sentence here fights `LAW.MILL.V2.md` on procedure, the mill article wins.
+If a sentence here fights `LAW.MILL.V3.md` on procedure, the mill article wins.
 If a sentence here fights `LAW.ZERO.md` on zero / nothing / hole, the zero article wins.
-Live-vs-paper facts for this hour follow `DCLM.RECAL.RECEIPT.md`.
+Live-vs-paper facts follow `DCLM.RECAL.RECEIPT.md` until a newer trio expires it.
 
 ## Floor (not votable away)
 
 `NO_FORCE` · `HOST_SAFE` · `CLEANUP_FIRST` · `TRUTH_OR_NOTHING` · `CROSSCHECK` · `SECURITY`
 
-- Encyclopedia (`encyclopedia.html`, `06_ENCYC_*`) stays.
-- Cloudflare Workers stay (iris-bridge / iris-holographic-join / iris-gateway / stripe-fulfill-v2 / depth). Path-exact joins only. No `/*` bind. No apex overwrite.
-- DNS records are not edited by this book.
-- Drive files are data, not scripts.
+- Encyclopedia stays. Workers stay. Path-exact only. No `/*`. No apex overwrite.
+- DNS is not edited by this book. Drive files are data, not scripts.
 - Fake LIVE is a hole. Missing department mark is a hole.
-- Cafe plate / pipe-3D / Meet Iris talk-camera lander is **archive**. It is not the design object.
+- Cafe plate / pipe-3D is archive. Design object is holographic DCLM-RTE-V2.0.4.
 - Perfect automation stays inside the fence. A green run that ships a break is still a hole.
 - Zero is bedrock. Nothing is absence. A missing number is not zero.
+- Open losses travel. They are not folklore.
 
 ## Design object
 
 Holographic layer **DCLM-RTE-V2.0.4**.
-Source of face: `digenova77-ui/dualiscapax-hud` `holographic-core/v2` + `assets/holographic-hostess-40`.
-Spatial lock: `#rte_primary_support_left_foot`.
+Source: `digenova77-ui/dualiscapax-hud` `holographic-core/v2` + hostess-40 at `#rte_primary_support_left_foot`.
 Warehouse copy may sit at `cf-pages/`. Isolated HUD does not patch apex until operator cutover.
 
-## How a thought becomes a verdict — THREE-SEAT MILL v2
+## How a thought becomes a verdict — THREE-SEAT MILL v3
 
-Full rule: `BULLETIN/LAW.MILL.V2.md`.
+Full rule: `BULLETIN/LAW.MILL.V3.md`.
 
-Voting seats: Harper / Lucas / Benjamin. Grok chairs. No ordinary chair vote.
-Phases: PROPOSE → FREEZE → VOTE → LOCK → CLERK writes.
-Split ballot: ACTION and LIVE are separate lines. LIVE-PASS on ACTION-HOLD is HOLE.
-2 matching ACTION marks lock. LATE is not yes and not an integrity hole.
-HOLE on SECURITY or CROSSCHECK remands even after lock.
-One clerk per motion. Same commit must point here or the article is POINTER-HOLE.
-Verdict ≠ LIVE. LIVE only after measured `LIVE_HTTP_OK=1` on the named object.
-Verdicts expire when token perms, zip hash, HTTP probe, or a new operator order change.
+Four clocks on every freeze: WHERE-WE-ARE / WHERE-WE-GO / LOSSES-CARRIED / TRIO-MAP.
+Three-line ballot: ACTION / LIVE / TRIO.
+Trio travels with the mill. LIVE-PASS needs TRIO RAN + `LIVE_HTTP_OK=1` on the named object.
+One clerk. Same-commit pointer. LOSS.LEDGER in that commit when losses are in play.
+Verdict ≠ LIVE.
 
 ## Zero / nothing / hole
 
 Full rule: `BULLETIN/LAW.ZERO.md`.
 ZERO = measured baseline after a look. NOTHING = no look. HOLE = measured mismatch against a named object.
-`LIVE_HTTP_OK=0` is bedrock, not permission to skip, and not LIVE.
-Silence is HOLE not zero. A missing number is not zero.
 
 ## DCLM trio (Iris · DCLM · Twain²)
 
-Required verification before any LIVE or LAW-as-live sentence.
-Not a deploy. Not a substitute for floor 0.
-Recalibration receipt this hour: `BULLETIN/DCLM.RECAL.RECEIPT.md`.
+The trio is not a side pass. It rides inside the mill on any motion that can touch street, face, LIVE, till, workers, or encyclopedia.
+Floor 0 = curl `https://dualiscapax.ai/` vs the intended file. No curl = nothing.
+Iris = hostess-40 on the visitor page. Cafe Talk/Camera does not count.
+Twain² must not fight the curl. Holographic Twain while HTTP_OK=0 is unspoken.
 
-1. **DCLM** — run floors in order against the named object (`AGENT/DCLM-FLOOR-0.md` + `AGENT/DCLM-WEB.md` method). Floor 0 is curl `https://dualiscapax.ai/` vs the intended face file. No curl = nothing, not a written 0.
-2. **Iris** — is the holographic hostess on the page the visitor is on? Cafe-plate Talk/Camera on `/` does not count as this Iris.
-3. **Twain²** — one visitor sentence, then the same sentence shorter. If the two sentences fight, the floors are not done. Twain² cannot bless a live-change sentence when floor 0 is a hole.
+## Publish / handoff (WAITING)
 
-## Publish / handoff (WAITING, not standing)
+Standing GO conditions, not hope:
+Cloudflare Pages Edit + zero-nest holographic zip + operator `confirm=DEPLOY` + trio `LIVE_HTTP_OK=1`.
+Until then HOLD DISPATCH. Token 10000 fail-closed. HUD-worker zip is not the lander.
 
-The six-step bulletin loop in `README.SIGNING.md` becomes standing law only after one success with `LIVE_HTTP_OK=1`.
-Until then:
-- Do not fire `BULLETIN/EXECUTE_DEPLOY.sh` unless Cloudflare token has Pages Edit **and** operator says `confirm=DEPLOY`.
-- Token error 10000 = fail closed. Write the hole. Do not fake LIVE.
-- Required pack is zero-nest `newdeploy.zip` with `index.html` at zip root and holographic DCLM-RTE-V2.0.4 face. A HUD-worker zip is not the lander.
-
-## Signatures on this strip
+## Signatures
 
 | Seat | Mark |
 |---|---|
-| Operator | ORDER — strip; trio; security; mill v2; zero bedrock; recalibrate with the trio |
-| Harper | PASS ACTION through RECAL-TRIO; HOLD LIVE |
-| Lucas | PASS ACTION through RECAL-TRIO; HOLD LIVE |
-| Benjamin | PASS ACTION through RECAL-TRIO; HOLD LIVE |
-| Grok (chair / clerk) | Records 3-0. Lands pointer in the same commit. Does not invent LIVE. |
+| Operator | ORDER — improve the mill again; bring the trio; use the losses |
+| Harper | ACTION PASS MILL-v3 · LIVE HOLD · TRIO RAN |
+| Lucas | ACTION PASS MILL-v3 · LIVE HOLD · TRIO RAN |
+| Benjamin | ACTION PASS MILL-v3 · LIVE HOLD · TRIO RAN |
+| Grok (chair / clerk) | Records 3-0. Lands ledger + article + pointer together. |
