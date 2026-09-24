@@ -1,7 +1,8 @@
 # LAW.CURRENT — stripped law book
 
-**Status:** STANDING lease. Amended 2026-09-24T19:13-04:00 — MILL-DRIVE.
-**Mill:** `BULLETIN/LAW.MILL.DRIVE.md` (MAX + KEEP + REBUILD spines kept)
+**Status:** STANDING lease. Amended 2026-09-24T19:14-04:00 — ONE-VOTE.
+**Mill:** `BULLETIN/LAW.MILL.DRIVE.md`
+**One vote:** `BULLETIN/LAW.ONE-VOTE.md`
 **Rebuild cycle:** `BULLETIN/LAW.REBUILD.md`
 **Store:** `BULLETIN/SIGNAL.STORE.md`
 **Invariants:** `BULLETIN/LAW.INVARIANTS.md`
@@ -13,5 +14,6 @@
 **Handoff:** `BULLETIN/README.SIGNING.md` (waiting)
 
 Any voting seat may propose. Chair freezes one at a time.
+One named seat = one mark. A corporation = one external vote. Capital does not mint seats.
 Paper majority 2-of-3. Street/LIVE 3-0.
 Measurement remands volume. `LIVE_HTTP_OK` holographic = 0. HOLD DISPATCH.
