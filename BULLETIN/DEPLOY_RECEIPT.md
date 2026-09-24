@@ -1,27 +1,19 @@
-# DEPLOY RECEIPT — pending first closed loop
+# DEPLOY_RECEIPT
 
-**Opened:** 2026-09-24T22:08-04:00
-**Law:** BULLETIN/README.SIGNING.md SIGNED
-**DNS:** not touched
+**Stamp:** 2026-09-24T19:50-04:00
+**Operator:** confirm=DEPLOY received (message: confirm deploy)
+**File-pick:** isolated HUD DCLM-RTE-V2.0.4 `cf-pages/holographic-core/v2/index.html`
+**Encyclopedia:** KEEP
+**DNS:** not edited
+**Workers:** not rebound
 
-## Expected path
+## Rails this beat
 
-1. Factory reads README.SIGNING.md
-2. Factory runs EXECUTE_DEPLOY.sh
-3. Copy newdeploy.zip from Drive bulletin
-4. Check SHA-256 `3ce42dc1c0303944e8761dd400df10f97adf2df072eb8a09017a906104a15678`
-5. unzip -o
-6. wrangler pages deploy → project `dualiscapax-landing`
-7. curl https://dualiscapax.ai/
+1. `bulletin-handoff.yml` dispatched with input confirm=DEPLOY (Actions secrets must hold Pages Edit).
+2. Drive zip SHA `3ce42dc1…` is RETIRED lander (HOLE_NO_INDEX class). A green wrangler on that zip is still the wrong object.
+3. No CLOUDFLARE_API_TOKEN in this chat runtime. Token 10000 remains a named hole unless Actions secrets work.
 
-## Known hole (do not hide)
+## LIVE
 
-`pages-direct-upload.yml` run 36044218651 failed wrangler with Cloudflare API authentication error **10000**. Token exists; it cannot write Pages project `dualiscapax-landing`.
-
-Until that token has **Account · Cloudflare Pages · Edit**, this receipt stays `LIVE=NO`.
-
-## Result
-
-- LIVE: NO
-- LIVE_HTTP_OK: 0
-- Reason: waiting first successful wrangler handoff after token fix or manual CF upload of the checked zip
+Do not stamp LIVE until two curls of https://dualiscapax.ai/ return RTE Desk / HOLD DISPATCH, not Meet Iris.
+`LIVE_HTTP_OK` holographic starts this receipt at 0.
