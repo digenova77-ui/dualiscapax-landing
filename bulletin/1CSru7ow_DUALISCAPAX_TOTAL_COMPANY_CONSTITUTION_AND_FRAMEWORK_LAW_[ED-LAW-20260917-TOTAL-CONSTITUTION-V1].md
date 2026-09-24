@@ -48,10 +48,10 @@ Every participant, transaction, and seat must satisfy five orthogonal verificati
 4\. \*\*Treasury Proof of Control:\*\* Confirmed via Stripe Live Wire, 1:1 CAD Equal-Crypto, or Corporate Bank Pre-Auth.  
 5\. \*\*Merkle Genesis Seeding:\*\* Matched against the Founder Whitelist Merkle root (0.00% retained PII).
 
-\#\#\# LAW 5: THE FIDUCIARY INVERSION & ZERO ECONOMIC RENT ($0 UPFRONT / R \-\> 0\)  
+\#\#\# LAW 5: THE FIDUCIARY INVERSION & ZERO ECONOMIC RENT (\$0 UPFRONT / R \-\> 0\)  
 \- Institutional partnerships and deployments are self-funded entirely from verified operational friction and waste reduction.  
-\- \*\*5-Year Asymptotic Retention Waterfall:\*\* Client retains 81.0% of realized savings in Year 1, escalating to 87.5% in Year 2, 92.0% in Year 3, 97.0% in Year 4, and 100.0% permanent client retention in Year 5 (R \-\> 0, $0.00 ongoing software fees).  
-\- \*\*Emergency Clean Unplug:\*\* Sub-90-second clean unplug guarantee with $0.00 asset leakage.
+\- \*\*5-Year Asymptotic Retention Waterfall:\*\* Client retains 81.0% of realized savings in Year 1, escalating to 87.5% in Year 2, 92.0% in Year 3, 97.0% in Year 4, and 100.0% permanent client retention in Year 5 (R \-\> 0, \$0.00 ongoing software fees).  
+\- \*\*Emergency Clean Unplug:\*\* Sub-90-second clean unplug guarantee with \$0.00 asset leakage.
 
 \---
 
@@ -161,7 +161,7 @@ Internal engineering and mathematical expressions (\`DCLM Layer \[0\]\`, \`det(M
 \- CLEANUP\_FIRST \-\> \*\*Fix What's Broken First\*\* (Stop bleeding time and cash before buying more software).  
 \- TRUTH\_OR\_NOTHING \-\> \*\*Real Truth Only\*\* (Zero AI guessing or fake stats; only real games, real invoices, real roads).  
 \- The Seat OS \-\> \*\*The Seat Beside Your Tools\*\* (Sits quietly with TeamSnap, POS, CAN-bus, SCADA; zero duplicate entry).  
-\- 5-Year Asymptotic Split \-\> \*\*What You Keep\*\* (81% on Day 1 growing to 100% permanent ownership at $0.00 fee forever).
+\- 5-Year Asymptotic Split \-\> \*\*What You Keep\*\* (81% on Day 1 growing to 100% permanent ownership at \$0.00 fee forever).
 
 \#\#\# 3\. Visual Feedback & Sight QA Loop (\`Iris-Overseer-Sight\`)  
 \- All autonomous bots must execute multimodal visual feedback loops prior to production deployment.  

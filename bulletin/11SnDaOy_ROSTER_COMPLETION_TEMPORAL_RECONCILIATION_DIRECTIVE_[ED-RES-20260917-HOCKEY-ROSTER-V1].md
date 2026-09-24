@@ -20,7 +20,7 @@ This directive establishes:
 
 1. **The 5-Tier State Model:** Strict formal separation between `COMPLIANT`, `PROVISIONALLY_COMPLETE`, `CONFIRMED`, `DELTA`, and `UNKNOWN`.  
 2. **Sub-Federation Archetypes:** Separate analysis of governing regulations and publication architectures across the **OHF**, **OMHA**, and **OWHA**.  
-3. **Differential Object Accounting:** The Delta Rule ($\\Delta \= S\_{\\text{known}} \\setminus S\_{\\text{current}}$) ensuring roster modifications trigger targeted entity tracking rather than full-league re-harvests.  
+3. **Differential Object Accounting:** The Delta Rule (\$\\Delta \= S\_{\\text{known}} \\setminus S\_{\\text{current}}\$) ensuring roster modifications trigger targeted entity tracking rather than full-league re-harvests.  
 4. **Entropy-Minimizing Harvesting:** A cryptographic checksum verification model that hardens state evidence without redundant scraping cycles.
 
 ---
@@ -105,7 +105,7 @@ To construct temporal roster provenance without relying on internal database IDs
 
 Because minor hockey regulations forbid exposing national registry IDs publicly, the factory must construct a **Deterministic Composite Object Identifier (`PLAYER_KEY`)**:
 
-$$\\text{PLAYER\_KEY} \= \\text{SHA256}(\\text{Normalized\_Name} \\parallel \\text{Birth\_Cohort} \\parallel \\text{Home\_Association} \\parallel \\text{Branch\_Code})$$
+\$\$\\text{PLAYER\_KEY} \= \\text{SHA256}(\\text{Normalized\_Name} \\parallel \\text{Birth\_Cohort} \\parallel \\text{Home\_Association} \\parallel \\text{Branch\_Code})\$\$
 
 ### 4.1 Identifier Stability Hierarchy
 
@@ -177,15 +177,15 @@ A compliant roster must never be mistaken for a complete roster. The factory mus
 
 ## 6\. The Delta Rule & Graph Traversal Protocol
 
-When an established roster changes (e.g., $18 \\to 17$ players), the factory **must not rebuild or re-scrape the entire league**.
+When an established roster changes (e.g., \$18 \\to 17\$ players), the factory **must not rebuild or re-scrape the entire league**.
 
 ### 6.1 Step 1: Object-Level Set Subtraction
 
-$$\\Delta\_{\\text{missing}} \= S\_{\\text{known}} \\setminus S\_{\\text{current}}$$ Isolate the unique `PLAYER_KEY` of the dropped object.
+\$\$\\Delta\_{\\text{missing}} \= S\_{\\text{known}} \\setminus S\_{\\text{current}}\$\$ Isolate the unique `PLAYER_KEY` of the dropped object.
 
 ### 6.2 Step 2: Bounded Traversal in Known League Evidence
 
-Search the current federated graph for $\\text{PLAYER\_KEY}$ across surrounding teams:
+Search the current federated graph for \$\\text{PLAYER\_KEY}\$ across surrounding teams:
 
 1. **Intra-League Reassignment:** Did the player move to another team in the same league (e.g. ETA trade, release to Central Ontario Wolves)?  
 2. **Tier Demotion / Release:** Did the player appear on a local AA/A roster within the same home center?  
@@ -206,7 +206,7 @@ To eliminate compute waste and prevent redundant ingestion loops across hundreds
 
 ### 7.1 Cryptographic Roster Checksum
 
-$$\\text{ROSTER\_CHECKSUM} \= \\text{SHA256}\\left(\\bigoplus\_{i=1}^{N} \\text{PLAYER\_KEY}\_i \\right)$$
+\$\$\\text{ROSTER\_CHECKSUM} \= \\text{SHA256}\\left(\\bigoplus\_{i=1}^{N} \\text{PLAYER\_KEY}\_i \\right)\$\$
 
 ### 7.2 The Cheap Confirmation Loop
 

@@ -36,7 +36,7 @@ Under DCLM Layer \[0\] Law Floor (`TRUTH_OR_NOTHING`), history cannot be rewritt
 
 The revised change ledger binds every operational intervention to an explicit five-stage causal trajectory:
 
-$$\\mathbf{Original\\ Defect} \\longrightarrow \\mathbf{Modification} \\longrightarrow \\mathbf{Affected\\ Surfaces} \\longrightarrow \\mathbf{Independent\\ Verification} \\longrightarrow \\mathbf{Final\\ State}$$
+\$\$\\mathbf{Original\\ Defect} \\longrightarrow \\mathbf{Modification} \\longrightarrow \\mathbf{Affected\\ Surfaces} \\longrightarrow \\mathbf{Independent\\ Verification} \\longrightarrow \\mathbf{Final\\ State}\$\$
 
 - **Original Defect:** The unambiguous baseline malfunction, layout overflow, or invariant breach fingerprinted prior to intervention.  
 - **Modification:** The precise physical lines of code, selectors, assets, or configuration rules changed (with `ENVIRONMENTAL_CHANGE = NONE` where untouched).  

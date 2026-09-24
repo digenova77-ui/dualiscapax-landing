@@ -37,8 +37,8 @@ This experiment implements the canonical loop: `REALITY → PROBABILISTIC DISCOV
 ### MODELED (Theoretical / Metric Projections)
 
 1. Invariant preflight gating (`if: vars.GCP_WIF_ENABLED == 'true'`) eliminates 48 redundant failing runner runs per day (\~432 runner-seconds / \~7.2 runner-minutes per day saved).  
-2. Manifest-first ingestion reduces Drive API read overhead from $O(N)$ (where $N$ is total board files) to $O(1)$ manifest check \+ $O(K)$ new dockets ($K \\ll N$).  
-3. Financial value recovered: $0.00 CAD hard cash (compute quota conservation only).
+2. Manifest-first ingestion reduces Drive API read overhead from \$O(N)\$ (where \$N\$ is total board files) to \$O(1)\$ manifest check \+ \$O(K)\$ new dockets (\$K \\ll N\$).  
+3. Financial value recovered: \$0.00 CAD hard cash (compute quota conservation only).
 
 ### PROPOSED (Admissible Interventions)
 
@@ -164,7 +164,7 @@ This experiment implements the canonical loop: `REALITY → PROBABILISTIC DISCOV
 
     "drive\_api\_calls\_saved\_per\_cycle": "N \- 1 calls (where N is count of closed board dockets)",
 
-    "fiat\_cash\_value": "CAD $0.00 (infrastructure efficiency only; no external fiat impact)",
+    "fiat\_cash\_value": "CAD \$0.00 (infrastructure efficiency only; no external fiat impact)",
 
     "validation\_status": "MODELED\_NOT\_VALIDATED"
 
