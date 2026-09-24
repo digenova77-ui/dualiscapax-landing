@@ -1,16 +1,18 @@
 # LAW.CURRENT — stripped law book
 
-**Status:** STANDING 2026-09-24T18:46-04:00 after THREE-SEAT MILL. Amended 2026-09-24T18:51-04:00 — MILL v2 + SECURITY pointer.
+**Status:** STANDING 2026-09-24T18:46-04:00 after THREE-SEAT MILL. Amended 2026-09-24T18:53-04:00 — ZERO-BEDROCK.
 **Parent signature file:** `BULLETIN/README.SIGNING.md` (kept as the signed handoff instrument).
 **Integrity article:** `BULLETIN/LAW.INTEGRITY.CROSSCHECK.md`
 **Security article:** `BULLETIN/LAW.SECURITY.TIGHT.md`
 **Mill article:** `BULLETIN/LAW.MILL.V2.md`
+**Zero article:** `BULLETIN/LAW.ZERO.md`
 **Retired list:** `BULLETIN/LAW.RETIRED.md`
 **Trio receipt:** `BULLETIN/DCLM.TRIO.RECEIPT.md`
 
 This file is the current book. Older AGENT / factory clauses that fight it are archive, not law.
 Files named in LAW.RETIRED.md are not deleted.
 If a sentence here fights `LAW.MILL.V2.md` on procedure, the mill article wins.
+If a sentence here fights `LAW.ZERO.md` on zero / nothing / hole, the zero article wins.
 
 ## Floor (not votable away)
 
@@ -23,6 +25,7 @@ If a sentence here fights `LAW.MILL.V2.md` on procedure, the mill article wins.
 - Fake LIVE is a hole. Missing department mark is a hole.
 - Cafe plate / pipe-3D / Meet Iris talk-camera lander is **archive**. It is not the design object.
 - Perfect automation stays inside the fence. A green run that ships a break is still a hole.
+- Zero is bedrock. Nothing is absence. A missing number is not zero.
 
 ## Design object
 
@@ -44,12 +47,19 @@ One clerk per motion. Same commit must point here or the article is POINTER-HOLE
 Verdict ≠ LIVE. LIVE only after measured `LIVE_HTTP_OK=1` on the named object.
 Verdicts expire when token perms, zip hash, HTTP probe, or a new operator order change.
 
+## Zero / nothing / hole
+
+Full rule: `BULLETIN/LAW.ZERO.md`.
+ZERO = measured baseline after a look. NOTHING = no look. HOLE = measured mismatch against a named object.
+`LIVE_HTTP_OK=0` is bedrock, not permission to skip, and not LIVE.
+Silence is HOLE not zero. A missing number is not zero.
+
 ## DCLM trio (Iris · DCLM · Twain²)
 
 Required verification before any LIVE or LAW-as-live sentence.
 Not a deploy. Not a substitute for floor 0.
 
-1. **DCLM** — run floors in order against the named object (`AGENT/DCLM-FLOOR-0.md` + `AGENT/DCLM-WEB.md` method). Floor 0 is curl `https://dualiscapax.ai/` vs the intended face file. No curl = hole.
+1. **DCLM** — run floors in order against the named object (`AGENT/DCLM-FLOOR-0.md` + `AGENT/DCLM-WEB.md` method). Floor 0 is curl `https://dualiscapax.ai/` vs the intended face file. No curl = nothing, not a written 0.
 2. **Iris** — is the holographic hostess on the page the visitor is on? Cafe-plate Talk/Camera on `/` does not count as this Iris.
 3. **Twain²** — one visitor sentence, then the same sentence shorter. If the two sentences fight, the floors are not done. Twain² cannot bless a live-change sentence when floor 0 is a hole.
 
@@ -65,8 +75,8 @@ Until then:
 
 | Seat | Mark |
 |---|---|
-| Operator | ORDER — strip obsolete laws; run the trio; tighten security; improve the mill |
-| Harper | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 ACTION; HOLD LIVE |
-| Lucas | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 ACTION; HOLD LIVE |
-| Benjamin | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 ACTION; HOLD LIVE |
-| Grok (chair / MILL-v2 clerk) | Records 3-0. Lands pointer in the same commit. Does not invent LIVE. |
+| Operator | ORDER — strip obsolete laws; run the trio; tighten security; improve the mill; zero is bedrock |
+| Harper | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 + ZERO-BEDROCK ACTION; HOLD LIVE |
+| Lucas | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 + ZERO-BEDROCK ACTION; HOLD LIVE |
+| Benjamin | PASS LAW-STRIP + RUN-TRIO + SECURITY + MILL-v2 + ZERO-BEDROCK ACTION; HOLD LIVE |
+| Grok (chair / clerk) | Records 3-0. Lands pointer in the same commit. Does not invent LIVE. |
