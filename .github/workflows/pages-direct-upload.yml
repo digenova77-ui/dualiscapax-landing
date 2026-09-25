@@ -114,7 +114,7 @@ jobs:
           echo "payload files: $(find "$GITHUB_WORKSPACE/deploy-payload" -type f | wc -l)"
 
       - name: Setup Node.js LTS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
 
