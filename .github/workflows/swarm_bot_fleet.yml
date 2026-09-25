@@ -23,7 +23,7 @@ jobs:
   demoted:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Refuse theater
         run: |
           echo "swarm_bot_fleet schedule removed."
