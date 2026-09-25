@@ -1,0 +1,38 @@
+name: campaign-desk
+
+on:
+  schedule:
+    - cron: "19,49 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: campaign-desk
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write one draft
+        run: python3 units/campaign-desk/campaign_desk.py
+      - name: Commit draft
+        run: |
+          git config user.email "factory@dualiscapax.ai"
+          git config user.name "Dualis Factory"
+          git add research/campaigns/drafts || true
+          if git diff --cached --quiet; then
+            echo "No new draft."
+            exit 0
+          fi
+          git commit -m "chore(campaign): draft plate [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin HEAD && git push origin HEAD && exit 0
+            sleep $((i * 2))
+          done
+          echo "push failed after retries" >&2
+          exit 1
