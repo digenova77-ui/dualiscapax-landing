@@ -4,6 +4,11 @@ name: pages-direct-upload
 # Package cf-pages as a zero-nest zip, then deploy THAT artifact.
 # Secrets stay in the deploy job. Fail hard on missing creds or wrangler errors.
 # Dispatch-only so factory [skip ci] harvests do not publish apex.
+#
+# 2026-09-24 run 36044218651 failed after a good zip:
+#   Authentication error [code: 10000] on GET /pages/projects/dualiscapax-landing
+# Token was present. Scope was not Pages Write. YAML cannot mint that.
+# Pin wrangler@3.112.0 (3.114.0 is deprecated; bulletin script already used 3.112.0).
 
 on:
   workflow_dispatch:
@@ -125,7 +130,20 @@ jobs:
             echo "::error::CLOUDFLARE_ACCOUNT_ID missing in Actions secrets — refuse deploy"
             exit 1
           fi
-          npx --yes wrangler@3.114.0 pages deploy ./deploy-payload \
+          echo "preflight: wrangler@3.112.0 pages project list"
+          set +e
+          npx --yes wrangler@3.112.0 pages project list
+          LIST_RC=$?
+          set -e
+          if [ "$LIST_RC" -ne 0 ]; then
+            echo "::error::HOLE_WRANGLER_AUTH Cloudflare API 10000. Token is set. It cannot list/edit Pages project dualiscapax-landing."
+            echo "::error::Edit the existing GitHub secret CLOUDFLARE_API_TOKEN (do not paste it in chat)."
+            echo "::error::Token needs Account → Cloudflare Pages → Edit (Pages Write), plus User → User Details → Read."
+            echo "::error::Account ID must match the account that owns project dualiscapax-landing."
+            echo "::error::Dashboard: https://dash.cloudflare.com/profile/api-tokens — Edit Cloudflare Workers template, add Pages Edit."
+            exit 1
+          fi
+          npx --yes wrangler@3.112.0 pages deploy ./deploy-payload \
             --project-name=dualiscapax-landing \
             --branch=main \
             --commit-hash="${GITHUB_SHA}" \
