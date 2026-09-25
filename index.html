@@ -1,184 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>DualisCapax — Iris</title>
-  <meta name="theme-color" content="#07090d">
-  <meta name="description" content="DualisCapax is a media company. Talk to Iris. Asking is free.">
-  <link rel="manifest" href="manifest.json">
-  <style>
-    :root{--bg:#07090d;--card:#10151c;--line:#243040;--cyan:#38BDF8;--mint:#34D399;--text:#F8FAFC;--mute:#94A3B8;--dim:#64748B;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100%}
-    body{padding-bottom:96px}
-    header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.2rem;background:rgba(7,9,13,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
-    .brand{color:var(--text);text-decoration:none;font-weight:800;letter-spacing:.02em}
-    .lab{background:var(--mint);color:#064E3B;text-decoration:none;font-weight:800;font-size:.82rem;padding:.45rem .9rem;border-radius:999px}
-    .quiet{margin-left:.5rem;background:transparent;color:var(--mute);border:1px solid var(--line);border-radius:999px;font:700 .72rem var(--sans);padding:.35rem .7rem;cursor:pointer}
-    .quiet.on{color:#082F49;background:var(--cyan);border-color:var(--cyan)}
-    .stage{max-width:820px;margin:0 auto;padding:.6rem 1.1rem 2rem;display:flex;flex-direction:column;align-items:center;gap:.65rem}
-    .orb-wrap{position:relative;width:min(92vw,28rem);height:min(92vw,28rem);max-height:58dvh;display:grid;place-items:center}
-    #presence{width:100%;height:100%;position:relative}
-    #presence canvas{display:block;width:100%;height:100%}
-    #you{position:absolute;right:6%;bottom:6%;z-index:3;width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);background:#000;display:none}
-    h1{font-size:clamp(1.7rem,5.5vw,2.5rem);font-weight:900;text-align:center;line-height:1.12}
-    h1 span{color:var(--mint)}
-    .lead{color:var(--mute);text-align:center;max-width:34rem;font-size:.98rem}
-    .hint{font-family:var(--mono);font-size:.68rem;color:var(--cyan);text-align:center;min-height:1.1rem}
-    .actions{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:.35rem}
-    button,.btn{border:0;border-radius:999px;font-weight:800;padding:.7rem 1.05rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;font-size:.88rem}
-    .primary{background:var(--cyan);color:#082F49}
-    .ghost{background:transparent;color:var(--cyan);border:1px solid rgba(56,189,248,.45)}
-    .rooms{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.6rem}
-    .room{text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:.85rem .8rem}
-    .room b{display:block;font-size:.84rem}
-    .room span{display:block;margin-top:.2rem;font-size:.72rem;color:var(--dim)}
-    .dock{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;background:rgba(16,21,28,.94);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);border-radius:28px;padding:.35rem .55rem;display:flex;gap:.25rem}
-    .dock a{color:var(--mute);text-decoration:none;font-size:.76rem;font-weight:700;padding:.5rem .7rem;border-radius:20px}
-    .dock .go{background:var(--mint);color:#064E3B}
-    .fine{font-family:var(--mono);font-size:.62rem;color:var(--dim);text-align:center;margin-top:.4rem;max-width:36rem;line-height:1.45}
-    .veil{position:fixed;inset:0;z-index:50;background:rgba(7,9,13,.72);display:grid;place-items:end center;padding:0 1rem 6.5rem}
-    .veil[hidden]{display:none}
-    .card{width:min(92vw,26rem);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1rem 1.05rem 1.1rem}
-    .card h2{font-size:1.05rem;margin-bottom:.35rem}
-    .card p{color:var(--mute);font-size:.88rem;line-height:1.45;margin-bottom:.7rem}
-    .card ul{margin:0 0 .85rem 1.1rem;color:var(--text);font-size:.86rem;line-height:1.55}
-    .card .row{display:flex;gap:.45rem;flex-wrap:wrap}
-    #boot{position:fixed;inset:0;z-index:80;background:#07090d;display:grid;place-items:center;color:#F8FAFC}
-    #boot[hidden],#boot[data-phase="base"]{display:none}
-    #boot-splash{text-align:center}
-    #boot-splash .mark{width:120px;height:120px;margin:0 auto 1rem;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7dd3fc,#0ea5e9 42%,#082f49 78%);box-shadow:18px -28px 0 -64px #c084fc, 22px 26px 0 -70px #a78bfa, 0 0 48px rgba(56,189,248,.35)}
-    #boot-splash b{display:block;letter-spacing:.08em;font-size:1.15rem}
-    #boot-splash span{display:block;margin-top:.45rem;color:#94A3B8;font-size:.82rem}
-    #boot-stage{position:absolute;inset:0;width:100%;height:100%}
-    #boot-reel{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-    #boot-caption{position:absolute;left:0;right:0;bottom:5.2rem;text-align:center;font-weight:700;font-size:1.05rem;padding:0 1.2rem}
-    #boot-skip,#boot-enter{position:absolute;z-index:2;border:1px solid #243040;background:transparent;color:#94A3B8;border-radius:999px;font:700 .72rem var(--sans);padding:.45rem .8rem;cursor:pointer}
-    #boot-skip{top:1rem;right:1rem}
-    #boot-enter{bottom:1.4rem;left:50%;transform:translateX(-50%);color:#082F49;background:#38BDF8;border:0}
-    html[data-boot="splash"] #boot-stage,html[data-boot="splash"] #boot-reel,html[data-boot="splash"] #boot-caption{display:none}
-    html[data-boot="reel"] #boot-splash{display:none}
-    @media (max-width:560px){.rooms{grid-template-columns:1fr}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Your desk — DualisCapax</title>
+<meta name="theme-color" content="#070b12">
+<meta name="description" content="Phone is personal. Desktop is work or shop. Look is free.">
+<style>
+:root{--bg:#070b12;--panel:#0b1220;--line:rgba(20,184,166,.22);--teal:#14b8a6;--purple:#a855f7;--text:#e8eef6;--muted:#8b9caa;--safe:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font:16px/1.45 ui-sans-serif,system-ui,sans-serif}
+body{padding-bottom:calc(3.2rem + var(--safe))}
+a{color:var(--teal);text-decoration:none}
+.top{padding:calc(.9rem + env(safe-area-inset-top,0px)) 1rem .7rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:.7rem}
+.top h1{font-size:1.25rem;letter-spacing:-.02em}
+.top small{display:block;color:var(--muted);font-weight:400;margin-top:.2rem}
+.hold{font:700 10px/1 ui-monospace,monospace;letter-spacing:.08em;color:#fbbf24;border:1px solid rgba(251,191,36,.4);padding:.4rem .55rem;border-radius:999px}
+.you,.work{margin:1rem;padding:1rem;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.work{display:none}
+.you p,.work p{color:#c9d6df}
+.helix{height:48px;margin:.6rem 0 0}
+.helix svg{width:100%;height:100%}
+.rooms{margin:0 1rem 1rem}
+.rooms h2{font:700 11px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem}
+a.row{display:block;min-height:44px;padding:.85rem 1rem;margin:.4rem 0;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--text)}
+a.row strong{display:block}a.row span{color:var(--muted);font-size:.88rem}
+.desk-only{display:none}
+.note{margin:0 1rem 2rem;color:var(--muted);font-size:.9rem}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(7,11,18,.96);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + var(--safe));font:10px/1 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
+.dock a{color:var(--muted);text-decoration:none;padding:.45rem}.dock a.on{color:var(--teal)}
+@media (min-width:900px){
+  body{padding-bottom:1.5rem;display:grid;grid-template-columns:220px 1fr;grid-template-rows:auto 1fr}
+  .top{grid-column:2}
+  .rail{display:block;grid-row:1 / span 2;border-right:1px solid var(--line);padding:1.1rem .9rem}
+  .you{display:none}
+  .work{display:block}
+  .desk-only{display:block}
+  .dock{display:none}
+}
+.rail{display:none}
+.rail a,.rail span{display:block;padding:.55rem .4rem;color:var(--muted);border-radius:8px}
+.rail span.on{color:var(--text);background:rgba(20,184,166,.12)}
+@media(min-width:900px){.phone-title,.phone-lead{display:none}.desk-only{display:block !important}h1.desk-only{display:block !important}}
+</style>
 </head>
 <body>
-  <div id="boot" data-phase="splash" role="dialog" aria-label="Welcome">
-    <button type="button" id="boot-skip">Skip</button>
-    <div id="boot-splash"><div class="mark" aria-hidden="true"></div><b>DualisCapax</b><span>You just walked in.</span></div>
-    <canvas id="boot-stage" hidden></canvas>
-    <video id="boot-reel" muted playsinline preload="none" hidden></video>
-    <div id="boot-caption"></div>
-    <button type="button" id="boot-enter">Continue</button>
+<aside class="rail">
+  <span class="on">Desk</span>
+  <a href="/unity">Unity</a>
+  <a href="/rte/sima-dclm/">SIMA</a>
+  <a href="/hockey/">Hockey</a>
+  <a href="/ice">Ice</a>
+  <a href="/rte/easthill/">Easthill</a>
+  <a href="/encyclopedia.html">Encycl</a>
+</aside>
+<header class="top">
+  <div>
+    <h1 class="phone-title">You</h1>
+    <h1 class="desk-only" style="display:none">Desk</h1>
+    <small class="phone-lead">Personal. One human. Look is free.</small>
+    <small class="desk-only">Work or shop. Same floor. Look is free.</small>
   </div>
-  <header>
-    <a class="brand" href="#top">Dualiscapax</a>
-    <div>
-      <button type="button" class="quiet" id="voice" aria-pressed="true">Voice on</button>
-    </div>
-  </header>
-  <main class="stage" id="top">
-    <div class="orb-wrap" id="iris-plate" aria-label="Iris"><div id="presence"></div><video id="you" autoplay muted playsinline aria-label="Your camera"></video></div>
-    <p class="hint" id="hint">Hey. That's Iris.</p>
-    <h1>Meet Iris<span>.</span></h1>
-    <p class="lead">Talk. That's the whole interface. Camera if you want her to see. Flip for the other lens.</p>
-    <div class="actions">
-      <button class="primary" type="button" id="talk">Talk</button>
-      <button class="ghost" type="button" id="cam">Camera</button>
-      <button class="ghost" type="button" id="flip" hidden>Flip</button>
-    </div>
-    <section class="rooms">
-      <a class="room" href="hall/"><b>Hall</b><span>The other rooms.</span></a>
-      <a class="room" href="research/"><b>Reading</b><span>Papers. Not a clinic.</span></a>
-    </section>
-    <p class="fine">DualisCapax is a media company. Mail is automated. There is no phone. The company does not own the coin. Asking is free. This is not a clinic.</p>
-  </main>
-  <nav class="dock">
-    <a class="go" href="#top">Iris</a><a href="hall/">Hall</a><a href="research/">Reading</a>
-  </nav>
-  <div class="veil" id="veil" role="dialog" aria-labelledby="veil-title" hidden>
-    <div class="card">
-      <h2 id="veil-title">Hey — you just walked in.</h2>
-      <p>That's Iris. Talk. Mute if you only want to read.</p>
-      <div class="row">
-        <button class="primary" type="button" id="meet">I'll listen</button>
-        <button class="ghost" type="button" id="skip">I'll just read</button>
-      </div>
-    </div>
-  </div>
-  <script src="js/iris-boot.js"></script>
-  <script src="js/iris-realm.js"></script>
-  <script src="js/iris-sphere.js"></script>
-  <script src="js/dsap-engine.js"></script>
-  <script src="js/dsap.js"></script>
-  <script src="js/iris-voice.js"></script>
-  <script src="js/iris-av.js"></script>
-  <script src="js/iris-wav.js"></script>
-  <script src="js/iris-ring.js"></script>
-  <script>
-    (function () {
-      var MUTE = "dc-iris-mute";
-      var hint = document.getElementById("hint");
-      var voiceBtn = document.getElementById("voice");
-      var camBtn = document.getElementById("cam");
-      var flipBtn = document.getElementById("flip");
-      var camOn = false, muted = false;
-      try { muted = localStorage.getItem(MUTE) === "1"; } catch (e) {}
-      if (window.IrisSphere && IrisSphere.mount) IrisSphere.mount("#presence");
-      if (window.IrisSphere && IrisSphere.setWoken) IrisSphere.setWoken(true);
-      function paintMute() {
-        voiceBtn.textContent = muted ? "Voice off" : "Voice on";
-        voiceBtn.classList.toggle("on", !muted);
-        voiceBtn.setAttribute("aria-pressed", muted ? "false" : "true");
-      }
-      paintMute();
-      function skip() {
-        muted = true;
-        try { localStorage.setItem(MUTE, "1"); } catch (e) {}
-        paintMute();
-        if (window.IrisRing) IrisRing.stop();
-      }
-      voiceBtn.addEventListener("click", function () {
-        muted = !muted;
-        try { localStorage.setItem(MUTE, muted ? "1" : "0"); } catch (e) {}
-        paintMute();
-        if (muted) { if (window.IrisRing) IrisRing.stop(); hint.textContent = "Voice off."; }
-        else if (window.IrisRing) IrisRing.kick();
-      });
-      document.getElementById("skip").addEventListener("click", skip);
-      function afterBoot() {
-        if (!muted && window.IrisRing) IrisRing.kick();
-      }
-      if (document.documentElement.getAttribute("data-boot") === "base") afterBoot();
-      else window.addEventListener("iris:boot", afterBoot, { once: true });
-      window.addEventListener("pointermove", function (e) {
-        var x = (e.clientX / Math.max(1, window.innerWidth) - 0.5) * 2;
-        var y = (e.clientY / Math.max(1, window.innerHeight) - 0.5) * 2;
-        if (window.IrisSphere && IrisSphere.lookAt) IrisSphere.lookAt(x, y);
-      }, { passive: true });
-      camBtn.addEventListener("click", function () {
-        if (!window.IrisAV || !IrisAV.camera) { hint.textContent = "Camera not wired."; return; }
-        if (camOn) {
-          IrisAV.camera(false).then(function () {
-            camOn = false; flipBtn.hidden = true; camBtn.textContent = "Camera"; hint.textContent = "Camera off.";
-          });
-          return;
-        }
-        IrisAV.camera(true, { facing: "user" }).then(function () {
-          camOn = true; flipBtn.hidden = false; camBtn.textContent = "Camera off";
-          hint.textContent = "Front camera. Flip for the other lens. Speak — she replies.";
-          if (!muted && window.IrisRing) IrisRing.kick();
-        }).catch(function () { hint.textContent = "Camera blocked."; });
-      });
-      flipBtn.addEventListener("click", function () {
-        if (!window.IrisAV || !IrisAV.flip) return;
-        IrisAV.flip().then(function (res) {
-          var face = res && res.facing === "environment" ? "Rear" : "Front";
-          hint.textContent = face + " camera. Speak — she replies.";
-          if (!muted && window.IrisRing) IrisRing.kick();
-        }).catch(function () { hint.textContent = "That lens is not available."; });
-      });
-    })();
-  </script>
+  <div class="hold">LIVE PICK</div>
+</header>
+<section class="you">
+  <p>This is your phone. Not the office. Unity is you. Rooms you already have.</p>
+  <div class="helix" aria-hidden="true"><svg viewBox="0 0 1000 48" xmlns="http://www.w3.org/2000/svg"><path d="M20 24 C 140 6, 200 42, 280 24 S 440 6, 520 24 S 680 42, 760 24 S 900 6, 980 24" fill="none" stroke="#14b8a6" stroke-width="2"/><path d="M20 24 C 140 42, 200 6, 280 24 S 440 42, 520 24 S 680 6, 760 24 S 900 42, 980 24" fill="none" stroke="#a855f7" stroke-width="2"/></svg></div>
+</section>
+<section class="work">
+  <p>This is a desktop. It can be a person at work or a shop. Seed 1 / 2 / 4. Same Layer [0]. Not a new throne.</p>
+</section>
+<nav class="rooms">
+  <h2 class="phone-lead">Yours</h2>
+  <h2 class="desk-only">Rooms</h2>
+  <a class="row" href="/unity"><strong>Unity ID</strong><span>You · free to open</span></a>
+  <a class="row" href="/rte/sima-dclm/"><strong>SIMA</strong><span>Aide beside the chair</span></a>
+  <a class="row" href="/hockey/"><strong>Hockey</strong><span>League door</span></a>
+  <a class="row desk-only" href="/ice"><strong>Ice</strong><span>Working sheet</span></a>
+  <a class="row" href="/rte/easthill/"><strong>Easthill</strong><span>One child at a time</span></a>
+  <a class="row desk-only" href="/encyclopedia.html"><strong>Encyclopedia</strong><span>Bind</span></a>
+</nav>
+<p class="note">Look is free. Dualis Inc is media. Encyclopedia stays.</p>
+<nav class="dock">
+  <a class="on" href="/">You</a>
+  <a href="/unity">Unity</a>
+  <a href="/hockey/">Hockey</a>
+  <a href="/encyclopedia.html">Encycl</a>
+</nav>
 </body>
 </html>
