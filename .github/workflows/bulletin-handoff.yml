@@ -33,7 +33,7 @@ jobs:
           test -f BULLETIN/EXECUTE_DEPLOY.sh
           echo "== LAW =="
           cat BULLETIN/README.SIGNING.md
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
       - name: Execute companion script
