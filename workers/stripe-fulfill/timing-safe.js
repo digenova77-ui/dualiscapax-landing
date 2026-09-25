@@ -10,10 +10,12 @@ export function timingSafeEqualBytes(a, b) {
 
 export function hexToBytes(hex) {
   if (typeof hex !== "string" || hex.length % 2 !== 0) return null;
-  var n = hex.length / 2;
+  var s = hex.toLowerCase();
+  if (!/^[0-9a-f]*$/.test(s)) return null;
+  var n = s.length / 2;
   var out = new Uint8Array(n);
   for (var i = 0; i < n; i++) {
-    var byte = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+    var byte = parseInt(s.slice(i * 2, i * 2 + 2), 16);
     if (!Number.isFinite(byte)) return null;
     out[i] = byte;
   }
