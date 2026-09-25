@@ -2,128 +2,65 @@
 <html lang="en-CA">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RTE Desk — DualisCapax</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Your desk — DualisCapax</title>
 <meta name="theme-color" content="#070b12">
-<meta name="description" content="Default DualisCapax HUD. Liquid Unity-network orbs. Hostess-40. Not LIVE until curl.">
+<meta name="description" content="Your DualisCapax desk. One person. Look is free.">
 <style>
-:root{--bg:#070b12;--panel:#0b1220;--line:rgba(20,184,166,.22);--teal:#14b8a6;--purple:#a855f7;--ice:#7dd3fc;--text:#e8eef6;--muted:#8b9caa}
+:root{--bg:#070b12;--panel:#0b1220;--line:rgba(20,184,166,.22);--teal:#14b8a6;--purple:#a855f7;--ice:#7dd3fc;--text:#e8eef6;--muted:#8b9caa;--safe:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--text);font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
-body{display:flex;min-height:100vh}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font:16px/1.45 ui-sans-serif,system-ui,sans-serif}
+body{padding-bottom:calc(3.2rem + var(--safe))}
 a{color:var(--teal);text-decoration:none}
-.nav{width:220px;flex:none;background:#080d16;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:8px}
-.brand{display:flex;align-items:center;gap:8px;font:700 13px/1 ui-sans-serif;letter-spacing:.04em;margin-bottom:12px}
-.brand i{width:18px;height:18px;border:2px solid var(--teal);border-radius:5px;display:inline-block}
-.nav a,.nav span{display:block;padding:8px 10px;border-radius:8px;color:var(--muted);font:600 13px/1.2 ui-sans-serif}
-.nav a.on,.nav span.on{background:rgba(20,184,166,.12);color:var(--text)}
-.sys{margin-top:auto;font:12px/1.4 ui-monospace,monospace;color:var(--muted)}
-.sys b{color:var(--teal);font-weight:700}
-.main{flex:1;min-width:0;display:flex;flex-direction:column}
-.top{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line)}
-.top h1{font-size:1.15rem}
-.top small{display:block;color:var(--muted);font-weight:400;margin-top:2px}
-.hold{font:700 11px/1 ui-monospace,monospace;letter-spacing:.08em;color:#fbbf24;border:1px solid rgba(251,191,36,.4);padding:6px 10px;border-radius:999px}
-.stage{padding:18px 22px 8px;flex:1;display:flex;flex-direction:column;gap:14px}
-.field{position:relative;flex:1;min-height:320px;border:1px solid var(--line);border-radius:16px;background:radial-gradient(800px 280px at 50% 120%,rgba(20,184,166,.08),transparent 55%),#080d16;overflow:hidden;perspective:900px}
-.helix{position:absolute;left:8%;right:8%;top:14px;height:70px;z-index:2}
+.top{padding:calc(.9rem + env(safe-area-inset-top,0px)) 1rem .7rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:.7rem}
+.top h1{font-size:1.25rem;letter-spacing:-.02em}
+.top small{display:block;color:var(--muted);font-weight:400;margin-top:.2rem}
+.hold{font:700 10px/1 ui-monospace,monospace;letter-spacing:.08em;color:#fbbf24;border:1px solid rgba(251,191,36,.4);padding:.4rem .55rem;border-radius:999px;flex:none}
+.you{margin:1rem;padding:1rem;border:1px solid var(--line);border-radius:16px;background:radial-gradient(600px 180px at 20% 120%,rgba(20,184,166,.12),transparent 60%),var(--panel)}
+.you p{color:#c9d6df}
+.helix{height:52px;margin:.6rem 0 0}
 .helix svg{width:100%;height:100%}
-.net{position:absolute;inset:78px 6% 70px;transform-style:preserve-3d;animation:spin 28s linear infinite}
-@keyframes spin{from{transform:rotateY(0) rotateX(8deg)}to{transform:rotateY(360deg) rotateX(8deg)}}
-.net svg{width:100%;height:100%;overflow:visible}
-.orb{transform-style:preserve-3d}
-.liquid{filter:url(#goo)}
-.slab{position:absolute;left:12%;right:12%;bottom:28px;height:48px;border-radius:8px;background:linear-gradient(90deg,rgba(20,184,166,.28),rgba(168,85,247,.28));z-index:2}
-.hostess{position:absolute;left:18%;bottom:48px;width:78px;height:136px;z-index:3;pointer-events:none}
-.hostess svg{width:100%;height:100%;filter:drop-shadow(0 0 14px rgba(20,184,166,.4))}
-.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-.card h2{font:700 11px/1 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.card .n{font-size:1.25rem;font-weight:700}
-.card p{color:var(--muted);font-size:.86rem;margin-top:4px}
-@media(max-width:900px){body{flex-direction:column}.nav{width:auto;flex-direction:row;flex-wrap:wrap}.sys{margin:0}.cards{grid-template-columns:1fr 1fr}.net{animation:none}}
+.rooms{margin:0 1rem 1rem}
+.rooms h2{font:700 11px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem}
+a.row{display:block;min-height:44px;padding:.85rem 1rem;margin:.4rem 0;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--text)}
+a.row strong{display:block}a.row span{color:var(--muted);font-size:.88rem}
+.note{margin:0 1rem 2rem;color:var(--muted);font-size:.9rem}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;align-items:center;background:rgba(7,11,18,.96);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + var(--safe));font:10px/1 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;z-index:5}
+.dock a{color:var(--muted);text-decoration:none;padding:.45rem}.dock a.on{color:var(--teal)}
 </style>
 </head>
 <body>
-<aside class="nav">
-  <div class="brand"><i></i> DualisCapax</div>
-  <span class="on">RTE Desk</span>
-  <a href="/encyclopedia.html">Encyclopedia</a>
-  <a href="/rte/sima-dclm/">SIMA</a>
-  <a href="/hockey/">Hockey</a>
-  <a href="/ice">Ice</a>
+<header class="top">
+  <div>
+    <h1>Your desk</h1>
+    <small>One person. Look is free. Continue is Unity.</small>
+  </div>
+  <div class="hold">HOLD</div>
+</header>
+<section class="you">
+  <p>You stand here. Not a corp wall. Not a coin shop. Asking is free. Staying in the rules is how you continue.</p>
+  <div class="helix" aria-hidden="true">
+    <svg viewBox="0 0 1000 52" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 26 C 120 6, 180 46, 260 26 S 420 6, 500 26 S 660 46, 740 26 S 900 6, 980 26" fill="none" stroke="#14b8a6" stroke-width="2.2"/>
+      <path d="M20 26 C 120 46, 180 6, 260 26 S 420 46, 500 26 S 660 6, 740 26 S 900 46, 980 26" fill="none" stroke="#a855f7" stroke-width="2.2"/>
+    </svg>
+  </div>
+</section>
+<nav class="rooms">
+  <h2>Your rooms</h2>
+  <a class="row" href="/unity"><strong>Unity ID</strong><span>You. Free to open.</span></a>
+  <a class="row" href="/rte/sima-dclm/"><strong>SIMA</strong><span>The aide beside her chair.</span></a>
+  <a class="row" href="/hockey/"><strong>Hockey</strong><span>League door. Look $0.</span></a>
+  <a class="row" href="/ice"><strong>Ice</strong><span>Working sheet.</span></a>
+  <a class="row" href="/rte/easthill/"><strong>Easthill</strong><span>The evening, one child at a time.</span></a>
+  <a class="row" href="/encyclopedia.html"><strong>Encyclopedia</strong><span>The bind. Stays.</span></a>
+</nav>
+<p class="note">Street apex is still cafe. This desk is media. Not LIVE until two curls say so.</p>
+<nav class="dock">
+  <a class="on" href="#">You</a>
   <a href="/unity">Unity</a>
+  <a href="/hockey/">Hockey</a>
   <a href="/">Street</a>
-  <div class="sys">STATUS <b>HOLD</b><br>DEFAULT HUD v2.0.5<br>orbs = rooms that exist</div>
-</aside>
-<div class="main">
-  <header class="top">
-    <div>
-      <h1>RTE Desk</h1>
-      <small>Liquid 3D Unity network · affinity ∥ friction · not a pipe ride</small>
-    </div>
-    <div class="hold">HOLD DISPATCH</div>
-  </header>
-  <section class="stage">
-    <div class="field" aria-label="HUD field">
-      <div class="helix">
-        <svg viewBox="0 0 1000 70" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <text x="0" y="14" fill="#14b8a6" font-size="12" font-family="ui-monospace,monospace">AFFINITY</text>
-          <text x="900" y="14" fill="#a855f7" font-size="12" font-family="ui-monospace,monospace">FRICTION</text>
-          <path d="M40 40 C 140 12, 200 68, 280 40 S 440 12, 520 40 S 680 68, 760 40 S 900 12, 960 40" fill="none" stroke="#14b8a6" stroke-width="2.4"/>
-          <path d="M40 40 C 140 68, 200 12, 280 40 S 440 68, 520 40 S 680 12, 760 40 S 900 68, 960 40" fill="none" stroke="#a855f7" stroke-width="2.4"/>
-        </svg>
-      </div>
-      <div class="net" aria-label="Unity network orbs">
-        <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="b"/><feColorMatrix in="b" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -8"/></filter>
-            <radialGradient id="lg" cx="35%" cy="30%"><stop offset="0" stop-color="#e8fff8"/><stop offset=".45" stop-color="#14b8a6"/><stop offset="1" stop-color="#0b1220"/></radialGradient>
-            <radialGradient id="lp" cx="35%" cy="30%"><stop offset="0" stop-color="#f3e8ff"/><stop offset=".45" stop-color="#a855f7"/><stop offset="1" stop-color="#0b1220"/></radialGradient>
-            <radialGradient id="li" cx="35%" cy="30%"><stop offset="0" stop-color="#e8f7ff"/><stop offset=".45" stop-color="#7dd3fc"/><stop offset="1" stop-color="#0b1220"/></radialGradient>
-          </defs>
-          <g stroke="rgba(20,184,166,.35)" stroke-width="1.2" fill="none">
-            <line x1="400" y1="140" x2="160" y2="70"/>
-            <line x1="400" y1="140" x2="640" y2="70"/>
-            <line x1="400" y1="140" x2="150" y2="210"/>
-            <line x1="400" y1="140" x2="650" y2="210"/>
-            <line x1="400" y1="140" x2="400" y2="40"/>
-            <line x1="160" y1="70" x2="400" y2="40"/>
-            <line x1="640" y1="70" x2="400" y2="40"/>
-          </g>
-          <g class="liquid" font-family="ui-monospace,monospace" font-size="11" text-anchor="middle">
-            <a href="/encyclopedia.html"><circle cx="400" cy="140" r="28" fill="url(#lg)"/><text x="400" y="144" fill="#070b12">HUB</text></a>
-            <a href="/encyclopedia.html"><circle cx="400" cy="40" r="16" fill="url(#lp)"/><text x="400" y="44" fill="#fff">ENCYC</text></a>
-            <a href="/ice"><circle cx="160" cy="70" r="18" fill="url(#li)"/><text x="160" y="74" fill="#070b12">ICE</text></a>
-            <a href="/hockey/"><circle cx="640" cy="70" r="18" fill="url(#li)"/><text x="640" y="74" fill="#070b12">HKY</text></a>
-            <a href="/rte/sima-dclm/"><circle cx="150" cy="210" r="18" fill="url(#lg)"/><text x="150" y="214" fill="#070b12">SIMA</text></a>
-            <a href="/rte/easthill/"><circle cx="650" cy="210" r="18" fill="url(#lp)"/><text x="650" y="214" fill="#fff">EAST</text></a>
-            <a href="/unity"><circle class="orb" cx="520" cy="150" r="12" fill="url(#lg)"/><text x="520" y="184" fill="#8b9caa">UNITY</text></a>
-          </g>
-        </svg>
-      </div>
-      <div class="slab"></div>
-      <div class="hostess">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 280" role="img" aria-label="hostess 40">
-          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
-          <ellipse cx="80" cy="268" rx="42" ry="8" fill="#14b8a6" opacity=".28"/>
-          <path d="M68 118 C60 150 62 198 58 236 L74 236 C76 198 76 154 80 132 C84 154 84 198 86 236 L102 236 C98 198 100 150 92 118Z" fill="#0b1220" stroke="url(#g)" stroke-width="1.4"/>
-          <circle cx="80" cy="52" r="20" fill="#cbd5e1" stroke="url(#g)" stroke-width="1.6"/>
-          <path d="M62 50 Q80 20 98 50 Q96 34 80 30 Q64 34 62 50Z" fill="#0b1220"/>
-          <circle cx="73" cy="52" r="2.1" fill="#14b8a6"/>
-          <circle cx="87" cy="52" r="2.1" fill="#a855f7"/>
-          <circle cx="80" cy="96" r="11" fill="#05070c" stroke="url(#g)"/>
-          <text x="80" y="100" text-anchor="middle" font-family="ui-monospace,monospace" font-size="10" fill="#14b8a6">40</text>
-        </svg>
-      </div>
-    </div>
-    <div class="cards">
-      <article class="card"><h2>Affinity</h2><div class="n">orbs</div><p>Ice · Hockey · SIMA · Easthill · Encycl · Unity.</p></article>
-      <article class="card"><h2>Friction</h2><div class="n">open</div><p>Cafe still on / · HUD path 404 · retired zip refused.</p></article>
-      <article class="card"><h2>Look</h2><div class="n">6 · 0</div><p>Six orbs named. HUD-on-/ still 0.</p></article>
-      <article class="card"><h2>Insight</h2><div class="n">HOLD</div><p>Default HUD is this desk. Street is still cafe.</p></article>
-    </div>
-  </section>
-</div>
+</nav>
 </body>
 </html>
