@@ -4,17 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Hockey — DualisCapax</title>
-<meta name="description" content="Hockey desk. Look $0. Pay closed. Not a clinic. Working sheet on ice.">
 <meta name="theme-color" content="#070b12">
 <style>
 :root{--bg:#070b12;--ink:#e8eef6;--mute:#8b9caa;--ice:#7dd3fc;--gold:#fbbf24;--line:rgba(125,211,252,.22);--card:#0b1220}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;background:var(--bg);color:var(--ink);font:17px/1.5 ui-sans-serif,system-ui,sans-serif}
-body{background:radial-gradient(900px 420px at 12% -10%,rgba(125,211,252,.12),transparent 55%),#070b12}
+html,body{min-height:100%;background:radial-gradient(900px 420px at 12% -10%,rgba(125,211,252,.12),transparent 55%),#070b12;color:var(--ink);font:17px/1.5 ui-sans-serif,system-ui,sans-serif}
 .wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
 .top{display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap}
-.brand{font:11px/1 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-.pill{font:10px/1 ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(251,191,36,.4);padding:.35rem .65rem;border-radius:999px}
+.word{display:flex;align-items:center;gap:.5rem;font:11px/1 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.word img{width:22px;height:22px}
+.pill{font:10px/1 ui-monospace,monospace;color:var(--gold);border:1px solid rgba(251,191,36,.4);padding:.35rem .65rem;border-radius:999px}
 h1{font-size:clamp(2rem,8vw,3.1rem);letter-spacing:-.03em;margin:1rem 0 .55rem;font-weight:650}
 h1 em{font-style:italic;font-weight:400;color:var(--ice)}
 .lede{color:#c9d6df;margin:0 0 1rem}
@@ -29,32 +28,23 @@ a.row strong{display:block}a.row span{color:var(--mute);font-size:.88rem}
 </head>
 <body>
 <main class="wrap">
-  <div class="top"><span class="brand">DualisCapax · SPORT</span><span class="pill">Look $0 · pay closed</span></div>
+  <div class="top"><span class="word"><img src="/brand/liquid-orb.svg" alt=""> DualisCapax · SPORT</span><span class="pill">Look $0 · pay closed</span></div>
   <h1>Hockey.<br><em>The desk, not the portal.</em></h1>
-  <p class="lede">League / gameday room. Same class as ice. Not a clinic. Not the holographic HUD. Not a pipe ride. Asking is free.</p>
-  <section class="card">
-    <h2>What this room is</h2>
-    <p class="note">A named SPORT RTE. Look is $0. Till is closed. The working sheet lives on ice. This page is the league door so <code>/hockey/</code> is not an empty folder.</p>
-  </section>
+  <p class="lede">League door. Same class as ice. Not a clinic. Asking is free.</p>
   <section class="card">
     <h2>Rooms</h2>
-    <a class="row" href="/rte/ice/"><strong>Working sheet</strong><span>/rte/ice/ — skills and gameday plates</span></a>
-    <a class="row" href="/ice"><strong>Ice door</strong><span>Named ice path. Pay closed.</span></a>
-    <a class="row" href="/encyclopedia.html"><strong>Encyclopedia</strong><span>Bind. Stays.</span></a>
-    <a class="row" href="/rte/sima-dclm/"><strong>SIMA desk</strong><span>CARE room. Other verb.</span></a>
-    <a class="row" href="/"><strong>Street apex</strong><span>Cafe until four GO. Not this desk.</span></a>
-  </section>
-  <section class="card">
-    <h2>MAX lease</h2>
-    <p class="note">NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING · CROSSCHECK</p>
-    <p class="note">Hockey-as-apex-HUD = noise. Hockey-on-street as this desk = KEEP.</p>
+    <a class="row" href="/rte/ice/"><strong>Working sheet</strong><span>/rte/ice/</span></a>
+    <a class="row" href="/ice"><strong>Ice door</strong><span>Pay closed.</span></a>
+    <a class="row" href="/encyclopedia.html"><strong>Encyclopedia</strong><span>Bind.</span></a>
+    <a class="row" href="/rte/sima-dclm/"><strong>SIMA</strong><span>CARE. Other verb.</span></a>
+    <a class="row" href="/"><strong>Your desk</strong><span>Street apex.</span></a>
   </section>
 </main>
 <nav class="dock">
   <a class="on" href="/hockey/">Hockey</a>
   <a href="/ice">Ice</a>
   <a href="/rte/ice/">Sheet</a>
-  <a href="/">Iris</a>
+  <a href="/">You</a>
 </nav>
 </body>
 </html>
