@@ -40,7 +40,7 @@ jobs:
           chmod +x BULLETIN/PURGE_PAGES_DEPLOYMENTS.sh
           bash BULLETIN/PURGE_PAGES_DEPLOYMENTS.sh "${{ github.event.inputs.confirm }}"
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: purge-pages-receipt
           path: |
