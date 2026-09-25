@@ -9,26 +9,40 @@
 <style>
 :root{--ink:#e8e8e4;--dim:#8a8a84;--bg:#050505;--safe:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;min-height:100dvh;padding-bottom:calc(3.4rem + var(--safe))}
-.site{max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 2rem}
+html,body{min-height:100%;background:#020308;color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif}
+body{padding-bottom:calc(3.4rem + var(--safe));overflow-x:hidden}
+.field{position:fixed;inset:0;pointer-events:none;z-index:0;perspective:900px;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% -10%,rgba(20,184,166,.16),transparent 55%),
+    radial-gradient(ellipse 40% 30% at 90% 80%,rgba(168,85,247,.12),transparent 50%),
+    #020308}
+.field i{position:absolute;border-radius:50%;filter:blur(8px);opacity:.45;animation:float 16s ease-in-out infinite}
+.field i:nth-child(1){width:120px;height:120px;left:8%;top:18%;background:#14b8a6}
+.field i:nth-child(2){width:70px;height:70px;right:12%;top:28%;background:#a855f7;animation-delay:-4s}
+.field i:nth-child(3){width:44px;height:44px;left:22%;bottom:22%;background:#00e5ff;animation-delay:-8s}
+.field i:nth-child(4){width:28px;height:28px;right:28%;bottom:18%;background:#14b8a6;animation-delay:-11s}
+@keyframes float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(12px,-18px,40px)}}
+.site{position:relative;z-index:1;max-width:42rem;margin:0 auto;padding:1.2rem 1.1rem 2rem}
 header{display:flex;justify-content:space-between;align-items:center;gap:.8rem;margin-bottom:1.1rem;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:.85rem}
 .mark{display:flex;align-items:center;gap:.5rem;color:inherit;text-decoration:none;letter-spacing:.14em;text-transform:uppercase;font-size:.72rem}
-.mark img{width:22px;height:22px}
+.mark img{width:22px;height:22px;filter:drop-shadow(0 0 10px rgba(20,184,166,.55))}
 nav a{color:var(--dim);margin-left:.75rem;text-decoration:none;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-family:"IBM Plex Mono",monospace}
 .kicker{font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:#00ffaa;margin:0 0 .35rem}
 h1{font-size:clamp(1.65rem,7vw,2.2rem);margin:.15rem 0 .5rem}
 .lede{color:var(--dim);line-height:1.5;margin:0 0 1.1rem}
-.beat{border-left:4px solid var(--beat);padding-left:14px;margin:1.05rem 0}
+.beat{border-left:4px solid var(--beat);padding-left:14px;margin:1.05rem 0;background:rgba(0,0,0,.28)}
 .f-num{font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--beat);margin:0 0 .3rem}
 .why-line{color:var(--beat);font-weight:600;margin:0 0 .35rem}
 .b1{--beat:#ffb830}.b2{--beat:#3b82f6}.b3{--beat:#00e5ff}.b4{--beat:#c084fc}.b5{--beat:#00ffaa}
-a.row{display:block;color:inherit;text-decoration:none;border:1px solid #222;padding:.8rem .9rem;margin:.4rem 0;min-height:44px}
+a.row{display:block;color:inherit;text-decoration:none;border:1px solid rgba(20,184,166,.22);background:rgba(5,5,5,.55);padding:.8rem .9rem;margin:.4rem 0;min-height:44px;backdrop-filter:blur(10px)}
 a.row strong{display:block}a.row span{color:var(--dim);font-size:.88rem}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:#050505;border-top:1px solid #222;padding:.45rem .3rem calc(.45rem + var(--safe));font:10px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:2;display:flex;justify-content:space-around;background:rgba(5,5,5,.92);border-top:1px solid #222;padding:.45rem .3rem calc(.45rem + var(--safe));font:10px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;text-transform:uppercase}
 .dock a{color:var(--dim);text-decoration:none;padding:.45rem}.dock a.on{color:#00e5ff}
+@media (prefers-reduced-motion:reduce){.field i{animation:none}}
 </style>
 </head>
 <body>
+<div class="field" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 <div class="site">
   <header>
     <a class="mark" href="/"><img src="/brand/liquid-orb.svg" alt=""> DualisCapax</a>
@@ -38,16 +52,16 @@ a.row strong{display:block}a.row span{color:var(--dim);font-size:.88rem}
       <a href="/ca.html">Canada</a>
     </nav>
   </header>
-  <p class="kicker">DCLM · Iris · Twain²</p>
+  <p class="kicker">Holo · DCLM · Iris · Twain²</p>
   <h1>Look is free. Depth needs a name on this device.</h1>
-  <p class="lede">GrokBuild is the curtain skin. DCLM is the floor. Iris is talk that stays Look. Twain squared is language, logic, handoff — all three or it remands.</p>
-  <article class="beat b1"><p class="f-num">01 // DCLM</p><p class="why-line">Layer [0] on every hatch.</p><p>NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING. The engine builds the site. The site is the proof.</p></article>
-  <article class="beat b3"><p class="f-num">02 // IRIS</p><p class="why-line">Talk stays look until you say stop.</p><p>Liquid orb is the mark. Depth rooms ask for Unity ID. This hall does not.</p></article>
-  <article class="beat b2"><p class="f-num">03 // TWAIN²</p><p class="why-line">Clean language. Clean logic. Clean handoff.</p><p>A pretty card that fights the curl remands. Grok cover is not the street.</p></article>
-  <article class="beat b5"><p class="f-num">04 // FIDUCIARY</p><p class="why-line">No fee to stand here.</p><p>Inc. owns 0% of eFuse. Till closed.</p></article>
+  <p class="lede">Magnitudes we have sentences for: desk · room · corridor · indexed sky. Empty galaxies stay off the field. No pipe. No WebGL required.</p>
+  <article class="beat b5"><p class="f-num">10⁰ // DESK</p><p class="why-line">This phone. This person.</p></article>
+  <article class="beat b3"><p class="f-num">10¹ // ROOMS</p><p class="why-line">Named RTEs only.</p></article>
+  <article class="beat b2"><p class="f-num">10² // CORRIDOR</p><p class="why-line">Earth–Mars is indexed physics.</p><p>Dualis rooms there stay UNCONFIRMED.</p></article>
+  <article class="beat b4"><p class="f-num">10³ // SKY</p><p class="why-line">Only after the corridor keeps passing.</p></article>
   <a class="row" href="/curtain"><strong>Curtain</strong><span>Unity session</span></a>
   <a class="row" href="/unity"><strong>Unity ID</strong><span>$0</span></a>
-  <a class="row" href="/rte/sima-dclm/"><strong>SIMA</strong><span>CARE · DCLM aide</span></a>
+  <a class="row" href="/rte/sima-dclm/"><strong>SIMA</strong><span>CARE</span></a>
   <a class="row" href="/hockey/"><strong>Hockey</strong><span>SPORT</span></a>
   <a class="row" href="/rte/easthill/"><strong>Easthill</strong><span>FAMILY</span></a>
   <a class="row" href="/rte/"><strong>Hall</strong><span>Every named desk</span></a>
