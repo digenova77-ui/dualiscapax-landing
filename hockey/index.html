@@ -4,47 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Hockey — DualisCapax</title>
-<meta name="theme-color" content="#070b12">
-<style>
-:root{--bg:#070b12;--ink:#e8eef6;--mute:#8b9caa;--ice:#7dd3fc;--gold:#fbbf24;--line:rgba(125,211,252,.22);--card:#0b1220}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;background:radial-gradient(900px 420px at 12% -10%,rgba(125,211,252,.12),transparent 55%),#070b12;color:var(--ink);font:17px/1.5 ui-sans-serif,system-ui,sans-serif}
-.wrap{max-width:42rem;margin:0 auto;padding:1.25rem 1.1rem 5.5rem}
-.top{display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap}
-.word{display:flex;align-items:center;gap:.5rem;font:11px/1 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-.word img{width:22px;height:22px}
-.pill{font:10px/1 ui-monospace,monospace;color:var(--gold);border:1px solid rgba(251,191,36,.4);padding:.35rem .65rem;border-radius:999px}
-h1{font-size:clamp(2rem,8vw,3.1rem);letter-spacing:-.03em;margin:1rem 0 .55rem;font-weight:650}
-h1 em{font-style:italic;font-weight:400;color:var(--ice)}
-.lede{color:#c9d6df;margin:0 0 1rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1rem;margin:0 0 .8rem}
-.card h2{font:700 11px/1 ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 .45rem}
-.note{color:var(--mute);font-size:.92rem}
-a.row{display:block;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:.75rem .9rem;margin:.4rem 0}
-a.row strong{display:block}a.row span{color:var(--mute);font-size:.88rem}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(7,11,18,.94);border-top:1px solid var(--line);padding:.5rem .3rem calc(.5rem + env(safe-area-inset-bottom));font:10px/1 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
-.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--ice)}
-</style>
+<meta name="theme-color" content="#050505">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/curtain-skin.css">
 </head>
 <body>
-<main class="wrap">
-  <div class="top"><span class="word"><img src="/brand/liquid-orb.svg" alt=""> DualisCapax · SPORT</span><span class="pill">Look $0 · pay closed</span></div>
-  <h1>Hockey.<br><em>The desk, not the portal.</em></h1>
-  <p class="lede">League door. Same class as ice. Not a clinic. Asking is free.</p>
-  <section class="card">
-    <h2>Rooms</h2>
-    <a class="row" href="/rte/ice/"><strong>Working sheet</strong><span>/rte/ice/</span></a>
-    <a class="row" href="/ice"><strong>Ice door</strong><span>Pay closed.</span></a>
-    <a class="row" href="/encyclopedia.html"><strong>Encyclopedia</strong><span>Bind.</span></a>
-    <a class="row" href="/rte/sima-dclm/"><strong>SIMA</strong><span>CARE. Other verb.</span></a>
-    <a class="row" href="/"><strong>Your desk</strong><span>Street apex.</span></a>
-  </section>
-</main>
-<nav class="dock">
-  <a class="on" href="/hockey/">Hockey</a>
-  <a href="/ice">Ice</a>
-  <a href="/rte/ice/">Sheet</a>
-  <a href="/">You</a>
-</nav>
+<div class="site">
+  <header class="cur">
+    <a class="mark" href="/"><img src="/brand/liquid-orb.svg" alt=""> DualisCapax</a>
+    <nav class="cur"><a href="/curtain">Look</a><a href="/world.html">World</a><a href="/ca.html">Canada</a></nav>
+  </header>
+  <p class="kicker">Sport · Unity session</p>
+  <h1>Hockey. The desk, not the portal.</h1>
+  <p class="lede">League door. Look is free. Till closed. Not a clinic.</p>
+  <article class="beat b3"><p class="f-num">01 // SPORT</p><p class="why-line">Asking is free.</p></article>
+  <a class="row" href="/rte/ice/"><strong>Working sheet</strong><span>/rte/ice/</span></a>
+  <a class="row" href="/ice"><strong>Ice door</strong><span>Pay closed</span></a>
+  <a class="row" href="/"><strong>Your desk</strong><span>Street</span></a>
+</div>
+<nav class="dock"><a href="/">You</a><a class="on" href="/hockey/">Hockey</a><a href="/rte/ice/">Sheet</a><a href="/curtain">Curtain</a></nav>
 </body>
 </html>

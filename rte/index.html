@@ -4,43 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Your rooms — DualisCapax</title>
-<meta name="theme-color" content="#070b12">
-<style>
-:root{--bg:#070b12;--ink:#e8eef6;--mute:#8b9caa;--teal:#14b8a6;--gold:#fbbf24;--line:rgba(20,184,166,.22);--card:#0b1220;--safe:env(safe-area-inset-bottom,0px)}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.45 ui-sans-serif,system-ui,sans-serif}
-body{padding-bottom:calc(3.2rem + var(--safe))}
-.wrap{max-width:42rem;margin:0 auto;padding:calc(1rem + env(safe-area-inset-top,0px)) 1.1rem 1rem}
-.pill{font:10px/1 ui-monospace,monospace;color:var(--gold);border:1px solid rgba(251,191,36,.4);padding:.3rem .6rem;border-radius:999px;float:right}
-.brand{font:11px/1 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-h1{font-size:clamp(1.7rem,6vw,2.4rem);margin:.7rem 0 .35rem}
-.lede{color:#c9d6df;margin:0 0 1rem}
-a.row{display:block;min-height:44px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:.85rem 1rem;margin:.4rem 0}
-a.row strong{display:block}a.row span{color:var(--mute);font-size:.88rem}
-.hole{opacity:.65;border-style:dashed}
-.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(7,11,18,.96);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + var(--safe));font:10px/1 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
-.dock a{color:var(--mute);text-decoration:none;padding:.45rem}.dock a.on{color:var(--teal)}
-</style>
+<meta name="theme-color" content="#050505">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/curtain-skin.css">
 </head>
 <body>
-<main class="wrap">
-  <span class="pill">Look $0</span>
-  <p class="brand">Your rooms</p>
+<div class="site">
+  <header class="cur">
+    <a class="mark" href="/"><img src="/brand/liquid-orb.svg" alt=""> DualisCapax</a>
+    <nav class="cur"><a href="/curtain">Look</a><a href="/world.html">World</a><a href="/ca.html">Canada</a></nav>
+  </header>
+  <p class="kicker">Hall · Unity session</p>
   <h1>Every desk that exists.</h1>
-  <p class="lede">Phone is personal. Desktop can be work. Empty sky stays off this hall.</p>
-  <a class="row" href="/unity"><strong>Unity</strong><span>You. Free to open.</span></a>
-  <a class="row" href="/rte/sima-dclm/"><strong>SIMA</strong><span>CARE · aide beside the chair</span></a>
-  <a class="row" href="/hockey/"><strong>Hockey</strong><span>SPORT · league door</span></a>
-  <a class="row" href="/rte/ice/"><strong>Ice</strong><span>SPORT · working sheet</span></a>
-  <a class="row" href="/rte/easthill/"><strong>Easthill</strong><span>FAMILY · one child at a time</span></a>
-  <a class="row" href="/encyclopedia.html"><strong>Encyclopedia</strong><span>HALL · bind</span></a>
-  <a class="row hole" href="/look"><strong>Look</strong><span>HOLE · 404</span></a>
-</main>
-<nav class="dock">
-  <a href="/">You</a>
-  <a class="on" href="/rte/">Rooms</a>
-  <a href="/unity">Unity</a>
-  <a href="/hockey/">Hockey</a>
-</nav>
+  <p class="lede">Phone is personal. Empty sky stays off this hall. Look is free.</p>
+  <a class="row" href="/curtain"><strong>Curtain</strong><span>Unity session</span></a>
+  <a class="row" href="/unity"><strong>Unity</strong><span>You · $0</span></a>
+  <a class="row" href="/rte/sima-dclm/"><strong>SIMA</strong><span>CARE</span></a>
+  <a class="row" href="/hockey/"><strong>Hockey</strong><span>SPORT</span></a>
+  <a class="row" href="/rte/ice/"><strong>Ice</strong><span>Working sheet</span></a>
+  <a class="row" href="/rte/easthill/"><strong>Easthill</strong><span>FAMILY</span></a>
+  <a class="row" href="/encyclopedia.html"><strong>Encyclopedia</strong><span>Bind</span></a>
+</div>
+<nav class="dock"><a href="/">You</a><a class="on" href="/rte/">Rooms</a><a href="/curtain">Curtain</a><a href="/hockey/">Hockey</a></nav>
 </body>
 </html>
