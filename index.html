@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Your desk — DualisCapax</title>
 <meta name="theme-color" content="#070b12">
-<meta name="description" content="Phone is personal. Desktop is work or shop. Look is free.">
 <style>
 :root{--bg:#070b12;--panel:#0b1220;--line:rgba(20,184,166,.22);--teal:#14b8a6;--purple:#a855f7;--text:#e8eef6;--muted:#8b9caa;--safe:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;background:var(--bg);color:var(--text);font:16px/1.45 ui-sans-serif,system-ui,sans-serif}
 body{padding-bottom:calc(3.2rem + var(--safe))}
 a{color:var(--teal);text-decoration:none}
+.word{display:flex;align-items:center;gap:.55rem;font:700 13px/1 ui-sans-serif;letter-spacing:.04em}
+.word img{width:28px;height:28px}
 .top{padding:calc(.9rem + env(safe-area-inset-top,0px)) 1rem .7rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:.7rem}
 .top h1{font-size:1.25rem;letter-spacing:-.02em}
 .top small{display:block;color:var(--muted);font-weight:400;margin-top:.2rem}
@@ -37,15 +38,17 @@ a.row strong{display:block}a.row span{color:var(--muted);font-size:.88rem}
   .work{display:block}
   .desk-only{display:block}
   .dock{display:none}
+  .phone-title,.phone-lead{display:none}
+  h1.desk-only{display:block !important}
 }
 .rail{display:none}
 .rail a,.rail span{display:block;padding:.55rem .4rem;color:var(--muted);border-radius:8px}
 .rail span.on{color:var(--text);background:rgba(20,184,166,.12)}
-@media(min-width:900px){.phone-title,.phone-lead{display:none}.desk-only{display:block !important}h1.desk-only{display:block !important}}
 </style>
 </head>
 <body>
 <aside class="rail">
+  <div class="word"><img src="/brand/liquid-orb.svg" alt=""> DualisCapax</div>
   <span class="on">Desk</span>
   <a href="/unity">Unity</a>
   <a href="/rte/sima-dclm/">SIMA</a>
@@ -56,6 +59,7 @@ a.row strong{display:block}a.row span{color:var(--muted);font-size:.88rem}
 </aside>
 <header class="top">
   <div>
+    <div class="word"><img src="/brand/liquid-orb.svg" alt=""> DualisCapax</div>
     <h1 class="phone-title">You</h1>
     <h1 class="desk-only" style="display:none">Desk</h1>
     <small class="phone-lead">Personal. One human. Look is free.</small>
