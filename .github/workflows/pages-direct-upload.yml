@@ -81,7 +81,7 @@ jobs:
           unzip -Z1 cf-pages-production.zip | grep -qx 'index.html'
 
       - name: Upload production artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cf-pages-bundle
           path: |
