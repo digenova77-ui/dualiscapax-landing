@@ -5,10 +5,12 @@ name: pages-direct-upload
 # Secrets stay in the deploy job. Fail hard on missing creds or wrangler errors.
 # Dispatch-only so factory [skip ci] harvests do not publish apex.
 #
-# 2026-09-24 run 36044218651 failed after a good zip:
-#   Authentication error [code: 10000] on GET /pages/projects/dualiscapax-landing
-# Token was present. Scope was not Pages Write. YAML cannot mint that.
-# Pin wrangler@3.112.0 (3.114.0 is deprecated; bulletin script already used 3.112.0).
+# HOLE_CF_10000 (standing): CLOUDFLARE_API_TOKEN is injected but Cloudflare
+# returns Authentication error [code: 10000] on
+# GET /accounts/.../pages/projects/dualiscapax-landing.
+# Empty-check passes. Authorization fails. Operator must replace the token
+# with Account · Cloudflare Pages · Edit on the account that owns the project.
+# Do not paste the token into chat.
 
 on:
   workflow_dispatch:
@@ -123,32 +125,26 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
-            echo "::error::CLOUDFLARE_API_TOKEN missing in Actions secrets — refuse deploy"
+            echo "::error::HOLE_NO_TOKEN — CLOUDFLARE_API_TOKEN missing in Actions secrets"
             exit 1
           fi
           if [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
-            echo "::error::CLOUDFLARE_ACCOUNT_ID missing in Actions secrets — refuse deploy"
+            echo "::error::HOLE_NO_ACCOUNT — CLOUDFLARE_ACCOUNT_ID missing in Actions secrets"
             exit 1
           fi
-          echo "preflight: wrangler@3.112.0 pages project list"
           set +e
-          npx --yes wrangler@3.112.0 pages project list
-          LIST_RC=$?
-          set -e
-          if [ "$LIST_RC" -ne 0 ]; then
-            echo "::error::HOLE_WRANGLER_AUTH Cloudflare API 10000. Token is set. It cannot list/edit Pages project dualiscapax-landing."
-            echo "::error::Edit the existing GitHub secret CLOUDFLARE_API_TOKEN (do not paste it in chat)."
-            echo "::error::Token needs Account → Cloudflare Pages → Edit (Pages Write), plus User → User Details → Read."
-            echo "::error::Account ID must match the account that owns project dualiscapax-landing."
-            echo "::error::Dashboard: https://dash.cloudflare.com/profile/api-tokens — Edit Cloudflare Workers template, add Pages Edit."
-            exit 1
-          fi
           npx --yes wrangler@3.112.0 pages deploy ./deploy-payload \
             --project-name=dualiscapax-landing \
             --branch=main \
             --commit-hash="${GITHUB_SHA}" \
             --commit-message="pages-direct-upload ${GITHUB_SHA}" \
             --commit-dirty=true
+          WRC=$?
+          set -e
+          if [ "$WRC" -ne 0 ]; then
+            echo "::error::HOLE_CF_10000 — wrangler exit $WRC. Token is present but Cloudflare refused GET /pages/projects/dualiscapax-landing. Replace GitHub secret CLOUDFLARE_API_TOKEN with Account / Cloudflare Pages / Edit on the account that owns that project. Do not paste the token into chat."
+            exit 19
+          fi
 
       - name: Post-deploy live HTTP check
         run: |
