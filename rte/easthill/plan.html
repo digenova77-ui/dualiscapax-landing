@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lesson plan · Grade 2 Ontario</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Fraunces,Georgia,serif}
+.wrap{max-width:42rem;margin:0 auto;padding:1.1rem 1rem 5.6rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:1.8rem}
+.note{color:var(--mute)}label{display:block;font:10px IBM Plex Mono,monospace;text-transform:uppercase;color:var(--mute);margin:.35rem 0 .15rem}
+select,textarea,input,button{width:100%;font:16px Georgia,serif;margin:0 0 .65rem;background:#070b10;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:.5rem}
+button{color:var(--cyan);border-radius:999px;width:auto}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.94);border-top:1px solid var(--line);padding:.45rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Ontario Grade 2 · not a ministry PDF · this phone</p>
+<h1>Plan the lesson</h1>
+<p class="note">Pick a strand. Write what they will do. Official daybook stays hers.</p>
+<label>Strand</label>
+<select id="strand">
+<option>Language A — Literacy connections (2023)</option>
+<option>Language B — Foundations: phonics, oral, sentences</option>
+<option>Language C — Comprehension</option>
+<option>Language D — Composition / printing / simple texts</option>
+<option>Math B — Number to 200, fair share, add/subtract</option>
+<option>Math C — Patterns and early code</option>
+<option>Math D — Data: tally, Venn, two attributes</option>
+<option>Math E — Spatial / measurement</option>
+<option>Math F — Canadian coins</option>
+<option>Science A — STEM skills</option>
+<option>Science B — Animals and habitat</option>
+<option>Science C — Liquids and solids</option>
+<option>Science D — Simple machines</option>
+<option>Science E — Air and water in the environment</option>
+<option>Social A — Family and community traditions</option>
+<option>Social B — Global communities</option>
+<option>Health / Phys Ed</option>
+<option>Arts — dance, drama, music, visual</option>
+</select>
+<label>When</label>
+<input id="when" type="date">
+<label>What they will do</label>
+<textarea id="do" rows="5" placeholder="Read a patterned text. Build numbers to 200 with tens."></textarea>
+<label>How she will see it</label>
+<textarea id="see" rows="3" placeholder="Conference. Exit slip. Anecdotal."></textarea>
+<button type="button" id="save">Save plan on this phone</button>
+<p class="note" id="say"></p>
+<div id="out"></div>
+</div>
+<nav class="dock"><a href="./index.html">Desk</a><a href="./week.html">Week</a><a class="on" href="./plan.html">Plan</a><a href="./class.html">Cards</a><a href="./share.html">Share</a></nav>
+<script>
+var KEY='dc.sara.g2.plans';
+function all(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function draw(){
+  var p=all(),h='';
+  p.slice().reverse().forEach(function(x){h+='<p><strong>'+(x.when||'')+' · '+x.strand+'</strong><br>'+(x.do||'')+'</p>'});
+  document.getElementById('out').innerHTML=h||'<p class="note">No plans yet.</p>';
+}
+document.getElementById('save').onclick=function(){
+  var row={strand:document.getElementById('strand').value,when:document.getElementById('when').value,do:document.getElementById('do').value.trim(),see:document.getElementById('see').value.trim()};
+  if(!row.do){document.getElementById('say').textContent='Write what they will do.';return;}
+  var p=all();p.push(row);localStorage.setItem(KEY,JSON.stringify(p));
+  document.getElementById('do').value='';document.getElementById('see').value='';
+  document.getElementById('say').textContent='Saved on this phone. Not uploaded.'; draw();
+};
+draw();
+</script>
+</body></html>

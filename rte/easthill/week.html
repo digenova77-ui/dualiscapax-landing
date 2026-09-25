@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>This week · Grade 2 · Easthill</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#05070c">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070c;--ink:#eef4f8;--mute:#8b9caa;--cyan:#3ee8ff;--line:rgba(62,232,255,.14);--card:rgba(8,14,22,.72)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Fraunces,Georgia,serif}
+.wrap{max-width:44rem;margin:0 auto;padding:1.1rem 1rem 5.6rem}
+.brand{font:11px IBM Plex Mono,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(1.6rem,4vw,2.2rem)}h1 em{color:var(--cyan);font-weight:400}
+.note{color:var(--mute)}
+.card{border:1px solid var(--line);border-radius:16px;padding:.85rem;margin:.55rem 0;background:var(--card)}
+.verbs{display:flex;flex-wrap:wrap;gap:.35rem}
+button.verb,a.verb{appearance:none;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;padding:.4rem .7rem;font:11px IBM Plex Mono,monospace;text-transform:uppercase;text-decoration:none}
+button.verb.on{background:rgba(62,232,255,.12)}
+.readout{white-space:pre-wrap;font:14px/1.45 Fraunces,Georgia,serif}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.94);border-top:1px solid var(--line);padding:.45rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
+</style></head>
+<body>
+<div class="wrap">
+<p class="brand">Easthill · Grade 2 · Sara · bells 8:10–2:30</p>
+<h1>What this week<br><em>actually needs.</em></h1>
+<p class="note">Five school days. Plans stay on this phone. Official book stays the board.</p>
+<div class="card">
+  <p class="brand">Day tap</p>
+  <div class="verbs" id="days"></div>
+  <p class="readout" id="say">Pick a day.</p>
+</div>
+<div class="card">
+  <p class="brand">Then the human work</p>
+  <p><a class="verb" href="./plan.html">Write the lesson</a> <a class="verb" href="./class.html">Class list</a></p>
+  <p><a class="verb" href="./iep.html">IEP draft</a> <a class="verb" href="./report.html">Report draft</a></p>
+  <p><a class="verb" href="./share.html">Grants (off)</a> <a class="verb" href="./bind.html">Bind room</a></p>
+</div>
+</div>
+<nav class="dock"><a href="./index.html">Desk</a><a class="on" href="./week.html">Week</a><a href="./class.html">Cards</a><a href="./plan.html">Plan</a><a href="./share.html">Share</a></nav>
+<script>
+var DAYS=['Mon','Tue','Wed','Thu','Fri'];
+var KEY='dc.sara.g2.plans';
+function all(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function weekday(iso){
+  if(!iso) return '';
+  var d=new Date(iso+'T12:00:00');
+  if(isNaN(d.getTime())) return '';
+  return DAYS[d.getDay()-1]||'';
+}
+function draw(){
+  var h='';
+  DAYS.forEach(function(d){h+='<button type="button" class="verb" data-d="'+d+'">'+d+'</button>'});
+  document.getElementById('days').innerHTML=h;
+  document.querySelectorAll('#days .verb').forEach(function(b){
+    b.onclick=function(){
+      document.querySelectorAll('#days .verb').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');
+      var d=b.getAttribute('data-d');
+      var p=all().filter(function(x){return weekday(x.when)===d});
+      var lines=p.length?p.map(function(x){return (x.when||'')+' · '+x.strand+' — '+(x.do||'')}).join('\n'):'No saved plan for '+d+' yet. Open Plan.';
+      document.getElementById('say').textContent=d+' \u00b7 '+lines;
+    };
+  });
+}
+draw();
+</script>
+</body></html>
