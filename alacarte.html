@@ -1,43 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>À la carte — DualisCapax</title>
-<meta name="theme-color" content="#0B0E14">
-<link rel="stylesheet" href="lander.css">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>À la carte · You — DualisCapax</title>
+<meta name="theme-color" content="#070b12">
 <style>
-body{margin:0;background:#0B0E14;color:#eef4f8;font:18px/1.55 Georgia,serif}
-.wrap{max-width:40rem;margin:0 auto;padding:1.2rem 1.1rem 5rem}
-.brand{font:11px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:#8b9caa}
-h1{font-size:clamp(2rem,8vw,3rem);line-height:1;margin:1rem 0 .7rem}
-h1 em{font-style:italic;color:#38BDF8}
-.lede{color:#c9d6df}
-.card{border:1px solid rgba(56,189,248,.2);border-radius:16px;padding:1rem;margin:0 0 .75rem;background:rgba(8,14,22,.7)}
-.card h2{margin:0 0 .35rem;font-size:1.05rem}
-.card p{margin:0;color:#8b9caa;font-size:.95rem}
-a.card{display:block;color:inherit;text-decoration:none}
-a.card:hover{border-color:#38BDF8}
-.nav{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.2rem;font:13px ui-monospace,monospace}
-.nav a{color:#38BDF8}
+:root{--bg:#070b12;--ink:#e8eef6;--mute:#8b9caa;--teal:#14b8a6;--gold:#fbbf24;--line:rgba(20,184,166,.22);--card:#0b1220;--safe:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.45 ui-sans-serif,system-ui,sans-serif}
+body{padding-bottom:calc(3.2rem + var(--safe))}
+.wrap{max-width:40rem;margin:0 auto;padding:calc(1rem + env(safe-area-inset-top,0px)) 1.1rem 1rem}
+.pill{font:10px/1 ui-monospace,monospace;color:var(--gold);border:1px solid rgba(251,191,36,.4);padding:.3rem .55rem;border-radius:999px;float:right}
+.brand{font:11px/1 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(1.7rem,7vw,2.4rem);margin:.7rem 0 .35rem}
+.lede{color:#c9d6df;margin:0 0 1rem}
+.row{display:block;min-height:44px;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:.85rem 1rem;margin:.4rem 0;color:inherit;text-decoration:none}
+.row strong{display:block}.row span{color:var(--mute);font-size:.88rem}
+.cad{float:right;color:var(--teal);font:700 13px/1 ui-monospace,monospace}
+.dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(7,11,18,.96);border-top:1px solid var(--line);padding:.45rem .3rem calc(.45rem + var(--safe));font:10px/1 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
+.dock a{color:var(--mute);text-decoration:none;padding:.45rem}.dock a.on{color:var(--teal)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="brand">DualisCapax · À la carte</div>
-  <h1>Hockey first.<br><em>One seat.</em></h1>
-  <p class="lede">Claim who you are on the roster. Then the next game. Other sports wait until they are real. Nothing here is a $499 solver.</p>
-  <a class="card" href="ice.html"><h2>Ice</h2><p>The rink. Claim seat. TeamSnap if you have it. Empty roster is honest.</p></a>
-  <a class="card" href="rte/sima-dclm/"><h2>Job aide</h2><p>Implement. Upgrade. Integrate. Her desk. Not a hospital volume counter.</p></a>
-  <a class="card" href="rte/sima-dclm/implement.html"><h2>Implement</h2><p>Stand the book up.</p></a>
-  <a class="card" href="rte/sima-dclm/integrate.html"><h2>Integrate</h2><p>Two books already paid for. They still do not talk.</p></a>
-  <a class="card" href="index.html"><h2>Home</h2><p>The lander.</p></a>
-  <nav class="nav">
-    <a href="index.html">Home</a>
-    <a href="ice.html">Ice</a>
-    <a href="rte/sima-dclm/">SIMA</a>
-    <a href="hockey.html">Hockey</a>
-  </nav>
-</div>
+<main class="wrap">
+  <span class="pill">CLOSED</span>
+  <p class="brand">À la carte · one person</p>
+  <h1>On your phone.</h1>
+  <p class="lede">Look is free. Seats are listed. Nothing checks out tonight. Unity is you.</p>
+  <a class="row" href="/unity"><strong>Unity ID</strong><span class="cad">0.00</span><span>Continue-gate. Free to open.</span></a>
+  <a class="row" href="/hockey/"><strong>Hockey Leaf</strong><span class="cad">49.00</span><span>One seat · 8 ticks · 12 mo. CLOSED.</span></a>
+  <a class="row" href="/hockey/"><strong>Hockey matchup</strong><span class="cad">19.00</span><span>SKU-081. CLOSED.</span></a>
+  <a class="row" href="/ice"><strong>Ice sheet</strong><span class="cad">Look</span><span>Working sheet. Pay closed.</span></a>
+  <a class="row" href="/rte/sima-dclm/"><strong>SIMA aide</strong><span class="cad">Look</span><span>Her desk. Not a clinic cart.</span></a>
+  <a class="row" href="/rte/easthill/"><strong>Easthill evening</strong><span class="cad">Look</span><span>One child at a time.</span></a>
+  <p class="lede" style="margin-top:1rem">Fuel 5 / 20 / 50 when a run is not on the net. Inc. does not pocket it as a coin.</p>
+</main>
+<nav class="dock">
+  <a href="/">You</a>
+  <a class="on" href="/alacarte.html">Menu</a>
+  <a href="/unity">Unity</a>
+  <a href="/hockey/">Hockey</a>
+</nav>
 </body>
 </html>
