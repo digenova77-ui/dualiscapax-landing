@@ -67,7 +67,7 @@ const receipt = {
   at: new Date().toISOString(),
   mode,
   file_count: list.length,
-  wrap_prefix: "",
+  wrap_prefix: "site/",
   files: list.map((f) => f.rel),
   pinned: false,
   cid: null,
@@ -95,13 +95,13 @@ if (!jwt || jwt.length < 20) {
 const fd = new FormData();
 for (const f of list) {
   const bytes = readFileSync(f.abs);
-  fd.append("file", new File([bytes], f.rel));
+  fd.append("file", new File([bytes], "site/" + f.rel));
 }
 fd.append("pinataMetadata", JSON.stringify({
   name: "DualisCapax-L1-" + new Date().toISOString().slice(0, 10),
   keyvalues: { project: "DualisCapax", layer: "L1_Public_Face", mode: receipt.mode }
 }));
-fd.append("pinataOptions", JSON.stringify({ cidVersion: 1, wrapWithDirectory: true }));
+fd.append("pinataOptions", JSON.stringify({ cidVersion: 1, wrapWithDirectory: false }));
 
 const res = await fetchWithBackoff(
   ENDPOINT,
