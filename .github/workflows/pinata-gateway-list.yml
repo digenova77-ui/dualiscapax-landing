@@ -1,0 +1,39 @@
+name: pinata-gateway-list
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: list dedicated gateway hostnames
+        env:
+          PINATA_JWT: ${{ secrets.PINATAJWT }}
+        run: |
+          if [ -z "$PINATA_JWT" ]; then
+            echo "PINATAJWT empty"
+            exit 0
+          fi
+          echo "Calling GET /v3/gateways (domains only)"
+          curl -sS --max-time 20 -H "Authorization: Bearer $PINATA_JWT" \
+            "https://api.pinata.cloud/v3/gateways?pageSize=20" \
+          | python3 -c '
+import json,sys
+raw=sys.stdin.read()
+try:
+    d=json.loads(raw)
+except Exception:
+    print("non-json", raw[:400])
+    raise SystemExit(0)
+if isinstance(d, dict) and d.get("error"):
+    print("api_error", d.get("error"), str(d)[:300])
+    raise SystemExit(0)
+rows=((d.get("data") or {}).get("rows") if isinstance(d.get("data"), dict) else None) or d.get("rows") or []
+print("count", len(rows))
+for r in rows:
+    print("domain", r.get("domain"))
+    print("restrict", r.get("restrict"))
+    for c in (r.get("custom_domains") or []):
+        print("custom", c.get("domain"), c.get("domain_validation_status"), c.get("ssl_validation_status"))
+'
