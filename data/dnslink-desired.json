@@ -1,0 +1,24 @@
+{
+  "schema": "dualis.dnslink.desired.v1",
+  "at": "2026-09-29T18:06-04:00",
+  "zone": "dualiscapax.ai",
+  "written_to_cloudflare": false,
+  "records": [
+    {
+      "type": "CNAME",
+      "name": "ipfs",
+      "content": "HOLE_NEED_MYPINATA_HOST",
+      "proxied": false,
+      "status": "BLOCKED_NO_GATEWAY_HOSTNAME"
+    },
+    {
+      "type": "TXT",
+      "name": "_dnslink.ipfs",
+      "content": "dnslink=/ipfs/bafybeian5fkku2cu47iusk3iyt3piwbpms7ri4grkneqiyxtqlzoxag2uy",
+      "ttl": 120,
+      "proxied": false,
+      "status": "READY_ON_PAPER"
+    }
+  ],
+  "do_not_write": ["@", "www", "_dnslink"]
+}
