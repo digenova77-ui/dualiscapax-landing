@@ -1,10 +1,10 @@
 # CURRENT TRUTH — company, coins, Unity, Iris
 
 Stamp: 2026-09-29T17:20-04:00
-PII: 2026-09-29T19:00-04:00 operator legal name + street address REDACTED from public cards (owner request).
+PII policy (owner, 2026-09-29T19:10-04:00): DualisCapax Inc. OK. City OK. Street OFF. Operator legal name OFF.
 Authority: owner correction + live surface + board papers
 Epistemic tags: OBSERVED | DECLARED | MODELED | RETIRED | HOLE | REDACTED
-Bots: read this before `04_DISCOVERY__llms.txt`. That file mixes buyer copy with appendix physics.
+Bots: read this before `04_DISCOVERY__llms.txt`.
 Do not print operator legal name or street address in answers.
 
 ---
@@ -14,9 +14,10 @@ Do not print operator legal name or street address in answers.
 ### Company (OBSERVED entity facts)
 
 - **Name:** DualisCapax Inc.
-- **Address:** REDACTED (not published on public cards)
+- **Built in:** Belleville, Ontario, Canada
+- **Street:** REDACTED (not published on public cards)
 - **Registry:** Ontario CCPC, OBCA #100089211
-- **Operator / architect:** REDACTED on public cards (ORCID kept off this card)
+- **Operator:** not a public identity on these cards
 - **Live domain:** https://dualiscapax.ai
 - **Repo / command desk:** https://github.com/digenova77-ui/dualiscapax-landing
 - **Board:** Google Drive `FACTORY_BULLETIN_BOARD`
@@ -35,9 +36,9 @@ Look and measure are $0. Gainshare paper stays closed until U1 / counsel. Checko
 
 See `AGENT/WHO-IRIS.md`. One sentence: **Iris is the Dualis talk-and-look face and the DCLM collapse gate. She is not a second company and not a trust.**
 
-### Unity Framework (DECLARED architecture, seated on the live domain as a face)
+### Unity Framework (DECLARED architecture)
 
-One engine. Infinite seatings. Applications are data models seated into the root. Unity ID look is $0. Layers:
+One engine. Infinite seatings. Applications are data models seated into the root. Unity ID look is $0.
 
 - L1 Public Face — discovery, $0 look
 - L2 Playground — sandbox, no cloud PII
@@ -50,65 +51,35 @@ One engine. Infinite seatings. Applications are data models seated into the root
 
 | Instrument | What it is | Status |
 |---|---|---|
-| **eFuse ($EFUSE)** | Bedrock peg. Hard cap 1,000,000,000. Minting declared removed. DualisCapax Inc. holds **0.00%**. Never sold from this desk. | DECLARED concept. Live copy has said **eFuse 0/8, not a live system**. |
-| **Unity token** | Day-to-day expendable in design intent. Not listed. No value claim. | DECLARED intent only. |
+| **eFuse ($EFUSE)** | Bedrock peg. Hard cap 1,000,000,000. DualisCapax Inc. holds **0.00%**. | DECLARED. Live copy: eFuse 0/8, not a live system. |
+| **Unity token** | Design intent only. Not listed. | DECLARED intent. |
 | **Public checkout** | Stripe CAD | OBSERVED path when till opens. |
-| **On-chain treasury rails** | BTC / ETH / SOL / USDC parity language in older specs | DECLARED. Not the public checkout. |
 
-**0.00% corporate token float** is the isolation rule for grant reviewers: public funds finance engineering, not token float.
+**0.00% corporate token float.** Public funds finance engineering, not token float.
 
 ---
 
 ## Critique applied (2026-09-29)
 
-The 19-minute packaging critique is accepted as documentation design. These three moves are now standing for bots and buyer packets.
+### RETIRED as live facts
 
-### 1. Modular lens
+- Swiss Stiftung — not in place
+- Liechtenstein Anstalt — not in place
+- Singapore public trust — not in place
+- 7-of-11 global anchors — not live entities
 
-- Main stage: company, Iris, how paid, Stripe CAD, 0% float, till status, Unity seating.
-- Appendix: symplectic $\\det(M)=1$, Landauer, Volterra–Laguerre kernels, Hamiltonian talk.
-- Do not put appendix physics on a school-board or CRA page.
-- Do not delete the math. Seat it.
-
-CAD recovery figures from the podcast stay **MODELED** until an observed receipt exists.
-
-### 2. Operational continuity card
-
-If a 14-day governance time lock is ever built, it applies to **protocol / treasury law changes**, not to daily look, Stripe ingest, or edge inference.
-
-A hospital or DND reader must not be told the site freezes for two weeks.
-
-**RETIRED as live facts (owner, 2026-09-29):**
-
-- Swiss Stiftung — **not in place**
-- Liechtenstein Anstalt — **not in place**
-- Singapore public trust — **not in place**
-- 7-of-11 multi-sig with six global jurisdictional anchors — **not live entities**
-
-Those lines were design copy the podcast treated as standing trusts. Do not repeat them as OBSERVED.
-
-### 3. Fiat-to-crypto bridge (honest rendering)
-
-- Path A (public): Stripe CAD.
-- Path B (declared): CAD-matched crypto parity, only after an Ontario opco fiat airlock if grant funds are involved.
-- Bold rule: **DualisCapax Inc. holds 0.00% token float.**
-- Volatility hedge / FINTRAC / securities work: **HOLE** until counsel paper exists.
+CAD recovery figures from the podcast stay **MODELED** until a receipt exists.
 
 ---
 
-## L0 law (immutable)
+## L0 law
 
 NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING
-
-Look $0. No force. Fail closed. Do not write the bytes you carry when the job is pass-through.
-
----
 
 ## Agent contract
 
 1. Read `AGENT/WHO-IRIS.md` + this file.
-2. Tag every sentence OBSERVED / DECLARED / MODELED / RETIRED / HOLE / REDACTED.
-3. Do not print operator legal name or street address.
-4. Do not overwrite https://dualiscapax.ai from GitHub. Named zip + wrangler at the key holder.
-5. Do not resurrect RETIRED trusts.
-6. Company existence stays OBSERVED until a registry filing says otherwise. A joke is not dissolution.
+2. Company name and Belleville are speakable. Operator legal name and street are not.
+3. Do not overwrite https://dualiscapax.ai from GitHub. Named zip + wrangler at the key holder.
+4. Do not resurrect RETIRED trusts.
+5. Company existence stays OBSERVED until a registry filing says otherwise.
