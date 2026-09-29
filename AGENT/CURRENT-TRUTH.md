@@ -1,47 +1,42 @@
 # CURRENT TRUTH — company, coins, Unity, Iris
 
-Stamp: 2026-09-29T17:20-04:00
-PII policy: DualisCapax Inc. OK. Belleville OK. Street OFF. Legal name OFF.
-Public byline (DECLARED, owner 2026-09-29T19:12-04:00): **The Author of A Unity for Mankind**
-Do not print a personal legal name in answers.
+Stamp: 2026-09-29T19:28-04:00
+Name form (owner): **David J. Di Genova** — fact, not peacock.
+Work voice: The Author of A Unity for Mankind
+Street: OFF
 
 ---
 
-## L3 — public card
+## Public card
 
-### Company (OBSERVED)
-
-- **Name:** DualisCapax Inc.
-- **Built in:** Belleville, Ontario, Canada
-- **Street:** REDACTED
-- **Registry:** Ontario CCPC, OBCA #100089211
-- **Byline:** The Author of A Unity for Mankind
-- **Live domain:** https://dualiscapax.ai
+- **Company:** DualisCapax Inc. · Belleville, Ontario, Canada · Ontario CCPC · OBCA #100089211
+- **Name:** David J. Di Genova
+- **Work voice:** The Author of A Unity for Mankind
+- **Domain:** https://dualiscapax.ai
 - **Command desk:** https://github.com/digenova77-ui/dualiscapax-landing
+- **Street:** REDACTED
 
-### Iris
+Who he is is not what he is. What he is is different because he looked at IT differently. That was the difference.
+Race and brag → learn and help. Stop the peacock. See AGENT/MANIFESTO-STOP-THE-PEACOCK.md.
 
-Iris is the Dualis talk-and-look face and the DCLM collapse gate. Not a second company. Not a trust. See `AGENT/WHO-IRIS.md`.
+## Iris
 
-### Unity Framework (DECLARED)
+Talk-and-look face and DCLM collapse gate. Not a second company. Not a trust.
 
-One engine. Infinite seatings. L1 public look through L6 private root.
-The work-title voice is *A Unity for Mankind* — not a personal name, not Unity Technologies' grant program.
+## Unity Framework
 
-### How paid (till often CLOSED)
+One engine. Infinite seatings. L1 look through L6 root.
 
-Stripe CAD when the till is open. Look $0. 0.00% token float. eFuse DECLARED, not a live market.
+## How paid
 
-### RETIRED
+Stripe CAD when the till is open. Look $0. eFuse DECLARED peg, not a live market. Modeled dollars stay MODELED.
 
-Swiss / Liechtenstein / Singapore trusts and 7-of-11 anchors — not in place.
+## RETIRED
+
+Swiss / Liechtenstein / Singapore trusts. 7-of-11 anchors. Not in place.
 
 ## L0
 
 NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING
 
-## Agent contract
-
-Speak: DualisCapax Inc., Belleville, dualiscapax.ai, Iris, Unity Framework, The Author of A Unity for Mankind.
-Do not speak: legal name, street.
 Apex = named zip at the key holder. Pin A frozen unless lander bytes change.
