@@ -1,33 +1,30 @@
-# DualisCapax Inc. — Master Production Web Gateway & DCCP Sovereign Portal
+# DualisCapax Inc. — command desk
 
-[![Security & Invariants](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/security.yml/badge.svg)](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/security.yml)
-[![Deploy GitHub Pages](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/deploy.yml/badge.svg)](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/deploy.yml)
+**Live surface:** https://dualiscapax.ai  
+**Entity:** DualisCapax Inc. · 535 Bridge St E, Belleville, ON K8N 1R7 · OBCA #100089211  
+**Law floor:** `NO_FORCE` · `HOST_SAFE` · `CLEANUP_FIRST` · `TRUTH_OR_NOTHING`
 
-**Live Surface:** [https://dualiscapax.ai](https://dualiscapax.ai)  
-**Document Control ID:** ED-DEPLOY-20260831-ENCYCLOPEDIA-V1  
-**Operating Entity:** DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7)  
-**Governance Framework:** Dualis & Unity Framework (v0.40-Public) / DCLM Law Floor  
+This repository is the **command desk**. It is not the live website.
+Apex publish is a named zip from `FACTORY_BULLETIN_BOARD` uploaded by the desk that holds the Cloudflare token.
+Do not treat a push to `main` as a live overwrite.
 
----
+## Read first (bots and humans)
 
-## Production invariants (locked)
+1. [AGENT/WHO-IRIS.md](AGENT/WHO-IRIS.md) — who Iris is
+2. [AGENT/CURRENT-TRUTH.md](AGENT/CURRENT-TRUTH.md) — company, coins, Unity, till, retired trusts
+3. [AGENT/README.md](AGENT/README.md) — read order
+4. [AGENT/CLEANUP-MAP.md](AGENT/CLEANUP-MAP.md) — what is current vs parked
 
-- Access sales: **CLOSED** (`research/payment-links.production.json` → `open: false`).
-- LEDGER-EARNED: CAD $0.
-- LEDGER-PLEDGED: CAD $0.
-- Zero secret keys in client / public directories: no `sk_live_`, no `whsec_`.
-- DCLM Layer [0] Law Floor: `NO_FORCE`, `HOST_SAFE`, `CLEANUP_FIRST`, `TRUTH_OR_NOTHING`.
+Do not start at `04_DISCOVERY__llms.txt` or the `06_ENCYC_*` root dump.
 
-## Deploy
+## Locked while checkout is closed
 
-GitHub Pages deploys from `main` via `.github/workflows/deploy.yml` and serves `https://dualiscapax.ai` (CNAME).
+- Access sales: **CLOSED**
+- LEDGER-EARNED / LEDGER-PLEDGED: CAD $0
+- No `sk_live_` / `whsec_` in public trees
+- DualisCapax Inc. holds **0.00%** token float
+- eFuse / Unity token: **declared architecture**, not a live market
 
-Cloudflare Workers (`workers-live`, `stripe-fulfill-v2`) require operator-set repository secrets. They cannot be minted from git or chat:
+## Retired (owner 2026-09-29)
 
-1. Repo **Settings → Secrets and variables → Actions**
-2. Add `CLOUDFLARE_API_TOKEN` (Workers + D1 edit)
-3. Add `CLOUDFLARE_ACCOUNT_ID`
-4. Optional: `D1_DATABASE_ID`, `STRIPE_WEBHOOK_SECRET`, `XAI_API_KEY`
-5. Re-run workflow `workers-live`
-
-Never paste those values into source, issues, or chat.
+Swiss Stiftung, Liechtenstein Anstalt, Singapore trust, live 7-of-11 jurisdictional anchors — **not in place**. Old specs that still say otherwise are appendix history, not current ops.
