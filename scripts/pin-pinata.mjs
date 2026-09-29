@@ -28,8 +28,6 @@ const CORE_REL = [
   "alacarte.html",
   "manifold.html",
   "rtesimadclm/manifold.html",
-  "rte/sima-dclm/index.html",
-  "_redirects",
   "404.html"
 ];
 
