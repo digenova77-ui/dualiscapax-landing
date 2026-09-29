@@ -1,7 +1,8 @@
 # CURRENT TRUTH — company, coins, Unity, Iris
 
 Stamp: 2026-09-29T19:28-04:00
-Name form (owner): **David J. Di Genova** — fact, not peacock.
+Name: **David J. Di Genova** — fact, not peacock.
+Say it: **Dee JEN-oh-vah** (operator: Dee Jennova).
 Work voice: The Author of A Unity for Mankind
 Street: OFF
 
@@ -11,6 +12,7 @@ Street: OFF
 
 - **Company:** DualisCapax Inc. · Belleville, Ontario, Canada · Ontario CCPC · OBCA #100089211
 - **Name:** David J. Di Genova
+- **Pronounce:** Dee Jennova
 - **Work voice:** The Author of A Unity for Mankind
 - **Domain:** https://dualiscapax.ai
 - **Command desk:** https://github.com/digenova77-ui/dualiscapax-landing
