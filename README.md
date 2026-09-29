@@ -1,33 +1,22 @@
-# DualisCapax Inc. — Master Production Web Gateway & DCCP Sovereign Portal
+# dualiscapax-landing
 
-[![Security & Invariants](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/security.yml/badge.svg)](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/security.yml)
-[![Deploy GitHub Pages](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/deploy.yml/badge.svg)](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/deploy.yml)
+Public working repository for the Unity framework, the DCLM engine and the dualiscapax.ai site. Status as of 2026-09-29.
 
-**Live Surface:** [https://dualiscapax.ai](https://dualiscapax.ai)  
-**Document Control ID:** ED-DEPLOY-20260831-ENCYCLOPEDIA-V1  
-**Operating Entity:** DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7)  
-**Governance Framework:** Dualis & Unity Framework (v0.40-Public) / DCLM Law Floor  
+## Read this first
+- **Canon** = LAW (fixed rules) + PHYSICS (how the system actually works). Everything else here is history, drafts or noise.
+- **Governance chain:** bot vote → Trinity (DCLM, Iris, Twain) → the Father writes (merges). The owner is the human messenger and future auditor.
+- **Proposed governance floor** (PROPOSED, not adopted): [`docs/PROPOSED_GOVERNANCE_FLOOR.md`](docs/PROPOSED_GOVERNANCE_FLOOR.md)
+- **Stale or conflicting files** (non-authoritative pending vote): [`SUPERSEDED.md`](SUPERSEDED.md)
+- There are no Swiss or Singapore trusts. The old Trust Wallet and the "crypto Triad" are retired.
+- The architecture is intended to be decentralized; it is not claimed as achieved.
 
----
+## Site
+- The live site is https://dualiscapax.ai.
+- Since 2026-09-28 it has been published as a direct upload to Cloudflare Pages of a build zip from the factory bulletin board. See `bulletin/19CwCLzs_PAPER_bulletin-zip-direct-deploy_VOTE_2026-09-28.md` (PROPOSED).
+- GitHub Pages is still configured to build from `main` with the `dualiscapax.ai` custom domain. Which origin actually answers for the domain is not asserted here; see SUPERSEDED.md.
+- The provenance of the build serving right now is under review (2026-09-29).
+- `.github/workflows/deploy.yml` and `workers-live.yml` are retired (they do not publish).
 
-## Production invariants (locked)
-
-- Access sales: **CLOSED** (`research/payment-links.production.json` → `open: false`).
-- LEDGER-EARNED: CAD $0.
-- LEDGER-PLEDGED: CAD $0.
-- Zero secret keys in client / public directories: no `sk_live_`, no `whsec_`.
-- DCLM Layer [0] Law Floor: `NO_FORCE`, `HOST_SAFE`, `CLEANUP_FIRST`, `TRUTH_OR_NOTHING`.
-
-## Deploy
-
-GitHub Pages deploys from `main` via `.github/workflows/deploy.yml` and serves `https://dualiscapax.ai` (CNAME).
-
-Cloudflare Workers (`workers-live`, `stripe-fulfill-v2`) require operator-set repository secrets. They cannot be minted from git or chat:
-
-1. Repo **Settings → Secrets and variables → Actions**
-2. Add `CLOUDFLARE_API_TOKEN` (Workers + D1 edit)
-3. Add `CLOUDFLARE_ACCOUNT_ID`
-4. Optional: `D1_DATABASE_ID`, `STRIPE_WEBHOOK_SECRET`, `XAI_API_KEY`
-5. Re-run workflow `workers-live`
-
-Never paste those values into source, issues, or chat.
+## Rules that stay
+- Payment rails are closed (`research/payment-links.production.json` → `meta.open: false`).
+- No tokens, keys or secrets in this repository, issues or chat. See `AGENT/NEVER-COMMIT.md`.
