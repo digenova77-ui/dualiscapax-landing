@@ -36,14 +36,14 @@ One fact each. History merge without the encyclopedia dump.
 2. `AGENT/CURRENT-TRUTH.md`
 3. `AGENT/README.md` + `AGENT/CLEANUP-MAP.md` as one index
 4. `README.md` front door
-5. `BULLETIN/LAW.PURITY.1.md`
+5. (removed) `BULLETIN/LAW.PURITY.1.md` is a SUPERSEDED stub; PURITY-1 (PURITY_1_DEFINITION_v1.4.md, sha256 a2473df39668904c5883f4dd8852dda40fe825edd7c56c687f7c3ae698e83777) replaces it and is not a pinned repo file.
 
 Status: **PIN=HOLE**. `scripts/pin-pinata.mjs` default allowlist is still the lander five, not this pack.
 Do not invent a CID for set B.
 
 ## What 1.0 does **not** mean
 
-`BULLETIN/LAW.PURITY.1.md`: 1.0 is not `LIVE_HTTP_OK=1`. Not a LIVE badge. Not fill=100.
+PURITY-1 (PURITY_1_DEFINITION_v1.4.md, §0b honesty guards): a purity result of 1.0 is not `LIVE_HTTP_OK=1`. Not a LIVE badge. Not fill=100. It never blesses a LIVE claim, and no desk may skip the curl check.
 Pinning five lander files does not make DualisCapax live on IPFS as the current site.
 
 ## Next owner move
