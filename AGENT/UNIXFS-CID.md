@@ -1,40 +1,40 @@
-# UNIXFS-CID — one encoding per fact
+# LAW.CID.ENCODING — one encoding per fact
 
-Stamp: 2026-09-29T18:10-04:00
-Kind: knowledge book. Law pointer: `BULLETIN/LAW.PURITY.1.md` § Encoding.
-A CID addresses one encoding of bytes, not the idea of the file.
+Stamp: 2026-09-29T18:11-04:00
+Book: AGENT knowledge (not mill purity score).
+Pointer from: `BULLETIN/LAW.PURITY.1.md`, `AGENT/CURRENT-TRUTH.md`.
 
 ## Standing rule
 
-Pinata folder pin defaults are frozen for Dualis spare copies:
+A CID is the address of one encoding of bytes. Same HTML under two wraps, two chunkers, two CID versions, or two path prefixes is two facts. Purity 1.0 forbids publishing both as “the” spare.
 
-- `cidVersion = 1` → `bafy…` UnixFS directory
-- Pinata `pinFileToIPFS` wrap as used on the successful core5 pin
-- Do not pass `--chunker=rabin` or `buzhash`
-- Do not change `size-N` to chase a local Kubo CID
-- Do not add UnixFS 1.5 `mode` / `mtime`
-- Request `/ipfs/<folderCid>/index.html`, never a child-file CID on a restricted gateway
+Pinata `pinFileToIPFS` with `cidVersion: 1` and the current allowlist is the Dualis encoding. Do not retune chunker, raw-leaves, or wrap to chase a local Kubo CID.
 
-A second encoding of the same HTML (different wrap, prefix, cidVersion, chunker, raw-leaves, or extra allowlist file) is a **second copy**. Purity 1.0 forbids publishing both as “the” site.
+Observed folder CID (set A, lander core5):
+`bafybeian5fkku2cu47iusk3iyt3piwbpms7ri4grkneqiyxtqlzoxag2uy`
 
-## Chunkers (so bots stop retuning them)
+Retrieve as `/ipfs/<folderCid>/index.html` on a dedicated gateway. Child-file CIDs are not the pin.
 
-| Name | Cut | CID-stable |
+## Chunkers (Kubo names; do not pass these to Pinata)
+
+| Spec | Cut | Dualis |
 |---|---|---|
-| `size-N` (Kubo default `size-262144`) | every N bytes | yes, if N and leaves/layout stay fixed |
-| `rabin` / `rabin-min-avg-max` | content-defined | no across tools |
-| `buzhash` | content-defined, 512 KiB cap | no across tools |
+| `size-N` | every N bytes | default `size-262144`. Deterministic. |
+| `rabin[-min-avg-max]` | content-defined | dedup on large edits. Different CID. |
+| `buzhash` | content-defined | same warning. |
 
-Only `size-N` is allowed if a future object is large enough to split. Write `N` on the pin receipt. Never change N for that object.
+Layout after the cut (balanced vs trickle) is not a chunker. It still changes the root CID.
 
-## Dualis lander (OBSERVED)
+Lander core5 is 13425 bytes. Every file is under 256 KiB. The chunker does not split those files. What *does* change the folder CID: wrap on/off, path prefix, cidVersion, extra allowlist files, UnixFS 1.5 mode/mtime (forbidden).
 
-- Pin size 13425 B. Default chunk 262144 B. **Chunker did not run.**
-- Folder CID: `bafybeian5fkku2cu47iusk3iyt3piwbpms7ri4grkneqiyxtqlzoxag2uy`
-- Git SHA ≠ CID. Kubo `ipfs add` ≠ Pinata folder CID unless every knob matches.
-- `main` re-pin 2026-09-29: Pinata `400 More than one file` = wrap/allowlist, not a chunker bug.
-- `403 ERR_ID:00023` on `gateway.pinata.cloud` = gateway policy, not a bad CID.
+`--full` / `--repo` would hit the chunker and the quota. Do not turn them on to “test chunking.”
 
-## Not this card
+## Git SHA ≠ CID
 
-Live apex. IPNS keys. `--full` / `--repo`. A second lander CID.
+Residual-ring hashes git. Pinata hashes UnixFS blocks. Do not treat them as equal.
+
+In-repo `01_CORE__ipfs_sovereign_filesystem.py` mints mock `bafybeic…` strings. Those are not pins.
+
+## Retrieval is not addressing
+
+`403 ERR_ID:00023` on `gateway.pinata.cloud` is gateway policy. The CID remains valid. Dedicated host + grey CNAME `ipfs` is Rung 2. DNSLink TXT is Rung 3. Neither is a second encoding.

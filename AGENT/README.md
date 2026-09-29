@@ -1,6 +1,6 @@
 # AGENT — read this first
 
-Stamp: 2026-09-29T17:55-04:00
+Stamp: 2026-09-29T18:11-04:00
 Repo is the command desk. It is not the live site.
 Live surface: https://dualiscapax.ai
 Board: FACTORY_BULLETIN_BOARD `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`
@@ -10,7 +10,8 @@ Board: FACTORY_BULLETIN_BOARD `1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4`
 1. `AGENT/WHO-IRIS.md` — who Iris is
 2. `AGENT/CURRENT-TRUTH.md` — company, coins, Unity, till, retired trusts
 3. `AGENT/CLEANUP-MAP.md` — what stays, what is parked
-4. Only then: `AGENT/IRIS-SIMPLE.md`, `AGENT/IRIS-RING.md`, other IRIS-* tickets
+4. `AGENT/UNIXFS-CID.md` — CID / chunker standing rule (spare copy encoding)
+5. Only then: `AGENT/IRIS-SIMPLE.md`, `AGENT/IRIS-RING.md`, other IRIS-* tickets
 
 Do **not** start at `04_DISCOVERY__llms.txt`. That file is STALE buyer/appendix mix.
 Do **not** start at `06_ENCYC_*`. Those are L4 appendix.
