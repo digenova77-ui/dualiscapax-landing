@@ -2,7 +2,7 @@
 
 Stamp: 2026-09-29T18:11-04:00
 Book: AGENT knowledge (not mill purity score).
-Pointer from: `BULLETIN/LAW.PURITY.1.md`, `AGENT/CURRENT-TRUTH.md`.
+Pointer from: `AGENT/CURRENT-TRUTH.md` (`BULLETIN/LAW.PURITY.1.md` is superseded by PURITY-1).
 
 ## Standing rule
 
