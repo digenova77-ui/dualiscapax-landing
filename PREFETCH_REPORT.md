@@ -2,15 +2,16 @@
 
 Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). The Grok Bots remain the **unknown branch** — their marks are verified against this receipt. An empty seat never passes by default.
 
-Trigger (untrusted event metadata only): push by digenova77-ui to main at `b0188c8efd3f5db3ac1fdea41b2aa38cabd21f9e`.
+Trigger (untrusted event metadata only): push by digenova77-ui to main at `18e3c5f908f7f407fd5422d3883afe6962a9099c`.
 Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-site write.
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
-`github___list_commits` since `2026-09-29T15:48:00Z`, sha=main, perPage=50. Newest first (first page; more exist).
+`github___list_commits` since `2026-09-29T15:49:00Z`, sha=main, perPage=50. Newest first (first page; more exist).
 
 | SHA (short) | Message | Author | Time (UTC) |
 |---|---|---|---|
+| 18e3c5f9 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:49Z) | David J. Di Genova | 2026-09-30T15:49:40Z |
 | b0188c8e | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:47Z) | David J. Di Genova | 2026-09-30T15:48:32Z |
 | f9989cbe | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:45Z) | David J. Di Genova | 2026-09-30T15:47:16Z |
 | 7493b941 | R&D task: build the join-state mechanism (persistent agent identity) | David J. Di Genova | 2026-09-30T15:31:45Z |
@@ -39,26 +40,25 @@ Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-
 
 List truncated by API page size; commits continue earlier in the 24h window.
 
-Trigger commit `b0188c8e` files: PREFETCH_REPORT.md only (stats +147/−27).
+Trigger commit `18e3c5f9` files: PREFETCH_REPORT.md only (prior receipt).
 
 ## TASK_ / RND- / PREFETCH / AUTO-INVOKE files that landed
 
-From commit messages + `github___get_commit` + `github___search_code`:
+From commit messages + prior known-branch receipt:
 
 | Commit | Files landed |
 |---|---|
-| b0188c8e | PREFETCH_REPORT.md (update, this prior receipt) |
+| 18e3c5f9 | PREFETCH_REPORT.md (update, prior receipt) |
+| b0188c8e | PREFETCH_REPORT.md (update) |
 | f9989cbe | PREFETCH_REPORT.md (update) |
 | 7493b941 | RND-TASK_join-state-mechanism_2026-09-30.md, RND-SPEC_join-state-record_2026-09-30.md |
 | e9ef5417 | AUTO-INVOKE.md |
 | 70c2fc21 | TASK_cf-agency_2026-09-30.md, RECEIPT_cf-agency_2026-09-30.md |
 | cfffd74c | TASK_ipfs-migration_2026-09-30.md |
 
-Also present on main (search, not necessarily new this hour):
+Also present on main (not necessarily new this hour):
 - TASK_sandbox-test_2026-09-30.md
 - 07_FACTORY__TASK_verifier-build_2026-09-30.md
-
-`filename:PREFETCH` code search returned 0 (report file may be unindexed yet).
 
 ## Workflow inventory
 
@@ -117,33 +117,17 @@ Repo workflow files (Actions registry):
 
 ## Recently triggered vs idle pipes
 
-`github___actions_list` method=list_workflow_runs, branch=main, perPage=100 (sample of total_count 2500). Newest run in that page: **2026-09-26T00:02:00Z** (fail-order). No main-branch run in that page after 2026-09-26.
+`github___actions_list` method=list_workflow_runs, branch=main, perPage=100 (sample of total_count 2500).
 
-Paths seen in that sample:
+Recently seen on this page (push-triggered by PREFETCH_REPORT and other main commits today):
 
-- dynamic/pages/pages-build-deployment
-- .github/workflows/fail-order.yml
-- .github/workflows/pack-self-deploy.yml
-- .github/workflows/factory_workers.yml
-- .github/workflows/factory_verify.yml
-- .github/workflows/ice_session_bot.yml
-- .github/workflows/secret-scan.yml
-- .github/workflows/iris-greet-mint.yml
-- .github/workflows/hockey_girls_owha.yml
-- .github/workflows/factory_audit.yml
-- .github/workflows/wav-watch.yml
-- .github/workflows/hockey_boys_omha_u16.yml
-- .github/workflows/forensics.yml
-- .github/workflows/plate-verify.yml
-- .github/workflows/flow-wattage.yml
-- .github/workflows/factory_mill.yml
-- .github/workflows/unity_playground_idle.yml
-- .github/workflows/golf_usa_envelopes.yml
-- .github/workflows/bulletin-board-watch.yml
-- .github/workflows/hockey_house_rec.yml
 - .github/workflows/curl-gate.yml
+- .github/workflows/secret-scan.yml
+- .github/workflows/pinata-gateway-list.yml (completed failure on recent PREFETCH pushes)
+- .github/workflows/pack-self-deploy.yml
+- dynamic/pages/pages-build-deployment
 
-Idle pipes (registered `.github/workflows/*` with **no run in the last 100 main runs**):
+Idle pipes (registered `.github/workflows/*` with **no run in this 100-run main sample**):
 
 - bulletin-handoff.yml
 - critical-drop.yml
@@ -158,7 +142,6 @@ Idle pipes (registered `.github/workflows/*` with **no run in the last 100 main 
 - live-clock.yml
 - oidc-auth.yml
 - pages-direct-upload.yml
-- pinata-gateway-list.yml
 - pinata-pin.yml
 - plate_live_watch.yml
 - purge-pages-deployments.yml
