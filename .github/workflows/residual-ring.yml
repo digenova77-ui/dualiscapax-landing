@@ -1,11 +1,6 @@
 name: residual-ring
 
 on:
-  push:
-    branches: [main]
-  schedule:
-    # Daily observe — ring does not sleep just because chat is idle
-    - cron: "0 12 * * *"
   workflow_dispatch:
 
 permissions:
@@ -84,12 +79,6 @@ jobs:
           echo "=== git diff HEAD~1 (critical paths) ==="
           if git rev-parse HEAD~1 >/dev/null 2>&1; then
             git diff --stat HEAD~1 -- "${paths[@]}" || true
-            if git diff --name-only HEAD~1 -- hall/index.html hall/cuts-v1.json residual-law.html research/sim/METHOD.md research/sim/storage/RESIDUAL-VAULT.md | grep -q .; then
-              echo "LAW_SURFACE_CHANGED=1"
-              if ! git log -1 --pretty=%B | grep -qiE 'law|residual|vault|method|hall|loop'; then
-                echo "::warning::Law- or hall-related paths changed without hall/law/residual/vault/method/loop in commit message"
-              fi
-            fi
           else
             echo "First commit — no previous baseline"
           fi
@@ -105,34 +94,8 @@ jobs:
           set -euo pipefail
           LIVE="${LIVE_URL:-https://www.dualiscapax.ai/}"
           HALL="${HALL_URL:-https://www.dualiscapax.ai/hall/}"
-          RAW="https://raw.githubusercontent.com/digenova77-ui/dualiscapax-landing/main/index.html"
-          RAW_HALL="https://raw.githubusercontent.com/digenova77-ui/dualiscapax-landing/main/hall/index.html"
           echo "LIVE=$LIVE HALL=$HALL"
           code_live=$(curl -sL -o /tmp/live.html -w "%{http_code}" "$LIVE" || echo 000)
           code_hall=$(curl -sL -o /tmp/hall.html -w "%{http_code}" "$HALL" || echo 000)
-          code_raw=$(curl -sL -o /tmp/raw.html -w "%{http_code}" "$RAW" || echo 000)
-          code_raw_hall=$(curl -sL -o /tmp/raw-hall.html -w "%{http_code}" "$RAW_HALL" || echo 000)
-          echo "live_http=$code_live hall_http=$code_hall raw_http=$code_raw raw_hall_http=$code_raw_hall"
-          echo "=== live head ==="
-          head -c 400 /tmp/live.html | tr '\n' ' ' || true
-          echo
-          echo "=== hall head ==="
-          head -c 400 /tmp/hall.html | tr '\n' ' ' || true
-          echo
-          if grep -q "FIVE ROOMS\|START THE TOUR\|data-land" /tmp/raw-hall.html 2>/dev/null; then
-            echo "RAW_HALL_OK=1"
-          else
-            echo "::warning::Raw hall/index.html missing five-room markers"
-          fi
-          if grep -q "FIVE ROOMS\|START THE TOUR\|data-land" /tmp/hall.html 2>/dev/null; then
-            echo "LIVE_HALL_OK=1"
-          else
-            echo "::warning::LIVE /hall/ missing five-room hall — Pages may still be on an older publish or apex is not this repo"
-          fi
-          if grep -qi "Residual-Tax Software Control Plane\|Unity Framework" /tmp/live.html 2>/dev/null; then
-            if ! grep -q "Sandbox surface\|FIVE ROOMS" /tmp/live.html 2>/dev/null; then
-              echo "::warning::LIVE / still looks like merch or control-plane — cutover to /hall only if David says yes"
-            fi
-          fi
+          echo "live_http=$code_live hall_http=$code_hall"
           echo "manifest_sha=${{ needs.A_build.outputs.manifest_sha }}"
-          echo "Ring position: A built → B verified → C observed / and /hall. Checkout stays closed."
