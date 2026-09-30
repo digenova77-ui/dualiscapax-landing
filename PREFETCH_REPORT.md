@@ -1,16 +1,17 @@
-# PREFETCH REPORT — 2026-09-30T15:51:00Z
+# PREFETCH REPORT — 2026-09-30T15:51:40Z
 
 Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). The Grok Bots remain the **unknown branch** — their marks are verified against this receipt. An empty seat never passes by default.
 
-Trigger (untrusted event metadata only): push by digenova77-ui to main at `dda651041657e37994692569a5cdeb82e0373cc5`.
+Trigger (untrusted event metadata only): push by digenova77-ui to main at `23a90c0f0e3e3625882dd049883e68f5bbc45f27`.
 Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-site write.
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
-`github___list_commits` since `2026-09-29T00:00:00Z`, sha=main, perPage=50. Newest first (first page; more exist).
+`github___list_commits` since `2026-09-29T15:51:00Z`, sha=main, perPage=50. Newest first (first page; more exist).
 
 | SHA (short) | Message | Author | Time (UTC) |
 |---|---|---|---|
+| 23a90c0f | SCOPED-VISIBILITY.md: scoped visibility spec for factory desks | David J. Di Genova | 2026-09-30T15:51:25Z |
 | dda65104 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:50Z) | David J. Di Genova | 2026-09-30T15:51:12Z |
 | 8c53f4d1 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:49Z) | David J. Di Genova | 2026-09-30T15:50:27Z |
 | 18e3c5f9 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:49Z) | David J. Di Genova | 2026-09-30T15:49:40Z |
@@ -39,7 +40,7 @@ Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-
 
 List truncated by API page size; commits continue earlier in the 24h window.
 
-Trigger commit `dda65104` files: PREFETCH_REPORT.md only (prior receipt).
+Trigger commit `23a90c0f`: SCOPED-VISIBILITY.md (allowlist, not full factory view).
 
 ## TASK_ / RND- / PREFETCH / AUTO-INVOKE files that landed
 
@@ -60,6 +61,7 @@ From commit messages + prior known-branch receipt:
 Also present on main (not necessarily new this hour):
 - TASK_sandbox-test_2026-09-30.md
 - 07_FACTORY__TASK_verifier-build_2026-09-30.md
+- SCOPED-VISIBILITY.md (23a90c0f; not a TASK_/RND-/PREFETCH/AUTO-INVOKE filename)
 
 ## Workflow inventory
 
@@ -118,17 +120,18 @@ Repo workflow files (Actions registry):
 
 ## Recently triggered vs idle pipes
 
-`github___actions_list` method=list_workflow_runs, perPage=100 (sample of total_count 15327).
+`github___actions_list` method=list_workflow_runs, branch=main, perPage=50 (sample of total_count 2500 on this filter).
 
-Recently seen on this page (push-triggered by PREFETCH_REPORT and other main commits today):
+Recently seen on this page (push-triggered by PREFETCH_REPORT / SCOPED-VISIBILITY and other main commits):
 
 - .github/workflows/curl-gate.yml
 - .github/workflows/secret-scan.yml
 - .github/workflows/pinata-gateway-list.yml (completed failure on recent PREFETCH pushes)
 - dynamic/pages/pages-build-deployment
 
-Idle pipes (registered `.github/workflows/*` with **no run in this 100-run sample**):
+Idle pipes (registered `.github/workflows/*` with **no run in this recent-run sample**):
 
+- bulletin-board-watch.yml
 - bulletin-handoff.yml
 - critical-drop.yml
 - deploy.yml
@@ -136,13 +139,28 @@ Idle pipes (registered `.github/workflows/*` with **no run in this 100-run sampl
 - dualis-gate-replay.yml
 - encyclopedia-verify.yml
 - escalate.yml
+- factory_audit.yml
+- factory_mill.yml
+- factory_verify.yml
+- factory_workers.yml
+- fail-order.yml
+- flow-wattage.yml
+- forensics.yml
+- golf_usa_envelopes.yml
+- hockey_boys_omha_u16.yml (disabled_manually)
+- hockey_girls_owha.yml (disabled_manually)
+- hockey_house_rec.yml (disabled_manually)
 - hockey_ohf_five.yml (disabled_manually)
+- ice_session_bot.yml
+- iris-greet-mint.yml
 - iris-mint-greet.yml
 - jurisdiction-watch.yml
 - live-clock.yml
 - oidc-auth.yml
+- pack-self-deploy.yml
 - pages-direct-upload.yml
 - pinata-pin.yml
+- plate-verify.yml
 - plate_live_watch.yml
 - purge-pages-deployments.yml
 - residual-ring.yml
@@ -151,6 +169,8 @@ Idle pipes (registered `.github/workflows/*` with **no run in this 100-run sampl
 - swarm_bot_fleet.yml
 - swarm_runner.yml
 - unity_mesh.yml
+- unity_playground_idle.yml
+- wav-watch.yml
 - workers-live.yml
 
 This prefetch did **not** dispatch any of them.
