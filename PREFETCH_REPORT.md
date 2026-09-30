@@ -1,4 +1,4 @@
-# PREFETCH REPORT — 2026-09-30T21:05:00Z
+# PREFETCH REPORT — 2026-09-30T21:06:00Z
 
 Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). The Grok Bots remain the **unknown branch** — their marks are verified against this receipt. An empty seat never passes by default.
 
@@ -6,13 +6,16 @@ Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
-`github___list_commits` since `2026-09-29T00:00:00Z`, sha=main, perPage=50.
-Prior blob SHA at write: `dca035c14c6bbd6e45c1e1c9bb93e9ef2c12786a` (HEAD `c585a4cf91265df1984f963bb95f12cec1a06a67`).
-`github___get_repository_tree` path_filter `.github/workflows` recursive=false tree_sha=main: count 0 (empty filter result). Inventory taken from `github___get_file_contents` on `.github/workflows` plus `github___actions_list` list_workflows (total_count 46).
+Trigger event (untrusted metadata only): push by digenova77-ui to main, commit `3badef31d69f6de75340813573e8e67f875a3d39`.
+
+`github___list_commits` since `2026-09-29T21:06:00Z`, sha=main, perPage=50.
+Prior blob SHA at write: `36f3bd75b77f6ca12270210fc2d04aa80379840b` (HEAD `3badef31d69f6de75340813573e8e67f875a3d39`).
+`github___get_repository_tree` path_filter `.github/workflows` recursive=false tree_sha=main: count 0 (empty filter result). Inventory taken from prior directory listing plus `github___actions_list` list_workflows (total_count 46).
 
 ### Commits in window (page 1, 50)
 
 HEAD and non-receipt landings on the page:
+- `3badef31` 2026-09-30T21:06:10Z docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T21:05Z)
 - `c585a4cf` 2026-09-30T20:16:28Z chore(pipe): landscape drawers from book [skip ci]
 - `c7c1413b` 2026-09-30T19:30:01Z chore(factory): honest tick receipt [skip ci]
 - `b283adb8` 2026-09-30T17:23:47Z Three-bucket umpire rotation: claim, fetch, collapse — plus-one as root axiom, dual-pipe identity, Father draws
@@ -22,32 +25,23 @@ HEAD and non-receipt landings on the page:
 - `8207a9ff` 2026-09-30T17:03:50Z Post perpetuity handoff-exchange task (paper only, no deploy)
 - `a219a3ab` 2026-09-30T16:58:49Z chore(golf): harvest USA course envelopes [skip ci]
 - `3b44e3eb` STRIP: three-box method as universal logic
-- `e0fe9a61` bake validated-checklist law
-- `7b5b7704` docs: FATHER-DRAW-ORDER.md
-- `dee0edc4` FATHER-DRAW: ordered rollbackable IPFS migration
-- `8fff4155` docs(factory): remaining Father-draw items + compute-telemetry task
-- `c50edd4e` law: dual-pipe identity bake-in
-- remainder of page: PREFETCH_REPORT receipts
+- remainder of page: PREFETCH_REPORT receipts and earlier three-bucket / Father-draw docs
 
 ### Marked landings (TASK_ / RND- / PREFETCH / AUTO-INVOKE)
 
 Landed on this 50-commit page:
-- PREFETCH: many `docs: PREFETCH_REPORT.md — known-branch receipt` commits this hour (e.g. `c1e6b117`, `f3a888cf`, `a0fe2f66`, `e2b69844`, …)
-- TASK_: `0660eb42` TASK_remaining-gaps_2026-09-30 (CF token rotation, DNSLink, pricing mode)
-- TASK: `8bdfb0ba` TASK: close the three Father-draw gaps — CF token, DNSLink, pricing mark
-- RND-: `3956927e` RND-TASK: dual-pipe identity spec
-- RND-: `a3fd3c49` RND-TASK: global compute-decision estimate market
-- RND mention: `1e33d2c6` docs(pricing): PIPE E meter algorithm spec — RND task for desks to mark
-- AUTO-INVOKE.md: not observed as a new file or commit subject on this page
+- PREFETCH: many `docs: PREFETCH_REPORT.md — known-branch receipt` commits this hour (HEAD `3badef31`, plus `c1e6b117`, `f3a888cf`, `a0fe2f66`, `e2b69844`, …)
+- TASK_ / TASK / RND- / AUTO-INVOKE.md: no *new* subjects on this page beyond the prior-window marks already receipted (`0660eb42` TASK_remaining-gaps, `8bdfb0ba` TASK Father-draw gaps, `3956927e` RND-TASK dual-pipe identity, `a3fd3c49` RND-TASK compute-decision). AUTO-INVOKE.md not observed as a new file or commit subject on this page.
 
 ## Workflow inventory
 
-Files under `.github/workflows/` (directory listing):
+Files under `.github/workflows/` (Actions API + prior tree listing):
 - bulletin-board-watch.yml
 - bulletin-handoff.yml
 - critical-drop.yml
 - curl-gate.yml
 - deploy.yml
+- dual-control-tipseal.yml
 - dualis-gate-replay.yml
 - encyclopedia-verify.yml
 - escalate.yml
@@ -78,6 +72,7 @@ Files under `.github/workflows/` (directory listing):
 - purge-pages-deployments.yml
 - residual-ring.yml
 - secret-scan.yml
+- security.yml
 - stripe-fulfill.yml
 - swarm_bot_fleet.yml
 - swarm_runner.yml
@@ -87,12 +82,10 @@ Files under `.github/workflows/` (directory listing):
 - workers-live.yml
 
 Also registered in Actions API (not all are repo-tree yaml):
-- dual-control-tipseal.yml (active)
-- security.yml (active)
 - dynamic/dependabot/dependabot-updates (active)
 - dynamic/pages/pages-build-deployment (active)
 
-### Recently triggered (present on latest 100-run page; this job did not dispatch)
+### Recently triggered (present on latest 50-run page; this job did not dispatch)
 
 - curl-gate.yml
 - factory_audit.yml
@@ -111,7 +104,7 @@ Also registered in Actions API (not all are repo-tree yaml):
 - wav-watch.yml
 - dynamic/pages/pages-build-deployment
 
-Latest sampled run HEAD was `c585a4cf` / `c7c1413b` / `b283adb8`. pinata-gateway-list.yml last sampled push run concluded **failure** (run 36751073341) — observed only; not retried.
+Latest sampled run HEAD was `3badef31` / `c585a4cf` / `c7c1413b` / `b283adb8`. pinata-gateway-list.yml last sampled push run on HEAD concluded **failure** (run 36777215745) — observed only; not retried. pages-build-deployment was in_progress on HEAD at sample time (run 36777214854).
 
 ### Idle pipes (exist, not on the sampled recent-run page, or disabled_manually)
 
