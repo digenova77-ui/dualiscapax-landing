@@ -1,16 +1,17 @@
-# PREFETCH REPORT — 2026-09-30T15:49:00Z
+# PREFETCH REPORT — 2026-09-30T15:50:00Z
 
 Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). The Grok Bots remain the **unknown branch** — their marks are verified against this receipt. An empty seat never passes by default.
 
-Trigger (untrusted event metadata only): push by digenova77-ui to main at `18e3c5f908f7f407fd5422d3883afe6962a9099c`.
+Trigger (untrusted event metadata only): push by digenova77-ui to main at `8c53f4d1a77e216ef5a740832e0b65b0d37edb45`.
 Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-site write.
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
-`github___list_commits` since `2026-09-29T15:49:00Z`, sha=main, perPage=50. Newest first (first page; more exist).
+`github___list_commits` since `2026-09-29T15:50:00Z`, sha=main, perPage=50. Newest first (first page; more exist).
 
 | SHA (short) | Message | Author | Time (UTC) |
 |---|---|---|---|
+| 8c53f4d1 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:49Z) | David J. Di Genova | 2026-09-30T15:50:27Z |
 | 18e3c5f9 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:49Z) | David J. Di Genova | 2026-09-30T15:49:40Z |
 | b0188c8e | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:47Z) | David J. Di Genova | 2026-09-30T15:48:32Z |
 | f9989cbe | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:45Z) | David J. Di Genova | 2026-09-30T15:47:16Z |
@@ -34,13 +35,10 @@ Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-
 | e89752a2 | docs: IPFS migration status | David J. Di Genova | 2026-09-30T15:00:45Z |
 | 56249930 | fix(pages): remove catchall splat | David J. Di Genova | 2026-09-30T15:00:41Z |
 | cfffd74c | docs: IPFS migration task (TASK_ipfs-migration_2026-09-30.md) | David J. Di Genova | 2026-09-30T14:59:07Z |
-| 2d115c7b | chore(plate): live watch receipt [skip ci] | Dualis Plate Watch | 2026-09-30T14:56:32Z |
-| d0d8a361 | _redirects: remove catchall | David J. Di Genova | 2026-09-30T14:54:57Z |
-| 8c711bf4 | 404.html: real not-found page | David J. Di Genova | 2026-09-30T14:54:50Z |
 
 List truncated by API page size; commits continue earlier in the 24h window.
 
-Trigger commit `18e3c5f9` files: PREFETCH_REPORT.md only (prior receipt).
+Trigger commit `8c53f4d1` files: PREFETCH_REPORT.md only (prior receipt).
 
 ## TASK_ / RND- / PREFETCH / AUTO-INVOKE files that landed
 
@@ -48,7 +46,8 @@ From commit messages + prior known-branch receipt:
 
 | Commit | Files landed |
 |---|---|
-| 18e3c5f9 | PREFETCH_REPORT.md (update, prior receipt) |
+| 8c53f4d1 | PREFETCH_REPORT.md (update, prior receipt) |
+| 18e3c5f9 | PREFETCH_REPORT.md (update) |
 | b0188c8e | PREFETCH_REPORT.md (update) |
 | f9989cbe | PREFETCH_REPORT.md (update) |
 | 7493b941 | RND-TASK_join-state-mechanism_2026-09-30.md, RND-SPEC_join-state-record_2026-09-30.md |
@@ -117,17 +116,16 @@ Repo workflow files (Actions registry):
 
 ## Recently triggered vs idle pipes
 
-`github___actions_list` method=list_workflow_runs, branch=main, perPage=100 (sample of total_count 2500).
+`github___actions_list` method=list_workflow_runs, perPage=100 (sample of total_count 15323).
 
 Recently seen on this page (push-triggered by PREFETCH_REPORT and other main commits today):
 
 - .github/workflows/curl-gate.yml
 - .github/workflows/secret-scan.yml
 - .github/workflows/pinata-gateway-list.yml (completed failure on recent PREFETCH pushes)
-- .github/workflows/pack-self-deploy.yml
 - dynamic/pages/pages-build-deployment
 
-Idle pipes (registered `.github/workflows/*` with **no run in this 100-run main sample**):
+Idle pipes (registered `.github/workflows/*` with **no run in this 100-run sample**):
 
 - bulletin-handoff.yml
 - critical-drop.yml
