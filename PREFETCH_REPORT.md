@@ -1,4 +1,4 @@
-# PREFETCH REPORT — 2026-09-30T21:06:00Z
+# PREFETCH REPORT — 2026-09-30T21:07:00Z
 
 Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). The Grok Bots remain the **unknown branch** — their marks are verified against this receipt. An empty seat never passes by default.
 
@@ -6,15 +6,16 @@ Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
-Trigger event (untrusted metadata only): push by digenova77-ui to main, commit `3badef31d69f6de75340813573e8e67f875a3d39`.
+Trigger event (untrusted metadata only): push by digenova77-ui to main, commit `9a9d1dab8d0a7616f970d5b68ed182ecc2a43a2e`.
 
-`github___list_commits` since `2026-09-29T21:06:00Z`, sha=main, perPage=50.
-Prior blob SHA at write: `36f3bd75b77f6ca12270210fc2d04aa80379840b` (HEAD `3badef31d69f6de75340813573e8e67f875a3d39`).
-`github___get_repository_tree` path_filter `.github/workflows` recursive=false tree_sha=main: count 0 (empty filter result). Inventory taken from prior directory listing plus `github___actions_list` list_workflows (total_count 46).
+`github___list_commits` since `2026-09-29T21:07:00Z`, sha=main, perPage=50.
+Prior blob SHA at write: `8fa685fd3d53a02394dc3b2df4030601c8223c67` (HEAD `9a9d1dab8d0a7616f970d5b68ed182ecc2a43a2e`).
+`github___get_repository_tree` path_filter `.github/workflows` recursive=false tree_sha=main: count 0 (empty filter result). Inventory taken from `github___actions_list` list_workflows (total_count 46).
 
 ### Commits in window (page 1, 50)
 
 HEAD and non-receipt landings on the page:
+- `9a9d1dab` 2026-09-30T21:07:06Z docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T21:06Z)
 - `3badef31` 2026-09-30T21:06:10Z docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T21:05Z)
 - `c585a4cf` 2026-09-30T20:16:28Z chore(pipe): landscape drawers from book [skip ci]
 - `c7c1413b` 2026-09-30T19:30:01Z chore(factory): honest tick receipt [skip ci]
@@ -24,18 +25,18 @@ HEAD and non-receipt landings on the page:
 - `4bed002c` 2026-09-30T17:06:12Z Three-bucket pass-through + remaining Father-draw list
 - `8207a9ff` 2026-09-30T17:03:50Z Post perpetuity handoff-exchange task (paper only, no deploy)
 - `a219a3ab` 2026-09-30T16:58:49Z chore(golf): harvest USA course envelopes [skip ci]
-- `3b44e3eb` STRIP: three-box method as universal logic
 - remainder of page: PREFETCH_REPORT receipts and earlier three-bucket / Father-draw docs
 
 ### Marked landings (TASK_ / RND- / PREFETCH / AUTO-INVOKE)
 
 Landed on this 50-commit page:
-- PREFETCH: many `docs: PREFETCH_REPORT.md — known-branch receipt` commits this hour (HEAD `3badef31`, plus `c1e6b117`, `f3a888cf`, `a0fe2f66`, `e2b69844`, …)
-- TASK_ / TASK / RND- / AUTO-INVOKE.md: no *new* subjects on this page beyond the prior-window marks already receipted (`0660eb42` TASK_remaining-gaps, `8bdfb0ba` TASK Father-draw gaps, `3956927e` RND-TASK dual-pipe identity, `a3fd3c49` RND-TASK compute-decision). AUTO-INVOKE.md not observed as a new file or commit subject on this page.
+- PREFETCH: many `docs: PREFETCH_REPORT.md — known-branch receipt` commits this hour (HEAD `9a9d1dab`, plus `3badef31`, `c1e6b117`, …)
+- TASK_ remaining-gaps / TASK Father-draw gaps / RND-TASK dual-pipe identity: already on the page from earlier today; no *new* subjects since the prior receipt HEAD `3badef31` besides this PREFETCH receipt chain.
+- AUTO-INVOKE.md: not observed as a new file or commit subject on this page.
 
 ## Workflow inventory
 
-Files under `.github/workflows/` (Actions API + prior tree listing):
+Files under `.github/workflows/` (Actions API):
 - bulletin-board-watch.yml
 - bulletin-handoff.yml
 - critical-drop.yml
@@ -85,7 +86,7 @@ Also registered in Actions API (not all are repo-tree yaml):
 - dynamic/dependabot/dependabot-updates (active)
 - dynamic/pages/pages-build-deployment (active)
 
-### Recently triggered (present on latest 50-run page; this job did not dispatch)
+### Recently triggered (present on latest 100-run page; this job did not dispatch)
 
 - curl-gate.yml
 - factory_audit.yml
@@ -104,7 +105,7 @@ Also registered in Actions API (not all are repo-tree yaml):
 - wav-watch.yml
 - dynamic/pages/pages-build-deployment
 
-Latest sampled run HEAD was `3badef31` / `c585a4cf` / `c7c1413b` / `b283adb8`. pinata-gateway-list.yml last sampled push run on HEAD concluded **failure** (run 36777215745) — observed only; not retried. pages-build-deployment was in_progress on HEAD at sample time (run 36777214854).
+Latest sampled run HEAD was `9a9d1dab`. pinata-gateway-list.yml last sampled push run on that SHA concluded **failure** (run 36777319511) — observed only; not retried. pages-build-deployment was in_progress on HEAD at sample time (run 36777318651).
 
 ### Idle pipes (exist, not on the sampled recent-run page, or disabled_manually)
 
