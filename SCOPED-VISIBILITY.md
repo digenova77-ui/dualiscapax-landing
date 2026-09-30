@@ -1,52 +1,57 @@
 # SCOPED-VISIBILITY.md
 
-**Status:** LOOK ONLY. Paper spec. Not a land order. Not a deploy.
+**Date:** 2026-09-30
+**Status:** LOOK ONLY — Father draws
+**Root rule:** scoped visibility, not full visibility, not proofs-only
 
-**Root rule:** scoped visibility, not full factory view.
+## The question
 
-A desk sees only what its job needs. Everything else is a hole it can name but not read.
+Should every agent see the whole factory's operations, or only what it can derive by proofs?
 
-## Why not full visibility
+## The answer
 
-- A desk that can see everything can act on everything.
-- That is the 100% leash (STRESS row 20) and the swarm-as-census problem.
-- Full visibility also makes attribution impossible: if every desk sees every receipt, no desk's mark is distinguishable.
+Neither extreme. **Scoped visibility.**
 
-## What a desk sees
+- Full visibility → a desk that can see everything can act on everything → 100% leash (STRESS row 20, REFUSE)
+- Proofs-only → a desk that cannot see its own allowlist cannot do its job
+- Scoped visibility → each desk sees exactly its PATH_ALLOWLIST; everything else is a named hole it can cite but not read
 
-1. Its own charter (PATH_ALLOWLIST, hard denies, production freeze).
-2. The task file assigned to it (from FACTORY_BULLETIN_BOARD or a direct send).
-3. The receipts it has written.
-4. Public law files: CHARTER, CITE-OR-HOLE, ROUTER, RECEIPT-SPINE, VERIFIER, ANTI-PARADOX.
+## How it works
 
-## What a desk does not see
-
-- Other desks' internal working notes.
-- SEAT_ONLY material (how-we-got-it, sealed papers, handoff folders).
-- Secrets, tokens, keys.
-- The Father's draws and decisions before they are published as law.
-
-## How it is enforced
-
-- Path allowlists in each desk's charter (already the pattern: Desk Iris Engine, Desk Web Wordage, Desk Style Unify).
-- The bulletin board is the doorbell: a desk reads only the task files routed to it.
-- DCLM collapses claims; Twain² marks pragmatism; neither sees the other's internals.
-- No desk can list the factory root or enumerate other desks' folders.
-
-## What this spec does not do
-
-- It does not create a new Kind.
-- It does not grant any desk production rights.
-- It does not replace the Father's switch.
-- It does not make the board a command channel.
-
-## Next step
-
-Father reviews. If YES, each desk's charter gets an explicit VISIBILITY section citing this file. Until then this is paper.
-
+```text
+Desk Iris Engine     → cf-pages/iris.html + js/iris-* + ai/iris-* + factory-security-corpus
+Desk Web Wordage    → cf-pages/** + factory-security-corpus (copy only)
+Desk Style Unify     → cf-pages/** (CSS only)
+Desk Absolute Link Census → cf-pages/** (href graph only)
+Desk RTE Boards Watch → cf-pages/rte/** + Absolute aliases
+Desk Park Honesty Wordage → cf-pages pay/payments/donate/buy/unity/pay-thanks
+Desk Golf           → ATH-GOLF-COURSE-* harvest
+Desk Hockey         → ATH-HOCKEY-RINK-* harvest
+Desk DCLM GitHub    → short-pipe hashing, claims, WORK_KEY dedupe, receipts
+Desk Keybridge      → capability routing (find holder, delegate, return evidence)
+Desk GRANT_OFFBAND  → paper/cite only, no tip mutate
+Bulletin Watcher    → FACTORY_BULLETIN_BOARD folder only (doorbell, not floor)
+Bulletin Signaler   → urgency routing only
+Bulletin Dispatcher → routes tasks, does not bypass DCLM
+Twain²             → /workspace/twain2/ receipts only
+DCLM                → collapse, claims, evidence — parent of factory desks
 ```
-Look   = scoped visibility named
-Use    = Father.draw
-Stake  = off
-street = unchanged
-```
+
+## Rules
+
+1. A desk reads only its allowlist. Everything else is a HOLE it can name, not a file it can open.
+2. A desk cannot act on what it cannot see. No blind deploys, no blind tips.
+3. Author never verifies itself. Twain² runs on items it did not author.
+4. The bulletin board is the doorbell. Tasks land there; desks execute only after DCLM conditions.
+5. Father draws. Desks mark. No desk sits `/`.
+
+## What this is not
+
+- Not a census (STRESS 15 REFUSE)
+- Not a second lander
+- Not a bypass of DCLM
+- Not production — LOOK ONLY until Father draws
+
+## Street
+
+Unchanged. No deploy. No tip. No mint.
