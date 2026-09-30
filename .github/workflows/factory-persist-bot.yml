@@ -1,0 +1,47 @@
+name: factory-persist-bot
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  persist-tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 20
+
+      - name: known-branch tick
+        run: |
+          set -euo pipefail
+          TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          {
+            echo "# PERSIST TICK — ${TS}"
+            echo
+            echo "Dual-pipe known branch. Rail B (Desk Iris Engine) is not invoked from this workflow."
+            echo "Scope: read-only street. No Cloudflare. No Pinata. No DNS. No live overwrite."
+            echo
+            echo "## Workflow inventory"
+            ls -1 .github/workflows | sort
+            echo
+            echo "## Recent commits"
+            git log -10 --oneline --format='%h %ci %s'
+            echo
+            echo "## Law files present"
+            ls -1 AGENT/LAW-AUTOMATIONS.md AGENT/LAW-DUAL-PIPE-IRIS.md AGENT/LAW-PERSIST-BOT.md 2>/dev/null || true
+          } > AGENT/RECEIPTS/PERSIST_TICK.md
+          git config user.name "factory-persist-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add AGENT/RECEIPTS/PERSIST_TICK.md
+          if git diff --cached --quiet; then
+            echo "no persist tick change"
+          else
+            git commit -m "tick(factory): persist known-branch ${TS}"
+            git push
+          fi
