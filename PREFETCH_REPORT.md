@@ -1,15 +1,15 @@
-# PREFETCH REPORT — 2026-09-30T16:51:00Z
+# PREFETCH REPORT — 2026-09-30T16:52:00Z
 
 Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). The Grok Bots remain the **unknown branch** — their marks are verified against this receipt. An empty seat never passes by default.
 
 Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-site write.
 
-Trigger event (untrusted metadata only): push by digenova77-ui to main, cited commit `7b5b77046afa32aad40187de3d0c026537799e38`.
+Trigger event (untrusted metadata only): push by digenova77-ui to main, cited commit `9b62603c37cb35efbffd2fda9a20a88f5b882666`.
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
 `github___list_commits` since `2026-09-29T16:51:00Z`, sha=main, perPage=50. Newest first (first page; more exist in the 24h window).
-HEAD at this session fetch: `7b5b77046afa32aad40187de3d0c026537799e38`.
+HEAD at this session fetch: `7b5b77046afa32aad40187de3d0c026537799e38` (file blob SHA at write: ebda52f0444a83cf249aa561702c8db7e4e2305a).
 
 - 7b5b7704 — 2026-09-30T16:51:51Z — docs: FATHER-DRAW-ORDER.md — five Father-draw items, rollbackable order, IPFS cutover. https://github.com/digenova77-ui/dualiscapax-landing/commit/7b5b77046afa32aad40187de3d0c026537799e38
 - 9b62603c — 2026-09-30T16:51:47Z — docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T16:51Z). https://github.com/digenova77-ui/dualiscapax-landing/commit/9b62603c37cb35efbffd2fda9a20a88f5b882666
@@ -32,15 +32,16 @@ HEAD at this session fetch: `7b5b77046afa32aad40187de3d0c026537799e38`.
 
 ## TASK_ / RND- / PREFETCH / AUTO-INVOKE landings
 
-- 7b5b7704 — FATHER-DRAW-ORDER.md (event commit; message does not use TASK_/RND-/PREFETCH/AUTO-INVOKE prefixes)
-- 0660eb42 — TASK_remaining-gaps_2026-09-30 (message prefix)
+- 7b5b7704 — FATHER-DRAW-ORDER.md (docs; not TASK_/RND-/PREFETCH/AUTO-INVOKE prefix)
+- 9b62603c and sibling PREFETCH_REPORT.md receipts this hour
+- dee0edc4 — FATHER-DRAW IPFS migration spec (no TASK_/RND-/PREFETCH/AUTO-INVOKE prefix)
+- 0660eb42 — TASK_remaining-gaps_2026-09-30
 - 8bdfb0ba — TASK father-draw gaps
 - 3956927e — RND-TASK dual-pipe identity
 - a3fd3c49 — RND-TASK global compute-decision estimate market
-- 1e33d2c6 — RND pricing meter spec (message)
-- 90827996 — RND dividend-vehicle task (message)
-- c909b9bb — TASK audit-stream (message)
-- PREFETCH_REPORT.md — this known-branch receipt (and many prior receipts this hour)
+- 1e33d2c6 — RND pricing meter spec
+- 90827996 — RND dividend-vehicle task
+- c909b9bb — TASK audit-stream
 - AUTO-INVOKE.md — not a new file on the event commit
 
 ## Workflow inventory
