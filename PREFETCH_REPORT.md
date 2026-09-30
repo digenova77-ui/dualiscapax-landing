@@ -1,4 +1,4 @@
-# PREFETCH REPORT — 2026-09-30T23:35:45Z
+# PREFETCH REPORT — 2026-09-30T23:36:45Z
 
 Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). The Grok Bots remain the **unknown branch** — their marks are verified against this receipt. An empty seat never passes by default.
 
@@ -6,15 +6,16 @@ Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
-Trigger event (untrusted metadata only): push by digenova77-ui to main, commit `e40828701639747f912354bfb8dff788f8f74c75`.
+Trigger event (untrusted metadata only): push by digenova77-ui to main, commit `7ca7e5b6f92a8784b1b2733478570de1b14df361`.
 
 `github___list_commits` since `2026-09-29T00:00:00Z`, sha=main, perPage=50.
-Prior blob SHA at write: `d96d69a548e8a67ad0ac5894b0c87764fdfce431` (previous report HEAD `e408287…`).
+Prior blob SHA at write: `c9d17767e680dea989cb4b87df922d61d8d2879a` (previous report HEAD `7ca7e5b6…`).
 `github___get_repository_tree` path_filter `.github/workflows` recursive=false tree_sha=main: count 0 (empty filter result). Inventory taken from `github___actions_list` list_workflows (total_count 47).
 
 ### Commits in window (page 1, 50)
 
 HEAD and non-receipt landings on the page:
+- `7ca7e5b6` 2026-09-30T23:36:29Z docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T23:35Z)
 - `e4082870` 2026-09-30T23:35:34Z docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T23:35Z)
 - `9385e6c0` 2026-09-30T23:35:24Z chore(unity): honest mesh docket [skip ci]
 - `445e85f8` 2026-09-30T23:35:24Z chore(unity): honest mesh docket [skip ci]
@@ -27,13 +28,13 @@ HEAD and non-receipt landings on the page:
 - `b283adb8` 2026-09-30T17:23:47Z Three-bucket umpire rotation: claim, fetch, collapse — plus-one as root axiom, dual-pipe identity, Father draws
 - remainder of page: PREFETCH_REPORT receipts and earlier three-bucket / Father-draw / handoff docs
 
-New vs prior receipt (`d4db7252` window): two `chore(unity): honest mesh docket [skip ci]` commits (`445e85f8`, `9385e6c0`) plus the prior receipt itself (`e4082870`).
+New vs prior receipt (HEAD was already `7ca7e5b6` when this job started): this write is the next receipt after the previous known-branch file at SHA `c9d17767`. No additional non-receipt commits after `7ca7e5b6` in the list_commits snapshot.
 
 ### Marked landings (TASK_ / RND- / PREFETCH / AUTO-INVOKE)
 
 Landed on this 50-commit page:
-- PREFETCH: receipt chain including HEAD `e4082870` and earlier `docs: PREFETCH_REPORT.md — known-branch receipt` commits. This write is the next receipt.
-- TASK_ / RND- / AUTO-INVOKE: no *new* filenames matching TASK_, RND-, or AUTO-INVOKE on HEAD `e4082870`. Dual-pipe Iris pair + persist-bot laws remain from `d4db7252` (`AGENT/LAW-*`, `factory-persist-bot.yml`). Unity mesh dockets used `[skip ci]` and did not add those prefixes.
+- PREFETCH: receipt chain including HEAD `7ca7e5b6` and earlier `docs: PREFETCH_REPORT.md — known-branch receipt` commits. This write is the next receipt.
+- TASK_ / RND- / AUTO-INVOKE: no *new* filenames matching TASK_, RND-, or AUTO-INVOKE on HEAD `7ca7e5b6`. Dual-pipe Iris pair + persist-bot laws remain from `d4db7252` (`AGENT/LAW-*`, `factory-persist-bot.yml`). Unity mesh dockets used `[skip ci]` and did not add those prefixes.
 - AUTO-INVOKE.md: not observed as a new file on HEAD.
 
 ## Workflow inventory
@@ -91,10 +92,10 @@ Also registered in Actions API:
 
 ### Recently triggered (present on latest 100-run page; this job did not dispatch)
 
-- curl-gate.yml (in_progress on HEAD `e4082870`, run 36791884386; prior success on `d4db7252`)
-- secret-scan.yml (in_progress on HEAD `e4082870`, run 36791884332)
-- pinata-gateway-list.yml (completed failure on HEAD `e4082870`, run 36791883306 — observed only; not retried)
-- dynamic/pages/pages-build-deployment (pending/in_progress/cancelled across HEAD and mesh-docket SHAs)
+- curl-gate.yml (in_progress on HEAD `7ca7e5b6`, run 36791960174; prior success on `e4082870`)
+- secret-scan.yml (in_progress on HEAD `7ca7e5b6`, run 36791960238; prior success on `e4082870`)
+- pinata-gateway-list.yml (completed failure on HEAD `7ca7e5b6`, run 36791958975 — observed only; not retried)
+- dynamic/pages/pages-build-deployment (pending on HEAD `7ca7e5b6`, run 36791958996; in_progress/cancelled across prior SHAs)
 - unity_mesh.yml (success on `d4db7252`, issue event)
 - pack-self-deploy.yml
 - factory_workers.yml
