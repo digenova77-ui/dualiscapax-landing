@@ -31,15 +31,15 @@ One engine. Infinite seatings. L1 look through L6 root.
 
 ## How paid
 
-Look $0. **Stripe retired — not used.** No live till. No replacement processor from this card. eFuse DECLARED peg, not a live market. Modeled dollars stay MODELED.
+Look $0. Stripe is **RETIRED** — not used anymore. No replacement till from the desk. eFuse DECLARED peg, not a live market. Modeled dollars stay MODELED.
 
 ## RETIRED
 
-Swiss / Liechtenstein / Singapore trusts. 7-of-11 anchors. Stripe / buy.stripe.com as Dualis till. Not in place.
+Swiss / Liechtenstein / Singapore trusts. 7-of-11 anchors. Stripe. Not in place.
 
 ## L0
 
 NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING
 
 Apex = named zip at the key holder. Pin A frozen unless lander bytes change.
-He writes. He decides.
+He decides. Launch is his. Revoke is his.
