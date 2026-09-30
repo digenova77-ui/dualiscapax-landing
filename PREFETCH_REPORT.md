@@ -1,16 +1,17 @@
-# PREFETCH REPORT — 2026-09-30T15:50:00Z
+# PREFETCH REPORT — 2026-09-30T15:51:00Z
 
 Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). The Grok Bots remain the **unknown branch** — their marks are verified against this receipt. An empty seat never passes by default.
 
-Trigger (untrusted event metadata only): push by digenova77-ui to main at `8c53f4d1a77e216ef5a740832e0b65b0d37edb45`.
+Trigger (untrusted event metadata only): push by digenova77-ui to main at `dda651041657e37994692569a5cdeb82e0373cc5`.
 Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-site write.
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
-`github___list_commits` since `2026-09-29T15:50:00Z`, sha=main, perPage=50. Newest first (first page; more exist).
+`github___list_commits` since `2026-09-29T00:00:00Z`, sha=main, perPage=50. Newest first (first page; more exist).
 
 | SHA (short) | Message | Author | Time (UTC) |
 |---|---|---|---|
+| dda65104 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:50Z) | David J. Di Genova | 2026-09-30T15:51:12Z |
 | 8c53f4d1 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:49Z) | David J. Di Genova | 2026-09-30T15:50:27Z |
 | 18e3c5f9 | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:49Z) | David J. Di Genova | 2026-09-30T15:49:40Z |
 | b0188c8e | docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T15:47Z) | David J. Di Genova | 2026-09-30T15:48:32Z |
@@ -38,7 +39,7 @@ Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-
 
 List truncated by API page size; commits continue earlier in the 24h window.
 
-Trigger commit `8c53f4d1` files: PREFETCH_REPORT.md only (prior receipt).
+Trigger commit `dda65104` files: PREFETCH_REPORT.md only (prior receipt).
 
 ## TASK_ / RND- / PREFETCH / AUTO-INVOKE files that landed
 
@@ -46,7 +47,8 @@ From commit messages + prior known-branch receipt:
 
 | Commit | Files landed |
 |---|---|
-| 8c53f4d1 | PREFETCH_REPORT.md (update, prior receipt) |
+| dda65104 | PREFETCH_REPORT.md (update, prior receipt) |
+| 8c53f4d1 | PREFETCH_REPORT.md (update) |
 | 18e3c5f9 | PREFETCH_REPORT.md (update) |
 | b0188c8e | PREFETCH_REPORT.md (update) |
 | f9989cbe | PREFETCH_REPORT.md (update) |
@@ -116,7 +118,7 @@ Repo workflow files (Actions registry):
 
 ## Recently triggered vs idle pipes
 
-`github___actions_list` method=list_workflow_runs, perPage=100 (sample of total_count 15323).
+`github___actions_list` method=list_workflow_runs, perPage=100 (sample of total_count 15327).
 
 Recently seen on this page (push-triggered by PREFETCH_REPORT and other main commits today):
 
