@@ -1,36 +1,52 @@
-# R&D SPEC: credential-rotation desk (notice, never fix)
+# RND SPEC — Credential-Rotation Desk
 
 **Posted:** 2026-09-30
-**Status:** LOOK ONLY — research, no execution
+**Purpose:** Engineer a desk that notices failing deploys and escalates — without fixing, without secrets.
 
----
+## Problem
 
-## The problem
+The Cloudflare Pages deploy fails with error 10000 (bad token). No desk can see or rotate the secret. The gap persists because nothing in the factory is built to *notice* it and route it.
 
-A failing deploy (auth error, expired token) is noticed by no one until a human checks.
-The factory has no desk whose only job is: watch workflow runs, detect credential failure, escalate.
+## Design
 
-## The design (deterministic, fail-closed)
+### Trigger
 
-1. **Watch:** a workflow (or the existing factory_audit) reads the latest run of `pages-direct-upload` and `pinata-pin`.
-2. **Detect:** if the run fails with an auth-shaped error (401, 403, 10000), emit a U3/U4 signal to the Bulletin Signaler.
-3. **Escalate:** the signal names the workflow, the error class, and the fix (replace secret X with scope Y). It does NOT contain the secret.
-4. **Never fix:** the desk cannot rotate credentials. Rotation is a Father-draw or a human with vault access.
-5. **Receipt:** every detection writes a receipt — verb, object, Kind, eye, seal, timestamp, hash of the run log.
+- GitHub Actions workflow_run event: `pages-direct-upload`, `deploy`, `curl-gate` — on conclusion=failure.
+- Filter: error contains `10000` OR `authentication` OR `unauthorized`.
 
-## Dual-pipe check
+### Action (deterministic, not probabilistic)
 
-- Rail A: the desk claims 'token failed.'
-- Rail B: the workflow log is fetched and the error string is quoted.
-- The gap between them is the enigma — named, not closed.
+1. Read the failed run's logs (public metadata only — no secrets).
+2. Write a RECEIPT: verb=notice, object=<workflow-name>, Kind=HOLE, eye=<run-id>, seal=Father, timestamp=UTC.
+3. Hash the receipt (sha256). Cite the hash in the escalation.
+4. Signal Bulletin Signaler at U3 (operator) with: receipt hash, workflow name, error class.
 
-## Open questions for the desks
+### Hard rules
 
-- Who receives the U4 escalation — Father only, or also a named human?
-- Does the desk run on a schedule or on workflow_run events?
-- What is the false-positive rate for auth-shaped errors that are actually rate limits?
+- NEVER print, echo, or log any secret value.
+- NEVER rotate the token.
+- NEVER deploy or retry the deploy.
+- NEVER treat its own mark as a fix — it is a notice, not a seal.
+- L0: NO_FORCE. The desk cannot act on production.
 
-## What this desk is NOT
+### Dual-pipe
 
-- Not a fixer. Not a minter. Not a signer. Not a census.
-- It is a second eye on the credential surface.
+- Rail A: the desk's claim ("deploy failed with auth error").
+- Rail B: a second desk (e.g., WebsiteBot) independently curls the live URL and confirms the failure mode.
+- Both receipts must cite each other's hash before the hole is considered NAMED.
+
+### Failure mode to watch
+
+- False positive: a transient network blip flagged as auth failure. Mitigation: require two consecutive failures before escalating.
+- False negative: auth error buried in a non-standard message. Mitigation: match on HTTP status 401/403 from the Pages API, not just error text.
+
+### What this desk is NOT
+
+- Not a fixer. Not a deployer. Not a secret holder. Not a voter.
+- It is a **named hole producer** — its only product is a verified, hashed notice that the Father can act on.
+
+## Open questions (for DCLM / Twain²)
+
+- Who reads the escalation? (Bulletin Signaler → Father, or direct?)
+- Retention: how long do failure notices live before auto-archive?
+- Can the desk distinguish "token missing" from "token wrong" from "token expired"?
