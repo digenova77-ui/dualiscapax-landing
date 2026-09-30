@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Unity Network · eFuse</title>
+  <meta name="theme-color" content="#020308" />
+  <meta name="description" content="Unity Network wallet for the eFuse unit. Not issued. This page does not hold a seed." />
+  <link rel="stylesheet" href="../../theme.css" />
+  <style>
+    .mark { letter-spacing: .12em; text-transform: uppercase; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .72rem; color: var(--blue); }
+    .orb {
+      width: 4.2rem; height: 4.2rem; margin: 1.4rem auto 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, #e8f1ff, transparent 42%),
+        radial-gradient(circle at 70% 70%, rgba(74,143,216,.55), transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(20,40,80,.9), #020308 70%);
+      box-shadow: 0 18px 40px rgba(0,0,0,.55), 0 0 28px rgba(158,197,255,.18);
+    }
+    .addr {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: .82rem;
+      word-break: break-all;
+      color: var(--fg);
+    }
+    button.door {
+      background: none;
+      border: 0;
+      cursor: pointer;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header>
+      <span class="mark">Unity Network</span>
+      <nav>
+        <a class="on" href="wallet.html">Vault</a>
+        <a href="PLATE.md">Plate</a>
+      </nav>
+    </header>
+    <p class="eyebrow">eFuse · vault</p>
+    <h1>Hold the unit.</h1>
+    <p class="lede">This glass is the Unity Network. The coin is eFuse. The seed stays on your device. This page never asks for it and never stores it.</p>
+    <div class="orb" aria-hidden="true"></div>
+    <div class="hud">
+      <p id="status">No device is connected. Issued is no. There is no contract to read yet.</p>
+      <p class="addr" id="address"></p>
+    </div>
+    <section>
+      <div class="label">Device</div>
+      <p>Open the wallet you already tested. Hardware first for the founder vault. A throwaway is fine for beta.</p>
+      <button class="door" type="button" id="connect">Connect the device</button>
+      <button class="door" type="button" id="sign">Sign the plate</button>
+    </section>
+    <section>
+      <div class="label">What this is not</div>
+      <ul>
+        <li>Not a company letterhead.</li>
+        <li>Not a place to type twenty-four words.</li>
+        <li>Not a listing.</li>
+        <li>Not issued.</li>
+      </ul>
+    </section>
+    <footer>Unity Network · eFuse · no seed on this glass</footer>
+  </div>
+  <script>
+    const status = document.getElementById("status");
+    const addressEl = document.getElementById("address");
+    let account = null;
+    function say(text) { status.textContent = text; }
+    document.getElementById("connect").addEventListener("click", async () => {
+      const eth = window.ethereum;
+      if (!eth) {
+        say("No wallet is in this browser. Open it from the device that already holds the key.");
+        return;
+      }
+      try {
+        const accounts = await eth.request({ method: "eth_requestAccounts" });
+        account = accounts && accounts[0] ? accounts[0] : null;
+        if (!account) {
+          say("The device did not hand over an address.");
+          return;
+        }
+        addressEl.textContent = account;
+        say("Device connected. eFuse balance cannot be read. The unit is not issued. This address is not the founder vault until it signs.");
+      } catch (err) {
+        say("The device refused the connect.");
+      }
+    });
+    document.getElementById("sign").addEventListener("click", async () => {
+      const eth = window.ethereum;
+      if (!eth || !account) {
+        say("Connect the device first.");
+        return;
+      }
+      try {
+        const sig = await eth.request({
+          method: "personal_sign",
+          params: ["eFuse founder vault", account]
+        });
+        say("The plate sentence is signed. Paste only the public address back to the factory. Keep the signature. Never send the seed.");
+        addressEl.textContent = account + "\n" + String(sig).slice(0, 18) + "…";
+      } catch (err) {
+        say("The device refused the signature.");
+      }
+    });
+  </script>
+</body>
+</html>
