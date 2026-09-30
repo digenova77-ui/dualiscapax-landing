@@ -4,16 +4,18 @@ Dual-pipe: this file is the **known branch** (fetched bytes from GitHub APIs). T
 
 Scope: read-only. No workflow trigger, no deploy, no Cloudflare/Pinata/DNS/live-site write.
 
-Trigger event (untrusted metadata only): push by digenova77-ui to main, cited commit `dee0edc43a7c7f705c30c5f7c91d09ccbb84a74b`.
+Trigger event (untrusted metadata only): push by digenova77-ui to main, cited commit `7b5b77046afa32aad40187de3d0c026537799e38`.
 
 ## Repo: digenova77-ui/dualiscapax-landing @ main
 
 `github___list_commits` since `2026-09-29T16:51:00Z`, sha=main, perPage=50. Newest first (first page; more exist in the 24h window).
-HEAD at this session fetch: `92136d80ff028684534f1379ca6728ac0159c406`.
+HEAD at this session fetch: `7b5b77046afa32aad40187de3d0c026537799e38`.
 
+- 7b5b7704 — 2026-09-30T16:51:51Z — docs: FATHER-DRAW-ORDER.md — five Father-draw items, rollbackable order, IPFS cutover. https://github.com/digenova77-ui/dualiscapax-landing/commit/7b5b77046afa32aad40187de3d0c026537799e38
+- 9b62603c — 2026-09-30T16:51:47Z — docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T16:51Z). https://github.com/digenova77-ui/dualiscapax-landing/commit/9b62603c37cb35efbffd2fda9a20a88f5b882666
 - 92136d80 — 2026-09-30T16:51:05Z — docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T16:50Z). https://github.com/digenova77-ui/dualiscapax-landing/commit/92136d80ff028684534f1379ca6728ac0159c406
 - dee0edc4 — 2026-09-30T16:51:00Z — FATHER-DRAW: ordered, rollbackable migration to IPFS — token, JWT, zip, DNSLink, IPNS key. https://github.com/digenova77-ui/dualiscapax-landing/commit/dee0edc43a7c7f705c30c5f7c91d09ccbb84a74b
-- df5c813c — 2026-09-30T16:50:11Z — docs: PREFETCH_REPORT.md — known-branch receipt (2026-09-30T16:48Z). https://github.com/digenova77-ui/dualiscapax-landing/commit/df5c813c880857b9ce837585c9b46713601b7cdb
+- df5c813c — 2026-09-30T16:50:11Z — docs: PREFETCH_REPORT.md. https://github.com/digenova77-ui/dualiscapax-landing/commit/df5c813c880857b9ce837585c9b46713601b7cdb
 - 2ad2f424 — 2026-09-30T16:49:27Z — docs: PREFETCH_REPORT.md. https://github.com/digenova77-ui/dualiscapax-landing/commit/2ad2f424850a059abde05db512b6832b22ba06de
 - 8fff4155 — 2026-09-30T16:49:16Z — docs(factory): pass-through — remaining Father-draw items + compute-telemetry task. https://github.com/digenova77-ui/dualiscapax-landing/commit/8fff4155e3454ef2cc795b33da136739cca5f61b
 - 0660eb42 — 2026-09-30T16:48:56Z — TASK_remaining-gaps_2026-09-30. https://github.com/digenova77-ui/dualiscapax-landing/commit/0660eb42752cd4949cf343877c94a8b061951d8e
@@ -26,12 +28,11 @@ HEAD at this session fetch: `92136d80ff028684534f1379ca6728ac0159c406`.
 - a5cf9401 / a8b4d1c0 / d1cff23d — standing-offer door + offer.html + STANDING-OFFER.md
 - 90827996 — RND task: dividend-paying investment vehicle structure. https://github.com/digenova77-ui/dualiscapax-landing/commit/90827996b786e01234e5963b1ed95f0ab958d779
 - c909b9bb — TASK: audit-stream endpoint + audit card. https://github.com/digenova77-ui/dualiscapax-landing/commit/c909b9bbce7ed172b014afdf19e016c712c913aa
-- b1185a1f — TASK: 100% existence proof for software agents. https://github.com/digenova77-ui/dualiscapax-landing/commit/b1185a1fa1e780d7f818a17dc503920541759b8e
 - plus earlier PREFETCH_REPORT.md receipts and plate-watch skip-ci commits on the same first page
 
 ## TASK_ / RND- / PREFETCH / AUTO-INVOKE landings
 
-- dee0edc4 — FATHER-DRAW IPFS migration spec (event commit; message does not use TASK_/RND-/PREFETCH/AUTO-INVOKE prefixes)
+- 7b5b7704 — FATHER-DRAW-ORDER.md (event commit; message does not use TASK_/RND-/PREFETCH/AUTO-INVOKE prefixes)
 - 0660eb42 — TASK_remaining-gaps_2026-09-30 (message prefix)
 - 8bdfb0ba — TASK father-draw gaps
 - 3956927e — RND-TASK dual-pipe identity
@@ -39,7 +40,6 @@ HEAD at this session fetch: `92136d80ff028684534f1379ca6728ac0159c406`.
 - 1e33d2c6 — RND pricing meter spec (message)
 - 90827996 — RND dividend-vehicle task (message)
 - c909b9bb — TASK audit-stream (message)
-- b1185a1f — TASK existence proof (message)
 - PREFETCH_REPORT.md — this known-branch receipt (and many prior receipts this hour)
 - AUTO-INVOKE.md — not a new file on the event commit
 
