@@ -7,6 +7,7 @@
  */
 import http from 'node:http';
 import crypto from 'node:crypto';
+import { driveStatus, driveInventory } from './dualis-google-drive-bridge.mjs';
 
 const HOST = process.env.DUALIS_HOST || '127.0.0.1';
 const PORT = Number(process.env.PORT || 8787);
@@ -47,7 +48,9 @@ function dryRun(task) {
 const server = http.createServer(async (req,res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || `${HOST}:${PORT}`}`);
-    if (req.method === 'GET' && url.pathname === '/api/v2/health') return response(res,200,{ok:true,protocol:PROTOCOL,build:BUILD,mode:'local-only-preparation',external_writes:false,auth:'NOT_IMPLEMENTED',connectors:[],at:now()});
+    if (req.method === 'GET' && url.pathname === '/api/v2/health') return response(res,200,{ok:true,protocol:PROTOCOL,build:BUILD,mode:'local-only-preparation',external_writes:false,auth:'NOT_IMPLEMENTED',connectors:[{id:'google-drive',mode:'read-only-bridge',credentials:'redacted'}],at:now()});
+    if (req.method === 'GET' && url.pathname === '/api/v2/connectors/google-drive/status') { try { return response(res,200,{ok:true,connector:await driveStatus(),receipt:{status:'PASS',stage:'connector-health',external_writes:false}}); } catch (error) { return response(res,200,{ok:false,connector:'google-drive',status:'HOLE',reason:'connector unavailable or not authorized',detail:error.message,credentials:'redacted'}); } }
+    if (req.method === 'GET' && url.pathname === '/api/v2/connectors/google-drive/inventory') { try { return response(res,200,{ok:true,inventory:await driveInventory(url.searchParams.get('limit') || 25),receipt:{status:'PASS',stage:'read-only-inventory',external_writes:false}}); } catch (error) { return response(res,200,{ok:false,connector:'google-drive',status:'HOLE',reason:'inventory unavailable or not authorized',detail:error.message,credentials:'redacted'}); } }
     if (req.method === 'POST' && url.pathname === '/api/v2/tasks/prepare') { const task=safeTask(await body(req)); tasks.set(task.request_id,task); return response(res,201,{task,receipt:receipt(task,'WAIT_GRANT','prepare',[{kind:'policy',result:'prepared; authentication and quorum are not implemented'}])}); }
     const dry=url.pathname.match(/^\/api\/v2\/tasks\/([^/]+)\/dry-run$/);
     if (req.method === 'POST' && dry) { const task=tasks.get(dry[1]); return task ? response(res,200,dryRun(task)) : response(res,404,{ok:false,code:'TASK_NOT_FOUND'}); }
