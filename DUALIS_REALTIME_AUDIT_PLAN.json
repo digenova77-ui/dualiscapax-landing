@@ -6,6 +6,7 @@
   "base_revision": "HEAD at audit start",
   "max_runtime_seconds": 120,
   "external_writes": false,
+  "write_authority": "verified-father-kernel-only",
   "credentials": "redacted",
   "stop_on": ["HOLE", "FAIL", "timeout", "material_change"],
   "checks": [
