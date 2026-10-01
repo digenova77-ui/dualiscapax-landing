@@ -1,0 +1,111 @@
+{
+  "schema": "dualis.audit.receipt.v1",
+  "plan": "DualisCapax live builder and connector audit",
+  "mode": "read-only-real-time",
+  "target": "https://dualiscapax.ai/builder/",
+  "started_at": "2026-10-01T07:43:49.505Z",
+  "finished_at": "2026-10-01T07:43:57.301Z",
+  "status": "FAIL",
+  "counts": {
+    "PASS": 6,
+    "HOLE": 2,
+    "FAIL": 1
+  },
+  "external_writes": false,
+  "credentials": "redacted",
+  "results": [
+    {
+      "id": "live-builder",
+      "status": "PASS",
+      "elapsed_ms": 4890,
+      "evidence": {
+        "http": 200,
+        "bytes": 26814,
+        "final_url": "https://dualiscapax.ai/builder",
+        "body_sha256": "b93dfb2729c4c4c2"
+      }
+    },
+    {
+      "id": "pwa-manifest",
+      "status": "PASS",
+      "elapsed_ms": 488,
+      "evidence": {
+        "http": 200,
+        "bytes": 446,
+        "final_url": "https://dualiscapax.ai/builder-manifest.json",
+        "body_sha256": "afeb446498436d9c"
+      }
+    },
+    {
+      "id": "service-worker",
+      "status": "PASS",
+      "elapsed_ms": 753,
+      "evidence": {
+        "http": 200,
+        "bytes": 1103,
+        "final_url": "https://dualiscapax.ai/builder-sw.js",
+        "body_sha256": "f74a5f81438af600"
+      }
+    },
+    {
+      "id": "api-v2-health",
+      "status": "HOLE",
+      "elapsed_ms": 458,
+      "evidence": {
+        "http": 404,
+        "bytes": 1660,
+        "final_url": "https://dualiscapax.ai/api/v2/health",
+        "body_sha256": "33917e7090464d44"
+      }
+    },
+    {
+      "id": "api-v2-chat",
+      "status": "HOLE",
+      "elapsed_ms": 557,
+      "evidence": {
+        "http": 404,
+        "bytes": 75,
+        "final_url": "https://dualiscapax.ai/api/v2/chat",
+        "body_sha256": "046572fbb14ef469",
+        "interpretation": "route not deployed; no availability claim"
+      }
+    },
+    {
+      "id": "repo-revision",
+      "status": "PASS",
+      "elapsed_ms": 7,
+      "evidence": {
+        "value": "cd45f52bb3fc5c34acd14d18709bfe28f7b8fc6a",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "repo-status",
+      "status": "PASS",
+      "elapsed_ms": 25,
+      "evidence": {
+        "value": "\u001b[31m??\u001b[m DUALIS_REALTIME_AUDIT_PLAN.json\n\u001b[31m??\u001b[m dualis-realtime-audit.mjs\n",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "drive-bridge",
+      "status": "PASS",
+      "evidence": {
+        "connector": "google-drive",
+        "mode": "read-only",
+        "credentials": "redacted",
+        "external_writes": false
+      }
+    },
+    {
+      "id": "security-strings",
+      "status": "FAIL",
+      "evidence": {
+        "password_or_private_key_input": true,
+        "public_client_secret_storage": false
+      }
+    }
+  ],
+  "receipt_hash": "52f2bd93567b944e514633714175d4df4126f777c438314081d541311984741d"
+}
