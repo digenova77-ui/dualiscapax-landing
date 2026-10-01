@@ -70,7 +70,7 @@
       <div class="skill-card"><strong>GITHUB CI DIAGNOSTIC</strong><span>Read workflow status and failure logs; never bypass a failing gate or invent success.</span><em>READ-ONLY</em></div>
       <div class="skill-card"><strong>PINATA RECEIPT CHECK</strong><span>Validate upload response, CID, gateway reachability, and folder structure before acceptance.</span><em>VERIFY</em></div>
       <div class="skill-card"><strong>CLOUDFLARE ACCESS STATUS</strong><span>Inspect Pages and Access configuration; changes require explicit approval and protected API scope.</span><em>AUTH REQUIRED</em></div>
-      <div class="skill-card"><strong>PROVENANCE & HASHING</strong><span>Record source revision, compiler version, canonical bytes, SHA-256, and evidence links.</span><em>DETERMINISTIC</em></div>
+      <div class="skill-card"><strong>PROVENANCE & HASHING</strong><span>Record source revision, compiler version, canonical bytes, SHA-256, and evidence links.</span><em>DETERMINISTIC</em></div><div class="skill-card"><strong>DEEP SEARCH + IMPLEMENTATION</strong><span>Discover sources, cross-check independent evidence, map connectors, plan dependencies, implement in stages, and audit the result.</span><em>GATED · AUDITED</em></div>
     </div>
     <div class="skill-foot"><strong>BOUNDARY:</strong> The builder is an untrusted client. No password, private key, Cloud Computer credential, or signing secret is stored here. External writes remain disabled until a server-side identity, quorum, and audit receipt are present.</div>
   </aside>
@@ -96,6 +96,7 @@
           'TRINITY GATE: bind DCLM, Twain², and Iris votes to the same canonical request hash; require 2-of-3 distinct authenticated approvals.',
           'DARK LEDGER: record prompt hash, actor, target, inputs, evidence, votes, denials, timestamps, and final receipt server-side; do not expose secrets or private audit contents to the public UI.',
           'WRITE AUTHORITY: only the verified kernel/Father layer may perform the final write. If any gate is missing, do not execute; return a receipt with the reason.',
+          'DEEP MODE: search primary sources first; cross-check independent evidence; map required connectors and scopes; identify conflicts and unknowns; write a bounded implementation plan; implement smallest reversible change; run deterministic and negative checks; compare before/after hashes; produce a post-change audit receipt.' ,
           'Safety: non-destructive, deterministic, reversible, least privilege, no credential invention, no external publication without a separate approved gate.'
         ].join('\n');
         output.textContent = prompt;

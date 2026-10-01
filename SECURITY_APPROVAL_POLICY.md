@@ -48,3 +48,9 @@ The DCLM kernel is the **canonical protected reference** for this system. The de
 Every new task is first converted into a prompt for the designated online computer. The local authoring session is not the execution target. The prompt uses two rails: **Claim** (the requested work) and **Fetch** (independent evidence and environment verification), followed by a **Collapse** verdict of PASS, FAIL, or HOLE.
 
 The Dark Ledger is hidden from the public client and retained server-side as an attributable audit record. It contains hashes, actors, target, evidence, votes, denials, timestamps, and receipts, but never raw secrets. The Trinity gate binds DCLM, Twain², and Iris votes to the same request hash and requires 2-of-3 authenticated approvals. Only the verified kernel/Father layer may perform the final write; absent a valid receipt, the online computer must not execute.
+
+## Deep search and implementation protocol
+
+For complex tasks, the online computer must work in stages: discover the relevant primary sources and local artifacts; cross-check independent evidence; map each required connector, credential scope, and target environment; identify conflicts and unknowns; write a bounded implementation plan; make the smallest reversible change; run deterministic, negative, and integration checks; compare before/after hashes; and produce a post-change audit receipt.
+
+A connector is not considered useful merely because it is configured. It is verified only when its identity, scope, target resource, permitted operation, evidence of success, and rollback path are recorded. Builder knowledge is not connector authority, and a connector cannot bypass the Trinity gate or Father/kernel write boundary.
