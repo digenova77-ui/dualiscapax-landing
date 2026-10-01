@@ -2,7 +2,7 @@ const CACHE = 'dualis-builder-shell-v1';
 const SHELL = [
   '/builder/',
   '/builder.html',
-  '/builder-manifest.webmanifest',
+  '/builder-manifest.json',
   '/builder-icon.svg',
   '/assets/builder-CsCqM4I9.js',
   '/assets/scene-manifest-BjFSetx2.js'
