@@ -1,0 +1,21 @@
+{
+  "schema": "dualis.audit.plan.v1",
+  "name": "DualisCapax live builder and connector audit",
+  "mode": "read-only-real-time",
+  "target": "https://dualiscapax.ai/builder/",
+  "base_revision": "HEAD at audit start",
+  "max_runtime_seconds": 120,
+  "external_writes": false,
+  "credentials": "redacted",
+  "stop_on": ["HOLE", "FAIL", "timeout", "material_change"],
+  "checks": [
+    {"id":"live-builder","kind":"http","url":"https://dualiscapax.ai/builder/","expect":"HTTP 200 and Dual Pipeline controls"},
+    {"id":"pwa-manifest","kind":"http","url":"https://dualiscapax.ai/builder-manifest.json","expect":"HTTP 200 and valid manifest"},
+    {"id":"service-worker","kind":"http","url":"https://dualiscapax.ai/builder-sw.js","expect":"HTTP 200 and scoped builder cache"},
+    {"id":"api-v2-health","kind":"http","url":"https://dualiscapax.ai/api/v2/health","expect":"explicit live or NOT_READY status; no fake success"},
+    {"id":"api-v2-chat","kind":"http","url":"https://dualiscapax.ai/api/v2/chat","expect":"explicit route status; no invented availability"},
+    {"id":"repo-revision","kind":"git","expect":"clean or explicitly reported working tree"},
+    {"id":"drive-bridge","kind":"connector","expect":"read-only, redacted, no external writes"},
+    {"id":"security-strings","kind":"content","expect":"no password/private-key/token collection in public builder"}
+  ]
+}
