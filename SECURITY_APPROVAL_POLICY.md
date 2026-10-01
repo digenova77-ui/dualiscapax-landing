@@ -42,3 +42,9 @@ The current UI labels the policy; it does not claim to enforce quorum authorizat
 ## Canonical kernel designation
 
 The DCLM kernel is the **canonical protected reference** for this system. The designation is an integrity and governance statement: the exact kernel identity, build provenance, ABI, and receipt format must be pinned and verified before any privileged write is accepted. A public label alone is not cryptographic protection; enforcement requires immutable hashes, verified provenance, authenticated quorum signatures, access isolation, and auditable receipts.
+
+## Dark Ledger task protocol
+
+Every new task is first converted into a prompt for the designated online computer. The local authoring session is not the execution target. The prompt uses two rails: **Claim** (the requested work) and **Fetch** (independent evidence and environment verification), followed by a **Collapse** verdict of PASS, FAIL, or HOLE.
+
+The Dark Ledger is hidden from the public client and retained server-side as an attributable audit record. It contains hashes, actors, target, evidence, votes, denials, timestamps, and receipts, but never raw secrets. The Trinity gate binds DCLM, Twain², and Iris votes to the same request hash and requires 2-of-3 authenticated approvals. Only the verified kernel/Father layer may perform the final write; absent a valid receipt, the online computer must not execute.
