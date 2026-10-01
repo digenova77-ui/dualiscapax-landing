@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Deterministic Machine Builder — compile a manifest-bound DCLM Trinity portal scene and produce a verifiable WASM receipt.">
+  <meta name="dclm-purity-policy" content="manifest-authorized; deterministic; non-destructive; kernel/father-signed; receipt-required">
   <title>DCLM Trinity Portal · DualisCapax</title>
   <style>
     :root{color-scheme:dark;--bg:#02030a;--panel:#07101be8;--line:#6fe8d855;--ink:#e1fffb;--muted:#8aa9b8;--cyan:#63f7dd;--violet:#a68cff;--amber:#ffd37d;--rose:#ff8fcf}
@@ -43,7 +44,7 @@
     <textarea id="manifest-input" spellcheck="false" inputmode="text" autocapitalize="off" autocomplete="off" enterkeyhint="done" aria-label="Canonical scene manifest"></textarea>
     <div class="actions"><button class="primary" id="compile">COMPILE 3D</button><button id="run-kernel">RUN WASM</button><button id="reset">RESET</button><button id="download">EXPORT JSON</button></div>
     <div class="receipt" aria-live="polite"><div>STATUS <strong id="status">READY</strong></div><div>OBJECTS <code id="objects">—</code> · TEXT MESHES <code id="texts">—</code></div><div>MANIFEST SHA256 <code id="hash">—</code></div><div>KERNEL <code id="kernel">NOT RUN</code></div></div>
-    <div class="hint">Identical manifest + compiler version → identical scene contract. Unknown or 2D scene objects fail closed.</div><div class="ethic-note"><strong>WRITE AUTHORITY:</strong> manifest edits are draft input only. Authoritative scene, receipt, and kernel state are written by the kernel / father layer.</div>
+    <div class="hint">Identical manifest + compiler version → identical scene contract. Unknown or 2D scene objects fail closed.</div><div class="ethic-note"><strong>WRITE AUTHORITY:</strong> manifest edits are draft input only. Authoritative scene, receipt, and kernel state are written by the kernel / father layer.</div><div class="ethic-note"><strong>PURITY GATE:</strong> DCLM runtime commands must be manifest-authorized, deterministic, non-destructive, kernel/father-signed, and receipt-producing.</div>
     <div class="ethic-note"><strong>TRINITY SYMBOLIC LAYER:</strong> portal imagery frames the DCLM experience; receipts remain computational outputs, not claims of divine revelation.</div>
   </section>
   <button id="toggle-builder" class="builder-orb" type="button" aria-expanded="false" aria-label="Open the deterministic builder" title="Open builder">⌬</button>
