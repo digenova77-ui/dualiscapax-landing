@@ -6,6 +6,11 @@
   <meta name="description" content="Deterministic Machine Builder — compile a manifest-bound DCLM Trinity portal scene and produce a verifiable WASM receipt.">
   <meta name="dclm-purity-policy" content="manifest-authorized; deterministic; non-destructive; kernel/father-signed; receipt-required; 2-of-3-approval">
   <title>DCLM Trinity Portal · DualisCapax</title>
+  <link rel="manifest" href="/builder-manifest.webmanifest">
+  <meta name="theme-color" content="#63f7dd">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="icon" href="/builder-icon.svg">
   <style>
     :root{color-scheme:dark;--bg:#02030a;--panel:#07101be8;--line:#6fe8d855;--ink:#e1fffb;--muted:#8aa9b8;--cyan:#63f7dd;--violet:#a68cff;--amber:#ffd37d;--rose:#ff8fcf}
     *{box-sizing:border-box}
@@ -55,7 +60,7 @@
       <label><span class="eyebrow">PIPE A · CLAIM</span><textarea id="pipeline-claim" spellcheck="false">Inspect the Unity ID / RTE / API v2 surface and prepare the smallest secure implementation step.</textarea></label>
       <label><span class="eyebrow">PIPE B · FETCH / EVIDENCE PLAN</span><textarea id="pipeline-fetch" spellcheck="false">Fetch the live route, repository base revision, connector scope, current receipt, and rollback path. Cross-check independent evidence.</textarea></label>
     </div>
-    <div class="actions"><button class="primary" id="pipeline-prepare">PREPARE ENVELOPE</button><button id="pipeline-dry-run">LOCAL DRY-RUN</button></div>
+    <div class="actions"><button class="primary" id="pipeline-prepare">PREPARE ENVELOPE</button><button id="pipeline-dry-run">LOCAL DRY-RUN</button><button id="pipeline-simulate">SIMULATION RUN</button></div>
     <div id="pipeline-state" class="pipeline-state">COLLAPSE: WAITING FOR CLAIM AND FETCH</div>
     <div id="pipeline-output" class="pipeline-output" aria-live="polite"></div>
     <div class="pipeline-meta"><strong>AUTH:</strong> passkey/OAuth only; never a Google password · <strong>TARGET:</strong> explicitly verified online computer · <strong>WRITE:</strong> Father/kernel gate plus authenticated quorum · <strong>FAIL-CLOSED:</strong> missing evidence is HOLE, not PASS.</div>
@@ -103,7 +108,7 @@
         const digest = await crypto.subtle.digest('SHA-256', bytes);
         return [...new Uint8Array(digest)].map(x => x.toString(16).padStart(2,'0')).join('');
       };
-      const preparePipeline = async (dryRun = false) => {
+      const preparePipeline = async (dryRun = false, simulation = false) => {
         const claim = pipelineClaim.value.trim();
         const fetchPlan = pipelineFetch.value.trim();
         const target = 'designated-online-computer';
@@ -111,9 +116,9 @@
         if (!claim) holes.push('claim is empty');
         if (!fetchPlan) holes.push('fetch/evidence plan is empty');
         if (/password|passphrase|private key|secret/i.test(claim + ' ' + fetchPlan)) holes.push('credential language requires passkey/OAuth handling, never a password');
-        const body = {schema:'dualis.task.v2',target,verb:dryRun?'dry-run':'prepare',kind:'dual-pipeline',claim,fetch_plan:fetchPlan,constraints:{non_destructive:true,reversible:true,external_writes:false}};
+        const body = {schema:'dualis.task.v2',target,verb:dryRun?'dry-run':'prepare',kind:'dual-pipeline',claim,fetch_plan:fetchPlan,constraints:{non_destructive:true,reversible:true,external_writes:false},simulation_policy:simulation?{mode:'simulation',max_active_tasks:4,max_steps_per_task:12,max_retries_per_step:2,max_runtime_seconds:900,stop_on:['HOLE','FAIL','WAIT_GRANT','VETO','budget','timeout','material_change']}:null};
         const requestHash = await sha256(canonical(body));
-        const status = holes.length ? 'HOLE' : dryRun ? 'PASS · LOCAL DRY-RUN ONLY' : 'WAIT_GRANT · ENVELOPE PREPARED';
+        const status = holes.length ? 'HOLE' : simulation ? 'PASS · SIMULATION ONLY' : dryRun ? 'PASS · LOCAL DRY-RUN ONLY' : 'WAIT_GRANT · ENVELOPE PREPARED';
         pipelineState.textContent = 'COLLAPSE: ' + status;
         pipelineOutput.textContent = JSON.stringify({...body,request_hash:requestHash,status,evidence:holes.length?holes:['not fetched by public client'],auth:'passkey/OAuth required',receipt:'not an execution receipt'}, null, 2);
       };
@@ -121,6 +126,7 @@
       pipelineClose?.addEventListener('click',()=>{ pipeline.classList.remove('open'); pipeline.setAttribute('aria-hidden','true'); });
       document.getElementById('pipeline-prepare')?.addEventListener('click',()=>preparePipeline(false));
       document.getElementById('pipeline-dry-run')?.addEventListener('click',()=>preparePipeline(true));
+      document.getElementById('pipeline-simulate')?.addEventListener('click',()=>preparePipeline(true, true));
       const panel = document.getElementById('skill-panel');
       const ledger = document.getElementById('ledger-panel');
       const ledgerOpen = document.getElementById('ledger');
@@ -155,6 +161,7 @@
       open.addEventListener('click', () => set(true));
       close.addEventListener('click', () => set(false));
       document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { set(false); if (ledger) ledger.classList.remove('open'); if (pipeline) pipeline.classList.remove('open'); } });
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('/builder-sw.js', {scope:'/builder/'}).catch(() => {});
     })();
   </script>
 </body>
