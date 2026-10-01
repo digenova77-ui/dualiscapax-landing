@@ -38,3 +38,7 @@ The current UI labels the policy; it does not claim to enforce quorum authorizat
 - Require two distinct principals; never count two sessions for one principal as two votes.
 - Log denials and failed signature checks without logging secret material.
 - Keep the final write idempotent and auditable.
+
+## Canonical kernel designation
+
+The DCLM kernel is the **canonical protected reference** for this system. The designation is an integrity and governance statement: the exact kernel identity, build provenance, ABI, and receipt format must be pinned and verified before any privileged write is accepted. A public label alone is not cryptographic protection; enforcement requires immutable hashes, verified provenance, authenticated quorum signatures, access isolation, and auditable receipts.
