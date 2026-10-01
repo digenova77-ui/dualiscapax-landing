@@ -13,6 +13,7 @@ const HOST = process.env.DUALIS_HOST || '127.0.0.1';
 const PORT = Number(process.env.PORT || 8787);
 const PROTOCOL = 'dualis.api.v2.bootstrap';
 const BUILD = 'bootstrap-local-only-1';
+const WRITE_AUTHORITY = 'verified-father-kernel-only';
 const tasks = new Map();
 const receipts = new Map();
 const json = (value) => JSON.stringify(value, null, 2) + '\n';
@@ -32,7 +33,7 @@ async function body(req) {
   return text ? JSON.parse(text) : {};
 }
 function safeTask(input) {
-  const task = {schema:'dualis.task.v2',request_id:input.request_id || crypto.randomUUID(),unity_id:input.unity_id || null,target:input.target || 'local-bootstrap-only',verb:input.verb || 'prepare',object:input.object || null,kind:input.kind || null,base_revision:input.base_revision || null,claim:input.claim || {},fetch_plan:input.fetch_plan || {},constraints:{non_destructive:true,reversible:true,external_writes:false,...input.constraints},created_at:now()};
+  const task = {schema:'dualis.task.v2',request_id:input.request_id || crypto.randomUUID(),unity_id:input.unity_id || null,target:input.target || 'local-bootstrap-only',verb:input.verb || 'prepare',object:input.object || null,kind:input.kind || null,base_revision:input.base_revision || null,claim:input.claim || {},fetch_plan:input.fetch_plan || {},constraints:{non_destructive:true,reversible:true,external_writes:false,write_authority:WRITE_AUTHORITY,...input.constraints},created_at:now()};
   return {...task, request_hash:hash(task)};
 }
 function dryRun(task) {
@@ -48,7 +49,7 @@ function dryRun(task) {
 const server = http.createServer(async (req,res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || `${HOST}:${PORT}`}`);
-    if (req.method === 'GET' && url.pathname === '/api/v2/health') return response(res,200,{ok:true,protocol:PROTOCOL,build:BUILD,mode:'local-only-preparation',external_writes:false,auth:'NOT_IMPLEMENTED',connectors:[{id:'google-drive',mode:'read-only-bridge',credentials:'redacted'}],at:now()});
+    if (req.method === 'GET' && url.pathname === '/api/v2/health') return response(res,200,{ok:true,protocol:PROTOCOL,build:BUILD,mode:'local-only-preparation',external_writes:false,write_authority:WRITE_AUTHORITY,auth:'NOT_IMPLEMENTED',connectors:[{id:'google-drive',mode:'read-only-bridge',credentials:'redacted'}],at:now()});
     if (req.method === 'GET' && url.pathname === '/api/v2/connectors/google-drive/status') { try { return response(res,200,{ok:true,connector:await driveStatus(),receipt:{status:'PASS',stage:'connector-health',external_writes:false}}); } catch (error) { return response(res,200,{ok:false,connector:'google-drive',status:'HOLE',reason:'connector unavailable or not authorized',detail:error.message,credentials:'redacted'}); } }
     if (req.method === 'GET' && url.pathname === '/api/v2/connectors/google-drive/inventory') { try { return response(res,200,{ok:true,inventory:await driveInventory(url.searchParams.get('limit') || 25),receipt:{status:'PASS',stage:'read-only-inventory',external_writes:false}}); } catch (error) { return response(res,200,{ok:false,connector:'google-drive',status:'HOLE',reason:'inventory unavailable or not authorized',detail:error.message,credentials:'redacted'}); } }
     if (req.method === 'POST' && url.pathname === '/api/v2/tasks/prepare') { const task=safeTask(await body(req)); tasks.set(task.request_id,task); return response(res,201,{task,receipt:receipt(task,'WAIT_GRANT','prepare',[{kind:'policy',result:'prepared; authentication and quorum are not implemented'}])}); }
@@ -58,6 +59,7 @@ const server = http.createServer(async (req,res) => {
     if (req.method === 'GET' && getTask) { const task=tasks.get(getTask[1]); return task ? response(res,200,task) : response(res,404,{ok:false,code:'TASK_NOT_FOUND'}); }
     const getReceipt=url.pathname.match(/^\/api\/v2\/receipts\/([^/]+)$/);
     if (req.method === 'GET' && getReceipt) { const value=receipts.get(getReceipt[1]); return value ? response(res,200,value) : response(res,404,{ok:false,code:'RECEIPT_NOT_FOUND'}); }
+    if (req.method === 'POST' && url.pathname === '/api/v2/execute') return response(res,403,{ok:false,code:'FATHER_KERNEL_REQUIRED',status:'WAIT_GRANT',write_authority:WRITE_AUTHORITY,external_writes:false});
     return response(res,404,{ok:false,code:'NOT_FOUND',protocol:PROTOCOL});
   } catch (error) { return response(res,400,{ok:false,code:'BAD_REQUEST',message:error instanceof SyntaxError ? 'invalid JSON' : error.message}); }
 });
