@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unity room — DualisCapax computer</title>
+  <style>
+    :root{color-scheme:dark;--bg:#02030a;--panel:#07101be8;--line:#6fe8d855;--ink:#e1fffb;--muted:#8aa9b8;--cyan:#63f7dd;--violet:#a68cff;--amber:#ffd37d}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.4 ui-monospace,Menlo,monospace}
+    canvas{position:fixed;inset:0;width:100%;height:100%}
+    #panel{position:fixed;top:12px;left:12px;width:min(420px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;padding:14px;background:var(--panel);border:1px solid var(--line)}
+    h1{margin:6px 0;font-size:18px} p,li{color:var(--muted)} button{margin:6px 6px 0 0;background:var(--cyan);color:#03201d;border:0;font-weight:700;padding:8px 10px}
+    button.no{background:transparent;color:var(--amber);border:1px solid var(--amber)}
+    #out{white-space:pre-wrap;word-break:break-all;color:var(--amber)}
+    .eyebrow{color:var(--cyan);letter-spacing:.14em;font-size:10px}
+  </style>
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.169.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.169.0/examples/jsm/"}}</script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+  <section id="panel">
+    <div class="eyebrow">UNIFIED ROOM · V8 FLOOR · CHECKOUT CLOSED</div>
+    <h1>Computer in the room.</h1>
+    <p>Look is free. A decision is a bounded post to the live kernel. This page cannot write. Father is the only writer, and this client is not Father.</p>
+    <ul>
+      <li>No Dualis coin. Fuel is prepaid CAD runtime, not a token.</li>
+      <li>V8 floor: Look 0, Fuel 5 / 20 / 50 / 120 / 350. V9 is a proposal.</li>
+      <li>Displayed decision quote: 1 Fuel unit, about CAD 0.50. Not a charge.</li>
+    </ul>
+    <button id="look" type="button">LOOK</button>
+    <button id="decide" type="button">DECISION</button>
+    <button id="write" class="no" type="button">FATHER WRITE</button>
+    <div id="out">Audit not run.</div>
+  </section>
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    const out = document.getElementById("out");
+    const canvas = document.getElementById("view");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setClearColor(0x02030a);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 80);
+    camera.position.set(7, 5, 10);
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.target.set(0, 1.2, 0);
+    scene.add(new THREE.HemisphereLight(0xd8fff8, 0x12101c, 0.75));
+    scene.add(new THREE.GridHelper(20, 20, 0x63f7dd, 0x17202a));
+    const room = new THREE.Group();
+    scene.add(room);
+    const core = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 2.4, 24), new THREE.MeshStandardMaterial({ color: 0x63f7dd, roughness: 0.35 }));
+    core.position.y = 1.2;
+    room.add(core);
+    function plate(text, x, z, color) {
+      const c = document.createElement("canvas");
+      c.width = 512; c.height = 256;
+      const g = c.getContext("2d");
+      g.fillStyle = "#07101b"; g.fillRect(0, 0, 512, 256);
+      g.strokeStyle = color; g.strokeRect(8, 8, 496, 240);
+      g.fillStyle = color; g.font = "700 42px sans-serif"; g.fillText(text, 28, 140);
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.2), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), side: THREE.DoubleSide }));
+      mesh.position.set(x, 1.6, z);
+      mesh.lookAt(0, 1.6, 0);
+      room.add(mesh);
+    }
+    plate("LOOK 0", -3.4, 2.2, "#63f7dd");
+    plate("FUEL", 3.4, 2.2, "#ffd37d");
+    plate("FATHER", 0, -3.2, "#a68cff");
+    addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+    (function frame(){ controls.update(); renderer.render(scene, camera); requestAnimationFrame(frame); })();
+    const base = location.host.endsWith("dualiscapax.ai") ? "" : "https://dualiscapax.ai";
+    async function audit() {
+      const caps = await fetch(base + "/api/v2/capabilities").then(r => r.json());
+      const prov = await fetch(base + "/api/v2/provenance").then(r => r.json());
+      out.textContent = "KERNEL " + prov.artifact + "\n" + prov.artifactSha256 + "\nwrites " + caps.privilegedWrites + "\ncheckout closed · no coin";
+    }
+    document.getElementById("look").onclick = audit;
+    document.getElementById("decide").onclick = async () => {
+      const quote = { rail: "V8", sku: "FUEL-UNIT", cad: 0.5, charged: false, checkout: "closed" };
+      const res = await fetch(base + "/api/v2/compute", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ payload: "decision:look-room" }) });
+      const data = await res.json();
+      out.textContent = "DECISION quote CAD " + quote.cad + " not charged\n" + JSON.stringify(data);
+    };
+    document.getElementById("write").onclick = () => {
+      out.textContent = "HOLE\nFather write refused.\nThis client holds no signing key.\nprivilegedWrites is false on the live kernel.";
+    };
+    audit().catch(err => { out.textContent = "HOLE\n" + err.message; });
+  </script>
+</body>
+</html>
