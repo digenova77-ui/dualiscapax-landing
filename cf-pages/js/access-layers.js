@@ -2,7 +2,7 @@
  * DualisCapax access ladder — V8 / payment-links.json
  * Look+Measure free. Leaf/Branch/Trunk/Atlas priced.
  * SEAL is NOT on the public face: Phase-3 / .org/.gov / SEAL-1 institutions only.
- * Jacket open flag gates card checkout. Never invent buy.stripe.com URLs.
+ * Jacket open flag gates card checkout. Checkout closed; never invent a payment-link URL.
  */
 (function (g) {
   var LADDER = {

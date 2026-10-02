@@ -9,7 +9,7 @@ HASH-20260901-1208-GROK-WIN · COMPLETE
 | Site | https://dualiscapax.ai/ | HTTP 200 |
 | Look | https://dualiscapax.ai/look.html | HTTP 200 |
 | Iris app | https://dualiscapax.ai/ai/app | HTTP 200 |
-| Payments | https://dualiscapax.ai/payments.html | live buy.stripe.com links |
+| Payments | https://dualiscapax.ai/payments.html | checkout closed; Stripe links parked 2026-09-29 |
 | Thanks | https://dualiscapax.ai/pay/thanks.html | HTTP 200 |
 | Depth worker | https://dualiscapax-depth.digenova77.workers.dev/ | up, has_key true |
 | Stripe fulfill | https://dualiscapax-stripe-fulfill-v2.digenova77.workers.dev/ | up, has_webhook_secret true, has_kv true |
