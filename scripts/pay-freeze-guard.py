@@ -11,12 +11,12 @@ so every file in this tree is a public plate. Fail (exit 1) if the tree carries:
     addresses themselves are not republished here). Addresses are allowed ONLY in a
     donate-only file (DONATE_ONLY below), and no pay/checkout/fuel/payments/rails/
     operations page may reference that file;
-  * a pay-to offer for another wallet or chain (Trust Wallet, MetaMask pay-to,
+  * a pay-to offer for another wallet or chain (a named third-party wallet, MetaMask pay-to,
     "send crypto", "gift/pay/send ... BTC/ETH/SOL/DOGE/XRP/ZEC/DOT/DGB/BCH",
     equal-CAD chain lists, "<chain> receive string", "<chain> vault"). Unity ID is the
     only wallet; payments stay closed until the owner opens them;
-  * a retired-structure term (owner rule 2026-10-02): triad, swiss, switzerland,
-    singapore, zug, stiftung, "trust structure";
+  * a retired-structure term (owner rule 2026-10-02). The word list is held only as
+    sha256 below, so this public file does not repeat the retired names;
   * under cf-pages/**: an external checkout / processor link; and anywhere (cf-pages/**
     and its root twins): a price-tagged portal (a <section>/<article>/<div> block whose
     aria-label or heading/text names a portal and that carries a non-zero CAD/USD price),
@@ -72,8 +72,6 @@ PATTERNS = [
     ("stripe_payment_link", re.compile(r"buy\.stripe\.com/(?:test_)?[A-Za-z0-9]{10,}")),
     ("stripe_checkout", re.compile(r"checkout\.stripe\.com/")),
     ("stripe_js", re.compile(r"js\.stripe\.com")),
-    ("retired_term", re.compile(r"(?i)\btriad|\bswiss\b|\bswitzerland\b|\bsingapore\b|\bzug\b|stiftung|trust\s+structures?\b")),
-    ("trust_wallet", re.compile(r"(?i)trust\s*wallet")),
     ("send_crypto", re.compile(r"(?i)(?<!not )(?<!never )\bsend\s+(?:your\s+)?crypto\b")),
     ("metamask_payto", re.compile(r"(?i)(?:\b(?:pay|send|gift|deposit|donat\w*|checkout)\b[^.\n<]{0,60}metamask|metamask[^.\n<]{0,60}\b(?:pay|send|gift|deposit|donat\w*|checkout)\b)")),
     ("chain_payto", re.compile(PAYWORD + r"[^.\n<\"']{0,40}" + CHAIN)),
@@ -86,6 +84,47 @@ CF_PAGES_PATTERNS = [
 PORTAL_BLOCK = re.compile(r"(?is)<(section|article|div)\b[^>]*>.*?</\1>")
 PORTAL_WORD = re.compile(r"(?i)aria-label\s*=\s*[\"'][^\"']*\bportal\b|<(?:h[1-6]|p|strong|span|div|legend|caption)\b[^>]*>[^<]*\bportal\b")
 NONZERO_PRICE = re.compile(r"(?i)(?:\b(?:CAD|USD|C)\s*\$|\$)\s*(?:0*[1-9][0-9,]*(?:\.[0-9]+)?|0\.[0-9]*[1-9])")
+# Retired names, as sha256 of lower-case tokens (see docstring). Whole words, 5-letter
+# prefixes, 8-letter suffixes, and two-word phrases are checked.
+RETIRED_WORD_SHA256 = {
+    "898fa2c627354c20bf3c7a81460fc5be1ec10a085ce90ca61077782c8e908be9",
+    "c32f5de8269a9aced9a2a66afe8d228052211b0008b80b6993811ce29496bc91",
+    "51e2a46721d104d9148d85b617833e7745fdbd6795cb0b502a5b6ea31d33378e",
+    "badc194db2c72e19accb589d987a3a2b588fb87a723194ef6b6ec610b1aaafb9",
+    "a792968b61657232818d4932db54d12d1fb1c6469c98a319dff3b1d1b172ea3d",
+    "cd8f2ab8fa14d87a8c85ef0540b33857104f38cc123b512487771d0ca0e0093e",
+}
+RETIRED_PREFIX5_SHA256 = {
+    "fb6132a111c52ee36109a731ee1f56c36a79ce553f8c6cc301f692b4ef9dcf94",
+}
+RETIRED_SUFFIX8_SHA256 = {
+    "a792968b61657232818d4932db54d12d1fb1c6469c98a319dff3b1d1b172ea3d",
+}
+RETIRED_BIGRAM_SHA256 = {
+    "20ca673a8cd2287f753202f3dd65f97d59c43e6c785a08abb08f437da7a48147",
+    "44cf710a1e8fdd24625e10b1f96466cfca6dc4d26124fc2c060d00968931995b",
+    "fe4a6d9671eb47ce90c619ba58416760c26661651ff4564472375d9c84508dd1",
+}
+WORD = re.compile(r"[a-z]+")
+
+
+def _sha(t):
+    return hashlib.sha256(t.encode()).hexdigest()
+
+
+def retired_terms(line):
+    ws = WORD.findall(line.lower())
+    out = []
+    for k, w in enumerate(ws):
+        if (_sha(w) in RETIRED_WORD_SHA256 or _sha(w[:11]) in RETIRED_WORD_SHA256
+                or _sha(w[:5]) in RETIRED_PREFIX5_SHA256
+                or (len(w) >= 8 and _sha(w[-8:]) in RETIRED_SUFFIX8_SHA256)):
+            out.append(w)
+        if k + 1 < len(ws) and _sha(w + " " + ws[k + 1]) in RETIRED_BIGRAM_SHA256:
+            out.append(w + " " + ws[k + 1])
+    return out
+
+
 CONFIG_PATTERNS = [
     ("open_flag", re.compile(r"\b(?:stripe_enabled|crypto_enabled|checkout_open|jacket_open)\s*:\s*true\b")),
     ("config_address", re.compile(r"\b(?:research|ai)_[a-z]+\s*:\s*\"[^\"]{20,}\"")),
@@ -121,6 +160,8 @@ for dp, dns, fns in os.walk(ROOT):
             for name, rx in pats:
                 for m in rx.finditer(line):
                     hits.append((rel, i, name, m.group(0)[:12] + "…"))
+            for w in retired_terms(line):
+                hits.append((rel, i, "retired_term", w[:3] + "…"))
             if PAY_PAGE.search(fn) and "donate-only-addresses" in line:
                 hits.append((rel, i, "pay_page_loads_donate_file", "donate-only…"))
             if donate_only:
