@@ -98,7 +98,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Download packaged artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cf-pages-bundle
           path: ./downloaded_artifact
