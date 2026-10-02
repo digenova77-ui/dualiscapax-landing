@@ -1,8 +1,12 @@
 # Crypto-Only Fuel Gateway — Decision Base Unit
 
 **Status:** protocol scaffold / testnet-only / `WAIT_GRANT`  
-**Settlement:** crypto-only Unity token; no CAD, Stripe, bank, or fiat field is accepted by the API contract.  
+**Settlement:** crypto-only Unity token; no CAD, Stripe, bank, or fiat field is accepted by the API contract. Unity is the sellable token class; eFuse is non-sellable.
 **Base unit:** `1 Fuel unit`.
+
+## Peg basis
+
+Unity’s declared peg basis is the **global-cost-reduction index**. The non-sellable eFuse token is the declared backing/covenant reference. The index is a measurement contract, not a live price claim. Until its methodology, data sources, cadence, audit trail, and governing authority are approved, API v2 reports `peg_status: UNSET` and `backing_status: DESIGN_ONLY`; it does not quote a market value or claim verified reserves.
 
 ## Decision base unit
 
@@ -26,6 +30,7 @@ The current implementation supports neither live asset verification nor custody.
 - chain ID;
 - Unity token contract/address;
 - eFuse covenant contract/address or authority reference;
+- global-cost-reduction index methodology, source, cadence, and audit authority;
 - burn contract or receiving contract;
 - finality requirement;
 - oracle/indexing source;
