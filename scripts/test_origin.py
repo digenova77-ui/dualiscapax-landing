@@ -33,6 +33,7 @@ clean = {"api_version": "2", "law": LAW, "authority": "NONE", "pii_coefficient":
 status, body = call("/v2/dclm/sandbox/execute", "POST", clean)
 check(status == 200 and body["verdict"] == "SEE" and body["authority"] == "NONE", "clean request admitted")
 check(len(body["receipt"]) == 64, "receipt is SHA-256")
+check(len(body["input_hash"]) == 64, "input fingerprint is SHA-256")
 
 status, body = call("/v2/dclm/sandbox/execute", "POST", {**clean, "name": "must-not-be-stored"})
 check(status == 400 and body["verdict"] == "HOLE", "PII rejected")

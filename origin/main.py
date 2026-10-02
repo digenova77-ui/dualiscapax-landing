@@ -26,8 +26,12 @@ app.add_middleware(
 )
 
 
-def sha256(payload: dict) -> str:
-    raw = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+def canonical_json(payload: object) -> str:
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def sha256(payload: object) -> str:
+    raw = canonical_json(payload).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()
 
 
@@ -61,6 +65,7 @@ def admit(ask: dict) -> dict:
         "verdict": "SEE",
         "authority": "NONE",
         "ingress": ask.get("source", "sandbox"),
+        "input_hash": sha256(ask),
         "pii_coefficient": 0.0,
         "law": list(LAW),
         "dccp": "NOT_ATTESTED",

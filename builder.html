@@ -102,7 +102,11 @@
       const pipelineFetch = document.getElementById('pipeline-fetch');
       const pipelineState = document.getElementById('pipeline-state');
       const pipelineOutput = document.getElementById('pipeline-output');
-      const canonical = value => JSON.stringify(value, Object.keys(value).sort());
+      const canonical = value => {
+        if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
+        if (value && typeof value === 'object') return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}';
+        return JSON.stringify(value);
+      };
       const sha256 = async value => {
         const bytes = new TextEncoder().encode(value);
         const digest = await crypto.subtle.digest('SHA-256', bytes);
