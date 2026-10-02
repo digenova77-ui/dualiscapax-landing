@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DCLM walk</title>
+  <style>
+    :root{color-scheme:dark;--bg:#02030a;--ink:#e1fffb;--cyan:#63f7dd;--amber:#ffd37d}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.3 ui-monospace,Menlo,monospace;overflow:hidden;touch-action:none}
+    canvas{position:fixed;inset:0;width:100%;height:100%}
+    #top{position:fixed;left:12px;right:12px;top:12px;padding:10px 12px;background:#07101bcc;border:1px solid #6fe8d855;backdrop-filter:blur(10px)}
+    #step{color:var(--cyan);letter-spacing:.14em;font-size:11px}
+    #log{margin-top:6px;color:var(--amber);white-space:pre-wrap;word-break:break-all}
+    #bar{position:fixed;left:12px;right:12px;bottom:16px;display:flex;align-items:flex-end;justify-content:space-between}
+    #stick{width:96px;height:96px;border:1px solid #63f7dd88;border-radius:50%;position:relative;background:#07101b88}
+    #nub{width:28px;height:28px;border-radius:50%;background:#63f7dd;position:absolute;left:34px;top:34px}
+    button{border:1px solid #63f7dd;background:#07101bcc;color:#e1fffb;padding:12px 14px;font:700 13px ui-monospace,Menlo,monospace}
+    button:disabled{opacity:.4}
+  </style>
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.169.0/build/three.module.js"}}</script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+  <div id="top"><div id="step">1 · WALK</div><div id="log">Drag the right side to look. Drag the circle to move. Walk onto a pad.</div></div>
+  <div id="bar"><div id="stick"><div id="nub"></div></div><button id="act" type="button" disabled>VOTE</button></div>
+  <script type="module">
+    import * as THREE from "three";
+    const step = document.getElementById("step");
+    const log = document.getElementById("log");
+    const act = document.getElementById("act");
+    const canvas = document.getElementById("view");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setClearColor(0x0b1016);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.95;
+    renderer.shadowMap.enabled = true;
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x0b1016, 12, 34);
+    const camera = new THREE.PerspectiveCamera(64, innerWidth / innerHeight, 0.1, 70);
+    const yaw = new THREE.Object3D();
+    const pitch = new THREE.Object3D();
+    yaw.position.set(0, 1.6, 7.5);
+    yaw.add(pitch); pitch.add(camera); scene.add(yaw);
+    scene.add(new THREE.HemisphereLight(0xb7c4c8, 0x1a140e, 0.55));
+    const sun = new THREE.DirectionalLight(0xfff0dc, 1.15);
+    sun.position.set(7, 12, 5);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    sun.shadow.camera.near = 1;
+    sun.shadow.camera.far = 28;
+    sun.shadow.camera.left = sun.shadow.camera.bottom = -10;
+    sun.shadow.camera.right = sun.shadow.camera.top = 10;
+    scene.add(sun);
+    const fill = new THREE.DirectionalLight(0x8eb4c8, 0.25);
+    fill.position.set(-6, 4, -3); scene.add(fill);
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(16, 72), new THREE.MeshStandardMaterial({ color: 0x2a3136, roughness: 0.86, metalness: 0.04 }));
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
+    const rings = [];
+    for (let i = 1; i <= 4; i++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.5 + i * 0.85, 0.025, 10, 80), new THREE.MeshStandardMaterial({ color: 0x8a9398, roughness: 0.4, metalness: 0.7 }));
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = 0.02;
+      ring.receiveShadow = true;
+      scene.add(ring);
+      rings.push(ring);
+    }
+    const walls = [];
+    function stone(w, h, d, x, y, z, color) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color, roughness: 0.72, metalness: 0.08 }));
+      m.position.set(x, y, z);
+      m.castShadow = true;
+      m.receiveShadow = true;
+      scene.add(m);
+      walls.push({ x, z, hx: w / 2 + 0.3, hz: d / 2 + 0.3 });
+      const plinth = new THREE.Mesh(new THREE.BoxGeometry(w + 0.28, 0.12, d + 0.28), new THREE.MeshStandardMaterial({ color: 0x3a4146, roughness: 0.8 }));
+      plinth.position.set(x, 0.06, z);
+      plinth.receiveShadow = true;
+      scene.add(plinth);
+    }
+    function plaque(text, x, y, z) {
+      const c = document.createElement("canvas");
+      c.width = 512; c.height = 128;
+      const g = c.getContext("2d");
+      g.fillStyle = "#1c2226";
+      g.fillRect(0, 24, 512, 80);
+      g.fillStyle = "#e7eef2";
+      g.font = "600 42px sans-serif";
+      g.fillText(text, 24, 78);
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true }));
+      s.position.set(x, y, z);
+      s.scale.set(1.6, 0.4, 1);
+      scene.add(s);
+    }
+    stone(1.15, 3.4, 1.15, -4, 1.82, 0, 0x5f8f8a);
+    plaque("DCLM", -4, 3.7, 0);
+    stone(1.15, 3.4, 1.15, 4, 1.82, 0, 0x5c5678);
+    plaque("IRIS", 4, 3.7, 0);
+    const core = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 1.2, 1.35, 32), new THREE.MeshStandardMaterial({ color: 0x3c444a, roughness: 0.55, metalness: 0.35 }));
+    core.position.y = 0.72;
+    core.castShadow = true;
+    core.receiveShadow = true;
+    scene.add(core);
+    walls.push({ x: 0, z: 0, hx: 1.3, hz: 1.3 });
+    plaque("CORE", 0, 1.7, 0);
+    const pads = [
+      { name: "FATHER", at: new THREE.Vector3(-2.4, 0.04, 2.6), color: 0xb9a27a },
+      { name: "SON", at: new THREE.Vector3(2.4, 0.04, 2.6), color: 0x6f8f8c },
+      { name: "SPIRIT", at: new THREE.Vector3(0, 0.04, -2.8), color: 0x7a7394 }
+    ];
+    const votes = {};
+    pads.forEach(p => {
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.58, 0.04, 28), new THREE.MeshStandardMaterial({ color: p.color, roughness: 0.5, metalness: 0.2 }));
+      m.position.copy(p.at);
+      m.receiveShadow = true;
+      scene.add(m);
+      p.mesh = m;
+      plaque(p.name, p.at.x, 0.7, p.at.z);
+    });
+    let lookX = 0, lookY = 0, moveX = 0, moveZ = 0, near = null;
+    const stick = document.getElementById("stick");
+    const nub = document.getElementById("nub");
+    stick.addEventListener("pointerdown", e => stick.setPointerCapture(e.pointerId));
+    stick.addEventListener("pointermove", e => {
+      if (!stick.hasPointerCapture(e.pointerId)) return;
+      const r = stick.getBoundingClientRect();
+      moveX = Math.max(-1, Math.min(1, (e.clientX - r.left - 48) / 36));
+      moveZ = Math.max(-1, Math.min(1, (e.clientY - r.top - 48) / 36));
+      nub.style.left = (34 + moveX * 28) + "px";
+      nub.style.top = (34 + moveZ * 28) + "px";
+    });
+    function dropStick() { moveX = 0; moveZ = 0; nub.style.left = "34px"; nub.style.top = "34px"; }
+    stick.addEventListener("pointerup", dropStick);
+    stick.addEventListener("pointercancel", dropStick);
+    canvas.addEventListener("pointerdown", e => { if (e.clientX > innerWidth * 0.45) canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener("pointermove", e => {
+      if (!canvas.hasPointerCapture(e.pointerId)) return;
+      lookX -= e.movementX * 0.005; lookY -= e.movementY * 0.004;
+    });
+    const keys = {};
+    addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+    addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+    function blocked(x, z) { return walls.some(w => Math.abs(x - w.x) < w.hx && Math.abs(z - w.z) < w.hz); }
+    function tally() { return Object.values(votes).filter(Boolean).length; }
+    act.onclick = async () => {
+      if (act.textContent === "RUN") {
+        log.textContent = "Vote passed. Asking the public kernel.";
+        const base = location.host.endsWith("dualiscapax.ai") ? "" : "https://dualiscapax.ai";
+        try {
+          const data = await fetch(base + "/api/v2/compute", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ payload: "vote:" + Object.keys(votes).filter(k => votes[k]).join("-") }) }).then(r => r.json());
+          step.textContent = data.accepted ? "3 · SEE" : "3 · HOLE";
+          log.textContent = "seq " + data.sequence + "\n" + data.inputDigest + "\nwrite not granted";
+        } catch (err) { step.textContent = "3 · HOLE"; log.textContent = err.message; }
+        return;
+      }
+      if (!near) return;
+      votes[near.name] = !votes[near.name];
+      near.mesh.material.color.setHex(votes[near.name] ? 0xe7eef2 : near.color);
+      const n = tally();
+      step.textContent = n >= 2 ? "3 · RUN" : "2 · VOTE " + n + "/2";
+      log.textContent = near.name + (votes[near.name] ? " voted" : " cleared") + ". Need two. Authority stays none.";
+    };
+    (function frame() {
+      rings.forEach((r, i) => r.rotation.z += 0.0004 + i * 0.0001);
+      lookY = Math.max(-1, Math.min(1, lookY));
+      yaw.rotation.y = lookX; pitch.rotation.x = lookY;
+      const forward = Number(keys.w || keys.arrowup) - Number(keys.s || keys.arrowdown);
+      const side = Number(keys.d || keys.arrowright) - Number(keys.a || keys.arrowleft);
+      const dir = new THREE.Vector3(side + moveX, 0, -forward - moveZ);
+      if (dir.lengthSq() > 0.01) {
+        dir.normalize().applyEuler(new THREE.Euler(0, lookX, 0)).multiplyScalar(0.07);
+        const nx = yaw.position.x + dir.x, nz = yaw.position.z + dir.z;
+        if (!blocked(nx, yaw.position.z)) yaw.position.x = nx;
+        if (!blocked(yaw.position.x, nz)) yaw.position.z = nz;
+      }
+      near = pads.find(p => yaw.position.distanceTo(p.at) < 1.3) || null;
+      const n = tally();
+      if (n >= 2) { act.disabled = false; act.textContent = "RUN"; }
+      else if (near) { act.disabled = false; act.textContent = votes[near.name] ? "CLEAR" : "VOTE"; }
+      else { act.disabled = true; act.textContent = "VOTE"; if (step.textContent.startsWith("2")) step.textContent = "1 · WALK"; }
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    })();
+    addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+  </script>
+</body>
+</html>
