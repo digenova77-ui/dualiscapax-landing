@@ -37,11 +37,11 @@
     const out = document.getElementById("kernel");
     async function read() {
       try {
-        const res = await fetch("https://dualiscapax.ai/api/v2/metrics");
+        const res = await fetch("/api/v2/metrics");
         const data = await res.json();
         out.textContent = "requests " + data.requests + "\naccepted " + data.accepted + "\nuptime " + data.uptimeSeconds + "s";
       } catch (err) {
-        out.textContent = "HOLE\n" + err.message + "\nThe kernel does not send a CORS header to this host yet.";
+        out.textContent = "HOLE\n" + err.message;
       }
     }
     document.getElementById("see").onclick = read;
