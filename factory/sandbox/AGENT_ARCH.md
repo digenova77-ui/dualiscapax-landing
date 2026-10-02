@@ -25,7 +25,7 @@ A tool call is not a claim. A tool call + AND=1 + unit moved is a receipt.
 ## Tickets (A2A-shaped)
 
 Factory_TEN: measure live → cue ten → collapse → one atom → re-curl.
-Want must stay live. Sara cards and kid AV never ride this bus.
+Want must stay live. Grade 2 desk cards and kid AV never ride this bus.
 
 ## Why the coin matters to silicon
 

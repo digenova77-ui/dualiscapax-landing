@@ -3,7 +3,7 @@
 Software agents get a real-time environment.
 They do not get a page.
 
-Sara needs glass because she is a pair of eyes after 2:30.
+The Grade 2 teacher needs glass because she is a pair of eyes after 2:30.
 An agent needs a destination, a leftover cell, and a place to put a receipt.
 
 ## The room (no GUI)
@@ -25,7 +25,7 @@ Look stays $0 for humans. Agents do not browse Look for fun.
 
 - A dock, a geodesic, a chart
 - Iris voice
-- Sara's class cards
+- The Grade 2 teacher's class cards
 - A coin widget
 
 ## What they may have

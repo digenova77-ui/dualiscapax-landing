@@ -28,7 +28,7 @@ If there is no output (plate unchanged), we were a speech.
 | Supervisor (FACTORY_TEN) | Cue, collapse, emit T | Paint Home, mint, hold phrase |
 | Executor | Tools, one path | New ten, GUI, class cards |
 | Iris | Watch receipts, name holes, same collapse | Kid AV, PII, stadium mouth, skip AND |
-| Human desk (Sara / Ice) | Glass RTE | Upload children |
+| Human desk (Grade 2 teacher / Ice) | Glass RTE | Upload children |
 | Coin book | Remember a close after PoL | Pay sitting |
 
 Iris is not a fourth religion. She runs **this file**. Hop-limited observation of the mill. She does not become the destination.
@@ -53,4 +53,4 @@ Never idle ≠ invent work.
 `PERSONAL_DESK.md` — same desk for every jurisdiction; prepare then sign.
 `COMPLIANCE_MAP.md` — find, define, or `awaiting_ring`.
 
-Cross-ref: FACTORY_TEN, IDEA_FARM, AGENT_RTE, AGENT_ECONOMY, DCLM_UNITY_MATRIX, UNITY_THREE_BOOKS, POL1_STANDARD, COMPLIANCE_FLOOR, SARA_SURFACE, THE_ARROW.
+Cross-ref: FACTORY_TEN, IDEA_FARM, AGENT_RTE, AGENT_ECONOMY, DCLM_UNITY_MATRIX, UNITY_THREE_BOOKS, POL1_STANDARD, COMPLIANCE_FLOOR, GRADE2_TEACHER_SURFACE, THE_ARROW.

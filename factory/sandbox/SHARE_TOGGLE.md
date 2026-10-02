@@ -1,6 +1,6 @@
 # SHARE TOGGLE — classroom interoperability
 
-Sara may share a working card with a parent, an EA, or a board official.
+The Grade 2 teacher may share a working card with a parent, an EA, or a board official.
 Dualis does not become the SIS. Default is OFF.
 A grant is a named seat + named fields. Not “post the class to the internet.”
 
@@ -33,7 +33,7 @@ homeForSchool and IEP default stay OFF even if the simple row is ON.
 
 1. She unlocks phrase.
 2. She toggles a seat + fields.
-3. Device writes `dc.sara.g2.grant.${name}` with seats, fields, at, revoked=false.
+3. Device writes `dc.g2teacher.g2.grant.${name}` with seats, fields, at, revoked=false.
 4. Channel is `awaiting_channel`: show-the-phone, encrypted export she chooses, or later board OIDC.
 5. Dualis servers do **not** store the card. Unity ID of the other human is the door, not an email list in git.
 

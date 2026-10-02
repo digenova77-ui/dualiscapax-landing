@@ -12,7 +12,7 @@ Dualis does not invent the grade.
 Dualis does not scrape staff emails onto git.
 Until the mailbox is granted, grade is `awaiting_mailbox`.
 
-Named cite: Sara Kristen Foster, Easthill Grade 2 — David seated that room.
+Role cite: Grade 2 teacher (unconfirmed; name withheld until written consent), Easthill Grade 2 — David seated that room.
 
 person_door = OAuth PKCE S256 against the board tenant.
 awaiting_board_oidc until a board row exists.

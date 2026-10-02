@@ -20,7 +20,7 @@ button{margin-top:.6rem;background:transparent;color:var(--gold);border:1px soli
 </style></head>
 <body>
 <div class="wrap">
-<p class="brand">Easthill · Grade 2 · Sara</p>
+<p class="brand">Easthill · Grade 2 teacher desk</p>
 <h1>Import the class</h1>
 <p class="note">One name per line. Prefer first name + last initial. Nothing is uploaded. Dualis does not invent children.</p>
 <textarea id="raw" placeholder="Maya F.\nNoah K."></textarea>
@@ -31,7 +31,7 @@ button{margin-top:.6rem;background:transparent;color:var(--gold);border:1px soli
 </div>
 <nav class="dock"><a href="./index.html">Desk</a><a class="on" href="./class.html">Class</a><a href="./iep.html">IEP</a><a href="./report.html">Report</a></nav>
 <script>
-var KEY='dc.sara.g2.class';
+var KEY='dc.g2teacher.g2.class';
 function names(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
 function draw(){
   var n=names(),ul=document.getElementById('list'),say=document.getElementById('say');

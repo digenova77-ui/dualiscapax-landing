@@ -81,9 +81,9 @@ button,a.verb{appearance:none;border:1px solid var(--cyan);background:transparen
 <nav class="dock"><a class="on" href="./index.html">Desk</a><a href="./class.html">Cards</a><a href="./share.html">Share</a><a href="/portal">Phrase</a></nav>
 <script src="/js/device-pass.js"></script>
 <script>
-var KEY='dc.sara.g2.cards'; var cur=-1;
+var KEY='dc.g2teacher.g2.cards'; var cur=-1;
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
-function persist(a){localStorage.setItem(KEY,JSON.stringify(a)); localStorage.setItem('dc.sara.g2.class',JSON.stringify(a.map(function(x){return x.name})));}
+function persist(a){localStorage.setItem(KEY,JSON.stringify(a)); localStorage.setItem('dc.g2teacher.g2.class',JSON.stringify(a.map(function(x){return x.name})));}
 function list(){
   var box=document.getElementById('list'), a=load();
   box.innerHTML='';

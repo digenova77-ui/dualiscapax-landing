@@ -17,7 +17,7 @@ Until a board signs a row, the door button names the official board site and doe
 ## Index (not 300k files)
 
 One `/teacher` desk. School is a public chip. Grade is a picker.
-Sara / Easthill is the one named instance David asked for first.
+Easthill Grade 2 (teacher unconfirmed) is the one instance David asked for first.
 
 ## Data
 

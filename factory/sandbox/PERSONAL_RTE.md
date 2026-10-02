@@ -22,7 +22,7 @@ We are the shortest arrow to that pack. We are not the signature.
 - File, wire, or place an order without your confirm (same grammar as teacher confirm)
 - Mix DualisCapax till with your personal trading pile
 - Mix the coin vehicle with your RRSP
-- See Sara's class cards because they are doing your GST
+- See the Grade 2 teacher's class cards because they are doing your GST
 
 ## Last link (Unity)
 
@@ -42,4 +42,4 @@ Company profit you later point at Doge or the coin is *your* wallet after confir
 `awaiting_cra_api` — we do not scrape My Account.
 `awaiting_broker_oauth` — read-only journal first, never a hot key in the mill.
 
-Look $0 for law. Personal numbers stay in the vault. Overlay still prefers Sara 404s for the *company* plate this hour.
+Look $0 for law. Personal numbers stay in the vault. Overlay still prefers first-name-alias 404s for the *company* plate this hour.

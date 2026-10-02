@@ -39,7 +39,7 @@ button{appearance:none;margin-top:.7rem;border:1px solid var(--cyan);background:
 <button type="button" id="look">Look up from this phone</button>
 <div class="readout" id="out">No look yet. Confirm comes after.</div>
 </div>
-<p class="note">Named cite already seated as a proposal only: Sara Kristen Foster · Easthill · Grade 2 — she still confirms. Dualis does not scrape emails onto GitHub.</p>
+<p class="note">Role cite only (hpedsb.easthill.g2): Easthill · Grade 2 teacher (unconfirmed) — no name is seated until she confirms in writing. Dualis does not scrape emails onto GitHub.</p>
 <p><a href="./confirm.html" id="go" style="color:#3ee8ff">Go confirm before the desk opens</a></p>
 </div>
 <nav class="dock"><a href="./index.html">Boards</a><a class="on" href="./bind.html">Bind</a><a href="./confirm.html">Confirm</a><a href="./desk.html">Desk</a></nav>
@@ -64,13 +64,14 @@ function lookup(){
   var grade=(typeof gradeFromText==='function'?gradeFromText(mail+' '+clue):'')||'awaiting_mailbox';
   var school='';
   if(/easthill/i.test(clue+' '+mail)) school='Easthill Elementary School';
-  var named=(local.replace(/[^a-z]/gi,'').toLowerCase().indexOf('foster')>=0)||(local.replace(/[^a-z]/gi,'').toLowerCase().indexOf('sara')>=0);
+  var roleKey=(board.id==='hpedsb'&&school==='Easthill Elementary School'&&/grade\s*2|\bg2\b/i.test(clue+' '+mail))?'hpedsb.easthill.g2':'';
+  var named=!!roleKey;
   if(board.id==='hpedsb' && named){
     if(grade==='awaiting_mailbox'||!grade) grade='Grade 2';
     if(!school) school='Easthill Elementary School';
   }
   var prev=null; try{prev=JSON.parse(localStorage.getItem('dc.teacher.bind')||'null')}catch(e){}
-  var seat={mail:mail,board:board.id,boardName:board.name,school:school,grade:grade,clue:clue,t:Date.now(),status:'PROPOSAL',confirmed:false};
+  var seat={mail:mail,board:board.id,boardName:board.name,school:school,grade:grade,clue:clue,t:Date.now(),status:'PROPOSAL',confirmed:false,role:roleKey||null};
   if(prev&&prev.confirmed&&prev.mail===mail&&prev.grade===grade&&prev.school===school){
     seat.confirmed=true; seat.status='CONFIRMED';
   }

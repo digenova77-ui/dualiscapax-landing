@@ -1,6 +1,6 @@
 # SHARE_GRANT
 
-Sara may share a card. Dualis may not.
+The Grade 2 teacher may share a card. Dualis may not.
 Default = OFF. Nothing leaves the phone in this tick.
 `awaiting_board_oidc` · `awaiting_parent_seat` · PHIPA hole if this ever phones home without counsel.
 
@@ -23,7 +23,7 @@ Expanded = each field its own bit.
 
 ## Law
 
-1. Grant is localStorage `dc.sara.g2.grants` until a pipe exists.
+1. Grant is localStorage `dc.g2teacher.g2.grants` until a pipe exists.
 2. Pipe does not exist. Toggle is intent, not a send.
 3. Official book remains the board SIS.
 4. Revoke is one tap. Dualis keeps no shadow copy.

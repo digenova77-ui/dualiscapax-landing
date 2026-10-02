@@ -30,7 +30,6 @@ curl -sI --no-location https://dualiscapax.ai/rte/easthill/ | head -12
 curl -sI --no-location https://dualiscapax.ai/rte/easthill | head -12
 curl -sI --no-location https://dualiscapax.ai/rte/easthill/index.html | head -12
 curl -sI --no-location https://dualiscapax.ai/rte/easthill/class.html | head -12
-curl -sI --no-location https://dualiscapax.ai/sara | head -12
 
 # board on the plate
 curl -sI --no-location https://dualiscapax.ai/js/modules.json | head -12
@@ -42,7 +41,7 @@ curl -sI --no-location https://dualiscapax.ai/portal | head -12
 
 ```bash
 for p in / /ice /ice.html /look /hockey /rink /portal /unity \
-  /rte/easthill/ /rte/easthill /rte/easthill/class.html /sara \
+  /rte/easthill/ /rte/easthill /rte/easthill/class.html \
   /js/modules.json /js/unity-bind.js /js/device-pass.js
 do
   printf "%-36s " "$p"

@@ -1,6 +1,6 @@
 # CLASS_CAPTURE
 
-Sara may keep a record of her room **on her device** if authority is real.
+The Grade 2 teacher may keep a record of her room **on her device** if authority is real.
 Dualis does not get the file. Iris does not post. Look never plays it.
 
 ## Authority is not a vibe

@@ -48,9 +48,9 @@ button,.verb{appearance:none;border:1px solid var(--cyan);background:transparent
 </div>
 <nav class="dock"><a href="./index.html">Desk</a><a class="on" href="./class.html">Class</a><a href="/portal">Phrase</a></nav>
 <script>
-var KEY='dc.sara.g2.cards';
+var KEY='dc.g2teacher.g2.cards';
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
-function saveAll(a){localStorage.setItem(KEY,JSON.stringify(a)); try{localStorage.setItem('dc.sara.g2.class',JSON.stringify(a.map(function(x){return x.name})))}catch(e){}}
+function saveAll(a){localStorage.setItem(KEY,JSON.stringify(a)); try{localStorage.setItem('dc.g2teacher.g2.class',JSON.stringify(a.map(function(x){return x.name})))}catch(e){}}
 function draw(){
   var a=load(), box=document.getElementById('list');
   box.innerHTML='';
@@ -87,7 +87,7 @@ document.getElementById('save').onclick=function(){
 document.getElementById('back').onclick=closeEdit;
 document.getElementById('wipe').onclick=function(){
   if(!confirm('Clear every card from this phone? Dualis cannot restore them.'))return;
-  localStorage.removeItem(KEY); localStorage.removeItem('dc.sara.g2.class'); draw();
+  localStorage.removeItem(KEY); localStorage.removeItem('dc.g2teacher.g2.class'); draw();
 };
 draw();
 </script>
