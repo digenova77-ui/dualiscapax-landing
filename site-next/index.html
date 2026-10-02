@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DualisCapax</title>
+  <style>
+    :root{color-scheme:dark;--bg:#02030a;--ink:#e1fffb;--muted:#8aa9b8;--cyan:#63f7dd;--amber:#ffd37d;--line:#6fe8d855}
+    body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 ui-monospace,Menlo,monospace}
+    main{max-width:720px;margin:40px auto;padding:0 16px}
+    a{color:var(--cyan)}
+    .card{border:1px solid var(--line);padding:14px;margin:12px 0;background:#07101bcc}
+    button{background:var(--cyan);color:#03201d;border:0;font-weight:700;padding:8px 10px}
+    pre{white-space:pre-wrap;word-break:break-all;color:var(--amber)}
+  </style>
+</head>
+<body>
+  <main>
+    <p>DUALISCAPAX · NEXT</p>
+    <h1>The public site, beside the kernel.</h1>
+    <p>This host is the page. The kernel stays at dualiscapax.ai until you cut DNS. Look is free. A write is not offered here.</p>
+    <div class="card">
+      <div>KERNEL</div>
+      <pre id="kernel">Checking.</pre>
+      <button id="see" type="button">READ METRICS</button>
+    </div>
+    <div class="card">
+      <a href="./walk.html">Walk the room</a>
+      <p>Three pads. Two votes open a public compute call. That call is not a Father write.</p>
+    </div>
+    <div class="card">
+      <div>BUILDER</div>
+      <p>Father is the only writer. This site does not edit builder.html.</p>
+    </div>
+  </main>
+  <script>
+    const out = document.getElementById("kernel");
+    async function read() {
+      try {
+        const res = await fetch("https://dualiscapax.ai/api/v2/metrics");
+        const data = await res.json();
+        out.textContent = "requests " + data.requests + "\naccepted " + data.accepted + "\nuptime " + data.uptimeSeconds + "s";
+      } catch (err) {
+        out.textContent = "HOLE\n" + err.message + "\nThe kernel does not send a CORS header to this host yet.";
+      }
+    }
+    document.getElementById("see").onclick = read;
+    read();
+  </script>
+</body>
+</html>
