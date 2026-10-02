@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DCLM walk</title>
+  <style>
+    :root{color-scheme:dark;--bg:#02030a;--ink:#e1fffb;--cyan:#63f7dd;--amber:#ffd37d;--violet:#a68cff}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.3 ui-monospace,Menlo,monospace;overflow:hidden}
+    canvas{position:fixed;inset:0;width:100%;height:100%}
+    #hud{position:fixed;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:8px}
+    #log{position:fixed;left:12px;right:12px;bottom:108px;color:var(--amber);white-space:pre-wrap;word-break:break-all}
+    #stick{position:fixed;left:18px;bottom:18px;width:92px;height:92px;border:1px solid var(--cyan);border-radius:50%;touch-action:none}
+    button{border:1px solid var(--cyan);background:#02030acc;color:var(--ink);padding:8px 10px}
+    button.on{background:var(--cyan);color:#03201d}
+  </style>
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.169.0/build/three.module.js"}}</script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+  <div id="hud">
+    <div id="votes"></div>
+    <button id="run" type="button" disabled>RUN LOCKED</button>
+  </div>
+  <div id="log">Walk to a pad and vote. Two of three opens the public kernel. It does not open a write.</div>
+  <div id="stick"></div>
+  <script type="module">
+    import * as THREE from "three";
+    const log = document.getElementById("log");
+    const run = document.getElementById("run");
+    const canvas = document.getElementById("view");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setClearColor(0x02030a);
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x02030a, 8, 28);
+    const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 60);
+    const yaw = new THREE.Object3D();
+    const pitch = new THREE.Object3D();
+    yaw.add(pitch); pitch.add(camera); scene.add(yaw);
+    yaw.position.set(0, 1.6, 8);
+    scene.add(new THREE.HemisphereLight(0xd8fff8, 0x101018, 0.85));
+    const sun = new THREE.DirectionalLight(0xfff4e5, 0.6);
+    sun.position.set(4, 8, 2); scene.add(sun);
+    scene.add(new THREE.GridHelper(30, 30, 0x1f6f66, 0x10201c));
+    const solids = [];
+    function box(w, h, d, x, y, z, color) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color }));
+      m.position.set(x, y, z); scene.add(m); solids.push(m); return m;
+    }
+    box(30, 0.2, 30, 0, -0.1, 0, 0x071018);
+    box(1.2, 3.6, 1.2, -4, 1.8, 0, 0x3dceb8);
+    box(1.2, 3.6, 1.2, 4, 1.8, 0, 0x6d5bd0);
+    box(2.4, 1.6, 2.4, 0, 0.8, 0, 0x102028);
+    const pads = [
+      { name: "FATHER", at: new THREE.Vector3(-2.2, 0.05, 3), color: 0xffd37d },
+      { name: "SON", at: new THREE.Vector3(2.2, 0.05, 3), color: 0x63f7dd },
+      { name: "SPIRIT", at: new THREE.Vector3(0, 0.05, -3), color: 0xa68cff }
+    ];
+    const votes = {};
+    pads.forEach(p => {
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.08, 20), new THREE.MeshStandardMaterial({ color: p.color }));
+      m.position.copy(p.at); scene.add(m); p.mesh = m;
+    });
+    const keys = {};
+    addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+    addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+    let lookX = 0, lookY = 0, moveX = 0, moveZ = 0;
+    canvas.addEventListener("pointerdown", () => canvas.requestPointerLock?.());
+    addEventListener("mousemove", e => { if (document.pointerLockElement === canvas) { lookX -= e.movementX * 0.002; lookY -= e.movementY * 0.002; } });
+    const stick = document.getElementById("stick");
+    stick.addEventListener("pointerdown", e => stick.setPointerCapture(e.pointerId));
+    stick.addEventListener("pointermove", e => {
+      if (!stick.hasPointerCapture(e.pointerId)) return;
+      const r = stick.getBoundingClientRect();
+      moveX = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / 36));
+      moveZ = Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / 36));
+    });
+    stick.addEventListener("pointerup", () => { moveX = 0; moveZ = 0; });
+    function cast(name) {
+      const here = yaw.position;
+      const pad = pads.find(p => p.name === name && here.distanceTo(p.at) < 1.4);
+      if (!pad) { log.textContent = "Walk onto the " + name + " pad first."; return; }
+      votes[name] = !votes[name];
+      pad.mesh.material.emissive = new THREE.Color(votes[name] ? pad.color : 0x000000);
+      const n = Object.values(votes).filter(Boolean).length;
+      run.disabled = n < 2;
+      run.textContent = n < 2 ? "RUN LOCKED " + n + "/2" : "RUN";
+      log.textContent = name + (votes[name] ? " voted" : " cleared") + "\n" + n + " of 3. Need 2. Authority stays none.";
+    }
+    document.getElementById("votes").innerHTML = pads.map(p => `<button type="button" data-v="${p.name}">${p.name}</button>`).join(" ");
+    document.getElementById("votes").onclick = e => { if (e.target.dataset.v) cast(e.target.dataset.v); };
+    const base = location.host.endsWith("dualiscapax.ai") ? "" : "https://dualiscapax.ai";
+    run.onclick = async () => {
+      if (run.disabled) return;
+      log.textContent = "Vote passed. Asking the public kernel.";
+      try {
+        const data = await fetch(base + "/api/v2/compute", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ payload: "vote:" + Object.keys(votes).filter(k => votes[k]).join("-") }) }).then(r => r.json());
+        log.textContent = (data.accepted ? "SEE" : "HOLE") + "\nseq " + data.sequence + "\n" + data.inputDigest + "\nwrite not granted";
+      } catch (err) { log.textContent = "HOLE\n" + err.message; }
+    };
+    const player = new THREE.Vector3();
+    (function frame() {
+      lookY = Math.max(-1.1, Math.min(1.1, lookY));
+      yaw.rotation.y = lookX; pitch.rotation.x = lookY;
+      const forward = Number(keys["w"] || keys["arrowup"]) - Number(keys["s"] || keys["arrowdown"]);
+      const side = Number(keys["d"] || keys["arrowright"]) - Number(keys["a"] || keys["arrowleft"]);
+      const dir = new THREE.Vector3(side + moveX, 0, -forward - moveZ);
+      if (dir.lengthSq() > 0) {
+        dir.normalize().applyEuler(new THREE.Euler(0, lookX, 0));
+        player.copy(yaw.position).addScaledVector(dir, 0.08);
+        const hit = solids.some(s => Math.abs(player.x - s.position.x) < 0.8 && Math.abs(player.z - s.position.z) < 0.8 && s.position.y > 0);
+        if (!hit) yaw.position.copy(player);
+      }
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    })();
+    addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+  </script>
+</body>
+</html>
