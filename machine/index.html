@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Unity Playground — DualisCapax machine</title>
+  <style>
+    :root{color-scheme:dark;--bg:#02030a;--panel:#07101be8;--line:#6fe8d855;--ink:#e1fffb;--muted:#8aa9b8;--cyan:#63f7dd;--violet:#a68cff;--amber:#ffd37d}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+    canvas{display:block;width:100%;height:100%;position:fixed;inset:0}
+    #panel{position:fixed;top:12px;left:12px;width:min(380px,calc(100vw - 24px));padding:14px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(12px)}
+    .eyebrow{color:var(--cyan);letter-spacing:.16em;font-size:10px}
+    h1{margin:6px 0;font-size:18px;letter-spacing:-.03em}
+    p{margin:0 0 8px;color:var(--muted)}
+    textarea{width:100%;min-height:64px;background:#03060a;color:var(--ink);border:1px solid var(--line);padding:8px;font:12px/1.4 ui-monospace,monospace}
+    button{margin-top:8px;background:var(--cyan);color:#03201d;border:0;font-weight:700;padding:8px 10px}
+    #out{margin-top:8px;color:var(--amber);white-space:pre-wrap;word-break:break-all}
+    .sr{position:absolute;left:-10000px;top:0}
+  </style>
+  <script type="importmap">
+  {"imports":{"three":"https://unpkg.com/three@0.169.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.169.0/examples/jsm/"}}
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+  <section id="panel">
+    <div class="eyebrow">DCLM / UNITY PLAYGROUND · MACHINE</div>
+    <h1>Boards in the realm.</h1>
+    <p>Drag to orbit. The three boards move with the floor. RUN posts a 256-byte payload to the live kernel.</p>
+    <textarea id="payload" maxlength="256">scene-manifest:unity-playground</textarea>
+    <button id="run" type="button">RUN KERNEL</button>
+    <div id="out">Kernel not asked yet.</div>
+  </section>
+  <div class="sr">
+    <h1>Unity Playground on the DCLM machine</h1>
+    <p>Law floor: NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING. Authority none. PII coefficient 0.00.</p>
+  </div>
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    const LAW = ["NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING"];
+    const out = document.getElementById("out");
+    const canvas = document.getElementById("view");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setClearColor(0x02030a);
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x02030a, 12, 42);
+    const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 80);
+    camera.position.set(8, 6, 11);
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.target.set(0, 1.4, 0);
+    scene.add(new THREE.HemisphereLight(0xd8fff8, 0x12101c, 0.7));
+    const sun = new THREE.DirectionalLight(0xfff4e5, 0.9);
+    sun.position.set(6, 10, 4);
+    scene.add(sun);
+    scene.add(new THREE.GridHelper(24, 24, 0x63f7dd, 0x17202a));
+    const root = new THREE.Group();
+    root.name = "UNITY";
+    scene.add(root);
+    for (let i = 1; i <= 6; i++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.4 + i * 0.95, 0.03, 8, 64), new THREE.MeshBasicMaterial({ color: 0x63f7dd }));
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = 0.03;
+      root.add(ring);
+    }
+    function tower(name, x, color) {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(1.15, 3.8, 1.15), new THREE.MeshStandardMaterial({ color, roughness: 0.35 }));
+      mesh.position.set(x, 1.9, 0);
+      mesh.name = name;
+      root.add(mesh);
+    }
+    tower("DCLM", -3.1, 0x63f7dd);
+    tower("IRIS", 3.1, 0xa68cff);
+    function board(title, seat, x, z, tint) {
+      const c = document.createElement("canvas");
+      c.width = 512; c.height = 288;
+      const g = c.getContext("2d");
+      g.fillStyle = "#07101b";
+      g.fillRect(0, 0, 512, 288);
+      g.strokeStyle = tint;
+      g.lineWidth = 8;
+      g.strokeRect(8, 8, 496, 272);
+      g.fillStyle = tint;
+      g.font = "700 40px sans-serif";
+      g.fillText(title, 28, 90);
+      g.fillStyle = "#e1fffb";
+      g.font = "24px sans-serif";
+      g.fillText(seat, 28, 150);
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 1.24), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, side: THREE.DoubleSide }));
+      mesh.position.set(x, 2.2, z);
+      root.add(mesh);
+      const box = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.35, 0.55), new THREE.MeshStandardMaterial({ color: 0x17202a }));
+      box.position.set(x, 0.2, z + 0.8);
+      root.add(box);
+    }
+    board("FATHER", "write gate", -4.2, 2.4, "#ffd37d");
+    board("SON", "DCLM machine", 4.2, 2.4, "#63f7dd");
+    board("SPIRIT", "Iris + Twain", 0, -3.4, "#a68cff");
+    addEventListener("resize", () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+    (function frame() { controls.update(); renderer.render(scene, camera); requestAnimationFrame(frame); })();
+    document.getElementById("run").onclick = async () => {
+      const payload = document.getElementById("payload").value.slice(0, 256);
+      if (/@|password|phone/i.test(payload)) {
+        out.textContent = "HOLE\nperson-like field refused\n" + LAW.join(" · ");
+        return;
+      }
+      const base = location.host.endsWith("dualiscapax.ai") ? "" : "https://dualiscapax.ai";
+      try {
+        const res = await fetch(base + "/api/v2/compute", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ payload }) });
+        const data = await res.json();
+        out.textContent = (data.accepted ? "SEE" : "HOLE") + "\nseq " + data.sequence + "\ninput " + data.inputDigest + "\nstate " + data.stateDigest + "\nauthority NONE";
+      } catch (err) {
+        out.textContent = "HOLE\nkernel not reached from this host\n" + err.message;
+      }
+    };
+  </script>
+</body>
+</html>
