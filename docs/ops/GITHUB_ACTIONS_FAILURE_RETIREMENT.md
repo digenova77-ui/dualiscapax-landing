@@ -14,6 +14,8 @@ A workflow that repeatedly fails and is no longer required may be **disabled**, 
 
 These were disabled after repeated failures in the current run history. No active run existed at the time of retirement.
 
+`pinata-pin.yml` remains enabled as the deliberate manager for the existing five-pin spare system. The pins were not deleted, repinned, or altered. GitHub workflow state is not treated as the authority for Pinata content.
+
 ## What is preserved
 
 - Git commits and workflow source files;
