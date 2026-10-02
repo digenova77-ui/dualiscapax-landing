@@ -925,7 +925,7 @@
         window.open(url, "_blank", "noopener,noreferrer");
         return;
       }
-      // No live link yet ($5 / $350) — send to payments page, never invent a buy.stripe.com URL
+      // No live link yet ($5 / $350) — send to payments page, never invent a payment-link URL
       if (typeof playIrisChime === "function") playIrisChime();
       var modal = document.getElementById("checkoutModal");
       if (modal) {
