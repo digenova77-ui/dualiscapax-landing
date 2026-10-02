@@ -36,37 +36,27 @@ foot{display:block;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(15
 <body>
 <div class="wrap">
   <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/donate.html">Donate</a></div>
-  <p class="kicker">Residual Law gateway</p>
-  <h1>DC-SRI-1 is open</h1>
+  <p class="kicker">Residual Law gateway · closed under the freeze</p>
+  <h1>DC-SRI-1 is closed (frozen)</h1>
   <p>Fiat face CAD $0.00. Crypto only. You keep 90%. House takes 10% for 90 days on each inverted event, then 10% annual residual while the figure still inverts.</p>
   <div class="grid">
     <div class="row"><b>Days 1–90</b>10% of each inverted event. Crypto within 7 days.</div>
     <div class="row"><b>Anniversary</b>10% of that year’s inverted annualized leak. Crypto within 14 days.</div>
     <div class="row"><b>Invert fails</b>Nothing is owed that period.</div>
   </div>
-  <div class="ok" id="gate"><strong>Gateway open.</strong> Name the deal and the rail. Bind writes a hash you can keep. On-chain anchor follows when the contract is deployed.</div>
+  <div class="ok" id="gate"><strong>Gateway closed.</strong> All rails are frozen under the production freeze. Nothing can be bound or settled here until the owner lifts the freeze. Unity ID is the only rail DualisCapax will use.</div>
   <h2>Bind</h2>
   <label for="who">Counterparty name</label>
   <input id="who" maxlength="120"/>
   <label for="deal">Deal / leak named</label>
   <input id="deal" maxlength="160"/>
   <label for="rail">Crypto rail</label>
-  <select id="rail">
-    <option value="">Choose a rail</option>
-    <option value="ETH">ETH</option>
-    <option value="POL">Polygon</option>
-    <option value="BNB">BNB Smart Chain</option>
-    <option value="LINK">LINK</option>
-    <option value="SOL">SOL</option>
-    <option value="XRP">XRP</option>
-    <option value="ZEC">ZEC</option>
-    <option value="DOT">DOT</option>
-    <option value="DGB">DGB</option>
-    <option value="BCH">BCH</option>
+  <select id="rail" disabled>
+    <option value="">Unity ID (closed under the freeze)</option>
   </select>
   <label for="note">Invert note</label>
   <textarea id="note" maxlength="500"></textarea>
-  <button type="button" class="go" id="sign">Bind this instrument</button>
+  <button type="button" class="go" id="sign" disabled>Closed under the freeze</button>
   <p class="hash" id="receipt" hidden></p>
   <p class="note">Ontario. Template, not counsel. Not Fuel. Not a seat. Not equity. Not medical. Hash is the human bind until the chain accepts it.</p>
   <foot>DualisCapax · Residual Law · DC-SRI-1</foot>
