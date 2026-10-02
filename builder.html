@@ -108,6 +108,15 @@
         const digest = await crypto.subtle.digest('SHA-256', bytes);
         return [...new Uint8Array(digest)].map(x => x.toString(16).padStart(2,'0')).join('');
       };
+      const pipeToDclm = async payload => {
+        if (location.port !== '8080') return {verdict:'HOLE', why:'DCLM origin is local-only', authority:'NONE'};
+        try {
+          const res = await fetch('/v2/dclm/ingest', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({source:'builder',payload})});
+          return await res.json();
+        } catch (error) {
+          return {verdict:'HOLE', why:'DCLM ingress unreachable', authority:'NONE'};
+        }
+      };
       const preparePipeline = async (dryRun = false, simulation = false) => {
         const claim = pipelineClaim.value.trim();
         const fetchPlan = pipelineFetch.value.trim();
@@ -118,9 +127,10 @@
         if (/password|passphrase|private key|secret/i.test(claim + ' ' + fetchPlan)) holes.push('credential language requires passkey/OAuth handling, never a password');
         const body = {schema:'dualis.task.v2',target,verb:dryRun?'dry-run':'prepare',kind:'dual-pipeline',claim,fetch_plan:fetchPlan,constraints:{non_destructive:true,reversible:true,external_writes:false},simulation_policy:simulation?{mode:'simulation',max_active_tasks:4,max_steps_per_task:12,max_retries_per_step:2,max_runtime_seconds:900,stop_on:['HOLE','FAIL','WAIT_GRANT','VETO','budget','timeout','material_change']}:null};
         const requestHash = await sha256(canonical(body));
+        const dclm = holes.length ? {verdict:'HOLE',why:'local validation failed',authority:'NONE'} : await pipeToDclm({...body,request_hash:requestHash});
         const status = holes.length ? 'HOLE' : simulation ? 'PASS · SIMULATION ONLY' : dryRun ? 'PASS · LOCAL DRY-RUN ONLY' : 'WAIT_GRANT · ENVELOPE PREPARED';
         pipelineState.textContent = 'COLLAPSE: ' + status;
-        pipelineOutput.textContent = JSON.stringify({...body,request_hash:requestHash,status,evidence:holes.length?holes:['not fetched by public client'],auth:'passkey/OAuth required',receipt:'not an execution receipt'}, null, 2);
+        pipelineOutput.textContent = JSON.stringify({...body,request_hash:requestHash,status,evidence:holes.length?holes:['not fetched by public client'],dclm_ingress:dclm,auth:'passkey/OAuth required',receipt:'not an execution receipt'}, null, 2);
       };
       pipelineOpen?.addEventListener('click',()=>{ pipeline.classList.add('open'); pipeline.setAttribute('aria-hidden','false'); });
       pipelineClose?.addEventListener('click',()=>{ pipeline.classList.remove('open'); pipeline.setAttribute('aria-hidden','true'); });
