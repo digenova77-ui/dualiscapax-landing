@@ -16,7 +16,11 @@ so every file in this tree is a public plate. Fail (exit 1) if the tree carries:
     equal-CAD chain lists, "<chain> receive string", "<chain> vault"). Unity ID is the
     only wallet; payments stay closed until the owner opens them;
   * a retired-structure term (owner rule 2026-10-02): triad, swiss, switzerland,
-    singapore, zug, stiftung, "trust structure".
+    singapore, zug, stiftung, "trust structure";
+  * under cf-pages/**: an external checkout / processor link; and anywhere (cf-pages/**
+    and its root twins): a price-tagged portal (a <section>/<article>/<div> block whose
+    aria-label or heading/text names a portal and that carries a non-zero CAD/USD price),
+    e.g. the old holographic-core v2 / rte "Private portal" ($49 / $120).
 
 Usage: python3 scripts/pay-freeze-guard.py [root]
 """
@@ -76,6 +80,12 @@ PATTERNS = [
     ("chain_equal_cad", re.compile(r"(?i:equal-?(?:cad|crypto))[^.\n<\"']{0,40}" + CHAIN)),
     ("chain_receive", re.compile(CHAIN + r"\s+(?i:receive\s+string|vault)\b")),
 ]
+CF_PAGES_PATTERNS = [
+    ("checkout_link", re.compile(r"(?i)href\s*=\s*[\"']?https?://[^\"'\s>]*(?:checkout|buy\.stripe\.com|/pay(?:[/?#]|\b)|/buy(?:[/?#]|\b)|paypal\.|square\.link|squareup\.com|commerce\.coinbase|nowpayments|bitpay|moonpay|banxa|gumroad|lemonsqueezy|paddle\.com)")),
+]
+PORTAL_BLOCK = re.compile(r"(?is)<(section|article|div)\b[^>]*>.*?</\1>")
+PORTAL_WORD = re.compile(r"(?i)aria-label\s*=\s*[\"'][^\"']*\bportal\b|<(?:h[1-6]|p|strong|span|div|legend|caption)\b[^>]*>[^<]*\bportal\b")
+NONZERO_PRICE = re.compile(r"(?i)(?:\b(?:CAD|USD|C)\s*\$|\$)\s*(?:0*[1-9][0-9,]*(?:\.[0-9]+)?|0\.[0-9]*[1-9])")
 CONFIG_PATTERNS = [
     ("open_flag", re.compile(r"\b(?:stripe_enabled|crypto_enabled|checkout_open|jacket_open)\s*:\s*true\b")),
     ("config_address", re.compile(r"\b(?:research|ai)_[a-z]+\s*:\s*\"[^\"]{20,}\"")),
@@ -97,7 +107,16 @@ for dp, dns, fns in os.walk(ROOT):
         except OSError:
             continue
         donate_only = rel in DONATE_ONLY
-        pats = PATTERNS + (CONFIG_PATTERNS if fn == "payments-config.js" else [])
+        in_cf_pages = rel.split(os.sep)[0] == "cf-pages"
+        pats = PATTERNS + (CONFIG_PATTERNS if fn == "payments-config.js" else []) \
+            + (CF_PAGES_PATTERNS if in_cf_pages else [])
+        if os.path.splitext(fn)[1].lower() in {".html", ".htm", ".bak"}:  # portal check: whole tree (cf-pages/** + root twins)
+            text = "\n".join(lines)
+            for m in PORTAL_BLOCK.finditer(text):
+                blk = m.group(0)
+                if PORTAL_WORD.search(blk) and NONZERO_PRICE.search(blk):
+                    i = text.count("\n", 0, m.start()) + 1
+                    hits.append((rel, i, "price_tagged_portal", NONZERO_PRICE.search(blk).group(0)[:12] + "…"))
         for i, line in enumerate(lines, 1):
             for name, rx in pats:
                 for m in rx.finditer(line):
