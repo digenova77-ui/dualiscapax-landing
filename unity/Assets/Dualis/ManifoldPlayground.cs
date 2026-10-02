@@ -2,6 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public static class LawFloor
 {
@@ -9,10 +10,29 @@ public static class LawFloor
 
     public static string Hole(string why)
     {
-        var body = "{\"verdict\":\"HOLE\",\"authority\":\"NONE\",\"pii\":0,\"why\":\"" + why + "\"}";
+        var body = "{\"verdict\":\"HOLE\",\"authority\":\"NONE\",\"pii\":0,\"why\":\"" + EscapeJson(why) + "\"}";
         using var sha = SHA256.Create();
         var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(body));
         return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+    }
+
+    private static string EscapeJson(string value)
+    {
+        if (value == null) return "";
+        var builder = new StringBuilder(value.Length);
+        foreach (var c in value)
+        {
+            switch (c)
+            {
+                case '\\': builder.Append("\\\\"); break;
+                case '"': builder.Append("\\\""); break;
+                case '\n': builder.Append("\\n"); break;
+                case '\r': builder.Append("\\r"); break;
+                case '\t': builder.Append("\\t"); break;
+                default: builder.Append(c); break;
+            }
+        }
+        return builder.ToString();
     }
 }
 
@@ -37,5 +57,20 @@ public class ManifoldPlayground : MonoBehaviour
         iris.transform.position = new Vector3(3f, 2f, 0f);
         iris.transform.localScale = new Vector3(1.2f, 4f, 1.2f);
         Debug.Log("Unity playground parented. Jacket origin " + origin + ". Authority NONE.");
+        StartCoroutine(PipeSceneReceipt());
+    }
+
+    private System.Collections.IEnumerator PipeSceneReceipt()
+    {
+        var json = "{\"source\":\"unity\",\"payload\":{\"kind\":\"scene-manifold\",\"rings\":6,\"towers\":[\"DCLM\",\"IRIS\"],\"authority\":\"NONE\",\"pii_coefficient\":0}}";
+        using var request = new UnityWebRequest(origin + "/v2/dclm/ingest", "POST");
+        request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        yield return request.SendWebRequest();
+        if (request.result == UnityWebRequest.Result.Success)
+            Debug.Log("DCLM ingress receipt: " + request.downloadHandler.text);
+        else
+            Debug.Log("DCLM ingress HOLE: " + request.error);
     }
 }

@@ -37,6 +37,15 @@ check(len(body["receipt"]) == 64, "receipt is SHA-256")
 status, body = call("/v2/dclm/sandbox/execute", "POST", {**clean, "name": "must-not-be-stored"})
 check(status == 400 and body["verdict"] == "HOLE", "PII rejected")
 
+status, body = call("/v2/dclm/ingest", "POST", {"source": "unity", "payload": {"nested": {"email": "must-not-be-stored"}}})
+check(status == 400 and body["verdict"] == "HOLE", "nested PII rejected")
+
+status, body = call("/v2/dclm/ingest", "POST", {"source": "unity", "payload": clean})
+check(status == 200 and body["verdict"] == "SEE" and body["ingress"] == "unity", "Unity ingress admitted")
+
+status, body = call("/v2/dclm/ingest", "POST", {"source": "unknown", "payload": clean})
+check(status == 422 and body["verdict"] == "HOLE", "unknown ingress rejected")
+
 status, body = call("/v2/dclm/sandbox/execute", "POST", {**clean, "law": LAW[:-1]})
 check(status == 422 and body["verdict"] == "HOLE", "law drift rejected")
 
