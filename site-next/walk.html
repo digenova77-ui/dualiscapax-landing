@@ -147,10 +147,9 @@
     function tally() { return Object.values(votes).filter(Boolean).length; }
     act.onclick = async () => {
       if (act.textContent === "RUN") {
-        log.textContent = "Vote passed. Asking the public kernel.";
-        const base = location.host.endsWith("dualiscapax.ai") ? "" : "https://dualiscapax.ai";
+        log.textContent = "Vote passed. Asking this host.";
         try {
-          const data = await fetch(base + "/api/v2/compute", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ payload: "vote:" + Object.keys(votes).filter(k => votes[k]).join("-") }) }).then(r => r.json());
+          const data = await fetch("/api/v2/compute", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ payload: "vote:" + Object.keys(votes).filter(k => votes[k]).join("-") }) }).then(r => r.json());
           step.textContent = data.accepted ? "3 · SEE" : "3 · HOLE";
           log.textContent = "seq " + data.sequence + "\n" + data.inputDigest + "\nwrite not granted";
         } catch (err) { step.textContent = "3 · HOLE"; log.textContent = err.message; }
