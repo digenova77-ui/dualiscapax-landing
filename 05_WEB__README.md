@@ -29,4 +29,3 @@ git push -u origin main
 - **DCLM Layer [0] Law Floor:** `NO_FORCE`, `HOST_SAFE`, `CLEANUP_FIRST`, `TRUTH_OR_NOTHING`.
 - **Invariant M-S Watchdog:** Sub-4.20 ms fail-closed hardware circuit breaker.
 - **Zero Secret Keys in Client Code:** Zero `sk_live_` or `whsec_` credentials stored in repository.
-- **1:1 CAD Parity:** Stripe CAD checkout alongside Equal-Crypto rails (`BTC`, `ETH`, `SOL`).

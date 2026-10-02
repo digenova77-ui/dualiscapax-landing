@@ -25,7 +25,7 @@ Access: CLOSED (`open: false`)
 
 | Combo | Path A | Path B | Rule |
 |-------|--------|--------|------|
-| PAY-1 | Stripe Payment Link (when open) | Equal-CAD BTC / ETH / SOL / USDC | No exchange product |
+| PAY-1 | Stripe Payment Link (when open) | Checkout closed | No exchange product |
 
 ## Create missing links (Dashboard · operator only)
 

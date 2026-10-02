@@ -162,8 +162,7 @@
         return null;
       }
       if ($("eth")) $("eth").value = addr;
-      var label = provider.isTrust ? "Trust Wallet" :
-        provider.isMetaMask ? "MetaMask" :
+      var label = provider.isMetaMask ? "MetaMask" :
         provider.isCoinbaseWallet ? "Coinbase Wallet" :
         provider.isBraveWallet ? "Brave Wallet" : "Browser wallet";
       if (out) out.textContent = label + " connected · " + addr.slice(0, 6) + "…" + addr.slice(-4) + ". Optional: Prove with signature.";

@@ -16,7 +16,7 @@
 
 ---
 
-## 2. Domain triad (DOMAIN.md)
+## 2. Domain chain (DOMAIN.md)
 
 ```
 REPO   → github.com/digenova77-ui/dualiscapax-landing

@@ -27,7 +27,7 @@ Smashing the entire 50-file expanded ecosystem against the DCLM Layer [0] Law Fl
 │  1. Kernel Loop Latency     │ 14.84 μs (DHAVP-1.0)     │ 0.1536 μs (Bare-Metal C)│
 │  2. Peak System Throughput  │ 60,758 cycles/sec        │ 4,699,713 cycles/sec    │
 │  3. Symplectic Determinant  │ det(M) == 1.000000       │ det(M) == 1.000000000000│
-│  4. Legacy Governance Drift │ 36 Legacy Triad/2P5L refs│ 0 Legacy Remnants (0.0%)│
+│  4. Legacy Governance Drift │ 36 Legacy governance refs│ 0 Legacy Remnants (0.0%)│
 │  5. Indexed Knowledge Graph │ 13 Files                 │ 50 Canonical Files      │
 │  6. Multi-Domain Reach      │ Web & Public Sector      │ Cellular -> Earth-Mars  │
 │  7. Residual Friction Floor │ Reff <= 4.18e-13         │ Reff <= 4.18e-13 (PASS) │

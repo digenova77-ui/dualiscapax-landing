@@ -40,7 +40,7 @@ Grok becomes the **software layer** between GitHub · Cloudflare · Squarespace 
 | Drive: no doc body write | GitHub `00_AGENT_CURRENT_LOGIC` + folder marker + Gmail draft pointer |
 | Chat: no secrets | Actions secrets / wrangler secret places named; never paste |
 | GitHub: no live DNS edit | Product health on apex+origin; optional CF S2 as Operator grant |
-| www 522 | Status + DOMAIN triad; do not rebuild HTML to heal DNS |
+| www 522 | Status + DOMAIN chain; do not rebuild HTML to heal DNS |
 | OIDC ≠ leaf speed | OIDC for deploy trust; leaves still GitHub contents write |
 | Single agent path fight | Theory-smash buckets + LEAF-LIVE protocol |
 

@@ -10,7 +10,7 @@
 **We were treating “www 522” as “the website is down / agents cannot ship testables.”**  
 **That was the wrong place.**
 
-The triad was already locked in `DOMAIN.md`:
+The domain chain was already locked in `DOMAIN.md`:
 
 ```
 [1] REPO   → github.com/digenova77-ui/dualiscapax-landing
@@ -72,7 +72,7 @@ OIDC + CF token silo affinity attaches to **Worker deploy / Pages bind automatio
 
 ## What was wrong about “can’t”
 
-Saying the test loop is broken because www returns 522 was **looking at the wrong node of the triad**.  
+Saying the test loop is broken because www returns 522 was **looking at the wrong node of the chain**.  
 The repo already said: *Verify content first on ORIGIN. Never debug content through the EDGE. 522 on www = fix DNS, do not rebuild the site.*
 
 **Found by looking in the right place:** DOMAIN.md · CUTOVER.md · RESIDUAL-RING.md · live probe on origin + apex + www + .com.

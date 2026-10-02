@@ -69,7 +69,7 @@ We touch **interfaces**. We do not become **their interior**.
 | Face | Spec |
 |------|------|
 | **Platform face** | DNS records, optional Workers **when** Operator-placed secrets exist |
-| **Our face** | DOMAIN triad, status health = apex+origin, BIND-CF-WORKER when YES BIND |
+| **Our face** | DOMAIN chain, status health = apex+origin, BIND-CF-WORKER when YES BIND |
 | **API theory** | LIMIT on DNS-from-Git → Bridge owns health law; optional Worker is first-party under our account |
 | **With TOS** | Cloudflare rules for zone Owner only |
 | **Not into** | We do not become Cloudflare; we configure **our** zone via allowed means |

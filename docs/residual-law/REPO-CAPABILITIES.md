@@ -25,7 +25,7 @@
 |------|----------------|
 | `create_or_update_file` | Ship leaves, indexes, law docs to `main` |
 | `delete_file` | Remove leftovers |
-| `get_file_contents` / `get_repository_tree` | Read before write; triad docs |
+| `get_file_contents` / `get_repository_tree` | Read before write; domain chain docs |
 | `create_branch` | Parallel agent lanes without main fights |
 | `create_pull_request` / `merge_pull_request` | Review gate when needed |
 | `actions_run_trigger` | **Run / rerun / cancel** workflows (OIDC, residual-ring) |

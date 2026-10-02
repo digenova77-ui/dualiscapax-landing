@@ -58,7 +58,6 @@ Pillar 7: Cosmos Glassmorphic Front-End Control Plane (v6.0-Cosmos)
    * DCLM Friction Compressor: Exponential compression trigger validated at $\Theta^* = 50.000001%$, Net Coupling $C = 0.9877$, Mean User Affinity $\bar{\mathcal{A}} = 0.9925$.
    * Smart Contract Monotonic Gating: Verified strict temporal ordering: $t_{\text{sign}} < t_{\text{dispatch}} < t_{\text{hash}}$.
 Pillar 8: Multi-Jurisdictional Statutory & Fiduciary Compliance
-   * 4-Pillar Corporate Governance: Belleville Ontario OpCo (Commercial), DualisCapax Foundation (Open Research), Institutional Trust Anchor (Smart Contract Custody), Sovereign Trust Anchor (Reserve Anchor).
    * Ontario BPS Directive: $0.00 upfront CapEx/OpEx, 90-day evaluation horizon, self-funding gain-share decaying to 100% client retained savings by Year 5 ($R \to 0$).
    * Clean Unplug Guarantee: Armed sub-90-second emergency clean unplug SLA leaving zero residual footprint.
    * Zero Corporate Token Float: 0.00% float; 100% candidate enterprise deposits credited against future royalties.
@@ -229,8 +228,6 @@ The Dualis Core Logic Model (DCLM) executes a structured two-pass dialectical op
    * Friction Resolution: Two-speed cognitive triaging. Simple Tier 1/2 prompts execute via fast deterministic local AST rules ($\le 45\text{ ms}$); deep Tier 4/5 proofs trigger asynchronous sub-agent DAG parallelization with real-time HUD progress streaming.
    * Tension 3 (Multi-Layer CSS 3D Viewports vs. Mobile Thermal Limits): Continuous 60 FPS 3D perspective matrix transformations and dynamic particle physics cause thermal throttling and battery drain on mobile devices.
    * Friction Resolution: Adaptive Hardware Clamping. Mobile viewports drop particle counts by 65% and utilize static hardware-accelerated CSS layer compositing (will-change: transform), while desktop workstations run the full 17.5KB Cosmos Quarks engine.
-   * Tension 4 (Multi-Jurisdictional Trust Shells vs. Authentic Fiduciary Simplicity): Theoretical offshore sovereign model trust structures (Institutional Trust Anchor, Sovereign Trust Anchor) introduced statutory overhead and governance ambiguity.
-   * Friction Resolution: Purge offshore trust templates; anchor 100% in authentic OBCA Ontario corporate authority, 1:1 CAD-matched Equal-Crypto parity, and immutable Cloudflare D1 Merkle ledgers.
 2.2 The Rejection Container (Isolated Drag & Distillation Substrates)
 The following 6 drag vectors have been purged from the live execution path and isolated:
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -597,7 +594,7 @@ ID
 	GOV-05
 	Crypto Settlement Parity
 	Dynamic exchange
-	1:1 CAD Equal-Crypto Parity (BTC/ETH/SOL)
+	1:1 CAD Equal-Crypto Parity
 	ratio
 	LOCKED
 	Equal settlement parity without speculative spread

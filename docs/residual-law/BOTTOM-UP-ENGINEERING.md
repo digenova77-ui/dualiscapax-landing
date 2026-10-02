@@ -54,7 +54,7 @@ Engineer **up** from L0–L5 before treating L6–L7 as blockers. Static DualisC
 | Public GET of origin/apex | HTTP | residual-ring C observe |
 | Connected GitHub tools | User-linked OAuth | Write/trigger/list without pasting PATs in chat |
 | Google Drive connected | User-linked | Operator docs off-repo |
-| DOMAIN.md triad | **Our** prior lock | Stop re-diagnosing edge as content |
+| DOMAIN.md chain | **Our** prior lock | Stop re-diagnosing edge as content |
 
 These are **in** the product contracts we operate under — not loopholes outside TOS.
 
@@ -87,6 +87,6 @@ Bottom-up means **our** law + **public** contracts + **observed** behavior — n
 
 ## 6. One line
 
-**Reverse-engineer the triad we already locked: repo writes, Pages publishes, origin and apex serve, www is DNS-only residual — build DualisCapax upward from that public contract under residual law, never by stepping outside TOS.**
+**Reverse-engineer the domain chain we already locked: repo writes, Pages publishes, origin and apex serve, www is DNS-only residual — build DualisCapax upward from that public contract under residual law, never by stepping outside TOS.**
 
 **Last update:** 26 Aug 2026
