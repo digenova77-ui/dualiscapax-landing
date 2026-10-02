@@ -32,63 +32,93 @@
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     renderer.setSize(innerWidth, innerHeight);
-    renderer.setClearColor(0x02030a);
+    renderer.setClearColor(0x0b1016);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 0.95;
+    renderer.shadowMap.enabled = true;
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x02030a, 0.045);
+    scene.fog = new THREE.Fog(0x0b1016, 12, 34);
     const camera = new THREE.PerspectiveCamera(64, innerWidth / innerHeight, 0.1, 70);
     const yaw = new THREE.Object3D();
     const pitch = new THREE.Object3D();
     yaw.position.set(0, 1.6, 7.5);
     yaw.add(pitch); pitch.add(camera); scene.add(yaw);
-    scene.add(new THREE.HemisphereLight(0xc8fff4, 0x140818, 0.45));
-    const sun = new THREE.DirectionalLight(0xfff1d6, 0.7);
-    sun.position.set(6, 10, 4); scene.add(sun);
-    const cyan = new THREE.PointLight(0x63f7dd, 8, 14);
-    cyan.position.set(-3.2, 2.4, 0); scene.add(cyan);
-    const violet = new THREE.PointLight(0xa68cff, 8, 14);
-    violet.position.set(3.2, 2.4, 0); scene.add(violet);
-    const floor = new THREE.Mesh(new THREE.CircleGeometry(16, 64), new THREE.MeshStandardMaterial({ color: 0x071018, metalness: 0.4, roughness: 0.55 }));
-    floor.rotation.x = -Math.PI / 2; scene.add(floor);
-    scene.add(new THREE.GridHelper(28, 28, 0x1c4a46, 0x101820));
+    scene.add(new THREE.HemisphereLight(0xb7c4c8, 0x1a140e, 0.55));
+    const sun = new THREE.DirectionalLight(0xfff0dc, 1.15);
+    sun.position.set(7, 12, 5);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    sun.shadow.camera.near = 1;
+    sun.shadow.camera.far = 28;
+    sun.shadow.camera.left = sun.shadow.camera.bottom = -10;
+    sun.shadow.camera.right = sun.shadow.camera.top = 10;
+    scene.add(sun);
+    const fill = new THREE.DirectionalLight(0x8eb4c8, 0.25);
+    fill.position.set(-6, 4, -3); scene.add(fill);
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(16, 72), new THREE.MeshStandardMaterial({ color: 0x2a3136, roughness: 0.86, metalness: 0.04 }));
+    floor.rotation.x = -Math.PI / 2;
+    floor.receiveShadow = true;
+    scene.add(floor);
     const rings = [];
-    for (let i = 1; i <= 5; i++) {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.3 + i * 0.72, 0.018, 8, 96), new THREE.MeshBasicMaterial({ color: i % 2 ? 0x63f7dd : 0xa68cff, transparent: true, opacity: 0.55 }));
-      ring.rotation.x = Math.PI / 2; ring.position.y = 0.04 + i * 0.01; scene.add(ring); rings.push(ring);
+    for (let i = 1; i <= 4; i++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.5 + i * 0.85, 0.025, 10, 80), new THREE.MeshStandardMaterial({ color: 0x8a9398, roughness: 0.4, metalness: 0.7 }));
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = 0.02;
+      ring.receiveShadow = true;
+      scene.add(ring);
+      rings.push(ring);
     }
     const walls = [];
-    function tower(w, h, d, x, y, z, color, glow) {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color, emissive: glow, emissiveIntensity: 0.35, metalness: 0.25, roughness: 0.35 }));
-      m.position.set(x, y, z); scene.add(m);
-      walls.push({ x, z, hx: w / 2 + 0.35, hz: d / 2 + 0.35 });
+    function stone(w, h, d, x, y, z, color) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color, roughness: 0.72, metalness: 0.08 }));
+      m.position.set(x, y, z);
+      m.castShadow = true;
+      m.receiveShadow = true;
+      scene.add(m);
+      walls.push({ x, z, hx: w / 2 + 0.3, hz: d / 2 + 0.3 });
+      const plinth = new THREE.Mesh(new THREE.BoxGeometry(w + 0.28, 0.12, d + 0.28), new THREE.MeshStandardMaterial({ color: 0x3a4146, roughness: 0.8 }));
+      plinth.position.set(x, 0.06, z);
+      plinth.receiveShadow = true;
+      scene.add(plinth);
     }
-    function sign(text, x, y, z, color) {
+    function plaque(text, x, y, z) {
       const c = document.createElement("canvas");
       c.width = 512; c.height = 128;
       const g = c.getContext("2d");
-      g.fillStyle = color; g.font = "700 54px sans-serif"; g.fillText(text, 12, 78);
+      g.fillStyle = "#1c2226";
+      g.fillRect(0, 24, 512, 80);
+      g.fillStyle = "#e7eef2";
+      g.font = "600 42px sans-serif";
+      g.fillText(text, 24, 78);
       const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true }));
-      s.position.set(x, y, z); s.scale.set(2.4, 0.6, 1); scene.add(s);
+      s.position.set(x, y, z);
+      s.scale.set(1.6, 0.4, 1);
+      scene.add(s);
     }
-    tower(1.15, 3.6, 1.15, -4, 1.8, 0, 0x1f8f86, 0x63f7dd); sign("DCLM", -4, 3.9, 0, "#63f7dd");
-    tower(1.15, 3.6, 1.15, 4, 1.8, 0, 0x3a2d78, 0xa68cff); sign("IRIS", 4, 3.9, 0, "#a68cff");
-    const core = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.25, 1.5, 32), new THREE.MeshStandardMaterial({ color: 0x102028, emissive: 0x63f7dd, emissiveIntensity: 0.18, metalness: 0.5, roughness: 0.3 }));
-    core.position.y = 0.75; scene.add(core);
-    walls.push({ x: 0, z: 0, hx: 1.35, hz: 1.35 });
-    sign("CORE", 0, 1.9, 0, "#63f7dd");
+    stone(1.15, 3.4, 1.15, -4, 1.82, 0, 0x5f8f8a);
+    plaque("DCLM", -4, 3.7, 0);
+    stone(1.15, 3.4, 1.15, 4, 1.82, 0, 0x5c5678);
+    plaque("IRIS", 4, 3.7, 0);
+    const core = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 1.2, 1.35, 32), new THREE.MeshStandardMaterial({ color: 0x3c444a, roughness: 0.55, metalness: 0.35 }));
+    core.position.y = 0.72;
+    core.castShadow = true;
+    core.receiveShadow = true;
+    scene.add(core);
+    walls.push({ x: 0, z: 0, hx: 1.3, hz: 1.3 });
+    plaque("CORE", 0, 1.7, 0);
     const pads = [
-      { name: "FATHER", at: new THREE.Vector3(-2.4, 0.05, 2.6), color: 0xffd37d },
-      { name: "SON", at: new THREE.Vector3(2.4, 0.05, 2.6), color: 0x63f7dd },
-      { name: "SPIRIT", at: new THREE.Vector3(0, 0.05, -2.8), color: 0xa68cff }
+      { name: "FATHER", at: new THREE.Vector3(-2.4, 0.04, 2.6), color: 0xb9a27a },
+      { name: "SON", at: new THREE.Vector3(2.4, 0.04, 2.6), color: 0x6f8f8c },
+      { name: "SPIRIT", at: new THREE.Vector3(0, 0.04, -2.8), color: 0x7a7394 }
     ];
     const votes = {};
     pads.forEach(p => {
-      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.05, 28), new THREE.MeshStandardMaterial({ color: p.color, emissive: p.color, emissiveIntensity: 0.45 }));
-      m.position.copy(p.at); scene.add(m); p.mesh = m;
-      const halo = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.02, 8, 40), new THREE.MeshBasicMaterial({ color: p.color }));
-      halo.rotation.x = Math.PI / 2; halo.position.copy(p.at); scene.add(halo);
-      sign(p.name, p.at.x, 1.05, p.at.z, "#" + p.color.toString(16).padStart(6, "0"));
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.58, 0.04, 28), new THREE.MeshStandardMaterial({ color: p.color, roughness: 0.5, metalness: 0.2 }));
+      m.position.copy(p.at);
+      m.receiveShadow = true;
+      scene.add(m);
+      p.mesh = m;
+      plaque(p.name, p.at.x, 0.7, p.at.z);
     });
     let lookX = 0, lookY = 0, moveX = 0, moveZ = 0, near = null;
     const stick = document.getElementById("stick");
@@ -128,13 +158,13 @@
       }
       if (!near) return;
       votes[near.name] = !votes[near.name];
-      near.mesh.material.emissiveIntensity = votes[near.name] ? 1.1 : 0.45;
+      near.mesh.material.color.setHex(votes[near.name] ? 0xe7eef2 : near.color);
       const n = tally();
       step.textContent = n >= 2 ? "3 · RUN" : "2 · VOTE " + n + "/2";
       log.textContent = near.name + (votes[near.name] ? " voted" : " cleared") + ". Need two. Authority stays none.";
     };
     (function frame() {
-      rings.forEach((r, i) => r.rotation.z += 0.0015 + i * 0.0003);
+      rings.forEach((r, i) => r.rotation.z += 0.0004 + i * 0.0001);
       lookY = Math.max(-1, Math.min(1, lookY));
       yaw.rotation.y = lookX; pitch.rotation.x = lookY;
       const forward = Number(keys.w || keys.arrowup) - Number(keys.s || keys.arrowdown);
