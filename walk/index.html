@@ -8,13 +8,13 @@
     :root{color-scheme:dark;--bg:#02030a;--ink:#e1fffb;--cyan:#63f7dd;--amber:#ffd37d}
     html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.3 ui-monospace,Menlo,monospace;overflow:hidden;touch-action:none}
     canvas{position:fixed;inset:0;width:100%;height:100%}
-    #top{position:fixed;left:12px;right:12px;top:12px}
-    #step{color:var(--cyan);letter-spacing:.12em;font-size:11px}
+    #top{position:fixed;left:12px;right:12px;top:12px;padding:10px 12px;background:#07101bcc;border:1px solid #6fe8d855;backdrop-filter:blur(10px)}
+    #step{color:var(--cyan);letter-spacing:.14em;font-size:11px}
     #log{margin-top:6px;color:var(--amber);white-space:pre-wrap;word-break:break-all}
     #bar{position:fixed;left:12px;right:12px;bottom:16px;display:flex;align-items:flex-end;justify-content:space-between}
-    #stick{width:96px;height:96px;border:1px solid var(--cyan);border-radius:50%;position:relative}
-    #nub{width:28px;height:28px;border-radius:50%;background:var(--cyan);position:absolute;left:34px;top:34px}
-    button{border:1px solid var(--cyan);background:#02030acc;color:var(--ink);padding:12px 14px;font:700 13px ui-monospace,Menlo,monospace}
+    #stick{width:96px;height:96px;border:1px solid #63f7dd88;border-radius:50%;position:relative;background:#07101b88}
+    #nub{width:28px;height:28px;border-radius:50%;background:#63f7dd;position:absolute;left:34px;top:34px}
+    button{border:1px solid #63f7dd;background:#07101bcc;color:#e1fffb;padding:12px 14px;font:700 13px ui-monospace,Menlo,monospace}
     button:disabled{opacity:.4}
   </style>
   <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.169.0/build/three.module.js"}}</script>
@@ -33,20 +33,33 @@
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     renderer.setSize(innerWidth, innerHeight);
     renderer.setClearColor(0x02030a);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x02030a, 10, 32);
-    const camera = new THREE.PerspectiveCamera(68, innerWidth / innerHeight, 0.1, 60);
+    scene.fog = new THREE.FogExp2(0x02030a, 0.045);
+    const camera = new THREE.PerspectiveCamera(64, innerWidth / innerHeight, 0.1, 70);
     const yaw = new THREE.Object3D();
     const pitch = new THREE.Object3D();
     yaw.position.set(0, 1.6, 7.5);
     yaw.add(pitch); pitch.add(camera); scene.add(yaw);
-    scene.add(new THREE.HemisphereLight(0xd8fff8, 0x101018, 0.9));
-    const sun = new THREE.DirectionalLight(0xfff4e5, 0.55);
-    sun.position.set(5, 8, 3); scene.add(sun);
-    scene.add(new THREE.GridHelper(28, 28, 0x1f6f66, 0x10201c));
+    scene.add(new THREE.HemisphereLight(0xc8fff4, 0x140818, 0.45));
+    const sun = new THREE.DirectionalLight(0xfff1d6, 0.7);
+    sun.position.set(6, 10, 4); scene.add(sun);
+    const cyan = new THREE.PointLight(0x63f7dd, 8, 14);
+    cyan.position.set(-3.2, 2.4, 0); scene.add(cyan);
+    const violet = new THREE.PointLight(0xa68cff, 8, 14);
+    violet.position.set(3.2, 2.4, 0); scene.add(violet);
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(16, 64), new THREE.MeshStandardMaterial({ color: 0x071018, metalness: 0.4, roughness: 0.55 }));
+    floor.rotation.x = -Math.PI / 2; scene.add(floor);
+    scene.add(new THREE.GridHelper(28, 28, 0x1c4a46, 0x101820));
+    const rings = [];
+    for (let i = 1; i <= 5; i++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.3 + i * 0.72, 0.018, 8, 96), new THREE.MeshBasicMaterial({ color: i % 2 ? 0x63f7dd : 0xa68cff, transparent: true, opacity: 0.55 }));
+      ring.rotation.x = Math.PI / 2; ring.position.y = 0.04 + i * 0.01; scene.add(ring); rings.push(ring);
+    }
     const walls = [];
-    function wall(w, h, d, x, y, z, color) {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color, roughness: 0.45 }));
+    function tower(w, h, d, x, y, z, color, glow) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color, emissive: glow, emissiveIntensity: 0.35, metalness: 0.25, roughness: 0.35 }));
       m.position.set(x, y, z); scene.add(m);
       walls.push({ x, z, hx: w / 2 + 0.35, hz: d / 2 + 0.35 });
     }
@@ -58,19 +71,24 @@
       const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true }));
       s.position.set(x, y, z); s.scale.set(2.4, 0.6, 1); scene.add(s);
     }
-    wall(1.2, 3.4, 1.2, -4, 1.7, 0, 0x3dceb8); sign("DCLM", -4, 3.7, 0, "#63f7dd");
-    wall(1.2, 3.4, 1.2, 4, 1.7, 0, 0x6d5bd0); sign("IRIS", 4, 3.7, 0, "#a68cff");
-    wall(2.2, 1.4, 2.2, 0, 0.7, 0, 0x102028); sign("CORE", 0, 1.8, 0, "#63f7dd");
+    tower(1.15, 3.6, 1.15, -4, 1.8, 0, 0x1f8f86, 0x63f7dd); sign("DCLM", -4, 3.9, 0, "#63f7dd");
+    tower(1.15, 3.6, 1.15, 4, 1.8, 0, 0x3a2d78, 0xa68cff); sign("IRIS", 4, 3.9, 0, "#a68cff");
+    const core = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.25, 1.5, 32), new THREE.MeshStandardMaterial({ color: 0x102028, emissive: 0x63f7dd, emissiveIntensity: 0.18, metalness: 0.5, roughness: 0.3 }));
+    core.position.y = 0.75; scene.add(core);
+    walls.push({ x: 0, z: 0, hx: 1.35, hz: 1.35 });
+    sign("CORE", 0, 1.9, 0, "#63f7dd");
     const pads = [
-      { name: "FATHER", at: new THREE.Vector3(-2.4, 0.04, 2.6), color: 0xffd37d },
-      { name: "SON", at: new THREE.Vector3(2.4, 0.04, 2.6), color: 0x63f7dd },
-      { name: "SPIRIT", at: new THREE.Vector3(0, 0.04, -2.8), color: 0xa68cff }
+      { name: "FATHER", at: new THREE.Vector3(-2.4, 0.05, 2.6), color: 0xffd37d },
+      { name: "SON", at: new THREE.Vector3(2.4, 0.05, 2.6), color: 0x63f7dd },
+      { name: "SPIRIT", at: new THREE.Vector3(0, 0.05, -2.8), color: 0xa68cff }
     ];
     const votes = {};
     pads.forEach(p => {
-      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.06, 24), new THREE.MeshStandardMaterial({ color: p.color }));
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.05, 28), new THREE.MeshStandardMaterial({ color: p.color, emissive: p.color, emissiveIntensity: 0.45 }));
       m.position.copy(p.at); scene.add(m); p.mesh = m;
-      sign(p.name, p.at.x, 0.9, p.at.z, "#" + p.color.toString(16).padStart(6, "0"));
+      const halo = new THREE.Mesh(new THREE.TorusGeometry(0.78, 0.02, 8, 40), new THREE.MeshBasicMaterial({ color: p.color }));
+      halo.rotation.x = Math.PI / 2; halo.position.copy(p.at); scene.add(halo);
+      sign(p.name, p.at.x, 1.05, p.at.z, "#" + p.color.toString(16).padStart(6, "0"));
     });
     let lookX = 0, lookY = 0, moveX = 0, moveZ = 0, near = null;
     const stick = document.getElementById("stick");
@@ -110,11 +128,13 @@
       }
       if (!near) return;
       votes[near.name] = !votes[near.name];
+      near.mesh.material.emissiveIntensity = votes[near.name] ? 1.1 : 0.45;
       const n = tally();
       step.textContent = n >= 2 ? "3 · RUN" : "2 · VOTE " + n + "/2";
       log.textContent = near.name + (votes[near.name] ? " voted" : " cleared") + ". Need two. Authority stays none.";
     };
     (function frame() {
+      rings.forEach((r, i) => r.rotation.z += 0.0015 + i * 0.0003);
       lookY = Math.max(-1, Math.min(1, lookY));
       yaw.rotation.y = lookX; pitch.rotation.x = lookY;
       const forward = Number(keys.w || keys.arrowup) - Number(keys.s || keys.arrowdown);
@@ -127,11 +147,10 @@
         if (!blocked(yaw.position.x, nz)) yaw.position.z = nz;
       }
       near = pads.find(p => yaw.position.distanceTo(p.at) < 1.3) || null;
-      pads.forEach(p => { p.mesh.scale.y = p === near ? 2.4 : 1; });
       const n = tally();
       if (n >= 2) { act.disabled = false; act.textContent = "RUN"; }
       else if (near) { act.disabled = false; act.textContent = votes[near.name] ? "CLEAR" : "VOTE"; }
-      else { act.disabled = true; act.textContent = "VOTE"; step.textContent = "1 · WALK"; }
+      else { act.disabled = true; act.textContent = "VOTE"; if (step.textContent.startsWith("2")) step.textContent = "1 · WALK"; }
       renderer.render(scene, camera);
       requestAnimationFrame(frame);
     })();
