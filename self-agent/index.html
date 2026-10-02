@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Self-model agent</title>
+  <style>
+    :root{color-scheme:dark;--bg:#02030a;--ink:#e1fffb;--cyan:#63f7dd;--amber:#ffd37d;--muted:#8aa9b8}
+    body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 ui-monospace,Menlo,monospace}
+    main{max-width:640px;margin:32px auto;padding:0 16px}
+    button{background:var(--cyan);color:#03201d;border:0;font-weight:700;padding:10px 12px}
+    pre{white-space:pre-wrap;word-break:break-all;color:var(--amber)}
+    p{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Self-model agent</h1>
+    <p>It can name its limits. It cannot rewrite the kernel. Arbitrary compute stays false unless the kernel itself says otherwise.</p>
+    <button id="run" type="button">SEE</button>
+    <pre id="out">Not run.</pre>
+  </main>
+  <script type="module">
+    import { tick } from "./agent.js";
+    document.getElementById("run").onclick = async () => {
+      const out = document.getElementById("out");
+      try { out.textContent = JSON.stringify(await tick(), null, 2); }
+      catch (err) { out.textContent = "HOLE\n" + err.message; }
+    };
+  </script>
+</body>
+</html>
