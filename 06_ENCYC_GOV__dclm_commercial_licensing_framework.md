@@ -176,7 +176,7 @@ If any incoming call, client payload, or prompt injection matches protected IP e
 
 To prevent dilution of proprietary value and unauthorized appropriation:
 1. Automated agents (Agent Iris, Web Concierge) are physically barred from providing unmetered, high-density analytical monographs or operational schedules for free.
-2. All substantive operational outputs are strictly gated behind difficulty-based tokens ($P(\mathcal{D})$) settled via Stripe Live Wire (CAD) or 1:1 CAD-matched Equal-Crypto (BTC, ETH, SOL).
+2. All substantive operational outputs are strictly gated behind difficulty-based tokens ($P(\mathcal{D})$) settled via Stripe Live Wire (CAD) or 1:1 CAD-matched Equal-Crypto.
 3. Reverse engineering, decompilation, model scraping, unjacketed model distillation, and training derivative neural networks on DCLM outputs are strictly prohibited and constitute a material breach triggering immediate automatic termination.
 
 
@@ -235,7 +235,7 @@ The DCLM framework is commercialized across 5 orthogonal tiers designed to elimi
 
 #### Tier 2: A La Carte Difficulty Passes & Single Monographs
 * **Grant of Rights:** Non-exclusive, non-transferable, single-use or term-limited license to execute pre-compiled DCLM operational routines and receive high-density analytical monographs.
-* **Settlement:** Paid directly via Stripe Live Wire (CAD) or 1:1 CAD-matched Equal-Crypto parity (BTC, ETH, SOL).
+* **Settlement:** Paid directly via Stripe Live Wire (CAD) or 1:1 CAD-matched Equal-Crypto parity.
 * **Delivery:** Instant generation of cryptographic result packs sealed with Carter-Wegman polynomial hashes.
 
 
@@ -257,7 +257,6 @@ The DCLM framework is commercialized across 5 orthogonal tiers designed to elimi
 
 #### Tier 5: Sovereign Institutional & Deep Enterprise Deposits
 * **Grant of Rights:** Reserved Core capacity allocation, direct hardware TEE enclave peering, and sovereign institutional trust anchoring.
-* **Trust Structure:** Deposits ($25M – $100M USD) are anchored under Sovereign Institutional Trust Anchors (Ontario, Canada) trust structures. **100% of deposits are credited against future performance royalties**, establishing zero-friction institutional scaling.
 
 
 ---
@@ -349,9 +348,6 @@ THE DCLM SOFTWARE AND SIMULATION MODELS ARE PROVIDED AS MATHEMATICAL MODELING AN
 
 
 ### 7.2 Automated Intercompany Decoupling (<4.20 ms SLA)
-In accordance with Intercompany Document `ED-CORP-20260816-MS-001`, all commercial operations in Ontario are isolated from core intellectual property held in European sovereign trusts (Sovereign Trust Anchor / Institutional Trust Anchor).
-
-
 Upon any adverse legal, regulatory, or insolvency event affecting the Canadian operating company, the **Invariant M-S Circuit Breaker** triggers automated fail-closed decoupling in `<4.20 ms`, terminating runtime sleeves and guaranteeing **zero liability propagation** to the core IP.
 
 

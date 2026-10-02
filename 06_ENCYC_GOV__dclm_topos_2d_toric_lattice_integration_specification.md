@@ -71,7 +71,7 @@ By mapping heterogeneous enterprise workloads—spanning **Energy SCADA grids**,
 |    ┌──────────────────────────────────────────────────────────────────────────────────────────┐    |
 |    │ 4. MULTI-CHAIN CONSENSUS ANCHORING & SOVEREIGN FIDUCIARY SETTLEMENT                      │    |
 |    │ • Bitcoin Taproot PoW Entropy Root · Ethereum BN254 Groth16 zk-SNARK · Solana PoH Clock │    |
-|    │ • 1:1 CAD Equal-Crypto Parity Rails (USDC/BTC/ETH/SOL) · Zero Token Float (0.00%)        │    |
+|    │ • 1:1 CAD Equal-Crypto Parity Rails · Zero Token Float (0.00%)                           │    |
 |    │ • Turnkey Fiduciary Model (81% Yr 1 Retained Savings ──> 100% Yr 5 Singularity)          │    |
 |    └──────────────────────────────────────────────────────────────────────────────────────────┘    |
 +----------------------------------------------------------------------------------------------------+
@@ -264,7 +264,7 @@ External payloads must be wrapped inside an authenticated API V2 Sleeve (Jacket)
   1. *Statutory Registry Ground Truth:* Validated against OBCA or Ontario Education Act registry records.
   2. *Cryptographic Domain Wire Proof:* Validated via DNS DKIM/SPF/DANE cryptographic wire headers.
   3. *Hardware Enclave Passkey Binding:* Deterministic ERC-4337 Smart Account derived from unexportable WebAuthn/FIDO2/TPM 2.0 enclave chips (zero seed phrases).
-  4. *Treasury Proof of Control:* Confirmed via Stripe Live Wire, 1:1 CAD Equal-Crypto parity rails (USDC/ETH/SOL), or Corporate Bank Pre-Auth.
+  4. *Treasury Proof of Control:* Confirmed via Stripe Live Wire, 1:1 CAD Equal-Crypto parity rails, or Corporate Bank Pre-Auth.
   5. *Merkle Genesis Seeding:* Authenticated against the Founder Whitelist Merkle root ($0.00\%$ retained PII).
 - **Fail-Closed Unjacketed Rejection:** Raw, unjacketed ingress is intercepted at the wire boundary and rejected with `FAIL_CLOSED_REJECTED_UNJACKETED`.
 

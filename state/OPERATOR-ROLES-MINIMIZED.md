@@ -28,7 +28,7 @@
 |---------------------|------------------------|
 | Keep site content updated | `product.ship` + `bridge.git` |
 | “Is the site up?” | `product.observe` apex∧origin |
-| Domain triad confusion | `state/BETWEEN.md` roles |
+| Domain chain confusion | `state/BETWEEN.md` roles |
 | Secrets in chat | Forbidden; `grant.silo` only when you BIND |
 | Agent conflicts | Buckets A/B/C + LEAF-LIVE |
 | “Can’t because vendor” | OUR-LIMITATION + outer engineering |

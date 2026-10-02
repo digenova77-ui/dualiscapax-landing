@@ -4,8 +4,6 @@ Stamp: 2026-09-29T17:20-04:00
 Board: FACTORY_BULLETIN_BOARD 1T6qBAzbwdmJj820bO9qji3wIx7xj0_q4
 Also mirrored: GitHub AGENT/CURRENT-TRUTH.md + AGENT/WHO-IRIS.md
 
-Owner correction applied: Swiss Stiftung, Liechtenstein Anstalt, Singapore trust, 7-of-11 global anchors are NOT in place. Podcast treated design copy as live entities. RETIRED.
-
 ## Who Iris is (one card)
 Iris is DualisCapax's talk-and-look face and the DCLM collapse gate. One orb, one voice, one listen. Look is free. Not a clinic. Not a second company. Not a trust. Role names (Iris-Core, Iris-Treasury, Iris-Gate) are desks on the same organ — do not ship four homepages.
 

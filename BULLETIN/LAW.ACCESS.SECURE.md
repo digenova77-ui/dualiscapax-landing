@@ -22,7 +22,7 @@ Secure it. Price it. One meter. Dualis does not issue a coin.
 
 1 GameTick = 2 Fuel. TeamSnap / LiveBarn / Sportlogiq $14.95 stay *their* meters. Do not wrap them into Leaf $49.
 
-Crypto = **equal-CAD** on a published factory address when the rail is open. BTC / ETH / SOL / USDC named in V8. No Dualis token. No exchange product.
+Crypto = **equal-CAD** on a published factory address when the rail is open. No Dualis token. No exchange product.
 
 ## Secure
 

@@ -3,7 +3,7 @@
 **Status:** Locked 26 Aug 2026  
 **Operator law:** *I will accept can’t — but only after absolutely every other option has been ruled out and you found can’t as a loop.*
 
-Cross-ref: MISSING-PIECE · DOMAIN.md triad · AFFINITY-OPERATING-MODEL · SECRETS-ISOLATION · AGENT-BUCKETS
+Cross-ref: MISSING-PIECE · DOMAIN.md chain · AFFINITY-OPERATING-MODEL · SECRETS-ISOLATION · AGENT-BUCKETS
 
 ---
 

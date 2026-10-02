@@ -1,0 +1,25 @@
+name: pay-freeze-guard
+
+# Payments are closed. The Pages build publishes the repo root, so any Stripe link,
+# wallet address (outside the donate-only file), other-wallet/chain pay-to copy,
+# retired-structure term or open payment flag anywhere in the tree is public. Fail loudly.
+# Make this a required status check on main (owner setting) so nothing re-opens.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Scan tree for pay rails, wallet pay-to copy and retired terms
+        run: python3 scripts/pay-freeze-guard.py .

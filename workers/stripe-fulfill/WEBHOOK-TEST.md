@@ -24,8 +24,8 @@ Unsigned POST returns `invalid signature`. That is correct.
 
 Use a Test Payment Link from `research/payment-links.json`:
 
-- leaf `https://buy.stripe.com/test_aFaeVdcQm5pJ8IJ1oN3ZK00`
-- depth_s `https://buy.stripe.com/test_7sY00j9Ea05p2klebz3ZK03`
+- leaf (test link removed: payments closed)
+- depth_s (test link removed: payments closed)
 
 Card: `4242 4242 4242 4242` · any future date · any CVC · any postal.
 
@@ -33,7 +33,7 @@ Success return page on this site: `/pay/thanks.html`.
 
 ## Live money links (already 200)
 
-Fuel and seats on `/payments.html` use live `buy.stripe.com` URLs. Do not send test cards there.
+Checkout is closed; `/payments.html` carries no payment links.
 
 ## What GitHub Actions secrets still cannot do
 

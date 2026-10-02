@@ -13,7 +13,7 @@ A lean UnixFS folder of **current cards + a parked-history index**, content-addr
 ## Purity score 1.0 gates (all must PASS or do not pin)
 
 1. No secrets: no JWT, sk_, whsec, /workspace paths, phone-PIN, seed phrases.
-2. No RETIRED trusts as live: Swiss Stiftung, Liechtenstein Anstalt, Singapore trust, 7-of-11 anchors.
+2. No RETIRED items as live: 7-of-11 anchors.
 3. No modeled dollars as observed ($2.8M / 18.4% / $1.5M / $494.5k stay out or tagged MODELED).
 4. One Iris. No second homepage. No second company.
 5. Coins DECLARED. Company 0.00% float. Till not advertised open.

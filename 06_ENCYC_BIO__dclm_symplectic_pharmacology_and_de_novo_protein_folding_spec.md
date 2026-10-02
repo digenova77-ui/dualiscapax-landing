@@ -77,7 +77,7 @@ Traditional drug discovery and molecular dynamics software (e.g. GROMACS, AMBER,
 │    accumulation; maintains cellular [NAD+]/[NAM] ratio > 25:1                   │
 │                                                                                  │
 │  [ LEAD 3: DCLM-CD38-BLOCK-03 ] (Selective Cleavable Allosteric CD38 Antagonist) │
-│  • Target: CD38 Glycohydrolase Catalytic Cleft (E226 / W125 / D155 Triad)        │
+│  • Target: CD38 Glycohydrolase Catalytic Cleft (E226 / W125 / D155 sites)        │
 │  • Structure: Fluorinated Pyridinium-Quercetin Mimetic                           │
 │  • Kinetics: Ki = 0.38 nM; 96.2% inhibition of NAD+ glycohydrolase degradation    │
 │    without interfering with leukocyte CD38 surface receptor signaling           │

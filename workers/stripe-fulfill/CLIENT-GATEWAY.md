@@ -18,10 +18,6 @@ Stripe Payment Links + this fulfill webhook. SKUs: `depth_s` $20 / `depth_m` $50
 
 Turn on card, Link, Apple Pay, Google Pay (and any CAD bank methods Stripe enables) on the **Dualis** Stripe account. No `sk_` on dualiscapax.ai.
 
-## Crypto
-
-Receive-only USDC / BTC / ETH / SOL at published Dualis wallets, 1:1 CAD-matched, memo = sku. Grant only after confirm. Addresses stay with the operator — not invented in git.
-
 ## After pay
 
 Grant Fuel or seat. House `IRIS_ALLOW_HOUSE_KEY` stays `0` unless Fuel is being spent on a house key and a cap exists. Auto top-up on console.x.ai stays off until then.

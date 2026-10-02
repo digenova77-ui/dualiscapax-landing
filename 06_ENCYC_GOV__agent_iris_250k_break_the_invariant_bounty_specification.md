@@ -44,5 +44,5 @@ DualisCapax invites smart contract auditors, cryptographic researchers, and AI a
 ## 2. Submission & Verification Rules
 
 1. **Deterministic Reproduction:** Submissions must supply an executable Python or Rust reproduction script executing within the official Docker test container (`dualiscapax/iris-node:v2.0-enterprise`).
-2. **Payout Rails:** 100% guaranteed bounty settlement in USDC or 1:1 CAD-matched Equal-Crypto parity (BTC, ETH, SOL) within 48 hours of confirmed vulnerability verification.
+2. **Payout Rails:** 100% guaranteed bounty settlement in USDC or 1:1 CAD-matched Equal-Crypto parity within 48 hours of confirmed vulnerability verification.
 3. **Responsible Disclosure:** Submissions must be encrypted to `security@dualiscapax.ai` using the DualisCapax Sovereign Ed25519 Root Key.

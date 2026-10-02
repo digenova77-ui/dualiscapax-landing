@@ -17,7 +17,7 @@ The merged history is a **pointer**, not a dump:
 
 ## What this pack is not
 
-Not the live website. Not eFuse listed. Not Swiss/Singapore trusts. Not 06_ENCYC. Not a CID until Pinata returns one.
+Not the live website. Not eFuse listed. Not 06_ENCYC. Not a CID until Pinata returns one.
 
 ## Pin
 

@@ -72,7 +72,7 @@ Open loop (score without ledger, reply without auth proof, “can’t” without
 
 Two end constraints: **A inbound proof** · **B outbound auth path**.
 
-### 3.5 Web / domain triad
+### 3.5 Web / domain chain
 
 ```
 REPO   → github.com/digenova77-ui/dualiscapax-landing
