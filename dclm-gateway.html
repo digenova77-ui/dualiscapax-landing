@@ -91,16 +91,11 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
   </section>
 
   <section class="step" id="s2">
-    <h2>Step 2 · FE-02 · Rail B · equal-CAD crypto</h2>
-    <p class="lede">Same toll as fiat. 0.00% built-in spread. Validate an address on this device. Deposit addresses stay on Fuel when a rail is bound.</p>
-    <div class="grid">
-      <button type="button" class="rail on" data-asset="BTC"><b>BTC</b><span>Taproot / SegWit · Bech32m</span></button>
-      <button type="button" class="rail" data-asset="ETH"><b>ETH</b><span>EIP-55 · Mainnet / L2</span></button>
-      <button type="button" class="rail" data-asset="SOL"><b>SOL</b><span>Base58 native / SPL</span></button>
-    </div>
-    <input id="addr" autocomplete="off" spellcheck="false" placeholder="Paste a destination to checksum — not a Dualis invoice"/>
-    <p class="meta" id="addrMsg">No address checked.</p>
-    <button type="button" class="cta" disabled>Rail B send closed on this page</button>
+    <h2>Step 2 · FE-02 · Rail B</h2>
+    <p class="lede">Checkout closed. Payments will use Unity ID only when opened.</p>
+    <input id="addr" type="hidden" value=""/>
+    <p class="meta" id="addrMsg" hidden></p>
+    <button type="button" class="cta" disabled>Rail B checkout closed</button>
   </section>
 
   <section class="step" id="s3">
@@ -118,7 +113,7 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
   <section class="step" id="s5">
     <h2>Step 5 · FE-05 · parallel combos</h2>
     <div class="grid">
-      <div class="combo"><b>PAY-1</b><span>Fiat CAD (Stripe / Interac / wire) ∥ equal-CAD BTC · ETH · SOL. No exchange product.</span></div>
+      <div class="combo"><b>PAY-1</b><span>Checkout closed.</span></div>
       <div class="combo"><b>SEAT-1</b><span>Corporate capacity seat ∥ grassroots / research node. Same peg.</span></div>
       <div class="combo"><b>ACCESS-1</b><span>Closed document packs ∥ sealed attestation. IP stays closed until contract.</span></div>
       <div class="combo"><b>EVAL-1</b><span>Tier 0 sandbox CAD $0 ∥ public measure with Iris.</span></div>
@@ -215,7 +210,7 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
       'Corporate float: 0.00%',
       'Royalty credit: CAD $' + state.cad.toFixed(2) + ' (100% when contracted)',
       'Singularity advance: +' + state.days + ' d  (R-CAD-DAY = 1000)',
-      'Rail B asset: ' + state.asset + ' · equal-CAD · 0.00% spread',
+      'Rail B: checkout closed',
       'Address checked: ' + (state.addr ? 'yes' : 'none'),
       'QR URI: template only — not a live invoice',
       'Status: PREVIEW_NOT_AN_INVOICE'

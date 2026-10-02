@@ -270,10 +270,10 @@
       ],
       institutional: [
         {
-          id: "pharma_triad",
-          sku: "SKU-INST-TRIAD-01",
+          id: "pharma_seal",
+          sku: "SKU-INST-SEAL-01",
           title: "Tier-1 Big Pharma Master Seal: Phase III Attrition Insurance",
-          desc: "Full patent cliff amortization and Phase III clinical trial attrition bypass. Coupled 5-variable non-linear systems pharmacology solution deployed in confidential client compute enclaves (AWS Nitro / NVIDIA H100). Governed under the Swiss Stiftung, Austrian Anstalt, and Singapore Public Trust Triad with zero corporate equity dilution.",
+          desc: "Full patent cliff amortization and Phase III clinical trial attrition bypass. Coupled 5-variable non-linear systems pharmacology solution deployed in confidential client compute enclaves (AWS Nitro / NVIDIA H100).",
           targets: "Target Primes: Merck (Keytruda LoE), Biogen (ALS/AD Attrition), BMS (Revlimid LoE), Pfizer (ADC Resistance), AbbVie (Humira/AML)",
           watchdog: "< 4.20 ms Invariant M-S Statutory Circuit Breaker",
           price: "$25M – $100M USD (100% Credited Against Royalties)"
@@ -368,7 +368,7 @@
 
       if (!item) return;
 
-      if (item.id === 'pharma_triad') {
+      if (item.id === 'pharma_seal') {
         openPharmaInquiry();
         return;
       }
@@ -787,10 +787,10 @@
       biomed: {
         badge: "🧭 Agent Iris Guided Pathway // Tier-1 Biopharma Primes",
         title: "Phase III clinical trial attrition insurance & patent cliff amortization.",
-        desc: "Restricted exclusively to validated biopharma primes (Merck, Biogen, BMS, Pfizer, AbbVie). We solve coupled 28-state ODE disease models in local RAM to bypass $1.5B+ Phase III clinical trial failures, anchored by the Swiss Stiftung, Austrian Anstalt, and Singapore Trust Triad.",
-        buttonText: "Inspect Big Pharma Sovereign Trust Triad →",
+        desc: "Restricted exclusively to validated biopharma primes (Merck, Biogen, BMS, Pfizer, AbbVie). We solve coupled 28-state ODE disease models in local RAM to bypass $1.5B+ Phase III clinical trial failures.",
+        buttonText: "Inspect Big Pharma Institutional Gate →",
         targetSection: "sector-research",
-        speech: "For Tier-one biopharma primes, I provide Phase Three clinical trial attrition bypass and patent cliff amortization under the Swiss and Singapore Trust Triad."
+        speech: "For Tier-one biopharma primes, I provide Phase Three clinical trial attrition bypass and patent cliff amortization."
       },
       spacex: {
         badge: "🧭 Agent Iris Guided Pathway // Deep Aerospace & SpaceX Starship",
@@ -840,8 +840,8 @@
 
     function openPharmaInquiry() {
       playIrisChime();
-      alert("🏛️ DualisCapax Executive C-Suite Gateway:\n\n• Target Primes: Merck, Biogen, BMS, Pfizer, AbbVie\n• Governance: Swiss Stiftung · Austrian Anstalt · Singapore Public Trust Triad\n• Commitment: $25.00M - $100.00M USD (100% Amortized Dollar-for-Dollar)\n\nDirect institutional dispatch initiated to admin@dualiscapax.ai.");
-      speakText("Big Pharma Institutional Gate opened. Connecting to the Swiss, Austrian, and Singapore Sovereign Trust Triad.");
+      alert("🏛️ DualisCapax Executive C-Suite Gateway:\n\n• Target Primes: Merck, Biogen, BMS, Pfizer, AbbVie\n• Commitment: $25.00M - $100.00M USD (100% Amortized Dollar-for-Dollar)\n\nDirect institutional dispatch initiated to admin@dualiscapax.ai.");
+      speakText("Big Pharma Institutional Gate opened.");
     }
 
     
@@ -1020,7 +1020,7 @@
           "• ED-SPEC-20260901-MULTI-TENANT-DCLM: Concentric 4-Ring Security Topology & Zero Wire Leakage",
           "• ED-BOUNTY-20260901-BREAK-INVARIANT: $250,000 USD Red-Teaming Bounty Challenge"
         ],
-        statute: "Statutes: OBCA #100089211 • Swiss Stiftung / Austrian Anstalt Vetoes",
+        statute: "Statutes: OBCA #100089211",
         speech: "Sector Two defines Sovereign Governance and Constitutional Protocols: the DCLM Layer Zero Law Floor, the open Unity Framework, and our escrowed two hundred fifty thousand dollar red teaming bounty."
       },
       sec3: {
@@ -1040,16 +1040,16 @@
       sec4: {
         badge: "SECTOR IV // MEDICAL BIOPHYSICS & SYSTEMS PHARMACOLOGY",
         watchdog: "Watchdog SLA: < 0.45 ms Stiff In-Silico Solve",
-        title: "117-Indication Pan-Kingdom Compendium & Big Pharma Trust Triad",
-        desc: "Exhaustive multi-kingdom disease taxonomy spanning Human Neurology (MS 28-state ODE, ALS, Huntington's, Alzheimer's, Parkinson's), Oncology (HER2+ ctDNA kinetics, Osteosarcoma, Glioblastoma), Acute Critical Care (ICU Propofol BIS 40-60 & MAP >= 65 mmHg gating), Crop Rusts (Citrus Greening HLB, Panama TR4), and Veterinary Medicine. Governed by the Swiss Stiftung, Austrian Anstalt, and Singapore Trust Triad for Phase III trial attrition insurance ($25M-$100M).",
+        title: "117-Indication Pan-Kingdom Compendium",
+        desc: "Exhaustive multi-kingdom disease taxonomy spanning Human Neurology (MS 28-state ODE, ALS, Huntington's, Alzheimer's, Parkinson's), Oncology (HER2+ ctDNA kinetics, Osteosarcoma, Glioblastoma), Acute Critical Care (ICU Propofol BIS 40-60 & MAP >= 65 mmHg gating), Crop Rusts (Citrus Greening HLB, Panama TR4), and Veterinary Medicine.",
         specs: [
           "• ED-INDEX-20260901-PAN-PATHOLOGY: Universal Grand Master Index (117 Indications)",
           "• ED-MED-20260901-ALS-SEAL-PAN: Master ALS Seal & 3D Biophysical Simulation Docket",
           "• ED-SPEC-20260901-BIO-RD-GOLD: Medical R&D & Systems Pharmacology Gold Standard",
           "• ED-SPEC-20260901-SYNTHETIC-PATHOGEN: Synthetic Pathogen Neutralization Pharmacology"
         ],
-        statute: "Compliance: PHIPA / HIPAA 0.00% PII Retained • Swiss Triad Escrow",
-        speech: "Sector Four encompasses Medical Biophysics and Systems Pharmacology: our one hundred seventeen indication library and the Big Pharma Sovereign Trust Triad."
+        statute: "Compliance: PHIPA / HIPAA 0.00% PII Retained",
+        speech: "Sector Four encompasses Medical Biophysics and Systems Pharmacology: our one hundred seventeen indication library."
       },
       sec5: {
         badge: "SECTOR V // EMPIRICAL SIMULATION RECEIPTS & BENCHMARKS",
@@ -1104,7 +1104,7 @@
           "• ED-SPEC-20260903-MASTER-UNIFIED: Master Enterprise Fiduciary Architecture",
           "• ED-SLA-20260901-CLEAN-UNPLUG: Sub-90-Second Cryptographic Clean Unplug SLA"
         ],
-        statute: "Settlement Rails: Interac e-Transfer • Ethereum Vault 0x0adC...AFBBc4 • Bitcoin Taproot",
+        statute: "Settlement Rails: Checkout closed",
         speech: "Sector Eight establishes our Sovereign Fiduciary Treasury: zero corporate token float, 100% CRA barter parity, and our five-year sunsetting model where clients retain eighty-one to one hundred percent of savings."
       }
     };

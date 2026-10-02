@@ -23,6 +23,3 @@ Street face: one orb, one voice, one listen. Look is free. Not a clinic.
 DCLM gate: observe → hypotheses → evidence → one path or a named HOLE.
 Iris-Core / Iris-Treasury / Iris-Gate are desks on the same organ, not extra products.
 
-## Retired (owner 2026-09-29)
-
-Swiss Stiftung, Liechtenstein Anstalt, Singapore trust, live 7-of-11 anchors — **not in place**. Do not resurrect them from old specs.

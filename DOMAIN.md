@@ -1,8 +1,8 @@
-# DualisCapax Domain Triad (LOCKED)
+# DualisCapax Domain Chain (LOCKED)
 
 This file is the permanent rule set. Do not re-diagnose the domain as a new problem every session.
 
-## The Triad (fault dependency order)
+## The Chain (fault dependency order)
 
 ```
 [1] REPO  — source of truth

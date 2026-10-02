@@ -35,7 +35,7 @@ Look $0. Stripe is **RETIRED** — not used anymore. No replacement till from th
 
 ## RETIRED
 
-Swiss / Liechtenstein / Singapore trusts. 7-of-11 anchors. Stripe. Not in place.
+7-of-11 anchors. Stripe. Not in place.
 
 ## L0
 

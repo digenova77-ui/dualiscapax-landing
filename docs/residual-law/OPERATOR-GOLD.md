@@ -51,7 +51,7 @@ Agents treat these as **sealed** unless you type **YES reopen [id]**:
 | C4 | Fuel unified (no parallel pricing theater) |
 | C5 | Theory-smash buckets A/B/C |
 | C6 | Secrets never in chat |
-| C7 | Domain triad: content via ORIGIN first |
+| C7 | Domain chain: content via ORIGIN first |
 | C8 | No cure claims / no securities theater |
 | C9 | Study rigor without naming external study labels |
 | C10 | Account-scoped only — no TOS circumvention |

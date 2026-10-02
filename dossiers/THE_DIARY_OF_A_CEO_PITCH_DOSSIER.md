@@ -38,7 +38,6 @@ Every tech CEO sitting in front of Steven Bartlett tells the same story: raise v
 
 #### Arc 4: The Sovereign Life
 * Local operating base: Belleville. $0 retainer. Paper trading only. CRA send = owner wet-ink only.
-* Drop Swiss / Liechtenstein reserve language until there is a public audit trail.
 
 ---
 

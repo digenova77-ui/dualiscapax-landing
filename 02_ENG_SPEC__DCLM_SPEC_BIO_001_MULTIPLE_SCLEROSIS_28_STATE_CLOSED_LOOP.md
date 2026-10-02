@@ -6,7 +6,6 @@
 **System Architecture:** DualisCapax Logic Model (DCLM) / DCCP Conserved Plane  
 **Operating Entity:** DualisCapax Inc. (535 Bridge St E, Belleville, Ontario, Canada K8N 1R7 · OBCA #100089211)  
 **Institutional Gate:** Tier-1 Biopharma Primes (Merck, Biogen, BMS, Pfizer, AbbVie)  
-**Governance Triad:** Swiss Stiftung · Austrian Anstalt · Singapore Public Trust  
 **Classification:** AUTHORITATIVE COMPUTATIONAL BIOLOGY & PHARMACOLOGY SPECIFICATION  
 **Status:** SEALED · PRODUCTION DIRECTIVE · SYSTEM OF RECORD  
 **Timestamp:** 2026-09-10T21:30:00Z  

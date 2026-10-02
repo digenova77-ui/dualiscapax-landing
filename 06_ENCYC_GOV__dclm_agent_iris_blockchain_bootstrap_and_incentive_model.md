@@ -344,7 +344,7 @@ Phase 3: Developer Invariant Bounties & Hackathons
 * Sponsor hackathon tracks for building verifiable AI agents in DeFi, DeSci, and automated DAO governance.
 Phase 4: Regulated Enterprise AppChain Syndication
 * Deploy the Turnkey Fiduciary Performance Model: $0.00 upfront retainer, 81.0% Year 1 client retained cost savings, decaying asymptotically to 100.0% permanent client retention in Year 5.
-* Enable 1:1 CAD-matched Equal-Crypto parity (BTC, ETH, SOL, USDC) settlement backed by sovereign institutional trust anchors.
+* Enable 1:1 CAD-matched Equal-Crypto parity settlement backed by sovereign institutional trust anchors.
 
 
 ________________

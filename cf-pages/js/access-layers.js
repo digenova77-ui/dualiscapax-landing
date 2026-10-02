@@ -80,7 +80,7 @@
     var id = String(item.id || "");
     var layer = String(item.layer || item.tier || "").toLowerCase();
     if (layer) return layer;
-    if (id === "pharma_triad" || /seal|triad|phase.?3|co-?dev/i.test(id + " " + (item.title || ""))) return "seal";
+    if (id === "pharma_seal" || /seal|phase.?3|co-?dev/i.test(id + " " + (item.title || ""))) return "seal";
     if (id === "full_compendium" || id === "eng_grand_suite" || /compendium|atlas|grand.?suite|117/i.test(id)) return "library";
     if (/_pack$/.test(id) || (/branch|pack/i.test(id) && /10|all/i.test(item.title || ""))) return "branch";
     if (/trunk|super-?trunk/i.test(id + (item.title || ""))) return "trunk";

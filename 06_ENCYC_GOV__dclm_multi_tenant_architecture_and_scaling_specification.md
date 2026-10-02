@@ -68,7 +68,7 @@ Engineered to support massive horizontal and vertical scalability across both co
 |   ┌────────────────────────────────────────────────────────────────────────────────────────────┐   |
 |   │ 4. MULTI-CHAIN CONSENSUS ANCHORING & SOVEREIGN FIDUCIARY SETTLEMENT                        │   |
 |   │ • Bitcoin Taproot PoW Entropy · Ethereum BN254 Groth16 zk-SNARK · Solana PoH Clock         │   |
-|   │ • 1:1 CAD Equal-Crypto Parity Rails (USDC/BTC/ETH/SOL) · Zero Token Float (0.00%)          │   |
+|   │ • 1:1 CAD Equal-Crypto Parity Rails · Zero Token Float (0.00%)                             │   |
 |   │ • Turnkey Fiduciary Model (81% Yr 1 Client Retained Savings ──> 100% Yr 5 Singularity)     │   |
 |   │ • Sovereign Institutional Enterprise Reserve Trust Anchors                     │   |
 |   └────────────────────────────────────────────────────────────────────────────────────────────┘   |
@@ -151,7 +151,7 @@ Every tenant, administrative user, clinical professional, student, operator, or 
 |     FIDO2, or TPM 2.0 device chips (Zero seed phrases, zero biometric exfiltration).               |
 |                                                  │                                                 |
 | Layer 4: Treasury Proof of Control               ▼                                                 |
-|   • 1:1 CAD Equal-Crypto Parity Rails (USDC/ETH/SOL) or Corporate Bank Pre-Auth Live Wire.        |
+|   • 1:1 CAD Equal-Crypto Parity Rails or Corporate Bank Pre-Auth Live Wire.                       |
 |   • On-chain cryptographic liquidity and smart contract bonding validation.                        |
 |                                                  │                                                 |
 | Layer 5: Merkle Genesis Seeding                  ▼                                                 |
@@ -365,7 +365,7 @@ To prevent the "noisy neighbor" problem in shared computing environments, Dualis
 |  • Symplectic Hamiltonian Load Balancing       • WebAuthn Biometric 1-Click Smart Accounts         |
 |  --------------------------------------------  --------------------------------------------------  |
 |  5. LOGISTICS & AUTONOMOUS SUPPLY CHAINS       6. SOVEREIGN FINANCE & TREASURY                     |
-|  • Multi-Echelon TPBVP Hamiltonian Routing     • 1:1 CAD Equal-Crypto Rails (USDC/ETH/SOL)         |
+|  • Multi-Echelon TPBVP Hamiltonian Routing     • 1:1 CAD Equal-Crypto Rails                        |
 |  • IoT Cold-Chain Invariant State Monitors     • Zero Token Float & Sovereign Enterprise Trust      |
 +----------------------------------------------------------------------------------------------------+
 ```
@@ -396,7 +396,7 @@ To prevent the "noisy neighbor" problem in shared computing environments, Dualis
 
 
 ### 7.5 Sovereign Finance & Multi-Tenant Treasury Rails
-- **1:1 CAD-Matched Equal-Crypto Parity:** Direct settlement in USDC, BTC, ETH, and SOL with zero speculative token float ($0.00\%$).
+- **1:1 CAD-Matched Equal-Crypto Parity:** Direct settlement with zero speculative token float ($0.00\%$).
 - **Multi-Chain Consensus Verification:** Bitcoin Taproot PoW entropy anchoring, Ethereum BN254 Groth16 zk-SNARK proof verification, and Solana Proof-of-History (PoH) clock synchronization.
 - **Institutional Custody Anchors:** Deep enterprise reserve deposits ($25\text{M} – $100\text{M USD}$) structured under Sovereign Institutional Trust Anchors legal trust anchors, 100% credited against future performance residual royalties.
 
@@ -414,7 +414,7 @@ To prevent the "noisy neighbor" problem in shared computing environments, Dualis
 |                                                                                                    |
 |  1. A LA CARTE SELF-SERVICE TIER                                                                   |
 |     • Entry point: CAD $19 – $1,499 CAD per module / seat.                                         |
-|     • 1:1 CAD Equal-Crypto Parity rails (USDC, BTC, ETH, SOL) with zero token float.               |
+|     • 1:1 CAD Equal-Crypto Parity rails with zero token float.                                     |
 |                                                                                                    |
 |  2. CLINICAL & INDUSTRIAL PLUG-IN SLEEVES                                                          |
 |     • Enterprise enclaves: CAD $6,750 – $135,000 CAD access bonds.                                 |

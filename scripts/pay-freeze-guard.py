@@ -1,31 +1,80 @@
 #!/usr/bin/env python3
-"""Payments-freeze guard (2026-10-02).
+"""Payments-freeze + retired-terms guard (2026-10-02).
 
 The Pages build publishes the repo root (wrangler.toml: pages_build_output_dir = "."),
-so every file in this tree is a public plate. While payments are closed, fail if the
-tree carries a Stripe Payment Link / Checkout URL, a wallet address, or an open
-payment flag. Exit 1 on any hit. Usage: python3 scripts/pay-freeze-guard.py [root]
+so every file in this tree is a public plate. Fail (exit 1) if the tree carries:
+
+  * a Stripe Payment Link / Checkout URL / Stripe.js, or an open payment flag
+    (Stripe is retired; checkout is closed);
+  * a wallet address (EVM, bech32 BTC/DGB/LTC, CashAddr, wallet URI, truncated 0x…,
+    or any retired research/donation address, matched by sha256 fingerprint so the
+    addresses themselves are not republished here). Addresses are allowed ONLY in a
+    donate-only file (DONATE_ONLY below), and no pay/checkout/fuel/payments/rails/
+    operations page may reference that file;
+  * a pay-to offer for another wallet or chain (Trust Wallet, MetaMask pay-to,
+    "send crypto", "gift/pay/send ... BTC/ETH/SOL/DOGE/XRP/ZEC/DOT/DGB/BCH",
+    equal-CAD chain lists, "<chain> receive string", "<chain> vault"). Unity ID is the
+    only wallet; payments stay closed until the owner opens them;
+  * a retired-structure term (owner rule 2026-10-02): triad, swiss, switzerland,
+    singapore, zug, stiftung, "trust structure".
+
+Usage: python3 scripts/pay-freeze-guard.py [root]
 """
-import os, re, sys
+import hashlib, os, re, sys
 
 ROOT = sys.argv[1] if len(sys.argv) > 1 else "."
 SKIP_DIRS = {".git", "node_modules"}
 SKIP_FILES = {os.path.normpath("scripts/pay-freeze-guard.py")}
 TEXT_EXT = {".html", ".htm", ".js", ".mjs", ".cjs", ".json", ".jsonl", ".md", ".txt",
-            ".css", ".xml", ".svg", ".toml", ".yml", ".yaml", ".csv", ".ts", ".py", ""}
+            ".css", ".xml", ".svg", ".toml", ".yml", ".yaml", ".csv", ".ts", ".py", "",
+            ".bak", ".sh", ".sql", ".sol", ".c", ".cs", ".webmanifest"}
+# Future donate-only address file(s). Addresses may live here and nowhere else.
+DONATE_ONLY = {os.path.normpath(p) for p in (
+    "js/donate-only-addresses.js",
+    "cf-pages/js/donate-only-addresses.js",
+)}
+PAY_PAGE = re.compile(r"(?i)(pay|checkout|fuel|payments?|rails?|operations?)")
 # Token contracts and the zero address are not pay-to addresses.
 EVM_ALLOW = {
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",  # USDC (Ethereum) token contract
     "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",  # USDC (Base) token contract
     "0x0000000000000000000000000000000000000000",
 }
+# sha256 of retired research/donation addresses (EVM lower-cased). Not the addresses.
+RETIRED_ADDR_SHA256 = {
+    "9aab19e039822b7328b6d01c4471fbebc287769d2b762d4a78efc0c680459e5a",
+    "7e9894d6766fdc6ce2177cb70f6ad171d644e254f0df9f3f364bb0d01f37ad93",
+    "f6beb3513ac7fa17213a6f71911b3c470311510257df407dd0db134509bcabcc",
+    "260a61ed139828f17381339696638036c7efec7de4b737f90ade907e2bdf772a",
+    "088a302dca9b29d95a8378ffb6e52897429a8986122933f864aaec4cbd4019ea",
+    "ee852d44498bd2f11fc3663839acabe3819b2291513a4204e14905e9db5205b1",
+    "32a62104be6ef7c312ee643dcdb8a616a30eebd6462c62808ad4a023e6f2b577",
+    "925eed3b242e193190fb638781f01db8b37e0e74ad894c523c220a30ce679ba3",
+    "f36e6e053868586307338d17f0d229b996ea9aead31b9108ba10f7a6829215db",
+}
+ADDRESS_PATTERNS = [
+    ("evm_address", re.compile(r"(?<![0-9a-fA-F])0x[0-9a-fA-F]{40}(?![0-9a-fA-F])")),
+    ("evm_truncated", re.compile(r"(?<![#0-9a-fA-F])0x[0-9a-fA-F]{4,}(?:\.{2,3}|…)[0-9a-fA-F]{4,}")),
+    ("btc_bech32", re.compile(r"\bbc1[02-9ac-hj-np-z]{25,62}\b")),
+    ("dgb_ltc_bech32", re.compile(r"\b(?:dgb1|ltc1)[02-9ac-hj-np-z]{25,62}\b")),
+    ("cashaddr", re.compile(r"\b(?:bitcoincash:)?[qp][02-9ac-hj-np-z]{41}\b")),
+    ("wallet_uri", re.compile(r"\b(?:bitcoin|ethereum|solana|dogecoin|ripple|litecoin|bitcoincash|zcash|polkadot|digibyte):[A-Za-z0-9]{25,}")),
+]
+TOKEN = re.compile(r"[A-Za-z0-9]{25,64}")
+CHAIN = (r"(?:\b(?:BTC|ETH|SOL|DOGE|XRP|ZEC|DOT|DGB|BCH|LTC)\b|"
+         r"(?i:\b(?:bitcoin(?:\s+cash)?|ethereum|ether|solana|dogecoin|doge|ripple|zcash|polkadot|digibyte|litecoin)\b))")
+PAYWORD = r"(?i:\b(?:gift|pay|pays|paying|send|sends|deposit|donate|donation|tip)\b)"
 PATTERNS = [
     ("stripe_payment_link", re.compile(r"buy\.stripe\.com/(?:test_)?[A-Za-z0-9]{10,}")),
     ("stripe_checkout", re.compile(r"checkout\.stripe\.com/")),
     ("stripe_js", re.compile(r"js\.stripe\.com")),
-    ("evm_address", re.compile(r"(?<![0-9a-fA-F])0x[0-9a-fA-F]{40}(?![0-9a-fA-F])")),
-    ("btc_bech32", re.compile(r"\bbc1[02-9ac-hj-np-z]{25,62}\b")),
-    ("wallet_uri", re.compile(r"\b(?:bitcoin|ethereum|solana|dogecoin|ripple|litecoin|bitcoincash):[A-Za-z0-9]{25,}")),
+    ("retired_term", re.compile(r"(?i)\btriad|\bswiss\b|\bswitzerland\b|\bsingapore\b|\bzug\b|stiftung|trust\s+structures?\b")),
+    ("trust_wallet", re.compile(r"(?i)trust\s*wallet")),
+    ("send_crypto", re.compile(r"(?i)(?<!not )(?<!never )\bsend\s+(?:your\s+)?crypto\b")),
+    ("metamask_payto", re.compile(r"(?i)(?:\b(?:pay|send|gift|deposit|donat\w*|checkout)\b[^.\n<]{0,60}metamask|metamask[^.\n<]{0,60}\b(?:pay|send|gift|deposit|donat\w*|checkout)\b)")),
+    ("chain_payto", re.compile(PAYWORD + r"[^.\n<\"']{0,40}" + CHAIN)),
+    ("chain_equal_cad", re.compile(r"(?i:equal-?(?:cad|crypto))[^.\n<\"']{0,40}" + CHAIN)),
+    ("chain_receive", re.compile(CHAIN + r"\s+(?i:receive\s+string|vault)\b")),
 ]
 CONFIG_PATTERNS = [
     ("open_flag", re.compile(r"\b(?:stripe_enabled|crypto_enabled|checkout_open|jacket_open)\s*:\s*true\b")),
@@ -47,13 +96,26 @@ for dp, dns, fns in os.walk(ROOT):
                 lines = fh.read().split("\n")
         except OSError:
             continue
+        donate_only = rel in DONATE_ONLY
         pats = PATTERNS + (CONFIG_PATTERNS if fn == "payments-config.js" else [])
         for i, line in enumerate(lines, 1):
             for name, rx in pats:
                 for m in rx.finditer(line):
+                    hits.append((rel, i, name, m.group(0)[:12] + "…"))
+            if PAY_PAGE.search(fn) and "donate-only-addresses" in line:
+                hits.append((rel, i, "pay_page_loads_donate_file", "donate-only…"))
+            if donate_only:
+                continue
+            for name, rx in ADDRESS_PATTERNS:
+                for m in rx.finditer(line):
                     if name == "evm_address" and m.group(0).lower() in EVM_ALLOW:
                         continue
-                    hits.append((rel, i, name, m.group(0)[:12] + "…"))
+                    hits.append((rel, i, name, m.group(0)[:8] + "…"))
+            for m in TOKEN.finditer(line):
+                t = m.group(0)
+                if (hashlib.sha256(t.encode()).hexdigest() in RETIRED_ADDR_SHA256 or
+                        hashlib.sha256(("0x" + t[2:]).lower().encode()).hexdigest() in RETIRED_ADDR_SHA256):
+                    hits.append((rel, i, "retired_address", t[:6] + "…"))
 
 for rel, i, name, frag in hits:
     print(f"FREEZE-HIT {name} {rel}:{i} {frag}")

@@ -25,6 +25,3 @@ Do not start at `04_DISCOVERY__llms.txt` or the `06_ENCYC_*` root dump.
 - DualisCapax Inc. holds **0.00%** token float
 - eFuse / Unity token: **declared architecture**, not a live market
 
-## Retired (owner 2026-09-29)
-
-Swiss Stiftung, Liechtenstein Anstalt, Singapore trust, live 7-of-11 jurisdictional anchors — **not in place**. Old specs that still say otherwise are appendix history, not current ops.

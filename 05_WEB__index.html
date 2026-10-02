@@ -215,10 +215,10 @@
           <div id="sleeve-launch-feedback" style="margin-top: 14px; font-size: 0.8rem; font-family: var(--font-mono); color: #22c55e;"></div>
 
           <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1);">
-            <label>Single Payment Wallet (ERC-4337)</label>
+            <label>Payment wallet</label>
             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family: var(--font-mono); margin: 6px 0;">
               <span style="color: var(--text-muted);">Account:</span>
-              <span style="color: var(--accent-cyan);">0x20e01879...6ee7</span>
+              <span style="color: var(--accent-cyan);">not published</span>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-family: var(--font-mono); margin: 6px 0;">
               <span style="color: var(--text-muted);">1:1 CAD Balance:</span>
@@ -329,7 +329,7 @@
       </div>
       <div class="inv-item">
         <span class="inv-label">Toll Parity (No Spread)</span>
-        <span class="inv-value">CAD ↔ Equal-Crypto (BTC, ETH, SOL)</span>
+        <span class="inv-value">CAD ↔ Equal-Crypto</span>
       </div>
     </div>
 
@@ -364,7 +364,7 @@
           </div>
           <div>
             <button class="btn-checkout" onclick="openCheckout('SKU-LEAF-01', 'Single Leaf Monograph', '49.00')">Stripe Live Wire (CAD $49)</button>
-            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-LEAF-01', '49.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-LEAF-01', '49.00')">Checkout closed</button>
           </div>
         </div>
 
@@ -386,7 +386,7 @@
           </div>
           <div>
             <button class="btn-checkout" onclick="openCheckout('SKU-BRANCH-01', 'Family Branch Pack', '299.00')">Stripe Live Wire (CAD $299)</button>
-            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-BRANCH-01', '299.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-BRANCH-01', '299.00')">Checkout closed</button>
           </div>
         </div>
 
@@ -408,7 +408,7 @@
           </div>
           <div>
             <button class="btn-checkout" onclick="openCheckout('SKU-LIB-01', 'Master Compendium Library', '1,499.00')">Stripe Live Wire (CAD $1,499)</button>
-            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-LIB-01', '1499.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-LIB-01', '1499.00')">Checkout closed</button>
           </div>
         </div>
 
@@ -430,7 +430,7 @@
           </div>
           <div>
             <button class="btn-checkout" onclick="openCheckout('SKU-PLUG-01', 'Single Line Plug-In', '6,750.00')">Stripe Live Wire (CAD $6,750)</button>
-            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-01', '6750.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-01', '6750.00')">Checkout closed</button>
           </div>
         </div>
 
@@ -452,7 +452,7 @@
           </div>
           <div>
             <button class="btn-checkout" onclick="openCheckout('SKU-PLUG-02', 'Hospital Facility Plug-In', '33,750.00')">Stripe Live Wire (CAD $33,750)</button>
-            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-02', '33750.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-02', '33750.00')">Checkout closed</button>
           </div>
         </div>
 
@@ -474,7 +474,7 @@
           </div>
           <div>
             <button class="btn-checkout" onclick="openCheckout('SKU-PLUG-03', 'Enterprise Network Plug-In', '135,000.00')">Stripe Live Wire (CAD $135,000)</button>
-            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-03', '135000.00')">Equal-Crypto Parity (BTC/ETH/SOL)</button>
+            <button class="btn-checkout btn-crypto" onclick="openCrypto('SKU-PLUG-03', '135000.00')">Checkout closed</button>
           </div>
         </div>
       </div>
@@ -724,7 +724,7 @@ python3 dclm_runtime_sleeve.py --runtime-id=${rtId} --sector=${sec}`;
 
     function openCrypto(sku, priceCad) {
       document.getElementById('modalTitle').innerText = 'Equal-Crypto Settlement: ' + sku;
-      document.getElementById('modalBody').innerText = 'Pay using Bitcoin (BTC), Ethereum (ETH), or Solana (SOL) with 1:1 CAD Parity. Vault: [address removed: payments closed]';
+      document.getElementById('modalBody').innerText = 'Checkout closed. Payments will use Unity ID only when opened.';
       document.getElementById('modalPrice').innerHTML = '<strong>CAD Equivalent:</strong> CAD $' + priceCad;
       document.getElementById('checkoutModal').style.display = 'flex';
     }

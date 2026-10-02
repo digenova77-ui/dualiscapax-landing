@@ -37,7 +37,7 @@ On this repo that is:
 
 1. **Clean language** — one story: we stop the leak. Iris is a sphere, not a person.
 2. **Clean logic** — DualisAV must not steal `#iris-sphere`. Wake with `null` canvas.
-3. **Clean handoff** — pack `cf-pages` *and* elevate root index because DOMAIN triad origin is GitHub Pages.
+3. **Clean handoff** — pack `cf-pages` *and* elevate root index because DOMAIN chain origin is GitHub Pages.
 
 ## Rooms that actually exist (do not link ghosts)
 

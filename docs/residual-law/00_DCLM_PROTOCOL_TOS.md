@@ -15,7 +15,7 @@
 | A2 | Fuel / Residual Cost Peg; Open → Prove → Depth → Seal |
 | A3 | DCLM (honesty, free will, host-safe, domain-perfect meter) |
 | A4 | Bond (their eyes); C-suite × grassroots under one law |
-| A5 | Domain triad REPO → ORIGIN → EDGE; apex+origin health |
+| A5 | Domain chain REPO → ORIGIN → EDGE; apex+origin health |
 | A6 | Encyclopedia path residual; study rigor without naming external labels |
 | A7 | Lander freeze; particle intro; no cure/securities theater |
 | A8 | Theory-smash buckets A/B/C; parallel/serial; secrets isolation |

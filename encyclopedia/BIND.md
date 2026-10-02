@@ -25,7 +25,6 @@ CIBC Basic+Growth WAIT numbers. Gateway Worker sketched; client Fuel leftover. N
 ## Drive root (Oliver\* at root)
 DISREGARD folder and 'no longer necessary' = park.
 All 2P5L cohort folders = ARCHIVE.
-TrustWalletBackup = do not index contents.
 Keep: Landing Files, CIBC+CRA folder as pointer, this encyclopedia folder, medical leaves.
 Do not mint a new root folder for each municipality or disease. Use the existing shape.
 

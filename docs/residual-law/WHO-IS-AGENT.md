@@ -51,7 +51,7 @@ If step 4 is reached, agents present **one** law expression — not a chore list
 
 ## 4. Unify-all-three
 
-“All three” = the organ triad under DualisWebComplex (Git · Cloud · Square, with Google as signal as needed).  
+“All three” = the three organs under DualisWebComplex (Git · Cloud · Square, with Google as signal as needed).  
 Unifying button = single Operator YES that enables the **last** shared grant/join agents cannot mint (e.g. silo bind), after which **who returns to agent**.
 
 ---
