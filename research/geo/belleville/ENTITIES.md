@@ -60,7 +60,7 @@ No deals. No timing. No why. Name and pin only.
 | Eastside Secondary | 275 Farley Ave |
 | Bayside Secondary | 1247 Old Hwy 2 |
 | Bayside Public | 132 Aikins Rd |
-| Easthill Elementary | 135 MacDonald Ave |
+| Easthill Elementary | (address withheld) |
 | Harry J. Clarke | 77 Rollins Dr |
 | Park Dale | 73 Poplar St |
 | Prince Charles (Belleville) | 75 Ritchie Ave |

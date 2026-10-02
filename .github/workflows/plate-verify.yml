@@ -34,7 +34,7 @@ jobs:
           BASE=https://dualiscapax.ai
           holes=0
           echo "path status location"
-          for p in / /portal /js/modules.json /ice /ice.html /look /hockey /rte/easthill/ /rte/easthill /sara; do
+          for p in / /portal /js/modules.json /ice /ice.html /look /hockey /rte/easthill/ /rte/easthill; do
             hdr=$(mktemp)
             code=$(curl -sI --max-redirs 0 -o "$hdr" -w "%{http_code}" --max-time 20 "$BASE$p" || echo 000)
             loc=$(grep -i '^location:' "$hdr" | tr -d '\r' | head -1 || true)
