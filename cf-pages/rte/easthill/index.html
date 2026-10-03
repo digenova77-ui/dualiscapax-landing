@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#05070c">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./desk.css">
-<script>/* one-time purge of the pre-rename on-device keys (old prefix, orphaned by the role rename); no name in code. Removes dc.<token>.g2.* / dc.<token>.parent / dc.<token>.sketch unless the token is a live desk (g2teacher, sima). */(function(){try{var F='dc.g2teacher.purge.v1';if(localStorage.getItem(F))return;var keep={g2teacher:1,sima:1},re=/^dc\.([^.]+)\.(g2\.[a-z]+|parent|sketch)$/i,ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i),m=re.exec(k||'');if(m&&!keep[m[1].toLowerCase()])ks.push(k);}for(var j=0;j<ks.length;j++)localStorage.removeItem(ks[j]);localStorage.setItem(F,String(ks.length));}catch(e){}})();</script>
+<script>/* one-time purge of the pre-rename on-device keys (old prefix, orphaned by the role rename); no name in code. Removes dc.<token>.g2.<kind> and per-item dc.<token>.g2.<kind>.<id> / dc.<token>.parent / dc.<token>.sketch unless the token is a live desk (g2teacher, sima). */(function(){try{var F='dc.g2teacher.purge.v2';if(localStorage.getItem(F))return;var keep={g2teacher:1,sima:1},re=/^dc\.([^.]+)\.(g2\.[a-z]+(?:\..+)?|parent|sketch)$/i,ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i),m=re.exec(k||'');if(m&&!keep[m[1].toLowerCase()])ks.push(k);}for(var j=0;j<ks.length;j++)localStorage.removeItem(ks[j]);localStorage.setItem(F,String(ks.length));}catch(e){}})();</script>
 </head>
 <body>
 <div class="wrap">
