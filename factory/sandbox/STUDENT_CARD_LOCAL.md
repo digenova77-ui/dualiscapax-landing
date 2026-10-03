@@ -7,7 +7,7 @@ It never enters git, Drive-as-SoR, Dualis servers, or a coin receipt.
 Dualis does not invent children. Empty class → no cards.
 Official marks / IEP / OSR stay with the board. This is her working copy.
 
-## Record (`dc.sara.g2.card.${name}`)
+## Record (`dc.g2teacher.g2.card.${name}`)
 
 ```
 {
@@ -23,7 +23,7 @@ Official marks / IEP / OSR stay with the board. This is her working copy.
 
 `homeForSchool` is **not** a family dossier. It is only what a caregiver already told her so Monday works (sleep, pickup change she was asked to remember, language at home). No SIN. No OEN required. No address. No sibling map unless she types it for teaching.
 
-`worksWith` may only reference names already on `dc.sara.g2.class`.
+`worksWith` may only reference names already on `dc.g2teacher.g2.class`.
 
 Receipt hash may count cards. It may not include names or notes.
 

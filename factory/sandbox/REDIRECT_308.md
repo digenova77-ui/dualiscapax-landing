@@ -18,7 +18,7 @@ then `/ice` → `/ice/` → `/ice` can become **308 to self**.
 ## Two trees (this repo)
 
 `wrangler.toml`: `pages_build_output_dir = "."` — **root** `_redirects` is the file Pages eats.
-`cf-pages/_redirects` has easthill/sara rules the root file **does not**. Those rules are a book, not the plate, unless output dir is `cf-pages/`.
+`cf-pages/_redirects` has easthill rules the root file **does not**. Those rules are a book, not the plate, unless output dir is `cf-pages/`.
 
 Root has `ice.html`. `cf-pages/ice/index.html` also exists. Single-path law is already broken in the book.
 

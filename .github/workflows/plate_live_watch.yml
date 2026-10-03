@@ -49,7 +49,7 @@ jobs:
                   return rec
 
           paths = ['/', '/ice', '/ice.html', '/look', '/hockey', '/portal',
-                   '/rte/easthill/', '/sara', '/js/modules.json']
+                   '/rte/easthill/', '/js/modules.json']
           rows = {p: head('https://dualiscapax.ai' + p) for p in paths}
           rec = {
             'kind': 'plate_live_watch',

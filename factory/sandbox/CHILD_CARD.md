@@ -4,7 +4,7 @@ A class list is names. A desk is cards.
 Cards never leave the phone. Never git. Never Look. Never coin.
 Dualis does not invent a child, a mark, or a home.
 
-## Schema (`dc.sara.g2.cards`)
+## Schema (`dc.g2teacher.g2.cards`)
 
 ```
 {

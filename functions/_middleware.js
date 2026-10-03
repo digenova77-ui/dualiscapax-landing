@@ -27,8 +27,6 @@ const MAP = {
   "/aide/": "/rte/sima-dclm/index.html",
   "/desk": "/rte/sima-dclm/index.html",
   "/desk/": "/rte/sima-dclm/index.html",
-  "/sara": "/rte/easthill/index.html",
-  "/sara/": "/rte/easthill/index.html",
   "/easthill": "/rte/easthill/index.html",
   "/easthill/": "/rte/easthill/index.html",
   "/rte/easthill": "/rte/easthill/index.html",

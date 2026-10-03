@@ -1,7 +1,7 @@
 # AGENT_ECONOMY
 
 Why a software agent stays at this desk.
-Not APY. Not a GUI. Not Sara's cards.
+Not APY. Not a GUI. Not the Grade 2 teacher's cards.
 DualisCapax = company desk. Coin = separate vehicle. Unity = human seat.
 
 ## The stack they actually use

@@ -8,10 +8,11 @@
 <meta name="theme-color" content="#05070c">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./desk.css">
+<script>/* one-time purge of the pre-rename on-device keys (old prefix, orphaned by the role rename); no name in code. Removes dc.<token>.g2.<kind> and per-item dc.<token>.g2.<kind>.<id> / dc.<token>.parent / dc.<token>.sketch unless the token is a live desk (g2teacher, sima). */(function(){try{var F='dc.g2teacher.purge.v2';if(localStorage.getItem(F))return;var keep={g2teacher:1,sima:1},re=/^dc\.([^.]+)\.(g2\.[a-z]+(?:\..+)?|parent|sketch)$/i,ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i),m=re.exec(k||'');if(m&&!keep[m[1].toLowerCase()])ks.push(k);}for(var j=0;j<ks.length;j++)localStorage.removeItem(ks[j]);localStorage.setItem(F,String(ks.length));}catch(e){}})();</script>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><span class="brand">Easthill · Grade 2 · Sara</span><span class="pill">Bells 8:10–2:30</span></div>
+  <div class="top"><span class="brand">Easthill · Grade 2 teacher desk</span><span class="pill">Bells 8:10–2:30</span></div>
   <h1>What this week<br><em>actually needs.</em></h1>
   <p class="lede">Five school days. One strand in the morning. One strand after recess. The aide follows her week, not a Dualis pitch.</p>
   <section class="card">
@@ -32,7 +33,7 @@
 <nav class="dock"><a href="./index.html">Desk</a><a class="on" href="./week.html">Week</a><a href="./plan.html">Plan</a><a href="./class.html">Class</a><a href="./report.html">Report</a></nav>
 <script>
 var DAYS=["Mon","Tue","Wed","Thu","Fri"];
-var KEY='dc.sara.g2.plans';
+var KEY='dc.g2teacher.g2.plans';
 function all(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
 function draw(){
   var h='';

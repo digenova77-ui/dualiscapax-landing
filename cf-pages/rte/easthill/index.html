@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Grade 2 desk · Sara · Easthill — DualisCapax</title>
-<meta name="description" content="Grade 2 teacher desk for Sara Kristen Foster at Easthill Elementary. Class list stays on this phone.">
+<title>Grade 2 teacher desk (unconfirmed) · Easthill — DualisCapax</title>
+<meta name="description" content="Grade 2 teacher desk (unconfirmed) · Easthill Elementary. Class list stays on this phone.">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#05070c">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./desk.css">
+<script>/* one-time purge of the pre-rename on-device keys (old prefix, orphaned by the role rename); no name in code. Removes dc.<token>.g2.<kind> and per-item dc.<token>.g2.<kind>.<id> / dc.<token>.parent / dc.<token>.sketch unless the token is a live desk (g2teacher, sima). */(function(){try{var F='dc.g2teacher.purge.v2';if(localStorage.getItem(F))return;var keep={g2teacher:1,sima:1},re=/^dc\.([^.]+)\.(g2\.[a-z]+(?:\..+)?|parent|sketch)$/i,ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i),m=re.exec(k||'');if(m&&!keep[m[1].toLowerCase()])ks.push(k);}for(var j=0;j<ks.length;j++)localStorage.removeItem(ks[j]);localStorage.setItem(F,String(ks.length));}catch(e){}})();</script>
 </head>
 <body>
 <div class="wrap">
   <div class="top"><span class="brand">DualisCapax · Easthill Elementary</span><span class="pill">On this phone</span></div>
   <h1>Keep the child.<br><em>Stop burning the evening.</em></h1>
-  <p class="lede">Sara Kristen Foster. Grade 2. Easthill Elementary, 135 MacDonald Ave, Belleville. HPEDSB. JK–8. Bells 8:10–2:30. Principal Amy Woodland.</p>
+  <p class="lede">Grade 2 teacher desk (unconfirmed). Easthill Elementary, Belleville. HPEDSB. JK–8. Bells 8:10–2:30. Principal Amy Woodland.</p>
   <p class="pull">Plan the lesson. Name the class on this phone. Draft the IEP and the comment. The board form is still the official book.</p>
   <div class="verbs">
     <a class="verb" href="./week.html"><b>Week</b><span>What Monday needs</span></a>
@@ -62,7 +63,7 @@
 <script>
 function d(x){return (Math.round(x*10)/10).toLocaleString("en-CA")}
 function n(x){return Math.round(x).toLocaleString("en-CA")}
-function classCount(){try{return JSON.parse(localStorage.getItem("dc.sara.g2.class")||"[]").length}catch(e){return 0}}
+function classCount(){try{return JSON.parse(localStorage.getItem("dc.g2teacher.g2.class")||"[]").length}catch(e){return 0}}
 function rec(){
   var m=+document.getElementById("mins").value||0;
   var days=+document.getElementById("days").value||0;
@@ -77,20 +78,20 @@ function rec(){
 async function sha(s){var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0")}).join("")}
 document.getElementById("save").onclick=async function(){
   var s=rec();
-  var parent=localStorage.getItem("dc.sara.parent")||"0".repeat(64);
+  var parent=localStorage.getItem("dc.g2teacher.parent")||"0".repeat(64);
   var body=JSON.stringify({room:"easthill-g2",m:s.m,days:s.days,kids:s.kids,status:"SEED",parent:parent,t:Date.now()});
   var h=await sha(body);
-  localStorage.setItem("dc.sara.parent",h);
-  localStorage.setItem("dc.sara.sketch",body);
+  localStorage.setItem("dc.g2teacher.parent",h);
+  localStorage.setItem("dc.g2teacher.sketch",body);
   document.getElementById("rx").textContent="parent "+parent.slice(0,12)+"… → "+h;
   if(window.DualisAV) DualisAV.wake("dvp","desk",16);
 };
 try{
-  var sk=JSON.parse(localStorage.getItem("dc.sara.sketch")||"null");
+  var sk=JSON.parse(localStorage.getItem("dc.g2teacher.sketch")||"null");
   if(sk){
     if(sk.m) document.getElementById("mins").value=sk.m;
     if(sk.days) document.getElementById("days").value=sk.days;
-    var p=localStorage.getItem("dc.sara.parent");
+    var p=localStorage.getItem("dc.g2teacher.parent");
     if(p) document.getElementById("rx").textContent="last "+p.slice(0,16)+"… on this phone";
   }
 }catch(e){}
