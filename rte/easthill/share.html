@@ -23,7 +23,8 @@ button{appearance:none;border:1px solid var(--cyan);background:transparent;color
 .pill{font:10px IBM Plex Mono,monospace;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
 .dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;background:rgba(5,7,12,.94);border-top:1px solid var(--line);padding:.45rem;font:10px IBM Plex Mono,monospace;text-transform:uppercase}
 .dock a{color:var(--mute);text-decoration:none}.dock a.on{color:var(--cyan)}
-</style></head>
+</style><script>/* one-time purge of the pre-rename on-device keys (old prefix, orphaned by the role rename); no name in code. Removes dc.<token>.g2.* / dc.<token>.parent / dc.<token>.sketch unless the token is a live desk (g2teacher, sima). */(function(){try{var F='dc.g2teacher.purge.v1';if(localStorage.getItem(F))return;var keep={g2teacher:1,sima:1},re=/^dc\.([^.]+)\.(g2\.[a-z]+|parent|sketch)$/i,ks=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i),m=re.exec(k||'');if(m&&!keep[m[1].toLowerCase()])ks.push(k);}for(var j=0;j<ks.length;j++)localStorage.removeItem(ks[j]);localStorage.setItem(F,String(ks.length));}catch(e){}})();</script>
+</head>
 <body>
 <div class="wrap">
 <p class="brand">Grant · default off · this phone</p>

@@ -1,7 +1,7 @@
 # MATRIX ABC 2026-09-16T23:01Z
 
 A = Dualis self-model (git): ice.html exists, easthill files on root tree, middleware seated, GREENLIGHT had easthill PRODUCTION.
-B = Apex playground (this curl): / 200, /portal 200, /js/modules.json 200, /js/unity-bind.js 200, /ice 308→/ice, /look 308→/look, /rte/easthill/ 200, /rte/easthill 308, first-name alias 404 (alias since pulled, 2026-10-02).
+B = Apex playground (this curl): / 200, /portal 200, /js/modules.json 200, /js/unity-bind.js 200, /ice 308→/ice, /look 308→/look, /rte/easthill/ 200, /rte/easthill 308, first-name alias 404 at that curl (alias since pulled, 2026-10-02; the post-deploy check is 0 term hits in the alias body via scripts/alias-body-check.py, not 404: unknown paths return the 200 HTML fallback).
 C = Independent (Lucas, earlier hour): /rte/easthill/ 404, /ice titled Ice + client 308 hole.
 
 ΔAB: model says Ice file + middleware = serveable; plate still 308. Swallow or zone Worker.
