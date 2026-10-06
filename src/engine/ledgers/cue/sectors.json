@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-07-sectors-162709-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T16:27:09Z",
-      "payload": {
-        "sector": "Telecom & Signal Entropy",
-        "domain": "Spectral noise reduction",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-07-sectors-162753-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-07-sectors-163015-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T16:30:15Z",
+      "payload": {
+        "sector": "Telecom & Signal Entropy",
+        "domain": "Spectral noise reduction",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T16:29:31Z",
+  "refilled_at": "2026-10-06T16:30:15Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
