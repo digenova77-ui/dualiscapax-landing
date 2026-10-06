@@ -2,21 +2,6 @@
   "lane": "seal",
   "pending": [
     {
-      "task_id": "SEC-10-seal-192356-0004",
-      "task_type": "seal",
-      "kind": "seal",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T19:23:56Z",
-      "payload": {
-        "sector": "Agriculture & Soil Kinetics",
-        "domain": "Thermodynamic reclamation",
-        "lane": "seal",
-        "q": 1.0,
-        "p": 0.5,
-        "check": "actuator_floor"
-      }
-    },
-    {
       "task_id": "SEC-10-seal-192413-0004",
       "task_type": "seal",
       "kind": "seal",
@@ -60,11 +45,26 @@
         "p": 0.5,
         "check": "actuator_floor"
       }
+    },
+    {
+      "task_id": "SEC-10-seal-192502-0004",
+      "task_type": "seal",
+      "kind": "seal",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T19:25:02Z",
+      "payload": {
+        "sector": "Agriculture & Soil Kinetics",
+        "domain": "Thermodynamic reclamation",
+        "lane": "seal",
+        "q": 1.0,
+        "p": 0.5,
+        "check": "actuator_floor"
+      }
     }
   ],
   "floor": 4,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T19:24:46Z",
+  "refilled_at": "2026-10-06T19:25:02Z",
   "pending_count": 4,
   "cra_send": false,
   "target": "STUB"
