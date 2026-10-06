@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-09-sectors-185726-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T18:57:26Z",
-      "payload": {
-        "sector": "Banking & 1:1 CAD Settlement",
-        "domain": "Zero token float settlement",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-09-sectors-185745-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-10-sectors-190025-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T19:00:25Z",
+      "payload": {
+        "sector": "Agriculture & Soil Kinetics",
+        "domain": "Thermodynamic reclamation",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T19:00:11Z",
+  "refilled_at": "2026-10-06T19:00:25Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
