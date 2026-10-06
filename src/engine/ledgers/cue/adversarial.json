@@ -1,0 +1,71 @@
+{
+  "lane": "adversarial",
+  "pending": [
+    {
+      "task_id": "SEC-10-adversarial-093449-0001",
+      "task_type": "adversarial",
+      "kind": "adversarial",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T09:34:49Z",
+      "payload": {
+        "sector": "Agriculture & Soil Kinetics",
+        "domain": "Thermodynamic reclamation",
+        "lane": "adversarial",
+        "q": 1.0,
+        "p": 0.5,
+        "attack": "stampede"
+      }
+    },
+    {
+      "task_id": "SEC-10-adversarial-093449-0002",
+      "task_type": "adversarial",
+      "kind": "adversarial",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T09:34:49Z",
+      "payload": {
+        "sector": "Agriculture & Soil Kinetics",
+        "domain": "Thermodynamic reclamation",
+        "lane": "adversarial",
+        "q": 1.0,
+        "p": 0.5,
+        "attack": "lease_recovery"
+      }
+    },
+    {
+      "task_id": "SEC-10-adversarial-093449-0003",
+      "task_type": "adversarial",
+      "kind": "adversarial",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T09:34:49Z",
+      "payload": {
+        "sector": "Agriculture & Soil Kinetics",
+        "domain": "Thermodynamic reclamation",
+        "lane": "adversarial",
+        "q": 1.0,
+        "p": 0.5,
+        "attack": "poison_payload"
+      }
+    },
+    {
+      "task_id": "SEC-10-adversarial-093449-0004",
+      "task_type": "adversarial",
+      "kind": "adversarial",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T09:34:49Z",
+      "payload": {
+        "sector": "Agriculture & Soil Kinetics",
+        "domain": "Thermodynamic reclamation",
+        "lane": "adversarial",
+        "q": 1.0,
+        "p": 0.5,
+        "attack": "circuit_breaker"
+      }
+    }
+  ],
+  "floor": 4,
+  "live_actuators": false,
+  "refilled_at": "2026-10-06T09:34:49Z",
+  "pending_count": 4,
+  "cra_send": false,
+  "target": "STUB"
+}
