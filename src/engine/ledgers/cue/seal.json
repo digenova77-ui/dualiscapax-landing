@@ -2,21 +2,6 @@
   "lane": "seal",
   "pending": [
     {
-      "task_id": "SEC-02-seal-211058-0004",
-      "task_type": "seal",
-      "kind": "seal",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T21:10:58Z",
-      "payload": {
-        "sector": "Public Education & Governance",
-        "domain": "HPEDSB / Ontario Education Act",
-        "lane": "seal",
-        "q": 1.0,
-        "p": 0.5,
-        "check": "actuator_floor"
-      }
-    },
-    {
       "task_id": "SEC-02-seal-211115-0004",
       "task_type": "seal",
       "kind": "seal",
@@ -60,11 +45,26 @@
         "p": 0.5,
         "check": "actuator_floor"
       }
+    },
+    {
+      "task_id": "SEC-02-seal-211208-0004",
+      "task_type": "seal",
+      "kind": "seal",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T21:12:08Z",
+      "payload": {
+        "sector": "Public Education & Governance",
+        "domain": "HPEDSB / Ontario Education Act",
+        "lane": "seal",
+        "q": 1.0,
+        "p": 0.5,
+        "check": "actuator_floor"
+      }
     }
   ],
   "floor": 4,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T21:11:50Z",
+  "refilled_at": "2026-10-06T21:12:08Z",
   "pending_count": 4,
   "cra_send": false,
   "target": "STUB"
