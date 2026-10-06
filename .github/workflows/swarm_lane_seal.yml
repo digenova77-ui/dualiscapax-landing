@@ -1,6 +1,6 @@
 name: Swarm lane seal
 
-# 5-minute fleet. Minute 25 and 55. Actuator floor. No lander publish.
+# Perpetual cue. Cron is the backstop. Actuators false. No lander publish.
 
 on:
   schedule:
@@ -13,6 +13,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   lane:
@@ -30,15 +31,26 @@ jobs:
         with:
           python-version: '3.11'
       - run: python3 src/engine/swarm_five_lane.py
-      - name: Commit lane receipt
+      - name: Commit refilled cue
         run: |
           git config user.email "swarm@dualiscapax.ai"
           git config user.name "Dualis Swarm Seal"
-          git add src/engine/ledgers/five/seal || true
+          git add src/engine/ledgers/five/seal src/engine/ledgers/cue/seal.json || true
           git diff --cached --quiet && exit 0
-          git commit -m "chore(swarm): seal 5-minute lane [skip ci]"
+          git commit -m "chore(swarm): seal cue refilled [skip ci]"
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD && exit 0
             sleep $((i * 2))
           done
           exit 1
+      - name: Chain next refill
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          queued=$(gh run list --workflow swarm_lane_seal.yml --status queued --limit 5 --json databaseId --jq 'length')
+          if [ "$queued" != "0" ]; then
+            echo "next refill already queued"
+            exit 0
+          fi
+          gh workflow run swarm_lane_seal.yml --ref main || echo "chain deferred — cue already full"
