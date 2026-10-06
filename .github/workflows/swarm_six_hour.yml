@@ -6,6 +6,7 @@ name: DualisCapax Swarm Six-Hour
 # Law: NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING
 # Do not add actions/deploy-pages or wrangler deploy to this job.
 # Live actuators stay false. Demoted hourly stubs stay off this clock.
+# Cues refill to floor. They do not sit empty.
 
 on:
   schedule:
@@ -48,6 +49,11 @@ jobs:
           test "${LIVE_ACTUATORS}" = "false"
           test "${CRA_SEND}" = "NO"
 
+      - name: Refill cues before work
+        run: python3 src/engine/swarm_five_lane.py
+        env:
+          SWARM_LANE: refill-all
+
       - name: Perpetual swarm runner
         run: python3 src/engine/agent_swarm_runner.py --ledger-dir src/engine/ledgers
 
@@ -56,6 +62,11 @@ jobs:
 
       - name: Sector autonomy agents (simulation, actuators false)
         run: python3 src/engine/sector_autonomy_agents.py
+
+      - name: Refill cues after work
+        run: python3 src/engine/swarm_five_lane.py
+        env:
+          SWARM_LANE: refill-all
 
       - name: Actuator floor
         run: |
@@ -73,7 +84,15 @@ jobs:
           bad = [a["agent"] for a in doc.get("agents", []) if a.get("live_actuator") is not False]
           if bad:
               raise SystemExit(f"REFUSE live actuator on {bad}")
-          print("actuator floor held")
+          cue = Path("src/engine/ledgers/cue")
+          empty = []
+          for path in sorted(cue.glob("*.json")):
+              row = json.loads(path.read_text())
+              if not row.get("pending"):
+                  empty.append(path.name)
+          if empty:
+              raise SystemExit(f"REFUSE empty cue {empty}")
+          print("actuator floor held; cues refilled")
           PY
 
       - name: Commit epoch ledgers
@@ -84,12 +103,13 @@ jobs:
                   src/engine/ledgers/docket.jsonl \
                   src/engine/ledgers/epochs \
                   src/engine/ledgers/receipts \
-                  src/engine/ledgers/agents || true
+                  src/engine/ledgers/agents \
+                  src/engine/ledgers/cue || true
           if git diff --cached --quiet; then
             echo "No ledger changes."
             exit 0
           fi
-          git commit -m "chore(swarm): six-hour epoch flush [skip ci]"
+          git commit -m "chore(swarm): six-hour epoch flush, cues refilled [skip ci]"
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD && exit 0
             echo "push race attempt $i — retry"
