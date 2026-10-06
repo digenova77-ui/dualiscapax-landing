@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-05-sectors-140048-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T14:00:48Z",
-      "payload": {
-        "sector": "Hospitality & Labor Operations",
-        "domain": "Enterprise labor efficiency",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-05-sectors-140106-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-05-sectors-140251-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T14:02:51Z",
+      "payload": {
+        "sector": "Hospitality & Labor Operations",
+        "domain": "Enterprise labor efficiency",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T14:02:35Z",
+  "refilled_at": "2026-10-06T14:02:51Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
