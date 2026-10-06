@@ -15,7 +15,7 @@ Do not treat a push to `main` as a live overwrite.
 3. [AGENT/README.md](AGENT/README.md) — read order
 4. [AGENT/CLEANUP-MAP.md](AGENT/CLEANUP-MAP.md) — what is current vs parked
 
-Do not start at `04_DISCOVERY__llms.txt` or the `06_ENCYC_*` root dump.
+The root dumps (`01_CORE__*`, `02_ENG_SPEC__*`, `03_LEGAL__*`, `04_DISCOVERY__*`, `05_WEB__*`, `06_ENCYC_*`) are off the working tree. History still has them. Do not treat them as the lander.
 
 ## Locked while checkout is closed
 
