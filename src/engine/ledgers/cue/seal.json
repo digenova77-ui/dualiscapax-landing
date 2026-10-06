@@ -2,21 +2,6 @@
   "lane": "seal",
   "pending": [
     {
-      "task_id": "SEC-09-seal-183222-0004",
-      "task_type": "seal",
-      "kind": "seal",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T18:32:22Z",
-      "payload": {
-        "sector": "Banking & 1:1 CAD Settlement",
-        "domain": "Zero token float settlement",
-        "lane": "seal",
-        "q": 1.0,
-        "p": 0.5,
-        "check": "actuator_floor"
-      }
-    },
-    {
       "task_id": "SEC-09-seal-183243-0004",
       "task_type": "seal",
       "kind": "seal",
@@ -60,11 +45,26 @@
         "p": 0.5,
         "check": "actuator_floor"
       }
+    },
+    {
+      "task_id": "SEC-09-seal-183430-0004",
+      "task_type": "seal",
+      "kind": "seal",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T18:34:30Z",
+      "payload": {
+        "sector": "Banking & 1:1 CAD Settlement",
+        "domain": "Zero token float settlement",
+        "lane": "seal",
+        "q": 1.0,
+        "p": 0.5,
+        "check": "actuator_floor"
+      }
     }
   ],
   "floor": 4,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T18:33:59Z",
+  "refilled_at": "2026-10-06T18:34:30Z",
   "pending_count": 4,
   "cra_send": false,
   "target": "STUB"
