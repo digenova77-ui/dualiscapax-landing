@@ -43,3 +43,16 @@ GitHub is command desk. Apex publish is named zip + wrangler at the key holder.
 - Stamped `04_DISCOVERY__llms.txt` STALE
 - Did not move or delete encyclopedia files
 - Did not touch live apex
+
+## Removed from the working tree (2026-10-06)
+
+The parked root dumps are off `main`. Git history still has them. They were not the lander.
+
+- `00_RESTORE_TO_REPO_STRUCTURE.py`
+- `01_CORE__*`
+- `02_ENG_SPEC__*`
+- `03_LEGAL__*`
+- `04_DISCOVERY__*`
+- `05_WEB__*`
+- `06_ENCYC_*`
+
