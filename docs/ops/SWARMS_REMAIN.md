@@ -1,14 +1,25 @@
 # Swarms stay on GitHub
 
 Document control: `ED-OPS-20260911-SWARMS-STAY-V1`
+Seat amendment: `ED-OPS-20261006-SWARM-SIX-HOUR-V1`
 
 These Actions keep running. They write ledgers and verify invariants. They do not publish the lander.
 
+## Seated clock (2026-10-06)
+
 | Workflow | Cadence | Job |
 |---|---|---|
-| `swarm_runner.yml` | hourly + dispatch | `agent_swarm_runner.py`, adversarial test, sector agents, commit ledgers |
-| `swarm_bot_fleet.yml` | :15 past hour + dispatch | swarm + tax clerks (CRA send stays NO) + paper trading + unity mesh stub |
-| `unity_mesh.yml` | existing | mesh stub |
+| `swarm_six_hour.yml` | `0 */6 * * *` UTC + dispatch | `agent_swarm_runner.py`, adversarial sentry, sector agents, commit ledgers. Actuators false. |
+
+UTC fires: 00:00, 06:00, 12:00, 18:00. GitHub may delay a scheduled run. Manual dispatch is the same job.
+
+## Prior table (transformed, not deleted)
+
+| Workflow | Cadence | Job |
+|---|---|---|
+| `swarm_runner.yml` | demoted 2026-09-14 — dispatch only | refuse stub epoch |
+| `swarm_bot_fleet.yml` | demoted 2026-09-14 — dispatch only | refuse theater |
+| `unity_mesh.yml` | dispatch / issue only | mesh stub; no scheduled UNANIMOUS_PASS |
 | `residual-ring.yml` | existing | residual ring |
 | `encyclopedia-verify.yml` | existing | encyclopedia verify |
 | `secret-scan.yml` | existing | secret scan |
