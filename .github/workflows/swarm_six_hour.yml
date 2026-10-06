@@ -1,0 +1,99 @@
+name: DualisCapax Swarm Six-Hour
+
+# Seat order 2026-10-06.
+# Deploy the perpetual bot swarm every 6 hours as a Git epoch flush.
+# This is not a lander publish.
+# Law: NO_FORCE · HOST_SAFE · CLEANUP_FIRST · TRUTH_OR_NOTHING
+# Do not add actions/deploy-pages or wrangler deploy to this job.
+# Live actuators stay false. Demoted hourly stubs stay off this clock.
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # 00:00, 06:00, 12:00, 18:00 UTC
+  workflow_dispatch:
+    inputs:
+      note:
+        description: 'Manual seat. Blank is fine. Does not flip actuators.'
+        required: false
+        default: ''
+
+concurrency:
+  group: dualis-swarm-six-hour
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-swarm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: src/engine
+      LIVE_ACTUATORS: 'false'
+      CRA_SEND: 'NO'
+      DUALIS_TARGET: STUB
+      SWARM_LEDGER_DIR: src/engine/ledgers
+      SWARM_AGENT_DIR: src/engine/ledgers/agents
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Refuse lander publish
+        run: |
+          echo "six-hour swarm is an epoch flush. pages=NO wrangler=NO actuators=false"
+          test "${LIVE_ACTUATORS}" = "false"
+          test "${CRA_SEND}" = "NO"
+
+      - name: Perpetual swarm runner
+        run: python3 src/engine/agent_swarm_runner.py --ledger-dir src/engine/ledgers
+
+      - name: Adversarial sentry
+        run: python3 src/engine/test_adversarial_swarm_attack.py
+
+      - name: Sector autonomy agents (simulation, actuators false)
+        run: python3 src/engine/sector_autonomy_agents.py
+
+      - name: Actuator floor
+        run: |
+          python3 << 'PY'
+          import json
+          from pathlib import Path
+          p = Path("src/engine/ledgers/agents/LATEST.json")
+          if not p.is_file():
+              raise SystemExit("DROPPED sector docket — agents/LATEST.json unavailable")
+          doc = json.loads(p.read_text())
+          if doc.get("live_actuators") is not False:
+              raise SystemExit("REFUSE live_actuators is not false")
+          if doc.get("target") != "STUB":
+              raise SystemExit("REFUSE target is not STUB")
+          bad = [a["agent"] for a in doc.get("agents", []) if a.get("live_actuator") is not False]
+          if bad:
+              raise SystemExit(f"REFUSE live actuator on {bad}")
+          print("actuator floor held")
+          PY
+
+      - name: Commit epoch ledgers
+        run: |
+          git config user.email "swarm@dualiscapax.ai"
+          git config user.name "Dualis Swarm Six-Hour"
+          git add src/engine/ledgers/LATEST.json \
+                  src/engine/ledgers/docket.jsonl \
+                  src/engine/ledgers/epochs \
+                  src/engine/ledgers/receipts \
+                  src/engine/ledgers/agents || true
+          if git diff --cached --quiet; then
+            echo "No ledger changes."
+            exit 0
+          fi
+          git commit -m "chore(swarm): six-hour epoch flush [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            echo "push race attempt $i — retry"
+            sleep $((i * 2))
+          done
+          echo "push failed after retries" >&2
+          exit 1
