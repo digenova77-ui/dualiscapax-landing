@@ -1,7 +1,7 @@
 # DualisCapax Inc. — command desk
 
 **Live surface:** https://dualiscapax.ai  
-**Entity:** DualisCapax Inc. · 535 Bridge St E, Belleville, ON K8N 1R7 · OBCA #100089211  
+**Entity:** DualisCapax.ai 
 **Law floor:** `NO_FORCE` · `HOST_SAFE` · `CLEANUP_FIRST` · `TRUTH_OR_NOTHING`
 
 This repository is the **command desk**. It is not the live website.
