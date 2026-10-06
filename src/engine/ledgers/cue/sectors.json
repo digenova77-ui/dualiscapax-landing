@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-10-sectors-191732-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T19:17:32Z",
-      "payload": {
-        "sector": "Agriculture & Soil Kinetics",
-        "domain": "Thermodynamic reclamation",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-10-sectors-191752-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-10-sectors-191933-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T19:19:33Z",
+      "payload": {
+        "sector": "Agriculture & Soil Kinetics",
+        "domain": "Thermodynamic reclamation",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T19:19:17Z",
+  "refilled_at": "2026-10-06T19:19:33Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
