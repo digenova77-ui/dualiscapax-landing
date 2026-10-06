@@ -2,21 +2,6 @@
   "lane": "seal",
   "pending": [
     {
-      "task_id": "SEC-08-seal-172345-0004",
-      "task_type": "seal",
-      "kind": "seal",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T17:23:45Z",
-      "payload": {
-        "sector": "Defense & Resilient Airlock",
-        "domain": "DO-178C DAL A fail-closed",
-        "lane": "seal",
-        "q": 1.0,
-        "p": 0.5,
-        "check": "actuator_floor"
-      }
-    },
-    {
       "task_id": "SEC-08-seal-172403-0004",
       "task_type": "seal",
       "kind": "seal",
@@ -60,11 +45,26 @@
         "p": 0.5,
         "check": "actuator_floor"
       }
+    },
+    {
+      "task_id": "SEC-08-seal-172511-0004",
+      "task_type": "seal",
+      "kind": "seal",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T17:25:11Z",
+      "payload": {
+        "sector": "Defense & Resilient Airlock",
+        "domain": "DO-178C DAL A fail-closed",
+        "lane": "seal",
+        "q": 1.0,
+        "p": 0.5,
+        "check": "actuator_floor"
+      }
     }
   ],
   "floor": 4,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T17:24:39Z",
+  "refilled_at": "2026-10-06T17:25:11Z",
   "pending_count": 4,
   "cra_send": false,
   "target": "STUB"
