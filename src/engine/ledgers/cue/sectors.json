@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-08-sectors-175224-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T17:52:24Z",
-      "payload": {
-        "sector": "Defense & Resilient Airlock",
-        "domain": "DO-178C DAL A fail-closed",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-08-sectors-175238-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-08-sectors-175444-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T17:54:44Z",
+      "payload": {
+        "sector": "Defense & Resilient Airlock",
+        "domain": "DO-178C DAL A fail-closed",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T17:54:25Z",
+  "refilled_at": "2026-10-06T17:54:44Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
