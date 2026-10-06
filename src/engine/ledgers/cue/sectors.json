@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-09-sectors-183241-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-06T18:32:41Z",
-      "payload": {
-        "sector": "Banking & 1:1 CAD Settlement",
-        "domain": "Zero token float settlement",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-09-sectors-183301-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-09-sectors-183519-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-06T18:35:19Z",
+      "payload": {
+        "sector": "Banking & 1:1 CAD Settlement",
+        "domain": "Zero token float settlement",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-06T18:34:37Z",
+  "refilled_at": "2026-10-06T18:35:19Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
