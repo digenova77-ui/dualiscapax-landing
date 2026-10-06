@@ -1,0 +1,44 @@
+name: Swarm lane Iris-Treasury
+
+# 5-minute fleet. Minute 10 and 40. Actuators false. No lander publish.
+
+on:
+  schedule:
+    - cron: '10,40 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: dualis-swarm-lane-treasury
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  lane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      PYTHONPATH: src/engine
+      SWARM_LANE: iris-treasury
+      LIVE_ACTUATORS: 'false'
+      CRA_SEND: 'NO'
+      DUALIS_TARGET: STUB
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python3 src/engine/swarm_five_lane.py
+      - name: Commit lane receipt
+        run: |
+          git config user.email "swarm@dualiscapax.ai"
+          git config user.name "Dualis Swarm Iris-Treasury"
+          git add src/engine/ledgers/five/iris-treasury || true
+          git diff --cached --quiet && exit 0
+          git commit -m "chore(swarm): iris-treasury 5-minute lane [skip ci]"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD && exit 0
+            sleep $((i * 2))
+          done
+          exit 1
