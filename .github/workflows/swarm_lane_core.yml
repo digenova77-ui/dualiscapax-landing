@@ -4,7 +4,7 @@ name: Swarm lane Iris-Core
 
 on:
   schedule:
-    - cron: '0,30 * * * *'
+    - cron: '7 */6 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -40,14 +40,43 @@ jobs:
           git commit -m "chore(swarm): iris-core cue refilled [skip ci]"
           for i in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD && exit 0
-            sleep $((i * 2))
+            sleep $((2 ** i))
           done
           exit 1
-      - name: Chain next refill
+      - name: Hold the next refill
         if: success()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          python3 << 'PY'
+          import json, subprocess, sys, time
+          from datetime import datetime, timezone
+          wf = "swarm_lane_core.yml"
+          raw = subprocess.check_output(["gh","run","list","--workflow",wf,"--limit","30","--json","createdAt,status"], text=True)
+          now = time.time()
+          def stamp(s):
+              return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp()
+          runs = json.loads(raw)
+          recent = [r for r in runs if now - stamp(r["createdAt"]) < 6 * 3600]
+          step = min(len(recent), 5)
+          gap = min(21600, 600 * (2 ** step))
+          newest = max(stamp(r["createdAt"]) for r in runs) if runs else 0
+          age = now - newest if runs else gap
+          print(f"backoff gap={int(gap)} age={int(age)} recent={len(recent)}")
+          if age < gap:
+              print("hold")
+              sys.exit(0)
+          print("open")
+          sys.exit(10)
+          PY
+          code=$?
+          if [ "$code" -eq 0 ]; then
+            echo "backoff hold — no dispatch"
+            exit 0
+          fi
+          if [ "$code" -ne 10 ]; then
+            exit "$code"
+          fi
           queued=$(gh run list --workflow swarm_lane_core.yml --status queued --limit 5 --json databaseId --jq 'length')
           if [ "$queued" != "0" ]; then
             echo "next refill already queued"
