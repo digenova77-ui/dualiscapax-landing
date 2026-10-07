@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-02-sectors-010738-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-07T01:07:38Z",
-      "payload": {
-        "sector": "Public Education & Governance",
-        "domain": "HPEDSB / Ontario Education Act",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-02-sectors-010757-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-02-sectors-010954-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-07T01:09:54Z",
+      "payload": {
+        "sector": "Public Education & Governance",
+        "domain": "HPEDSB / Ontario Education Act",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-07T01:09:34Z",
+  "refilled_at": "2026-10-07T01:09:54Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
