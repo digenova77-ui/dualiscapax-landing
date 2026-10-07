@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-04-sectors-032603-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-07T03:26:03Z",
-      "payload": {
-        "sector": "Municipal SCADA & Transit",
-        "domain": "Water & fleet load balancing",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-04-sectors-032619-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-04-sectors-032813-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-07T03:28:13Z",
+      "payload": {
+        "sector": "Municipal SCADA & Transit",
+        "domain": "Water & fleet load balancing",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-07T03:27:56Z",
+  "refilled_at": "2026-10-07T03:28:13Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
