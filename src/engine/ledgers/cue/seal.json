@@ -2,21 +2,6 @@
   "lane": "seal",
   "pending": [
     {
-      "task_id": "SEC-03-seal-020636-0004",
-      "task_type": "seal",
-      "kind": "seal",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-07T02:06:36Z",
-      "payload": {
-        "sector": "Clinical Healthcare Systems",
-        "domain": "Diagnostic transparency",
-        "lane": "seal",
-        "q": 1.0,
-        "p": 0.5,
-        "check": "actuator_floor"
-      }
-    },
-    {
       "task_id": "SEC-03-seal-020653-0004",
       "task_type": "seal",
       "kind": "seal",
@@ -60,11 +45,26 @@
         "p": 0.5,
         "check": "actuator_floor"
       }
+    },
+    {
+      "task_id": "SEC-03-seal-020750-0004",
+      "task_type": "seal",
+      "kind": "seal",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-07T02:07:50Z",
+      "payload": {
+        "sector": "Clinical Healthcare Systems",
+        "domain": "Diagnostic transparency",
+        "lane": "seal",
+        "q": 1.0,
+        "p": 0.5,
+        "check": "actuator_floor"
+      }
     }
   ],
   "floor": 4,
   "live_actuators": false,
-  "refilled_at": "2026-10-07T02:07:31Z",
+  "refilled_at": "2026-10-07T02:07:50Z",
   "pending_count": 4,
   "cra_send": false,
   "target": "STUB"
