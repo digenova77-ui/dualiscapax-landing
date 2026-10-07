@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-03-sectors-020629-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-07T02:06:29Z",
-      "payload": {
-        "sector": "Clinical Healthcare Systems",
-        "domain": "Diagnostic transparency",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-03-sectors-020726-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-03-sectors-020920-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-07T02:09:20Z",
+      "payload": {
+        "sector": "Clinical Healthcare Systems",
+        "domain": "Diagnostic transparency",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-07T02:09:04Z",
+  "refilled_at": "2026-10-07T02:09:20Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
