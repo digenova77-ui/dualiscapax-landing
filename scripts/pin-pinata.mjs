@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Pinata is the spare copy. Cloudflare is live. GitHub is the library.
- * Files sit at CID root (no dualiscapax/ prefix).
+ * One directory only. Pinata rejects a mix of root files and folders.
  * JWT from env only. Dry-run unless --pin.
  *
  * Default lander mode pins the core publish set only.
@@ -18,6 +18,7 @@ const PIN = process.argv.includes("--pin");
 const FULL = process.argv.includes("--full");
 const REPO = process.argv.includes("--repo");
 const ENDPOINT = "https://api.pinata.cloud/pinning/pinFileToIPFS";
+const WRAP = "site";
 
 const SKIP_DIR = new Set([".git", ".github", "node_modules", "workers", "artifacts", ".tmp", "dist", "_peel-backup"]);
 const SKIP_FILE = /\.(env|pem|key)$/i;
@@ -69,12 +70,12 @@ const receipt = {
   at: new Date().toISOString(),
   mode,
   file_count: list.length,
-  wrap_prefix: "",
+  wrap_prefix: WRAP,
   files: list.map((f) => f.rel),
   pinned: false,
   cid: null,
   origin: "cloudflare-manual",
-  note: "Live site is Cloudflare. This CID is the spare copy. Default pins core routes only so harvest files do not blow the pin quota."
+  note: "One directory. The spare copy is /ipfs/<cid>/site/. It is not the live trail."
 };
 
 if (!PIN) {
@@ -82,7 +83,8 @@ if (!PIN) {
     dry_run: true,
     mode: receipt.mode,
     file_count: list.length,
-    sample: list.slice(0, 15).map((f) => f.rel)
+    wrap: WRAP,
+    sample: list.slice(0, 15).map((f) => WRAP + "/" + f.rel)
   }, null, 2));
   writeFileSync(join(ROOT, "data", "pinata-last.json"), JSON.stringify(receipt, null, 2));
   process.exit(0);
@@ -97,13 +99,13 @@ if (!jwt || jwt.length < 20) {
 const fd = new FormData();
 for (const f of list) {
   const bytes = readFileSync(f.abs);
-  fd.append("file", new File([bytes], f.rel));
+  fd.append("file", new File([bytes], WRAP + "/" + f.rel));
 }
 fd.append("pinataMetadata", JSON.stringify({
   name: "DualisCapax-L1-" + new Date().toISOString().slice(0, 10),
   keyvalues: { project: "DualisCapax", layer: "L1_Public_Face", mode: receipt.mode }
 }));
-fd.append("pinataOptions", JSON.stringify({ cidVersion: 1, wrapWithDirectory: true }));
+fd.append("pinataOptions", JSON.stringify({ cidVersion: 1, wrapWithDirectory: false }));
 
 const res = await fetchWithBackoff(
   ENDPOINT,
@@ -127,4 +129,4 @@ receipt.pin_size = body.PinSize || null;
 receipt.timestamp = body.Timestamp || null;
 writeFileSync(join(ROOT, "data", "pinata-last.json"), JSON.stringify(receipt, null, 2));
 console.log(JSON.stringify({ ok: true, cid: receipt.cid, files: list.length, size: receipt.pin_size }, null, 2));
-console.log("/ipfs/" + receipt.cid + "/index.html");
+console.log("/ipfs/" + receipt.cid + "/site/index.html");
