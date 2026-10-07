@@ -2,21 +2,6 @@
   "lane": "seal",
   "pending": [
     {
-      "task_id": "SEC-01-seal-005144-0004",
-      "task_type": "seal",
-      "kind": "seal",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-07T00:51:44Z",
-      "payload": {
-        "sector": "Biophysical & Oncology",
-        "domain": "PK/PD binding kinetics",
-        "lane": "seal",
-        "q": 1.0,
-        "p": 0.5,
-        "check": "actuator_floor"
-      }
-    },
-    {
       "task_id": "SEC-01-seal-005208-0004",
       "task_type": "seal",
       "kind": "seal",
@@ -60,11 +45,26 @@
         "p": 0.5,
         "check": "actuator_floor"
       }
+    },
+    {
+      "task_id": "SEC-01-seal-005258-0004",
+      "task_type": "seal",
+      "kind": "seal",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-07T00:52:58Z",
+      "payload": {
+        "sector": "Biophysical & Oncology",
+        "domain": "PK/PD binding kinetics",
+        "lane": "seal",
+        "q": 1.0,
+        "p": 0.5,
+        "check": "actuator_floor"
+      }
     }
   ],
   "floor": 4,
   "live_actuators": false,
-  "refilled_at": "2026-10-07T00:52:40Z",
+  "refilled_at": "2026-10-07T00:52:58Z",
   "pending_count": 4,
   "cra_send": false,
   "target": "STUB"
