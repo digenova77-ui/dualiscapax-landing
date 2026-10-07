@@ -2,21 +2,6 @@
   "lane": "sectors",
   "pending": [
     {
-      "task_id": "SEC-01-sectors-003241-0007",
-      "task_type": "sector",
-      "kind": "sector",
-      "status": "PENDING",
-      "enqueued_at": "2026-10-07T00:32:41Z",
-      "payload": {
-        "sector": "Biophysical & Oncology",
-        "domain": "PK/PD binding kinetics",
-        "lane": "sectors",
-        "q": 1.0,
-        "p": 0.5,
-        "agent": "UNITY-mesh-stub"
-      }
-    },
-    {
       "task_id": "SEC-01-sectors-003258-0007",
       "task_type": "sector",
       "kind": "sector",
@@ -105,11 +90,26 @@
         "p": 0.5,
         "agent": "UNITY-mesh-stub"
       }
+    },
+    {
+      "task_id": "SEC-01-sectors-003440-0007",
+      "task_type": "sector",
+      "kind": "sector",
+      "status": "PENDING",
+      "enqueued_at": "2026-10-07T00:34:40Z",
+      "payload": {
+        "sector": "Biophysical & Oncology",
+        "domain": "PK/PD binding kinetics",
+        "lane": "sectors",
+        "q": 1.0,
+        "p": 0.5,
+        "agent": "UNITY-mesh-stub"
+      }
     }
   ],
   "floor": 7,
   "live_actuators": false,
-  "refilled_at": "2026-10-07T00:34:23Z",
+  "refilled_at": "2026-10-07T00:34:40Z",
   "pending_count": 7,
   "cra_send": false,
   "target": "STUB"
