@@ -45,6 +45,7 @@ jobs:
   inventory:
     name: Vultr read-only inventory
     runs-on: ubuntu-latest
+    environment: vultr-readonly
     steps:
       - name: Validate target input
         env:
@@ -90,6 +91,7 @@ jobs:
     if: ${{ inputs.operation == 'ssh_verify' }}
     needs: inventory
     runs-on: ubuntu-latest
+    environment: vultr-readonly
     steps:
       - name: Require SSH secret and user
         env:

@@ -25,13 +25,15 @@ The workflow is `.github/workflows/vultr-control-plane.yml`.
 
 The workflow has no provisioning, deployment, DNS mutation, firewall mutation, SSH-key mutation, billing, deletion, wallet signing, or token-transfer job. This is deliberate. The first circuit proves identity, reachability, and current state before a mutation rail exists.
 
-## Required GitHub secrets
+## Required GitHub environment secrets
 
-Configure these in **Settings → Secrets and variables → Actions** for `digenova77-ui/dualiscapax-landing`:
+Both jobs automatically bind to the dedicated GitHub environment **`vultr-readonly`**. Configure these in **Settings → Environments → vultr-readonly → Environment secrets** for `digenova77-ui/dualiscapax-landing`:
 
 - `VULTR_API_KEY`: a dedicated, expiring Vultr API key. Prefer Vultr API access control restricted to the runner’s approved source range if available.
 - `VULTR_SSH_PRIVATE_KEY`: only if `ssh_verify` is needed. Store the private key as a multiline secret; never commit it or print it.
 - `VULTR_SSH_USER`: the actual login user for the existing VM (`root`, `ubuntu`, or another explicitly provisioned account).
+
+After these secrets are saved, no workflow edit is needed: a manual `workflow_dispatch` automatically selects `vultr-readonly`, reads its scoped credentials, and emits only sanitized inventory evidence. Environment protection reviewers, if enabled, remain an intentional human gate before credentials become available to a runner.
 
 The SSH key added to the Vultr account does not retroactively install itself on an existing VM. The `ssh_verify` path is therefore expected to fail until the public key is installed on the VM through an already-authorized path.
 
