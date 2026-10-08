@@ -20,6 +20,7 @@ The workflow is `.github/workflows/vultr-control-plane.yml`.
 - Inventory `both` regions by default, or scope to `toronto`, `new_jersey`, or one explicit `ip`.
 - Verify the API response and print sanitized per-instance health: region, IP, lifecycle status, power status, and server status.
 - Upload a sanitized inventory artifact with a 14-day retention period.
+- Parse the sanitized inventory with `scripts/check_vultr_health.py`, write a GitHub Actions summary/annotation, and fail the run if any scoped instance is degraded.
 - Optionally run a read-only SSH probe against the target VM.
 
 ## What it cannot do
@@ -33,6 +34,7 @@ Both jobs automatically bind to the dedicated GitHub environment **`vultr-readon
 - `VULTR_API_KEY`: a dedicated, expiring Vultr API key. Prefer Vultr API access control restricted to the runner’s approved source range if available.
 - `VULTR_SSH_PRIVATE_KEY`: only if `ssh_verify` is needed. Store the private key as a multiline secret; never commit it or print it.
 - `VULTR_SSH_USER`: the actual login user for the existing VM (`root`, `ubuntu`, or another explicitly provisioned account).
+- `DCLM_ALERT_WEBHOOK_URL`: optional. If configured, the parser sends only a minimal degraded-instance summary to this explicitly selected endpoint; it never sends account, domain, firewall, SSH-key, or raw API response data.
 
 After these secrets are saved, no workflow edit is needed: a manual `workflow_dispatch` automatically selects `vultr-readonly`, reads its scoped credentials, and emits only sanitized inventory evidence. Environment protection reviewers, if enabled, remain an intentional human gate before credentials become available to a runner.
 
@@ -50,6 +52,14 @@ python3 scripts/dispatch_vultr_workflow.py ssh_verify --region-scope ip --target
 ```
 
 The dispatcher prints only the workflow name, repository, operation, and target IP.
+
+### Local parser usage
+
+```bash
+python3 scripts/check_vultr_health.py out/inventory.json
+```
+
+Exit codes: `0` means healthy or no instances in scope, `1` means one or more degraded instances, and `2` means invalid input or a parser/notification error.
 
 ## Gate for a future deployment rail
 

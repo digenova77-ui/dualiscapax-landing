@@ -106,6 +106,12 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Notify on degraded Vultr instances
+        env:
+          DCLM_ALERT_WEBHOOK_URL: ${{ secrets.DCLM_ALERT_WEBHOOK_URL }}
+          REGION_SCOPE: ${{ inputs.region_scope }}
+        run: python3 scripts/check_vultr_health.py out/inventory.json
+
   ssh_verify:
     name: Vultr SSH read-only verification
     if: ${{ inputs.operation == 'ssh_verify' }}
