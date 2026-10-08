@@ -1,0 +1,112 @@
+name: DualisCapax Vultr Control Plane
+
+# Safe bridge: local operator -> GitHub workflow_dispatch -> runner -> Vultr.
+# This workflow is intentionally read-only. It does not provision, deploy, mutate DNS,
+# change firewalls, modify SSH keys, bill, delete, or sign wallet/token transactions.
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "Read-only operation"
+        required: true
+        type: choice
+        options:
+          - inventory
+          - ssh_verify
+        default: inventory
+      target_ip:
+        description: "Vultr instance IPv4 to inspect"
+        required: true
+        type: string
+        default: "108.61.17.141"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dualiscapax-vultr-readonly-${{ inputs.target_ip }}
+  cancel-in-progress: false
+
+env:
+  VULTR_API_BASE: https://api.vultr.com/v2
+
+jobs:
+  inventory:
+    name: Vultr read-only inventory
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate target input
+        env:
+          TARGET_IP: ${{ inputs.target_ip }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import ipaddress, os
+          ipaddress.ip_address(os.environ["TARGET_IP"])
+          PY
+
+      - name: Query Vultr metadata
+        env:
+          VULTR_API_KEY: ${{ secrets.VULTR_API_KEY }}
+          TARGET_IP: ${{ inputs.target_ip }}
+        run: |
+          set -euo pipefail
+          test -n "$VULTR_API_KEY" || { echo "::error::VULTR_API_KEY is not configured"; exit 1; }
+          mkdir -p out
+          auth=(-H "Authorization: Bearer ${VULTR_API_KEY}" -H "Accept: application/json")
+          for endpoint in account instances regions ssh-keys firewalls domains; do
+            curl --fail-with-body --silent --show-error --retry 2 --max-time 30 \
+              "${auth[@]}" "$VULTR_API_BASE/$endpoint" -o "out/vultr-$endpoint.json"
+          done
+          jq --arg ip "$TARGET_IP" '{schema:"dualis.vultr-inventory/1",readOnly:true,targetIp:$ip,account:(input_filename|split("/")[-1]),instances:([.instances[]? | {id,label,main_ip,region,plan,status,power_status,server_status,firewall_group_id}] | map(select(.main_ip == $ip or .ipv4 == $ip or .internal_ip == $ip))),mutations:[]}' out/vultr-instances.json > out/target.json
+          jq '{available: true}' out/vultr-account.json > out/account-sanitized.json
+          jq -s '{schema:"dualis.vultr-inventory/1",readOnly:true,target:(.[0].instances),account:(.[1]),regions:(.[2].regions // [] | map({id,city,country,continent})),sshKeys:(.[3].ssh_keys // [] | map({id,name,date_created})),firewalls:(.[4].firewalls // [] | map({id,description,date_created})),domains:(.[5].domains // [] | map({domain,date_created})),mutations:[]}' out/target.json out/account-sanitized.json out/vultr-regions.json out/vultr-ssh-keys.json out/vultr-firewalls.json out/vultr-domains.json > out/inventory.json
+          jq '{schema,readOnly,target,mutations}' out/inventory.json
+
+      - name: Upload sanitized inventory evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: dualiscapax-vultr-inventory-${{ github.run_id }}
+          path: out/inventory.json
+          if-no-files-found: error
+          retention-days: 14
+
+  ssh_verify:
+    name: Vultr SSH read-only verification
+    if: ${{ inputs.operation == 'ssh_verify' }}
+    needs: inventory
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require SSH secret and user
+        env:
+          SSH_KEY: ${{ secrets.VULTR_SSH_PRIVATE_KEY }}
+          SSH_USER: ${{ secrets.VULTR_SSH_USER }}
+        run: |
+          set -euo pipefail
+          test -n "$SSH_KEY" || { echo "::error::VULTR_SSH_PRIVATE_KEY is not configured"; exit 1; }
+          test -n "$SSH_USER" || { echo "::error::VULTR_SSH_USER is not configured"; exit 1; }
+
+      - name: Install ephemeral SSH key
+        env:
+          SSH_KEY: ${{ secrets.VULTR_SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$RUNNER_TEMP/dclm-ssh"
+          printf '%s\n' "$SSH_KEY" > "$RUNNER_TEMP/dclm-ssh/id_rsa"
+          chmod 600 "$RUNNER_TEMP/dclm-ssh/id_rsa"
+
+      - name: Execute read-only host probe
+        env:
+          SSH_USER: ${{ secrets.VULTR_SSH_USER }}
+          TARGET_IP: ${{ inputs.target_ip }}
+        run: |
+          set -euo pipefail
+          ssh -i "$RUNNER_TEMP/dclm-ssh/id_rsa" \
+            -o BatchMode=yes -o StrictHostKeyChecking=accept-new \
+            -o ConnectTimeout=15 "$SSH_USER@$TARGET_IP" \
+            'printf "ssh_auth=ok\\n"; hostname; id -u; uname -srv; . /etc/os-release 2>/dev/null && printf "os=%s %s\\n" "$ID" "$VERSION_ID" || true; uptime -p 2>/dev/null || true; df -h / | tail -1'
+
+      - name: Remove ephemeral SSH key
+        if: ${{ always() }}
+        run: rm -rf "$RUNNER_TEMP/dclm-ssh"
