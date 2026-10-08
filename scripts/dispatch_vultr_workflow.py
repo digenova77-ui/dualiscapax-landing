@@ -25,6 +25,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("operation", choices=("inventory", "ssh_verify"))
     parser.add_argument("--target-ip", default="108.61.17.141")
+    parser.add_argument("--region-scope", choices=("both", "toronto", "new_jersey", "ip"), default="both")
     args = parser.parse_args()
 
     token = os.environ.get("GITHUB_TOKEN")
@@ -34,7 +35,7 @@ def main() -> int:
     repo = os.environ.get("GITHUB_REPOSITORY", "digenova77-ui/dualiscapax-landing")
     ref = os.environ.get("GITHUB_REF", "main")
     url = f"https://api.github.com/repos/{repo}/actions/workflows/{WORKFLOW}/dispatches"
-    body = json.dumps({"ref": ref, "inputs": {"operation": args.operation, "target_ip": args.target_ip}}).encode()
+    body = json.dumps({"ref": ref, "inputs": {"operation": args.operation, "region_scope": args.region_scope, "target_ip": args.target_ip}}).encode()
     request = urllib.request.Request(
         url,
         data=body,
@@ -58,7 +59,7 @@ def main() -> int:
     except urllib.error.URLError as error:
         print(f"GitHub dispatch failed: {error.reason}", file=sys.stderr)
         return 1
-    print(f"dispatched workflow={WORKFLOW} repo={repo} ref={ref} operation={args.operation} target_ip={args.target_ip}")
+    print(f"dispatched workflow={WORKFLOW} repo={repo} ref={ref} operation={args.operation} region_scope={args.region_scope} target_ip={args.target_ip}")
     return 0
 
 
