@@ -18,6 +18,7 @@ The workflow is `.github/workflows/vultr-control-plane.yml`.
 
 - Query Vultr account, instance, region, SSH-key, firewall, and DNS-domain metadata.
 - Inventory `both` regions by default, or scope to `toronto`, `new_jersey`, or one explicit `ip`.
+- Verify the API response and print sanitized per-instance health: region, IP, lifecycle status, power status, and server status.
 - Upload a sanitized inventory artifact with a 14-day retention period.
 - Optionally run a read-only SSH probe against the target VM.
 
