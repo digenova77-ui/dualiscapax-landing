@@ -78,6 +78,26 @@ jobs:
           jq -s '{schema:"dualis.vultr-inventory/1",readOnly:true,target:(.[0].instances),account:(.[1]),regions:(.[2].regions // [] | map({id,city,country,continent})),sshKeys:(.[3].ssh_keys // [] | map({id,name,date_created})),firewalls:(.[4].firewalls // [] | map({id,description,date_created})),domains:(.[5].domains // [] | map({domain,date_created})),mutations:[]}' out/target.json out/account-sanitized.json out/vultr-regions.json out/vultr-ssh-keys.json out/vultr-firewalls.json out/vultr-domains.json > out/inventory.json
           jq '{schema,readOnly,target,mutations}' out/inventory.json
 
+      - name: Verify Vultr API connection and output instance health
+        run: |
+          set -euo pipefail
+          jq -e '(.schema == "dualis.vultr-inventory/1") and (.readOnly == true) and (.target | type == "array")' out/inventory.json >/dev/null
+          total=$(jq '.target | length' out/inventory.json)
+          healthy=$(jq '[.target[] | select((.status == "active") and (.power_status == "running") and (.server_status == "running"))] | length' out/inventory.json)
+          if [ "$total" -eq 0 ]; then
+            overall=NO_INSTANCES_IN_SCOPE
+          elif [ "$healthy" -eq "$total" ]; then
+            overall=HEALTHY
+          else
+            overall=DEGRADED
+          fi
+          echo "vultr_api_connection=ok"
+          echo "inventory_scope=${{ inputs.region_scope }}"
+          echo "instances_in_scope=$total"
+          echo "instances_healthy=$healthy"
+          echo "overall_health=$overall"
+          jq -r '.target[] | ["instance", (.id // ""), (.label // ""), (.region // ""), (.main_ip // ""), (.status // "unknown"), (.power_status // "unknown"), (.server_status // "unknown")] | @tsv' out/inventory.json
+
       - name: Upload sanitized inventory evidence
         uses: actions/upload-artifact@v4
         with:
