@@ -17,7 +17,7 @@ The workflow is `.github/workflows/vultr-control-plane.yml`.
 ## What it can do
 
 - Query Vultr account, instance, region, SSH-key, firewall, and DNS-domain metadata.
-- Match the supplied target IP, defaulting to `108.61.17.141`.
+- Inventory `both` regions by default, or scope to `toronto`, `new_jersey`, or one explicit `ip`.
 - Upload a sanitized inventory artifact with a 14-day retention period.
 - Optionally run a read-only SSH probe against the target VM.
 
@@ -41,8 +41,9 @@ Use a GitHub token in the local environment, not in source files or chat:
 
 ```bash
 export GITHUB_TOKEN='...'
-python3 scripts/dispatch_vultr_workflow.py inventory
-python3 scripts/dispatch_vultr_workflow.py ssh_verify --target-ip 108.61.17.141
+python3 scripts/dispatch_vultr_workflow.py inventory --region-scope both
+python3 scripts/dispatch_vultr_workflow.py inventory --region-scope toronto
+python3 scripts/dispatch_vultr_workflow.py ssh_verify --region-scope ip --target-ip 108.61.17.141
 ```
 
 The dispatcher prints only the workflow name, repository, operation, and target IP.
@@ -60,3 +61,9 @@ A deploy job should not be added until all of the following are written down and
 7. A tokenomics compliance result marked `PASS` or an explicit decision to keep the service read-only.
 
 Until then, `inventory` and `ssh_verify` are the only supported operations.
+
+## Toronto, New Jersey, or bare metal?
+
+The recommended first topology is **two ordinary cloud instances**, one in Toronto and one in New Jersey, with the application artifact identical in both regions and state kept outside either host. This gives regional redundancy without locking the first release to hardware-specific recovery constraints.
+
+Choose bare metal only when sustained CPU, memory, disk I/O, or noisy-neighbor isolation is a demonstrated bottleneck. Vultr documents dedicated bare metal in both Toronto and New Jersey as locations in its global network, but the feature set is narrower than cloud compute: snapshots and custom ISOs may be unavailable, and VPC support depends on the plan. Verify the exact plan’s availability and pricing in the Vultr account before provisioning.

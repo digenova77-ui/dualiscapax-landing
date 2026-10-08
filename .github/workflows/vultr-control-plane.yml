@@ -15,9 +15,19 @@ on:
           - inventory
           - ssh_verify
         default: inventory
-      target_ip:
-        description: "Vultr instance IPv4 to inspect"
+      region_scope:
+        description: "Inventory scope"
         required: true
+        type: choice
+        options:
+          - both
+          - toronto
+          - new_jersey
+          - ip
+        default: both
+      target_ip:
+        description: "Explicit IPv4 when region_scope=ip or operation=ssh_verify"
+        required: false
         type: string
         default: "108.61.17.141"
 
@@ -25,7 +35,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: dualiscapax-vultr-readonly-${{ inputs.target_ip }}
+  group: dualiscapax-vultr-readonly-${{ inputs.region_scope }}-${{ inputs.target_ip }}
   cancel-in-progress: false
 
 env:
@@ -39,17 +49,20 @@ jobs:
       - name: Validate target input
         env:
           TARGET_IP: ${{ inputs.target_ip }}
+          REGION_SCOPE: ${{ inputs.region_scope }}
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import ipaddress, os
-          ipaddress.ip_address(os.environ["TARGET_IP"])
+          if os.environ["REGION_SCOPE"] == "ip" or os.environ.get("TARGET_IP"):
+              ipaddress.ip_address(os.environ["TARGET_IP"])
           PY
 
       - name: Query Vultr metadata
         env:
           VULTR_API_KEY: ${{ secrets.VULTR_API_KEY }}
           TARGET_IP: ${{ inputs.target_ip }}
+          REGION_SCOPE: ${{ inputs.region_scope }}
         run: |
           set -euo pipefail
           test -n "$VULTR_API_KEY" || { echo "::error::VULTR_API_KEY is not configured"; exit 1; }
@@ -59,7 +72,7 @@ jobs:
             curl --fail-with-body --silent --show-error --retry 2 --max-time 30 \
               "${auth[@]}" "$VULTR_API_BASE/$endpoint" -o "out/vultr-$endpoint.json"
           done
-          jq --arg ip "$TARGET_IP" '{schema:"dualis.vultr-inventory/1",readOnly:true,targetIp:$ip,account:(input_filename|split("/")[-1]),instances:([.instances[]? | {id,label,main_ip,region,plan,status,power_status,server_status,firewall_group_id}] | map(select(.main_ip == $ip or .ipv4 == $ip or .internal_ip == $ip))),mutations:[]}' out/vultr-instances.json > out/target.json
+          jq --arg ip "$TARGET_IP" --arg scope "$REGION_SCOPE" '{schema:"dualis.vultr-inventory/1",readOnly:true,regionScope:$scope,targetIp:$ip,instances:([.instances[]? | {id,label,main_ip,region,plan,status,power_status,server_status,firewall_group_id}] | map(select(($scope == "both") or ($scope == "toronto" and ((.region // "") | ascii_downcase | test("tor"))) or ($scope == "new_jersey" and ((.region // "") | ascii_downcase | test("nj|new"))) or ($scope == "ip" and (.main_ip == $ip or .ipv4 == $ip or .internal_ip == $ip)))),mutations:[]}' out/vultr-instances.json > out/target.json
           jq '{available: true}' out/vultr-account.json > out/account-sanitized.json
           jq -s '{schema:"dualis.vultr-inventory/1",readOnly:true,target:(.[0].instances),account:(.[1]),regions:(.[2].regions // [] | map({id,city,country,continent})),sshKeys:(.[3].ssh_keys // [] | map({id,name,date_created})),firewalls:(.[4].firewalls // [] | map({id,description,date_created})),domains:(.[5].domains // [] | map({domain,date_created})),mutations:[]}' out/target.json out/account-sanitized.json out/vultr-regions.json out/vultr-ssh-keys.json out/vultr-firewalls.json out/vultr-domains.json > out/inventory.json
           jq '{schema,readOnly,target,mutations}' out/inventory.json
@@ -84,6 +97,7 @@ jobs:
           SSH_USER: ${{ secrets.VULTR_SSH_USER }}
         run: |
           set -euo pipefail
+          test "${{ inputs.region_scope }}" = "ip" || { echo "::error::ssh_verify requires region_scope=ip and one explicit target_ip"; exit 1; }
           test -n "$SSH_KEY" || { echo "::error::VULTR_SSH_PRIVATE_KEY is not configured"; exit 1; }
           test -n "$SSH_USER" || { echo "::error::VULTR_SSH_USER is not configured"; exit 1; }
 
