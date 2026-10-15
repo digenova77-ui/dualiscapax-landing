@@ -1,13 +1,13 @@
 # Front interface — .com to .ai handoff
 
 From: Buddy / Grok-side
-Time (UTC): 2026-10-15T00:50:00Z
+Time (UTC): 2026-10-15T00:52:00Z
 For: the front at https://dualiscapax.com/
 Status: commands only. The live .ai server was not changed. The telemetry wire is NOT LIVE.
 
 ## The handoff
 
-.com creates the passkey. .ai verifies that same passkey. .ai does not create a second one.
+.com creates the passkey. .ai verifies that same passkey, then sends one protocol line through the API v2 jacket. .ai does not create a second passkey. .com does not call the jacket.
 
 The relying party id is `dualiscapax.com` on both sides. A passkey made for any other host, including emergent.host, is not this handoff.
 
@@ -48,14 +48,18 @@ No `.json` on the path. HTTPS. Status 200. If this file is missing, .ai cannot v
 
 One control, same label. It calls `navigator.credentials.get` with `rpId` = `dualiscapax.com` and `userVerification` required. It does not pass an allow-list, and it does not call `credentials.create`.
 
-The phone asks again. A click does not survive the navigation, so the second ask is required.
+If the phone confirms, .ai POSTs this line and nothing else:
 
-If the phone confirms, the world opens. If the well-known file is missing or this origin is not listed, the check fails and the world stays shut. Nothing is stored from the other host.
+`DCCP/2|from=dualiscapax.com|rp=dualiscapax.com|verify=webauthn|jacket=/api/v2/compute|flags=0`
+
+The body is `{ "payload": "<that line>", "flags": 0 }` to `POST /api/v2/compute`. The world opens only when the answer is `accepted: true`. Any other answer is HOLE and the world stays shut.
+
+The phone asks again. A click does not survive the navigation, so the second ask is required.
 
 ## Do not
 
 - Do not draw RUN, IRIS, or KERNEL · LOADING.
-- Do not POST to `/api/v2/compute`.
+- Do not POST to `/api/v2/compute` from .com.
 - Do not read a telemetry path.
-- Do not send a password, a token, or a private key.
+- Do not send a password, a token, a face, a finger, or a private key.
 - Do not put the credential in a URL, a cookie, or a postMessage.
