@@ -7,9 +7,9 @@ Backwards compatible with `unity.id.v1` packets that have no `unity` block.
 | Seat | Public | Human | Status |
 | --- | --- | --- | --- |
 | Founder reserved | `DC0-Z0-0000` | U0 | NOT verified. Cannot hatch. |
-| Operator first | `DC1-H1-0001` | U1 | David John Di Genova. Can hatch. |
+| Operator first | `DC1-H1-0001` | U1 | Reserved to the operator seat. Can hatch. |
 
-U1 does not wait on U0. Lineage note only: founder seat exists; it has not passed Unity verification.
+U1 does not wait on U0. Lineage note only: the reserved seat exists; it has not passed Unity verification.
 
 ## Hatch
 

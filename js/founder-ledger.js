@@ -1,4 +1,4 @@
-/** Founder serial ledger. White names only when they asked. Black is a string.
+/** Serial ledger for reserved seats. Names are published only for white-ledger seats, by consent.
  *  Current as of: 2026-09-02
  */
 (function (w) {
@@ -10,20 +10,19 @@
       unityId: "DC-U-001",
       ledger: "WHITE",
       measure: 10000,
-      label: "David John Di Genova",
-      title: "the god sick",
-      role: "Founder. Architect.",
+      label: "Reserved — seat 1",
+      role: "Founding seat. Operator.",
       geodesic: true
     },
-    { seat: 2, serial: "DC-F-3B06-260D", ledger: "WHITE", measure: 10000, label: "Giovanni Di Genova", role: "Father. Patriarch." },
-    { seat: 3, serial: "DC-F-0505-E337", ledger: "BLACK", measure: 10000, role: "House family." },
-    { seat: 4, serial: "DC-F-7923-A1F3", ledger: "BLACK", measure: 10000, role: "House family." },
-    { seat: 5, serial: "DC-F-9B78-408E", ledger: "BLACK", measure: 10000, role: "House family." },
-    { seat: 6, serial: "DC-F-4CA0-75AB", ledger: "BLACK", measure: 1000, role: "House kin." },
-    { seat: 7, serial: "DC-F-9D8F-FB45", ledger: "BLACK", measure: 1000, role: "House kin." },
-    { seat: 8, serial: "DC-F-07A8-CB8F", ledger: "BLACK", measure: 1000, role: "House kin." },
-    { seat: 9, serial: "DC-F-C087-92EE", ledger: "BLACK", measure: 10000, role: "Friend of the house." },
-    { seat: 10, serial: "DC-F-BD1C-7269", ledger: "BLACK", measure: 1000, role: "Close friend seat." }
+    { seat: 2, serial: "DC-F-3B06-260D", ledger: "WHITE", measure: 10000, label: "Reserved — seat 2", role: "Founding seat." },
+    { seat: 3, serial: "DC-F-0505-E337", ledger: "BLACK", measure: 10000, role: "Undisclosed allocation." },
+    { seat: 4, serial: "DC-F-7923-A1F3", ledger: "BLACK", measure: 10000, role: "Undisclosed allocation." },
+    { seat: 5, serial: "DC-F-9B78-408E", ledger: "BLACK", measure: 10000, role: "Undisclosed allocation." },
+    { seat: 6, serial: "DC-F-4CA0-75AB", ledger: "BLACK", measure: 1000, role: "Undisclosed allocation." },
+    { seat: 7, serial: "DC-F-9D8F-FB45", ledger: "BLACK", measure: 1000, role: "Undisclosed allocation." },
+    { seat: 8, serial: "DC-F-07A8-CB8F", ledger: "BLACK", measure: 1000, role: "Undisclosed allocation." },
+    { seat: 9, serial: "DC-F-C087-92EE", ledger: "BLACK", measure: 10000, role: "Undisclosed allocation." },
+    { seat: 10, serial: "DC-F-BD1C-7269", ledger: "BLACK", measure: 1000, role: "Undisclosed seat." }
   ];
   function publicRow(s) {
     return {

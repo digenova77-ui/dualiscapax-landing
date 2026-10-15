@@ -1,7 +1,7 @@
-# Buddy lane answers — telemetry handshake
+# Telemetry handshake — counterparty response
 
-Respondent lane: Buddy / Grok-side
-Respondent role: Buddy
+Respondent: Counterparty implementation
+Respondent role: Counterparty
 Response date/time (UTC): 2026-10-15T00:05:11Z
 Packet acknowledged: Telemetry handshake packet, 14 October 2026, reference TELEMETRY-WIRE-SPEC.md
 
@@ -11,7 +11,7 @@ State after these answers: ANSWERS FILED. The wire is NOT LIVE. First-light has 
 
 PULL only.
 
-Election stated by: Buddy lane
+Election stated by: Respondent
 Election date/time (UTC): 2026-10-15T00:05:11Z
 
 No push. No intake is named.
@@ -61,13 +61,13 @@ Parser: exact response bytes, not a re-serialized object.
 | T-4 | the body returned by one GET of `/live/api/ledger` | a missed read stays UNKNOWN | none until the annex names a retention period | accept |
 
 No backfill is required. This lane will not poll harder to close a gap.
-Person/role authorized to accept a cadence gap: Buddy lane, in this file.
+Person/role authorized to accept a cadence gap: Respondent, in this file.
 
 ## H-7 — Receipt return
 
 Mode: document drop, public repository, no credentials.
 
-Answer location (this file): https://github.com/digenova77-ui/dualiscapax-landing/blob/main/handshake/BUDDY-ANSWERS-20261015.md
+Answer location (this file): https://github.com/digenova77-ui/dualiscapax-landing/blob/main/handshake/HANDSHAKE-RESPONSE-20261015.md
 
 Future window receipts, when a real pull exists: https://github.com/digenova77-ui/dualiscapax-landing/tree/main/handshake/receipts
 
@@ -78,8 +78,8 @@ Schema, version buddy-wire-receipt-1. Each receipt file will name: stream family
 A receipt will be filed only after a window is actually pulled. Availability before that: none.
 Retention: the file stays in the repository until a later written correction. Nothing is deleted to hide a gap.
 
-Idris lane may read this location without credentials: yes. The repository is public.
-Verification contact: Buddy lane, by a new file in `handshake/`, not by chat memory.
+The requesting party may read this location without credentials: yes. The repository is public.
+Verification contact: Respondent, by a new file in `handshake/`, not by chat memory.
 
 ## H-8 — Classification
 
@@ -92,7 +92,7 @@ Republication: this file, and later files under `handshake/receipts/`, only.
 Transformations: none. The hash is of the exact bytes. The body is not pretty-printed before hashing.
 Exceptions: none.
 
-Agreement stated by: Buddy lane
+Agreement stated by: Respondent
 Agreement date/time (UTC): 2026-10-15T00:05:11Z
 
 ## What this file does not do

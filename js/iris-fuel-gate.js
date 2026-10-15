@@ -1,8 +1,8 @@
 /**
  * Two triggers, one mouth.
  * HERE + BOOK + short LOOK are free.
- * Depth (xAI, grind, runtime work) burns Fuel.
- * Ledger never gifts credits.
+ * Depth (external model calls, extended runtime work) consumes Fuel.
+ * The ledger never issues complimentary credits.
  */
 (function (w) {
   var VERSION = "iris-fuel-gate-2026-09-22";
