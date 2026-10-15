@@ -1,49 +1,61 @@
-# Front interface — commands for the Emergent build
+# Front interface — .com to .ai handoff
 
 From: Buddy / Grok-side
-Time (UTC): 2026-10-15T00:22:00Z
-For: the front at https://dualis-capax.emergent.host/ and, later, dualiscapax.com
-Status: commands only. Nothing here was deployed to dualiscapax.ai. The telemetry wire is NOT LIVE.
+Time (UTC): 2026-10-15T00:50:00Z
+For: the front at https://dualiscapax.com/
+Status: commands only. The live .ai server was not changed. The telemetry wire is NOT LIVE.
 
-## Do this
+## The handoff
+
+.com creates the passkey. .ai verifies that same passkey. .ai does not create a second one.
+
+The relying party id is `dualiscapax.com` on both sides. A passkey made for any other host, including emergent.host, is not this handoff.
+
+## What .com does
 
 1. One control. Its only label is: Face or finger.
-2. That control runs in the top window, on https, never inside a frame.
-3. On success, move the top window to https://dualiscapax.ai/ with an empty query string and an empty hash. Stop. The .ai page repeats the check itself.
-4. On failure, stay on the front and say the matching line from the failure list. Do not open the world.
+2. Top window, https, never inside a frame.
+3. First time, `navigator.credentials.create`. After that, `navigator.credentials.get`.
+4. Both calls use `rp.id` = `dualiscapax.com`, not `location.hostname` when that differs.
+5. `authenticatorAttachment`: `platform`
+6. `userVerification`: `required`
+7. `residentKey`: `required`
+8. `challenge`: 32 bytes from `crypto.getRandomValues`
+9. timeout 90000
+10. On success, `location.assign('https://dualiscapax.ai/')` with an empty query and an empty hash. Do not append the credential id, the digest, or the handle.
+11. On failure, stay on .com. Say what failed. Do not navigate.
 
-## The check
+## The file .com must serve
 
-Use the platform authenticator only.
+URL: `https://dualiscapax.com/.well-known/webauthn`
 
-- `navigator.credentials.create` the first time this host has no credential.
-- `navigator.credentials.get` every time after that.
-- `authenticatorAttachment: "platform"`
-- `userVerification: "required"`
-- `residentKey: "preferred"`
-- `rp.id` is `location.hostname` of the page that creates the credential
-- `challenge` is 32 random bytes from `crypto.getRandomValues`
-- timeout 90000
+Content-Type: `application/json`
 
-A credential made on emergent.host does not open dualiscapax.com. A credential made on dualiscapax.com does not open dualiscapax.ai. The front does not copy the credential, the digest, or the handle into a URL, a cookie for another host, or a postMessage.
+Body, exactly:
 
-If `window.top !== window.self`, do not call `credentials`. Say: This preview cannot ask for your face or your finger. Open the world in its own tab.
+```json
+{
+  "origins": [
+    "https://dualiscapax.ai",
+    "https://www.dualiscapax.ai"
+  ]
+}
+```
 
-If the page is not a secure context, do not call `credentials`. Say: Your face or your finger needs a secure page.
+No `.json` on the path. HTTPS. Status 200. If this file is missing, .ai cannot verify the passkey.
 
-If `PublicKeyCredential` is missing, say: This phone cannot ask for your face or your finger.
+## What .ai does
 
-If the person cancels, say: You did not confirm. Nothing was saved.
+One control, same label. It calls `navigator.credentials.get` with `rpId` = `dualiscapax.com` and `userVerification` required. It does not pass an allow-list, and it does not call `credentials.create`.
 
-## Do not do this
+The phone asks again. A click does not survive the navigation, so the second ask is required.
 
-- Do not draw RUN, IRIS, a crosshair, or KERNEL · LOADING.
-- Do not POST to `/api/v2/compute` or to `https://dualiscapax.ai/api/v2/compute`.
-- Do not GET `/live/api/telemetry/`, `/live/api/corporate/`, `/live/api/`, or `/live/api/ledger`.
-- Do not invent a kernel result, a sequence number, or a receipt.
+If the phone confirms, the world opens. If the well-known file is missing or this origin is not listed, the check fails and the world stays shut. Nothing is stored from the other host.
+
+## Do not
+
+- Do not draw RUN, IRIS, or KERNEL · LOADING.
+- Do not POST to `/api/v2/compute`.
+- Do not read a telemetry path.
 - Do not send a password, a token, or a private key.
-- Do not add a slogan. The page is the door, then the other host.
-
-## What the other side does
-
-https://dualiscapax.ai/ keeps the 3D world. It asks for the same face or finger on its own host. That is the only link. There is no second handshake in this command.
+- Do not put the credential in a URL, a cookie, or a postMessage.
