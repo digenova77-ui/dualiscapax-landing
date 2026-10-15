@@ -2,7 +2,7 @@
 
 **Document Control ID:** ED-MED-20260825-OMNI-INDEX-V1
 
-**Author & System Architect:** David John Di Genova (ORCID: 0009-0005-6291-8508)
+**Author:** DualisCapax project (open source)
 
 **Authority:** DualisCapax / eFuse Residual Law (1,000 Index Lock, ALS Gold Standard, Invariant Zero)
 

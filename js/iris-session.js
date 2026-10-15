@@ -1,6 +1,6 @@
 /**
  * IrisSession — one environment.
- * Clerk sits in front of think(): admit() then LOOK before xAI.
+ * The clerk stage precedes think(): admit() then LOOK before the external model call.
  */
 (function (w) {
   var VERSION = "iris-session-2026-09-22-clerk";

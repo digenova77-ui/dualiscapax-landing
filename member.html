@@ -17,31 +17,28 @@
   </nav>
 </header>
 <main>
-  <p class="chips"><span class="chip">No charge</span><span class="chip">Number one</span><span class="chip warn">Not a government ID</span></p>
+  <p class="chips"><span class="chip">No charge</span><span class="chip">Member 0001</span><span class="chip warn">Not a government ID</span></p>
   <h1>Join as a Unity member</h1>
-  <p class="lead">This is an identity bind. Not a sale. Pick which of your addresses sits on U1. The others stay listed as aliases.</p>
+  <p class="lead">This form issues a Unity identity record; it is not a sale. Select the primary address for member U1. Other addresses on file are recorded as aliases.</p>
 
   <div class="card" style="margin-top:1rem">
     <label>Legal name</label>
-    <input id="name" value="David John Di Genova" autocomplete="name">
+    <input id="name" placeholder="Full legal name" autocomplete="name">
     <label>Town</label>
-    <input id="muni" value="Belleville" autocomplete="address-level2">
+    <input id="muni" placeholder="Municipality" autocomplete="address-level2">
     <label>Primary email for this bind</label>
     <select id="email">
       <option value="admin@dualiscapax.ai">admin@dualiscapax.ai</option>
       <option value="ceo@dualiscapax.ai">ceo@dualiscapax.ai</option>
-      <option value="digenova77@gmail.com">digenova77@gmail.com</option>
-      <option value="daviddigenova@gmail.com">daviddigenova@gmail.com</option>
-      <option value="zarkmuckerbarn@gmail.com">zarkmuckerbarn@gmail.com</option>
     </select>
-    <p class="lead">Also on file as aliases: the other four.</p>
+    <p class="lead">Other addresses on file are recorded as aliases.</p>
     <label>Secret phrase (optional)</label>
     <input id="phrase" type="password" autocomplete="new-password">
     <button class="btn ghost" type="button" id="hashPhrase">Fingerprint the phrase</button>
     <p id="phraseOut" class="lead"></p>
     <button class="btn ghost" type="button" id="makeKey">Passkey on this device</button>
     <p id="keyOut" class="lead"></p>
-    <label class="check"><input id="attest" type="checkbox"> I am David John Di Genova. I take Unity member number one. Founder zero is reserved and not verified. Dualis did not run a government check.</label>
+    <label class="check"><input id="attest" type="checkbox"> I attest that the information provided is accurate. Member 0001 is reserved and has not been verified. No government identity check has been performed.</label>
     <button class="btn" type="button" id="seal">Issue my Unity ID</button>
     <pre id="log"></pre>
   </div>
@@ -51,7 +48,7 @@
     <p id="human" style="font-size:2rem;margin:.2rem 0">U1</p>
     <p id="pub" class="lead"></p>
     <p id="iris" class="lead"></p>
-    <p class="lead">L5 stays unpublished. This public handle is the face.</p>
+    <p class="lead">L5 remains unpublished. The public handle is the published identifier.</p>
   </div>
 </main>
 <script src="unity-id.js"></script>
