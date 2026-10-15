@@ -1,8 +1,8 @@
-/** DualisCapax Fuel ledger — local demo stub until server + xAI API */
+/** DualisCapax Fuel ledger — local demonstration stub pending server integration. */
 (function (g) {
   var KEY = 'dc_fuel_balance_v1';
   // OPEN free-floor: start at 0 Fuel. Looking/measuring is free;
-  // Fuel packs (and BYOK) add Grok depth later — never gift demo credits.
+  // Fuel packs (and BYOK) extend model capacity in a later phase.
   var START = 0;
 
   function read() {

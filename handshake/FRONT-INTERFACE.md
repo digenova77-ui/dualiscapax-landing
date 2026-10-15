@@ -1,6 +1,6 @@
 # Front interface — .com to .ai handoff
 
-From: Buddy / Grok-side
+From: Counterparty implementation
 Time (UTC): 2026-10-15T00:52:00Z
 For: the front at https://dualiscapax.com/
 Status: commands only. The live .ai server was not changed. The telemetry wire is NOT LIVE.
@@ -9,7 +9,7 @@ Status: commands only. The live .ai server was not changed. The telemetry wire i
 
 .com creates the passkey. .ai verifies that same passkey, then sends one protocol line through the API v2 jacket. .ai does not create a second passkey. .com does not call the jacket.
 
-The relying party id is `dualiscapax.com` on both sides. A passkey made for any other host, including emergent.host, is not this handoff.
+The relying party id is `dualiscapax.com` on both sides. A passkey created for any other relying party is not valid for this handoff.
 
 ## What .com does
 

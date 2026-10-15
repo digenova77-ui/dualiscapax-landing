@@ -3,10 +3,7 @@
   var state = { phrase_sha256: null, passkey: null };
   var ALIAS = [
     "admin@dualiscapax.ai",
-    "ceo@dualiscapax.ai",
-    "digenova77@gmail.com",
-    "daviddigenova@gmail.com",
-    "zarkmuckerbarn@gmail.com"
+    "ceo@dualiscapax.ai"
   ];
 
   async function sha256hex(text) {
@@ -16,14 +13,14 @@
 
   $("hashPhrase").onclick = async function () {
     var p = $("phrase").value;
-    if (!p || p.length < 8) { $("phraseOut").textContent = "Eight characters if you use a phrase."; return; }
+    if (!p || p.length < 8) { $("phraseOut").textContent = "Enter a phrase of at least eight characters."; return; }
     state.phrase_sha256 = await sha256hex(p);
     $("phrase").value = "";
     $("phraseOut").textContent = "Fingerprint saved. Phrase cleared.";
   };
 
   $("makeKey").onclick = async function () {
-    if (!window.PublicKeyCredential) { $("keyOut").textContent = "No passkeys on this browser."; return; }
+    if (!window.PublicKeyCredential) { $("keyOut").textContent = "Passkeys are not available in this browser."; return; }
     try {
       var cred = await navigator.credentials.create({
         publicKey: {
@@ -36,19 +33,19 @@
         },
       });
       state.passkey = { id: cred.id, type: cred.type };
-      $("keyOut").textContent = "Passkey on this device.";
+      $("keyOut").textContent = "Passkey created on this device.";
     } catch (e) { $("keyOut").textContent = (e && e.name) || "cancelled"; }
   };
 
   $("seal").onclick = async function () {
-    if (!$("attest").checked) { $("log").textContent = "Check the box."; return; }
+    if (!$("attest").checked) { $("log").textContent = "Please complete the attestation."; return; }
     var name = ($("name").value || "").trim();
     var muni = ($("muni").value || "").trim();
     var email = ($("email").value || "").trim().toLowerCase();
     if (name.toLowerCase().indexOf("david") === -1 || name.toLowerCase().indexOf("genova") === -1) {
-      $("log").textContent = "Number one is reserved for David John Di Genova."; return;
+      $("log").textContent = "Member 0001 is reserved."; return;
     }
-    if (!muni) { $("log").textContent = "Need a town."; return; }
+    if (!muni) { $("log").textContent = "A municipality is required."; return; }
 
     var unity = window.UnityID ? UnityID.mintU1() : { human: "U1", public: "DC1-H1-0001", serial: 1 };
     var look = {

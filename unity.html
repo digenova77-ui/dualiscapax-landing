@@ -17,31 +17,31 @@
   </nav>
 </header>
 <main>
-  <p class="chips"><span class="chip">U1 live</span><span class="chip warn">U0 not verified</span><span class="chip warn">Dualis is not your ID office</span></p>
+  <p class="chips"><span class="chip">U1 live</span><span class="chip warn">U0 not verified</span><span class="chip warn">Not a government ID</span></p>
   <h1>Unity ID</h1>
-  <p class="lead">You are first. Founder zero is reserved and has not passed verification. That does not block you. Hatches hang off you, not off him.</p>
+  <p class="lead">Member U1 is issued first. Seat U0 is reserved and has not passed verification; this does not block issuance. Additional identities are issued under U1.</p>
   <div class="grid two">
     <div class="card">
       <h2>U1</h2>
       <p id="u1">DC1-H1-0001</p>
-      <p>David John Di Genova · Belleville · operator seat · may hatch</p>
+      <p>Operator seat · may issue additional identities</p>
     </div>
     <div class="card">
       <h2>U0</h2>
       <p>DC0-Z0-0000</p>
-      <p>Founder seat. Unity verification: not passed. Cannot hatch.</p>
+      <p>Reserved seat. Unity verification: not passed. Cannot issue additional identities.</p>
     </div>
   </div>
   <div class="card" style="margin-top:1rem;text-align:left">
     <h2>Same checklist a firm would use — applied to U1 first</h2>
-    <p>Dualis does not stamp this. A lawyer or reporting firm does. Fill what you want kept on this device. Do not type a SIN or a licence number into this box.</p>
-    <label>Legal name</label><input id="kName" value="David John Di Genova">
-    <label>Town</label><input id="kTown" value="Belleville">
-    <label>Occupation</label><input id="kJob" value="Operator, DualisCapax Inc.">
+    <p>DualisCapax does not certify this declaration; certification is performed by a lawyer or reporting firm. Enter only information you want stored on this device. Do not enter a SIN or a licence number.</p>
+    <label>Legal name</label><input id="kName" placeholder="Full legal name">
+    <label>Town</label><input id="kTown" placeholder="Municipality">
+    <label>Occupation</label><input id="kJob" placeholder="Occupation">
     <label>ID type (no number)</label>
     <select id="kId"><option>Ontario photo card / licence (number not stored)</option><option>Passport (number not stored)</option><option>Other government photo ID</option></select>
     <label class="check"><input id="kPep" type="checkbox"> I am not a politically exposed person for this declaration.</label>
-    <label class="check"><input id="kTrue" type="checkbox"> This is me. Dualis did not run a government check.</label>
+    <label class="check"><input id="kTrue" type="checkbox"> This declaration is accurate. No government identity check has been performed.</label>
     <button class="btn" type="button" id="sealKyc">Save declaration on this device</button>
     <p id="kOut" class="lead"></p>
   </div>
@@ -54,7 +54,7 @@
   if (u) document.getElementById("u1").textContent = u.public + " · " + u.check;
   document.getElementById("sealKyc").onclick = function(){
     if (!document.getElementById("kTrue").checked) {
-      document.getElementById("kOut").textContent = "Check that this is you."; return;
+      document.getElementById("kOut").textContent = "Please confirm the declaration."; return;
     }
     var d = {
       schema: "unity.kyc.self.v1",
@@ -72,7 +72,7 @@
     var a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(d,null,2)], {type:"application/json"}));
     a.download = "unity-U1-kyc-self.json"; a.click();
-    document.getElementById("kOut").textContent = "Saved on this device. Hand the file to a firm. Dualis did not verify it.";
+    document.getElementById("kOut").textContent = "Saved on this device. Provide the file to a firm for verification. DualisCapax has not verified it.";
   };
 })();
 </script>
