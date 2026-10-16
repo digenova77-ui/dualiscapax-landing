@@ -144,7 +144,7 @@ h2{
   display:grid;
   gap:.35rem;
 }
-.ring-card,.show-all{position:relative}
+.ring-card,.show-all{position:relative;margin:0;letter-spacing:0;text-transform:none}
 .ring-card{
   display:grid;
   grid-template-columns:7.2rem 1fr;
@@ -173,7 +173,7 @@ h2{
   text-transform:uppercase;
   color:var(--c,var(--iris));
 }
-.say{color:var(--ink);font-size:1.02rem}
+.say{color:var(--ink);font-size:1.02rem;letter-spacing:0;text-transform:none}
 .close{margin:1.15rem 0 0;max-width:38ch;color:var(--quiet)}
 .doors,.sec-break{
   display:flex;
