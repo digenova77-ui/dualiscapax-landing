@@ -1,5 +1,5 @@
 (function (w) {
-  var VERSION = "dclm-look-2026-09-22-talk";
+  var VERSION = "dclm-look-2026-10-16-attack";
   function scanVeto(text) {
     if (w.IrisPolicy && IrisPolicy.veto) {
       var hit = IrisPolicy.veto(text);
@@ -142,10 +142,25 @@
     if (w.IrisFuel && IrisFuel.admit) return IrisFuel.admit(text);
     return { ok: true, paid: false, grade: { lane: "LOOK", burn: 0, grant: "LOOK" } };
   }
+  async function attackAnswer(raw) {
+    try {
+      if (!w.IrisAttack) {
+        var mod = await import("/js/iris-attack.js");
+        if (mod.install) mod.install(w);
+      }
+    } catch (e) {
+      return null;
+    }
+    if (!w.IrisAttack || !IrisAttack.match(raw)) return null;
+    var hit = IrisAttack.attack({ text: raw });
+    return { grant: "ATTACK", lane: "LOOK", spoken: hit.spoken, attack: hit };
+  }
   async function run(text, ticket) {
     var v = scanVeto(text);
     if (v) return { grant: "VETO", spoken: v, lane: "VETO" };
     var raw = String(text || "");
+    var atk = await attackAnswer(raw);
+    if (atk) return atk;
     var facts = "";
     var book = null;
     if (w.IrisBook && IrisBook.lookup) {
