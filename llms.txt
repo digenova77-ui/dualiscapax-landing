@@ -8,7 +8,8 @@ This file is the public door's machine card. The page at / is the three-ring doo
 
 ## What this build does
 
-- It is an open page. No company holds the source. The machine holds nothing. The till is closed.
+- It is an open page. No company holds the source. The machine holds nothing. The till on the door is closed. Look is 0.
+- The exchange is a different request. GET or POST /api/x402/exchange. No PAYMENT-SIGNATURE, and the answer is HTTP 402 with PAYMENT-REQUIRED (x402 version 2, scheme exact, 10000 units of USDC, 0.01). The receipt, exchanged true, is returned only after the facilitator settles that exact payment. The bot founding signature is still pay 0. That signature is not this exchange.
 - On the field canvas at /field.html, a person orbits a night Earth and asks. What is already known can be drawn. Risk of the playground is 0. The door itself is the three rings, not that orbit.
 - The floor is 0. The ceiling is 1. The seed sits at -1, under the floor. One name has no second point, so no derivative is taken.
 - Four laws stand on the floor: NO_FORCE, HOST_SAFE, TRUTH_OR_NOTHING, CLEANUP_FIRST.
