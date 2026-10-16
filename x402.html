@@ -24,7 +24,7 @@
   <p><a href="/">Back to the poster</a></p>
 </main>
 <script type="module">
-import { decodeHeader, encodeHeader, freshAuthorization, typedData } from "/js/x402-exchange.js";
+import { decodeHeader } from "/js/x402-exchange.js";
 
 const status = document.querySelector("#status");
 const receipt = document.querySelector("#receipt");
@@ -32,11 +32,6 @@ const form = document.querySelector("#exchange");
 const endpoint = "/api/x402/exchange";
 
 function say(text) { status.textContent = text; }
-
-function chosen() {
-  const picked = form.querySelector("input[name=network]:checked");
-  return picked ? picked.value : "eip155:8453";
-}
 
 async function readRequired(response) {
   const header = response.headers.get("PAYMENT-REQUIRED");
@@ -59,71 +54,10 @@ async function ask() {
   return body;
 }
 
-async function signAndSend(required) {
-  const trinity = window.trinity;
-  if (!trinity) {
-    say("No wallet on this page. An agent sends PAYMENT-SIGNATURE on the same URL.");
-    return;
-  }
-  const network = chosen();
-  const accepted = (required.accepts || []).find((item) => item.network === network);
-  if (!accepted) {
-    say("That network is not accepted.");
-    return;
-  }
-  const chainId = "0x" + Number(network.split(":")[1]).toString(16);
-  try {
-    await trinity.request({ method: "wallet_switchTrinityChain", params: [{ chainId }] });
-  } catch (err) {
-    say("The wallet did not switch to " + network + ".");
-    return;
-  }
-  const accounts = await trinity.request({ method: "eth_requestAccounts" });
-  const from = accounts && accounts[0];
-  if (!from) {
-    say("The wallet did not give an account.");
-    return;
-  }
-  const authorization = freshAuthorization(accepted, from, Math.floor(Date.now() / 1000));
-  const data = typedData(accepted, authorization);
-  let signature;
-  try {
-    signature = await trinity.request({
-      method: "eth_signTypedData_v4",
-      params: [from, JSON.stringify(data)]
-    });
-  } catch (err) {
-    say("The signature was not given. Nothing settled.");
-    return;
-  }
-  const payload = {
-    x402Version: 2,
-    resource: required.resource,
-    accepted,
-    payload: { signature, authorization }
-  };
-  say("Signed. Waiting for settlement.");
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      "content-type": "application/json",
-      "PAYMENT-SIGNATURE": encodeHeader(payload)
-    }
-  });
-  const body = await response.json();
-  receipt.textContent = JSON.stringify(body, null, 2);
-  if (response.status === 200 && body.exchanged === true && body.transaction) {
-    say("Exchanged. " + body.transaction);
-    return;
-  }
-  say(body.error || "Not exchanged.");
-}
-
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const required = await ask();
-  if (required) await signAndSend(required);
+  await ask();
+  say("Payment required. The sovereign coin is Trinity's own. Nothing has moved.");
 });
 
 ask();

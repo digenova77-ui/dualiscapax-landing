@@ -50,10 +50,10 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <button type="button" class="rail" id="xrp" data-chain="xrp">Open XRP send</button>
   <button type="button" class="rail" id="zec" data-chain="zec">Open Zcash send</button>
   <button type="button" class="rail" id="sol" data-chain="sol">Open Solana send</button>
-  <button type="button" class="rail" id="eth" data-chain="eth">Open Trinity send</button>
+  <button type="button" class="rail" id="eth" data-chain="eth">Open Trinity coin send</button>
   <button type="button" class="rail" id="pol" data-chain="pol">Open Polygon send</button>
   <button type="button" class="rail" id="bsc" data-chain="bsc">Open BNB Chain send</button>
-  <button type="button" class="rail" id="link" data-chain="link">Open LINK (Trinity) send</button>
+  <button type="button" class="rail" id="link" data-chain="link">Open LINK send</button>
   <button type="button" class="rail" id="dot" data-chain="dot">Open Polkadot send</button>
   <button type="button" class="rail" id="dgb" data-chain="dgb">Open DigiByte send</button>
   <button type="button" class="rail" id="bch" data-chain="bch">Open Bitcoin Cash send</button>
@@ -96,9 +96,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   function walletUri(chain, addr){
     if (!addr) return null;
     switch (chain) {
-      case 'eth': case 'link': return 'trinity:' + addr;
-      case 'pol': return 'trinity:' + addr + '@137';
-      case 'bsc': return 'trinity:' + addr + '@56';
+      case 'eth': case 'link': case 'pol': case 'bsc': return null;
       case 'sol': return 'solana:' + addr;
       case 'bch': return 'bitcoincash:' + addr;
       case 'doge': return 'dogecoin:' + addr;
@@ -109,7 +107,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     }
   }
   function chainLabel(chain){
-    return ({xrp:'XRP',zec:'Zcash',sol:'Solana',eth:'Trinity',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK (Trinity)',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
+    return ({xrp:'XRP',zec:'Zcash',sol:'Solana',eth:'Trinity',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
   }
   function addrFor(chain){
     var map = {xrp:pay.research_xrp,zec:pay.research_zec,sol:pay.research_sol,eth:pay.research_eth,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,bch:pay.research_bch,doge:pay.ai_doge};

@@ -53,14 +53,9 @@
 
   $("signEth").onclick = async function () {
     const addr = ($("eth").value || "").trim();
-    if (!/^0x[0-9a-fA-F]{40}$/.test(addr)) { $("ethOut").textContent = "Need a full Trinity address."; return; }
-    const msg = "DualisCapax Unity bind " + location.host + " " + new Date().toISOString().slice(0, 10);
-    if (!window.trinity || !window.trinity.request) { $("ethOut").textContent = "Address kept. No wallet on this browser."; return; }
-    try {
-      const sig = await window.trinity.request({ method: "personal_sign", params: [msg, addr] });
-      state.eth_sig = { addr: addr.toLowerCase(), msg: msg, sig: sig };
-      $("ethOut").textContent = "Wallet signed.";
-    } catch (e) { $("ethOut").textContent = "Wallet refused."; }
+    if (!/^0x[0-9a-fA-F]{40}$/.test(addr)) { $("ethOut").textContent = "Need a full address."; return; }
+    state.eth_sig = { addr: addr.toLowerCase() };
+    $("ethOut").textContent = "Address kept. The sovereign coin is Trinity's own.";
   };
 
   function packet() {
