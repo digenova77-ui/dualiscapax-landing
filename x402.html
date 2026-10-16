@@ -15,14 +15,12 @@
   <h1>HTTP 402</h1>
   <p class="lead">0.01 USDC. Exact. The receipt is withheld until the facilitator settles.</p>
   <form id="exchange">
-    <p>
-      <label><input type="radio" name="network" value="eip155:8453" checked> Base</label>
-      <label><input type="radio" name="network" value="eip155:84532"> Base Sepolia</label>
-    </p>
+    <label class="check"><input type="radio" name="network" value="eip155:8453" checked> Base</label>
+    <label class="check"><input type="radio" name="network" value="eip155:84532"> Base Sepolia</label>
     <button type="submit">Exchange</button>
   </form>
   <p id="status" role="status">Asking the exchange.</p>
-  <pre id="receipt" class="hud"></pre>
+  <pre id="receipt" style="white-space:pre-wrap;word-break:break-all;text-align:left"></pre>
   <p><a href="/">Back to the poster</a></p>
 </main>
 <script type="module">
