@@ -28,6 +28,7 @@
   <section>
     <p>Open now: Look, Why, the aide desk, the menu, the sheet. Those are rooms you can walk.</p>
     <p>Closed until a real row exists: the till, the split after a named save, a chain contract. Those are not prices on this page.</p>
+    <p id="merit-gate">Gate shut. Merit’s price links to Unity through UniFi³. UniFi³ connects to eFuse. Those readings are not aligned for use.</p>
     <a class="row" href="look.html"><strong>Look</strong>See the hall. Free.</a>
     <a class="row" href="alacarte.html"><strong>A la carte</strong>Pick a desk by name.</a>
     <a class="row" href="rte/sima-dclm/index.html"><strong>Aide desk</strong>The working surface. Not a hospital record.</a>
@@ -40,6 +41,18 @@
   </section>
   <footer>DualisCapax · a gate is 0 or 1 · look stays free</footer>
 </div>
+<script type="module">
+  import { published } from "./js/merit-align.js";
+  var gate = published();
+  var line = document.getElementById("merit-gate");
+  if (line) {
+    line.dataset.open = gate.open === true ? "1" : "0";
+    line.dataset.reason = gate.reason;
+    line.textContent = gate.open === true
+      ? "Gate open. Merit’s price, Unity, UniFi³, and eFuse read 1."
+      : "Gate shut. Merit’s price links to Unity through UniFi³. UniFi³ connects to eFuse. Those readings are not aligned for use.";
+  }
+</script>
 <script src="js/home-quarks.js"></script>
 <script src="js/no-select.js"></script>
 <script src="assets/haptic.js"></script>
