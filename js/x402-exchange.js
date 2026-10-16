@@ -2,7 +2,11 @@
  * x402 HTTP exchange. Protocol v2, exact scheme, EIP-3009 USDC.
  * The receipt is built only after the facilitator settles.
  * Look stays free. This module does not touch the door.
+ * A non-zero price is offered only when the decision gate is open.
+ * That gate requires a joule the father read. The published joule is null.
  */
+
+import { quotePrice } from "./merit-align.js";
 
 export const X402_VERSION = 2;
 export const PAY_TO = "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4";
@@ -231,6 +235,18 @@ export async function handleExchange(request, options) {
   }
   if (request.method !== "GET" && request.method !== "POST") {
     return jsonResponse(405, { error: "GET or POST" });
+  }
+
+  const quote = quotePrice({ amount: AMOUNT, decision: opts.decision });
+  if (!quote.priced) {
+    return jsonResponse(403, {
+      priced: false,
+      charge: false,
+      open: false,
+      reason: quote.reason,
+      joule: quote.joule,
+      exchanged: false
+    });
   }
 
   const url = new URL(request.url);

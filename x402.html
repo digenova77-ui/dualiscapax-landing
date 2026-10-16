@@ -12,12 +12,12 @@
   <nav><a href="/">Poster</a><a href="/pay.html">Pay</a></nav>
 </header>
 <main>
-  <h1>HTTP 402</h1>
-  <p class="lead">0.01 USDC. Exact. The receipt is withheld until the facilitator settles.</p>
+  <h1>The gate</h1>
+  <p class="lead" id="lead">Look is $0. A charge waits on the joule and the decision gate.</p>
   <form id="exchange">
     <label class="check"><input type="radio" name="network" value="eip155:8453" checked> Base</label>
     <label class="check"><input type="radio" name="network" value="eip155:84532"> Base Sepolia</label>
-    <button type="submit">Exchange</button>
+    <button type="submit">Ask the gate</button>
   </form>
   <p id="status" role="status">Asking the exchange.</p>
   <pre id="receipt" style="white-space:pre-wrap;word-break:break-all;text-align:left"></pre>
@@ -25,6 +25,7 @@
 </main>
 <script type="module">
 import { decodeHeader } from "/js/x402-exchange.js";
+import { quotePrice } from "/js/merit-align.js";
 
 const status = document.querySelector("#status");
 const receipt = document.querySelector("#receipt");
@@ -41,7 +42,17 @@ async function readRequired(response) {
   return response.json();
 }
 
+function showShut(quote) {
+  say("No price. The joule and the decision gate are shut. Nothing has moved.");
+  receipt.textContent = JSON.stringify(quote, null, 2);
+}
+
 async function ask() {
+  const quote = quotePrice({ amount: "10000" });
+  if (!quote.priced) {
+    showShut(quote);
+    return null;
+  }
   const response = await fetch(endpoint, { headers: { accept: "application/json" } });
   const body = await readRequired(response);
   if (response.status !== 402) {
@@ -56,6 +67,11 @@ async function ask() {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const quote = quotePrice({ amount: "10000" });
+  if (!quote.priced) {
+    showShut(quote);
+    return;
+  }
   await ask();
   say("Payment required. The sovereign coin is Trinity's own. Nothing has moved.");
 });

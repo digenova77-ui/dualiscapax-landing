@@ -13,11 +13,11 @@
 </header>
 <main>
   <h1>One schema. Every medical leaf.</h1>
-  <p class="lead">ALS was the prototype. Osteosarcoma, neurology, oncology, and any later leaf use the same depths. We do not sell a disease. We sell how far the work goes. Look is free. Checkout is Stripe CAD. Cards stay off the plate.</p>
+  <p class="lead">ALS was the prototype. Osteosarcoma, neurology, oncology, and any later leaf use the same depths. We do not sell a disease. Look is $0. A charge waits on the joule the father read and on the decision gate. The joule is null, so the amounts below are the schedule and nothing is offered.</p>
 
   <div class="card">
     <h2>How detailed the ALS schema is</h2>
-    <p>Four live depths. Four gated depths. No per-drug SKU. No “ALS = $200 million” button.</p>
+    <p>Four named depths. Four gated depths. No per-drug SKU. No “ALS = $200 million” button.</p>
     <p>Peg used for gated math: ~$20M US to run one late-stage ALS regimen (HEALEY-class) over ~37 months. Other fields use the same percentages against their own public Phase 3 neighborhood when a sponsor pack is ever invoiced.</p>
   </div>
 
@@ -28,11 +28,11 @@
   </div>
 
   <div class="card" style="margin-top:1rem">
-    <h2>Live — every leaf</h2>
+    <h2>Schedule — every leaf — not offered</h2>
+    <p id="price-gate">Look stays $0. A charge waits on the joule and the decision gate.</p>
     <p>Look (journal, names, public residual) — $0</p>
     <p>Iris grind — $20 / 40 passes · $50 / 120 · $120 / 320</p>
     <p>Room 12 mo — $49 leaf · $149 field · $499 library (class)</p>
-    <p><a class="btn" href="pay.html">Checkout</a></p>
   </div>
 
   <div class="card" style="margin-top:1rem">
@@ -49,5 +49,16 @@
     <p>Same plate for ALS and for every other leaf: public serial only. Stripe only. Webhook on the fulfill worker. Hospital / physician / pharmacy may ask the holder for a card. Dualis does not store it. No diagnosis for sale.</p>
   </div>
 </main>
+<script type="module">
+  import { quotePrice } from "./js/merit-align.js";
+  var line = document.getElementById("price-gate");
+  var grind = quotePrice({ amount: 20 });
+  var look = quotePrice({ amount: 0 });
+  if (line && look.charge === false && grind.priced === false) {
+    line.textContent = "Look stays $0. A charge waits on the joule and the decision gate. The joule has not been read.";
+    line.dataset.priced = "0";
+    line.dataset.reason = grind.reason;
+  }
+</script>
 </body>
 </html>

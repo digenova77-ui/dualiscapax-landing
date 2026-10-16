@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { align, published, publishedResponse, unifiCubed } from "../js/merit-align.js";
+import { OPEN_DECISION, align, published, publishedResponse, quotePrice, unifiCubed } from "../js/merit-align.js";
 
 test("UniFi³ is the reading taken three times", () => {
   assert.equal(unifiCubed(1), 1);
@@ -86,6 +86,33 @@ test("Unity 2 cubes to 8 and does not align the price to Unity", () => {
   assert.equal(gate.chain.unifiCubed, 8);
   assert.equal(gate.aligned, false);
   assert.equal(gate.open, false);
+});
+
+test("look stays free while a charge waits on the joule and the decision gate", () => {
+  const look = quotePrice({ amount: 0 });
+  assert.equal(look.priced, true);
+  assert.equal(look.charge, false);
+  assert.equal(look.reason, "look");
+
+  const shut = quotePrice({ amount: "10000" });
+  assert.equal(shut.priced, false);
+  assert.equal(shut.charge, false);
+  assert.equal(shut.open, false);
+  assert.equal(shut.joule, null);
+  assert.equal(shut.reason, "misaligned");
+
+  const unread = quotePrice({
+    amount: 20,
+    decision: { unity: 1, meritPrice: 1, efuse: 1, joule: null }
+  });
+  assert.equal(unread.priced, false);
+  assert.equal(unread.reason, "joule-null");
+
+  const open = quotePrice({ amount: "10000", decision: OPEN_DECISION });
+  assert.equal(open.priced, true);
+  assert.equal(open.charge, true);
+  assert.equal(open.reason, "aligned");
+  assert.equal(open.joule, 1);
 });
 
 test("Unity 1 through UniFi³ into eFuse, with a read joule, admits usage and opens the gate", () => {

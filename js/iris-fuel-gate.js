@@ -46,7 +46,7 @@
       grant: "FUEL",
       lane: "DEPTH",
       burn: 0,
-      spoken: "Looking is free. Depth needs Fuel. Forty passes are twenty Canadian on Pay.",
+      spoken: "Looking is free. A price waits on the joule and the decision gate. The joule has not been read.",
       href: "/pay.html",
       label: "Pay Fuel"
     };
