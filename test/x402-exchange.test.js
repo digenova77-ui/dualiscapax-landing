@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { OPEN_DECISION } from "../js/merit-align.js";
 import {
   AMOUNT,
   PAY_TO,
@@ -56,8 +57,38 @@ function offerPayload(network) {
   };
 }
 
+function openOpts(extra) {
+  return Object.assign({ decision: OPEN_DECISION }, extra || {});
+}
+
+test("the published joule shuts the price before any payment is asked", async () => {
+  let called = 0;
+  const response = await handleExchange(request({ "payment-signature": "abc" }), {
+    fetch: () => { called += 1; throw new Error("no facilitator"); }
+  });
+  assert.equal(response.status, 403);
+  assert.equal(called, 0);
+  assert.equal(response.headers.get("PAYMENT-REQUIRED"), null);
+  const body = await response.json();
+  assert.equal(body.priced, false);
+  assert.equal(body.open, false);
+  assert.equal(body.joule, null);
+  assert.equal(body.exchanged, false);
+});
+
+test("a null joule shuts an otherwise aligned decision", async () => {
+  const response = await handleExchange(request(), {
+    decision: { unity: 1, meritPrice: 1, efuse: 1, joule: null },
+    fetch: () => { throw new Error("no facilitator"); }
+  });
+  assert.equal(response.status, 403);
+  const body = await response.json();
+  assert.equal(body.reason, "joule-null");
+  assert.equal(body.priced, false);
+});
+
 test("a request with no signature is 402 and does not exchange", async () => {
-  const response = await handleExchange(request(), { fetch: () => { throw new Error("no facilitator"); } });
+  const response = await handleExchange(request(), openOpts({ fetch: () => { throw new Error("no facilitator"); } }));
   assert.equal(response.status, 402);
   const body = await response.json();
   assert.equal(body.x402Version, 2);
@@ -87,9 +118,9 @@ test("a mismatched amount never reaches the facilitator", async () => {
   let called = 0;
   const payload = offerPayload("eip155:84532");
   payload.payload.authorization.value = "1";
-  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), {
+  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), openOpts({
     fetch: () => { called += 1; throw new Error("should not settle"); }
-  });
+  }));
   assert.equal(response.status, 402);
   assert.equal(called, 0);
   const body = await response.json();
@@ -100,7 +131,7 @@ test("a mismatched amount never reaches the facilitator", async () => {
 test("the receipt is withheld unless settle returns a transaction", async () => {
   const payload = offerPayload("eip155:84532");
   const calls = [];
-  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), {
+  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), openOpts({
     fetch: async (url) => {
       calls.push(url);
       if (String(url).endsWith("/verify")) {
@@ -114,7 +145,7 @@ test("the receipt is withheld unless settle returns a transaction", async () => 
         network: "eip155:84532"
       }), { status: 200 });
     }
-  });
+  }));
   assert.deepEqual(calls, [
     "https://x402.org/facilitator/verify",
     "https://x402.org/facilitator/settle"
@@ -130,7 +161,7 @@ test("the receipt is withheld unless settle returns a transaction", async () => 
 test("a settled payment is the only 200", async () => {
   const payload = offerPayload("eip155:8453");
   const tx = "0x" + "cd".repeat(32);
-  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), {
+  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), openOpts({
     fetch: async (url) => {
       if (String(url).endsWith("/verify")) {
         return new Response(JSON.stringify({ isValid: true, payer: payload.payload.authorization.from }), { status: 200 });
@@ -142,7 +173,7 @@ test("a settled payment is the only 200", async () => {
         network: "eip155:8453"
       }), { status: 200 });
     }
-  });
+  }));
   assert.equal(response.status, 200);
   const body = await response.json();
   assert.equal(body.exchanged, true);
@@ -156,7 +187,7 @@ test("a settled payment is the only 200", async () => {
 
 test("a pending settlement is not an exchange", async () => {
   const payload = offerPayload("eip155:84532");
-  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), {
+  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), openOpts({
     fetch: async (url) => {
       if (String(url).endsWith("/verify")) {
         return new Response(JSON.stringify({ isValid: true, payer: payload.payload.authorization.from }), { status: 200 });
@@ -169,7 +200,7 @@ test("a pending settlement is not an exchange", async () => {
         payer: payload.payload.authorization.from
       }), { status: 200 });
     }
-  });
+  }));
   assert.equal(response.status, 402);
   const body = await response.json();
   assert.equal(body.exchanged, undefined);
@@ -182,7 +213,7 @@ test("the pay-to address is the published research address", () => {
 
 test("the live testnet facilitator refuses an unpaid signature and nothing is exchanged", async () => {
   const payload = offerPayload("eip155:84532");
-  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), {});
+  const response = await handleExchange(request({ "payment-signature": encodeHeader(payload) }), openOpts({}));
   assert.equal(response.status, 402);
   const body = await response.json();
   assert.equal(body.exchanged, undefined);

@@ -32,7 +32,7 @@
       spoken: "Unity member number one is on Get ID. No charge.",
       href: "/member.html", label: "Get ID" },
     { id: "PAY", re: /\b(how (do I |to )?pay|stripe checkout|fuel pack|engine time)\b/i,
-      spoken: "Pay Canadian dollars on Pay. Live packs are $20, $50, and $120.",
+      spoken: "The packs are named: $20, $50, and $120. A charge waits on the joule and the decision gate. The joule has not been read. Look stays free.",
       href: "/pay.html", label: "Pay" },
     { id: "ENGINE", re: /^(?:iris[, ]+)?(open )?(the )?(engine|compute|runtime|workbench|abstract)\s*[?.!]*$/i,
       spoken: "The engine you can press is the abstract layer. Symplectic step plus the quaternion sphere. Not optical hardware.",

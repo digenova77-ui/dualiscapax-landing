@@ -55,6 +55,30 @@ export function published() {
   return align({ unity: null, unifi: null, meritPrice: null, efuse: null, joule: null });
 }
 
+export const OPEN_DECISION = { unity: 1, unifi: 1, meritPrice: 1, efuse: 1, joule: 1 };
+
+function amountOf(amount) {
+  if (typeof amount === "number" && Number.isFinite(amount)) return amount;
+  if (typeof amount === "string" && /^(?:0|[1-9]\d*)$/.test(amount)) return Number(amount);
+  return null;
+}
+
+export function quotePrice(input) {
+  const src = input || {};
+  const gate = src.decision === undefined ? published() : align(src.decision);
+  const amount = amountOf(src.amount);
+  if (amount === 0) {
+    return { priced: true, charge: false, open: true, reason: "look", joule: gate.joule, amount: 0 };
+  }
+  if (gate.open !== true) {
+    return { priced: false, charge: false, open: false, reason: gate.reason, joule: gate.joule, amount: amount };
+  }
+  if (amount === null || amount < 0) {
+    return { priced: false, charge: false, open: true, reason: "no-amount", joule: gate.joule, amount: null };
+  }
+  return { priced: true, charge: true, open: true, reason: "aligned", joule: gate.joule, amount: amount };
+}
+
 export function publishedResponse() {
   return new Response(JSON.stringify(published()), {
     status: 200,
