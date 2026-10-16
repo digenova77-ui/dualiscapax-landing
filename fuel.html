@@ -12,9 +12,18 @@
   <nav><a href="index.html">Gateway</a><a href="pay.html">Pay</a><a href="id.html">ID</a></nav>
 </header>
 <main>
-  <h1>Fuel received</h1>
-  <p class="lead">If Stripe just settled, prepaid depth time is yours. Unused stays with you. Iris still quotes class 3. This is not depth as a share.</p>
-  <a class="btn" href="pay.html">Back to Pay</a>
+  <h1>Energy</h1>
+  <p class="lead" id="energy">The energy cost is the joule. The joule has not been read, so the cost is empty.</p>
+  <a class="btn" href="pay.html">Merit exchange</a>
+<script type="module">
+import { energyCost, pricingGateway } from "./js/merit-align.js";
+const line = document.getElementById("energy");
+const cost = energyCost();
+const gate = pricingGateway("fuel");
+if (cost.cost === null || gate.priced !== true) {
+  line.textContent = "The energy cost is the joule. The joule has not been read, so the cost is empty. Merit is not priced.";
+}
+</script>
 </main>
 </body>
 </html>

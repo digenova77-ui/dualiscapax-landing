@@ -13,7 +13,7 @@
 </header>
 <main>
   <h1>The gate</h1>
-  <p class="lead" id="lead">Look is $0. A charge waits on the joule and the decision gate.</p>
+  <p class="lead" id="lead">The exchange is Merit. This rail sits behind it. Look is $0 until the energy cost, the joule, is read.</p>
   <form id="exchange">
     <label class="check"><input type="radio" name="network" value="eip155:8453" checked> Base</label>
     <label class="check"><input type="radio" name="network" value="eip155:84532"> Base Sepolia</label>
@@ -43,7 +43,7 @@ async function readRequired(response) {
 }
 
 function showShut(quote) {
-  say("No price. The joule and the decision gate are shut. Nothing has moved.");
+  say("No price. Merit is shut. The energy cost is empty. Nothing has moved.");
   receipt.textContent = JSON.stringify(quote, null, 2);
 }
 

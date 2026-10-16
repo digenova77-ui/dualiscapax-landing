@@ -13,7 +13,7 @@
 </header>
 <main>
   <h1>One schema. Every medical leaf.</h1>
-  <p class="lead">ALS was the prototype. Osteosarcoma, neurology, oncology, and any later leaf use the same depths. We do not sell a disease. Look is $0. A charge waits on the joule the father read and on the decision gate. The joule is null, so the amounts below are the schedule and nothing is offered.</p>
+  <p class="lead">ALS was the prototype. Osteosarcoma, neurology, oncology, and any later leaf use the same depths. We do not sell a disease. Look is $0. This gateway prices Merit at the energy cost, in joules. The joule has not been read, so the amounts below are the schedule and nothing is offered.</p>
 
   <div class="card">
     <h2>How detailed the ALS schema is</h2>
@@ -29,7 +29,7 @@
 
   <div class="card" style="margin-top:1rem">
     <h2>Schedule — every leaf — not offered</h2>
-    <p id="price-gate">Look stays $0. A charge waits on the joule and the decision gate.</p>
+    <p id="price-gate">Look stays $0. This gateway prices Merit at the joule.</p>
     <p>Look (journal, names, public residual) — $0</p>
     <p>Iris grind — $20 / 40 passes · $50 / 120 · $120 / 320</p>
     <p>Room 12 mo — $49 leaf · $149 field · $499 library (class)</p>
@@ -50,14 +50,15 @@
   </div>
 </main>
 <script type="module">
-  import { quotePrice } from "./js/merit-align.js";
+  import { pricingGateway, quotePrice } from "./js/merit-align.js";
   var line = document.getElementById("price-gate");
-  var grind = quotePrice({ amount: 20 });
+  var gate = pricingGateway("pricing");
   var look = quotePrice({ amount: 0 });
-  if (line && look.charge === false && grind.priced === false) {
-    line.textContent = "Look stays $0. A charge waits on the joule and the decision gate. The joule has not been read.";
+  if (line && look.charge === false && gate.priced === false) {
+    line.textContent = "Look stays $0. Merit is not priced. The energy cost is empty.";
     line.dataset.priced = "0";
-    line.dataset.reason = grind.reason;
+    line.dataset.reason = gate.reason;
+    line.dataset.energy = "empty";
   }
 </script>
 </body>

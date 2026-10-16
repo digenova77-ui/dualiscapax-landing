@@ -2,18 +2,42 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pay — DualisCapax</title>
+<title>Merit exchange — DualisCapax</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
   <div class="brand">DUALISCAPAX</div>
-  <nav><a href="/">Poster</a></nav>
+  <nav><a href="/">Poster</a><a href="/pricing.html">Pricing</a><a href="/fuel.html">Energy</a></nav>
 </header>
 <main>
-  <h1>Exchange</h1>
-  <p class="lead">Look is $0. A charge waits on the joule the father read and on the decision gate. The joule is null, so no price is offered.</p>
-  <p><a href="/x402.html">Open the exchange</a></p>
+  <h1>Merit</h1>
+  <p class="lead">The exchange is Merit. The price is the energy cost, in joules. The joule has not been read, so nothing is offered and nothing is filled.</p>
+  <p id="book">Reading the exchange.</p>
+  <p><button type="button" id="buy">Buy</button> <button type="button" id="sell">Sell</button></p>
+  <p id="fill"></p>
+  <p><a href="/pricing.html">Pricing gateway</a> · <a href="/fuel.html">Energy cost</a></p>
 </main>
+<script type="module">
+import { meritExchange, pricingGateway } from "/js/merit-align.js";
+
+const book = document.getElementById("book");
+const fill = document.getElementById("fill");
+const gate = pricingGateway("pay");
+
+function say(side) {
+  const quote = meritExchange({ side: side });
+  fill.textContent = quote.offered
+    ? "Offered. Nothing has been filled."
+    : "The " + side + " is shut. Energy cost is empty. Nothing moved.";
+}
+
+book.textContent = gate.priced
+  ? "Merit is offered at the joule."
+  : "Merit is shut. Look stays $0. Energy cost is empty. The split stays 0.81 drive-back, 0.10 fee, 0.09 room.";
+
+document.getElementById("buy").addEventListener("click", function () { say("buy"); });
+document.getElementById("sell").addEventListener("click", function () { say("sell"); });
+</script>
 </body>
 </html>
