@@ -25,6 +25,8 @@
     html, body { margin: 0; }
     body {
       min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
       color: var(--ink);
       background:
         radial-gradient(ellipse 42% 36% at 28% 62%, rgba(18, 64, 150, 0.32), transparent 68%),
@@ -46,10 +48,16 @@
       z-index: 2;
     }
     .skip:focus { transform: none; }
+    .float {
+      width: 100%;
+      margin-block: auto;
+      padding-top: max(1.4rem, env(safe-area-inset-top));
+      padding-bottom: max(1.4rem, env(safe-area-inset-bottom));
+    }
     header {
       width: min(1120px, calc(100% - 2.4rem));
       margin: 0 auto;
-      padding: calc(1.15rem + env(safe-area-inset-top)) 0 0;
+      padding: 0;
     }
     .name {
       margin: 0;
@@ -62,7 +70,7 @@
     .plate {
       width: min(1120px, calc(100% - 2.4rem));
       margin: 0 auto;
-      padding: 1.25rem 0 calc(2rem + env(safe-area-inset-bottom));
+      padding: 1.15rem 0 0;
       display: grid;
       grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.15fr);
       gap: clamp(1.2rem, 4vw, 3.5rem);
@@ -265,6 +273,7 @@
 </head>
 <body>
   <a class="skip" href="#rings">Skip to the three rings</a>
+  <div class="float">
   <header>
     <p class="name">dualiscapax</p>
   </header>
@@ -445,5 +454,6 @@
       </svg>
     </figure>
   </main>
+  </div>
 </body>
 </html>
