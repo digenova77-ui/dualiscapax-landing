@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>dualiscapax</title>
-  <meta name="description" content="Three rings. Blue bioluminescence, the cosmos, and a biosynthetic passphrase that glows green or red.">
+  <meta name="description" content="Three rings. Iris is teal and blue. The cosmos is the field. The passphrase glows green or red.">
   <meta name="theme-color" content="#07060e">
   <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
   <style>
@@ -17,7 +17,7 @@
       --line: rgba(170, 140, 255, 0.28);
       --cyan: #63f7dd;
       --violet: #aa8cff;
-      --dna: #7eb6ff;
+      --iris: #3ee0ff;
       --cosmos: var(--violet);
       --pass: #7dff9a;
       --stop: #ff5c64;
@@ -243,7 +243,7 @@
       margin-inline: auto;
     }
     .ring { transition: opacity 280ms ease; }
-    .plate:has(#pick-dna:checked) .ring:not(.is-dna),
+    .plate:has(#pick-iris:checked) .ring:not(.is-iris),
     .plate:has(#pick-cosmos:checked) .ring:not(.is-cosmos),
     .plate:has(#pick-sym:checked) .ring:not(.is-sym) {
       opacity: 0.2;
@@ -251,10 +251,6 @@
     .pass-red { display: none; }
     body:has(#pass-red:checked) .pass-green { display: none; }
     body:has(#pass-red:checked) .pass-red { display: inline; }
-    .back, .front { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    .back { stroke: url(#depth); stroke-width: 1.7; }
-    .front { stroke: url(#life); stroke-width: 2.7; filter: url(#soft); }
-    .rung { stroke-linecap: round; }
     .stars { fill: var(--violet); transform-box: view-box; transform-origin: center; animation: drift 180s linear infinite; }
     .breath { transform-box: view-box; transform-origin: center; animation: breath 7.5s ease-in-out infinite; }
     @keyframes drift { to { transform: rotate(360deg); } }
@@ -291,10 +287,10 @@
       </label>
       <ol class="rings" id="rings">
         <li>
-          <label class="ring-card" style="--c: var(--dna)">
-            <input type="radio" name="ring" id="pick-dna">
-            <span class="kicker">DNA</span>
-            <span class="say">Living code. Bioluminescence is blue.</span>
+          <label class="ring-card" style="--c: var(--iris)">
+            <input type="radio" name="ring" id="pick-iris">
+            <span class="kicker">Iris</span>
+            <span class="say">Teal and blue. The living light.</span>
           </label>
         </li>
         <li>
@@ -308,11 +304,11 @@
           <label class="ring-card" style="--c: var(--pass)">
             <input type="radio" name="ring" id="pick-sym">
             <span class="kicker">Symbiosis</span>
-            <span class="say">The biosynthetic passphrase glows green or red. The living light stays blue.</span>
+            <span class="say">The biosynthetic passphrase glows green or red.</span>
           </label>
         </li>
       </ol>
-      <p class="close">Biosynthetic symbiosis. Blue life, and a passphrase that reads green or red.</p>
+      <p class="close">Iris is teal and blue. The passphrase reads green or red.</p>
       <div class="lamps" role="group" aria-label="Passphrase glow">
         <span class="lamp-name">Passphrase</span>
         <label class="hold">
@@ -336,22 +332,22 @@
     <figure>
       <svg viewBox="0 0 640 640" role="img" aria-labelledby="fig-title fig-desc">
         <title id="fig-title">Three rings</title>
-        <desc id="fig-desc">An armillary of three rings. The inner ring is DNA, a helix of blue bioluminescence. The middle ring is the cosmos, a thin orbit with a few stars. The outer ring is law. Its arc is the biosynthetic passphrase: green, or red. The living light stays blue.</desc>
+        <desc id="fig-desc">An armillary of three rings. The inner ring is Iris, a teal and blue light. The middle ring is the cosmos, a thin orbit with a few stars. The outer ring is law. Its arc is the biosynthetic passphrase: green, or red.</desc>
         <defs>
-          <linearGradient id="life" x1="320" y1="128" x2="320" y2="512" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#d5e6ff"/>
-            <stop offset="0.22" stop-color="#7eb6ff"/>
-            <stop offset="0.55" stop-color="#2f74e0"/>
-            <stop offset="1" stop-color="#0c2c66"/>
-          </linearGradient>
-          <linearGradient id="depth" x1="320" y1="128" x2="320" y2="512" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#1a4a88"/>
-            <stop offset="0.5" stop-color="#0e3060"/>
-            <stop offset="1" stop-color="#071428"/>
-          </linearGradient>
-          <radialGradient id="bio" cx="50%" cy="50%" r="50%">
-            <stop offset="0" stop-color="#3d86ff" stop-opacity="0.55"/>
-            <stop offset="1" stop-color="#3d86ff" stop-opacity="0"/>
+          <radialGradient id="iris-core" cx="38%" cy="34%" r="68%">
+            <stop offset="0" stop-color="#e8fbff"/>
+            <stop offset="0.28" stop-color="#3ee0ff"/>
+            <stop offset="0.62" stop-color="#1494d6"/>
+            <stop offset="1" stop-color="#062848"/>
+          </radialGradient>
+          <radialGradient id="iris-shine" cx="32%" cy="28%" r="40%">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="iris-moon" cx="35%" cy="32%" r="70%">
+            <stop offset="0" stop-color="#e4c8ff"/>
+            <stop offset="0.45" stop-color="#9b5cff"/>
+            <stop offset="1" stop-color="#3a146e"/>
           </radialGradient>
           <radialGradient id="phos-green" cx="50%" cy="50%" r="50%">
             <stop offset="0" stop-color="#b6ff9a" stop-opacity="0.75"/>
@@ -424,30 +420,13 @@
           </g>
         </g>
 
-        <g class="ring is-dna" id="ring-dna">
-          <ellipse class="breath" cx="320" cy="390" rx="64" ry="130" fill="url(#bio)" filter="url(#bloom)"/>
-          <circle cx="320" cy="320" r="112" fill="none" stroke="rgba(126,176,255,0.55)" stroke-width="1.15"/>
-          <g class="back">
-            <path d="M362.0 171.9 L361.8 174.6 L361.1 177.4 L360.1 180.1 L358.6 182.9 L356.8 185.6 L354.6 188.3 L352.1 191.1 L349.3 193.8 L346.2 196.6 L342.8 199.3 L339.2 202.1 L335.5 204.8 L331.5 207.5 L327.5 210.3 L323.4 213.0 L319.2 215.8 L315.1 218.5 L311.0 221.3 L307.0 224.0 L303.1 226.7 L299.4 229.5 L295.9 232.2 L292.7 235.0 L289.6 237.7 L286.9 240.5 L284.5 243.2 L282.5 245.9 L280.8 248.7 L279.5 251.4 L278.6 254.2 L278.1 256.9 L278.0 259.7"/>
-            <path d="M362.0 347.4 L361.6 350.2 L360.8 352.9 L359.6 355.7 L358.0 358.4 L356.1 361.1 L353.8 363.9 L351.1 366.6 L348.2 369.4 L345.0 372.1 L341.5 374.9 L337.9 377.6 L334.0 380.3 L330.1 383.1 L326.0 385.8 L321.9 388.6 L317.7 391.3 L313.6 394.1 L309.6 396.8 L305.6 399.5 L301.8 402.3 L298.1 405.0 L294.7 407.8 L291.5 410.5 L288.6 413.3 L286.0 416.0 L283.8 418.7 L281.8 421.5 L280.3 424.2 L279.1 427.0 L278.4 429.7 L278.0 432.5 L278.1 435.2"/>
-            <path d="M320.0 128.0 L315.9 130.7 L311.8 133.5 L307.7 136.2 L303.8 139.0 L300.1 141.7 L296.5 144.5 L293.2 147.2 L290.2 149.9 L287.4 152.7 L284.9 155.4 L282.8 158.2 L281.1 160.9 L279.7 163.7 L278.7 166.4 L278.2 169.1 L278.0 171.9"/>
-            <path d="M362.0 259.7 L361.7 262.4 L360.9 265.1 L359.8 267.9 L358.3 270.6 L356.4 273.4 L354.2 276.1 L351.6 278.9 L348.8 281.6 L345.6 284.3 L342.2 287.1 L338.6 289.8 L334.8 292.6 L330.8 295.3 L326.8 298.1 L322.6 300.8 L318.5 303.5 L314.4 306.3 L310.3 309.0 L306.3 311.8 L302.5 314.5 L298.8 317.3 L295.3 320.0 L292.1 322.7 L289.1 325.5 L286.5 328.2 L284.1 331.0 L282.2 333.7 L280.5 336.5 L279.3 339.2 L278.5 341.9 L278.1 344.7 L278.0 347.4"/>
-            <path d="M361.9 435.2 L361.5 437.9 L360.6 440.7 L359.3 443.4 L357.7 446.2 L355.7 448.9 L353.3 451.7 L350.6 454.4 L347.6 457.1 L344.4 459.9 L340.9 462.6 L337.2 465.4 L333.3 468.1 L329.3 470.9 L325.3 473.6 L321.1 476.3 L317.0 479.1 L312.9 481.8 L308.8 484.6 L304.9 487.3 L301.1 490.1 L297.5 492.8 L294.1 495.5 L291.0 498.3 L288.1 501.0 L285.6 503.8 L283.4 506.5 L281.5 509.3 L280.1 512.0"/>
-          </g>
-          <g class="rung" fill="none">
-            <line x1="361.3" y1="166.4" x2="278.7" y2="166.4" stroke="#b7d4ff" stroke-width="1.6"/>
-            <line x1="279.5" y1="251.4" x2="360.5" y2="251.4" stroke="#5aa0f0" stroke-width="1.55"/>
-            <line x1="360.7" y1="339.2" x2="279.3" y2="339.2" stroke="#2a6ec8" stroke-width="1.5"/>
-            <line x1="279.1" y1="427.0" x2="360.9" y2="427.0" stroke="#16386e" stroke-width="1.45"/>
-          </g>
-          <g class="front">
-            <path d="M320.0 128.0 L324.1 130.7 L328.2 133.5 L332.3 136.2 L336.2 139.0 L339.9 141.7 L343.5 144.5 L346.8 147.2 L349.8 149.9 L352.6 152.7 L355.1 155.4 L357.2 158.2 L358.9 160.9 L360.3 163.7 L361.3 166.4 L361.8 169.1 L362.0 171.9"/>
-            <path d="M278.0 259.7 L278.3 262.4 L279.1 265.1 L280.2 267.9 L281.7 270.6 L283.6 273.4 L285.8 276.1 L288.4 278.9 L291.2 281.6 L294.4 284.3 L297.8 287.1 L301.4 289.8 L305.2 292.6 L309.2 295.3 L313.2 298.1 L317.4 300.8 L321.5 303.5 L325.6 306.3 L329.7 309.0 L333.7 311.8 L337.5 314.5 L341.2 317.3 L344.7 320.0 L347.9 322.7 L350.9 325.5 L353.5 328.2 L355.9 331.0 L357.8 333.7 L359.5 336.5 L360.7 339.2 L361.5 341.9 L361.9 344.7 L362.0 347.4"/>
-            <path d="M278.1 435.2 L278.5 437.9 L279.4 440.7 L280.7 443.4 L282.3 446.2 L284.3 448.9 L286.7 451.7 L289.4 454.4 L292.4 457.1 L295.6 459.9 L299.1 462.6 L302.8 465.4 L306.7 468.1 L310.7 470.9 L314.7 473.6 L318.9 476.3 L323.0 479.1 L327.1 481.8 L331.2 484.6 L335.1 487.3 L338.9 490.1 L342.5 492.8 L345.9 495.5 L349.0 498.3 L351.9 501.0 L354.4 503.8 L356.6 506.5 L358.5 509.3 L359.9 512.0"/>
-            <path d="M278.0 171.9 L278.2 174.6 L278.9 177.4 L279.9 180.1 L281.4 182.9 L283.2 185.6 L285.4 188.3 L287.9 191.1 L290.7 193.8 L293.8 196.6 L297.2 199.3 L300.8 202.1 L304.5 204.8 L308.5 207.5 L312.5 210.3 L316.6 213.0 L320.8 215.8 L324.9 218.5 L329.0 221.3 L333.0 224.0 L336.9 226.7 L340.6 229.5 L344.1 232.2 L347.3 235.0 L350.4 237.7 L353.1 240.5 L355.5 243.2 L357.5 245.9 L359.2 248.7 L360.5 251.4 L361.4 254.2 L361.9 256.9 L362.0 259.7"/>
-            <path d="M278.0 347.4 L278.4 350.2 L279.2 352.9 L280.4 355.7 L282.0 358.4 L283.9 361.1 L286.2 363.9 L288.9 366.6 L291.8 369.4 L295.0 372.1 L298.5 374.9 L302.1 377.6 L306.0 380.3 L309.9 383.1 L314.0 385.8 L318.1 388.6 L322.3 391.3 L326.4 394.1 L330.4 396.8 L334.4 399.5 L338.2 402.3 L341.9 405.0 L345.3 407.8 L348.5 410.5 L351.4 413.3 L354.0 416.0 L356.2 418.7 L358.2 421.5 L359.7 424.2 L360.9 427.0 L361.6 429.7 L362.0 432.5 L361.9 435.2"/>
-          </g>
-          <circle cx="320" cy="128" r="2.4" fill="#d5e6ff"/>
+        <g class="ring is-iris" id="ring-iris">
+          <circle class="breath" cx="320" cy="320" r="108" fill="url(#iris-core)"/>
+          <circle cx="320" cy="320" r="108" fill="url(#iris-shine)"/>
+          <circle cx="248" cy="392" r="38" fill="url(#iris-moon)" opacity="0.92"/>
+          <circle cx="248" cy="392" r="38" fill="url(#iris-shine)" opacity="0.45"/>
+          <circle cx="404" cy="246" r="34" fill="url(#iris-moon)" opacity="0.92"/>
+          <circle cx="404" cy="246" r="34" fill="url(#iris-shine)" opacity="0.4"/>
         </g>
 
         <g class="ring is-sym" id="ring-meet">
