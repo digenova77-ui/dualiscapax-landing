@@ -6,7 +6,7 @@
  * That gate requires a joule the father read. The published joule is null.
  */
 
-import { quotePrice } from "./merit-align.js";
+import { energyCost, quotePrice } from "./merit-align.js";
 
 export const X402_VERSION = 2;
 export const PAY_TO = "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4";
@@ -237,14 +237,18 @@ export async function handleExchange(request, options) {
     return jsonResponse(405, { error: "GET or POST" });
   }
 
+  const energy = energyCost({ decision: opts.decision });
   const quote = quotePrice({ amount: AMOUNT, decision: opts.decision });
-  if (!quote.priced) {
+  if (energy.cost === null || !quote.priced) {
     return jsonResponse(403, {
+      coin: "Merit",
       priced: false,
       charge: false,
       open: false,
-      reason: quote.reason,
-      joule: quote.joule,
+      reason: energy.cost === null ? energy.reason : quote.reason,
+      joule: energy.joule,
+      energy: null,
+      unit: "joule",
       exchanged: false
     });
   }

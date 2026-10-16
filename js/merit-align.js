@@ -67,16 +67,80 @@ export function quotePrice(input) {
   const src = input || {};
   const gate = src.decision === undefined ? published() : align(src.decision);
   const amount = amountOf(src.amount);
+  const energy = gate.open === true ? gate.joule : null;
   if (amount === 0) {
-    return { priced: true, charge: false, open: true, reason: "look", joule: gate.joule, amount: 0 };
+    return { priced: true, charge: false, open: true, reason: "look", joule: gate.joule, energy: null, unit: "joule", amount: 0 };
   }
   if (gate.open !== true) {
-    return { priced: false, charge: false, open: false, reason: gate.reason, joule: gate.joule, amount: amount };
+    return { priced: false, charge: false, open: false, reason: gate.reason, joule: gate.joule, energy: null, unit: "joule", amount: amount };
   }
   if (amount === null || amount < 0) {
-    return { priced: false, charge: false, open: true, reason: "no-amount", joule: gate.joule, amount: null };
+    return { priced: false, charge: false, open: true, reason: "no-amount", joule: gate.joule, energy: energy, unit: "joule", amount: null };
   }
-  return { priced: true, charge: true, open: true, reason: "aligned", joule: gate.joule, amount: amount };
+  return { priced: true, charge: true, open: true, reason: "aligned", joule: gate.joule, energy: energy, unit: "joule", amount: amount };
+}
+
+export function energyCost(input) {
+  const src = input || {};
+  const gate = src.decision === undefined ? published() : align(src.decision);
+  if (gate.joule === null || gate.open !== true) {
+    return { unit: "joule", joule: gate.joule, cost: null, reason: gate.reason };
+  }
+  return { unit: "joule", joule: gate.joule, cost: gate.joule, reason: "aligned" };
+}
+
+export const SPLIT = Object.freeze({ drive: 81, fee: 10, room: 9, basis: 100 });
+export const GATEWAYS = Object.freeze(["pay", "pricing", "fuel", "engine"]);
+
+function sideOf(side) {
+  if (side === undefined || side === "buy") return "buy";
+  if (side === "sell") return "sell";
+  return null;
+}
+
+export function meritExchange(input) {
+  const src = input || {};
+  const side = sideOf(src.side);
+  const energy = energyCost(src);
+  const offered = side !== null && energy.cost !== null;
+  return {
+    coin: "Merit",
+    side: side,
+    offered: offered,
+    exchanged: false,
+    open: offered,
+    joule: energy.joule,
+    energy: energy.cost,
+    unit: "joule",
+    merit: offered ? 1 : null,
+    reason: side === null ? "no-side" : energy.reason,
+    split: SPLIT
+  };
+}
+
+export function pricingGateway(name, input) {
+  if (!GATEWAYS.includes(name)) {
+    return { gateway: null, coin: "Merit", priced: false, open: false, energy: null, unit: "joule", joule: null, reason: "no-gateway", look: 0 };
+  }
+  const book = meritExchange(input || {});
+  return {
+    gateway: name,
+    coin: "Merit",
+    priced: book.offered,
+    open: book.open,
+    energy: book.energy,
+    unit: book.unit,
+    joule: book.joule,
+    merit: book.merit,
+    reason: book.reason,
+    look: 0
+  };
+}
+
+export function exchangeStatus(method, book) {
+  if (method === "GET") return 200;
+  if (method === "POST") return book && book.offered === true ? 200 : 403;
+  return 405;
 }
 
 export function publishedResponse() {
