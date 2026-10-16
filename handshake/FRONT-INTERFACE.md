@@ -1,65 +1,44 @@
-# Front interface — .com to .ai handoff
+# Front interface — one origin for the realm
 
 From: Counterparty implementation
-Time (UTC): 2026-10-15T00:52:00Z
-For: the front at https://dualiscapax.com/
-Status: commands only. The live .ai server was not changed. The telemetry wire is NOT LIVE.
+Time (UTC): 2026-10-16T21:06:00Z
+For: the public shore at https://dualiscapax.com/ and the realm at https://dualiscapax.ai/
+Status: the cross-domain passkey handoff is retired. The live .ai server enforces this.
 
-## The handoff
+## The rule
 
-.com creates the passkey. .ai verifies that same passkey, then sends one protocol line through the API v2 jacket. .ai does not create a second passkey. .com does not call the jacket.
+The 3D world, the passkey, and `POST /api/v2/compute` share one origin: `https://dualiscapax.ai`.
 
-The relying party id is `dualiscapax.com` on both sides. A passkey created for any other relying party is not valid for this handoff.
+`dualiscapax.com` is the public shore. It does not create a passkey, it does not verify a passkey, and it does not call the jacket. A link to the realm is an ordinary navigation. Nothing about the ceremony is attached to that navigation.
+
+A passkey is bound to the hostname that created it. Moving the top window does not move the biometric. The realm does not accept a credential whose relying party is `dualiscapax.com`.
 
 ## What .com does
 
-1. One control. Its only label is: Face or finger.
-2. Top window, https, never inside a frame.
-3. First time, `navigator.credentials.create`. After that, `navigator.credentials.get`.
-4. Both calls use `rp.id` = `dualiscapax.com`, not `location.hostname` when that differs.
-5. `authenticatorAttachment`: `platform`
-6. `userVerification`: `required`
-7. `residentKey`: `required`
-8. `challenge`: 32 bytes from `crypto.getRandomValues`
-9. timeout 90000
-10. On success, `location.assign('https://dualiscapax.ai/')` with an empty query and an empty hash. Do not append the credential id, the digest, or the handle.
-11. On failure, stay on .com. Say what failed. Do not navigate.
-
-## The file .com must serve
-
-URL: `https://dualiscapax.com/.well-known/webauthn`
-
-Content-Type: `application/json`
-
-Body, exactly:
-
-```json
-{
-  "origins": [
-    "https://dualiscapax.ai",
-    "https://www.dualiscapax.ai"
-  ]
-}
-```
-
-No `.json` on the path. HTTPS. Status 200. If this file is missing, .ai cannot verify the passkey.
+1. No control labeled Face or finger.
+2. No call to `navigator.credentials.create` or `navigator.credentials.get`.
+3. No `POST /api/v2/compute`.
+4. No `/.well-known/webauthn` that names `dualiscapax.ai`.
+5. One ordinary link, when a door is wanted: `https://dualiscapax.ai/`.
 
 ## What .ai does
 
-One control, same label. It calls `navigator.credentials.get` with `rpId` = `dualiscapax.com` and `userVerification` required. It does not pass an allow-list, and it does not call `credentials.create`.
+1. The relying party id is `dualiscapax.ai`, the same as `location.hostname` on that site.
+2. Top window, https, never inside a frame.
+3. First time, `navigator.credentials.create`. After that, `navigator.credentials.get`.
+4. `userVerification`: `required`.
+5. The ceremony result is posted to this same origin (`/auth/verify` or `/api/webauthn/auth/verify`).
+6. The jacket is `POST /api/v2/compute` on this same origin.
+7. `GET /api/v2/protocol` returns a line whose `rp` is `dualiscapax.ai`.
+8. `GET /.well-known/webauthn` returns `{"origins":[]}`. No other origin may borrow this passkey.
 
-If the phone confirms, .ai POSTs this line and nothing else:
+The protocol line is:
 
-`DCCP/2|from=dualiscapax.com|rp=dualiscapax.com|verify=webauthn|jacket=/api/v2/compute|flags=0`
-
-The body is `{ "payload": "<that line>", "flags": 0 }` to `POST /api/v2/compute`. The world opens only when the answer is `accepted: true`. Any other answer is HOLE and the world stays shut.
-
-The phone asks again. A click does not survive the navigation, so the second ask is required.
+`DCCP/2|from=dualiscapax.ai|rp=dualiscapax.ai|verify=webauthn|jacket=/api/v2/compute|flags=0`
 
 ## Do not
 
-- Do not draw RUN, IRIS, or KERNEL · LOADING.
-- Do not POST to `/api/v2/compute` from .com.
-- Do not read a telemetry path.
-- Do not send a password, a token, a face, a finger, or a private key.
+- Do not run the biometric on `.com` and continue it on `.ai`.
 - Do not put the credential in a URL, a cookie, or a postMessage.
+- Do not send a password, a token, a face, a finger, or a private key.
+- Do not POST to `/api/v2/compute` from `.com`.
