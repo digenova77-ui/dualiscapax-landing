@@ -1,0 +1,24 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]: DUALISCAPAX
+    - navigation [ref=e4]:
+      - link "Poster" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - link "Pricing" [ref=e6] [cursor=pointer]:
+        - /url: /pricing.html
+      - link "Energy" [ref=e7] [cursor=pointer]:
+        - /url: /fuel.html
+  - main [ref=e8]:
+    - heading "Merit" [level=1] [ref=e9]
+    - paragraph [ref=e10]: The exchange is Merit. The price is the energy cost, in joules. The joule has not been read, so nothing is offered and nothing is filled.
+    - paragraph [ref=e11]: Merit is shut. Look stays $0. Energy cost is empty. The split stays 0.81 drive-back, 0.10 fee, 0.09 room.
+    - paragraph [ref=e12]:
+      - button "Buy" [ref=e13]
+      - button "Sell" [ref=e14]
+    - paragraph
+    - paragraph [ref=e15]:
+      - link "Pricing gateway" [ref=e16] [cursor=pointer]:
+        - /url: /pricing.html
+      - text: ·
+      - link "Energy cost" [ref=e17] [cursor=pointer]:
+        - /url: /fuel.html
