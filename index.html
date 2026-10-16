@@ -5,21 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>dualiscapax</title>
   <meta name="description" content="Three rings. Blue bioluminescence, the cosmos, and a biosynthetic passphrase that glows green or red.">
-  <meta name="theme-color" content="#02060a">
+  <meta name="theme-color" content="#07060e">
   <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
   <style>
     :root {
       color-scheme: dark;
-      --bg: #02060a;
-      --ink: #e7f4ee;
-      --quiet: #b7d0c6;
-      --faint: #8eaea3;
-      --line: rgba(214, 236, 224, 0.16);
-      --dna: #8eb6ff;
-      --cosmos: #c5d4ea;
+      --bg: #07060e;
+      --ink: #f4f1fb;
+      --quiet: #c9c2de;
+      --faint: #a89fbe;
+      --line: rgba(170, 140, 255, 0.28);
+      --cyan: #63f7dd;
+      --violet: #aa8cff;
+      --dna: #7eb6ff;
+      --cosmos: var(--violet);
       --pass: #7dff9a;
       --stop: #ff5c64;
-      --wash: rgba(90, 255, 150, 0.12);
+      --wash: rgba(90, 255, 150, 0.10);
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; }
@@ -29,8 +31,9 @@
       flex-direction: column;
       color: var(--ink);
       background:
-        radial-gradient(ellipse 42% 36% at 28% 62%, rgba(18, 64, 150, 0.32), transparent 68%),
-        radial-gradient(ellipse 26% 22% at 72% 28%, var(--wash), transparent 70%),
+        radial-gradient(ellipse 48% 42% at 16% 18%, rgba(170, 140, 255, 0.24), transparent 68%),
+        radial-gradient(ellipse 42% 38% at 84% 78%, rgba(99, 247, 221, 0.12), transparent 70%),
+        radial-gradient(ellipse 22% 18% at 70% 24%, var(--wash), transparent 72%),
         var(--bg);
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
       line-height: 1.45;
@@ -65,7 +68,7 @@
       font-size: 0.78rem;
       letter-spacing: 0.18em;
       text-transform: lowercase;
-      color: var(--quiet);
+      color: var(--cyan);
     }
     .plate {
       width: min(1120px, calc(100% - 2.4rem));
@@ -83,7 +86,7 @@
       font-size: 0.72rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--dna);
+      color: var(--cyan);
     }
     h1 {
       margin: 0;
@@ -140,7 +143,7 @@
     .lamps label:has(input:focus-visible),
     .doors a:focus-visible,
     .skip:focus {
-      outline: 2px solid #e8eef8;
+      outline: 2px solid var(--cyan);
       outline-offset: 3px;
     }
     .ring-card input, .show-all input {
@@ -178,7 +181,7 @@
       text-transform: uppercase;
       text-decoration: none;
     }
-    .doors a:hover { color: var(--dna); }
+    .doors a:hover { color: var(--cyan); }
     .lamps {
       display: flex;
       flex-wrap: wrap;
@@ -252,7 +255,7 @@
     .back { stroke: url(#depth); stroke-width: 1.7; }
     .front { stroke: url(#life); stroke-width: 2.7; filter: url(#soft); }
     .rung { stroke-linecap: round; }
-    .stars { fill: #e7eef8; transform-box: view-box; transform-origin: center; animation: drift 180s linear infinite; }
+    .stars { fill: var(--violet); transform-box: view-box; transform-origin: center; animation: drift 180s linear infinite; }
     .breath { transform-box: view-box; transform-origin: center; animation: breath 7.5s ease-in-out infinite; }
     @keyframes drift { to { transform: rotate(360deg); } }
     @keyframes breath { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.5; } }
@@ -381,7 +384,7 @@
         <g class="ring is-sym" id="ring-sym">
           <ellipse class="breath pass-green" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-green)" filter="url(#bloom)"/>
           <ellipse class="breath pass-red" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-red)" filter="url(#bloom)"/>
-          <g fill="none" stroke="rgba(214,232,222,0.55)" stroke-linecap="round">
+          <g fill="none" stroke="rgba(99,247,221,0.62)" stroke-linecap="round">
             <line x1="320.0" y1="96.0" x2="320.0" y2="84.0" stroke-width="1.15"/>
             <line x1="432.0" y1="126.0" x2="438.0" y2="115.6" stroke-width="1.15"/>
             <line x1="514.0" y1="208.0" x2="524.4" y2="202.0" stroke-width="1.15"/>
@@ -395,12 +398,12 @@
             <line x1="126.0" y1="208.0" x2="115.6" y2="202.0" stroke-width="1.15"/>
             <line x1="208.0" y1="126.0" x2="202.0" y2="115.6" stroke-width="1.15"/>
           </g>
-          <circle cx="320" cy="320" r="236" fill="none" stroke="rgba(214,232,222,0.42)" stroke-width="1.15"/>
+          <circle cx="320" cy="320" r="236" fill="none" stroke="rgba(99,247,221,0.46)" stroke-width="1.15"/>
         </g>
 
         <g class="ring is-cosmos" id="ring-cosmos">
-          <circle cx="320" cy="320" r="176" fill="none" stroke="rgba(190,208,230,0.42)" stroke-width="1"/>
-          <ellipse cx="320" cy="320" rx="176" ry="54" fill="none" stroke="rgba(190,208,230,0.28)" stroke-width="0.8" transform="rotate(-24 320 320)"/>
+          <circle cx="320" cy="320" r="176" fill="none" stroke="rgba(170,140,255,0.62)" stroke-width="1.15"/>
+          <ellipse cx="320" cy="320" rx="176" ry="54" fill="none" stroke="rgba(170,140,255,0.38)" stroke-width="0.9" transform="rotate(-24 320 320)"/>
           <g class="stars">
             <circle cx="505.0" cy="317.9" r="1.5" opacity="1"/>
             <circle cx="490.8" cy="391.1" r="0.9" opacity="0.7"/>
