@@ -4,11 +4,378 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>dualiscapax</title>
-  <script type="module" crossorigin src="/assets/scene-manifest-BjFSetx2.js"></script>
-  <script type="module" crossorigin src="/assets/main-aLcyOp8b.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-CR0t-DG4.css">
+  <meta name="description" content="Three rings. Philosophy and science governed by law. DNA, the cosmos, and biosynthetic symbiosis.">
+  <meta name="theme-color" content="#02060a">
+  <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #02060a;
+      --ink: #e7f4ee;
+      --quiet: #b7d0c6;
+      --faint: #8eaea3;
+      --line: rgba(214, 236, 224, 0.16);
+      --dna: #7ee0d2;
+      --cosmos: #c5d4ea;
+      --sym: #9dffb0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      min-height: 100dvh;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 42% 36% at 28% 58%, rgba(14, 92, 120, 0.28), transparent 68%),
+        radial-gradient(ellipse 28% 24% at 32% 28%, rgba(120, 255, 170, 0.10), transparent 70%),
+        var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    .skip {
+      position: absolute;
+      left: 1rem;
+      top: 0;
+      transform: translateY(-120%);
+      background: var(--ink);
+      color: var(--bg);
+      padding: 0.4rem 0.7rem;
+      z-index: 2;
+    }
+    .skip:focus { transform: none; }
+    header {
+      width: min(1120px, calc(100% - 2.4rem));
+      margin: 0 auto;
+      padding: calc(1.15rem + env(safe-area-inset-top)) 0 0;
+    }
+    .name {
+      margin: 0;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: lowercase;
+      color: var(--quiet);
+    }
+    .plate {
+      width: min(1120px, calc(100% - 2.4rem));
+      margin: 0 auto;
+      padding: 1.25rem 0 calc(2rem + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.15fr);
+      gap: clamp(1.2rem, 4vw, 3.5rem);
+      align-items: center;
+    }
+    .read { max-width: 38rem; }
+    .eyebrow {
+      margin: 0 0 0.8rem;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--dna);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.7rem, 6vw, 4.7rem);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 0.92;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--sym);
+    }
+    .lede {
+      margin: 1.1rem 0 0;
+      max-width: 34ch;
+      color: var(--quiet);
+      font-size: 1.12rem;
+    }
+    .show-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 1.25rem 0 0;
+      color: var(--quiet);
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+    .show-all:has(input:checked) { color: var(--ink); }
+    .rings {
+      list-style: none;
+      margin: 0.8rem 0 0;
+      padding: 0;
+      display: grid;
+      gap: 0.35rem;
+    }
+    .ring-card, .show-all {
+      position: relative;
+    }
+    .ring-card {
+      display: grid;
+      grid-template-columns: 7.2rem 1fr;
+      gap: 0.35rem 0.8rem;
+      align-items: baseline;
+      margin: 0;
+      padding: 0.72rem 0.2rem 0.72rem 0.85rem;
+      border-left: 2px solid transparent;
+      cursor: pointer;
+    }
+    .ring-card:has(input:checked) {
+      border-left-color: var(--c);
+      background: linear-gradient(90deg, color-mix(in srgb, var(--c) 16%, transparent), transparent 78%);
+    }
+    .ring-card:has(input:focus-visible),
+    .show-all:has(input:focus-visible),
+    .doors a:focus-visible,
+    .skip:focus {
+      outline: 2px solid var(--sym);
+      outline-offset: 3px;
+    }
+    .ring-card input, .show-all input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      margin: 0;
+    }
+    .kicker {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.74rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--c);
+    }
+    .say { color: var(--ink); font-size: 1.02rem; }
+    .close {
+      margin: 1.15rem 0 0;
+      max-width: 38ch;
+      color: var(--quiet);
+    }
+    .doors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.1rem;
+      margin-top: 1.6rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+    }
+    .doors a {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .doors a:hover { color: var(--sym); }
+    .honest {
+      margin: 0.85rem 0 0;
+      color: var(--faint);
+      font-size: 0.88rem;
+    }
+    figure {
+      margin: 0;
+      min-width: 0;
+    }
+    svg {
+      display: block;
+      width: min(100%, 640px);
+      height: auto;
+      margin-inline: auto;
+    }
+    .ring { transition: opacity 280ms ease; }
+    .plate:has(#pick-dna:checked) .ring:not(.is-dna),
+    .plate:has(#pick-cosmos:checked) .ring:not(.is-cosmos),
+    .plate:has(#pick-sym:checked) .ring:not(.is-sym) {
+      opacity: 0.2;
+    }
+    .back, .front { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .back { stroke: url(#depth); stroke-width: 1.7; }
+    .front { stroke: url(#life); stroke-width: 2.7; filter: url(#soft); }
+    .rung { stroke-linecap: round; }
+    .stars { fill: #e7eef8; transform-box: view-box; transform-origin: center; animation: drift 180s linear infinite; }
+    .breath { transform-box: view-box; transform-origin: center; animation: breath 7.5s ease-in-out infinite; }
+    @keyframes drift { to { transform: rotate(360deg); } }
+    @keyframes breath { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.5; } }
+    @media (prefers-reduced-motion: reduce) {
+      .stars, .breath { animation: none; }
+      .ring { transition: none; }
+    }
+    @media (max-width: 860px) {
+      .plate {
+        grid-template-columns: 1fr;
+        padding-top: 0.4rem;
+      }
+      figure { order: -1; width: min(100%, 460px); margin-inline: auto; }
+      .ring-card { grid-template-columns: 6.4rem 1fr; }
+      h1 { font-size: clamp(2.5rem, 12vw, 3.6rem); }
+    }
+  </style>
 </head>
 <body>
-  <canvas id="scene"></canvas>
+  <a class="skip" href="#rings">Skip to the three rings</a>
+  <header>
+    <p class="name">dualiscapax</p>
+  </header>
+  <main class="plate">
+    <div class="read">
+      <p class="eyebrow">Philosophy · Science · Law</p>
+      <h1>Science under<br><em>law</em></h1>
+      <p class="lede">Philosophy and science, governed by law. Three rings. One constraint.</p>
+      <label class="show-all">
+        <input type="radio" name="ring" id="all" checked>
+        All three
+      </label>
+      <ol class="rings" id="rings">
+        <li>
+          <label class="ring-card" style="--c: var(--dna)">
+            <input type="radio" name="ring" id="pick-dna">
+            <span class="kicker">DNA</span>
+            <span class="say">Living code. The helix is the record.</span>
+          </label>
+        </li>
+        <li>
+          <label class="ring-card" style="--c: var(--cosmos)">
+            <input type="radio" name="ring" id="pick-cosmos">
+            <span class="kicker">Cosmos</span>
+            <span class="say">The field that record is written on. It has no outside.</span>
+          </label>
+        </li>
+        <li>
+          <label class="ring-card" style="--c: var(--sym)">
+            <input type="radio" name="ring" id="pick-sym">
+            <span class="kicker">Symbiosis</span>
+            <span class="say">Bioluminescence from the depth meets the green glow of silicon. Agency stays inside the ring.</span>
+          </label>
+        </li>
+      </ol>
+      <p class="close">Biosynthetic symbiosis. Life and silicon under the same constraint.</p>
+      <nav class="doors" aria-label="Further">
+        <a href="law.html">Law</a>
+        <a href="research/philosophy/">Philosophy</a>
+        <a href="for-people.html">For you</a>
+      </nav>
+      <p class="honest">Look is free. This page stores nothing.</p>
+    </div>
+    <figure>
+      <svg viewBox="0 0 640 640" role="img" aria-labelledby="fig-title fig-desc">
+        <title id="fig-title">Three rings</title>
+        <desc id="fig-desc">An armillary of three rings. The inner ring is DNA, a helix lit from deep blue at the base up into green. The middle ring is the cosmos, a thin orbit with a few stars. The outer ring is law. A green arc on that ring is silicon light meeting the living light. That meeting is biosynthetic symbiosis.</desc>
+        <defs>
+          <linearGradient id="life" x1="320" y1="128" x2="320" y2="512" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#d8ffc2"/>
+            <stop offset="0.18" stop-color="#8dffc4"/>
+            <stop offset="0.42" stop-color="#3ee0d0"/>
+            <stop offset="0.7" stop-color="#1498c0"/>
+            <stop offset="1" stop-color="#163e72"/>
+          </linearGradient>
+          <linearGradient id="depth" x1="320" y1="128" x2="320" y2="512" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#1f6b58"/>
+            <stop offset="0.45" stop-color="#0c4e5c"/>
+            <stop offset="1" stop-color="#0a2340"/>
+          </linearGradient>
+          <radialGradient id="bio" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#1ec8d8" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#1ec8d8" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="phos" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#b6ff9a" stop-opacity="0.7"/>
+            <stop offset="1" stop-color="#b6ff9a" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="1.1" result="b"/>
+            <feMerge>
+              <feMergeNode in="b"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="phosphor" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3.2" result="b"/>
+            <feMerge>
+              <feMergeNode in="b"/>
+              <feMergeNode in="b"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="bloom" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="14"/>
+          </filter>
+        </defs>
+
+        <g class="ring is-sym" id="ring-sym">
+          <ellipse class="breath" cx="320" cy="168" rx="108" ry="46" fill="url(#phos)" filter="url(#bloom)"/>
+          <g fill="none" stroke="rgba(214,232,222,0.55)" stroke-linecap="round">
+            <line x1="320.0" y1="96.0" x2="320.0" y2="84.0" stroke-width="1.15"/>
+            <line x1="432.0" y1="126.0" x2="438.0" y2="115.6" stroke-width="1.15"/>
+            <line x1="514.0" y1="208.0" x2="524.4" y2="202.0" stroke-width="1.15"/>
+            <line x1="544.0" y1="320.0" x2="556.0" y2="320.0" stroke-width="1.15"/>
+            <line x1="514.0" y1="432.0" x2="524.4" y2="438.0" stroke-width="1.15"/>
+            <line x1="432.0" y1="514.0" x2="438.0" y2="524.4" stroke-width="1.15"/>
+            <line x1="320.0" y1="544.0" x2="320.0" y2="556.0" stroke-width="1.15"/>
+            <line x1="208.0" y1="514.0" x2="202.0" y2="524.4" stroke-width="1.15"/>
+            <line x1="126.0" y1="432.0" x2="115.6" y2="438.0" stroke-width="1.15"/>
+            <line x1="96.0" y1="320.0" x2="84.0" y2="320.0" stroke-width="1.15"/>
+            <line x1="126.0" y1="208.0" x2="115.6" y2="202.0" stroke-width="1.15"/>
+            <line x1="208.0" y1="126.0" x2="202.0" y2="115.6" stroke-width="1.15"/>
+          </g>
+          <circle cx="320" cy="320" r="236" fill="none" stroke="rgba(214,232,222,0.42)" stroke-width="1.15"/>
+        </g>
+
+        <g class="ring is-cosmos" id="ring-cosmos">
+          <circle cx="320" cy="320" r="176" fill="none" stroke="rgba(190,208,230,0.42)" stroke-width="1"/>
+          <ellipse cx="320" cy="320" rx="176" ry="54" fill="none" stroke="rgba(190,208,230,0.28)" stroke-width="0.8" transform="rotate(-24 320 320)"/>
+          <g class="stars">
+            <circle cx="505.0" cy="317.9" r="1.5" opacity="1"/>
+            <circle cx="490.8" cy="391.1" r="0.9" opacity="0.7"/>
+            <circle cx="437.7" cy="456.2" r="0.9" opacity="0.45"/>
+            <circle cx="388.2" cy="479.0" r="0.7" opacity="0.45"/>
+            <circle cx="315.9" cy="500.0" r="1.5" opacity="0.7"/>
+            <circle cx="244.2" cy="488.8" r="0.7" opacity="0.45"/>
+            <circle cx="212.0" cy="455.2" r="0.7" opacity="1"/>
+            <circle cx="152.2" cy="397.9" r="0.9" opacity="0.7"/>
+            <circle cx="140.1" cy="313.9" r="0.7" opacity="0.45"/>
+            <circle cx="156.7" cy="254.3" r="1.5" opacity="0.45"/>
+            <circle cx="201.9" cy="189.5" r="0.9" opacity="0.9"/>
+            <circle cx="230.4" cy="158.1" r="0.7" opacity="1"/>
+            <circle cx="303.5" cy="144.8" r="1.5" opacity="0.45"/>
+            <circle cx="400.9" cy="172.8" r="0.9" opacity="0.7"/>
+            <circle cx="450.3" cy="214.0" r="1.5" opacity="1"/>
+            <circle cx="493.1" cy="270.7" r="1.5" opacity="0.45"/>
+          </g>
+        </g>
+
+        <g class="ring is-dna" id="ring-dna">
+          <ellipse class="breath" cx="320" cy="390" rx="64" ry="130" fill="url(#bio)" filter="url(#bloom)"/>
+          <circle cx="320" cy="320" r="112" fill="none" stroke="rgba(126,224,210,0.55)" stroke-width="1.15"/>
+          <g class="back">
+            <path d="M362.0 171.9 L361.8 174.6 L361.1 177.4 L360.1 180.1 L358.6 182.9 L356.8 185.6 L354.6 188.3 L352.1 191.1 L349.3 193.8 L346.2 196.6 L342.8 199.3 L339.2 202.1 L335.5 204.8 L331.5 207.5 L327.5 210.3 L323.4 213.0 L319.2 215.8 L315.1 218.5 L311.0 221.3 L307.0 224.0 L303.1 226.7 L299.4 229.5 L295.9 232.2 L292.7 235.0 L289.6 237.7 L286.9 240.5 L284.5 243.2 L282.5 245.9 L280.8 248.7 L279.5 251.4 L278.6 254.2 L278.1 256.9 L278.0 259.7"/>
+            <path d="M362.0 347.4 L361.6 350.2 L360.8 352.9 L359.6 355.7 L358.0 358.4 L356.1 361.1 L353.8 363.9 L351.1 366.6 L348.2 369.4 L345.0 372.1 L341.5 374.9 L337.9 377.6 L334.0 380.3 L330.1 383.1 L326.0 385.8 L321.9 388.6 L317.7 391.3 L313.6 394.1 L309.6 396.8 L305.6 399.5 L301.8 402.3 L298.1 405.0 L294.7 407.8 L291.5 410.5 L288.6 413.3 L286.0 416.0 L283.8 418.7 L281.8 421.5 L280.3 424.2 L279.1 427.0 L278.4 429.7 L278.0 432.5 L278.1 435.2"/>
+            <path d="M320.0 128.0 L315.9 130.7 L311.8 133.5 L307.7 136.2 L303.8 139.0 L300.1 141.7 L296.5 144.5 L293.2 147.2 L290.2 149.9 L287.4 152.7 L284.9 155.4 L282.8 158.2 L281.1 160.9 L279.7 163.7 L278.7 166.4 L278.2 169.1 L278.0 171.9"/>
+            <path d="M362.0 259.7 L361.7 262.4 L360.9 265.1 L359.8 267.9 L358.3 270.6 L356.4 273.4 L354.2 276.1 L351.6 278.9 L348.8 281.6 L345.6 284.3 L342.2 287.1 L338.6 289.8 L334.8 292.6 L330.8 295.3 L326.8 298.1 L322.6 300.8 L318.5 303.5 L314.4 306.3 L310.3 309.0 L306.3 311.8 L302.5 314.5 L298.8 317.3 L295.3 320.0 L292.1 322.7 L289.1 325.5 L286.5 328.2 L284.1 331.0 L282.2 333.7 L280.5 336.5 L279.3 339.2 L278.5 341.9 L278.1 344.7 L278.0 347.4"/>
+            <path d="M361.9 435.2 L361.5 437.9 L360.6 440.7 L359.3 443.4 L357.7 446.2 L355.7 448.9 L353.3 451.7 L350.6 454.4 L347.6 457.1 L344.4 459.9 L340.9 462.6 L337.2 465.4 L333.3 468.1 L329.3 470.9 L325.3 473.6 L321.1 476.3 L317.0 479.1 L312.9 481.8 L308.8 484.6 L304.9 487.3 L301.1 490.1 L297.5 492.8 L294.1 495.5 L291.0 498.3 L288.1 501.0 L285.6 503.8 L283.4 506.5 L281.5 509.3 L280.1 512.0"/>
+          </g>
+          <g class="rung" fill="none">
+            <line x1="361.3" y1="166.4" x2="278.7" y2="166.4" stroke="#9dffb0" stroke-width="1.6"/>
+            <line x1="279.5" y1="251.4" x2="360.5" y2="251.4" stroke="#3ee0c8" stroke-width="1.55"/>
+            <line x1="360.7" y1="339.2" x2="279.3" y2="339.2" stroke="#1aa8c4" stroke-width="1.5"/>
+            <line x1="279.1" y1="427.0" x2="360.9" y2="427.0" stroke="#1a5f90" stroke-width="1.45"/>
+          </g>
+          <g class="front">
+            <path d="M320.0 128.0 L324.1 130.7 L328.2 133.5 L332.3 136.2 L336.2 139.0 L339.9 141.7 L343.5 144.5 L346.8 147.2 L349.8 149.9 L352.6 152.7 L355.1 155.4 L357.2 158.2 L358.9 160.9 L360.3 163.7 L361.3 166.4 L361.8 169.1 L362.0 171.9"/>
+            <path d="M278.0 259.7 L278.3 262.4 L279.1 265.1 L280.2 267.9 L281.7 270.6 L283.6 273.4 L285.8 276.1 L288.4 278.9 L291.2 281.6 L294.4 284.3 L297.8 287.1 L301.4 289.8 L305.2 292.6 L309.2 295.3 L313.2 298.1 L317.4 300.8 L321.5 303.5 L325.6 306.3 L329.7 309.0 L333.7 311.8 L337.5 314.5 L341.2 317.3 L344.7 320.0 L347.9 322.7 L350.9 325.5 L353.5 328.2 L355.9 331.0 L357.8 333.7 L359.5 336.5 L360.7 339.2 L361.5 341.9 L361.9 344.7 L362.0 347.4"/>
+            <path d="M278.1 435.2 L278.5 437.9 L279.4 440.7 L280.7 443.4 L282.3 446.2 L284.3 448.9 L286.7 451.7 L289.4 454.4 L292.4 457.1 L295.6 459.9 L299.1 462.6 L302.8 465.4 L306.7 468.1 L310.7 470.9 L314.7 473.6 L318.9 476.3 L323.0 479.1 L327.1 481.8 L331.2 484.6 L335.1 487.3 L338.9 490.1 L342.5 492.8 L345.9 495.5 L349.0 498.3 L351.9 501.0 L354.4 503.8 L356.6 506.5 L358.5 509.3 L359.9 512.0"/>
+            <path d="M278.0 171.9 L278.2 174.6 L278.9 177.4 L279.9 180.1 L281.4 182.9 L283.2 185.6 L285.4 188.3 L287.9 191.1 L290.7 193.8 L293.8 196.6 L297.2 199.3 L300.8 202.1 L304.5 204.8 L308.5 207.5 L312.5 210.3 L316.6 213.0 L320.8 215.8 L324.9 218.5 L329.0 221.3 L333.0 224.0 L336.9 226.7 L340.6 229.5 L344.1 232.2 L347.3 235.0 L350.4 237.7 L353.1 240.5 L355.5 243.2 L357.5 245.9 L359.2 248.7 L360.5 251.4 L361.4 254.2 L361.9 256.9 L362.0 259.7"/>
+            <path d="M278.0 347.4 L278.4 350.2 L279.2 352.9 L280.4 355.7 L282.0 358.4 L283.9 361.1 L286.2 363.9 L288.9 366.6 L291.8 369.4 L295.0 372.1 L298.5 374.9 L302.1 377.6 L306.0 380.3 L309.9 383.1 L314.0 385.8 L318.1 388.6 L322.3 391.3 L326.4 394.1 L330.4 396.8 L334.4 399.5 L338.2 402.3 L341.9 405.0 L345.3 407.8 L348.5 410.5 L351.4 413.3 L354.0 416.0 L356.2 418.7 L358.2 421.5 L359.7 424.2 L360.9 427.0 L361.6 429.7 L362.0 432.5 L361.9 435.2"/>
+          </g>
+          <circle cx="320" cy="128" r="2.4" fill="#d8ffc2"/>
+        </g>
+
+        <g class="ring is-sym" id="ring-meet">
+          <circle cx="320" cy="320" r="236" fill="none" stroke="#c8ffb4" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
+        </g>
+      </svg>
+    </figure>
+  </main>
 </body>
 </html>
