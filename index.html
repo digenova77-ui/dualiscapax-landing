@@ -222,6 +222,9 @@
       <p id="sandbox-law">Every node computes the same math the same way from scratch. A cryptocurrency network is not required.</p>
       <p>The 50/50 Merit split is not finalized. The 90/9/1 profile and the 99/1 profile are candidates.</p>
       <p>The published joule is null, so the Merit gate stays shut.</p>
+      <p>A sensor asks GET /api/merit/align once. Off means off. One admitted read is kept, and the next step recalls it. A null read leaves the joule null, so the Merit gate stays shut.</p>
+      <button type="button" id="joule-ask">Ask the reading</button>
+      <p id="joule-out" class="honest" aria-live="polite">The joule is null. The Merit gate stays shut.</p>
       <p>No early-adopter seat is named. No founder-board seat is named.</p>
       <p class="honest">No coin is offered.</p>
       <button type="button" id="sandbox-run">Run the math twice</button>
@@ -245,9 +248,13 @@
   </main>
   </div>
   <script type="module">
+  import { open as openRead } from "./js/joule-read.js";
   import { run } from "./js/sandbox-math.js";
   const button = document.getElementById("sandbox-run");
   const out = document.getElementById("sandbox-out");
+  const sensor = openRead();
+  const ask = document.getElementById("joule-ask");
+  const jouleOut = document.getElementById("joule-out");
   function ring() {
     if (document.getElementById("pick-iris").checked) return "iris";
     if (document.getElementById("pick-cosmos").checked) return "cosmos";
@@ -264,6 +271,13 @@
     out.textContent = JSON.stringify(first) === JSON.stringify(second)
       ? "Same math. Gate shut. No coin."
       : "The two runs differed.";
+  });
+  ask.addEventListener("click", async function () {
+    sensor.set(true);
+    const row = await sensor.read();
+    jouleOut.textContent = row.joule === null || row.open !== true
+      ? "The joule is null. The Merit gate stays shut."
+      : "A read is on the tape. Look stays 0.";
   });
   </script>
 </body>
