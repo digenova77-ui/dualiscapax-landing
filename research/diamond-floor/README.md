@@ -41,7 +41,7 @@ A failed check blocks promotion. No missing data is filled with a mock success.
 ## Implemented in this branch
 
 - `diamond_floor.py`: deterministic inventory, content-addressed ingest, provenance ledger, verification, and derivative reports. Any non-empty change set is `PARTIAL` until reviewed; a zero-change comparison is `PASS`, but neither authorizes promotion.
-- `derivative_graph.py`: canonical hash-bound node/edge graph with a complete ceiling → mesh → floor → seed → taproot → bedrock trace, three required evidence rings, invariant checks, and node/edge/ring/invariant delta reporting.
+- `derivative_graph.py`: canonical hash-bound node/edge graph with a complete ceiling → mesh → floor → seed → taproot → bedrock trace, three required evidence rings, invariant checks, and node/edge/spectral/cross-layer/ring/invariant delta reporting.
 - `graph.template.json`: explicit fail-closed graph template; placeholder evidence is deliberately blocked, not treated as a real validation.
 - `test_derivative_graph.py`: exercises complete traces, missing ring evidence, trace gaps, tampering, cross-layer deltas, and no-promotion policy.
 - `reconcile.py`: one fail-closed status across inventory integrity, source discovery, public DNS audit evidence, and ledger integrity. A placeholder DNS report is `BLOCKED`, not a false green.
