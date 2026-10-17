@@ -310,7 +310,11 @@ test("the page says the rules and the New World examples", () => {
   assert.equal(html.includes(RING_RULE), true);
   assert.equal(html.includes(SPATIAL), true);
   for (let i = 0; i < EXAMPLES.length; i++) assert.equal(html.includes(EXAMPLES[i]), true);
-  assert.equal(html.includes("One became two. Adam and Eve are the human name for that split: one life, two branches."), true);
+  assert.equal(html.includes("One became two. Adam and Eve are the two who act."), true);
+  assert.equal(html.includes("The bite of the apple is the action: one, then two."), true);
+  assert.equal(html.includes("That action is the split: one life, then two branches."), true);
+  assert.equal(html.includes("The bite is how that split shows in the human story."), true);
+  assert.equal(html.includes("Adam and Eve are the human name for that split"), false);
   assert.equal(html.includes("IBM, 2004. eFuse was adopted for micro circuitry."), true);
   assert.equal(html.includes("Nothing to remember."), true);
   assert.equal(html.includes("Everything on this network has one Unity ID."), true);

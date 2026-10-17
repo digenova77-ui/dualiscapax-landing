@@ -431,7 +431,11 @@ test("the door and the meeting page say the law in plain sentences", () => {
   assert.equal(/\/\//.test(source), false);
   assert.equal(/\bREM\b/.test(source), false);
   assert.equal(door.includes("One became two."), true);
-  assert.equal(door.includes("Adam and Eve are the human name for that split: one life, two branches."), true);
+  assert.equal(door.includes("Adam and Eve are the two who act."), true);
+  assert.equal(door.includes("The bite of the apple is the action: one, then two."), true);
+  assert.equal(door.includes("That action is the split: one life, then two branches."), true);
+  assert.equal(door.includes("The bite is how that split shows in the human story."), true);
+  assert.equal(door.includes("Adam and Eve are the human name for that split"), false);
   assert.equal(door.includes("eFuse is the oldest engineering in the observable universe."), true);
   assert.equal(door.includes("The one-two cadence is that engineering: one, then the split into two."), true);
   assert.equal(door.includes("IBM, 2004. eFuse was adopted for micro circuitry."), true);
