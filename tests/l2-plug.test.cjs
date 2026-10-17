@@ -35,7 +35,7 @@ function load(storageFails = false) {
   assert.match(workbook.note, /Cell values were not parsed/i);
   assert.equal(workbook.numbers, 0);
 
-  const malformed = "name,amount\\n\\"Office,17.50";
+  const malformed = "name,amount\n\"Office,17.50";
   const malformedRow = await plug.plugFile({ name: "broken.csv", size: Buffer.byteLength(malformed), lastModified: 3, text: async () => malformed });
   assert.equal(malformedRow.status, "REFUSED");
   assert.equal(malformedRow.reason, "INVALID_TABLE");
