@@ -82,3 +82,14 @@ For future locally stored assets, record:
 ## Production simplification rule
 
 The current operations record states that the live domain, DNS, database, and New Jersey server must be preserved, and production publication/DNS cutover require explicit approval. The new archive and audit work is isolated on a review branch. It does not remove or replace the existing Pages worker or hosting configuration.
+
+
+## Diamond Floor implementation
+
+The archive now has a companion deterministic artifact engine:
+- [Diamond Floor contract and operating rules](../diamond-floor/README.md)
+- [Python implementation](../diamond-floor/diamond_floor.py)
+- [Manifest schema](../diamond-floor/manifest.schema.json)
+- [Integrity tests](../diamond-floor/test_diamond_floor.py)
+
+The engine inventories selected files, classifies their destination, hashes bytes, stores explicitly ingested local assets by SHA-256, records source/credit/rights metadata, verifies the append-only provenance chain, and calculates candidate-versus-baseline derivatives. It is a local research tool and does not deploy or mutate production.
