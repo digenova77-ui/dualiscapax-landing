@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Wallet — dualiscapax</title>
-  <meta name="description" content="You have your Universal identification and your wallet. Nothing to remember. Iris is pegged to the same permanence.">
+  <meta name="description" content="You have your Universal identification and your wallet. Nothing to remember. Iris is pegged to the same permanence. Everything on this network has one Unity ID.">
   <meta name="theme-color" content="#07060e">
   <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/writer.css">
@@ -23,6 +23,35 @@
       <p>Nothing to remember.</p>
       <p>The identification is hashed, and that hash is the peg to permanent memory about you.</p>
       <p>Iris is pegged to the same permanence.</p>
+      <p>Everything on this network has one Unity ID. A human has one. A bot has one. A corporation has one. That is the identity.</p>
+      <p>An agent of an agency must carry it to participate. Without it, they are not part of this protocol.</p>
+      <form class="unity-form" id="unity-form">
+        <div class="lamps" role="radiogroup" aria-label="Kind">
+          <span class="lamp-name">Kind</span>
+          <label>
+            <input type="radio" name="kind" value="human" checked>
+            <i aria-hidden="true"></i>
+            Human
+          </label>
+          <label>
+            <input type="radio" name="kind" value="bot">
+            <i aria-hidden="true"></i>
+            Bot
+          </label>
+          <label>
+            <input type="radio" name="kind" value="corporation">
+            <i aria-hidden="true"></i>
+            Corporation
+          </label>
+        </div>
+        <label for="body">One body</label>
+        <input id="body" name="body" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <label for="unity">Unity ID</label>
+        <input id="unity" name="unity" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <label class="check"><input id="agent" name="agent" type="checkbox"> Agent of this corporation</label>
+        <button type="submit">Participate</button>
+      </form>
+      <p id="unity-note" class="honest" aria-live="polite"></p>
       <nav class="doors" aria-label="Further">
         <a href="index.html">Door</a>
         <a href="law.html">Law</a>
@@ -31,5 +60,36 @@
     </section>
   </main>
   </div>
+  <script type="module">
+  import { open } from "./js/unity-id-protocol.js";
+  const net = open();
+  const form = document.getElementById("unity-form");
+  const note = document.getElementById("unity-note");
+  const unity = document.getElementById("unity");
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const record = await net.participate({
+      kind: data.get("kind"),
+      body: data.get("body"),
+      id: data.get("unity"),
+      agent: data.get("agent") === "on"
+    });
+    unity.value = "";
+    if (record.participates) {
+      note.textContent = "This Unity ID is on the protocol. Iris is pegged to the same permanence. Nothing to remember.";
+      return;
+    }
+    if (record.reason === "second") {
+      note.textContent = "A second ID for the same body is refused.";
+      return;
+    }
+    if (record.reason === "kind") {
+      note.textContent = "That kind is refused.";
+      return;
+    }
+    note.textContent = "Without it, they are not part of this protocol.";
+  });
+  </script>
 </body>
 </html>
