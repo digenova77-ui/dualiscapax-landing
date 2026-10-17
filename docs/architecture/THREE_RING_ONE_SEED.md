@@ -46,7 +46,7 @@ The seed is a shared contract, not a replacement for the existing swarm protocol
 
 ## Current implementation limits
 
-- The local seed and gate are deterministic Python primitives.
+- The local seed, protocol binding, correlation validator, and gate are deterministic Python primitives.
 - They do not authenticate identities, resolve evidence references, provide distributed consensus, measure physical energy, or execute work.
 - The local `authorized` input is a caller-supplied boolean, not an authentication mechanism. It demonstrates fail-closed decision logic only.
 - The JSON seed status is PROPOSED. It is not a production policy deployment.
