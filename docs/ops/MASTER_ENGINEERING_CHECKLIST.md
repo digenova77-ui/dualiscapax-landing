@@ -88,3 +88,9 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Deployment status — 2026-10-17
 
 Source changes are not a deployment. No Cloudflare dashboard credentials or direct deployment tool were available in this work session. Do not mark live deployment as PASS until the manual staging upload, route checks, and rollback target have been recorded. Do not change DNS or touch live servers/databases as part of this recovery.
+
+## Agent board — 2026-10-17
+
+- [x] Add append-only hash-chained `docs/ops/AGENT_BOARD.jsonl` + `tools/board.py` (stdlib) + `agent-board-verify` CI; seeded genesis and Grok Bot entries for PRs #111–#115.
+- [ ] Every agent appends an entry for each implementation (owner rule).
+- [ ] PROPOSED: optional per-agent ed25519 signatures.
