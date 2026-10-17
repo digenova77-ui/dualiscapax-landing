@@ -15,7 +15,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: public-dns-audit
+  # Serialize evidence refreshes because both workflows write snapshots to this branch.
+  group: research-evidence-refresh
   cancel-in-progress: false
 
 jobs:
@@ -43,4 +44,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add research/photo-archive/public-dns-audit.json
           git commit -m "Record read-only public DNS audit"
+          git pull --rebase origin "${{ github.ref_name }}"
           git push origin "HEAD:${{ github.ref_name }}"
