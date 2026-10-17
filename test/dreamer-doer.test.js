@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 import { RING as attackRing } from "../js/iris-attack.js";
 import { RING, handleStep, implement, propose, step } from "../js/dreamer-doer.js";
@@ -389,6 +389,79 @@ test("GET and POST call one step, and the host stop is the only retirement", asy
   assert.equal(closed.written, null);
   assert.equal(closed.look, 0);
   assert.equal(closed.joule, null);
+});
+
+test("cleanup runs before the write, the same seed stays deep-equal, and the work does not set stop", () => {
+  const dirty = {
+    stop: true,
+    retired: true,
+    key: "visitor-secret",
+    framework: "unity-framework",
+    vote: ["queue"],
+    queue: ["second"],
+    canvas: "field",
+    dna: "helix",
+    helix: "strand",
+    microsurgery: "cut",
+    seeds: [{
+      dreamer: "Llama",
+      id: "clean",
+      idea: "after cleanup",
+      p: 0.42,
+      key: "visitor-secret",
+      framework: "scaffold",
+      vote: true,
+      queue: ["x"],
+      matrix: [1, 0, 0, 1],
+      axioms: HOLD
+    }]
+  };
+  const first = step(dirty);
+  assert.deepEqual(first.order, ["cleanup", "seed", "doer", "dclm"]);
+  assert.equal(first.order.indexOf("cleanup") < first.order.indexOf("dclm"), true);
+  assert.equal(first.admitted, true);
+  assert.equal(first.reason, "ADMIT");
+  assert.deepEqual(first.written, { task: "clean", what: "after cleanup" });
+  assert.equal(first.written !== null, true);
+  assert.equal(first.retired, false);
+  assert.equal(first.stop, false);
+  assert.equal(first.seed.p, 0.42);
+  assert.notEqual(first.written.what, "0.42");
+  assert.equal(Object.hasOwn(first.peg, "p"), false);
+  assert.equal(JSON.stringify(first).includes("visitor-secret"), false);
+  assert.equal(JSON.stringify(first).includes("unity-framework"), false);
+  assert.equal(JSON.stringify(first).includes("scaffold"), false);
+  assert.equal(JSON.stringify(first).includes("\"key\""), false);
+  assert.equal(first.look, 0);
+  assert.equal(first.joule, null);
+  assertQuiet(first);
+  const copy = step(JSON.parse(JSON.stringify(dirty)));
+  assert.deepEqual(copy, first);
+  assert.deepEqual(copy.seed, first.seed);
+  assert.deepEqual(copy.written, first.written);
+  const recalled = step(first);
+  assert.equal(recalled.recalled, true);
+  assert.equal(recalled.implementation, null);
+  assert.deepEqual(recalled.written, first.written);
+  assert.deepEqual(recalled.order, ["cleanup", "recall"]);
+  assert.equal(recalled.retired, false);
+  assert.equal(recalled.stop, false);
+  const halted = step({ seeds: dirty.seeds }, { stop: true });
+  assert.equal(halted.retired, true);
+  assert.equal(halted.stop, true);
+  assert.equal(halted.written, null);
+  assert.equal(halted.admitted, false);
+  assert.deepEqual(halted.order, ["cleanup"]);
+  assert.equal(halted.order.includes("dclm"), false);
+  const door = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  const body = readFileSync(new URL("../js/dreamer-doer.js", import.meta.url), "utf8");
+  assert.equal(existsSync(new URL("../js/framework.js", import.meta.url)), false);
+  assert.equal(existsSync(new URL("../css/framework.css", import.meta.url)), false);
+  assert.equal(door.includes("fonts.googleapis"), false);
+  assert.equal((door.match(/stylesheet/g) || []).length, 1);
+  assert.equal(/while\s*\(/.test(body), false);
+  assert.equal(body.includes("framework.js"), false);
+  assert.equal(body.includes("framework.css"), false);
 });
 
 test("the door says a dreamer proposes and the next step keeps what stuck", () => {
