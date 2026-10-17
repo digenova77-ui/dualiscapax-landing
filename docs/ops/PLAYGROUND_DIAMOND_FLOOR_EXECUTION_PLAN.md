@@ -18,8 +18,9 @@
 - [x] Make the playground label Excel workbooks as metadata-only because cell values are not parsed.
 - [x] Fix API world switching so `DCWorld.apply(0|1)` updates the active request route and metadata.
 - [x] Fix API config's falsy-value bug that turned World 0 into World 1 in request headers/body when the standalone client path was used.
-- [x] Add an isolated Node 20 test workflow for workbench pushes and pull requests; no passing test run is confirmed yet.
-- [ ] Run all tests in a real checkout and verify the supported runtime.
+- [x] Add an isolated Node 20 test workflow for workbench pushes and pull requests.
+- [x] Run the Node 20 suite in GitHub Actions: 5 test files passed, 0 failed on commit `fec8d3466167bb102d90aa7f0dd6b6aaaee93d64` (run 39005709731).
+- [ ] Run browser-level checks on desktop/mobile and a production build in a safe environment.
 - [ ] Inspect Replit workspace changes when agent usage is available; do not assume all changes are committed.
 - [ ] Confirm which exact Cloudflare Worker/branch emitted the invalid build-token log.
 
@@ -46,7 +47,8 @@
 
 - [ ] Trace the API v2 route to the authoritative kernel; do not treat a client-side label or mock response as backend proof.
 - [x] Add deterministic tests for Iris recovery, local-file limits/privacy, API-origin restrictions, world switching, L2 parsing limits, metadata-only workbooks, and storage failure behavior.
-- [ ] Execute the test suite in a real checkout and run a production build in a safe environment.
+- [x] Execute the isolated test suite in a real GitHub Actions checkout (Node 20; 5 files passed, 0 failed).
+- [ ] Run a production build in a safe environment.
 - [ ] Confirm the actual deployment rail and rollback artifact.
 - [ ] Obtain explicit user approval before production deployment, DNS edits, auth-provider changes, or live server/database/firewall changes.
 
