@@ -9,8 +9,8 @@
 - [x] Preserve a reviewable work branch separate from `main`.
 - [x] Correct Iris session state recovery: answer lookup success/failure returns the session to `idle` instead of leaving it stuck in `think`.
 - [x] Add Node built-in tests for missing engine, successful answer, and rejected lookup paths.
-- [x] Restrict the browser-controlled `?api=` override to the same origin or the configured DualisCapax API worker in both API clients. The previous code could direct chat POSTs to an arbitrary origin.
-- [x] Add tests for untrusted, same-origin, and trusted API override paths.
+- [x] Restrict the browser-controlled `?api=` override and preconfigured API base to the same origin or the configured DualisCapax API worker in both API clients. The previous code could direct chat POSTs to an arbitrary origin.
+- [x] Add tests for untrusted query overrides, untrusted preconfigured API bases, same-origin and trusted bases, World 0 serialization, and world switching.
 - [x] Add a request-level test proving World 0 remains `0` in the request body and `X-DC-World` header.
 - [x] Bound L2 text-file reads to 5 MiB and metadata-only workbook fingerprinting to 25 MiB.
 - [x] Parse quoted CSV/TSV fields and multiline quoted cells; count actual JSON numeric values rather than digits embedded in strings.
@@ -18,7 +18,7 @@
 - [x] Make the playground label Excel workbooks as metadata-only because cell values are not parsed.
 - [x] Fix API world switching so `DCWorld.apply(0|1)` updates the active request route and metadata.
 - [x] Fix API config's falsy-value bug that turned World 0 into World 1 in request headers/body when the standalone client path was used.
-- [x] Add an isolated pull-request test workflow; its first execution is still pending.
+- [x] Add an isolated Node 20 test workflow for workbench pushes and pull requests; no passing test run is confirmed yet.
 - [ ] Run all tests in a real checkout and verify the supported runtime.
 - [ ] Inspect Replit workspace changes when agent usage is available; do not assume all changes are committed.
 - [ ] Confirm which exact Cloudflare Worker/branch emitted the invalid build-token log.
