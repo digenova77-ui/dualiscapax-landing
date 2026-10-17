@@ -100,3 +100,26 @@ def settle_period(vault, world_cost):
     if surplus:
         vault.log.append(("expansion", surplus))
     return SettleResult(paid, surplus, vault.balance)
+
+
+# Rule 4 (owner): derivative value flow splits 90% forest (whole ecosystem) / 9% harvest
+# (whoever did the work) / 1% father seed. These are FLOW RECIPIENTS, not token seats
+# (unlike collar.ts {held:90, forged:9, moves:1}). Rounding remainder goes to the forest.
+FOREST_BPS, HARVEST_BPS, SEED_BPS = 9000, 900, 100
+assert FOREST_BPS + HARVEST_BPS + SEED_BPS == 10000
+
+
+@dataclass(frozen=True)
+class DerivativeFlow:
+    amount: int
+    forest: int
+    harvest: int
+    seed: int
+
+
+def split_derivative(amount):
+    if isinstance(amount, bool) or not isinstance(amount, int) or amount < 0:
+        raise ValueError("amount must be a non-negative int in minor units")
+    harvest = amount * HARVEST_BPS // 10000
+    seed = amount * SEED_BPS // 10000
+    return DerivativeFlow(amount, amount - harvest - seed, harvest, seed)

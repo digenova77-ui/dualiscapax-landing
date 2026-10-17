@@ -96,3 +96,23 @@ class TestSurplusExpansion(unittest.TestCase):
         v = t.EFuseVault(); v.record_purchase(10000, "usd"); t.settle_period(v, 0)
         with self.assertRaises(t.EFuseLocked):
             v.withdraw(1, "founder")
+
+
+class TestDerivative9091(unittest.TestCase):
+    def test_exact_split(self):
+        self.assertEqual(t.split_derivative(10000), t.DerivativeFlow(10000, 9000, 900, 100))
+
+    def test_remainder_to_forest_and_conservation(self):
+        for a in range(0, 3001):
+            f = t.split_derivative(a)
+            self.assertEqual(f.forest + f.harvest + f.seed, a)
+            self.assertGreaterEqual(f.forest, a * 9 // 10)
+            self.assertLessEqual(f.seed, a // 100)
+
+    def test_small_amount(self):
+        self.assertEqual(t.split_derivative(99), t.DerivativeFlow(99, 91, 8, 0))
+
+    def test_rejects_bad(self):
+        for bad in (-1, 2.5, None):
+            with self.assertRaises(ValueError):
+                t.split_derivative(bad)
