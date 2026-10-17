@@ -41,18 +41,20 @@
     if (g.DCWorld && typeof g.DCWorld.chat === 'function') return g.DCWorld.chat(messages, opts);
     var fuelBal = opts.fuelBalance;
     if (typeof fuelBal !== 'number' && g.DCFuel) fuelBal = g.DCFuel.balance();
-    var path = g.DC_API_PATH || '/v2/chat';
+    var activeWorld = g.DC_WORLD === 0 ? 0 : 1;
+    var apiVersion = String(g.DC_API_VERSION || (activeWorld === 1 ? '2' : '1'));
+    var path = g.DC_API_PATH || (activeWorld === 1 ? '/v2/chat' : '/v1/chat');
     var res = await fetch(base + path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-DC-Fuel': String(fuelBal != null ? fuelBal : ''),
-        'X-DC-World': String(g.DC_WORLD || 1),
-        'X-DC-API-Version': String(g.DC_API_VERSION || '2')
+        'X-DC-World': String(activeWorld),
+        'X-DC-API-Version': apiVersion
       },
       body: JSON.stringify({
-        world: g.DC_WORLD || 1,
-        api_version: String(g.DC_API_VERSION || '2'),
+        world: activeWorld,
+        api_version: apiVersion,
         messages: messages,
         fuel: { balance: fuelBal, burn: opts.burn || 1 },
         session_id: opts.session_id || null,
