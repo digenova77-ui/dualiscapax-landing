@@ -49,7 +49,7 @@ class ReconciliationTests(unittest.TestCase):
             self.assertEqual(rc.check_ledger(path)["status"], "PASS")
             path.write_text("", encoding="utf-8")
             self.assertEqual(rc.check_ledger(path)["reason"], "ledger-empty")
-            path.write_text(json.dumps(record) + "\\n", encoding="utf-8")
+            path.write_text(json.dumps(record) + "\n", encoding="utf-8")
             record["event"] = "tampered"
             path.write_text(json.dumps(record) + "\n", encoding="utf-8")
             self.assertEqual(rc.check_ledger(path)["status"], "FAIL")
