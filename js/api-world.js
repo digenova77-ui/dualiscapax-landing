@@ -3,7 +3,7 @@
  * Does not invent a third rail. Does not put secrets in the page.
  */
 (function (g) {
-  var VERSION = "api-world-2026-09-01";
+  var VERSION = "api-world-2026-10-17-origin-guard";
 
   function detectWorld() {
     try {
@@ -30,11 +30,22 @@
 
   var world = apply(detectWorld());
 
+  function safeApiOverride(value) {
+    try {
+      var u = new URL(String(value), location.origin);
+      var trustedOrigin = "https://dualiscapax-depth.digenova77.workers.dev";
+      if (u.username || u.password || u.search || u.hash) return null;
+      if (u.origin !== location.origin && u.origin !== trustedOrigin) return null;
+      return (u.origin + u.pathname).replace(/\/$/, "");
+    } catch (e) { return null; }
+  }
+
   function baseUrl() {
     var base = (g.DC_API_BASE || "https://dualiscapax-depth.digenova77.workers.dev").replace(/\/$/, "");
     try {
       var q = new URLSearchParams(location.search).get("api");
-      if (q) base = String(q).replace(/\/$/, "");
+      var safe = q && safeApiOverride(q);
+      if (safe) base = safe;
     } catch (e) {}
     return base;
   }
@@ -46,14 +57,8 @@
   }
 
   async function post(path, body, headers) {
-    var res = await fetch(baseUrl() + path, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(body)
-    });
-    var data = await res.json().catch(function () {
-      return { ok: false, error: "BAD_JSON" };
-    });
+    var res = await fetch(baseUrl() + path, { method: "POST", headers: headers, body: JSON.stringify(body) });
+    var data = await res.json().catch(function () { return { ok: false, error: "BAD_JSON" }; });
     data._http = res.status;
     data._path = path;
     data.world = world;
@@ -63,20 +68,12 @@
 
   async function chat(messages, opts) {
     opts = opts || {};
-    var headers = {
-      "Content-Type": "application/json",
-      "X-DC-World": String(world),
-      "X-DC-API-Version": String(g.DC_API_VERSION)
-    };
+    var headers = { "Content-Type": "application/json", "X-DC-World": String(world), "X-DC-API-Version": String(g.DC_API_VERSION) };
     if (opts.fuelBalance != null) headers["X-DC-Fuel"] = String(opts.fuelBalance);
     var body = {
-      world: world,
-      api_version: g.DC_API_VERSION,
-      messages: messages || [],
-      channel: opts.channel || (world === 1 ? "depth" : "open"),
-      max_tokens: opts.max_tokens || 1024,
-      capabilities: caps(),
-      scientific_validation: false
+      world: world, api_version: g.DC_API_VERSION, messages: messages || [],
+      channel: opts.channel || (world === 1 ? "depth" : "open"), max_tokens: opts.max_tokens || 1024,
+      capabilities: caps(), scientific_validation: false
     };
     var data = await post(g.DC_API_PATH, body, headers);
     if (world === 0 && data && (data._http === 404 || data.code === "NO_ROUTE")) {
@@ -86,25 +83,13 @@
     return data;
   }
 
-  g.DCWorld = {
-    version: VERSION,
-    world: world,
-    name: g.DC_WORLD_NAME,
-    apiVersion: g.DC_API_VERSION,
-    path: g.DC_API_PATH,
-    detect: detectWorld,
-    apply: apply,
-    caps: caps,
-    chat: chat
-  };
+  g.DCWorld = { version: VERSION, world: world, name: g.DC_WORLD_NAME, apiVersion: g.DC_API_VERSION,
+    path: g.DC_API_PATH, detect: detectWorld, apply: apply, caps: caps, chat: chat };
 
   if (g.dcApi && typeof g.dcApi.chat === "function" && !g.dcApi.__worldHooked) {
     var orig = g.dcApi.chat.bind(g.dcApi);
     g.dcApi.chat = function (messages, opts) {
-      opts = opts || {};
-      opts.world = world;
-      opts.api_version = g.DC_API_VERSION;
-      return orig(messages, opts);
+      opts = opts || {}; opts.world = world; opts.api_version = g.DC_API_VERSION; return orig(messages, opts);
     };
     g.dcApi.__worldHooked = true;
   }
