@@ -193,3 +193,44 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Release gate
 
 Production release is **NO-GO** until all critical items in Phases 2, 3, 4, 6, 7, and 8 pass, the canonical deployment target is established, and the rollback path is verified. Non-critical documentation items may remain open only if explicitly listed and approved.
+
+
+## Handoff-loop investigation — 2026-10-16 UTC
+
+This is an evidence update, not a production release. No live DNS, server, database, or deployment was changed.
+
+### Confirmed evidence
+
+- [x] Read the live public https://dualiscapax.com/ page. Its visible description says the first tap creates a passkey, later taps prove that key, and the top window then moves to https://dualiscapax.ai/. It also explicitly describes “two ceremonies” and says the check is repeated on each host. Evidence: public page inspection on 2026-10-16; visible text appears in the Unity ID / Take Your Seat sections.
+- [x] Read handshake/FRONT-INTERFACE.md in the landing repository at base commit 300befb2f7aa4e0589ed5ef333a83a39a556d5c1. It directs .ai to call navigator.credentials.get and then POST the protocol line to /api/v2/compute; the document explicitly anticipates another passkey prompt after navigation.
+- [x] Read js/unity-session.js (blob dc52640cf5e6f89faa11332af2d86e1d918daa78). Its requireOrRedirect(next) calls location.replace("curtain.html") when dc.unity.session is absent. This is a concrete redirect candidate in repository code, but its involvement in the live passkey route is not proven until the deployed page and caller chain are identified.
+- [x] Read js/unity-bind.js (blob fdc18ffa5900973f2dfe5460783e4bd8c59a24a1). It mints a local visitor Unity ID and persists it in localStorage. That local ID is not evidence of a server-verified WebAuthn session.
+- [x] Read receiver/dualis-deploy.sh in digenova77-ui/dualiscapax-deploy at blob 31f2b87da10a83615707096070812de0bd4cec5b. The script describes .com as staged-only/cert-gated and rewrites the staged /api/ route to HTTP 501 ceremony_not_wired. This proves that this deployment package is not, by itself, evidence that the live .com API is wired.
+- [x] Inspected the current landing repository tree at commit 300befb2f7aa4e0589ed5ef333a83a39a556d5c1. Its root index.html is only 482 bytes and does not match the full public page returned for dualiscapax.com. Therefore the authoritative live source/publishing path remains unresolved; edits to this repository cannot be assumed to change the live page.
+- [x] Attempted read-only public inspection of https://dualiscapax.com/.well-known/webauthn and https://dualiscapax.ai/api/v2/compute. The web inspector returned an internal error for both URLs. This is inconclusive, not proof that either endpoint is down or misconfigured.
+
+### Engineering diagnosis (confidence-separated)
+
+1. High confidence: the documented UX intentionally asks for a second passkey ceremony after the cross-domain navigation. This matches the reported repeated prompt, but does not alone explain the page bounce.
+2. High confidence: the exact production source and deployment path must be identified before a code patch can be trusted. The landing repository and the staged deployment package do not establish the currently served source.
+3. Medium confidence: a missing or mismatched session may cause a redirect to curtain.html in repository code. The live route must be traced to prove or rule this out.
+4. Unverified: Related Origin Requests configuration, server-side assertion validation, the live .ai API route, and API-to-kernel routing. Do not infer a port or alter it without live read-only evidence.
+5. Security constraint: do not suppress the second prompt unless the first ceremony is verified server-side and a secure, short-lived, single-use cross-domain handoff is implemented. A displayed Unity ID or localStorage record is not authentication.
+
+### Remaining work — ordered closure gate
+
+- [ ] Identify the exact asset URL(s) and deployed artifact that render the live Face or finger control; record response headers, content hash, and source mapping where available.
+- [ ] Trace every handler bound to that control and every automatic navigation/redirect after success; check for duplicate event binding, duplicate initialization, service-worker cache, and location.replace/location.assign calls.
+- [ ] Capture browser Network + Console evidence for one controlled reproduction: passkey request, redirect chain, document reloads, failed assets, and the first failing HTTP status. Never capture or share assertion bodies, cookies, secrets, or private identity data.
+- [ ] Verify the .well-known/webauthn response with a direct HTTP client: status, JSON content type, exact origin list, TLS, and cache behavior.
+- [ ] Verify the .ai receiver's actual WebAuthn call and server verification path. Establish whether the second ceremony is intentional authentication or an accidental duplicate.
+- [ ] Probe POST /api/v2/compute only with a documented harmless test payload in an approved test context; record status, content type, sanitized body, and request ID. Do not send a live identity assertion or trigger a real job just to test availability.
+- [ ] Establish the authoritative deployment rail for the live .com page and confirm a preview/staging path before modifying implementation.
+- [ ] Implement the smallest source-of-truth fix on a branch: one guarded state machine, one navigation owner, idempotent initialization, explicit user-visible failure stage, and fail-closed behavior. Do not add a second competing passkey script.
+- [ ] Add automated tests for duplicate taps, duplicate script initialization, success handoff, missing session, cancellation, timeout, malformed response, HTTP 501/503, back/refresh, and retry.
+- [ ] Review the diff and tests; open a PR. Do not merge or deploy to production without a reviewed rollback path and explicit release approval.
+- [ ] After approved deployment, rerun mobile end-to-end tests and record the deployed artifact hash, commit, route responses, and rollback evidence.
+
+### Current release state
+
+NO-GO / investigation open. The repeated ceremony is supported by the written design, but the exact reload/bounce cause has not yet been proven. No production changes have been made. The next decisive evidence is the actual deployed script and a redacted browser Network/Console trace from one reproduction.
