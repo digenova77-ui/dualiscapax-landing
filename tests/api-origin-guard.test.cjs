@@ -63,5 +63,5 @@ function loadWorld(search, origin = "https://dualiscapax.ai", initialBase) {
   const trustedOverride = loadWorld("?api=https%3A%2F%2Fdualiscapax-depth.digenova77.workers.dev");
   await trustedOverride.window.DCWorld.chat([{ role: "user", content: "test" }]);
   assert.equal(trustedOverride.calls[0], trusted + "/v2/chat");
-  console.log("API origin guard tests: 6 assertions passed");
+  console.log("API origin/world guard tests passed");
 })().catch((error) => { console.error(error); process.exitCode = 1; });
