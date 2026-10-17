@@ -26,7 +26,7 @@ const MUTATION_PATTERNS = [
   ["cache-purge", /\b(?:purge|purge_everything|cache\s+purge)\b/i],
   ["http-mutation", /\bcurl\b[^\n]*(?:-X\s*(?:POST|PUT|PATCH|DELETE)|--request\s+(?:POST|PUT|PATCH|DELETE))/i],
   ["database-or-service", /\b(?:psql|systemctl\s+(?:restart|stop|start)|ufw\s+|DROP\s+DATABASE|ALTER\s+SYSTEM)\b/i],
-  ["publish-or-mint", /\b(?:npm\s+publish|mint|stripe\\s+checkout|open\\s+checkout|stripe\s+fulfill)\b/i]
+  ["publish-or-mint", /\b(?:npm\s+publish|mint|stripe\s+checkout|open\s+checkout|stripe\s+fulfill)\b/i]
 ];
 
 function eventList(source) {
