@@ -1,0 +1,301 @@
+{
+  "protocol": "dualis.spectra.v1",
+  "version": 1,
+  "status": "PROPOSED",
+  "purpose": "A typed, extensible inventory for separating observation channels, physical spectra, energy forms, scales, and knowledge status without claiming exhaustive coverage.",
+  "diamond_cycle": {
+    "ceiling_to_floor": [
+      "declare_scope_and_invariants",
+      "enumerate_domains_and_observables",
+      "select measurable quantities",
+      "define instruments_and_units",
+      "record observations_with_provenance",
+      "validate independently"
+    ],
+    "floor_to_ceiling": [
+      "check raw record integrity",
+      "check units_and_calibration",
+      "quantify uncertainty_and_detection_limits",
+      "compare independent observations",
+      "test competing models",
+      "revise higher_level claims without erasing prior evidence"
+    ],
+    "repeat_rule": "Each pass creates a versioned review record. Repetition alone does not increase confidence; only new evidence or stronger validation may change status."
+  },
+  "rings": [
+    {
+      "id": "A",
+      "key": "philosophy",
+      "question": "What is being claimed, what does it mean, and which assumptions are being made?",
+      "review": [
+        "definitions",
+        "assumptions",
+        "scope",
+        "epistemic_limits",
+        "ethical_implications"
+      ]
+    },
+    {
+      "id": "B",
+      "key": "physics",
+      "question": "What is measurable, by which instrument, in what units, and with what uncertainty?",
+      "review": [
+        "observable",
+        "measurement_method",
+        "units",
+        "calibration",
+        "uncertainty",
+        "detection_limits",
+        "reproducibility"
+      ]
+    },
+    {
+      "id": "C",
+      "key": "law",
+      "question": "Which constraints, invariants, equations, policies, or formal rules apply?",
+      "review": [
+        "physical_constraints",
+        "mathematical_consistency",
+        "protocol_invariants",
+        "legal_or_policy_constraints_when_applicable"
+      ]
+    }
+  ],
+  "decomposition_axes": [
+    {
+      "id": "AXIS-EM",
+      "key": "electromagnetic_frequency_spectrum",
+      "items": [
+        {
+          "key": "radio",
+          "status": "ESTABLISHED_CATEGORY",
+          "note": "Boundaries depend on convention and application."
+        },
+        {
+          "key": "microwave",
+          "status": "ESTABLISHED_CATEGORY",
+          "note": "Often treated as a radio-frequency sub-band."
+        },
+        {
+          "key": "infrared",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "visible",
+          "status": "ESTABLISHED_CATEGORY",
+          "note": "Human-visible band; boundaries vary by observer and convention."
+        },
+        {
+          "key": "ultraviolet",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "x_ray",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "gamma_ray",
+          "status": "ESTABLISHED_CATEGORY",
+          "note": "X-ray/gamma classification may depend on production mechanism, not energy alone."
+        }
+      ]
+    },
+    {
+      "id": "AXIS-WAVE",
+      "key": "non_electromagnetic_wave_observations",
+      "items": [
+        {
+          "key": "acoustic_and_seismic",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "surface_and_internal_mechanical_waves",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "gravitational_waves",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "plasma_and_magnetohydrodynamic_waves",
+          "status": "ESTABLISHED_CATEGORY"
+        }
+      ]
+    },
+    {
+      "id": "AXIS-PARTICLE",
+      "key": "particle_and_radiation_channels",
+      "items": [
+        {
+          "key": "charged_particles",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "neutrons",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "neutrinos",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "cosmic_rays",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "particle_flux_and_spectra",
+          "status": "MEASUREMENT_FAMILY"
+        }
+      ]
+    },
+    {
+      "id": "AXIS-ENERGY",
+      "key": "energy_forms_and_transfer",
+      "items": [
+        {
+          "key": "kinetic",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "potential",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "thermal_internal",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "chemical",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "electrical",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "magnetic_field_energy",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "radiant",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "nuclear",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "elastic_strain",
+          "status": "ESTABLISHED_CATEGORY"
+        },
+        {
+          "key": "mass_energy",
+          "status": "ESTABLISHED_RELATIONSHIP"
+        },
+        {
+          "key": "work_heat_power_flux",
+          "status": "QUANTITY_FAMILIES"
+        }
+      ]
+    },
+    {
+      "id": "AXIS-SCALE",
+      "key": "spatial_temporal_and_system_scales",
+      "items": [
+        {
+          "key": "quantum_and_particle",
+          "status": "SCOPE_TAG"
+        },
+        {
+          "key": "atomic_and_molecular",
+          "status": "SCOPE_TAG"
+        },
+        {
+          "key": "laboratory_and_material",
+          "status": "SCOPE_TAG"
+        },
+        {
+          "key": "biological_and_ecological",
+          "status": "SCOPE_TAG"
+        },
+        {
+          "key": "planetary_and_geophysical",
+          "status": "SCOPE_TAG"
+        },
+        {
+          "key": "stellar_and_galactic",
+          "status": "SCOPE_TAG"
+        },
+        {
+          "key": "cosmological",
+          "status": "SCOPE_TAG"
+        }
+      ]
+    },
+    {
+      "id": "AXIS-INFO",
+      "key": "information_and_model_outputs",
+      "items": [
+        {
+          "key": "human_report",
+          "status": "SIGNAL_CLASS"
+        },
+        {
+          "key": "instrument_telemetry",
+          "status": "SIGNAL_CLASS"
+        },
+        {
+          "key": "derived_measurement",
+          "status": "SIGNAL_CLASS"
+        },
+        {
+          "key": "simulation_output",
+          "status": "SIGNAL_CLASS"
+        },
+        {
+          "key": "theoretical_prediction",
+          "status": "SIGNAL_CLASS"
+        },
+        {
+          "key": "unresolved_or_unobserved",
+          "status": "KNOWLEDGE_STATE"
+        }
+      ]
+    }
+  ],
+  "evidence_states": [
+    "OBSERVED",
+    "INFERRED",
+    "HYPOTHESIS",
+    "INDEPENDENTLY_VALIDATED",
+    "REJECTED",
+    "UNRESOLVED"
+  ],
+  "required_observation_fields": [
+    "record_id",
+    "axis_id",
+    "channel",
+    "source",
+    "observed_at",
+    "value_or_payload",
+    "units_or_encoding",
+    "method",
+    "calibration_or_method_version",
+    "uncertainty",
+    "detection_limits",
+    "evidence_state"
+  ],
+  "invariants": {
+    "spectra_are_typed_not_conflated": true,
+    "energy_form_is_not_a_spectrum_by_default": true,
+    "absence_of_detection_is_not_proof_of_absence": true,
+    "model_output_is_not_observation": true,
+    "repeated_runs_do_not_upgrade_evidence_by_themselves": true,
+    "preserve_unknowns_and_negative_results": true,
+    "preserve_original_records_and_revision_history": true,
+    "independent_validation_required_for_validated_status": true,
+    "no_claim_of_exhaustive_inventory": true,
+    "no_live_actuation_or_sensor_access_from_registry": true,
+    "energy_values_must_have_units_and_provenance": true
+  }
+}
