@@ -86,3 +86,23 @@ Do not place credentials, personal authentication data, access tokens, or privat
 ## Explicit non-goals
 
 This prototype does not change DNS, deploy Cloudflare Pages, modify the Vultr servers/database, infer consciousness, establish new physics, or claim the archive is a complete record of Earth. It creates a reproducible way to store and test evidence.
+
+
+## One-command real-world status
+
+From the repository root, run:
+
+```sh
+python research/diamond-floor/world_status.py --root . --out /tmp/diamond-world-status.json
+```
+
+The command hashes the current repository inventory and reconciles the discovery report, read-only public DNS/HTTPS audit snapshot, provenance ledger, and derivative graph into one JSON report. It does not perform network requests or mutate source inputs, DNS, production, servers, databases, or token state. Use `--strict` when an automation gate should exit nonzero unless the aggregate status is `PASS`.
+
+Status meanings:
+
+- `PASS`: all configured checks passed. This does not mean every real-world domain is completely modelled.
+- `PARTIAL`: evidence exists but is incomplete or requires human review.
+- `BLOCKED`: required evidence is missing, is still a template, or external evidence references have not been independently resolved.
+- `FAIL`: a structural, integrity, or schema check failed.
+
+A structurally valid graph whose evidence references are merely strings is deliberately `BLOCKED` until an independent resolver verifies the referenced records. The current repository inputs are expected to produce `BLOCKED`: the discovery list is empty, the public DNS audit is a placeholder, the provenance ledger is missing, and the graph is an explicit template. CI preserves the generated report as the `diamond-world-status` artifact. This is a real integration test of honest status propagation, not a claim that production or DNS has passed.
