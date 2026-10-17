@@ -36,7 +36,7 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 - [x] Inspect recent GitHub Actions runs. A GitHub Pages build/deploy run for commit `b63320d6c49663bab9c39586fb4f82bf5b9a53d6` completed successfully on 2026-10-16; this does not prove the canonical domain is served by that deployment.
 - [ ] Record repository default branch, current HEAD SHA, most recent commit, and branch protection/rulesets.
 - [ ] Establish the authoritative live delivery path: Cloudflare Worker/Pages, GitHub Pages, IPFS/IPNS, or a documented combination. Confirm with live read-only evidence before any production deploy.
-- [ ] Capture current public responses for canonical domain, key routes, security headers, and relevant API endpoints. Do not include secrets or private identity data.
+- [ ] Capture current public responses for canonical domain, key routes, security headers, and relevant API endpoints. Do not include secrets or private identity data. Current execution environment could not resolve `dualiscapax.ai` (`curl` returned DNS resolution failure), so live HTTP/DNS status remains NOT TESTED here—not evidence that the site is down.
 - [ ] Record current live baseline and known issues so later tests can compare before/after.
 - [ ] Identify all active domains and their intended roles: `dualiscapax.ai`, `www.dualiscapax.ai`, and `dualiscapax.com`.
 
@@ -46,8 +46,12 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 - [x] Add explicit isolated HUD routes to the Pages Advanced Mode worker. Source merged to main in commit `3cd4de8ebce3c0b103594fd55da0559a4453e6c3`; routes are not live-verified.
 - [x] Restore `scripts/pack_hierarchical_flat_zip.py` on branch `fix/cloudflare-pages-package-2026-10-17`. The packer is source-added but has not yet been executed in a checkout.
 - [x] Restore `docs/ops/ENVIRONMENT.md` with the manual Pages upload and staging instructions.
-- [ ] Execute `python3 scripts/pack_hierarchical_flat_zip.py --lander --check` in a real checkout and confirm it passes.
-- [ ] Build the archive, inspect its root and SHA-256, and retain the artifact.
+- [x] Execute the Pages package validation and build in GitHub Actions. Run: https://github.com/digenova77-ui/dualiscapax-landing/actions/runs/39028163018; source commit `b3bfd02ffbb8097ed18621c9fd84ea46e2a210e6`; validation and ZIP build steps passed.
+- [x] Inspect the resulting artifact: required root files (`index.html`, `_worker.js`, `wrangler.toml`) present; ZIP CRC and SHA-256 sidecar verified; `.github/`, `docs/`, and `scripts/` excluded. Artifact ID `12099028793`; SHA-256 `e954635eacd535a11d1754f5b2d23f1f39d92f18cdabfa19451af19b4f1e1786` applies to the GitHub Actions artifact ZIP.
+- [x] Harden the packer so repository automation and engineering notes are not copied into the public Pages package; commit `b3bfd02ffbb8097ed18621c9fd84ea46e2a210e6`.
+- [ ] Confirm the actual Cloudflare Pages project attached to `dualiscapax.ai`; `wrangler.toml` and environment docs identify `dualiscapax-web`, while the direct-upload workflow still targets `dualiscapax-landing` and documents Cloudflare error `10000`. Do not change the deployment target until the bound project is verified.
+- [ ] Build/inspect a staging deployment, test root and HUD routes plus failure behavior, and verify no overlapping Worker routes.
+- [ ] Promote to production only with explicit approval; verify deployed behavior and retain rollback target.
 - [ ] Confirm the actual Cloudflare Pages project attached to `dualiscapax.ai`, current deployment and overlapping Worker routes.
 - [ ] Deploy to preview/staging, not production; test root and legacy routes plus `/iris/status`, HUD HTML, SVG, and upstream failure behavior.
 - [ ] Promote to production only with explicit approval; verify deployed behavior and retain rollback target.
