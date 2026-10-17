@@ -1,25 +1,10 @@
 import { pegOf } from "./unity-wallet.js";
 import { open } from "./unity-id-protocol.js";
-import { COINS, COIN_NOTE, SENTENCES, run } from "./sandbox-math.js";
+import { COINS, COIN_NOTE, MOTTO, ROLES, SENTENCES, run } from "./sandbox-math.js";
 
-export { COINS, COIN_NOTE, SENTENCES, run };
+export { COINS, COIN_NOTE, MOTTO, ROLES, SENTENCES, run };
 
-export const EARLY = 2;
-
-const HOUSE = Object.freeze([
-  Object.freeze({ seat: 1, serial: "DC-F-DE51-FFD7", unityId: "DC-U-001", ledger: "WHITE", label: "Reserved — seat 1", role: "Founding seat. Operator." }),
-  Object.freeze({ seat: 2, serial: "DC-F-3B06-260D", unityId: "", ledger: "WHITE", label: "Reserved — seat 2", role: "Founding seat." }),
-  Object.freeze({ seat: 3, serial: "DC-F-0505-E337", unityId: "", ledger: "BLACK", label: "", role: "Undisclosed allocation." }),
-  Object.freeze({ seat: 4, serial: "DC-F-7923-A1F3", unityId: "", ledger: "BLACK", label: "", role: "Undisclosed allocation." }),
-  Object.freeze({ seat: 5, serial: "DC-F-9B78-408E", unityId: "", ledger: "BLACK", label: "", role: "Undisclosed allocation." }),
-  Object.freeze({ seat: 6, serial: "DC-F-4CA0-75AB", unityId: "", ledger: "BLACK", label: "", role: "Undisclosed allocation." }),
-  Object.freeze({ seat: 7, serial: "DC-F-9D8F-FB45", unityId: "", ledger: "BLACK", label: "", role: "Undisclosed allocation." }),
-  Object.freeze({ seat: 8, serial: "DC-F-07A8-CB8F", unityId: "", ledger: "BLACK", label: "", role: "Undisclosed allocation." }),
-  Object.freeze({ seat: 9, serial: "DC-F-C087-92EE", unityId: "", ledger: "BLACK", label: "", role: "Undisclosed allocation." }),
-  Object.freeze({ seat: 10, serial: "DC-F-BD1C-7269", unityId: "", ledger: "BLACK", label: "", role: "Undisclosed seat." })
-]);
-
-export const RULE = "A founder seat is one Unity ID from the published house. One seat each. A duplicate is refused. A missing ID is refused. The seat does not vote. The pay is 0. It is not an office. The board does not mint a coin and does not open the gate. This door does not store a new board.";
+export const RULE = "The founding principle is identity, resource accounting, and Merit. The live specification does not name a founder board, a seat, or a cap. No seat is taken. Nothing is stored. Nothing is minted. The gate stays shut.";
 
 function text(value) {
   return typeof value === "string" ? value.trim() : "";
@@ -29,6 +14,7 @@ function quiet() {
   return {
     coin: null,
     minted: false,
+    live: false,
     gate: "shut",
     open: false,
     look: 0,
@@ -49,6 +35,18 @@ function secondOf(src) {
   return "";
 }
 
+function blankEconomic() {
+  return {
+    adopter: null,
+    rule: "unresolved",
+    cap: null,
+    price: null,
+    seat: null,
+    shifts: null,
+    cost: null
+  };
+}
+
 export async function adopt(input, net) {
   const src = input && typeof input === "object" && !Array.isArray(input) ? input : {};
   const protocol = net || open();
@@ -61,38 +59,25 @@ export async function adopt(input, net) {
     if (id) await protocol.participate({ kind: kind, body: slot, id: id });
     if (extra !== "second") await protocol.participate({ kind: kind, body: slot, id: extra });
     return {
-      adopter: false,
+      ...blankEconomic(),
       protocol: false,
       participates: false,
       reason: "second",
       kind: null,
       peg: null,
       iris: null,
-      shifts: 0,
-      sooner: 0,
-      cost: null,
-      find: false,
-      face: false,
-      standing: false,
       ...quiet()
     };
   }
   const record = await protocol.participate({ kind: kind, body: body, id: id });
-  const marked = src.adopter !== false && record.participates === true;
   return {
-    adopter: marked,
+    ...blankEconomic(),
     protocol: record.protocol === true,
     participates: record.participates === true,
     reason: record.reason,
     kind: record.kind,
     peg: record.peg,
     iris: record.iris,
-    shifts: marked ? EARLY : 0,
-    sooner: marked ? EARLY : 0,
-    cost: marked ? 0 : null,
-    find: false,
-    face: false,
-    standing: false,
     ...quiet()
   };
 }
@@ -104,62 +89,41 @@ function rowOf(row) {
 }
 
 export async function seatBoard(input) {
-  const rows = input == null ? HOUSE.map(function (seat) {
-    return { unityId: seat.unityId, seat: seat.seat };
-  }) : (Array.isArray(input) ? input : [input]);
-  const protocol = open();
+  const rows = input == null ? [] : (Array.isArray(input) ? input : [input]);
   const seen = new Set();
-  const seated = [];
   const refused = [];
   for (let i = 0; i < rows.length; i++) {
     const src = rowOf(rows[i]);
     if (secondOf(src)) {
-      refused.push({ reason: "second", peg: null, look: 0, joule: null });
+      refused.push({ reason: "second", peg: null, seat: null, look: 0, joule: null });
       continue;
     }
     const id = idOf(src);
     if (!id) {
-      refused.push({ reason: "no-id", seat: src.seat || null, look: 0, joule: null });
+      refused.push({ reason: "no-id", peg: null, seat: null, look: 0, joule: null });
       continue;
     }
     const mark = await pegOf(id);
     if (seen.has(mark)) {
-      refused.push({ reason: "duplicate", peg: mark, look: 0, joule: null });
+      refused.push({ reason: "second", peg: mark, seat: null, look: 0, joule: null });
       continue;
     }
     seen.add(mark);
-    const known = HOUSE.find(function (seat) { return seat.unityId === id; });
-    if (!known) {
-      refused.push({ reason: "not-on-board", peg: mark, look: 0, joule: null });
-      continue;
-    }
-    const record = await protocol.participate({ kind: "human", body: "seat-" + known.seat, id: id });
-    if (!record.participates) {
-      refused.push({ reason: record.reason, peg: null, look: 0, joule: null });
-      continue;
-    }
-    seated.push({
-      seat: known.seat,
-      serial: known.serial,
-      label: known.label || null,
-      ledger: known.ledger,
-      role: known.role,
-      peg: record.peg,
-      iris: record.iris,
-      vote: false,
-      pay: 0,
-      office: false,
-      look: 0,
-      joule: null
-    });
+    refused.push({ reason: "unresolved", peg: mark, seat: null, look: 0, joule: null });
   }
   return {
-    seated: seated,
+    rule: "unresolved",
+    principle: RULE,
+    seated: [],
+    seats: null,
+    cap: null,
+    names: null,
     refused: refused,
-    vote: false,
-    pay: 0,
-    office: false,
-    memory: protocol.memory(),
+    stored: false,
+    vote: null,
+    pay: null,
+    office: null,
+    memory: [],
     ...quiet()
   };
 }
@@ -169,31 +133,30 @@ export async function sign(input) {
   const base = {
     admitted: false,
     seated: false,
-    second: false,
-    vote: false,
-    pay: 0,
-    office: false,
     stored: false,
+    rule: "unresolved",
+    seat: null,
+    cap: null,
+    names: null,
     ...quiet()
   };
-  if (src.flags !== 0) return { ...base, reason: "flags", peg: null };
   if (secondOf(src)) return { ...base, reason: "second", peg: null };
   const id = idOf(src);
   if (!id) return { ...base, reason: "no-id", peg: null };
-  const known = HOUSE.find(function (seat) { return seat.unityId === id; });
-  const mark = await pegOf(id);
-  if (!known) return { ...base, reason: "not-on-board", peg: mark };
-  return { ...base, reason: "duplicate", peg: mark, seat: known.seat };
+  return { ...base, reason: "unresolved", peg: await pegOf(id) };
 }
 
 export async function foundingRule() {
   const board = await seatBoard(null);
   return {
-    rule: RULE,
     sentences: SENTENCES,
     note: COIN_NOTE,
+    motto: MOTTO,
     coins: COINS,
+    roles: ROLES,
+    ...board,
+    rule: RULE,
     stored: false,
-    ...board
+    live: false
   };
 }
