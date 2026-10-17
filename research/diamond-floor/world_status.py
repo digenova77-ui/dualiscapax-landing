@@ -29,6 +29,7 @@ def load_module(name: str, path: Path):
 
 
 reconcile_module = load_module("diamond_floor_reconcile", HERE / "reconcile.py")
+diamond_floor_module = load_module("diamond_floor_core", HERE / "diamond_floor.py")
 graph_module = load_module("diamond_derivative_graph", HERE / "derivative_graph.py")
 
 
@@ -55,7 +56,7 @@ def build_world_status(root: Path, graph_path: Path | None = None) -> dict:
     root = root.resolve()
     archive = root / "research" / "photo-archive"
     diamond = root / "research" / "diamond-floor"
-    inventory_report = reconcile_module.inventory(root)
+    inventory_report = diamond_floor_module.inventory(root)
 
     with tempfile.TemporaryDirectory(prefix="dualis-world-status-") as tmp:
         inventory_path = Path(tmp) / "inventory.json"
