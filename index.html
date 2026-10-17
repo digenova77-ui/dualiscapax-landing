@@ -260,6 +260,10 @@
       <p>Real-time telemetry offloads to Amsterdam.</p>
       <p>New Jersey takes the same object only when Amsterdam is down.</p>
       <p>The coins are not in this pipe.</p>
+      <p>Iris speaks the reading the servers already hold.</p>
+      <p id="iris-empty">The gate is shut. The joule is null.</p>
+      <button type="button" id="iris-speak">Speak the reading</button>
+      <p id="iris-spoken" class="honest" aria-live="polite"></p>
     </section>
 
     <section class="beat" id="senses" aria-labelledby="senses-title">
@@ -292,6 +296,7 @@
   <script type="module">
   import { open } from "./js/unity-id-protocol.js";
   import { run } from "./js/sandbox-math.js";
+  import { EMPTY_SPOKEN, learned } from "./js/iris-speaks.js";
   const net = open();
   const button = document.getElementById("sandbox-run");
   const out = document.getElementById("sandbox-out");
@@ -311,6 +316,13 @@
     out.textContent = JSON.stringify(first) === JSON.stringify(second)
       ? "Same math. Gate shut. No coin."
       : "The two runs differed.";
+  });
+
+  const speakButton = document.getElementById("iris-speak");
+  const spoken = document.getElementById("iris-spoken");
+  speakButton.addEventListener("click", function () {
+    const heard = learned();
+    spoken.textContent = heard && heard.spoken ? heard.spoken : EMPTY_SPOKEN;
   });
 
   const bang = document.getElementById("bang");

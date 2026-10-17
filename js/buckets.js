@@ -1,4 +1,5 @@
 import { SENTENCES as PIPE } from "./amsterdam-telemetry.js";
+import { EMPTY_SPOKEN, HOLD_LINE } from "./iris-speaks.js";
 import { FLOOR, CEILING, SEED } from "./brain-seat.js";
 import { LAWS, run } from "./dclm-write.js";
 import { SENTENCES as MEET } from "./iris-meeting.js";
@@ -186,6 +187,8 @@ export const PIECES = Object.freeze([
   claim("telemetry-amsterdam", "telemetry", PIPE[0]),
   claim("telemetry-jersey", "telemetry", PIPE[1]),
   claim("telemetry-coins", "telemetry", PIPE[2]),
+  claim("iris-holds", "telemetry", HOLD_LINE),
+  claim("iris-empty", "joule", EMPTY_SPOKEN),
   claim("theater-vote", "door story", "The theater on this page is what passed the vote."),
   claim("theater-rings", "door story", "The three rings passed the vote. Iris is the teal light."),
   claim("work-queue", "door story", "Each step votes one piece of theater and writes one line. The pending queue does not retire."),
