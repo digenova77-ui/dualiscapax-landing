@@ -116,7 +116,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
     document.getElementById("announce").textContent=s;
   }
   function greetText(){
-    return (window.IrisGuest && IrisGuest.greetLine) ? IrisGuest.greetLine() : "Hey. I'm Iris. What should I call you? Tap Talk if you want to say it.";
+    return (window.IrisGuest && IrisGuest.greetLine) ? IrisGuest.greetLine() : "Hey. I'm Iris. Type below or tap Talk to speak.";
   }
   function primeVoice(){
     primed=true;
@@ -240,7 +240,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
     if(busy){ showErr("Please wait for the current answer to finish."); return; }
     textInput.value="";
     showErr("");
-    meet();
+    if(!greeted){
+      greeted=true;
+      primeVoice();
+      if(window.IrisGuest&&IrisGuest.markAsked) IrisGuest.markAsked();
+    }
     hear(text);
   });
 
@@ -276,10 +280,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
         pip.classList.toggle("on",live);
         if(live){ setStatus("Camera preview · visual understanding not connected","ready"); line("Camera preview is live. Visual understanding is not connected yet."); }
         else { setStatus("Ready · text and voice controls available","ready"); line("Camera preview stopped."); }
-      }).catch(function(){ showErr("Camera blocked."); });
+      }).catch(function(){ showErr("Camera blocked."); setStatus("Camera permission denied or unavailable","error"); });
       return;
     }
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ showErr("Camera did not open."); return; }
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ showErr("Camera did not open."); setStatus("Camera unavailable","error"); return; }
     if(!on){
       var vid=document.getElementById("you");
       if(vid && vid.srcObject){ vid.srcObject.getTracks().forEach(function(t){t.stop();}); vid.srcObject=null; }
@@ -312,6 +316,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
     if(!f) return;
     if(!window.IrisFile || !IrisFile.read){
       showErr("Local text reading is unavailable in this build.");
+      setStatus("Local file reader unavailable","error");
       line("I couldn't open that file here.");
       return;
     }
@@ -340,6 +345,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
     if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
     if(window.speechSynthesis) speechSynthesis.cancel();
     if(window.IrisFile && IrisFile.clear) IrisFile.clear();
+    showErr("");
     setStatus("Session ended · local document context cleared","ready");
     talk.classList.remove("on");
     document.getElementById("cam").classList.remove("on");
