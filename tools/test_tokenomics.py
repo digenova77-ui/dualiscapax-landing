@@ -68,3 +68,31 @@ class TestEFuseGuard(unittest.TestCase):
     def test_no_negative_deposit(self):
         with self.assertRaises(ValueError):
             self.v.deposit(-10)
+
+
+class TestSurplusExpansion(unittest.TestCase):
+    def test_split_unchanged_when_world_cost_covered(self):
+        v = t.EFuseVault(); v.record_purchase(10000, "usd")
+        t.settle_period(v, 1000)
+        self.assertEqual(v.record_purchase(10000, "crypto"), t.PurchaseSplit(10000, 5000, 5000))
+
+    def test_surplus_funds_expansion(self):
+        v = t.EFuseVault(); v.record_purchase(10000, "usd")
+        r = t.settle_period(v, 3000)
+        self.assertEqual((r.world_cost_paid, r.expansion, r.reserve), (3000, 2000, 0))
+
+    def test_shortfall_no_expansion(self):
+        v = t.EFuseVault(); v.record_purchase(2000, "usd")
+        r = t.settle_period(v, 5000)
+        self.assertEqual((r.world_cost_paid, r.expansion), (1000, 0))
+
+    def test_conservation(self):
+        for amt, cost in [(0, 0), (1, 0), (999, 300), (5000, 2500), (7777, 9999)]:
+            v = t.EFuseVault(); v.record_purchase(amt, "crypto"); before = v.balance
+            r = t.settle_period(v, cost)
+            self.assertEqual(r.world_cost_paid + r.expansion + r.reserve, before)
+
+    def test_surplus_still_not_withdrawable(self):
+        v = t.EFuseVault(); v.record_purchase(10000, "usd"); t.settle_period(v, 0)
+        with self.assertRaises(t.EFuseLocked):
+            v.withdraw(1, "founder")

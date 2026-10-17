@@ -78,3 +78,25 @@ class EFuseVault:
 
     def transfer(self, amount, to, by="anyone"):
         return self.request("transfer", amount, by)
+
+
+# Rule 3 (owner): if the e-fuse already covers the world cost while dollars/crypto are still used,
+# the 50/50 split continues unchanged and the surplus above world cost funds expansion.
+@dataclass(frozen=True)
+class SettleResult:
+    world_cost_paid: int
+    expansion: int
+    reserve: int
+
+
+def settle_period(vault, world_cost):
+    """Pay world cost from the e-fuse; everything above it goes to expansion (never to a person)."""
+    if isinstance(world_cost, bool) or not isinstance(world_cost, int) or world_cost < 0:
+        raise ValueError("world_cost must be a non-negative int")
+    paid = min(vault.balance, world_cost)
+    surplus = vault.balance - paid
+    vault._balance = 0 if surplus else vault.balance - paid
+    vault.log.append(("world_cost", paid))
+    if surplus:
+        vault.log.append(("expansion", surplus))
+    return SettleResult(paid, surplus, vault.balance)
