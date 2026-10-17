@@ -184,6 +184,8 @@
     <section class="beat" id="senses" aria-labelledby="senses-title">
       <h2 id="senses-title">The senses</h2>
       <p>Each sense is its own switch. Place is where the phone is.</p>
+      <p id="user-switch">You turn it on. You turn it off.</p>
+      <p id="dark-seal">Identity-bearing material seals itself on the dark ledger, so the public page does not show who you are.</p>
       <div class="hud" id="row-microphone">
         <label class="check"><input id="sense-microphone" type="checkbox" disabled> Microphone</label>
         <p class="honest" id="live-microphone">Off. Nothing has been requested.</p>
@@ -281,7 +283,11 @@
   <script type="module">
   import { LABELS, SENSES, open } from "./js/iris-senses.js";
   import { askSense } from "./js/iris-senses-live.js";
+  import { open as openLedger } from "./js/dark-ledger.js";
+  import { boot } from "./js/planckos.js";
   const room = open();
+  const ledger = openLedger();
+  boot();
   const handles = new Map();
   const inflight = new Map();
   let painting = false;
@@ -397,6 +403,7 @@
         if (result.handle) result.handle.stop();
         return;
       }
+      ledger.android(name, result.granted === true);
       if (result.granted === true && result.handle) {
         handles.set(name, result.handle);
         room.grant(name, true);
@@ -421,9 +428,10 @@
       note.textContent = "The agreement is not signed. Every sense stays off.";
       return;
     }
+    const raw = document.getElementById("host-unity").value;
     const result = await room.sign({
       agree: true,
-      unityId: document.getElementById("host-unity").value,
+      unityId: raw,
       body: document.getElementById("host-body").value,
       kind: "human"
     });
@@ -431,7 +439,9 @@
       note.textContent = "A Unity ID is required. Nothing was requested.";
       return;
     }
+    await ledger.seal({ kind: "identification", identification: raw });
     document.getElementById("host-unity").value = "";
+    for (let i = 0; i < SENSES.length; i++) ledger.prefer(SENSES[i], true);
     room.seat(ringName());
     note.textContent = "Signed. Every sense preference is on. The live grant for each one is still pending.";
     render();
@@ -442,6 +452,7 @@
     document.getElementById("sense-" + name).addEventListener("change", async function () {
       if (painting) return;
       const on = document.getElementById("sense-" + name).checked;
+      ledger.prefer(name, on);
       room.set(name, on);
       if (!on) stop(name);
       render();
@@ -485,8 +496,9 @@
   document.getElementById("friend-form").addEventListener("submit", async function (event) {
     event.preventDefault();
     const note = document.getElementById("friend-note");
+    const raw = document.getElementById("friend-unity").value;
     const result = await room.join({
-      unityId: document.getElementById("friend-unity").value,
+      unityId: raw,
       body: document.getElementById("friend-body").value
     });
     if (result.joined !== true) {
@@ -495,8 +507,12 @@
       else note.textContent = "The ring is closed.";
       return;
     }
+    await ledger.seal({ kind: "identification", identification: raw });
     document.getElementById("friend-unity").value = "";
     render();
+  });
+  window.addEventListener("pagehide", function () {
+    ledger.close();
   });
   </script>
 </body>
