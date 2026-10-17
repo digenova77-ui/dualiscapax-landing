@@ -1,5 +1,8 @@
 name: pack-self-deploy
 
+# Artifact-only compatibility rail. Use the hardened canonical packer.
+# This workflow never deploys to Cloudflare or changes DNS.
+
 on:
   workflow_dispatch:
   workflow_run:
@@ -17,17 +20,25 @@ jobs:
   pack:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Zip cf-pages at archive root
+          persist-credentials: false
+      - name: Validate and build canonical Pages package
         run: |
-          cd cf-pages
-          zip -r "$GITHUB_WORKSPACE/dualis-pages.zip" . -x '*.DS_Store'
+          set -euo pipefail
+          python3 scripts/pack_hierarchical_flat_zip.py --lander --check
+          python3 scripts/pack_hierarchical_flat_zip.py --lander
+          unzip -t dist/cloudflare/lander-*.zip
+          cd dist/cloudflare
+          sha256sum -c lander-*.zip.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: dualis-pages
-          path: dualis-pages.zip
+          path: |
+            dist/cloudflare/lander-*.zip
+            dist/cloudflare/lander-*.zip.sha256
           retention-days: 14
+          if-no-files-found: error
