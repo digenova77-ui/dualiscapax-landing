@@ -108,6 +108,7 @@
         cell += ch;
       }
     }
+    if (quoted) return null;
     row.push(cell);
     if (row.some(function (v) { return String(v).trim(); })) rows.push(row);
     return rows;
@@ -131,6 +132,7 @@
     if (!first) return { numbers: 0, headers: [], residualNamed: false, rows: 0 };
     var delimiter = delimiterCount(first, "\t") > delimiterCount(first, ",") ? "\t" : ",";
     var rows = splitDelimited(source, delimiter);
+    if (!rows) return { invalid: true, numbers: 0, headers: [], residualNamed: false, rows: 0 };
     if (!rows.length) return { numbers: 0, headers: [], residualNamed: false, rows: 0 };
     var headers = rows[0].map(function (h) { return String(h).trim(); });
     var numbers = 0;
@@ -184,7 +186,7 @@
 
     if (file.size > MAX_TEXT_BYTES) return refuse("FILE_TOO_LARGE", { name: name, bytes: file.size });
     var text = await file.text();
-    if (SECRET.test(text.slice(0, 4000))) return refuse("SECRET_IN_FILE");
+    if (SECRET.test(text)) return refuse("SECRET_IN_FILE");
     var hash = await sha256(text);
     var stats = { numbers: 0, residualNamed: false };
     if (kind === "json") {
@@ -196,6 +198,7 @@
       }
     } else {
       stats = parseTable(text);
+      if (stats.invalid) return refuse("INVALID_TABLE", { name: name });
     }
     return seat({
       kind: kind,
