@@ -47,6 +47,22 @@ class DiamondFloorTests(unittest.TestCase):
             self.assertEqual(ledger["status"], "PASS")
             self.assertEqual(ledger["verified_records"], 1)
 
+    def test_reingesting_identical_artifact_is_idempotent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "audit.json"
+            source.write_text('{"status":"observed"}', encoding="utf-8")
+            archive = root / "archive"
+            first = df.ingest(source, archive, "https://example.org/audit.json", "DualisCapax audit", "needs-review", None, "test snapshot")
+            ledger_path = archive / "provenance" / "ledger.jsonl"
+            before = ledger_path.read_text(encoding="utf-8")
+            second = df.ingest(source, archive, "https://example.org/audit.json", "DualisCapax audit", "needs-review", None, "test snapshot")
+            after = ledger_path.read_text(encoding="utf-8")
+            self.assertEqual(first["sha256"], second["sha256"])
+            self.assertTrue(second["already_ingested"])
+            self.assertEqual(before, after)
+            self.assertEqual(df.verify_ledger(ledger_path)["verified_records"], 1)
+
     def test_ledger_detects_tampering(self):
         with tempfile.TemporaryDirectory() as tmp:
             ledger = Path(tmp) / "ledger.jsonl"
