@@ -47,7 +47,15 @@
 - The authoritative WebAuthn backend/session store and replay-safe cross-domain handoff remain unverified.
 - Replit workspace changes remain unreconciled while agent usage is paused.
 
-## 6. Next inventory actions
+## 6. Automated workflow inventory baseline
+
+- A read-only scanner now classifies all workflow YAML files and emits a JSON artifact; it does not run deployment commands or change repository state.
+- Initial baseline on 2026-10-17: 53 workflow files scanned; 29 classified as manual-mutation, 7 as scheduled-observer, 14 as read-only-or-artifact, and 3 as review-required.
+- The initial heuristic report surfaced four review findings: `bulletin-handoff.yml` and `pinata-gateway-list.yml` reference secrets; `curl-gate.yml` did not expose an explicit permissions block to the scanner; `pinata-pin.yml` references secrets. These are review flags, not confirmed vulnerabilities.
+- The scanner is deliberately report-only because it uses textual heuristics and can produce false positives. A human must review classifications before any rule becomes blocking.
+- Workflow audit run: https://github.com/digenova77-ui/dualiscapax-landing/actions/runs/39007608143
+
+## 7. Next inventory actions
 
 - [ ] Classify every landing workflow as test-only, artifact-only, manual deploy, scheduled observer, or state-changing.
 - [ ] Inspect the factory-queue and write-check repositories before assigning them roles.
