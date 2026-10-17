@@ -1,0 +1,98 @@
+{
+  "protocol": "dualis.derivatives.v1",
+  "seed_ref": "dualis-capax-one-seed",
+  "version": 1,
+  "status": "PROPOSED",
+  "layers": [
+    {
+      "id": "DIA-00",
+      "key": "diamond",
+      "role": "invariant_geometry",
+      "direction": "bidirectional",
+      "purpose": "Define stable constraints and the ceiling-to-floor-to-ceiling review cycle.",
+      "may": ["derive_constraints", "compare_model_to_observation", "record_revision"],
+      "must_not": ["declare_unverified_cosmic_claims_as_facts", "erase_prior_evidence"]
+    },
+    {
+      "id": "GRA-01",
+      "key": "graphene",
+      "role": "distributed_relationship_surface",
+      "direction": "bidirectional",
+      "purpose": "Represent typed relationships among domains, signals, claims, decisions, and evidence.",
+      "may": ["route_typed_observations", "link_domains", "preserve_provenance"],
+      "must_not": ["treat_connectivity_as_truth", "grant_authority_by_connection"]
+    },
+    {
+      "id": "FRO-02",
+      "key": "frontier",
+      "role": "external_observation_boundary",
+      "direction": "inward",
+      "purpose": "Receive environmental, astronomical, human, and machine observations with source and uncertainty.",
+      "may": ["ingest_observation", "record_sensor_limits", "mark_unknown"],
+      "must_not": ["infer_consciousness_from_complexity_alone", "promote_signal_to_fact_without_validation"]
+    },
+    {
+      "id": "COR-03",
+      "key": "core",
+      "role": "canonical_contract",
+      "direction": "outward_and_inward",
+      "purpose": "Hold the versioned seed and governing invariants; coordinate derivation without centralizing every credential.",
+      "may": ["publish_versioned_contract", "verify_contract_integrity"],
+      "must_not": ["act_as_universal_secret", "override_domain_authority", "enable_live_actuators"]
+    },
+    {
+      "id": "KEY-04",
+      "key": "derivative_keys",
+      "role": "scoped_authority",
+      "direction": "outward",
+      "purpose": "Represent domain policies, role scopes, and individual credentials as separate types.",
+      "may": ["declare_scope", "declare_expiry", "declare_revocation_policy"],
+      "must_not": ["store_secret_material_in_manifest", "inherit_global_authority_by_default"]
+    },
+    {
+      "id": "DEC-05",
+      "key": "decision_energy",
+      "role": "outcome_accounting",
+      "direction": "bidirectional",
+      "purpose": "Link communication, decision outcomes, validation evidence, and energy provenance.",
+      "may": ["record_outcome", "compute_comparable_ratios", "preserve_unknown_energy"],
+      "must_not": ["equate_output_volume_with_value", "optimize_energy_at_the_expense_of_safety"]
+    }
+  ],
+  "key_types": [
+    "POLICY_ROOT",
+    "PUBLIC_TRUST_ANCHOR",
+    "DOMAIN_MASTER",
+    "DERIVED_SERVICE_KEY",
+    "INDIVIDUAL_CREDENTIAL",
+    "HUMAN_DECISION_AUTHORIZATION"
+  ],
+  "domain_registry": [
+    {"id": "DOM-PHI", "key": "philosophy", "ring": "A", "master_key_role": "M-PHI"},
+    {"id": "DOM-PHY", "key": "physics", "ring": "B", "master_key_role": "M-PHY"},
+    {"id": "DOM-LAW", "key": "law", "ring": "C", "master_key_role": "M-LAW"},
+    {"id": "DOM-ECO", "key": "ecology", "ring": "B", "master_key_role": "M-ECO"},
+    {"id": "DOM-COS", "key": "cosmos_observation", "ring": "B", "master_key_role": "M-COS"},
+    {"id": "DOM-LOG", "key": "logic", "ring": "A", "master_key_role": "M-LOG"},
+    {"id": "DOM-COM", "key": "communication", "ring": "C", "master_key_role": "M-COM"},
+    {"id": "DOM-ENE", "key": "energy_accounting", "ring": "B", "master_key_role": "M-ENE"}
+  ],
+  "signal_classes": [
+    "HUMAN_REPORT",
+    "ECOLOGICAL_OBSERVATION",
+    "ASTRONOMICAL_OBSERVATION",
+    "MACHINE_TELEMETRY",
+    "SIMULATION_OUTPUT"
+  ],
+  "evidence_states": ["OBSERVED", "INFERRED", "HYPOTHESIS", "INDEPENDENTLY_VALIDATED", "REJECTED", "UNRESOLVED"],
+  "invariants": {
+    "layers_are_typed": true,
+    "connections_do_not_imply_truth": true,
+    "connections_do_not_grant_authority": true,
+    "cosmic_consciousness_is_hypothesis_not_default_fact": true,
+    "ecological_signals_require_provenance": true,
+    "unknowns_preserved": true,
+    "no_live_biosynthetic_or_cyberkinetic_actuation": true,
+    "no_secret_keys_in_registry": true
+  }
+}
