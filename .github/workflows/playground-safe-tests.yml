@@ -1,18 +1,10 @@
 name: playground-safe-tests
 
 on:
+  push:
+    branches: [workbench/domain-handoff-audit]
   pull_request:
     branches: [main]
-    paths:
-      - "ai/app.html"
-      - "ai/dclm-look.js"
-      - "js/iris-file.js"
-      - "js/iris-session.js"
-      - "js/api-config.js"
-      - "js/api-world.js"
-      - "js/l2-plug.js"
-      - "tests/**"
-      - ".github/workflows/playground-safe-tests.yml"
 
 permissions:
   contents: read
