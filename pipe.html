@@ -107,15 +107,9 @@ a:hover { text-decoration: underline; }
     radial-gradient(1px 1px at 15% 45%, rgba(200,220,230,0.22), transparent),
     radial-gradient(1px 1px at 60% 85%, rgba(200,220,230,0.28), transparent),
     radial-gradient(1px 1px at 90% 15%, rgba(200,220,230,0.2), transparent);
-  animation: drift 120s linear infinite;
   opacity: 0.85;
   pointer-events: none;
 }
-@keyframes drift {
-  from { transform: translateY(0); }
-  to { transform: translateY(-8%); }
-}
-
 #pipe-world {
   position: absolute;
   left: 50%;

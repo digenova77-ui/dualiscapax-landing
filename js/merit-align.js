@@ -1,11 +1,3 @@
-/**
- * Merit price is linked to Unity through UniFi³.
- * UniFi³ connects to eFuse.
- * Usage and the gate stay shut unless the four readings are the same number
- * and that number is 1. The published joule is null, so the gate stays shut.
- * Look stays free. This module does not open a till.
- */
-
 export const LINK = "Merit price is Unity through UniFi³. UniFi³ connects to eFuse.";
 
 export function unifiCubed(unity) {

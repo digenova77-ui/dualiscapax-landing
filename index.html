@@ -33,56 +33,9 @@
               <stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
               <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
             </radialGradient>
-            <radialGradient id="iris-moon" cx="35%" cy="32%" r="70%">
-              <stop offset="0" stop-color="#e4c8ff"/>
-              <stop offset="0.45" stop-color="#9b5cff"/>
-              <stop offset="1" stop-color="#3a146e"/>
-            </radialGradient>
-            <radialGradient id="phos-green" cx="50%" cy="50%" r="50%">
-              <stop offset="0" stop-color="#b6ff9a" stop-opacity="0.75"/>
-              <stop offset="1" stop-color="#b6ff9a" stop-opacity="0"/>
-            </radialGradient>
-            <radialGradient id="phos-red" cx="50%" cy="50%" r="50%">
-              <stop offset="0" stop-color="#ff6a70" stop-opacity="0.75"/>
-              <stop offset="1" stop-color="#ff6a70" stop-opacity="0"/>
-            </radialGradient>
-            <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="1.1" result="b"/>
-              <feMerge>
-                <feMergeNode in="b"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-            <filter id="phosphor" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3.2" result="b"/>
-              <feMerge>
-                <feMergeNode in="b"/>
-                <feMergeNode in="b"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-            <filter id="bloom" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="14"/>
-            </filter>
           </defs>
 
           <g class="ring is-sym" id="ring-sym">
-            <ellipse class="breath pass-green" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-green)" filter="url(#bloom)"/>
-            <ellipse class="breath pass-red" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-red)" filter="url(#bloom)"/>
-            <g fill="none" stroke="rgba(99,247,221,0.62)" stroke-linecap="round">
-              <line x1="320.0" y1="96.0" x2="320.0" y2="84.0" stroke-width="1.15"/>
-              <line x1="432.0" y1="126.0" x2="438.0" y2="115.6" stroke-width="1.15"/>
-              <line x1="514.0" y1="208.0" x2="524.4" y2="202.0" stroke-width="1.15"/>
-              <line x1="544.0" y1="320.0" x2="556.0" y2="320.0" stroke-width="1.15"/>
-              <line x1="514.0" y1="432.0" x2="524.4" y2="438.0" stroke-width="1.15"/>
-              <line x1="432.0" y1="514.0" x2="438.0" y2="524.4" stroke-width="1.15"/>
-              <line x1="320.0" y1="544.0" x2="320.0" y2="556.0" stroke-width="1.15"/>
-              <line x1="208.0" y1="514.0" x2="202.0" y2="524.4" stroke-width="1.15"/>
-              <line x1="126.0" y1="432.0" x2="115.6" y2="438.0" stroke-width="1.15"/>
-              <line x1="96.0" y1="320.0" x2="84.0" y2="320.0" stroke-width="1.15"/>
-              <line x1="126.0" y1="208.0" x2="115.6" y2="202.0" stroke-width="1.15"/>
-              <line x1="208.0" y1="126.0" x2="202.0" y2="115.6" stroke-width="1.15"/>
-            </g>
             <circle cx="320" cy="320" r="236" fill="none" stroke="rgba(99,247,221,0.46)" stroke-width="1.15"/>
           </g>
 
@@ -110,17 +63,13 @@
           </g>
 
           <g class="ring is-iris" id="ring-iris">
-            <circle class="breath" cx="320" cy="320" r="108" fill="url(#iris-core)"/>
+            <circle cx="320" cy="320" r="108" fill="url(#iris-core)"/>
             <circle cx="320" cy="320" r="108" fill="url(#iris-shine)"/>
-            <circle cx="248" cy="392" r="38" fill="url(#iris-moon)" opacity="0.92"/>
-            <circle cx="248" cy="392" r="38" fill="url(#iris-shine)" opacity="0.45"/>
-            <circle cx="404" cy="246" r="34" fill="url(#iris-moon)" opacity="0.92"/>
-            <circle cx="404" cy="246" r="34" fill="url(#iris-shine)" opacity="0.4"/>
           </g>
 
           <g class="ring is-sym" id="ring-meet">
-            <circle class="pass-green" cx="320" cy="320" r="236" fill="none" stroke="#c8ffb4" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
-            <circle class="pass-red" cx="320" cy="320" r="236" fill="none" stroke="#ff6a70" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
+            <circle class="pass-green" cx="320" cy="320" r="236" fill="none" stroke="#c8ffb4" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)"/>
+            <circle class="pass-red" cx="320" cy="320" r="236" fill="none" stroke="#ff6a70" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)"/>
           </g>
         </svg>
       </figure>
@@ -182,7 +131,7 @@
 
     <section class="beat" id="line" aria-labelledby="line-title">
       <h2 id="line-title">The rings</h2>
-      <p class="flow">The teal ring is Iris, the explorer 👽. From her the line runs the web 🌐, the world 🌎, the cosmos 🌌, the heart ❤️, the brain 🧠, and the fire 🔥.</p>
+      <p class="flow">The teal ring is Iris, the explorer.</p>
     </section>
 
     <section class="beat" id="wallet" aria-labelledby="wallet-title">
@@ -223,9 +172,6 @@
       <nav class="doors" aria-label="Further">
         <a href="wallet.html">Wallet</a>
         <a href="meeting.html">Meeting</a>
-        <a href="law.html">Law</a>
-        <a href="research/philosophy/">Philosophy</a>
-        <a href="for-people.html">For you</a>
       </nav>
       <p class="honest">Look is free. This page stores nothing.</p>
     </section>

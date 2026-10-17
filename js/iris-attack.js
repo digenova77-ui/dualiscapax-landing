@@ -1,11 +1,3 @@
-/**
- * Iris attacks in hybrid.
- * Free dreamers rotate and only seed a probability.
- * The deterministic engine on the back solves.
- * She books the solve and keeps the spread. A probability is not an answer.
- * This build does not call the dreamers. An empty seat does not invent an idea.
- */
-
 export const RING = ["Llama", "Mistral", "Gemma", "Phi", "Qwen", "DeepSeek", "Falcon", "OLMo"];
 export const EPS = 1e-12;
 
