@@ -2,12 +2,12 @@
   "schema": "dualis.diamond-derivative.graph.v1",
   "description": "Template only. Replace all example evidence references with verifiable records before validation.",
   "nodes": [
-    {"id":"ceiling","layer":"ceiling","content":{"state":"candidate-view"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
-    {"id":"mesh","layer":"mesh","content":{"state":"typed-relations"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
-    {"id":"floor","layer":"floor","content":{"state":"three-rings-unified"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
-    {"id":"seed","layer":"seed","content":{"state":"minimal-inputs"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
-    {"id":"taproot","layer":"taproot","content":{"state":"provenance-roots"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
-    {"id":"bedrock","layer":"bedrock","content":{"state":"governing-invariants"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"}
+    {"id":"ceiling","layer":"ceiling","domain":"governance","content":{"state":"candidate-view"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"mesh","layer":"mesh","domain":"software","content":{"state":"typed-relations"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"floor","layer":"floor","domain":"science","content":{"state":"three-rings-unified"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"seed","layer":"seed","domain":"earth","content":{"state":"minimal-inputs"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"taproot","layer":"taproot","domain":"identity","content":{"state":"provenance-roots"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"bedrock","layer":"bedrock","domain":"governance","content":{"state":"governing-invariants"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"}
   ],
   "edges": [
     {"from":"ceiling","to":"mesh","relation":"decomposes-into","verified":false},
