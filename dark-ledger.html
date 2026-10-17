@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Iris — dualiscapax</title>
+  <meta name="description" content="Iris shows your dark ledger only when you ask. A give and a gain are audited, and nothing is taken that was not given.">
+  <meta name="theme-color" content="#07060e">
+  <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/writer.css">
+</head>
+<body>
+  <a class="skip" href="#ledger">Skip to Iris</a>
+  <div class="float">
+  <header>
+    <p class="name">dualiscapax</p>
+  </header>
+  <main class="plate">
+    <section class="beat door" id="ledger" aria-labelledby="ledger-title">
+      <p class="eyebrow">Iris</p>
+      <h1 id="ledger-title">Iris</h1>
+      <p class="lede">Iris shows your dark ledger only when you ask.</p>
+      <p>A give and a gain are audited, and nothing is taken that was not given.</p>
+      <form class="unity-form" id="ask-form" method="post" action="dark-ledger.html">
+        <label for="unity">Unity ID</label>
+        <input id="unity" name="unity" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button type="submit">Ask</button>
+      </form>
+      <p id="seal" class="honest" aria-live="polite"></p>
+      <nav class="doors" aria-label="Further">
+        <a href="index.html">Door</a>
+      </nav>
+    </section>
+  </main>
+  </div>
+  <script type="module">
+  import { open } from "./js/dark-ledger.js";
+  const book = open();
+  const form = document.getElementById("ask-form");
+  const unity = document.getElementById("unity");
+  const seal = document.getElementById("seal");
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const id = unity.value;
+    unity.value = "";
+    const view = await book.ask({ id: id });
+    if (view && view.own === true && view.seal && view.seal.peg) {
+      seal.textContent = view.seal.iris + " " + view.seal.peg;
+      return;
+    }
+    seal.textContent = "";
+  });
+  </script>
+</body>
+</html>
