@@ -48,7 +48,8 @@
   }
 
   function baseUrl() {
-    var base = (g.DC_API_BASE || "https://dualiscapax-depth.digenova77.workers.dev").replace(/\/$/, "");
+    var trusted = "https://dualiscapax-depth.digenova77.workers.dev";
+    var base = safeApiOverride(g.DC_API_BASE || trusted) || trusted;
     try {
       var q = new URLSearchParams(location.search).get("api");
       var safe = q && safeApiOverride(q);
