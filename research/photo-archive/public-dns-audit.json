@@ -1,12 +1,227 @@
 {
   "schema": "dualis.public-dns-audit.v1",
-  "checked_at": null,
+  "checked_at": "2026-10-17T17:16:16+00:00",
   "scope": "Public DNS-over-HTTPS and public HTTPS GET checks only",
   "mutations_performed": false,
-  "records": [],
-  "https": [],
+  "records": [
+    {
+      "name": "dualiscapax.ai",
+      "type": "A",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 1,
+          "ttl": 300,
+          "data": "108.61.17.141"
+        }
+      ],
+      "authority": []
+    },
+    {
+      "name": "dualiscapax.ai",
+      "type": "AAAA",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [],
+      "authority": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 6,
+          "ttl": 300,
+          "data": "ns1.dualiscapax.ai. hostmaster.dualiscapax.ai. 2026101004 3600 900 1209600 300"
+        }
+      ]
+    },
+    {
+      "name": "dualiscapax.ai",
+      "type": "CNAME",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [],
+      "authority": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 6,
+          "ttl": 300,
+          "data": "ns1.dualiscapax.ai. hostmaster.dualiscapax.ai. 2026101004 3600 900 1209600 300"
+        }
+      ]
+    },
+    {
+      "name": "dualiscapax.ai",
+      "type": "NS",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 2,
+          "ttl": 3600,
+          "data": "ns1.dualiscapax.ai."
+        },
+        {
+          "name": "dualiscapax.ai.",
+          "type": 2,
+          "ttl": 3600,
+          "data": "ns2.dualiscapax.ai."
+        }
+      ],
+      "authority": []
+    },
+    {
+      "name": "dualiscapax.ai",
+      "type": "TXT",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 16,
+          "ttl": 3600,
+          "data": "google-site-verification=FuH-irctfv_fEfBEkj4i3AlQBC9BTzIbF4-90-F2vVQ"
+        },
+        {
+          "name": "dualiscapax.ai.",
+          "type": 16,
+          "ttl": 3600,
+          "data": "v=spf1 include:_spf.google.com ~all"
+        }
+      ],
+      "authority": []
+    },
+    {
+      "name": "dualiscapax.ai",
+      "type": "MX",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 15,
+          "ttl": 3600,
+          "data": "5 alt1.aspmx.l.google.com."
+        },
+        {
+          "name": "dualiscapax.ai.",
+          "type": 15,
+          "ttl": 3600,
+          "data": "10 alt3.aspmx.l.google.com."
+        },
+        {
+          "name": "dualiscapax.ai.",
+          "type": 15,
+          "ttl": 3600,
+          "data": "10 alt4.aspmx.l.google.com."
+        },
+        {
+          "name": "dualiscapax.ai.",
+          "type": 15,
+          "ttl": 3600,
+          "data": "5 alt2.aspmx.l.google.com."
+        },
+        {
+          "name": "dualiscapax.ai.",
+          "type": 15,
+          "ttl": 3600,
+          "data": "1 aspmx.l.google.com."
+        }
+      ],
+      "authority": []
+    },
+    {
+      "name": "_dnslink.dualiscapax.ai",
+      "type": "TXT",
+      "status": 3,
+      "authenticated_data": false,
+      "answers": [],
+      "authority": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 6,
+          "ttl": 300,
+          "data": "ns1.dualiscapax.ai. hostmaster.dualiscapax.ai. 2026101004 3600 900 1209600 300"
+        }
+      ]
+    },
+    {
+      "name": "www.dualiscapax.ai",
+      "type": "A",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [
+        {
+          "name": "www.dualiscapax.ai.",
+          "type": 1,
+          "ttl": 300,
+          "data": "108.61.17.141"
+        }
+      ],
+      "authority": []
+    },
+    {
+      "name": "www.dualiscapax.ai",
+      "type": "AAAA",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [],
+      "authority": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 6,
+          "ttl": 300,
+          "data": "ns1.dualiscapax.ai. hostmaster.dualiscapax.ai. 2026101004 3600 900 1209600 300"
+        }
+      ]
+    },
+    {
+      "name": "www.dualiscapax.ai",
+      "type": "CNAME",
+      "status": 0,
+      "authenticated_data": false,
+      "answers": [],
+      "authority": [
+        {
+          "name": "dualiscapax.ai.",
+          "type": 6,
+          "ttl": 300,
+          "data": "ns1.dualiscapax.ai. hostmaster.dualiscapax.ai. 2026101004 3600 900 1209600 300"
+        }
+      ]
+    }
+  ],
+  "https": [
+    {
+      "url": "https://dualiscapax.ai/",
+      "status": 200,
+      "final_url": "https://dualiscapax.ai/",
+      "content_type": "text/html; charset=utf-8",
+      "server": null,
+      "x_dc_iris": null
+    },
+    {
+      "url": "https://www.dualiscapax.ai/",
+      "status": 200,
+      "final_url": "https://dualiscapax.ai/",
+      "content_type": "text/html; charset=utf-8",
+      "server": null,
+      "x_dc_iris": null
+    },
+    {
+      "url": "https://dualiscapax.ai/iris/status",
+      "status": 404,
+      "error": "HTTPError"
+    },
+    {
+      "url": "https://dualiscapax.ai/holographic-core/v2",
+      "status": 404,
+      "error": "HTTPError"
+    }
+  ],
   "interpretation": [
-    "Initial placeholder; the scheduled or manually dispatched workflow fills this report.",
+    "A public resolver view is not the same as Cloudflare dashboard zone state.",
+    "DNSLink TXT records may intentionally be absent if the site is served by Pages.",
     "No DNS, Pages, Worker, database, or server configuration is changed by this audit."
   ]
 }
