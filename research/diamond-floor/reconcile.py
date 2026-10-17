@@ -125,6 +125,8 @@ def check_ledger(path: Path) -> dict:
             return {"status": "FAIL", "reason": "ledger-digest-mismatch", "line": line_no, "verified_records": count}
         previous = claimed
         count += 1
+    if count == 0:
+        return {"status": "BLOCKED", "reason": "ledger-empty", "verified_records": 0, "head_digest": previous}
     return {"status": "PASS", "verified_records": count, "head_digest": previous}
 
 
