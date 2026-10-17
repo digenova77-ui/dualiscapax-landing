@@ -1,5 +1,5 @@
+import { align, published } from "./merit-align.js";
 import { run } from "./dclm-write.js";
-import { read as senseJoule } from "./joule-sensor.js";
 
 const HOLD = Object.freeze({
   NO_FORCE: true,
@@ -99,6 +99,19 @@ export function identify(input) {
   return { known: false, peg: null };
 }
 
+function lawOf(input) {
+  if (input && input.decision && typeof input.decision === "object" && !Array.isArray(input.decision)) {
+    return align(input.decision);
+  }
+  if (input && Object.hasOwn(input, "joule")) return align({ joule: input.joule });
+  return published();
+}
+
+function jouleOf(input, law) {
+  if (finite(law.joule)) return law.joule;
+  return null;
+}
+
 function marksOf(input) {
   let admitted = false;
   let refused = false;
@@ -114,12 +127,12 @@ function marksOf(input) {
 
 function readingOf(input, peg) {
   const secrets = secretsOf(input);
-  const sensed = senseJoule(input);
-  const joule = sensed.joule;
+  const law = lawOf(input);
+  const joule = jouleOf(input, law);
   const place = clean(input.place, secrets, 80) || null;
   const step = finite(input.step) ? input.step : null;
   const marks = marksOf(input);
-  const gate = sensed.gate;
+  const gate = law.open === true ? "open" : "shut";
   return Object.freeze({
     peg: peg,
     step: step,
