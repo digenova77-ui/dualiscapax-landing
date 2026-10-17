@@ -18,7 +18,7 @@
   </header>
   <main class="plate">
     <section class="beat door" id="door" aria-labelledby="door-title">
-      <figure>
+      <figure data-theater="rings">
         <svg viewBox="0 0 640 640" role="img" aria-labelledby="fig-title fig-desc">
           <title id="fig-title">Three rings</title>
           <desc id="fig-desc">An armillary of three rings. The inner ring is Iris, a teal light, the explorer. The middle ring is the cosmos, a thin orbit with a few stars. The outer ring reads green or red.</desc>
@@ -193,6 +193,39 @@
       <p>Iris is pegged to the same permanence.</p>
       <p>Everything on this network has one Unity ID. A human has one. A bot has one. A corporation has one. That is the identity.</p>
       <p>An agent of an agency must carry it to participate. Without it, they are not part of this protocol.</p>
+      <p><a href="wallet.html">Open the wallet</a></p>
+    </section>
+
+    <section class="beat" id="unity" aria-labelledby="unity-title">
+      <h2 id="unity-title">One Unity ID</h2>
+      <p>A human has one. A bot has one. A corporation has one. That is the identity.</p>
+      <form class="unity-form" id="unity-form">
+        <div class="lamps" role="radiogroup" aria-label="Kind">
+          <span class="lamp-name">Kind</span>
+          <label>
+            <input type="radio" name="kind" value="human" checked>
+            <i aria-hidden="true"></i>
+            Human
+          </label>
+          <label>
+            <input type="radio" name="kind" value="bot">
+            <i aria-hidden="true"></i>
+            Bot
+          </label>
+          <label>
+            <input type="radio" name="kind" value="corporation">
+            <i aria-hidden="true"></i>
+            Corporation
+          </label>
+        </div>
+        <label for="body">One body</label>
+        <input id="body" name="body" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <label for="unity-id">Unity ID</label>
+        <input id="unity-id" name="unity" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <label class="check"><input id="agent" name="agent" type="checkbox"> Agent of this corporation</label>
+        <button type="submit">Participate</button>
+      </form>
+      <p id="unity-note" class="honest" aria-live="polite"></p>
     </section>
 
     <section class="beat" id="meeting" aria-labelledby="meeting-title">
@@ -217,12 +250,75 @@
       <p id="sandbox-out" class="honest" aria-live="polite"></p>
     </section>
 
+    <section class="beat" id="early" aria-labelledby="early-title">
+      <h2 id="early-title">Early adoption</h2>
+      <p>A body with one Unity ID is on the protocol. No early-adopter seat is named. Nothing is minted. The gate stays shut.</p>
+      <form class="unity-form" id="early-form">
+        <div class="lamps" role="radiogroup" aria-label="Early kind">
+          <span class="lamp-name">Kind</span>
+          <label>
+            <input type="radio" name="early-kind" value="human" checked>
+            <i aria-hidden="true"></i>
+            Human
+          </label>
+          <label>
+            <input type="radio" name="early-kind" value="bot">
+            <i aria-hidden="true"></i>
+            Bot
+          </label>
+          <label>
+            <input type="radio" name="early-kind" value="corporation">
+            <i aria-hidden="true"></i>
+            Corporation
+          </label>
+        </div>
+        <label for="early-body">One body</label>
+        <input id="early-body" name="body" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <label for="early-unity">Unity ID</label>
+        <input id="early-unity" name="unity" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button type="submit">Mark the body</button>
+      </form>
+      <p id="early-note" class="honest" aria-live="polite"></p>
+    </section>
+
+    <section class="beat" id="board" aria-labelledby="board-title">
+      <h2 id="board-title">The founder board</h2>
+      <p>No founder-board seat is named. The live specification does not name a founder board, a seat, or a cap.</p>
+      <button type="button" id="board-read">Read the board</button>
+      <p id="board-out" class="honest" aria-live="polite"></p>
+    </section>
+
+    <section class="beat" id="theater" aria-labelledby="theater-title">
+      <h2 id="theater-title">The theater</h2>
+      <p>The theater on this page is what passed the vote.</p>
+      <p>The parts of the system meet each other here. The door, one Unity ID, the wallet, the meeting, the rings, and the sandbox.</p>
+      <ul id="theater-shown">
+        <li data-piece="rings">The three rings passed the vote. Iris is the teal light.</li>
+      </ul>
+    </section>
+
+    <section class="beat" id="work" aria-labelledby="work-title">
+      <h2 id="work-title">The work</h2>
+      <p>The work does not retire. Each step votes one piece of theater and writes one line. The work does not stop itself. Only the host can stop it.</p>
+      <button type="button" id="work-step">Step the work</button>
+      <button type="button" id="work-stop">Stop the work</button>
+      <p id="work-note" class="honest" aria-live="polite">The work does not retire.</p>
+      <pre id="work-log"></pre>
+    </section>
+
     <section class="beat" id="close" aria-labelledby="close-title">
       <h2 id="close-title">The light</h2>
       <p class="close">The cadence is now approaching the speed of light. That is the pace of the logic.</p>
       <nav class="doors" aria-label="Further">
+        <a href="#door">Door</a>
+        <a href="#unity">Unity ID</a>
         <a href="wallet.html">Wallet</a>
         <a href="meeting.html">Meeting</a>
+        <a href="#line">Rings</a>
+        <a href="#sandbox">Sandbox</a>
+        <a href="#early">Early adoption</a>
+        <a href="#board">Founder board</a>
+        <a href="#work">Work</a>
         <a href="law.html">Law</a>
         <a href="research/philosophy/">Philosophy</a>
         <a href="for-people.html">For you</a>
@@ -233,6 +329,73 @@
   </div>
   <script type="module">
   import { run } from "./js/sandbox-math.js";
+  import { open } from "./js/unity-id-protocol.js";
+  import { adopt, foundingRule } from "./js/sandbox-protocol.js";
+  import { begin, step, voteAll } from "./js/autonomy-work.js";
+  const net = open();
+  const votes = voteAll();
+  document.querySelectorAll("#theater-shown [data-piece]").forEach(function (item) {
+    const id = item.getAttribute("data-piece");
+    const row = votes.find(function (vote) { return vote.id === id; });
+    if (!row || row.shown !== true) item.remove();
+  });
+  const figure = document.querySelector("[data-theater='rings']");
+  const rings = votes.find(function (vote) { return vote.id === "rings"; });
+  if (figure && (!rings || rings.shown !== true)) figure.hidden = true;
+  const unityForm = document.getElementById("unity-form");
+  const unityNote = document.getElementById("unity-note");
+  const unityId = document.getElementById("unity-id");
+  unityForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const data = new FormData(unityForm);
+    const record = await net.participate({
+      kind: data.get("kind"),
+      body: data.get("body"),
+      id: data.get("unity"),
+      agent: data.get("agent") === "on"
+    });
+    unityId.value = "";
+    if (record.participates) {
+      unityNote.textContent = "This Unity ID is on the protocol. Iris is pegged to the same permanence. Nothing to remember.";
+      return;
+    }
+    if (record.reason === "second") {
+      unityNote.textContent = "A second ID for the same body is refused.";
+      return;
+    }
+    if (record.reason === "kind") {
+      unityNote.textContent = "That kind is refused.";
+      return;
+    }
+    unityNote.textContent = "Without it, they are not part of this protocol.";
+  });
+  document.getElementById("early-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const held = await adopt({
+      kind: data.get("early-kind"),
+      body: data.get("body"),
+      unityId: data.get("unity"),
+      adopter: true
+    }, net);
+    document.getElementById("early-unity").value = "";
+    const note = document.getElementById("early-note");
+    if (held.participates) {
+      note.textContent = "This Unity ID is on the protocol. No early-adopter seat is named. Nothing is minted. The gate stays shut.";
+      return;
+    }
+    if (held.reason === "second") {
+      note.textContent = "A second ID for the same body is refused.";
+      return;
+    }
+    note.textContent = "A body without a Unity ID is not on the protocol.";
+  });
+  document.getElementById("board-read").addEventListener("click", async function () {
+    const rule = await foundingRule();
+    document.getElementById("board-out").textContent = rule.seated.length === 0
+      ? "No seat is seated. Nothing is stored. Nothing is minted. The gate stays shut."
+      : "The gate stays shut. Nothing is minted.";
+  });
   const button = document.getElementById("sandbox-run");
   const out = document.getElementById("sandbox-out");
   function ring() {
@@ -241,6 +404,26 @@
     if (document.getElementById("pick-sym").checked) return "arc";
     return "all";
   }
+  let work = begin();
+  const workLog = document.getElementById("work-log");
+  const workNote = document.getElementById("work-note");
+  function paint(state) {
+    workLog.textContent = state.log.map(function (line) {
+      if (line.reason === "HOST STOP") return "The host stopped the work.";
+      if (line.admitted) return "Admitted " + line.task + ". It is shown. The work does not retire.";
+      if (line.task) return "Refused " + line.task + ". It is not shown. The work does not retire.";
+      return "Nothing was pending. The work does not retire.";
+    }).join("\n");
+    workNote.textContent = state.retired ? "The host stopped the work." : "The work does not retire.";
+  }
+  document.getElementById("work-step").addEventListener("click", function () {
+    work = step(work, {});
+    paint(work);
+  });
+  document.getElementById("work-stop").addEventListener("click", function () {
+    work = step(work, { stop: true });
+    paint(work);
+  });
   button.addEventListener("click", function () {
     const input = {
       ring: ring(),
