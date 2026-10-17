@@ -234,3 +234,14 @@ This is an evidence update, not a production release. No live DNS, server, datab
 ### Current release state
 
 NO-GO / investigation open. The repeated ceremony is supported by the written design, but the exact reload/bounce cause has not yet been proven. No production changes have been made. The next decisive evidence is the actual deployed script and a redacted browser Network/Console trace from one reproduction.
+
+
+### Follow-up source trace — 2026-10-16 UTC
+
+- [x] Followed the repository caller for the local session redirect: js/curtain-gate.js (blob 577ba36ac42893564f646ba3870d8afd68833d43) invokes DC_UNITY.require(here) for non-free paths when DC_UNITY is present. The FREE allowlist includes /curtain.html, /why.html, /story.html, /index.html, /ca.html, /world.html, /look.html, /hall/, and /hall/index.html. This makes the redirect path concrete for gated pages, but does not prove the root-page biometric flow loads this gate script.
+- [x] Read curtain.html (blob 72e78c1c1064c2434edb1507a555de39b66e0c98). Its form mints a local unity.session.v1 record and navigates to the requested next path or DC_UNITY.landPath(). This is a local session flow distinct from the documented WebAuthn handoff; integration between the two is not established by source evidence.
+- [x] Attempted direct public inspection of /passkey/owner.html, /owner, /owner.html, and /.well-known/webauthn. The web inspector could not access these URLs. This remains inconclusive; no status code or origin configuration is claimed.
+
+### Implementation boundary
+
+The current evidence does not justify editing js/curtain-gate.js, js/unity-session.js, the staged owner scaffold, or an API port: these may belong to separate flows from the public page the user is experiencing. A safe implementation is blocked until the deployed script / artifact and the actual failing navigation chain are identified. The next engineering action is to capture a redacted mobile-browser Network/Console trace or obtain the exact deployed bundle URL and source mapping, then patch the authoritative source on a branch and test it before deployment.
