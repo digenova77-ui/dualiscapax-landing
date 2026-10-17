@@ -46,6 +46,14 @@ def validate_seed(seed: Any) -> dict[str, Any]:
         raise ProtocolError("SEED_IDENTITY_MISMATCH")
     if seed.get("version") != 1:
         raise ProtocolError("UNSUPPORTED_SEED_VERSION")
+    if seed.get("event_protocol") != "dualis.swarm.event.v1":
+        raise ProtocolError("SEED_EVENT_PROTOCOL_MISMATCH")
+    expected_roles = {
+        "iris", "scout", "builder", "sentinel", "verifier",
+        "infrastructure", "economics_ledger", "trinity_dclm",
+    }
+    if not isinstance(seed.get("roles"), list) or set(seed["roles"]) != expected_roles:
+        raise ProtocolError("SEED_ROLE_REGISTRY_MISMATCH")
     if seed.get("status") not in {"PROPOSED", "ACTIVE"}:
         raise ProtocolError("INVALID_SEED_STATUS")
     if seed.get("governing_laws") != [
