@@ -3,9 +3,17 @@ const fs = require("node:fs");
 const vm = require("node:vm");
 
 function loadConfig(search, origin = "https://dualiscapax.ai") {
+  const calls = [];
   const window = { location: { origin, search, pathname: "/playground.html" } };
-  const context = { window, location: window.location, URL, URLSearchParams, Promise, String, Date, Math };
+  const context = {
+    window, location: window.location, URL, URLSearchParams, Promise, String, Date, Math,
+    fetch: async (url, options) => {
+      calls.push({ url: String(url), options });
+      return { ok: true, status: 200, json: async () => ({ ok: true }) };
+    }
+  };
   vm.runInNewContext(fs.readFileSync("js/api-config.js", "utf8"), context);
+  window.calls = calls;
   return window;
 }
 
@@ -28,6 +36,12 @@ function loadWorld(search, origin = "https://dualiscapax.ai") {
   assert.equal(loadConfig("?api=https%3A%2F%2Fevil.example").DC_API_BASE, trusted);
   assert.equal(loadConfig("?api=%2Fapi").DC_API_BASE, "https://dualiscapax.ai/api");
   assert.equal(loadConfig("?api=https%3A%2F%2Fdualiscapax-depth.digenova77.workers.dev").DC_API_BASE, trusted);
+  const zero = loadConfig("?world=0");
+  await zero.dcChatV2([{ role: "user", content: "ground-zero" }]);
+  assert.equal(zero.calls[0].url, trusted + "/v1/chat");
+  assert.equal(zero.calls[0].options.headers["X-DC-World"], "0");
+  assert.equal(JSON.parse(zero.calls[0].options.body).world, 0, "World 0 must remain zero in the request body");
+  assert.equal(JSON.parse(zero.calls[0].options.body).api_version, "1");
   const rejected = loadWorld("?api=https%3A%2F%2Fevil.example");
   await rejected.window.DCWorld.chat([{ role: "user", content: "test" }]);
   assert.equal(rejected.calls[0], trusted + "/v2/chat", "untrusted query URL must not receive chat payload");
