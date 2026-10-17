@@ -1,0 +1,64 @@
+name: Build Cloudflare Pages upload package
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/package-cloudflare-pages.yml"
+      - "scripts/pack_hierarchical_flat_zip.py"
+      - "_worker.js"
+      - "wrangler.toml"
+      - "index.html"
+      - "**/*.html"
+      - "**/*.js"
+      - "**/*.css"
+      - "**/*.svg"
+      - "**/*.json"
+      - "**/*.webp"
+      - "**/*.png"
+      - "**/*.jpg"
+      - "**/*.jpeg"
+      - "**/*.woff"
+      - "**/*.woff2"
+      - "**/*.ttf"
+      - "**/*.glb"
+      - "**/*.gltf"
+      - "**/*.mp4"
+      - "**/*.webm"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-pages-package-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact source revision
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Validate package inputs
+        run: python3 scripts/pack_hierarchical_flat_zip.py --lander --check
+
+      - name: Build and verify ZIP
+        run: |
+          python3 scripts/pack_hierarchical_flat_zip.py --lander
+          unzip -l dist/cloudflare/lander-*.zip
+          sha256sum -c dist/cloudflare/lander-*.zip.sha256
+
+      - name: Publish package artifact (not a deployment)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-pages-lander-${{ github.sha }}
+          path: |
+            dist/cloudflare/lander-*.zip
+            dist/cloudflare/lander-*.zip.sha256
+          if-no-files-found: error
+          retention-days: 7
