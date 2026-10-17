@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
-import { AUTHORITY, LAWS, auditPipe, authorityOf, handleWrite, run, writePipe } from "../js/dclm-write.js";
+import { AUTHORITY, LAWS, auditPipe, authorityOf, handleWrite, invoke, run, writePipe } from "../js/dclm-write.js";
 
 const HOLD = {
   id: "look-0",
@@ -197,4 +198,78 @@ test("GET with no task admits nothing and POST returns the dual-pipe record", as
   const closed = await other.json();
   assert.equal(closed.admitted, false);
   assert.equal(closed.authority, "DCLM");
+});
+
+test("a task whose four laws hold is written in that same call", () => {
+  const task = {
+    id: "same-step",
+    what: "write when the law passes",
+    axioms: HOLD.axioms,
+    admitted: true,
+    vote: true,
+    waiting: "later",
+    residue: ["hang"],
+    pending: ["rings"],
+    queue: ["second"],
+    authority: "client",
+    look: 4,
+    joule: 9
+  };
+  const first = run(task);
+  assert.equal(first.admitted, true);
+  assert.equal(first.reason, "ADMIT");
+  assert.equal(first.authority, "DCLM");
+  assert.deepEqual(first.written, { task: "same-step", what: "write when the law passes" });
+  assert.equal(first.look, 0);
+  assert.equal(first.joule, null);
+  assert.equal(Object.hasOwn(first, "vote"), false);
+  assert.equal(Object.hasOwn(first, "waiting"), false);
+  assert.equal(Object.hasOwn(first, "residue"), false);
+  assert.equal(Object.hasOwn(first, "pending"), false);
+  assert.equal(Object.hasOwn(first, "queue"), false);
+  assert.equal(invoke(task), first);
+
+  const again = run({
+    id: "same-step",
+    what: "write when the law passes",
+    laws: HOLD.axioms,
+    vote: "yes",
+    waiting: true,
+    residue: "left"
+  });
+  assert.equal(again, first);
+  assert.equal(again.written, first.written);
+  assert.equal(again.admitted, true);
+  assert.equal(again.look, 0);
+  assert.equal(again.joule, null);
+
+  const veto = run({ ...task, veto: true });
+  assert.equal(veto.admitted, false);
+  assert.equal(veto.reason, "VETO");
+  assert.equal(veto.written, null);
+  assert.equal(Object.hasOwn(veto, "vote"), false);
+  assert.equal(Object.hasOwn(veto, "waiting"), false);
+  assert.equal(veto.look, 0);
+  assert.equal(veto.joule, null);
+  const vetoAgain = run({ ...task, veto: true });
+  assert.equal(vetoAgain.admitted, false);
+  assert.equal(vetoAgain.written, null);
+  assert.notEqual(vetoAgain, first);
+
+  const skipped = run({ ...task, skipped: ["CLEANUP_FIRST"] });
+  assert.equal(skipped.admitted, false);
+  assert.equal(skipped.reason, "SKIPPED CLEANUP_FIRST");
+  assert.equal(skipped.written, null);
+  assert.equal(Object.hasOwn(skipped, "vote"), false);
+  assert.equal(Object.hasOwn(skipped, "waiting"), false);
+  assert.equal(skipped.look, 0);
+  assert.equal(skipped.joule, null);
+});
+
+test("the door says the write happens in the same step the law passes", () => {
+  const sentence = "When the law passes, DCLM writes in that same step. Nothing is left to vote on.";
+  const door = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  const card = readFileSync(new URL("../llms.txt", import.meta.url), "utf8");
+  assert.equal(door.includes(sentence), true);
+  assert.equal(card.includes(sentence), true);
 });
