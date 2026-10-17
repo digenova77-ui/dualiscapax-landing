@@ -107,6 +107,28 @@ class DiamondReviewEngineTests(unittest.TestCase):
         self.assertEqual(result["disposition"], "DECLINE")
         self.assertIn("ring_challenge_resolution:physics", result["missing_primitives"])
 
+    def test_repeated_pass_links_prior_hash_without_upgrading_evidence(self):
+        first = run_diamond_review(
+            claim="Bounded fixture claim.",
+            observations=[observation()],
+            coverage=[coverage()],
+            ring_reviews=rings(),
+            independent_validation=validation(),
+            pass_number=1,
+        )
+        second = run_diamond_review(
+            claim="Bounded fixture claim.",
+            observations=[observation()],
+            coverage=[coverage()],
+            ring_reviews=rings(),
+            independent_validation=validation(),
+            pass_number=2,
+            prior_review_hash=first["review_hash"],
+        )
+        self.assertEqual(second["prior_review_hash"], first["review_hash"])
+        self.assertNotEqual(second["review_hash"], first["review_hash"])
+        self.assertEqual(second["disposition"], first["disposition"])
+
     def test_pass_number_must_be_positive(self):
         with self.assertRaisesRegex(ProtocolError, "PASS_NUMBER_MUST_BE_POSITIVE_INTEGER"):
             run_diamond_review(
