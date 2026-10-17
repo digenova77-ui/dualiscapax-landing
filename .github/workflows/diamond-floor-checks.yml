@@ -1,0 +1,24 @@
+name: Diamond Floor deterministic checks
+
+on:
+  pull_request:
+    paths:
+      - "research/diamond-floor/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run standard-library tests
+        run: python -m unittest discover -s research/diamond-floor -p 'test_*.py' -v
+      - name: Verify CLI help
+        run: python research/diamond-floor/diamond_floor.py --help
