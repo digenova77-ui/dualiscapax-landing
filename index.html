@@ -536,6 +536,11 @@
     if (arrived || !bang.isConnected) return;
     if (event.code === "Escape" && bang.dataset.phase !== "orb") land(true);
   });
+  window.addEventListener("resize", function () {
+    if (arrived || !bang.isConnected) return;
+    if (bang.dataset.phase === "earth") drawEarth();
+    else if (!flying) paintStill();
+  });
   paintStill();
   const phrase = document.getElementById("passphrase");
   if (phrase) phrase.focus();
