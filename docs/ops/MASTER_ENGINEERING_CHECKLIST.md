@@ -203,3 +203,16 @@ Production release is **NO-GO** until all critical items in Phases 2, 3, 4, 6, 7
 - [ ] Implement the receiver-side automatic POST handoff and clean redirect; remove the manual second link and redundant second biometric prompt only after server validation replaces their authorization function.
 - [ ] Stage and test supported mobile/desktop browsers: success, cancel, wrong origin/RP ID, invalid assertion, expired/replayed handoff, CORS/CSRF rejection, API down, and no URL/storage leakage.
 - [ ] Do not merge or deploy until the implementation is present, tests pass, and production serving path is established.
+## Production-source discovery: dualiscapax.com (2026-10-17)
+
+- [x] Located the dedicated private deployment repository: `digenova77-ui/dualiscapax-deploy`, documented as the manual-dispatch deploy source for the dualiscapax.com sovereign stack on NJ `108.61.17.141`.
+- [x] Read `webroot/passkey/owner.html`: the page explicitly labels itself a scaffold and states its authentication endpoints are not wired and should return HTTP 501 `ceremony_not_wired`; it says a genuine browser biometric prompt is not proof of sign-in.
+- [x] Read `deploy/sovereign/nginx-dualiscapax-com.conf`: `/api/` is proxied to `127.0.0.1:8410`; the comments describe this as an owner-auth service, while the deploy README says `/api/` currently answers 501.
+- [x] Verified latest available deploy-worker run `38425309591` (2026-10-13) failed at the preflight because `/usr/local/sbin/dualis-deploy` was not present/executable. Therefore the documented deployment rail did not deploy that bundle in this run.
+- [x] The deploy README says the deploy-worker key is not yet authorized on the box and the receiver is not installed; treat this as last-documented state, corroborated by the failed run, not as a fresh live-shell probe.
+- [x] The deployment manifest references server-side passkey service files under `deploy/passkey/functions/...`, but those paths are absent from the current repository tree returned by GitHub. The deploy workflow bundles `webroot`, `deploy/sovereign`, and `MANIFEST.md` only; it does not deploy the passkey backend sources.
+- [ ] Determine which exact live URL/page the user is using for the reported biometric→return→manual-3D-link flow. The `.com` owner scaffold and the `.com`→`.ai` cross-origin handoff spec are distinct paths and must not be assumed to be the same implementation.
+- [ ] Read-only inspect NJ for the active Nginx config, `/api/` upstream process on 127.0.0.1:8410, installed `/var/www/dualiscapax-com` page hash, and current `/.well-known/webauthn` response. Do not change DNS, server, database, or deploy anything during this inspection.
+- [ ] Restore/locate the missing passkey backend source, implement assertion verification and single-use handoff/session exchange, then stage browser tests. No redirect or UI-only change can safely substitute for backend verification.
+
+Current forensic conclusion: **BLOCKED before code implementation**. There is a concrete documented 501/backend-wiring gap and the deploy worker's latest run refused to deploy because its on-box receiver was missing. The user's exact observed page still needs to be matched to the serving source before editing runtime code.
