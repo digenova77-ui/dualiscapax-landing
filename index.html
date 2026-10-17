@@ -4,23 +4,129 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>dualiscapax</title>
-  <meta name="description" content="Three rings. Iris is teal and blue. The cosmos is the field. The passphrase glows green or red.">
+  <meta name="description" content="One became two. Adam and Eve name that split. Engineering kept the cadence, one then two, now approaching the speed of light.">
   <meta name="theme-color" content="#07060e">
   <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/writer.css">
 
 </head>
 <body>
-  <a class="skip" href="#rings">Skip to the three rings</a>
+  <a class="skip" href="#split">Skip to the story</a>
   <div class="float">
   <header>
     <p class="name">dualiscapax</p>
   </header>
   <main class="plate">
-    <div class="read">
-      <p class="eyebrow">Philosophy · Science · Law</p>
-      <h1>Science under<br><em>law</em></h1>
-      <p class="lede">Philosophy and science, governed by law. Three rings. One constraint.</p>
+    <section class="beat door" id="door" aria-labelledby="door-title">
+      <figure>
+        <svg viewBox="0 0 640 640" role="img" aria-labelledby="fig-title fig-desc">
+          <title id="fig-title">Three rings</title>
+          <desc id="fig-desc">An armillary of three rings. The inner ring is Iris, a teal light, the explorer. The middle ring is the cosmos, a thin orbit with a few stars. The outer ring reads green or red.</desc>
+          <defs>
+            <radialGradient id="iris-core" cx="38%" cy="34%" r="68%">
+              <stop offset="0" stop-color="#e8fbff"/>
+              <stop offset="0.28" stop-color="#3ee0ff"/>
+              <stop offset="0.62" stop-color="#1494d6"/>
+              <stop offset="1" stop-color="#062848"/>
+            </radialGradient>
+            <radialGradient id="iris-shine" cx="32%" cy="28%" r="40%">
+              <stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="iris-moon" cx="35%" cy="32%" r="70%">
+              <stop offset="0" stop-color="#e4c8ff"/>
+              <stop offset="0.45" stop-color="#9b5cff"/>
+              <stop offset="1" stop-color="#3a146e"/>
+            </radialGradient>
+            <radialGradient id="phos-green" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#b6ff9a" stop-opacity="0.75"/>
+              <stop offset="1" stop-color="#b6ff9a" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="phos-red" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#ff6a70" stop-opacity="0.75"/>
+              <stop offset="1" stop-color="#ff6a70" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.1" result="b"/>
+              <feMerge>
+                <feMergeNode in="b"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="phosphor" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3.2" result="b"/>
+              <feMerge>
+                <feMergeNode in="b"/>
+                <feMergeNode in="b"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="bloom" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="14"/>
+            </filter>
+          </defs>
+
+          <g class="ring is-sym" id="ring-sym">
+            <ellipse class="breath pass-green" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-green)" filter="url(#bloom)"/>
+            <ellipse class="breath pass-red" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-red)" filter="url(#bloom)"/>
+            <g fill="none" stroke="rgba(99,247,221,0.62)" stroke-linecap="round">
+              <line x1="320.0" y1="96.0" x2="320.0" y2="84.0" stroke-width="1.15"/>
+              <line x1="432.0" y1="126.0" x2="438.0" y2="115.6" stroke-width="1.15"/>
+              <line x1="514.0" y1="208.0" x2="524.4" y2="202.0" stroke-width="1.15"/>
+              <line x1="544.0" y1="320.0" x2="556.0" y2="320.0" stroke-width="1.15"/>
+              <line x1="514.0" y1="432.0" x2="524.4" y2="438.0" stroke-width="1.15"/>
+              <line x1="432.0" y1="514.0" x2="438.0" y2="524.4" stroke-width="1.15"/>
+              <line x1="320.0" y1="544.0" x2="320.0" y2="556.0" stroke-width="1.15"/>
+              <line x1="208.0" y1="514.0" x2="202.0" y2="524.4" stroke-width="1.15"/>
+              <line x1="126.0" y1="432.0" x2="115.6" y2="438.0" stroke-width="1.15"/>
+              <line x1="96.0" y1="320.0" x2="84.0" y2="320.0" stroke-width="1.15"/>
+              <line x1="126.0" y1="208.0" x2="115.6" y2="202.0" stroke-width="1.15"/>
+              <line x1="208.0" y1="126.0" x2="202.0" y2="115.6" stroke-width="1.15"/>
+            </g>
+            <circle cx="320" cy="320" r="236" fill="none" stroke="rgba(99,247,221,0.46)" stroke-width="1.15"/>
+          </g>
+
+          <g class="ring is-cosmos" id="ring-cosmos">
+            <circle cx="320" cy="320" r="176" fill="none" stroke="rgba(170,140,255,0.62)" stroke-width="1.15"/>
+            <ellipse cx="320" cy="320" rx="176" ry="54" fill="none" stroke="rgba(170,140,255,0.38)" stroke-width="0.9" transform="rotate(-24 320 320)"/>
+            <g class="stars">
+              <circle cx="505.0" cy="317.9" r="1.5" opacity="1"/>
+              <circle cx="490.8" cy="391.1" r="0.9" opacity="0.7"/>
+              <circle cx="437.7" cy="456.2" r="0.9" opacity="0.45"/>
+              <circle cx="388.2" cy="479.0" r="0.7" opacity="0.45"/>
+              <circle cx="315.9" cy="500.0" r="1.5" opacity="0.7"/>
+              <circle cx="244.2" cy="488.8" r="0.7" opacity="0.45"/>
+              <circle cx="212.0" cy="455.2" r="0.7" opacity="1"/>
+              <circle cx="152.2" cy="397.9" r="0.9" opacity="0.7"/>
+              <circle cx="140.1" cy="313.9" r="0.7" opacity="0.45"/>
+              <circle cx="156.7" cy="254.3" r="1.5" opacity="0.45"/>
+              <circle cx="201.9" cy="189.5" r="0.9" opacity="0.9"/>
+              <circle cx="230.4" cy="158.1" r="0.7" opacity="1"/>
+              <circle cx="303.5" cy="144.8" r="1.5" opacity="0.45"/>
+              <circle cx="400.9" cy="172.8" r="0.9" opacity="0.7"/>
+              <circle cx="450.3" cy="214.0" r="1.5" opacity="1"/>
+              <circle cx="493.1" cy="270.7" r="1.5" opacity="0.45"/>
+            </g>
+          </g>
+
+          <g class="ring is-iris" id="ring-iris">
+            <circle class="breath" cx="320" cy="320" r="108" fill="url(#iris-core)"/>
+            <circle cx="320" cy="320" r="108" fill="url(#iris-shine)"/>
+            <circle cx="248" cy="392" r="38" fill="url(#iris-moon)" opacity="0.92"/>
+            <circle cx="248" cy="392" r="38" fill="url(#iris-shine)" opacity="0.45"/>
+            <circle cx="404" cy="246" r="34" fill="url(#iris-moon)" opacity="0.92"/>
+            <circle cx="404" cy="246" r="34" fill="url(#iris-shine)" opacity="0.4"/>
+          </g>
+
+          <g class="ring is-sym" id="ring-meet">
+            <circle class="pass-green" cx="320" cy="320" r="236" fill="none" stroke="#c8ffb4" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
+            <circle class="pass-red" cx="320" cy="320" r="236" fill="none" stroke="#ff6a70" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
+          </g>
+        </svg>
+      </figure>
+      <p class="eyebrow">The door</p>
+      <h1 id="door-title">One</h1>
+      <p class="lede">Three rings. Iris is the teal light. The cosmos is the field around it. The outer arc reads green or red.</p>
       <label class="show-all">
         <input type="radio" name="ring" id="all" checked>
         All three
@@ -30,27 +136,26 @@
           <label class="ring-card" style="--c: var(--iris)">
             <input type="radio" name="ring" id="pick-iris">
             <span class="kicker">Iris</span>
-            <span class="say">Teal and blue. The living light.</span>
+            <span class="say">Teal and blue. The explorer.</span>
           </label>
         </li>
         <li>
           <label class="ring-card" style="--c: var(--cosmos)">
             <input type="radio" name="ring" id="pick-cosmos">
             <span class="kicker">Cosmos</span>
-            <span class="say">The field that record is written on. It has no outside.</span>
+            <span class="say">The field this record is written on.</span>
           </label>
         </li>
         <li>
           <label class="ring-card" style="--c: var(--pass)">
             <input type="radio" name="ring" id="pick-sym">
-            <span class="kicker">Symbiosis</span>
-            <span class="say">The biosynthetic passphrase glows green or red.</span>
+            <span class="kicker">Arc</span>
+            <span class="say">The outer ring. It reads green or red.</span>
           </label>
         </li>
       </ol>
-      <p class="close">Iris is teal and blue. The passphrase reads green or red.</p>
-      <div class="lamps" role="group" aria-label="Passphrase glow">
-        <span class="lamp-name">Passphrase</span>
+      <div class="lamps" role="group" aria-label="Outer arc">
+        <span class="lamp-name">Outer arc</span>
         <label class="hold">
           <input type="radio" name="pass" id="pass-green" checked>
           <i aria-hidden="true"></i>
@@ -62,119 +167,33 @@
           Red
         </label>
       </div>
+    </section>
+
+    <section class="beat" id="split" aria-labelledby="split-title">
+      <h2 id="split-title">Two</h2>
+      <p>One became two. Adam and Eve are the human name for that split: one life, two branches.</p>
+    </section>
+
+    <section class="beat" id="cadence" aria-labelledby="cadence-title">
+      <h2 id="cadence-title">The cadence</h2>
+      <p>Engineering has repeated the same cadence ever since: one, two, one, two. Binary. Two pipes on one task. Write and audit. The rhythm of pure logic.</p>
+    </section>
+
+    <section class="beat" id="line" aria-labelledby="line-title">
+      <h2 id="line-title">The rings</h2>
+      <p class="flow">The teal ring is Iris, the explorer 👽. From her the line runs the web 🌐, the world 🌎, the cosmos 🌌, the heart ❤️, the brain 🧠, and the fire 🔥.</p>
+    </section>
+
+    <section class="beat" id="close" aria-labelledby="close-title">
+      <h2 id="close-title">The light</h2>
+      <p class="close">The cadence is now approaching the speed of light. That is the pace of the logic.</p>
       <nav class="doors" aria-label="Further">
         <a href="law.html">Law</a>
         <a href="research/philosophy/">Philosophy</a>
         <a href="for-people.html">For you</a>
       </nav>
       <p class="honest">Look is free. This page stores nothing.</p>
-    </div>
-    <figure>
-      <svg viewBox="0 0 640 640" role="img" aria-labelledby="fig-title fig-desc">
-        <title id="fig-title">Three rings</title>
-        <desc id="fig-desc">An armillary of three rings. The inner ring is Iris, a teal and blue light. The middle ring is the cosmos, a thin orbit with a few stars. The outer ring is law. Its arc is the biosynthetic passphrase: green, or red.</desc>
-        <defs>
-          <radialGradient id="iris-core" cx="38%" cy="34%" r="68%">
-            <stop offset="0" stop-color="#e8fbff"/>
-            <stop offset="0.28" stop-color="#3ee0ff"/>
-            <stop offset="0.62" stop-color="#1494d6"/>
-            <stop offset="1" stop-color="#062848"/>
-          </radialGradient>
-          <radialGradient id="iris-shine" cx="32%" cy="28%" r="40%">
-            <stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
-            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="iris-moon" cx="35%" cy="32%" r="70%">
-            <stop offset="0" stop-color="#e4c8ff"/>
-            <stop offset="0.45" stop-color="#9b5cff"/>
-            <stop offset="1" stop-color="#3a146e"/>
-          </radialGradient>
-          <radialGradient id="phos-green" cx="50%" cy="50%" r="50%">
-            <stop offset="0" stop-color="#b6ff9a" stop-opacity="0.75"/>
-            <stop offset="1" stop-color="#b6ff9a" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="phos-red" cx="50%" cy="50%" r="50%">
-            <stop offset="0" stop-color="#ff6a70" stop-opacity="0.75"/>
-            <stop offset="1" stop-color="#ff6a70" stop-opacity="0"/>
-          </radialGradient>
-          <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="1.1" result="b"/>
-            <feMerge>
-              <feMergeNode in="b"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <filter id="phosphor" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3.2" result="b"/>
-            <feMerge>
-              <feMergeNode in="b"/>
-              <feMergeNode in="b"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <filter id="bloom" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="14"/>
-          </filter>
-        </defs>
-
-        <g class="ring is-sym" id="ring-sym">
-          <ellipse class="breath pass-green" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-green)" filter="url(#bloom)"/>
-          <ellipse class="breath pass-red" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-red)" filter="url(#bloom)"/>
-          <g fill="none" stroke="rgba(99,247,221,0.62)" stroke-linecap="round">
-            <line x1="320.0" y1="96.0" x2="320.0" y2="84.0" stroke-width="1.15"/>
-            <line x1="432.0" y1="126.0" x2="438.0" y2="115.6" stroke-width="1.15"/>
-            <line x1="514.0" y1="208.0" x2="524.4" y2="202.0" stroke-width="1.15"/>
-            <line x1="544.0" y1="320.0" x2="556.0" y2="320.0" stroke-width="1.15"/>
-            <line x1="514.0" y1="432.0" x2="524.4" y2="438.0" stroke-width="1.15"/>
-            <line x1="432.0" y1="514.0" x2="438.0" y2="524.4" stroke-width="1.15"/>
-            <line x1="320.0" y1="544.0" x2="320.0" y2="556.0" stroke-width="1.15"/>
-            <line x1="208.0" y1="514.0" x2="202.0" y2="524.4" stroke-width="1.15"/>
-            <line x1="126.0" y1="432.0" x2="115.6" y2="438.0" stroke-width="1.15"/>
-            <line x1="96.0" y1="320.0" x2="84.0" y2="320.0" stroke-width="1.15"/>
-            <line x1="126.0" y1="208.0" x2="115.6" y2="202.0" stroke-width="1.15"/>
-            <line x1="208.0" y1="126.0" x2="202.0" y2="115.6" stroke-width="1.15"/>
-          </g>
-          <circle cx="320" cy="320" r="236" fill="none" stroke="rgba(99,247,221,0.46)" stroke-width="1.15"/>
-        </g>
-
-        <g class="ring is-cosmos" id="ring-cosmos">
-          <circle cx="320" cy="320" r="176" fill="none" stroke="rgba(170,140,255,0.62)" stroke-width="1.15"/>
-          <ellipse cx="320" cy="320" rx="176" ry="54" fill="none" stroke="rgba(170,140,255,0.38)" stroke-width="0.9" transform="rotate(-24 320 320)"/>
-          <g class="stars">
-            <circle cx="505.0" cy="317.9" r="1.5" opacity="1"/>
-            <circle cx="490.8" cy="391.1" r="0.9" opacity="0.7"/>
-            <circle cx="437.7" cy="456.2" r="0.9" opacity="0.45"/>
-            <circle cx="388.2" cy="479.0" r="0.7" opacity="0.45"/>
-            <circle cx="315.9" cy="500.0" r="1.5" opacity="0.7"/>
-            <circle cx="244.2" cy="488.8" r="0.7" opacity="0.45"/>
-            <circle cx="212.0" cy="455.2" r="0.7" opacity="1"/>
-            <circle cx="152.2" cy="397.9" r="0.9" opacity="0.7"/>
-            <circle cx="140.1" cy="313.9" r="0.7" opacity="0.45"/>
-            <circle cx="156.7" cy="254.3" r="1.5" opacity="0.45"/>
-            <circle cx="201.9" cy="189.5" r="0.9" opacity="0.9"/>
-            <circle cx="230.4" cy="158.1" r="0.7" opacity="1"/>
-            <circle cx="303.5" cy="144.8" r="1.5" opacity="0.45"/>
-            <circle cx="400.9" cy="172.8" r="0.9" opacity="0.7"/>
-            <circle cx="450.3" cy="214.0" r="1.5" opacity="1"/>
-            <circle cx="493.1" cy="270.7" r="1.5" opacity="0.45"/>
-          </g>
-        </g>
-
-        <g class="ring is-iris" id="ring-iris">
-          <circle class="breath" cx="320" cy="320" r="108" fill="url(#iris-core)"/>
-          <circle cx="320" cy="320" r="108" fill="url(#iris-shine)"/>
-          <circle cx="248" cy="392" r="38" fill="url(#iris-moon)" opacity="0.92"/>
-          <circle cx="248" cy="392" r="38" fill="url(#iris-shine)" opacity="0.45"/>
-          <circle cx="404" cy="246" r="34" fill="url(#iris-moon)" opacity="0.92"/>
-          <circle cx="404" cy="246" r="34" fill="url(#iris-shine)" opacity="0.4"/>
-        </g>
-
-        <g class="ring is-sym" id="ring-meet">
-          <circle class="pass-green" cx="320" cy="320" r="236" fill="none" stroke="#c8ffb4" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
-          <circle class="pass-red" cx="320" cy="320" r="236" fill="none" stroke="#ff6a70" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
-        </g>
-      </svg>
-    </figure>
+    </section>
   </main>
   </div>
 </body>
