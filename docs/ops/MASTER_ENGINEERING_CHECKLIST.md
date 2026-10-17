@@ -216,3 +216,9 @@ Production release is **NO-GO** until all critical items in Phases 2, 3, 4, 6, 7
 - [ ] Restore/locate the missing passkey backend source, implement assertion verification and single-use handoff/session exchange, then stage browser tests. No redirect or UI-only change can safely substitute for backend verification.
 
 Current forensic conclusion: **BLOCKED before code implementation**. There is a concrete documented 501/backend-wiring gap and the deploy worker's latest run refused to deploy because its on-box receiver was missing. The user's exact observed page still needs to be matched to the serving source before editing runtime code.
+### Refinement: the scaffold is probably not the exact prompt path
+
+- [x] Read `webroot/passkey/owner.html` sign-in sequence: it first POSTs `/api/webauthn/auth/options`; only if that endpoint returns a successful response does it call `navigator.credentials.get`. After assertion it POSTs `/api/webauthn/auth/verify`, then checks session proof; it contains no automatic redirect into the 3D world in that handler.
+- [x] Read `receiver/dualis-deploy.sh` and `install/install-on-box.sh`: both deliberately transform the packaged `/api/` Nginx block into an explicit HTTP 501 `{"error":"ceremony_not_wired"}` response. This is an intentional fail-closed stub, not a working auth backend.
+- [x] Therefore, if the user is seeing a real biometric prompt succeed and then returning to a page with a separate 3D link, that exact behavior likely comes from a different page/version/path than this owner scaffold as currently committed. Do not patch this scaffold as though it were conclusively the reported page.
+- [ ] Find the exact URL and source of the page that launches the biometric prompt and then shows the manual 3D link. Compare its deployed bytes with GitHub/worker/IPFS artifacts before changing it.
