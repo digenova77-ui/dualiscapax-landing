@@ -19,16 +19,23 @@
     return 0;
   }
 
-  function apply(world) {
-    world = world === 1 ? 1 : 0;
+  var world = 0;
+  function apply(nextWorld) {
+    world = nextWorld === 1 ? 1 : 0;
     g.DC_WORLD = world;
     g.DC_WORLD_NAME = world === 1 ? "ONE" : "GROUND_ZERO";
     g.DC_API_VERSION = world === 1 ? "2" : "1";
     g.DC_API_PATH = world === 1 ? "/v2/chat" : "/v1/chat";
+    if (g.DCWorld) {
+      g.DCWorld.world = world;
+      g.DCWorld.name = g.DC_WORLD_NAME;
+      g.DCWorld.apiVersion = g.DC_API_VERSION;
+      g.DCWorld.path = g.DC_API_PATH;
+    }
     return world;
   }
 
-  var world = apply(detectWorld());
+  apply(detectWorld());
 
   function safeApiOverride(value) {
     try {
