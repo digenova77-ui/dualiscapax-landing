@@ -20,7 +20,7 @@
 - [x] Fix API world switching so `DCWorld.apply(0|1)` updates the active request route and metadata.
 - [x] Fix API config's falsy-value bug that turned World 0 into World 1 in request headers/body when the standalone client path was used.
 - [x] Add an isolated Node 20 test workflow for workbench pushes and pull requests.
-- [x] Run the Node 20 suite in GitHub Actions: 5 test files passed, 0 failed on commit `790bd0e2e833428e0fdf49b633cfdb9735fdb999` (push run 39005819815).
+- [x] Run the Node 20 suite in GitHub Actions: 6 test files passed, 0 failed on commit `d43ee0e6d94b96bb9e02bd45ef2d2d720547c8f8` (push run 39006059754).
 - [ ] Run browser-level checks on desktop/mobile and a production build in a safe environment.
 - [ ] Inspect Replit workspace changes when agent usage is available; do not assume all changes are committed.
 - [ ] Confirm which exact Cloudflare Worker/branch emitted the invalid build-token log.
@@ -35,6 +35,9 @@
 ## Iris / 3D World
 
 - [x] Improve the Iris session controller's error recovery and truthful fallback behavior.
+- [x] Add a typed-message fallback so Iris remains usable when browser speech recognition is unavailable.
+- [x] Add a visible, screen-reader-friendly status line and clearer control labels; honor reduced-motion preferences.
+- [x] Make the page-context and camera controls distinguish configured metadata/preview from actual visual understanding.
 - [x] Add ephemeral local text-file reading for .txt, .md, .csv, .json, and .log files, with 256 KB input and 20,000-character context limits.
 - [x] Keep extracted document contents out of Iris session telemetry events.
 - [x] Prevent selected local document text from falling through to Wikipedia/Wikidata if the configured answer engine is unavailable.
@@ -48,7 +51,7 @@
 
 - [ ] Trace the API v2 route to the authoritative kernel; do not treat a client-side label or mock response as backend proof.
 - [x] Add deterministic tests for Iris recovery, local-file limits/privacy, API-origin restrictions, world switching, L2 parsing limits, metadata-only workbooks, and storage failure behavior.
-- [x] Execute the isolated test suite in a real GitHub Actions checkout (Node 20; 5 files passed, 0 failed).
+- [x] Execute the isolated test suite in a real GitHub Actions checkout (Node 20; 6 files passed, 0 failed).
 - [ ] Run a production build in a safe environment.
 - [ ] Confirm the actual deployment rail and rollback artifact.
 - [ ] Obtain explicit user approval before production deployment, DNS edits, auth-provider changes, or live server/database/firewall changes.
