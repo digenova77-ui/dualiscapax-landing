@@ -12,6 +12,13 @@ Principle stated by David Di Genova, 2026-10-17. Status: **PROPOSED** (not yet a
    The shape changes; the three remain. Weighting changes how much evidence each ring must examine, never whether a ring gets a verdict.
 4. **Sub-parts** (at most 3 per ring) are **checklist items, not judges**. They feed their ring's single verdict and never vote on their own.
 
+## ANALOGY (not a physics claim)
+David relates the changing ring overlap to hydrogen in different phases: the constituents stay the same while their arrangement changes with conditions.
+- Hydrogen is a gas at ordinary conditions, liquefies near 20 K and solidifies near 14 K at atmospheric pressure. Under extreme pressure it is predicted, and reported in contested experiments, to become metallic. Sources: [Wikipedia: Solid hydrogen / Liquid hydrogen](https://en.wikipedia.org/wiki/Liquid_hydrogen), [Wikipedia: Metallic hydrogen](https://en.wikipedia.org/wiki/Metallic_hydrogen).
+- Molecular H2 exists as two spin isomers, ortho and para. Their equilibrium ratio shifts with temperature: about 3:1 ortho:para at room temperature, approaching nearly all para near 20 K. Source: [Wikipedia: Spin isomers of hydrogen](https://en.wikipedia.org/wiki/Spin_isomers_of_hydrogen).
+
+Mapping, analogy only: the three rings are the fixed constituents. A claim's work is the "conditions" that set their arrangement and weighting. Nothing here asserts that rings obey physical law.
+
 ## Placement
 No canonical ring document existed on `main` (searched docs/ops, research/, seed docs). This file is placed in `docs/ops/` alongside the Diamond Floor plan until an owner picks a canonical home.
 
