@@ -35,6 +35,11 @@ function load(storageFails = false) {
   assert.match(workbook.note, /Cell values were not parsed/i);
   assert.equal(workbook.numbers, 0);
 
+  const malformed = '"name,amount\\n"Office,17.50';
+  const malformedRow = await plug.plugFile({ name: "broken.csv", size: Buffer.byteLength(malformed), lastModified: 3, text: async () => malformed });
+  assert.equal(malformedRow.status, "REFUSED");
+  assert.equal(malformedRow.reason, "INVALID_TABLE");
+
   const hugeText = await plug.plugFile({ name: "huge.csv", size: 5 * 1024 * 1024 + 1, lastModified: 3, text: async () => "x" });
   assert.equal(hugeText.status, "REFUSED");
   assert.equal(hugeText.reason, "FILE_TOO_LARGE");
