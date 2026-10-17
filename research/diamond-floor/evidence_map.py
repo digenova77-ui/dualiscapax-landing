@@ -118,6 +118,52 @@ def node(node_id: str, layer: str, domain: str, content: dict, source_refs: list
     return result
 
 
+def build_observations(discoveries: dict, dns: dict, source_refs: list[dict]) -> list[dict]:
+    """Create individual hash-bound observations without upgrading them to verified facts."""
+    by_path = {item["path"]: item for item in source_refs}
+    observed_at = dns.get("checked_at")
+    scope = dns.get("scope", "scope-not-recorded")
+    observations = []
+
+    def add(kind: str, source_path: str, index: int | str, payload: dict, status: str, timestamp: str | None, observation_scope: str) -> None:
+        record = {
+            "id": f"{kind}-{index}",
+            "kind": kind,
+            "source_ref": by_path[source_path],
+            "observed_at": timestamp,
+            "scope": observation_scope,
+            "status": status,
+            "payload": payload,
+            "verified": False,
+        }
+        record["observation_sha256"] = digest(record)
+        observations.append(record)
+
+    dns_path = "research/photo-archive/public-dns-audit.json"
+    discovery_path = "research/photo-archive/discoveries.json"
+    for i, record in enumerate(dns.get("records", [])):
+        if not isinstance(record, dict):
+            add("dns", dns_path, i, {"raw_type": type(record).__name__}, "MALFORMED", observed_at, scope)
+            continue
+        status = "OBSERVATION" if record.get("status") == 0 and not record.get("error") else "FINDING"
+        add("dns", dns_path, i, record, status, observed_at, scope)
+    for i, check in enumerate(dns.get("https", [])):
+        if not isinstance(check, dict):
+            add("https", dns_path, i, {"raw_type": type(check).__name__}, "MALFORMED", observed_at, scope)
+            continue
+        code = check.get("status")
+        ok = isinstance(code, int) and 200 <= code < 400 and not check.get("error")
+        add("https", dns_path, i, check, "OBSERVATION" if ok else "FINDING", observed_at, scope)
+    discovery_timestamp = discoveries.get("updated_at")
+    discovery_scope = "discovery metadata snapshot; rights and source claims are not independently verified"
+    for i, item in enumerate(discoveries.get("items", [])):
+        payload = item if isinstance(item, dict) else {"raw_type": type(item).__name__}
+        has_source = isinstance(item, dict) and bool(item.get("source_url"))
+        add("discovery", discovery_path, i, payload, "NEEDS_REVIEW" if has_source else "FINDING",
+            discovery_timestamp, discovery_scope)
+    return observations
+
+
 def build_evidence_map(root: Path) -> dict:
     root = root.resolve()
     discoveries_path = "research/photo-archive/discoveries.json"
@@ -134,6 +180,7 @@ def build_evidence_map(root: Path) -> dict:
     ]
     checks = check_source_report(discoveries, dns, ledger_status)
     all_source_digest = digest(source_refs)
+    observations = build_observations(discoveries, dns, source_refs)
 
     nodes = [
         node("ceiling-current-view", "ceiling", "governance",
@@ -172,6 +219,7 @@ def build_evidence_map(root: Path) -> dict:
         "observed_at": dns.get("checked_at"),
         "scope": "Repository snapshots only; DNS and HTTPS values are observations from the saved public audit, not live checks by this builder.",
         "nodes": nodes,
+        "observations": observations,
         "edges": edges,
         "rings": {
             "authority": {"status": "BLOCKED", "evidence_refs": [ledger_path]},
