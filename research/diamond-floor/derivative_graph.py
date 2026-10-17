@@ -15,6 +15,7 @@ SCHEMA = "dualis.diamond-derivative.graph.v1"
 REPORT_SCHEMA = "dualis.diamond-derivative.report.v1"
 LAYERS = ["ceiling", "mesh", "floor", "seed", "taproot", "bedrock"]
 RINGS = ["authority", "measurement", "execution_evidence"]
+DOMAINS = {"earth", "energy", "identity", "economy", "software", "cognition", "governance", "infrastructure", "environment", "science"}
 GENESIS = "0" * 64
 
 
@@ -55,6 +56,8 @@ def validate_graph(graph: dict) -> dict:
         by_id[node["id"]] = node
         if node.get("layer") not in LAYERS:
             issues.append(_issue("LAYER_INVALID", "Node has an unknown layer.", node_id=node["id"], layer=node.get("layer")))
+        if node.get("domain") not in DOMAINS:
+            issues.append(_issue("DOMAIN_INVALID", "Node must map to a canonical world domain.", node_id=node["id"], domain=node.get("domain"), allowed=sorted(DOMAINS)))
         if not isinstance(node.get("content"), (dict, list, str, int, float, bool, type(None))):
             issues.append(_issue("NODE_CONTENT_INVALID", "Node content must be canonical JSON data.", node_id=node["id"]))
         claimed = node.get("content_sha256")
@@ -102,6 +105,7 @@ def validate_graph(graph: dict) -> dict:
         "node_count": len(by_id),
         "edge_count": len(edges),
         "layers_seen": [layer for layer in LAYERS if layer in layers_seen],
+        "domains_seen": sorted({n.get("domain") for n in by_id.values() if n.get("domain") in DOMAINS}),
         "rings": {ring: (rings.get(ring) or {}).get("status") if isinstance(rings.get(ring), dict) else "MISSING" for ring in RINGS},
         "invariants": {key: (invariants.get(key) or {}).get("status") if isinstance(invariants.get(key), dict) else "MISSING" for key in sorted(required_invariants)},
     }
@@ -118,6 +122,10 @@ def derivative(baseline: dict, candidate: dict) -> dict:
     removed_ids = sorted(old_nodes.keys() - new_nodes.keys())
     common_ids = old_nodes.keys() & new_nodes.keys()
     changed_ids = sorted(node_id for node_id in common_ids if old_nodes[node_id].get("content_sha256") != new_nodes[node_id].get("content_sha256"))
+    domain_changes = sorted(
+        [{"id": node_id, "before": old_nodes[node_id].get("domain"), "after": new_nodes[node_id].get("domain")} for node_id in common_ids if old_nodes[node_id].get("domain") != new_nodes[node_id].get("domain")],
+        key=lambda item: item["id"],
+    )
     spectral_changes = sorted(
         [
             {"id": node_id, "layer": new_nodes[node_id].get("layer"), "before": old_nodes[node_id].get("spectrum"), "after": new_nodes[node_id].get("spectrum")}
@@ -141,6 +149,11 @@ def derivative(baseline: dict, candidate: dict) -> dict:
         return left in node_map and right in node_map and node_map[left].get("layer") != node_map[right].get("layer")
     added_cross_layer = [key for key in added_edges if is_cross_layer(key, new_nodes)]
     removed_cross_layer = [key for key in removed_edges if is_cross_layer(key, old_nodes)]
+    def is_cross_domain(edge_key: tuple, node_map: dict) -> bool:
+        left, right, _ = edge_key
+        return left in node_map and right in node_map and node_map[left].get("domain") != node_map[right].get("domain")
+    added_cross_domain = [key for key in added_edges if is_cross_domain(key, new_nodes)]
+    removed_cross_domain = [key for key in removed_edges if is_cross_domain(key, old_nodes)]
     changed_rings = sorted(ring for ring in RINGS if baseline.get("rings", {}).get(ring) != candidate.get("rings", {}).get(ring))
     changed_invariants = sorted(key for key in set(baseline.get("invariants", {})) | set(candidate.get("invariants", {})) if baseline.get("invariants", {}).get(key) != candidate.get("invariants", {}).get(key))
     payload = {
@@ -149,7 +162,12 @@ def derivative(baseline: dict, candidate: dict) -> dict:
         "candidate_sha256": graph_digest(candidate),
         "nodes": {"added": [{"id": x, "layer": new_nodes[x].get("layer")} for x in added_ids], "removed": [{"id": x, "layer": old_nodes[x].get("layer")} for x in removed_ids], "changed": [{"id": x, "layer": new_nodes[x].get("layer"), "before_content_sha256": old_nodes[x].get("content_sha256"), "after_content_sha256": new_nodes[x].get("content_sha256")} for x in changed_ids]},
         "edges": {"added": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(added_edges)], "removed": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(removed_edges)]},
+        "domain_changes": domain_changes,
         "spectral_changes": spectral_changes,
+        "cross_domain_edges": {
+            "added": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(added_cross_domain)],
+            "removed": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(removed_cross_domain)],
+        },
         "cross_layer_edges": {
             "added": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(added_cross_layer)],
             "removed": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(removed_cross_layer)],
