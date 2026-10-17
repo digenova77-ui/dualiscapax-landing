@@ -26,6 +26,10 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
 .plate{position:relative;min-height:18rem;display:grid;place-items:center;padding:1rem 0}
 .presence{width:min(78vw,26rem);height:min(78vw,26rem);max-height:52rem}
 .presence canvas{display:block;width:100%;height:100%}
+/* Iris is a roaming presence, not a viewport-locked panel. Position is transient and never persisted. */
+#presence.iris-floater{position:fixed;z-index:20;width:min(42vw,12rem);height:min(42vw,12rem);max-height:none;pointer-events:auto;touch-action:pan-y;will-change:transform;filter:drop-shadow(0 0 1.2rem rgba(56,189,248,.12))}
+@media(min-width:700px){#presence.iris-floater{width:min(24vw,16rem);height:min(24vw,16rem)}}
+@media(prefers-reduced-motion:reduce){#presence.iris-floater{will-change:auto}}
 .pip{position:absolute;right:max(.7rem,env(safe-area-inset-right));bottom:.7rem;width:min(34vw,9.5rem);border:1px solid var(--line);background:#000;display:none}
 .pip.on{display:block}
 .pip video{display:block;width:100%;height:auto}
@@ -149,6 +153,68 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   }
   if(window.IrisSphere&&IrisSphere.mount) IrisSphere.mount("#presence");
   if(window.IrisSphere&&IrisSphere.setWoken) IrisSphere.setWoken(true);
+
+  // Ambient, non-authoritative motion only: no storage, network calls, or self-editing.
+  // Iris drifts slowly through the open middle of the viewport and yields to people.
+  (function letIrisRoam(){
+    var orb=document.getElementById("presence");
+    if(!orb) return;
+    orb.classList.add("iris-floater");
+    var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    var x=.5,y=.46,tx=.5,ty=.46,lastMove=0,holdUntil=0,rafId=0,seed=17;
+    var active=false;
+    function rand(){seed=(seed*48271)%2147483647;return seed/2147483647;}
+    function bounds(){
+      var w=window.innerWidth||360,h=window.innerHeight||640;
+      var rect=orb.getBoundingClientRect(), hw=Math.max(36,rect.width/2), hh=Math.max(36,rect.height/2);
+      return {w:w,h:h,minX:hw+12,maxX:w-hw-12,minY:Math.max(90,hh+52),maxY:Math.min(h-hh-125,h*.78)};
+    }
+    function choose(){
+      var b=bounds();
+      if(b.maxX<=b.minX||b.maxY<=b.minY) return;
+      tx=(b.minX+rand()*(b.maxX-b.minX))/b.w;
+      ty=(b.minY+rand()*(b.maxY-b.minY))/b.h;
+      lastMove=performance.now();
+    }
+    function nearControls(px,py){
+      var els=[document.querySelector("header"),document.querySelector(".dock"),document.querySelector(".pip")];
+      return els.some(function(el){
+        if(!el||el.hidden||getComputedStyle(el).display==="none") return false;
+        var r=el.getBoundingClientRect();
+        return px>r.left-24&&px<r.right+24&&py>r.top-24&&py<r.bottom+24;
+      });
+    }
+    function tick(now){
+      rafId=requestAnimationFrame(tick);
+      var b=bounds();
+      if(reduced||document.hidden||document.activeElement===talk||talk.classList.contains("on")||
+         (document.getElementById("cam")&&document.getElementById("cam").classList.contains("on"))||
+         (window.speechSynthesis&&speechSynthesis.speaking)||now<holdUntil) return;
+      if(now-lastMove>8500) choose();
+      var nx=x+(tx-x)*.0035, ny=y+(ty-y)*.0035;
+      var px=nx*b.w,py=ny*b.h;
+      if(nearControls(px,py)){holdUntil=now+2200;choose();return;}
+      x=nx;y=ny;
+      orb.style.transform="translate3d("+Math.round(x*b.w)+"px,"+Math.round(y*b.h)+"px,0) translate(-50%,-50%)";
+    }
+    function yieldToHuman(ev){
+      holdUntil=performance.now()+6500;
+      if(ev&&typeof ev.clientX==="number"&&typeof ev.clientY==="number"){
+        var b=bounds();x=ev.clientX/b.w;y=ev.clientY/b.h;
+        orb.style.transform="translate3d("+ev.clientX+"px,"+ev.clientY+"px,0) translate(-50%,-50%)";
+      }
+    }
+    orb.addEventListener("pointerdown",yieldToHuman,{passive:true});
+    document.addEventListener("pointermove",function(ev){
+      var r=orb.getBoundingClientRect();
+      if(ev.clientX>r.left-45&&ev.clientX<r.right+45&&ev.clientY>r.top-45&&ev.clientY<r.bottom+45) yieldToHuman(ev);
+    },{passive:true});
+    window.addEventListener("resize",function(){holdUntil=performance.now()+1200;},{passive:true});
+    choose();
+    orb.style.transform="translate3d(50vw,46vh,0) translate(-50%,-50%)";
+    if(!reduced) rafId=requestAnimationFrame(tick);
+    else orb.style.transform="translate3d(50vw,46vh,0) translate(-50%,-50%)";
+  })();
   line(greetText());
   window.addEventListener("pointerdown", meet, { capture: true, once: true });
   window.addEventListener("keydown", meet, { capture: true, once: true });
