@@ -44,7 +44,7 @@
   function greetLine() {
     var card = load();
     if (card.name) return "Hey " + card.name + ". I'm Iris. What's on your mind?";
-    return "Hey. I'm Iris. I know this house. What should I call you? Tap Talk if you want to say it — I can hear you from there.";
+    return "Hi, I'm Iris. Type a message below or tap Talk to speak. You can also choose a text file for me to read locally.";
   }
 
   function rememberFrom(text) {
