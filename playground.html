@@ -115,9 +115,11 @@ body{background:#02040c}
     DCL2.plugUrl(document.getElementById('url').value).then(paint).catch(fail);
   });
   document.getElementById('wipe').addEventListener('click', function(){
-    DCL2.clear();
-    note.className = 'warn';
-    note.textContent = 'Wiped on this device. Yearbook empty. Looking still free.';
+    file.value = '';
+    document.getElementById('url').value = '';
+    var cleared = DCL2.clear();
+    note.className = cleared ? 'warn' : 'warn bad';
+    note.textContent = cleared ? 'Wiped on this device. Yearbook empty. Looking still free.' : 'Cleanup incomplete: one or more local stores could not be cleared.';
     if (window.HoloSense) HoloSense.pulse('rest');
   });
   paint(DCL2.load());
