@@ -79,8 +79,9 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
 <script src="/js/iris-guest.js?v=54"></script>
 <script src="iris-book.js?v=54"></script>
 <script src="/js/iris-fuel-gate.js?v=54"></script>
-<script src="/js/iris-session.js?v=54"></script>
-<script src="dclm-look.js?v=54"></script>
+<script src="/js/iris-session.js?v=55"></script>
+<script src="dclm-look.js?v=55"></script>
+<script src="/js/iris-file.js?v=55"></script>
 <script>
 (function(){
   var cap=document.getElementById("caption");
@@ -167,10 +168,11 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
         busy=false;
         return;
       }
+      var question = window.IrisFile && IrisFile.prompt ? IrisFile.prompt(text) : text;
       var recu = window.IrisSession&&IrisSession.think
-        ? await IrisSession.think(text)
+        ? await IrisSession.think(text, { prompt: question, localDocument: !!(window.IrisFile && IrisFile.snapshot && IrisFile.snapshot().loaded) })
         : window.DCLMLook&&DCLMLook.run
-          ? await DCLMLook.run(text)
+          ? await DCLMLook.run(question, null, { localDocument: !!(window.IrisFile && IrisFile.snapshot && IrisFile.snapshot().loaded) })
           : {spoken:"I'm Iris."};
       var spoken=(recu&&recu.spoken)||"I'm Iris.";
       line(spoken);
@@ -227,6 +229,8 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
         btn.classList.toggle("on",live);
         btn.setAttribute("aria-pressed",live?"true":"false");
         pip.classList.toggle("on",live);
+        if(live) line("Camera preview is live. Visual understanding is not connected yet.");
+        else line("Camera preview stopped.");
       }).catch(function(){ showErr("Camera blocked."); });
       return;
     }
@@ -256,19 +260,38 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     meet();
     document.getElementById("irisLocalFile").click();
   });
-  document.getElementById("irisLocalFile").addEventListener("change",function(ev){
+  document.getElementById("irisLocalFile").addEventListener("change",async function(ev){
     var f = ev.target.files && ev.target.files[0];
     ev.target.value = "";
     if(!f) return;
-    var note = "Got " + f.name + ". I'll look at it here on this device. What do you want to know about it?";
-    line(note);
-    speakNow(note);
+    if(!window.IrisFile || !IrisFile.read){
+      showErr("Local text reading is unavailable in this build.");
+      line("I couldn't open that file here.");
+      return;
+    }
+    try {
+      var info = await IrisFile.read(f);
+      var note = "Read " + info.name + " locally (" + info.includedCharacters + " characters" +
+        (info.truncated ? ", first 20,000 characters only" : "") +
+        "). Ask a question to use it with your configured answer engine. The document stays in this tab unless you ask a question; it will not be sent to public search.";
+      showErr("");
+      line(note);
+      speakNow(note);
+    } catch (error) {
+      if(window.IrisFile && IrisFile.clear) IrisFile.clear();
+      var note = /FILE_TOO_LARGE/.test(String(error)) ? "That file is too large to read here. The local limit is 256 KB." :
+        "I can read text, Markdown, CSV, JSON, or log files locally. Image and PDF analysis is not connected yet.";
+      showErr(note);
+      line(note);
+      speakNow(note);
+    }
   });
 
   document.getElementById("hang").addEventListener("click",function(){
     if(rec) try{rec.stop();}catch(e){}
     if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
     if(window.speechSynthesis) speechSynthesis.cancel();
+    if(window.IrisFile && IrisFile.clear) IrisFile.clear();
     talk.classList.remove("on");
     document.getElementById("cam").classList.remove("on");
     document.getElementById("screen").classList.remove("on");
