@@ -1,79 +1,37 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Unity ID — DualisCapax</title>
-<link rel="icon" href="brand/seal.svg" type="image/svg+xml">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Unity</title>
+  <meta name="description" content="Universal identification, and the wallet. Nothing to remember.">
+  <meta name="theme-color" content="#07060e">
+  <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/writer.css">
 </head>
 <body>
-<header>
-  <a class="brand" href="index.html" style="text-decoration:none;color:inherit">DUALISCAPAX</a>
-  <nav>
-    <a href="unity.html">Unity ID</a>
-    <a href="onboard.html">Sign in</a>
-    <a href="runtime.html">Runtime</a>
-  </nav>
-</header>
-<main>
-  <p class="chips"><span class="chip">U1 live</span><span class="chip warn">U0 not verified</span><span class="chip warn">Not a government ID</span></p>
-  <h1>Unity ID</h1>
-  <p class="lead">Member U1 is issued first. Seat U0 is reserved and has not passed verification; this does not block issuance. Additional identities are issued under U1.</p>
-  <div class="grid two">
-    <div class="card">
-      <h2>U1</h2>
-      <p id="u1">DC1-H1-0001</p>
-      <p>Operator seat · may issue additional identities</p>
-    </div>
-    <div class="card">
-      <h2>U0</h2>
-      <p>DC0-Z0-0000</p>
-      <p>Reserved seat. Unity verification: not passed. Cannot issue additional identities.</p>
-    </div>
+  <a class="skip" href="#wallet">Skip to the wallet</a>
+  <div class="float">
+    <header>
+      <p class="name"><a href="index.html">dualiscapax</a></p>
+    </header>
+    <main class="plate">
+      <section class="beat door" id="wallet">
+        <p class="eyebrow">Unity</p>
+        <h1>Universal identification</h1>
+        <p class="lede">The person is the identification. The wallet is the wallet. Nothing to remember.</p>
+        <p><a href="wallet.html">Open the wallet</a></p>
+      </section>
+      <section class="beat">
+        <h2>The wallet</h2>
+        <p>One became two. Adam and Eve are the human name for that split. Unity holds both. The wallet holds nothing you must keep.</p>
+        <nav class="doors" aria-label="Further">
+          <a href="wallet.html">Wallet</a>
+          <a href="index.html">The door</a>
+        </nav>
+        <p class="honest">Look is free. This page stores nothing.</p>
+      </section>
+    </main>
   </div>
-  <div class="card" style="margin-top:1rem;text-align:left">
-    <h2>Same checklist a firm would use — applied to U1 first</h2>
-    <p>DualisCapax does not certify this declaration; certification is performed by a lawyer or reporting firm. Enter only information you want stored on this device. Do not enter a SIN or a licence number.</p>
-    <label>Legal name</label><input id="kName" placeholder="Full legal name">
-    <label>Town</label><input id="kTown" placeholder="Municipality">
-    <label>Occupation</label><input id="kJob" placeholder="Occupation">
-    <label>ID type (no number)</label>
-    <select id="kId"><option>Ontario photo card / licence (number not stored)</option><option>Passport (number not stored)</option><option>Other government photo ID</option></select>
-    <label class="check"><input id="kPep" type="checkbox"> I am not a politically exposed person for this declaration.</label>
-    <label class="check"><input id="kTrue" type="checkbox"> This declaration is accurate. No government identity check has been performed.</label>
-    <button class="btn" type="button" id="sealKyc">Save declaration on this device</button>
-    <p id="kOut" class="lead"></p>
-  </div>
-  <p class="lead" style="margin-top:1rem"><a href="onboard.html">Bind a hatch</a> · <a href="unity/SCHEME.md">Numbering</a></p>
-</main>
-<script src="unity-id.js"></script>
-<script>
-(function(){
-  var u = window.UnityID && UnityID.mintU1();
-  if (u) document.getElementById("u1").textContent = u.public + " · " + u.check;
-  document.getElementById("sealKyc").onclick = function(){
-    if (!document.getElementById("kTrue").checked) {
-      document.getElementById("kOut").textContent = "Please confirm the declaration."; return;
-    }
-    var d = {
-      schema: "unity.kyc.self.v1",
-      unity: u,
-      legal_name: document.getElementById("kName").value,
-      town: document.getElementById("kTown").value,
-      occupation: document.getElementById("kJob").value,
-      id_type: document.getElementById("kId").value,
-      pep_declared_false: document.getElementById("kPep").checked,
-      performed_by_dualis: false,
-      status: "SELF_DECLARED",
-      at: new Date().toISOString()
-    };
-    try { localStorage.setItem("dc.unity.kyc", JSON.stringify(d)); } catch (e) {}
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([JSON.stringify(d,null,2)], {type:"application/json"}));
-    a.download = "unity-U1-kyc-self.json"; a.click();
-    document.getElementById("kOut").textContent = "Saved on this device. Provide the file to a firm for verification. DualisCapax has not verified it.";
-  };
-})();
-</script>
 </body>
 </html>
