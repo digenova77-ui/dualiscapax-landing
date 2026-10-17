@@ -9,11 +9,15 @@ on:
       - "research/diamond-floor/**"
       - "research/photo-archive/discoveries.json"
       - "research/photo-archive/public-dns-audit.json"
+      - "research/photo-archive/assets/**"
+      - "research/photo-archive/provenance/**"
   pull_request:
     paths:
       - "research/diamond-floor/**"
       - "research/photo-archive/discoveries.json"
       - "research/photo-archive/public-dns-audit.json"
+      - "research/photo-archive/assets/**"
+      - "research/photo-archive/provenance/**"
   workflow_dispatch:
 
 permissions:
