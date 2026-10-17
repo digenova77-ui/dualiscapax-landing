@@ -1,9 +1,40 @@
 # Front interface — .com to .ai handoff
 
-From: Counterparty implementation
-Time (UTC): 2026-10-15T00:52:00Z
-For: the front at https://dualiscapax.com/
-Status: commands only. The live .ai server was not changed. The telemetry wire is NOT LIVE.
+From: DualisCapax engineering remediation
+Time (UTC): 2026-10-17
+Status: PROPOSED CORRECTION — specification only; not implemented or live-tested.
+
+## Required user experience
+
+The visitor performs one passkey ceremony on the identity page. After the passkey assertion is verified by the server, the application automatically transfers the authenticated state to the 3D site. Do not send the visitor back to the identity page and require a separate manual link to the 3D site. Do not ask for a second biometric ceremony merely because the first page navigated.
+
+A biometric/passkey prompt by itself is not server authentication. The server must validate the WebAuthn assertion before authorizing the handoff. The 3D receiver must validate the handoff and establish its own protected session before unlocking the world.
+
+## Proposed secure handoff protocol
+
+1. The identity page starts one WebAuthn ceremony from a clear user action.
+2. The browser sends the full WebAuthn assertion to the identity backend over HTTPS. The backend verifies the challenge, origin, relying-party ID, signature, user-verification flag, credential status, and replay protection. A client-side success message is not sufficient.
+3. After verification, the backend creates a cryptographically random, single-use handoff code with a short expiry (target: 60 seconds), bound to the destination audience and the verified session. Store only its hash server-side where practical.
+4. The browser automatically submits that opaque code to the 3D site's HTTPS handoff endpoint in a cross-origin POST body—not in the URL, query string, fragment, local storage, or referrer-bearing link.
+5. The receiving backend atomically consumes the code once, checks expiry, audience, and replay status, and establishes a secure host-only session cookie (Secure, HttpOnly, and an appropriate SameSite policy). It then returns a 303 redirect to the clean 3D entry URL.
+6. The 3D app opens automatically only after the receiver confirms the authenticated session / accepted gate. All failures fail closed and show a useful error with a retry path.
+7. Never transmit raw biometric data, a private key, or a reusable bearer token. Apply strict Origin checks, CSRF protections where applicable, rate limits, short expiry, one-time consumption, and audit-safe logging that excludes secrets.
+
+The cross-origin POST must be explicitly tested on supported mobile and desktop browsers. If the two domains cannot securely support this flow, stop and resolve the backend/session design; do not fall back to an unverified redirect or silently weaken the gate.
+
+## Acceptance criteria
+
+- One biometric/passkey ceremony for the normal sign-in flow.
+- No manual second link to reach the 3D site.
+- No second passkey prompt solely because of navigation.
+- Server-verified WebAuthn assertion and server-verified, single-use handoff.
+- Clean final URL; no credential/assertion/code in URL or browser storage.
+- The 3D scene remains locked if assertion validation, handoff exchange, session establishment, or API authorization fails.
+- Automated tests cover success, cancellation, invalid signature, wrong origin/RP ID, expired/replayed code, cross-origin rejection, and API unavailable.
+
+## Implementation status
+
+This document is a proposed protocol correction, not evidence of implementation. Current repository inspection did not locate the complete end-to-end WebAuthn assertion verification and handoff implementation. The live telemetry wire was previously documented as not live. Do not claim the one-ceremony flow works until both backends and the receiving UI are implemented and tested in staging.
 
 ## The handoff
 
