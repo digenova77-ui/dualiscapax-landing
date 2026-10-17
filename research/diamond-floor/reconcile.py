@@ -86,9 +86,20 @@ def check_dns(report: dict) -> dict:
         return {"status": "FAIL", "reason": "dns-audit-results-invalid"}
     if not records or not https:
         return {"status": "BLOCKED", "reason": "dns-audit-results-incomplete"}
-    failures = [x for x in records + https if isinstance(x, dict) and x.get("status") in {"FAIL", "ERROR"}]
-    if failures:
-        return {"status": "PARTIAL", "reason": "public-endpoint-findings-require-review", "findings": len(failures), "dns_records": len(records), "https_checks": len(https)}
+    findings = []
+    for index, record in enumerate(records):
+        if not isinstance(record, dict):
+            return {"status": "FAIL", "reason": "dns-record-entry-invalid", "index": index}
+        if record.get("error") or not isinstance(record.get("status"), int) or record.get("status") != 0:
+            findings.append({"kind": "dns", "index": index, "name": record.get("name"), "type": record.get("type"), "status": record.get("status"), "error": record.get("error")})
+    for index, check in enumerate(https):
+        if not isinstance(check, dict):
+            return {"status": "FAIL", "reason": "https-entry-invalid", "index": index}
+        status_code = check.get("status")
+        if check.get("error") or not isinstance(status_code, int) or not (200 <= status_code < 400):
+            findings.append({"kind": "https", "index": index, "url": check.get("url"), "status": status_code, "error": check.get("error")})
+    if findings:
+        return {"status": "PARTIAL", "reason": "public-endpoint-findings-require-review", "findings": findings, "dns_records": len(records), "https_checks": len(https)}
     return {"status": "PASS", "dns_records": len(records), "https_checks": len(https), "mutations_performed": False}
 
 
