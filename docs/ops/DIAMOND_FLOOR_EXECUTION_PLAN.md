@@ -9,9 +9,11 @@
 - [x] Preserve a reviewable work branch separate from `main`.
 - [x] Correct Iris session state recovery: answer lookup success/failure returns the session to `idle` instead of leaving it stuck in `think`.
 - [x] Add Node built-in tests for missing engine, successful answer, and rejected lookup paths.
-- [ ] Run the tests in a real checkout and verify the supported runtime.
+- [x] Restrict the browser-controlled `?api=` override to the same origin or the configured DualisCapax API worker in both API clients. The previous code could direct chat POSTs to an arbitrary origin.
+- [x] Add tests for untrusted, same-origin, and trusted API override paths.
+- [ ] Run all tests in a real checkout and verify the supported runtime.
 - [ ] Inspect Replit workspace changes when agent usage is available; do not assume all changes are committed.
-- [ ] Inspect build/deployment configuration and confirm the exact Cloudflare Worker/branch associated with the invalid build token.
+- [ ] Confirm which exact Cloudflare Worker/branch emitted the invalid build-token log.
 
 ## Identity handoff — blocked pending backend evidence
 
@@ -38,4 +40,6 @@
 
 ## Cloudflare build log (2026-10-17 04:56:49 UTC)
 
-Build environment initialization succeeded. The build then failed because the selected build token had been deleted or rotated. This is a credential/configuration failure; it does not prove the application source is broken. Deferred until the user wants to address it. No token or DNS changes were made.
+Build environment initialization succeeded. The build then failed because the selected Worker Builds token had been deleted or rotated. This is a credential/configuration failure; it does not prove the application source is broken. Deferred until the user wants to address it. No token or DNS changes were made.
+
+The repository also documents a separate Cloudflare Pages direct-upload workflow with a standing token authorization error. That is a different deployment path and is **not yet proven to be the same token or build as the user's log**. Keep the incidents separate until the affected Worker/build is identified.
