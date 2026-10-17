@@ -17,6 +17,14 @@
 
 The ceiling starts at the floor. It rises only when a candidate artifact passes schema, integrity, provenance, and invariant checks. An unverified candidate remains a candidate; it never silently becomes accepted state.
 
+## Three rings on one floor
+
+- **Authority ring:** identity, permission, and provenance for the actor or source that introduces a candidate.
+- **Measurement ring:** instrument, units, calibration/uncertainty where applicable, and source observations. Energy in joules remains a physical measurement; it is not silently equated with Merit or token value.
+- **Execution/evidence ring:** deterministic inputs, execution record, output hashes, and reproducible verification.
+
+All three rings must carry explicit evidence references. A label or boolean alone is not proof. This repository's validator checks that evidence references are present and status is asserted; external evidence must still be independently verified before a real acceptance decision.
+
 ## Required downward and upward passes
 
 1. **Ceiling → mesh:** enumerate claims, artifacts, and dependencies that the current view depends on.
@@ -26,12 +34,16 @@ The ceiling starts at the floor. It rises only when a candidate artifact passes 
 5. **Floor → mesh:** build typed relationships from verified inputs only.
 6. **Mesh → ceiling:** produce a candidate ceiling plus an explicit derivative against the previous baseline.
 7. **Reconcile:** verify the candidate against the same invariants; record PASS/PARTIAL/BLOCKED/FAIL and evidence.
+8. **Measure the derivative:** report node, edge, ring, and invariant changes separately; a changed candidate is not a verified improvement merely because it is different.
 
 A failed check blocks promotion. No missing data is filled with a mock success.
 
 ## Implemented in this branch
 
-- `diamond_floor.py`: deterministic inventory, content-addressed ingest, provenance ledger, verification, and derivative reports.
+- `diamond_floor.py`: deterministic inventory, content-addressed ingest, provenance ledger, verification, and derivative reports. Any non-empty change set is `PARTIAL` until reviewed; a zero-change comparison is `PASS`, but neither authorizes promotion.
+- `derivative_graph.py`: canonical hash-bound node/edge graph with a complete ceiling → mesh → floor → seed → taproot → bedrock trace, three required evidence rings, invariant checks, and node/edge/ring/invariant delta reporting.
+- `graph.template.json`: explicit fail-closed graph template; placeholder evidence is deliberately blocked, not treated as a real validation.
+- `test_derivative_graph.py`: exercises complete traces, missing ring evidence, trace gaps, tampering, cross-layer deltas, and no-promotion policy.
 - `reconcile.py`: one fail-closed status across inventory integrity, source discovery, public DNS audit evidence, and ledger integrity. A placeholder DNS report is `BLOCKED`, not a false green.
 - `test_reconcile.py`: verifies tamper detection, placeholder blocking, and the no-promotion invariant.
 - `manifest.schema.json`: manifest contract.
