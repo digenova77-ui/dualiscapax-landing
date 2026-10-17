@@ -27,5 +27,5 @@ function load() {
   const truncated = await irisFile.read({ name: "large.txt", type: "text/plain", size: huge.length, text: async () => huge });
   assert.equal(truncated.truncated, true);
   assert.equal(truncated.includedCharacters, 20000);
-  console.log("IrisFile tests: 10 assertions passed");
+  console.log("IrisFile tests: 11 assertions passed");
 })().catch((error) => { console.error(error); process.exitCode = 1; });
