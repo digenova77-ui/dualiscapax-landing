@@ -12,7 +12,8 @@ def make_graph():
     layers = dg.LAYERS
     nodes = []
     for i, layer in enumerate(layers):
-        node = {"id": layer, "layer": layer, "content": {"index": i, "value": "baseline"}, "source_sha256": ("%064x" % (i + 1)), "verified": True}
+        domain = {"ceiling": "governance", "mesh": "software", "floor": "science", "seed": "earth", "taproot": "identity", "bedrock": "governance"}[layer]
+        node = {"id": layer, "layer": layer, "domain": domain, "content": {"index": i, "value": "baseline"}, "source_sha256": ("%064x" % (i + 1)), "verified": True}
         node["content_sha256"] = dg.node_content_digest(node)
         nodes.append(node)
     edges = [{"from": a, "to": b, "relation": "derives", "verified": True} for a, b in zip(layers, layers[1:])]
@@ -60,6 +61,7 @@ class DiamondDerivativeGraphTests(unittest.TestCase):
         self.assertEqual(delta["edges"]["added"][0]["relation"], "spectral-supports")
         self.assertEqual(delta["spectral_changes"][0]["id"], "mesh")
         self.assertEqual(delta["cross_layer_edges"]["added"][0]["relation"], "spectral-supports")
+        self.assertEqual(delta["cross_domain_edges"]["added"][0]["relation"], "spectral-supports")
         self.assertEqual(delta["rings_changed"], ["measurement"])
         self.assertEqual(delta["invariants_changed"], ["zero_residue"])
         self.assertEqual(delta["promotion"], "NOT_AUTHORIZED")
