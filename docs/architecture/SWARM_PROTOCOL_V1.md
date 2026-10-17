@@ -33,7 +33,7 @@ Every event defaults to `authority: NONE` and `live_actuator: false`. A worker c
 6. Trinity/DCLM records ACCEPT, DECLINE, or BLOCKED with the missing primitive named.
 7. An authorized external release process, if any, separately checks policy and requires explicit approval for production actions.
 
-A missing worker, timeout, malformed event, absent evidence, disagreement, or unavailable authority means `BLOCKED`, never inferred success.
+A worker does not need to wait for a task assignment to begin useful work. Any registered role may self-initiate a bounded discovery or proposal with an explicit scope. It may gather evidence and record findings immediately, but each finding remains `UNVERIFIED` until a distinct verifier evaluates it against evidence. The author may explain or defend their work, but their own validation does not promote it to truth. Failed verification marks the claim `REJECTED`; missing evidence, timeout, disagreement, malformed events, or unavailable authority remain `BLOCKED` or `UNVERIFIED`, never inferred success.
 
 ## Idempotency and ledger
 
@@ -58,8 +58,10 @@ A missing worker, timeout, malformed event, absent evidence, disagreement, or un
 
 ## Test
 
+Autonomous work lifecycle helpers are in `src/engine/swarm_lifecycle.py`. The tests verify that self-initiation needs no assignment, claims stay unverified initially, self-validation is rejected, and independent pass/fail outcomes are recorded. The validator ID in this local implementation is only a label: production must authenticate it and independently inspect the referenced evidence.
+
 Run:
 
 ```sh
-PYTHONPATH=src/engine python3 -m unittest discover -s tests -p 'test_swarm_protocol.py' -v
+PYTHONPATH=src/engine python3 -m unittest discover -s tests -p 'test_swarm_*.py' -v
 ```
