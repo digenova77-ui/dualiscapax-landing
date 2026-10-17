@@ -62,7 +62,7 @@ test("a theater piece that holds the four laws passes and is shown", () => {
   assertQuiet(state);
 });
 
-test("a veto does not pass and is not shown", () => {
+test("a veto still writes nothing", () => {
   const veto = votePiece({
     id: "plain-stage",
     what: "a finite stage",
@@ -82,6 +82,7 @@ test("a veto does not pass and is not shown", () => {
     assert.equal(row.admitted, false);
     assert.equal(row.reason, "VETO");
     assert.equal(row.shown, false);
+    assert.equal(row.what, "");
     assert.equal(state.shown.some(function (item) { return item.id === task; }), false);
   }
   assert.equal(state.shown.length, 1);
@@ -126,7 +127,24 @@ test("the work does not retire across steps", () => {
   assertQuiet(state);
 });
 
-test("only the host can stop it", () => {
+test("hiding yields", () => {
+  const going = step(begin(), {});
+  const hidden = step(going, { hidden: true, stop: true });
+  assert.equal(hidden.retired, false);
+  assert.equal(hidden.stop, false);
+  assert.equal(hidden.log.length, going.log.length);
+  assert.equal(hidden.pending.length, going.pending.length);
+  assert.deepEqual(hidden.shown, going.shown);
+  assert.equal(hidden.log[0].reason, "ADMIT");
+  const visible = step(hidden, { hidden: false });
+  assert.equal(visible.retired, false);
+  assert.equal(visible.stop, false);
+  assert.equal(visible.log.length, going.log.length + 1);
+  assert.equal(visible.log[1].task, "field-canvas");
+  assertQuiet(visible);
+});
+
+test("a stop flag is ignored", () => {
   const going = step(begin(), {});
   assert.equal(going.retired, false);
   assert.equal(going.stop, false);
@@ -137,26 +155,31 @@ test("only the host can stop it", () => {
   assert.equal(planted.retired, false);
   assert.equal(planted.stop, false);
   assert.equal(planted.log[0].reason, "ADMIT");
-  const stopped = step(going, { stop: true });
-  assert.equal(stopped.retired, true);
-  assert.equal(stopped.stop, true);
-  assert.equal(stopped.log.length, going.log.length + 1);
-  assert.equal(stopped.log[stopped.log.length - 1].reason, "HOST STOP");
-  assert.equal(stopped.pending.length, going.pending.length);
-  assert.deepEqual(stopped.shown, going.shown);
-  assertQuiet(stopped);
+  const flagged = step(going, { stop: true });
+  assert.equal(flagged.retired, false);
+  assert.equal(flagged.stop, false);
+  assert.equal(flagged.log.length, going.log.length + 1);
+  assert.equal(flagged.log[flagged.log.length - 1].reason, "VETO");
+  assert.equal(flagged.log[flagged.log.length - 1].task, "field-canvas");
+  assert.equal(flagged.log[flagged.log.length - 1].what, "");
+  assert.equal(flagged.pending.length, going.pending.length - 1);
+  assertQuiet(flagged);
 });
 
-test("two steps append two log lines", () => {
+test("two ticks append at most two lines", () => {
   const once = step(begin(), {});
-  const twice = step(once, {});
+  const yielded = step(once, { hidden: true });
+  const twice = step(yielded, {});
   assert.equal(once.log.length, 1);
+  assert.equal(yielded.log.length, 1);
   assert.equal(twice.log.length, 2);
+  assert.equal(twice.log.length <= 2, true);
   assert.equal(twice.log[0].task, once.log[0].task);
   assert.equal(twice.log[0].reason, once.log[0].reason);
   assert.equal(twice.log[0].admitted, true);
   assert.equal(twice.log[1].admitted, false);
   assert.equal(twice.log[1].task, "field-canvas");
+  assert.equal(twice.log[1].what, "");
   assert.notEqual(twice.log[0], twice.log[1]);
   assertQuiet(twice);
 });
@@ -203,13 +226,16 @@ test("GET and POST each call step once", async () => {
   const halt = await handleWork(new Request("https://dualiscapax.com/api/autonomy/work", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ state: second, stop: true })
+    body: JSON.stringify({ state: second, stop: true, hidden: true })
   }));
   const host = await halt.json();
-  assert.equal(host.retired, true);
-  assert.equal(host.stop, true);
+  assert.equal(host.retired, false);
+  assert.equal(host.stop, false);
   assert.equal(host.log.length, 3);
-  assert.equal(host.pending.length, second.pending.length);
+  assert.equal(host.log[2].task, "quark-canvas");
+  assert.equal(host.log[2].admitted, false);
+  assert.equal(host.log[2].what, "");
+  assert.equal(host.pending.length, second.pending.length - 1);
   assertQuiet(host);
 });
 
@@ -220,7 +246,16 @@ test("the door shows the theater that passed and keeps the work open", () => {
   assert.equal(door.includes("The theater on this page is what passed the vote."), true);
   assert.equal(door.includes("The parts of the system meet each other here."), true);
   assert.equal(door.includes("The work does not retire."), true);
-  assert.equal(door.includes("Only the host can stop it."), true);
+  assert.equal(door.includes("The host is the node."), true);
+  assert.equal(door.includes("When the page is hidden, the tick yields."), true);
+  assert.equal(door.includes("When the page is visible, the node continues."), true);
+  assert.equal(door.includes("Only the host can stop it."), false);
+  assert.equal(door.includes('id="work-stop"'), false);
+  assert.equal(door.includes('id="work-step"'), false);
+  assert.equal(door.includes("visibilitychange"), true);
+  assert.equal(door.includes("document.hidden"), true);
+  assert.equal(door.includes("setInterval(tickWork, 1000)"), true);
+  assert.equal(door.includes("clearInterval"), true);
   assert.equal(door.includes("The three rings passed the vote. Iris is the teal light."), true);
   assert.equal(door.includes('data-theater="rings"'), true);
   assert.equal(door.includes('data-piece="rings"'), true);
@@ -236,6 +271,11 @@ test("the door shows the theater that passed and keeps the work open", () => {
   assert.equal(door.includes('id="scene"'), false);
   assert.equal(/\b(dna|helix|microsurgery|goggles)\b/i.test(door), false);
   assert.equal(work.includes("while"), false);
+  assert.equal(work.includes("HOST STOP"), false);
+  assert.equal(work.includes("retired: true"), false);
   assert.equal(card.includes("The theater on the page is what passed the vote."), true);
   assert.equal(card.includes("The work does not retire."), true);
+  assert.equal(card.includes("The host is the node."), true);
+  assert.equal(card.includes("A stop flag is ignored."), true);
+  assert.equal(card.includes("Only the host can stop it."), false);
 });

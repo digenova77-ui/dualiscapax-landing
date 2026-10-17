@@ -299,9 +299,7 @@
 
     <section class="beat" id="work" aria-labelledby="work-title">
       <h2 id="work-title">The work</h2>
-      <p>The work does not retire. Each step votes one piece of theater and writes one line. The work does not stop itself. Only the host can stop it.</p>
-      <button type="button" id="work-step">Step the work</button>
-      <button type="button" id="work-stop">Stop the work</button>
+      <p>The work does not retire. The host is the node. Each tick votes one piece of theater and writes one line. When the page is hidden, the tick yields. When the page is visible, the node continues.</p>
       <p id="work-note" class="honest" aria-live="polite">The work does not retire.</p>
       <pre id="work-log"></pre>
     </section>
@@ -407,23 +405,35 @@
   let work = begin();
   const workLog = document.getElementById("work-log");
   const workNote = document.getElementById("work-note");
+  let clock = 0;
   function paint(state) {
     workLog.textContent = state.log.map(function (line) {
-      if (line.reason === "HOST STOP") return "The host stopped the work.";
       if (line.admitted) return "Admitted " + line.task + ". It is shown. The work does not retire.";
       if (line.task) return "Refused " + line.task + ". It is not shown. The work does not retire.";
       return "Nothing was pending. The work does not retire.";
     }).join("\n");
-    workNote.textContent = state.retired ? "The host stopped the work." : "The work does not retire.";
+    workNote.textContent = "The work does not retire.";
   }
-  document.getElementById("work-step").addEventListener("click", function () {
-    work = step(work, {});
+  function tickWork() {
+    work = step(work, { hidden: document.hidden });
+    if (document.hidden) return;
     paint(work);
+  }
+  function arm() {
+    if (clock !== 0 || document.hidden) return;
+    clock = window.setInterval(tickWork, 1000);
+    tickWork();
+  }
+  function yieldClock() {
+    if (clock === 0) return;
+    window.clearInterval(clock);
+    clock = 0;
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) yieldClock();
+    else arm();
   });
-  document.getElementById("work-stop").addEventListener("click", function () {
-    work = step(work, { stop: true });
-    paint(work);
-  });
+  arm();
   button.addEventListener("click", function () {
     const input = {
       ring: ring(),
