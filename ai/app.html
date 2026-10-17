@@ -171,8 +171,8 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
         ? await IrisSession.think(text)
         : window.DCLMLook&&DCLMLook.run
           ? await DCLMLook.run(text)
-          : {spoken:"I'm Iris."};
-      var spoken=(recu&&recu.spoken)||"I'm Iris.";
+          : {status:"UNAVAILABLE",lane:"UNAVAILABLE",spoken:"Iris service is unavailable; no response was generated."};
+      var spoken=(recu&&recu.spoken)||"Iris returned no response.";
       line(spoken);
       speakNow(spoken);
     }catch(e){ showErr("She could not answer."); line("Say that again."); }
