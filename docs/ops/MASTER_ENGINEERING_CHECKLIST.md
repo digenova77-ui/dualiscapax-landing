@@ -193,3 +193,13 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Release gate
 
 Production release is **NO-GO** until all critical items in Phases 2, 3, 4, 6, 7, and 8 pass, the canonical deployment target is established, and the rollback path is verified. Non-critical documentation items may remain open only if explicitly listed and approved.
+
+## Biometric handoff remediation (2026-10-17)
+
+- [x] Confirmed the current handoff spec explicitly requires a second passkey prompt after navigation and describes the telemetry wire as not live.
+- [x] Staged a specification correction on branch fix/one-ceremony-biometric-handoff-20261017: one WebAuthn ceremony, server-side assertion validation, short-lived single-use handoff exchanged by HTTPS POST body, receiver-side session establishment, automatic clean-URL redirect into the 3D app, and fail-closed behavior.
+- [ ] Locate or implement the actual identity backend's WebAuthn assertion verification. Repository searches so far found the specification but did not establish the complete live implementation.
+- [ ] Implement the one-time handoff store/consume path on both backends; ensure atomic single-use consumption, expiry, audience binding, origin checks, replay protection, and secure session cookies.
+- [ ] Implement the receiver-side automatic POST handoff and clean redirect; remove the manual second link and redundant second biometric prompt only after server validation replaces their authorization function.
+- [ ] Stage and test supported mobile/desktop browsers: success, cancel, wrong origin/RP ID, invalid assertion, expired/replayed handoff, CORS/CSRF rejection, API down, and no URL/storage leakage.
+- [ ] Do not merge or deploy until the implementation is present, tests pass, and production serving path is established.
