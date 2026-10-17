@@ -94,9 +94,20 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
   var errEl=document.getElementById("err");
   var talk=document.getElementById("talk");
   var pip=document.getElementById("pip");
+  var statusEl=document.getElementById("status");
+  var textForm=document.getElementById("text-form");
+  var textInput=document.getElementById("text-input");
   var rec=null, busy=false, primed=false, synthWatch=0, greeted=false;
 
-  function showErr(m){ if(!m){errEl.hidden=true;errEl.textContent="";return;} errEl.hidden=false;errEl.textContent=m; }
+  function setStatus(message, state){
+    if(!statusEl) return;
+    statusEl.textContent=String(message||"");
+    statusEl.dataset.state=state||"ready";
+  }
+  function showErr(m){
+    if(!m){errEl.hidden=true;errEl.textContent="";return;}
+    errEl.hidden=false;errEl.textContent=m;
+  }
   function line(t){
     var s=String(t||"");
     cap.textContent=s;
@@ -164,12 +175,14 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
     text=String(text||"").trim();
     if(!text||busy) return;
     busy=true;
+    setStatus("Working · checking the configured answer engine","thinking");
     line("…");
     try{
       var guest = window.IrisGuest ? IrisGuest.rememberFrom(text) : null;
       if(guest && guest.name && window.IrisGuest.parseName && IrisGuest.parseName(text)){
         var hello = "Good to meet you, " + guest.name + ". I'm the person at this table for DualisCapax. What do you want to know?";
         line(hello);
+        setStatus("Ready · text and voice controls available","ready");
         speakNow(hello);
         busy=false;
         return;
@@ -181,16 +194,22 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
           ? await DCLMLook.run(question, null, { localDocument: !!(window.IrisFile && IrisFile.snapshot && IrisFile.snapshot().loaded) })
           : {spoken:"I'm Iris."};
       var spoken=(recu&&recu.spoken)||"I'm Iris.";
+      if(recu && (recu.lane==="ERROR" || recu.grant==="UNAVAILABLE")) setStatus("Unavailable · answer engine not connected","error");
+      else setStatus("Response received","ready");
       line(spoken);
       speakNow(spoken);
-    }catch(e){ showErr("She could not answer."); line("Say that again."); }
+    }catch(e){
+      showErr("I couldn't complete that request. You can try again or use text.");
+      setStatus("Request failed · try again","error");
+      line("I couldn't complete that request. Please try again.");
+    }
     busy=false;
   }
 
   function startRec(){
     if(window.IrisAV&&IrisAV.releaseMicTracks) IrisAV.releaseMicTracks();
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){ showErr("This browser cannot hear. That's okay — tap TALK still unlocks her mouth."); return false; }
+    if(!SR){ showErr("Voice input is not supported here. Type your message below instead."); setStatus("Voice input unavailable · text is ready","error"); return false; }
     rec=new SR();
     rec.lang=(window.IrisVoice&&IrisVoice.locale&&IrisVoice.locale())||(navigator.language||"en");
     rec.continuous=false; rec.interimResults=true;
@@ -200,11 +219,30 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
       line(t||"…");
       if(ev.results[ev.results.length-1].isFinal) hear(t);
     };
-    rec.onerror=function(){ talk.classList.remove("on"); talk.setAttribute("aria-pressed","false"); };
-    rec.onend=function(){ talk.classList.remove("on"); talk.setAttribute("aria-pressed","false"); if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(false); };
+    rec.onerror=function(){
+      talk.classList.remove("on"); talk.setAttribute("aria-pressed","false");
+      showErr("Voice input failed or permission was denied. You can type below instead.");
+      setStatus("Voice input failed · text is ready","error");
+    };
+    rec.onend=function(){
+      talk.classList.remove("on"); talk.setAttribute("aria-pressed","false");
+      if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(false);
+      if(statusEl && statusEl.dataset.state==="listening") setStatus("Ready · text and voice controls available","ready");
+    };
     rec.start();
     return true;
   }
+
+  if(textForm) textForm.addEventListener("submit",function(ev){
+    ev.preventDefault();
+    var text=String(textInput.value||"").trim();
+    if(!text) return;
+    if(busy){ showErr("Please wait for the current answer to finish."); return; }
+    textInput.value="";
+    showErr("");
+    meet();
+    hear(text);
+  });
 
   talk.addEventListener("click",function(){
     var on=!talk.classList.contains("on");
@@ -216,6 +254,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
       if(!startRec()) return;
       talk.classList.add("on"); talk.setAttribute("aria-pressed","true");
       if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(true);
+      setStatus("Listening · speak now","listening");
       line("I'm listening.");
     }else{
       if(rec) try{rec.stop();}catch(e){}
@@ -235,8 +274,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
         btn.classList.toggle("on",live);
         btn.setAttribute("aria-pressed",live?"true":"false");
         pip.classList.toggle("on",live);
-        if(live) line("Camera preview is live. Visual understanding is not connected yet.");
-        else line("Camera preview stopped.");
+        if(live){ setStatus("Camera preview · visual understanding not connected","ready"); line("Camera preview is live. Visual understanding is not connected yet."); }
+        else { setStatus("Ready · text and voice controls available","ready"); line("Camera preview stopped."); }
       }).catch(function(){ showErr("Camera blocked."); });
       return;
     }
@@ -257,7 +296,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
     meet();
     primeVoice();
     var spoken = (window.IrisPage && IrisPage.here && IrisPage.here().spoken)
-      || "You're with me in the lab. I already know this page.";
+      || "I can report the configured context for this page. Live visual understanding is not connected yet.";
+    setStatus("Page context · configured route metadata","ready");
     line(spoken);
     speakNow(spoken);
   });
@@ -281,6 +321,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
         (info.truncated ? ", first 20,000 characters only" : "") +
         "). Ask a question to use it with your configured answer engine. The document stays in this tab unless you ask a question; it will not be sent to public search.";
       showErr("");
+      setStatus("Local text loaded · ask a question to analyze it","ready");
       line(note);
       speakNow(note);
     } catch (error) {
@@ -288,6 +329,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
       var note = /FILE_TOO_LARGE/.test(String(error)) ? "That file is too large to read here. The local limit is 256 KB." :
         "I can read text, Markdown, CSV, JSON, or log files locally. Image and PDF analysis is not connected yet.";
       showErr(note);
+      setStatus("File not supported or could not be read","error");
       line(note);
       speakNow(note);
     }
@@ -298,6 +340,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
     if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
     if(window.speechSynthesis) speechSynthesis.cancel();
     if(window.IrisFile && IrisFile.clear) IrisFile.clear();
+    setStatus("Session ended · local document context cleared","ready");
     talk.classList.remove("on");
     document.getElementById("cam").classList.remove("on");
     document.getElementById("screen").classList.remove("on");
