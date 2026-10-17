@@ -195,7 +195,7 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 Production release is **NO-GO** until all critical items in Phases 2, 3, 4, 6, 7, and 8 pass, the canonical deployment target is established, and the rollback path is verified. Non-critical documentation items may remain open only if explicitly listed and approved.
 
 
-## Handoff-loop investigation — 2026-10-16 UTC
+## Handoff-loop investigation — 2026-10-17 UTC
 
 This is an evidence update, not a production release. No live DNS, server, database, or deployment was changed.
 
@@ -236,7 +236,7 @@ This is an evidence update, not a production release. No live DNS, server, datab
 NO-GO / investigation open. The repeated ceremony is supported by the written design, but the exact reload/bounce cause has not yet been proven. No production changes have been made. The next decisive evidence is the actual deployed script and a redacted browser Network/Console trace from one reproduction.
 
 
-### Follow-up source trace — 2026-10-16 UTC
+### Follow-up source trace — 2026-10-17 UTC
 
 - [x] Followed the repository caller for the local session redirect: js/curtain-gate.js (blob 577ba36ac42893564f646ba3870d8afd68833d43) invokes DC_UNITY.require(here) for non-free paths when DC_UNITY is present. The FREE allowlist includes /curtain.html, /why.html, /story.html, /index.html, /ca.html, /world.html, /look.html, /hall/, and /hall/index.html. This makes the redirect path concrete for gated pages, but does not prove the root-page biometric flow loads this gate script.
 - [x] Read curtain.html (blob 72e78c1c1064c2434edb1507a555de39b66e0c98). Its form mints a local unity.session.v1 record and navigates to the requested next path or DC_UNITY.landPath(). This is a local session flow distinct from the documented WebAuthn handoff; integration between the two is not established by source evidence.
