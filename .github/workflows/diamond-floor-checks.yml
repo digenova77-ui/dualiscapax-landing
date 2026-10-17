@@ -6,9 +6,13 @@ on:
       - "research/earth-photo-archive"
     paths:
       - "research/diamond-floor/**"
+      - "research/photo-archive/discoveries.json"
+      - "research/photo-archive/public-dns-audit.json"
   pull_request:
     paths:
       - "research/diamond-floor/**"
+      - "research/photo-archive/discoveries.json"
+      - "research/photo-archive/public-dns-audit.json"
   workflow_dispatch:
 
 permissions:
