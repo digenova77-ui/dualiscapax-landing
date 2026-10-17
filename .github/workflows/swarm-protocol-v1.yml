@@ -1,0 +1,29 @@
+name: Swarm Protocol v1 Tests
+
+on:
+  pull_request:
+    paths:
+      - "src/engine/swarm_protocol.py"
+      - "tests/test_swarm_protocol.py"
+      - "docs/architecture/SWARM_PROTOCOL_V1.md"
+      - ".github/workflows/swarm-protocol-v1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protocol-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile protocol module
+        run: python3 -m py_compile src/engine/swarm_protocol.py
+      - name: Run fail-closed protocol tests
+        env:
+          PYTHONPATH: src/engine
+        run: python3 -m unittest discover -s tests -p "test_swarm_protocol.py" -v
