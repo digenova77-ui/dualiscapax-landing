@@ -32,8 +32,8 @@ function load(overrides = {}) {
   privacy.on((event) => { if (event.kind === "think") thinkEvent = event; });
   await privacy.think("what is in this file?", { prompt: privateText });
   assert.equal(engineInput, privateText, "document text reaches the engine only as explicit prompt input");
-  assert.equal(thinkEvent.characters, "what is in this file?".length);
-  assert.equal(thinkEvent.hasLocalFile, true);
+  assert.equal(thinkEvent.extra.characters, "what is in this file?".length);
+  assert.equal(thinkEvent.extra.hasLocalFile, true);
   assert.equal(JSON.stringify(thinkEvent).includes(privateText), false, "telemetry event must not include document text");
   assert.equal(privacy.snapshot().last.text, "what is in this file?");
   console.log("IrisSession tests: 11 assertions passed");
