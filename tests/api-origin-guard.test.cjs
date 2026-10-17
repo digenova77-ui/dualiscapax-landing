@@ -10,17 +10,32 @@ function loadConfig(search, origin = "https://dualiscapax.ai") {
 }
 
 function loadWorld(search, origin = "https://dualiscapax.ai") {
+  const calls = [];
   const window = { location: { origin, search, pathname: "/playground.html" } };
-  const context = { window, location: window.location, URL, URLSearchParams, Promise, String, Date, Math };
+  const context = {
+    window, location: window.location, URL, URLSearchParams, Promise, String, Date, Math,
+    fetch: async (url) => {
+      calls.push(String(url));
+      return { status: 200, json: async () => ({ ok: true }) };
+    }
+  };
   vm.runInNewContext(fs.readFileSync("js/api-world.js", "utf8"), context);
-  return window;
+  return { window, calls };
 }
 
-const trusted = "https://dualiscapax-depth.digenova77.workers.dev";
-assert.equal(loadConfig("?api=https%3A%2F%2Fevil.example").DC_API_BASE, trusted);
-assert.equal(loadConfig("?api=https%3A%2F%2Fevil.example").DC_API_BASE, trusted);
-assert.equal(loadConfig("?api=%2Fapi").DC_API_BASE, "https://dualiscapax.ai/api");
-assert.equal(loadConfig("?api=https%3A%2F%2Fdualiscapax-depth.digenova77.workers.dev").DC_API_BASE, trusted);
-assert.equal(loadWorld("?api=https%3A%2F%2Fevil.example").DCWorld.chat ? "loaded" : "missing", "loaded");
-assert.equal(loadWorld("?api=https%3A%2F%2Fevil.example").DCWorld.version, "api-world-2026-10-17-origin-guard");
-console.log("API origin guard tests: 6 assertions passed");
+(async function () {
+  const trusted = "https://dualiscapax-depth.digenova77.workers.dev";
+  assert.equal(loadConfig("?api=https%3A%2F%2Fevil.example").DC_API_BASE, trusted);
+  assert.equal(loadConfig("?api=%2Fapi").DC_API_BASE, "https://dualiscapax.ai/api");
+  assert.equal(loadConfig("?api=https%3A%2F%2Fdualiscapax-depth.digenova77.workers.dev").DC_API_BASE, trusted);
+  const rejected = loadWorld("?api=https%3A%2F%2Fevil.example");
+  await rejected.window.DCWorld.chat([{ role: "user", content: "test" }]);
+  assert.equal(rejected.calls[0], trusted + "/v1/chat", "untrusted query URL must not receive chat payload");
+  const sameOrigin = loadWorld("?api=%2Fapi");
+  await sameOrigin.window.DCWorld.chat([{ role: "user", content: "test" }]);
+  assert.equal(sameOrigin.calls[0], "https://dualiscapax.ai/api/v1/chat", "same-origin override remains supported");
+  const trustedOverride = loadWorld("?api=https%3A%2F%2Fdualiscapax-depth.digenova77.workers.dev");
+  await trustedOverride.window.DCWorld.chat([{ role: "user", content: "test" }]);
+  assert.equal(trustedOverride.calls[0], trusted + "/v1/chat");
+  console.log("API origin guard tests: 6 assertions passed");
+})().catch((error) => { console.error(error); process.exitCode = 1; });
