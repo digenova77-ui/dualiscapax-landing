@@ -1,63 +1,60 @@
 # Diamond-Floor Execution Plan
 
-Status: active plan; not a completion claim. Production changes: none. Release gate: NO-GO until critical tests pass.
+**Updated:** 2026-10-17  
+**Work branch:** `workbench/domain-handoff-audit`  
+**Production changes:** None. DNS changes: None. Live-server changes: None.
 
-## Domain contract
-- dualiscapax.com is the 2D identity surface only.
-- dualiscapax.ai is the 3D World and in-world Iris only.
-- Identity must be validated server-side before .ai creates an authenticated session.
-- Preserve TRUTH_OR_NOTHING, NO_FORCE, HOST_SAFE, CLEANUP_FIRST.
-- No production deploy, DNS, auth-provider, live server, firewall, or database changes without explicit approval.
+## Active findings
 
-## Critical security finding
-The existing handshake/FRONT-INTERFACE.md proposes WebAuthn on dualiscapax.ai with rpId dualiscapax.com. WebAuthn requires rpId to equal the caller host or be a registrable domain suffix of it; .com is not a valid RP ID for an .ai origin. Do not implement or mark this flow PASS.
+- [x] Preserve a reviewable work branch separate from `main`.
+- [x] Correct Iris session state recovery: answer lookup success/failure returns the session to `idle` instead of leaving it stuck in `think`.
+- [x] Add Node built-in tests for missing engine, successful answer, and rejected lookup paths.
+- [x] Restrict the browser-controlled `?api=` override to the same origin or the configured DualisCapax API worker in both API clients. The previous code could direct chat POSTs to an arbitrary origin.
+- [x] Add tests for untrusted, same-origin, and trusted API override paths.
+- [x] Bound L2 text-file reads to 5 MiB and metadata-only workbook fingerprinting to 25 MiB.
+- [x] Parse quoted CSV/TSV fields and multiline quoted cells; count actual JSON numeric values rather than digits embedded in strings.
+- [x] Refuse persistent seating when browser storage is unavailable, and report incomplete local cleanup rather than claiming success.
+- [x] Make the playground label Excel workbooks as metadata-only because cell values are not parsed.
+- [x] Fix API world switching so `DCWorld.apply(0|1)` updates the active request route and metadata.
+- [x] Add an isolated pull-request test workflow; its first execution is still pending.
+- [ ] Run all tests in a real checkout and verify the supported runtime.
+- [ ] Inspect Replit workspace changes when agent usage is available; do not assume all changes are committed.
+- [ ] Confirm which exact Cloudflare Worker/branch emitted the invalid build-token log.
 
-Required direction: authenticate at a valid RP origin, verify the assertion server-side, issue a short-lived unpredictable single-use handoff grant, and atomically consume it on the trusted .ai backend to establish an .ai session. Bind to audience and expiry; prevent replay, CSRF, open redirects, and URL/token leakage. First identify the authoritative backend and session store. If unavailable, mark BLOCKED rather than faking acceptance.
+## Identity handoff — blocked pending backend evidence
 
-## Work board
-| ID | Priority | Task | Acceptance evidence | Status |
-|---|---|---|---|---|
-| DF-001 | P0 | Preserve Replit workspace | Export or verified Git sync, compared without overwriting either side | BLOCKED: Replit agent paused; workspace not inspected |
-| DF-002 | P0 | Confirm source of truth | Branch, HEAD, entry points, generated assets, deployment rail recorded | PARTIAL |
-| DF-003 | P0 | Correct WebAuthn design | RP ID and origin rules respected; server-side validation documented | IN PROGRESS: incompatibility identified |
-| DF-004 | P0 | Implement one-time handoff | Expiring single-use grant consumed atomically; secure .ai session | BLOCKED: backend/session implementation unconfirmed |
-| DF-005 | P0 | Test identity failure paths | cancel, timeout, invalid/stale/replayed challenge and missing session all fail closed | NOT STARTED |
-| DF-006 | P0 | Enforce domain separation | .com 2D only; .ai 3D only; no redirect loop | NOT STARTED |
-| DF-007 | P1 | Audit Iris modules | Canonical page, sphere, session, AV, chat/API paths inventoried | PARTIAL: js/iris-page.js and js/iris-session.js found |
-| DF-008 | P1 | Repair Iris HUD | Responsive, accessible, real controls and truthful states | NOT STARTED |
-| DF-009 | P1 | Verify Iris capabilities | chat/voice/camera/vision only claim capability when actually connected | NOT STARTED |
-| DF-010 | P0 | Verify API v2/kernel | canonical base, schema, auth, failure behavior and real kernel connection tested | BLOCKED: route/backend unverified |
-| DF-011 | P1 | Reconcile routes | redirects match intended existing destinations and pass route tests | NOT STARTED |
-| DF-012 | P0 | Build and test | clean build, tests, browser/mobile checks and artifact hash recorded | NOT STARTED |
-| DF-013 | P0 | Staging and rollback | safe preview and rollback verified; release separately approved | BLOCKED: delivery rail unresolved |
-| DF-014 | P1 | Import Replit work | export compared; only verified changes transplanted | BLOCKED: workspace changes unknown |
+- [x] Identify invalid proposed WebAuthn design: an `.ai` page cannot assert using `dualiscapax.com` as RP ID because the RP ID is not a suffix of the calling origin.
+- [ ] Identify the authoritative identity backend and server-side session store.
+- [ ] Implement a short-lived, single-use, audience-bound server handoff only after the receiving backend and atomic replay protection are confirmed.
+- [ ] Test success, expiry, replay, forged callback, origin mismatch, direct unauthenticated entry, and failure/cancel paths.
 
-## Release acceptance tests
-- Fresh, unpredictable, single-use challenge; origin/RP validated server-side.
-- Failed, cancelled, expired, forged, stale, replayed, and unavailable states stay locked.
-- Handoff grant is short-lived, single-use, audience-bound and atomically consumed.
-- No assertion, credential, reusable token, or private identity data in URL, local storage, or logs.
-- Successful handoff creates a trusted .ai session and opens the actual 3D World; direct unauthenticated entry stays locked.
-- Iris controls work on mobile/desktop; microphone and camera are opt-in; unsupported APIs and denied permissions are handled.
-- UI statuses reflect real service state; animation or client flags never imply authorization.
-- Clean build and required tests pass; CSP/CORS, routes, asset paths and API responses checked.
-- Record commit SHA, test evidence, artifact hash and rollback. No production changes without explicit approval.
+## Iris / 3D World
 
-## Current evidence
-- Baseline commit: 300befb2f7aa4e0589ed5ef333a83a39a556d5c1.
-- Iris page module: js/iris-page.js, blob 84bac9af8965564523ef7872b36eaef1cd329318.
-- Iris session module: js/iris-session.js, blob cf799deeccf2aba61b6fabbb4548291ae92be2e3.
-- Handoff specification: handshake/FRONT-INTERFACE.md, blob 4c8066628305bf2cec6aa05173745ce54a806f1a; it says telemetry was not live when documented.
-- Replit workspace export: NOT VERIFIED. End-to-end auth: NOT TESTED. Iris capabilities: NOT TESTED. Production changes: NONE.
+- [x] Improve the Iris session controller's error recovery and truthful fallback behavior.
+- [x] Add ephemeral local text-file reading for .txt, .md, .csv, .json, and .log files, with 256 KB input and 20,000-character context limits.
+- [x] Keep extracted document contents out of Iris session telemetry events.
+- [x] Prevent selected local document text from falling through to Wikipedia/Wikidata if the configured answer engine is unavailable.
+- [x] Make the UI state plainly that camera preview is not the same as visual understanding.
+- [ ] Verify file handling, camera permission, and answer-engine behavior in a browser on desktop and mobile.
+- [ ] Verify voice recognition, answer engine availability, speech synthesis, and visible status on desktop and mobile.
+- [ ] Redesign and validate both the Replit Iris app and the `.ai` HUD.
+- [ ] Confirm `.com` remains the 2D identity surface and `.ai` the 3D World surface.
 
-## Execution order
-1. Preserve/export Replit and compare to GitHub.
-2. Inventory code and deployment topology read-only.
-3. Resolve RP-ID mismatch and select trusted server-side handoff.
-4. Implement identity bridge on isolated branch with tests.
-5. Repair Iris/HUD against actual service contracts.
-6. Run build, unit, integration, browser, mobile, security and failure-path tests.
-7. Record diff, commit, tests, artifact hash and rollback.
-8. Request explicit release approval only after staging verification.
+## API, build, and release
 
-Completion means tested behavior with reproducible evidence, not merely files or submitted prompts.
+- [ ] Trace the API v2 route to the authoritative kernel; do not treat a client-side label or mock response as backend proof.
+- [x] Add deterministic tests for Iris recovery, local-file limits/privacy, API-origin restrictions, world switching, L2 parsing limits, metadata-only workbooks, and storage failure behavior.
+- [ ] Execute the test suite in a real checkout and run a production build in a safe environment.
+- [ ] Confirm the actual deployment rail and rollback artifact.
+- [ ] Obtain explicit user approval before production deployment, DNS edits, auth-provider changes, or live server/database/firewall changes.
+
+## Cloudflare build log (2026-10-17 04:56:49 UTC)
+
+Build environment initialization succeeded. The build then failed because the selected Worker Builds token had been deleted or rotated. This is a credential/configuration failure; it does not prove the application source is broken. Deferred until the user wants to address it. No token or DNS changes were made.
+
+The repository also documents a separate Cloudflare Pages direct-upload workflow with a standing token authorization error. That is a different deployment path and is **not yet proven to be the same token or build as the user's log**. Keep the incidents separate until the affected Worker/build is identified.
+
+
+## Local document privacy boundary
+
+The playground now reads supported text files locally in memory only. File content is not written to localStorage or included in Iris session telemetry. It is included in a prompt only when the user asks a question. If the configured answer engine is unavailable, DCLMLook returns an unavailable result rather than sending document text to public search. Image and PDF understanding remain unsupported in this staged implementation.
