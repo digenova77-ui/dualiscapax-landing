@@ -1,163 +1,29 @@
 name: pages-direct-upload
 
-# Canonical Cloudflare Pages handoff (existing rail, not a second project).
-# Package cf-pages as a zero-nest zip, then deploy THAT artifact.
-# Secrets stay in the deploy job. Fail hard on missing creds or wrangler errors.
-# Dispatch-only so factory [skip ci] harvests do not publish apex.
-#
-# HOLE_CF_10000 (standing): CLOUDFLARE_API_TOKEN is injected but Cloudflare
-# returns Authentication error [code: 10000] on
-# GET /accounts/.../pages/projects/dualiscapax-landing.
-# Empty-check passes. Authorization fails. Operator must replace the token
-# with Account · Cloudflare Pages · Edit on the account that owns the project.
-# Do not paste the token into chat.
+# RETIRED 2026-10-17 (fix/retire-cf-pages-rail-20261017, see PR #113).
+# Production is self-hosted on the NJ server (Caddy) for dualiscapax.com and dualiscapax.ai.
+# DNS resolves both to 108.61.17.141 directly (not proxied through Cloudflare).
+# Cloudflare Pages project dualiscapax-landing is an orphaned copy and does not serve either domain.
+# This workflow stays in tree so old badges and links do not 404. It does not deploy, upload or purge anything.
+# Previous content: git show 2e74c779:.github/workflows/pages-direct-upload.yml
 
 on:
   workflow_dispatch:
     inputs:
-      confirm:
-        description: 'Type DEPLOY to publish cf-pages to dualiscapax-landing'
+      confirm_retirement:
+        description: "Type RETIRED — this workflow does not publish"
         required: true
-        default: 'DEPLOY'
-      note:
-        description: 'Optional note'
-        required: false
-        default: 'artifact-to-pages handoff'
+        default: "RETIRED"
 
 permissions:
   contents: read
-  actions: write
-
-concurrency:
-  group: pages-direct-upload
-  cancel-in-progress: true
 
 jobs:
-  package-pages:
-    name: Package cf-pages Artifact
+  retired:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
-
-      - name: Verify cf-pages and leak-scan
+      - name: Refuse Cloudflare Pages rail
         run: |
-          set -euo pipefail
-          if [ ! -d "cf-pages" ]; then
-            echo "::error::cf-pages directory missing"
-            exit 1
-          fi
-          if [ ! -f "cf-pages/index.html" ]; then
-            echo "::error::cf-pages/index.html missing — refuse empty web root"
-            exit 1
-          fi
-          leaks=$(find cf-pages -type f \(
-            -name '.env' -o -name '.env.*' -o -name '*.pem' -o -name '*credentials*.json' -o -name 'wrangler.toml'
-          \) | grep -v '_peel-backup' || true)
-          if [ -n "$leaks" ]; then
-            echo "::error::Refusing to pack secrets/config:"
-            echo "$leaks"
-            exit 1
-          fi
-          echo "cf-pages files: $(find cf-pages -type f | wc -l)"
-
-      - name: Create zero-nest production zip + SHA-256
-        run: |
-          set -euo pipefail
-          cd cf-pages
-          zip -r -9 "$GITHUB_WORKSPACE/cf-pages-production.zip" . \
-            -x '*.DS_Store' '_peel-backup/*' 'data/matchups/*'
-          cd "$GITHUB_WORKSPACE"
-          sha256sum cf-pages-production.zip > cf-pages-production.zip.sha256
-          echo "zip_bytes=$(stat -c%s cf-pages-production.zip)"
-          echo "sha256=$(cut -d' ' -f1 cf-pages-production.zip.sha256)"
-          root=$(unzip -Z1 cf-pages-production.zip | head -1 || true)
-          echo "zip_first_entry=$root"
-          if echo "$root" | grep -q '^cf-pages/'; then
-            echo "::error::zip is nested under cf-pages/ — web root must be zero-nest"
-            exit 1
-          fi
-          unzip -Z1 cf-pages-production.zip | grep -qx 'index.html'
-
-      - name: Upload production artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: cf-pages-bundle
-          path: |
-            cf-pages-production.zip
-            cf-pages-production.zip.sha256
-          retention-days: 7
-          if-no-files-found: error
-
-  deploy-pages:
-    name: Deploy to Cloudflare Pages
-    needs: package-pages
-    if: ${{ github.event.inputs.confirm == 'DEPLOY' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Download packaged artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: cf-pages-bundle
-          path: ./downloaded_artifact
-
-      - name: Verify checksum and extract zero-nest payload
-        run: |
-          set -euo pipefail
-          cd ./downloaded_artifact
-          sha256sum -c cf-pages-production.zip.sha256
-          mkdir -p "$GITHUB_WORKSPACE/deploy-payload"
-          unzip -q cf-pages-production.zip -d "$GITHUB_WORKSPACE/deploy-payload"
-          test -f "$GITHUB_WORKSPACE/deploy-payload/index.html"
-          echo "payload files: $(find "$GITHUB_WORKSPACE/deploy-payload" -type f | wc -l)"
-
-      - name: Setup Node.js LTS
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Deploy extracted artifact via Wrangler
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          set -euo pipefail
-          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
-            echo "::error::HOLE_NO_TOKEN — CLOUDFLARE_API_TOKEN missing in Actions secrets"
-            exit 1
-          fi
-          if [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
-            echo "::error::HOLE_NO_ACCOUNT — CLOUDFLARE_ACCOUNT_ID missing in Actions secrets"
-            exit 1
-          fi
-          set +e
-          npx --yes wrangler@3.112.0 pages deploy ./deploy-payload \
-            --project-name=dualiscapax-landing \
-            --branch=main \
-            --commit-hash="${GITHUB_SHA}" \
-            --commit-message="pages-direct-upload ${GITHUB_SHA}" \
-            --commit-dirty=true
-          WRC=$?
-          set -e
-          if [ "$WRC" -ne 0 ]; then
-            echo "::error::HOLE_CF_10000 — wrangler exit $WRC. Token is present but Cloudflare refused GET /pages/projects/dualiscapax-landing. Replace GitHub secret CLOUDFLARE_API_TOKEN with Account / Cloudflare Pages / Edit on the account that owns that project. Do not paste the token into chat."
-            exit 19
-          fi
-
-      - name: Post-deploy live HTTP check
-        run: |
-          set -euo pipefail
-          sleep 8
-          code=$(curl -sS -o /tmp/live.html -w '%{http_code}' --max-time 25 https://dualiscapax.ai/ || echo 000)
-          echo "live_http=$code"
-          if [ "$code" != "200" ]; then
-            echo "::error::dualiscapax.ai returned $code after deploy"
-            exit 1
-          fi
-          if ! grep -qi 'DualisCapax\|Dualiscapax' /tmp/live.html; then
-            echo "::error::live HTML missing DualisCapax marker"
-            exit 1
-          fi
-          echo "LIVE_HTTP_OK=1"
+          echo "Cloudflare Pages direct upload is retired."
+          echo "Production = NJ Caddy (.com and .ai). See docs/ops/ENVIRONMENT.md."
+          exit 0

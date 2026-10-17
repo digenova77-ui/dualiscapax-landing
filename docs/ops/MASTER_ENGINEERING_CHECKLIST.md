@@ -88,3 +88,14 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Deployment status — 2026-10-17
 
 Source changes are not a deployment. No Cloudflare dashboard credentials or direct deployment tool were available in this work session. Do not mark live deployment as PASS until the manual staging upload, route checks, and rollback target have been recorded. Do not change DNS or touch live servers/databases as part of this recovery.
+
+## Retire Cloudflare Pages deploy rail — 2026-10-17
+
+Branch `fix/retire-cf-pages-rail-20261017`. Related: #113 (Workers Builds).
+- [x] Production = NJ Caddy for .com and .ai — PASS (public DNS resolves to 108.61.17.141; no cf-ray; content differs from pages.dev).
+- [x] Pages serves .com/.ai — FAIL (it does not; `dualiscapax-landing.pages.dev` hash equals repo `index.html`, live .com differs).
+- [x] Retired `pages-direct-upload.yml`, `bulletin-handoff.yml`, `purge-pages-deployments.yml` (dispatch-only no-op stubs, like `deploy.yml`) — source change only. Last 3 pages-direct-upload runs FAIL (Oct 6, Sep 30 ×2).
+- [ ] `stripe-fulfill.yml`, `oidc-auth.yml` — NOT APPLICABLE (Worker deploys, not Pages; left unchanged).
+- [ ] Pause Pages auto-deploy in dashboard — BLOCKED on David's approval and credentials (Pages API returned 10000).
+- [ ] Remove/rename `wrangler.toml` — BLOCKED until Pages auto-deploy is paused.
+- Rollback: revert this branch; old workflow content available at `2e74c779`.

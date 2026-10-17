@@ -1,4 +1,14 @@
-# Cloudflare Pages publishing path
+# Production hosting (corrected 2026-10-17)
+
+**Production is the NJ server (Caddy), not Cloudflare Pages.** Verified 2026-10-17 (see PR #113 and `fix/retire-cf-pages-rail-20261017`):
+- `dualiscapax.com`, `www.dualiscapax.com` and `dualiscapax.ai` resolve directly to `108.61.17.141` (NJ). Responses carry no `cf-ray` or `server: cloudflare`.
+- `.com` is served from `/var/www/dualiscapax-com` (`dualiscapax-deploy/deploy/sovereign/Caddyfile`). `.ai` is the Unity world on the same host.
+- Cloudflare Pages project `dualiscapax-landing` still auto-builds this repo to `dualiscapax-landing.pages.dev`. That is an **orphaned copy** with different content from live `.com`, and it serves neither domain. The manual Pages deploy workflows are RETIRED.
+- `wrangler.toml` is kept until Pages auto-deploy is paused in the dashboard (pending David's approval).
+
+The section below is **historical** and is not the production path.
+
+## (Historical) Cloudflare Pages publishing path
 
 **Scope:** `dualiscapax.ai` landing site in `digenova77-ui/dualiscapax-landing`.
 
