@@ -1,7 +1,7 @@
 # DualisCapax Master Engineering Checklist
 
 **Owner:** DualisCapax engineering workstream  
-**Baseline date:** 2026-10-17 UTC  
+**Baseline date:** 2026-10-16 UTC  
 **Repository:** `digenova77-ui/dualiscapax-landing`  
 **Status:** Initial audit in progress; this document is a checklist, not a claim that the items are complete.
 
@@ -193,3 +193,50 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Release gate
 
 Production release is **NO-GO** until all critical items in Phases 2, 3, 4, 6, 7, and 8 pass, the canonical deployment target is established, and the rollback path is verified. Non-critical documentation items may remain open only if explicitly listed and approved.
+
+## Biometric handoff remediation (2026-10-16)
+
+- [x] Confirmed the current handoff spec explicitly requires a second passkey prompt after navigation and describes the telemetry wire as not live.
+- [x] Staged a specification correction on branch fix/one-ceremony-biometric-handoff-20261017: one WebAuthn ceremony, server-side assertion validation, short-lived single-use handoff exchanged by HTTPS POST body, receiver-side session establishment, automatic clean-URL redirect into the 3D app, and fail-closed behavior.
+- [ ] Locate or implement the actual identity backend's WebAuthn assertion verification. Repository searches so far found the specification but did not establish the complete live implementation.
+- [ ] Implement the one-time handoff store/consume path on both backends; ensure atomic single-use consumption, expiry, audience binding, origin checks, replay protection, and secure session cookies.
+- [ ] Implement the receiver-side automatic POST handoff and clean redirect; remove the manual second link and redundant second biometric prompt only after server validation replaces their authorization function.
+- [ ] Stage and test supported mobile/desktop browsers: success, cancel, wrong origin/RP ID, invalid assertion, expired/replayed handoff, CORS/CSRF rejection, API down, and no URL/storage leakage.
+- [ ] Do not merge or deploy until the implementation is present, tests pass, and production serving path is established.
+## Production-source discovery: dualiscapax.com (2026-10-16)
+
+- [x] Located the dedicated private deployment repository: `digenova77-ui/dualiscapax-deploy`, documented as the manual-dispatch deploy source for the dualiscapax.com sovereign stack on NJ `108.61.17.141`.
+- [x] Read `webroot/passkey/owner.html`: the page explicitly labels itself a scaffold and states its authentication endpoints are not wired and should return HTTP 501 `ceremony_not_wired`; it says a genuine browser biometric prompt is not proof of sign-in.
+- [x] Read `deploy/sovereign/nginx-dualiscapax-com.conf`: `/api/` is proxied to `127.0.0.1:8410`; the comments describe this as an owner-auth service, while the deploy README says `/api/` currently answers 501.
+- [x] Verified latest available deploy-worker run `38425309591` (2026-10-13) failed at the preflight because `/usr/local/sbin/dualis-deploy` was not present/executable. Therefore the documented deployment rail did not deploy that bundle in this run.
+- [x] The deploy README says the deploy-worker key is not yet authorized on the box and the receiver is not installed; treat this as last-documented state, corroborated by the failed run, not as a fresh live-shell probe.
+- [x] The deployment manifest references server-side passkey service files under `deploy/passkey/functions/...`, but those paths are absent from the current repository tree returned by GitHub. The deploy workflow bundles `webroot`, `deploy/sovereign`, and `MANIFEST.md` only; it does not deploy the passkey backend sources.
+- [ ] Determine which exact live URL/page the user is using for the reported biometric→return→manual-3D-link flow. The `.com` owner scaffold and the `.com`→`.ai` cross-origin handoff spec are distinct paths and must not be assumed to be the same implementation.
+- [ ] Read-only inspect NJ for the active Nginx config, `/api/` upstream process on 127.0.0.1:8410, installed `/var/www/dualiscapax-com` page hash, and current `/.well-known/webauthn` response. Do not change DNS, server, database, or deploy anything during this inspection.
+- [ ] Restore/locate the missing passkey backend source, implement assertion verification and single-use handoff/session exchange, then stage browser tests. No redirect or UI-only change can safely substitute for backend verification.
+
+Current forensic conclusion: **BLOCKED before code implementation**. There is a concrete documented 501/backend-wiring gap and the deploy worker's latest run refused to deploy because its on-box receiver was missing. The user's exact observed page still needs to be matched to the serving source before editing runtime code.
+### Refinement: the scaffold is probably not the exact prompt path
+
+- [x] Read `webroot/passkey/owner.html` sign-in sequence: it first POSTs `/api/webauthn/auth/options`; only if that endpoint returns a successful response does it call `navigator.credentials.get`. After assertion it POSTs `/api/webauthn/auth/verify`, then checks session proof; it contains no automatic redirect into the 3D world in that handler.
+- [x] Read `receiver/dualis-deploy.sh` and `install/install-on-box.sh`: both deliberately transform the packaged `/api/` Nginx block into an explicit HTTP 501 `{"error":"ceremony_not_wired"}` response. This is an intentional fail-closed stub, not a working auth backend.
+- [x] Therefore, if the user is seeing a real biometric prompt succeed and then returning to a page with a separate 3D link, that exact behavior likely comes from a different page/version/path than this owner scaffold as currently committed. Do not patch this scaffold as though it were conclusively the reported page.
+- [ ] Find the exact URL and source of the page that launches the biometric prompt and then shows the manual 3D link. Compare its deployed bytes with GitHub/worker/IPFS artifacts before changing it.
+
+### Additional source integrity finding (2026-10-16)
+
+- [x] Confirmed `ice.html`, `rink.html`, `sheet.html`, and `rte/ice/index.html` reference `/js/dc-passkey.js`; the same HTML pages reference `/js/ice-portal.js`.
+- [x] GitHub's current `main` tree does not contain `js/dc-passkey.js` or `js/ice-portal.js`, and direct content fetch returns 404. Search results find the references in HTML but do not find implementation source in this repository.
+- [ ] Verify whether these scripts are injected/generated by the actual production build or are missing from the deployed site. Do not infer their live behavior from HTML alone.
+- [ ] Search deployment artifacts and the deployed page's Network panel/source map for the exact biometric handler. Compare its content hash with GitHub and the IPFS/Cloudflare release artifact.
+- [ ] Do not change the shared `ice/rink/sheet` passkey gate until the actual script is recovered and its call sites are understood; those pages are separate from the `.com`→`.ai` handoff and could be affected by a broad edit.
+
+### Cross-repository architecture check: EFUSE Unity (2026-10-16)
+
+- [x] Located `digenova77-ui/efuse-unity` as a related identity/world-gate repository and inspected `gate/ENTRY.md`, `gate/CEREMONY.md`, `gate/gate.py`, `gate/entry.py`, `client/index.html`, and `client/client.js`.
+- [x] Its documented product rule is explicit: world viewing is free and unguarded; binding/identity proof authorizes metered intent, not seeing the world. `gate.py` sets `WORLD_VIEWING_REQUIRES_BINDING = False` and provides `world_view_pass()` without identity.
+- [x] Its actual WebAuthn verifier is explicitly SPEC/NOT WIRED: the default `verify_webauthn_assertion()` returns `UNKNOWN`, and `confirm_bind()` refuses to transition on UNKNOWN. This repository must not be represented as a live, working biometric verifier.
+- [x] The Unity World client says its 3D ground is PENDING/not built in `client/index.html`; `client/client.js` describes its testnet ceremony proof as a stub and production WebAuthn as unwired.
+- [x] `digenova77-ui/dccp-world` currently contains only a README in its default-branch tree; it does not contain the referenced `src/dccp/unity/unityid.ts` implementation in that repository snapshot.
+- [ ] Determine whether EFUSE Unity is the page the user sees or only a related testnet implementation. Do not conflate it with `dualiscapax.com` or the `.com`→`.ai` landing handoff.
+- [ ] Preserve the architectural distinction: public world viewing may remain open; a verified identity/binding ceremony should authorize identity-bound or metered actions only. Confirm any desired gating change before implementation.
