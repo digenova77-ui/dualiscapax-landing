@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """Create a reproducible, repository-root Cloudflare Pages ZIP.
 
-The archive preserves repository-relative paths because the Pages build output
-is configured as "." and _worker.js must remain at the archive root. It only
-packages Git-tracked files, never local untracked files or secrets. It does
-not upload or deploy anything.
+The archive preserves website-relative paths because Pages uses "." and
+_worker.js must remain at the archive root. Only Git-tracked files are eligible;
+repository automation, engineering notes, build scripts, and credentials are
+never web payload. This tool does not upload or deploy anything.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
-import os
 import subprocess
 import sys
 import zipfile
@@ -18,10 +17,14 @@ from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = ROOT / "dist" / "cloudflare"
-DENIED_PARTS = {".git", ".wrangler", "node_modules", ".cloudflare", "secrets"}
+# These are repository/engineering inputs, not public website content.
+DENIED_PARTS = {
+    ".git", ".github", ".wrangler", "node_modules", ".cloudflare", "secrets",
+    "docs", "scripts",
+}
 DENIED_NAMES = {
-    ".env", ".env.production", ".env.local", "credentials.json",
-    "id_rsa", "id_ed25519", "id_ecdsa",
+    ".gitignore", ".env", ".env.production", ".env.local",
+    "credentials.json", "id_rsa", "id_ed25519", "id_ecdsa",
 }
 DENIED_SUFFIXES = {".pem", ".key", ".p12", ".pfx"}
 REQUIRED = {"index.html", "_worker.js", "wrangler.toml"}
@@ -41,6 +44,8 @@ def tracked_paths() -> list[Path]:
         rel = PurePosixPath(raw)
         parts = set(rel.parts)
         name = rel.name.lower()
+        # Do not publish hidden repository metadata. Preserve .well-known if a
+        # site adds one later; block known repository-control names explicitly.
         if parts & DENIED_PARTS or name in DENIED_NAMES:
             continue
         if name.startswith(".env.") or Path(name).suffix in DENIED_SUFFIXES:
@@ -69,10 +74,15 @@ def main() -> int:
             raise RuntimeError("Required Pages files missing from Git: " + ", ".join(missing))
         if len(rels) != len(set(rels)):
             raise RuntimeError("Duplicate archive paths detected")
+        # Fail closed if repository-only inputs accidentally enter the payload.
+        forbidden = [p for p in rels if set(PurePosixPath(p).parts) & DENIED_PARTS]
+        if forbidden:
+            raise RuntimeError("Repository-only paths found in payload: " + ", ".join(forbidden))
         if args.check:
             print("CHECK=PASS")
             print("MODE=lander")
-            print("ROOT=_worker.js and wrangler.toml included")
+            print("ROOT=_worker.js, wrangler.toml, and index.html included")
+            print("INTERNAL_PATHS=EXCLUDED (.github, docs, scripts)")
             print("FILES=" + str(len(rels)))
             for rel in rels:
                 print(rel)
@@ -94,11 +104,12 @@ def main() -> int:
                     info.compress_type = zipfile.ZIP_DEFLATED
                     info.external_attr = (0o100644 & 0xFFFF) << 16
                     archive.writestr(info, path.read_bytes())
-            # Validate archive before publishing its local output name.
             with zipfile.ZipFile(tmp_path, "r") as archive:
                 names = archive.namelist()
                 if len(names) != len(set(names)) or not REQUIRED.issubset(set(names)):
                     raise RuntimeError("Archive verification failed: duplicate or missing required files")
+                if any(set(PurePosixPath(n).parts) & DENIED_PARTS for n in names):
+                    raise RuntimeError("Archive verification failed: repository-only path included")
                 bad = archive.testzip()
                 if bad:
                     raise RuntimeError("ZIP CRC validation failed for " + bad)
