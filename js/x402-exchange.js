@@ -1,11 +1,3 @@
-/**
- * x402 HTTP exchange. Protocol v2, exact scheme, EIP-3009 USDC.
- * The receipt is built only after the facilitator settles.
- * Look stays free. This module does not touch the door.
- * A non-zero price is offered only when the decision gate is open.
- * That gate requires a joule the father read. The published joule is null.
- */
-
 import { energyCost, quotePrice } from "./merit-align.js";
 
 export const X402_VERSION = 2;
