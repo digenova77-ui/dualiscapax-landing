@@ -32,6 +32,8 @@ A failed check blocks promotion. No missing data is filled with a mock success.
 ## Implemented in this branch
 
 - `diamond_floor.py`: deterministic inventory, content-addressed ingest, provenance ledger, verification, and derivative reports.
+- `reconcile.py`: one fail-closed status across inventory integrity, source discovery, public DNS audit evidence, and ledger integrity. A placeholder DNS report is `BLOCKED`, not a false green.
+- `test_reconcile.py`: verifies tamper detection, placeholder blocking, and the no-promotion invariant.
 - `manifest.schema.json`: manifest contract.
 - `test_diamond_floor.py`: standard-library tests.
 - `README.md`: file routing, status semantics, and run instructions.
