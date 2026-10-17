@@ -1,6 +1,6 @@
 # Diamond Floor / Diamond Ceiling — Recursion Research & Build Plan
 
-**Status:** Research prototype specification; not a validated physical theory  
+**Status:** Research prototype; not a validated physical theory  
 **Date:** 2026-10-17  
 **Repository:** `digenova77-ui/dualiscapax-landing`  
 **Branch:** `research/diamond-floor-recursion-v1`  
@@ -20,22 +20,22 @@ The current claim is a **research hypothesis**, not an established law of physic
 
 For each system, record:
 
-- **State:** the variables sufficient to describe the system for the question being asked.
-- **Rules:** the governing equations and boundary conditions.
-- **Interactions:** the couplings and environment.
+- **State:** variables sufficient to describe the system for the question being asked.
+- **Rules:** governing equations and boundary conditions.
+- **Interactions:** couplings and environment.
 - **Observables:** what can be measured or inferred.
 - **Invariants / conservation laws:** what remains constant under stated assumptions.
 - **Model limits:** scale, approximations, uncertainty, and omitted physics.
 
-A generic schema is:
+Generic software schema:
 
 `Model = (state, rules, interactions, observables, invariants, limits)`
 
-The generic schema is a software abstraction, not a claim that all three systems obey the same equations.
+This is a software abstraction, not a claim that all three systems obey the same equations.
 
 ## Diamond ceiling: what a valid unification would require
 
-A correspondence is stronger than a visual resemblance only if it defines a mapping between formal objects and survives tests. Require at least one of:
+A correspondence is stronger than visual resemblance only if it defines a mapping between formal objects and survives tests. Require at least one:
 
 1. A shared invariant with a precise definition and domain.
 2. A structure-preserving mapping between two mathematical models.
@@ -48,21 +48,24 @@ Do not infer common physical causation from concentric shapes, a central point, 
 
 ### Hydrogen
 
-For a nonrelativistic hydrogen-like atom, stationary states are solutions to the Schrödinger equation with a Coulomb potential. In spherical coordinates the wavefunction separates into radial and angular parts:
+For a nonrelativistic hydrogen-like atom, stationary states solve the Schrödinger equation with a Coulomb potential. In spherical coordinates:
 
 `ψₙₗₘ(r,θ,φ) = Rₙₗ(r) Yₗₘ(θ,φ)`
 
-The quantum numbers specify allowed states; `|ψ|²` gives the position probability density for the relevant state. Orbital renderings often show a selected probability isosurface, not a material shell. Real precision work must state whether it uses a nonrelativistic Schrödinger model or includes fine structure, QED, recoil, hyperfine effects, and other corrections.
+The quantum numbers specify allowed states; `|ψ|²` gives position probability density. Orbital renderings often show a selected probability isosurface, not a material shell. Precision work must state whether it uses a nonrelativistic Schrödinger model or includes fine structure, QED, recoil, hyperfine effects, and other corrections.
 
-Reference: NIST Atomic Spectroscopy Compendium, “Atomic States, Shells, and Configurations” and hydrogen energy levels; OpenStax, *University Physics Vol. 3*, §8.1.
+References:
+- NIST, [Atomic States, Shells, and Configurations](https://www.nist.gov/pml/atomic-spectroscopy-compendium-basic-ideas-notation-data-and-formulas/atomic-spectroscopy-10)
+- NIST, [Energy Levels of Neutral Hydrogen](https://physics.nist.gov/PhysRefData/Handbook/Tables/hydrogentable5.htm)
+- OpenStax, [University Physics Vol. 3 — The Hydrogen Atom](https://openstax.org/books/university-physics-volume-3/pages/8-1-the-hydrogen-atom)
 
 ### Earth
 
-A layered interior is a geophysical model of composition, pressure, temperature, phase, and material properties. Its shells are physical regions; they are not quantum orbitals. The Earth's current structure is a result of formation and subsequent thermal and chemical evolution.
+A layered interior is a geophysical model of composition, pressure, temperature, phase, and material properties. Its shells are physical regions, not quantum orbitals. Earth's current structure reflects formation and subsequent thermal and chemical evolution.
 
 ### Solar system
 
-Planetary orbits are dynamical trajectories. At a first approximation, Newtonian gravity and initial masses/positions/velocities define the evolution; precision ephemerides add corrections as required. Orbit paths are not probability-density lobes.
+Planetary orbits are dynamical trajectories. At first approximation, Newtonian gravity and initial masses, positions, and velocities define evolution; precision ephemerides add corrections as required. Orbit paths are not probability-density lobes.
 
 ## Candidate common formal vocabulary
 
@@ -88,10 +91,18 @@ A verifier should:
 3. Execute the declared model with deterministic semantics where possible.
 4. Check declared invariants and model-specific reference cases.
 5. Serialize results canonically and compute a content hash as a commitment.
-6. Let an independent implementation reconstruct the result and compare both values and canonical output.
+6. Let an independent implementation reconstruct the result and compare values and canonical output.
 7. Report **PASS / FAIL / INSUFFICIENT INPUT / MODEL OUT OF SCOPE** with exact reasons.
 
-A hash identifies bytes; it does not prove that the mathematics, inputs, or physical interpretation are true. Independent replay checks reproducibility, not the truth of external measurements. Where floating-point execution differs across platforms, define numerical tolerances and report them; do not falsely promise bit-identical results.
+A hash identifies bytes; it does not prove the mathematics, inputs, or physical interpretation are true. Independent replay checks reproducibility, not the truth of external measurements. Where floating-point execution differs across platforms, define numerical tolerances and report them; do not falsely promise bit-identical results.
+
+## Prototype files
+
+- `/diamond-floor.html`: interactive conceptual workbench. All renderings are explicitly schematic; the page does not calculate hydrogen wavefunctions or simulate Earth/solar-system dynamics.
+- `/research/engineering/hydrogen_reference.py`: analytic nonrelativistic hydrogenic radial wavefunction, angular probability density, full separated-state probability density, and radial probability density. Bohr-radius units by default; `a0` can be supplied.
+- `/research/engineering/test_hydrogen_reference.py`: reference-formula, radial normalization, angular normalization, symmetry, non-negativity, and invalid-input tests. The test suite is authored but still requires execution in the target repository/CI environment before its results can be marked verified.
+
+The hydrogen code is scoped to the nonrelativistic one-electron Coulomb model with an infinitely heavy nucleus. It is not a precision spectroscopy package and does not include fine structure, QED, recoil, or hyperfine corrections.
 
 ## Test gates
 
@@ -99,24 +110,20 @@ A hash identifies bytes; it does not prove that the mathematics, inputs, or phys
 - **T1 — known answers:** hydrogen ground-state energy and selected energy levels compared against a cited reference within declared tolerances.
 - **T2 — invariants:** normalization / conservation checks appropriate to the model and assumptions.
 - **T3 — independent replay:** second implementation computes from the same canonical inputs.
-- **T4 — mutation:** change one input/rule/unit; the expected output or validation verdict must change.
+- **T4 — mutation:** change one input/rule/unit; expected output or validation verdict must change.
 - **T5 — model boundaries:** unsupported relativistic/QED/geophysical/dynamical cases must be labeled out of scope, not silently approximated.
 - **T6 — security:** untrusted manifests are data only; no dynamic code execution, network fetch, or implicit authority.
-- **T7 — production gate:** manual approval required before adding links to the public navigation, changing DNS, or deploying.
-
-## First build slice
-
-The accompanying `/diamond-floor.html` page is a visual research workbench. It is deliberately labelled conceptual and does not claim to calculate hydrogen wavefunctions or Earth/solar-system trajectories. It lets us compare the visual seed with three domains without confusing the analogy with evidence.
+- **T7 — production gate:** manual approval required before adding links to public navigation, changing DNS, or deploying.
 
 ## Next engineering sequence
 
-1. Replace illustrative drawings with separately sourced, correctly labeled scientific data/plots.
-2. Add a small pure-function hydrogen reference calculator with explicit units and test fixtures.
-3. Add canonical JSON manifest and SHA-256 commitment.
-4. Implement independent replay and invariant checks in a second implementation.
-5. Add an explicit cross-scale mapping proposal only after defining mathematical objects, domains, and falsifiable criteria.
-6. Keep all work on a non-production branch until reviewed and approved.
+1. Run the new Python test suite and fix any failures.
+2. Add hydrogen energy eigenvalues and reference comparisons against NIST data.
+3. Add a canonical model manifest and SHA-256 commitment; document canonical JSON rules.
+4. Implement a second independent replay path and compare numerical outputs under declared tolerances.
+5. Define one candidate cross-scale mapping precisely; test whether it preserves an invariant or makes a falsifiable prediction.
+6. Keep all work on a non-production branch until reviewed and explicitly approved.
 
 ## Acceptance rule
 
-No statement may be promoted from **analogy** to **verified correspondence** unless the mapping, assumptions, test inputs, tolerances, reference results, and failure conditions are recorded. No statement may be promoted to **new physics** without a derivation and empirical evidence.
+No statement may be promoted from **analogy** to **verified correspondence** unless the mapping, assumptions, test inputs, tolerances, reference results, and failure conditions are recorded. No statement may be promoted to **new physics** without derivation and empirical evidence.
