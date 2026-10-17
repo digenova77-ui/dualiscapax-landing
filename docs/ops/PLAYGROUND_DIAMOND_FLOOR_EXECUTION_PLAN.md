@@ -13,13 +13,14 @@
 - [x] Add tests for untrusted query overrides, untrusted preconfigured API bases, same-origin and trusted bases, World 0 serialization, and world switching.
 - [x] Add a request-level test proving World 0 remains `0` in the request body and `X-DC-World` header.
 - [x] Bound L2 text-file reads to 5 MiB and metadata-only workbook fingerprinting to 25 MiB.
-- [x] Parse quoted CSV/TSV fields and multiline quoted cells; count actual JSON numeric values rather than digits embedded in strings.
+- [x] Parse quoted CSV/TSV fields and multiline quoted cells; reject unbalanced quotes; count actual JSON numeric values rather than digits embedded in strings.
+- [x] Scan the complete bounded text file for secret-like markers, not only its first 4,000 characters.
 - [x] Refuse persistent seating when browser storage is unavailable, and report incomplete local cleanup rather than claiming success.
 - [x] Make the playground label Excel workbooks as metadata-only because cell values are not parsed.
 - [x] Fix API world switching so `DCWorld.apply(0|1)` updates the active request route and metadata.
 - [x] Fix API config's falsy-value bug that turned World 0 into World 1 in request headers/body when the standalone client path was used.
 - [x] Add an isolated Node 20 test workflow for workbench pushes and pull requests.
-- [x] Run the Node 20 suite in GitHub Actions: 5 test files passed, 0 failed on commit `fec8d3466167bb102d90aa7f0dd6b6aaaee93d64` (run 39005709731).
+- [x] Run the Node 20 suite in GitHub Actions: 5 test files passed, 0 failed on commit `790bd0e2e833428e0fdf49b633cfdb9735fdb999` (push run 39005819815).
 - [ ] Run browser-level checks on desktop/mobile and a production build in a safe environment.
 - [ ] Inspect Replit workspace changes when agent usage is available; do not assume all changes are committed.
 - [ ] Confirm which exact Cloudflare Worker/branch emitted the invalid build-token log.
