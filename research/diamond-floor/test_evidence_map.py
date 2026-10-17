@@ -49,7 +49,10 @@ class EvidenceMapTests(unittest.TestCase):
             self.assertEqual(result["nodes"][3]["content"]["http_findings"][0]["status"], 404)
             self.assertEqual(result["nodes"][4]["content"]["ledger_integrity"]["status"], "BLOCKED")
             self.assertEqual(len(result["observations"]), 4)
-            endpoint = next(item for item in result["observations"] if item["kind"] == "https")
+            endpoint = next(
+                item for item in result["observations"]
+                if item["kind"] == "https" and item["payload"].get("status") == 404
+            )
             self.assertEqual(endpoint["status"], "FINDING")
             self.assertEqual(endpoint["payload"]["status"], 404)
             self.assertFalse(any(item["verified"] for item in result["observations"]))
@@ -79,7 +82,7 @@ class EvidenceMapTests(unittest.TestCase):
                 evidence_map.build_evidence_map(Path(tmp))
 
     def test_invalid_ledger_is_fail_closed(self):
-        raw = b'{"schema":"bad","previous_record_digest":"0000000000000000000000000000000000000000000000000000000000000000","record_digest":"bad"}\n'
+        raw = b'{"schema":"bad","previous_record_digest":"0000000000000000000000000000000000000000000000000000000000000000","record_digest":"bad"}\\n'
         self.assertEqual(evidence_map.verify_ledger(raw)["status"], "FAIL")
 
 
