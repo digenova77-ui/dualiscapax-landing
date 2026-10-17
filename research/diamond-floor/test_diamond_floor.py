@@ -64,7 +64,16 @@ class DiamondFloorTests(unittest.TestCase):
         result = df.derivative(before, after)
         self.assertEqual(result["changed"][0]["path"], "x")
         self.assertEqual(result["added"][0]["path"], "y")
+        self.assertEqual(result["status"], "PARTIAL")
+        self.assertEqual(result["change_count"], 2)
+        self.assertEqual(result["promotion"], "NOT_AUTHORIZED")
+
+    def test_identical_derivative_is_pass_without_promotion(self):
+        report = {"content_digest": "same", "entries": [{"path": "x", "sha256": "1", "destination_class": "code"}]}
+        result = df.derivative(report, report)
         self.assertEqual(result["status"], "PASS")
+        self.assertEqual(result["change_count"], 0)
+        self.assertEqual(result["promotion"], "NOT_AUTHORIZED")
 
 
 if __name__ == "__main__":
