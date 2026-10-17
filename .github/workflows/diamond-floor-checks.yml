@@ -38,8 +38,17 @@ jobs:
         run: |
           python research/diamond-floor/diamond_floor.py --help
           python research/diamond-floor/world_status.py --help
+          python research/diamond-floor/evidence_map.py --help
       - name: Generate unified evidence status (read-only)
         run: python research/diamond-floor/world_status.py --root . --out /tmp/diamond-world-status.json
+      - name: Generate fail-closed evidence map (read-only)
+        run: python research/diamond-floor/evidence_map.py --root . --out /tmp/diamond-evidence-map.json
+      - name: Preserve evidence map
+        uses: actions/upload-artifact@v4
+        with:
+          name: diamond-evidence-map
+          path: /tmp/diamond-evidence-map.json
+          if-no-files-found: error
       - name: Preserve status report
         uses: actions/upload-artifact@v4
         with:
