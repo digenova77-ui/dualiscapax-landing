@@ -15,22 +15,59 @@
       "id": "A",
       "key": "philosophy",
       "name": "Philosophy",
-      "remit": ["definitions", "assumptions", "meaning", "values", "scope", "counterexamples"],
-      "verdicts": ["SUPPORT", "CHALLENGE", "NOT_APPLICABLE_WITH_REASON", "UNRESOLVED"]
+      "remit": [
+        "definitions",
+        "assumptions",
+        "meaning",
+        "values",
+        "scope",
+        "counterexamples"
+      ],
+      "verdicts": [
+        "SUPPORT",
+        "CHALLENGE",
+        "NOT_APPLICABLE_WITH_REASON",
+        "UNRESOLVED"
+      ]
     },
     {
       "id": "B",
       "key": "physics",
       "name": "Physics",
-      "remit": ["observations", "measurements", "units", "uncertainty", "predictions", "resource-effects"],
-      "verdicts": ["SUPPORT", "CHALLENGE", "NOT_APPLICABLE_WITH_REASON", "UNRESOLVED"]
+      "remit": [
+        "observations",
+        "measurements",
+        "units",
+        "uncertainty",
+        "predictions",
+        "resource-effects"
+      ],
+      "verdicts": [
+        "SUPPORT",
+        "CHALLENGE",
+        "NOT_APPLICABLE_WITH_REASON",
+        "UNRESOLVED"
+      ]
     },
     {
       "id": "C",
       "key": "law",
       "name": "Law",
-      "remit": ["authority", "consent", "rights", "safety", "privacy", "responsibility", "reversibility"],
-      "verdicts": ["SUPPORT", "CHALLENGE", "NOT_APPLICABLE_WITH_REASON", "UNRESOLVED"]
+      "remit": [
+        "authority",
+        "consent",
+        "rights",
+        "safety",
+        "privacy",
+        "responsibility",
+        "reversibility"
+      ],
+      "verdicts": [
+        "SUPPORT",
+        "CHALLENGE",
+        "NOT_APPLICABLE_WITH_REASON",
+        "UNRESOLVED"
+      ]
     }
   ],
   "pipelines": [
@@ -38,15 +75,32 @@
       "id": "P1",
       "key": "discovery_execution",
       "name": "Discovery and bounded work",
-      "may": ["observe", "hypothesize", "propose", "perform_pre_authorized_bounded_work"],
-      "must_not": ["self_certify", "expand_permissions", "convert_proposal_into_authority"]
+      "may": [
+        "observe",
+        "hypothesize",
+        "propose",
+        "perform_pre_authorized_bounded_work"
+      ],
+      "must_not": [
+        "self_certify",
+        "expand_permissions",
+        "convert_proposal_into_authority"
+      ]
     },
     {
       "id": "P2",
       "key": "independent_validation",
       "name": "Independent validation",
-      "must": ["inspect_evidence", "challenge_assumptions", "reproduce_results_when_applicable", "record_disagreement"],
-      "must_not": ["trust_author_claim_without_review", "silently_discard_failures"]
+      "must": [
+        "inspect_evidence",
+        "challenge_assumptions",
+        "reproduce_results_when_applicable",
+        "record_disagreement"
+      ],
+      "must_not": [
+        "trust_author_claim_without_review",
+        "silently_discard_failures"
+      ]
     }
   ],
   "correlation_types": [
@@ -70,5 +124,16 @@
     "correlations_must_be_typed": true,
     "unknowns_and_disagreements_are_preserved": true,
     "live_actuators_enabled_by_seed": false
-  }
+  },
+  "event_protocol": "dualis.swarm.event.v1",
+  "roles": [
+    "iris",
+    "scout",
+    "builder",
+    "sentinel",
+    "verifier",
+    "infrastructure",
+    "economics_ledger",
+    "trinity_dclm"
+  ]
 }
