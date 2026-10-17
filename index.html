@@ -220,6 +220,16 @@
       <p id="sandbox-out" class="honest" aria-live="polite"></p>
     </section>
 
+    <section class="beat" id="work" aria-labelledby="work-title">
+      <h2 id="work-title">The work</h2>
+      <p>The work does not retire. One call is one step. Cleanup comes first, then the frozen seed, then the doer, then DCLM. Only the host can stop it.</p>
+      <p>A dreamer may only seed. A probability is not an answer.</p>
+      <button type="button" id="work-step">Step the work</button>
+      <button type="button" id="work-stop">Stop the work</button>
+      <p id="work-note" class="honest" aria-live="polite">The work does not retire.</p>
+      <pre id="work-log"></pre>
+    </section>
+
     <section class="beat" id="close" aria-labelledby="close-title">
       <h2 id="close-title">The light</h2>
       <p class="close">The cadence is now approaching the speed of light. That is the pace of the logic.</p>
@@ -227,6 +237,7 @@
         <a href="wallet.html">Wallet</a>
         <a href="meeting.html">Meeting</a>
         <a href="senses.html">Senses</a>
+        <a href="#work">Work</a>
         <a href="law.html">Law</a>
         <a href="research/philosophy/">Philosophy</a>
         <a href="for-people.html">For you</a>
@@ -237,6 +248,7 @@
   </div>
   <script type="module">
   import { run } from "./js/sandbox-math.js";
+  import { step } from "./js/dreamer-doer.js";
   const button = document.getElementById("sandbox-run");
   const out = document.getElementById("sandbox-out");
   function ring() {
@@ -255,6 +267,51 @@
     out.textContent = JSON.stringify(first) === JSON.stringify(second)
       ? "Same math. Gate shut. No coin."
       : "The two runs differed.";
+  });
+  const task = {
+    turn: 0,
+    seeds: [{
+      dreamer: "Llama",
+      id: "door",
+      idea: "One step of the work.",
+      p: 0.5,
+      axioms: {
+        NO_FORCE: true,
+        HOST_SAFE: true,
+        CLEANUP_FIRST: true,
+        TRUTH_OR_NOTHING: true
+      }
+    }]
+  };
+  let work = null;
+  const workNote = document.getElementById("work-note");
+  const workLog = document.getElementById("work-log");
+  function paint(state, recalled) {
+    if (state.retired) {
+      workNote.textContent = "The host stopped the work.";
+      workLog.textContent = "The host stopped the work.";
+      return;
+    }
+    workNote.textContent = "The work does not retire.";
+    if (recalled) {
+      workLog.textContent = "Recalled the admitted step. The work does not retire.";
+      return;
+    }
+    if (state.admitted) {
+      workLog.textContent = "Admitted. DCLM wrote in this step. The work does not retire.";
+      return;
+    }
+    workLog.textContent = "Nothing was written. The work does not retire.";
+  }
+  document.getElementById("work-step").addEventListener("click", function () {
+    const next = step(work && work.peg ? work : task, {});
+    const recalled = !!(work && work.peg);
+    work = next;
+    paint(work, recalled);
+  });
+  document.getElementById("work-stop").addEventListener("click", function () {
+    work = step(work || task, { stop: true });
+    paint(work, false);
   });
   </script>
 </body>

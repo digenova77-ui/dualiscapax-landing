@@ -1,13 +1,3 @@
-/**
- * Dreamers propose one strategy seed. They do not implement and they do not admit.
- * A probability is not an answer.
- * A doer implements one frozen seed. The same seed implements the same way.
- * DCLM writes only when run() admits in that same step.
- * A strategy that stuck is the peg offered first on the next step.
- * A strategy that divided stays unknown.
- * One call is one step. The step does not retire unless the host passes stop.
- */
-
 import { RING, invert2, seats } from "./iris-attack.js";
 import { LAWS, run } from "./dclm-write.js";
 
@@ -210,10 +200,74 @@ function remember(state) {
   };
 }
 
-function hostStops(state, host) {
-  if (host && typeof host === "object" && host.stop === true) return true;
-  if (state && typeof state === "object" && !Array.isArray(state) && state.stop === true) return true;
-  return false;
+const DROP = {
+  key: true,
+  keys: true,
+  secret: true,
+  password: true,
+  identification: true,
+  unityId: true,
+  vote: true,
+  votes: true,
+  queue: true,
+  pending: true,
+  waiting: true,
+  residue: true,
+  framework: true,
+  canvas: true,
+  theater: true,
+  dna: true,
+  helix: true,
+  microsurgery: true,
+  comment: true,
+  rem: true,
+  look: true,
+  joule: true,
+  stop: true,
+  retired: true
+};
+
+function cleanSeed(seed) {
+  if (!seed || typeof seed !== "object" || Array.isArray(seed)) return null;
+  const out = {};
+  const names = Object.keys(seed);
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i];
+    if (DROP[name]) continue;
+    if (name === "job" && seed.job && typeof seed.job === "object" && !Array.isArray(seed.job)) {
+      const job = {};
+      const jobNames = Object.keys(seed.job);
+      for (let j = 0; j < jobNames.length; j++) {
+        if (DROP[jobNames[j]]) continue;
+        job[jobNames[j]] = seed.job[jobNames[j]];
+      }
+      out.job = job;
+      continue;
+    }
+    out[name] = seed[name];
+  }
+  return out;
+}
+
+function cleanup(state) {
+  const src = state && typeof state === "object" && !Array.isArray(state) ? state : {};
+  const seeds = [];
+  if (Array.isArray(src.seeds)) {
+    for (let i = 0; i < src.seeds.length; i++) {
+      const seed = cleanSeed(src.seeds[i]);
+      if (seed) seeds.push(seed);
+    }
+  }
+  return {
+    peg: src.peg,
+    unknown: src.unknown,
+    turn: src.turn,
+    seeds: seeds
+  };
+}
+
+function hostStops(host) {
+  return !!(host && typeof host === "object" && host.stop === true);
 }
 
 export function propose(input) {
@@ -291,14 +345,16 @@ function view(memory, fields) {
     retired: fields.retired === true,
     stop: fields.stop === true,
     turn: memory.turn,
+    order: Array.isArray(fields.order) ? fields.order.slice() : [],
     look: 0,
     joule: null
   };
 }
 
 export function step(state, host) {
-  const memory = remember(state);
-  if (hostStops(state, host)) {
+  const order = ["cleanup"];
+  const memory = remember(cleanup(state));
+  if (hostStops(host)) {
     return view(memory, {
       dreamer: memory.peg ? memory.peg.dreamer : null,
       written: null,
@@ -307,10 +363,12 @@ export function step(state, host) {
       offered: memory.peg ? [memory.peg] : [],
       recalled: false,
       retired: true,
-      stop: true
+      stop: true,
+      order: order
     });
   }
   if (memory.peg) {
+    order.push("recall");
     return view(memory, {
       dreamer: memory.peg.dreamer,
       written: memory.peg.written,
@@ -319,9 +377,11 @@ export function step(state, host) {
       offered: [memory.peg],
       recalled: true,
       retired: false,
-      stop: false
+      stop: false,
+      order: order
     });
   }
+  order.push("seed");
   const proposal = propose({
     turn: memory.turn,
     seeds: memory.seeds,
@@ -343,10 +403,13 @@ export function step(state, host) {
       recalled: false,
       refused: proposal.refused,
       retired: false,
-      stop: false
+      stop: false,
+      order: order
     });
   }
+  order.push("doer");
   const implementation = implement(proposal.seed);
+  order.push("dclm");
   const record = run(implementation.task);
   if (record.admitted === true && record.written) {
     const peg = Object.freeze({
@@ -377,7 +440,8 @@ export function step(state, host) {
       recalled: false,
       refused: proposal.refused,
       retired: false,
-      stop: false
+      stop: false,
+      order: order
     });
   }
   const divided = !!(record.write && record.audit && record.write.ok !== record.audit.ok);
@@ -409,7 +473,8 @@ export function step(state, host) {
     recalled: false,
     refused: proposal.refused,
     retired: false,
-    stop: false
+    stop: false,
+    order: order
   });
 }
 
