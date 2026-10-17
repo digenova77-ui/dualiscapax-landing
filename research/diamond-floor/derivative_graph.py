@@ -118,6 +118,11 @@ def derivative(baseline: dict, candidate: dict) -> dict:
     removed_ids = sorted(old_nodes.keys() - new_nodes.keys())
     common_ids = old_nodes.keys() & new_nodes.keys()
     changed_ids = sorted(node_id for node_id in common_ids if old_nodes[node_id].get("content_sha256") != new_nodes[node_id].get("content_sha256"))
+    spectral_changes = sorted(
+        ({"id": node_id, "layer": new_nodes[node_id].get("layer"), "before": old_nodes[node_id].get("spectrum"), "after": new_nodes[node_id].get("spectrum")})
+        for node_id in common_ids
+        if old_nodes[node_id].get("spectrum") != new_nodes[node_id].get("spectrum")
+    , key=lambda item: item["id"])
     def edge_map(graph: dict) -> dict:
         result = {}
         for edge in graph.get("edges", []):
@@ -128,6 +133,11 @@ def derivative(baseline: dict, candidate: dict) -> dict:
     old_edges, new_edges = edge_map(baseline), edge_map(candidate)
     added_edges = sorted(new_edges.keys() - old_edges.keys())
     removed_edges = sorted(old_edges.keys() - new_edges.keys())
+    def is_cross_layer(edge_key: tuple, node_map: dict) -> bool:
+        left, right, _ = edge_key
+        return left in node_map and right in node_map and node_map[left].get("layer") != node_map[right].get("layer")
+    added_cross_layer = [key for key in added_edges if is_cross_layer(key, new_nodes)]
+    removed_cross_layer = [key for key in removed_edges if is_cross_layer(key, old_nodes)]
     changed_rings = sorted(ring for ring in RINGS if baseline.get("rings", {}).get(ring) != candidate.get("rings", {}).get(ring))
     changed_invariants = sorted(key for key in set(baseline.get("invariants", {})) | set(candidate.get("invariants", {})) if baseline.get("invariants", {}).get(key) != candidate.get("invariants", {}).get(key))
     payload = {
@@ -136,6 +146,11 @@ def derivative(baseline: dict, candidate: dict) -> dict:
         "candidate_sha256": graph_digest(candidate),
         "nodes": {"added": [{"id": x, "layer": new_nodes[x].get("layer")} for x in added_ids], "removed": [{"id": x, "layer": old_nodes[x].get("layer")} for x in removed_ids], "changed": [{"id": x, "layer": new_nodes[x].get("layer"), "before_content_sha256": old_nodes[x].get("content_sha256"), "after_content_sha256": new_nodes[x].get("content_sha256")} for x in changed_ids]},
         "edges": {"added": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(added_edges)], "removed": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(removed_edges)]},
+        "spectral_changes": spectral_changes,
+        "cross_layer_edges": {
+            "added": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(added_cross_layer)],
+            "removed": [{"from": a, "to": b, "relation": c} for a, b, c in sorted(removed_cross_layer)],
+        },
         "rings_changed": changed_rings,
         "invariants_changed": changed_invariants,
         "promotion": "NOT_AUTHORIZED",
