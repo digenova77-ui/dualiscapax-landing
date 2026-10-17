@@ -65,6 +65,12 @@
     row.scientific_validation = false;
     row.ts = now();
     var saved = save(row);
+    if (saved.storage === "MEMORY_ONLY") {
+      saved.status = "REFUSED";
+      saved.reason = "STORAGE_UNAVAILABLE";
+      saved.note = "Browser storage is unavailable; the playground will not claim a persistent seat.";
+      return Promise.resolve(saved);
+    }
     var next = Promise.resolve(saved);
     if (w.DCMatrix && typeof w.DCMatrix.merge === "function") {
       next = w.DCMatrix.merge(saved).then(function (cell) {
