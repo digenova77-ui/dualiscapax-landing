@@ -10,9 +10,23 @@
   g.DC_API_VERSION = world === 1 ? '2' : '1';
   g.DC_API_PATH = world === 1 ? '/v2/chat' : '/v1/chat';
   g.DC_API_BASE = g.DC_API_BASE || 'https://dualiscapax-depth.digenova77.workers.dev';
+
+  function safeApiOverride(value) {
+    try {
+      var u = new URL(String(value), location.origin);
+      var trustedOrigin = 'https://dualiscapax-depth.digenova77.workers.dev';
+      if (u.username || u.password || u.search || u.hash) return null;
+      if (u.origin !== location.origin && u.origin !== trustedOrigin) return null;
+      return (u.origin + u.pathname).replace(/\/$/, '');
+    } catch (e) { return null; }
+  }
+
+  g.DC_API_BASE = safeApiOverride(g.DC_API_BASE) || 'https://dualiscapax-depth.digenova77.workers.dev';
+
   try {
     var q = new URLSearchParams(location.search).get('api');
-    if (q) g.DC_API_BASE = q.replace(/\/$/, '');
+    var safe = q && safeApiOverride(q);
+    if (safe) g.DC_API_BASE = safe;
     var wq = new URLSearchParams(location.search).get('world');
     if (wq === '1' || /^one$/i.test(wq)) {
       g.DC_WORLD = 1; g.DC_WORLD_NAME = 'ONE'; g.DC_API_VERSION = '2'; g.DC_API_PATH = '/v2/chat';
@@ -29,18 +43,20 @@
     if (g.DCWorld && typeof g.DCWorld.chat === 'function') return g.DCWorld.chat(messages, opts);
     var fuelBal = opts.fuelBalance;
     if (typeof fuelBal !== 'number' && g.DCFuel) fuelBal = g.DCFuel.balance();
-    var path = g.DC_API_PATH || '/v2/chat';
+    var activeWorld = g.DC_WORLD === 0 ? 0 : 1;
+    var apiVersion = String(g.DC_API_VERSION || (activeWorld === 1 ? '2' : '1'));
+    var path = g.DC_API_PATH || (activeWorld === 1 ? '/v2/chat' : '/v1/chat');
     var res = await fetch(base + path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-DC-Fuel': String(fuelBal != null ? fuelBal : ''),
-        'X-DC-World': String(g.DC_WORLD || 1),
-        'X-DC-API-Version': String(g.DC_API_VERSION || '2')
+        'X-DC-World': String(activeWorld),
+        'X-DC-API-Version': apiVersion
       },
       body: JSON.stringify({
-        world: g.DC_WORLD || 1,
-        api_version: String(g.DC_API_VERSION || '2'),
+        world: activeWorld,
+        api_version: apiVersion,
         messages: messages,
         fuel: { balance: fuelBal, burn: opts.burn || 1 },
         session_id: opts.session_id || null,

@@ -11,41 +11,41 @@
 <link rel="manifest" href="manifest-dclm.json"/>
 <link rel="icon" href="icon.svg"/>
 <style>
-:root{--bg:#050508;--fg:#f4f4f5;--muted:rgba(244,244,245,.88);--line:rgba(158,197,255,.18);--blue:#9ec5ff}
+:root{--bg:#050508;--fg:#f4f4f5;--muted:rgba(244,244,245,.82);--line:rgba(158,197,255,.22);--blue:#9ec5ff;--panel:rgba(18,20,30,.88)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,sans-serif;overflow:hidden}
 body{height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(safe-area-inset-top) max(.8rem,env(safe-area-inset-right)) 0 max(.8rem,env(safe-area-inset-left))}
-.brand{display:flex;align-items:center;text-decoration:none;color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+header{display:flex;align-items:center;gap:.55rem;min-height:3.2rem;padding:env(safe-area-inset-top) max(.8rem,env(safe-area-inset-right)) 0 max(.8rem,env(safe-area-inset-left))}
+.brand{display:flex;align-items:center;text-decoration:none;color:inherit;flex-shrink:0}
 .brand img{height:1.15rem;width:auto}
 .who{margin-left:.35rem;font:600 .68rem/1 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,244,245,.62)}
 .tools{margin-left:auto;display:flex;gap:.35rem}
-.tools button{min-width:2.4rem;height:2.4rem;padding:0 .4rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .72rem ui-monospace,monospace}
-.tools button.on{border-color:var(--blue);color:var(--blue)}
-.plate{position:relative;min-height:0;display:grid;place-items:center}
-.presence{width:min(86vw,28rem);height:min(86vw,28rem);max-height:56dvh}
+.tools button{min-height:2.45rem;padding:0 .72rem;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--fg);font:650 .68rem ui-monospace,monospace;letter-spacing:.06em;transition:border-color .16s ease,background .16s ease,color .16s ease}
+.tools button:hover{border-color:rgba(158,197,255,.6)}
+.tools button.on{border-color:var(--blue);color:var(--blue);background:rgba(158,197,255,.08)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.plate{position:relative;min-height:0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at center,rgba(35,48,80,.2),transparent 66%)}
+.presence{width:min(84vw,30rem);height:min(84vw,30rem);max-height:58dvh;filter:drop-shadow(0 0 2rem rgba(91,137,220,.08))}
 .presence canvas{display:block;width:100%;height:100%}
-.pip{position:absolute;right:max(.7rem,env(safe-area-inset-right));bottom:.7rem;width:min(34vw,9.5rem);border:1px solid var(--line);background:#000;display:none}
+.pip{position:absolute;right:max(.7rem,env(safe-area-inset-right));bottom:.7rem;width:min(34vw,9.5rem);overflow:hidden;border:1px solid var(--line);border-radius:1rem;background:#000;box-shadow:0 1rem 3rem rgba(0,0,0,.35);display:none}
 .pip.on{display:block}
 .pip video{display:block;width:100%;height:auto}
-.dock{padding:.4rem max(.8rem,env(safe-area-inset-right)) calc(.7rem + env(safe-area-inset-bottom)) max(.8rem,env(safe-area-inset-left));text-align:center}
-.caption{
-  min-height:2.8rem;
-  max-height:28dvh;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  font:500 clamp(1.08rem,4.4vw,1.32rem)/1.4 system-ui,sans-serif;
-  color:var(--muted);
-  padding:0 .55rem;
-}
-.caption.long{
-  font:500 clamp(.95rem,3.6vw,1.12rem)/1.4 system-ui,sans-serif;
-  text-align:left;
-}
-.talk{width:5.4rem;height:5.4rem;margin:.45rem auto 0;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);font:700 .72rem/1 ui-monospace,monospace;letter-spacing:.14em}
+.dock{width:100%;max-width:46rem;justify-self:center;padding:.25rem max(.9rem,env(safe-area-inset-right)) calc(.7rem + env(safe-area-inset-bottom)) max(.9rem,env(safe-area-inset-left));text-align:center}
+.caption{min-height:2.4rem;max-height:24dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;font:500 clamp(1.02rem,4.1vw,1.28rem)/1.42 system-ui,sans-serif;color:var(--muted);padding:.15rem .55rem}
+.caption.long{font:500 clamp(.94rem,3.5vw,1.1rem)/1.45 system-ui,sans-serif;text-align:left}
+.status{min-height:1.1rem;margin:.15rem 0 .35rem;color:rgba(158,197,255,.88);font:600 .64rem/1.4 ui-monospace,monospace;letter-spacing:.055em}
+.status[data-state="error"]{color:#fca5a5}
+.status[data-state="thinking"],.status[data-state="listening"]{color:#e4d4ff}
+.composer{display:flex;gap:.5rem;width:100%;max-width:34rem;margin:.35rem auto 0}
+.composer input{flex:1;min-width:0;min-height:2.85rem;border:1px solid var(--line);border-radius:1rem;background:var(--panel);color:var(--fg);padding:.75rem .9rem;font:500 .94rem/1.3 system-ui,sans-serif}
+.composer input::placeholder{color:rgba(244,244,245,.45)}
+.composer button{min-width:4.2rem;min-height:2.85rem;border:1px solid var(--line);border-radius:1rem;background:rgba(158,197,255,.1);color:var(--blue);font:700 .68rem ui-monospace,monospace;letter-spacing:.08em}
+.talk{width:4.25rem;height:4.25rem;margin:.45rem auto 0;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);font:700 .7rem/1 ui-monospace,monospace;letter-spacing:.14em}
 .talk.on{border-color:var(--blue);color:#050508;background:var(--blue)}
 .err{color:#f87171;font-size:.78rem;min-height:1rem;margin-top:.25rem}
+@media(max-width:420px){.who{display:none}.tools{gap:.25rem}.tools button{padding:0 .5rem;font-size:.61rem}.presence{width:min(78vw,26rem);height:min(78vw,26rem)}.dock{padding-left:.75rem;padding-right:.75rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
 #quat-hud{display:none !important}
 </style>
 </head>
@@ -53,22 +53,28 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
 <header>
   <a class="brand" href="/index.html"><img src="/brand/logo-mark-dark.svg" alt="DualisCapax home"/><span class="who">Iris</span></a>
   <div class="tools">
-    <button type="button" id="cam" aria-pressed="false" aria-label="Camera">cam</button>
-    <button type="button" id="filebtn" aria-label="Show her a file">file</button>
-    <button type="button" id="screen" aria-pressed="false" aria-label="This page">here</button>
-    <button type="button" id="hang" aria-label="Hang up">×</button>
+    <button type="button" id="cam" aria-pressed="false" aria-label="Camera preview">Camera</button>
+    <button type="button" id="filebtn" aria-label="Choose a local file">File</button>
+    <button type="button" id="screen" aria-pressed="false" aria-label="Describe this page">Page</button>
+    <button type="button" id="hang" aria-label="End Iris session">End</button>
   </div>
 </header>
 <main class="plate">
-  <div class="presence" id="presence" aria-label="Iris"></div>
+  <div class="presence" id="presence" aria-hidden="true"></div>
   <div class="pip" id="pip"><video id="you" autoplay muted playsinline></video></div>
 </main>
 <div class="dock">
   <p class="caption" id="caption"></p>
+  <p class="status" id="status" data-state="ready" role="status">Ready · voice and text controls available</p>
+  <form class="composer" id="text-form">
+    <label class="sr" for="text-input">Message Iris</label>
+    <input id="text-input" name="message" type="text" maxlength="4000" placeholder="Ask Iris in text…" autocomplete="off" enterkeyhint="send"/>
+    <button type="submit">SEND</button>
+  </form>
   <button type="button" class="talk" id="talk" aria-pressed="false">TALK</button>
   <p class="err" id="err" hidden role="alert"></p>
 </div>
-<input id="irisLocalFile" type="file" hidden accept="image/jpeg,image/png,image/webp,text/plain,text/markdown,text/csv,application/json,application/pdf,.txt,.md,.csv,.json,.pdf"/>
+<input id="irisLocalFile" type="file" hidden accept="text/plain,text/markdown,text/csv,text/tab-separated-values,application/json,.txt,.md,.markdown,.csv,.tsv,.json,.log"/>
 <p class="sr" id="announce" aria-live="assertive"></p>
 <script src="/js/dsap-engine.js?v=54"></script>
 <script src="/js/iris-sphere.js?v=54"></script>
@@ -79,17 +85,29 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
 <script src="/js/iris-guest.js?v=54"></script>
 <script src="iris-book.js?v=54"></script>
 <script src="/js/iris-fuel-gate.js?v=54"></script>
-<script src="/js/iris-session.js?v=54"></script>
-<script src="dclm-look.js?v=54"></script>
+<script src="/js/iris-session.js?v=55"></script>
+<script src="dclm-look.js?v=55"></script>
+<script src="/js/iris-file.js?v=55"></script>
 <script>
 (function(){
   var cap=document.getElementById("caption");
   var errEl=document.getElementById("err");
   var talk=document.getElementById("talk");
   var pip=document.getElementById("pip");
+  var statusEl=document.getElementById("status");
+  var textForm=document.getElementById("text-form");
+  var textInput=document.getElementById("text-input");
   var rec=null, busy=false, primed=false, synthWatch=0, greeted=false;
 
-  function showErr(m){ if(!m){errEl.hidden=true;errEl.textContent="";return;} errEl.hidden=false;errEl.textContent=m; }
+  function setStatus(message, state){
+    if(!statusEl) return;
+    statusEl.textContent=String(message||"");
+    statusEl.dataset.state=state||"ready";
+  }
+  function showErr(m){
+    if(!m){errEl.hidden=true;errEl.textContent="";return;}
+    errEl.hidden=false;errEl.textContent=m;
+  }
   function line(t){
     var s=String(t||"");
     cap.textContent=s;
@@ -98,7 +116,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     document.getElementById("announce").textContent=s;
   }
   function greetText(){
-    return (window.IrisGuest && IrisGuest.greetLine) ? IrisGuest.greetLine() : "Hey. I'm Iris. What should I call you? Tap Talk if you want to say it.";
+    return (window.IrisGuest && IrisGuest.greetLine) ? IrisGuest.greetLine() : "Hey. I'm Iris. Type below or tap Talk to speak.";
   }
   function primeVoice(){
     primed=true;
@@ -157,32 +175,41 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     text=String(text||"").trim();
     if(!text||busy) return;
     busy=true;
+    setStatus("Working · checking the configured answer engine","thinking");
     line("…");
     try{
       var guest = window.IrisGuest ? IrisGuest.rememberFrom(text) : null;
       if(guest && guest.name && window.IrisGuest.parseName && IrisGuest.parseName(text)){
         var hello = "Good to meet you, " + guest.name + ". I'm the person at this table for DualisCapax. What do you want to know?";
         line(hello);
+        setStatus("Ready · text and voice controls available","ready");
         speakNow(hello);
         busy=false;
         return;
       }
+      var question = window.IrisFile && IrisFile.prompt ? IrisFile.prompt(text) : text;
       var recu = window.IrisSession&&IrisSession.think
-        ? await IrisSession.think(text)
+        ? await IrisSession.think(text, { prompt: question, localDocument: !!(window.IrisFile && IrisFile.snapshot && IrisFile.snapshot().loaded) })
         : window.DCLMLook&&DCLMLook.run
-          ? await DCLMLook.run(text)
+          ? await DCLMLook.run(question, null, { localDocument: !!(window.IrisFile && IrisFile.snapshot && IrisFile.snapshot().loaded) })
           : {spoken:"I'm Iris."};
       var spoken=(recu&&recu.spoken)||"I'm Iris.";
+      if(recu && (recu.lane==="ERROR" || recu.grant==="UNAVAILABLE")) setStatus("Unavailable · answer engine not connected","error");
+      else setStatus("Response received","ready");
       line(spoken);
       speakNow(spoken);
-    }catch(e){ showErr("She could not answer."); line("Say that again."); }
+    }catch(e){
+      showErr("I couldn't complete that request. You can try again or use text.");
+      setStatus("Request failed · try again","error");
+      line("I couldn't complete that request. Please try again.");
+    }
     busy=false;
   }
 
   function startRec(){
     if(window.IrisAV&&IrisAV.releaseMicTracks) IrisAV.releaseMicTracks();
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){ showErr("This browser cannot hear. That's okay — tap TALK still unlocks her mouth."); return false; }
+    if(!SR){ showErr("Voice input is not supported here. Type your message below instead."); setStatus("Voice input unavailable · text is ready","error"); return false; }
     rec=new SR();
     rec.lang=(window.IrisVoice&&IrisVoice.locale&&IrisVoice.locale())||(navigator.language||"en");
     rec.continuous=false; rec.interimResults=true;
@@ -192,11 +219,34 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
       line(t||"…");
       if(ev.results[ev.results.length-1].isFinal) hear(t);
     };
-    rec.onerror=function(){ talk.classList.remove("on"); talk.setAttribute("aria-pressed","false"); };
-    rec.onend=function(){ talk.classList.remove("on"); talk.setAttribute("aria-pressed","false"); if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(false); };
+    rec.onerror=function(){
+      talk.classList.remove("on"); talk.setAttribute("aria-pressed","false");
+      showErr("Voice input failed or permission was denied. You can type below instead.");
+      setStatus("Voice input failed · text is ready","error");
+    };
+    rec.onend=function(){
+      talk.classList.remove("on"); talk.setAttribute("aria-pressed","false");
+      if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(false);
+      if(statusEl && statusEl.dataset.state==="listening") setStatus("Ready · text and voice controls available","ready");
+    };
     rec.start();
     return true;
   }
+
+  if(textForm) textForm.addEventListener("submit",function(ev){
+    ev.preventDefault();
+    var text=String(textInput.value||"").trim();
+    if(!text) return;
+    if(busy){ showErr("Please wait for the current answer to finish."); return; }
+    textInput.value="";
+    showErr("");
+    if(!greeted){
+      greeted=true;
+      primeVoice();
+      if(window.IrisGuest&&IrisGuest.markAsked) IrisGuest.markAsked();
+    }
+    hear(text);
+  });
 
   talk.addEventListener("click",function(){
     var on=!talk.classList.contains("on");
@@ -208,6 +258,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
       if(!startRec()) return;
       talk.classList.add("on"); talk.setAttribute("aria-pressed","true");
       if(window.IrisSphere&&IrisSphere.setListening) IrisSphere.setListening(true);
+      setStatus("Listening · speak now","listening");
       line("I'm listening.");
     }else{
       if(rec) try{rec.stop();}catch(e){}
@@ -227,14 +278,16 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
         btn.classList.toggle("on",live);
         btn.setAttribute("aria-pressed",live?"true":"false");
         pip.classList.toggle("on",live);
-      }).catch(function(){ showErr("Camera blocked."); });
+        if(live){ setStatus("Camera preview · visual understanding not connected","ready"); line("Camera preview is live. Visual understanding is not connected yet."); }
+        else { setStatus("Ready · text and voice controls available","ready"); line("Camera preview stopped."); }
+      }).catch(function(){ showErr("Camera blocked."); setStatus("Camera permission denied or unavailable","error"); });
       return;
     }
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ showErr("Camera did not open."); return; }
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ showErr("Camera did not open."); setStatus("Camera unavailable","error"); return; }
     if(!on){
       var vid=document.getElementById("you");
       if(vid && vid.srcObject){ vid.srcObject.getTracks().forEach(function(t){t.stop();}); vid.srcObject=null; }
-      pip.classList.remove("on"); btn.classList.remove("on"); return;
+      pip.classList.remove("on"); btn.classList.remove("on"); btn.setAttribute("aria-pressed","false"); setStatus("Ready · text and voice controls available","ready"); line("Camera preview stopped."); return;
     }
     navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false}).then(function(s){
       document.getElementById("you").srcObject=s;
@@ -247,7 +300,8 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     meet();
     primeVoice();
     var spoken = (window.IrisPage && IrisPage.here && IrisPage.here().spoken)
-      || "You're with me in the lab. I already know this page.";
+      || "I can report the configured context for this page. Live visual understanding is not connected yet.";
+    setStatus("Page context · configured route metadata","ready");
     line(spoken);
     speakNow(spoken);
   });
@@ -256,19 +310,43 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
     meet();
     document.getElementById("irisLocalFile").click();
   });
-  document.getElementById("irisLocalFile").addEventListener("change",function(ev){
+  document.getElementById("irisLocalFile").addEventListener("change",async function(ev){
     var f = ev.target.files && ev.target.files[0];
     ev.target.value = "";
     if(!f) return;
-    var note = "Got " + f.name + ". I'll look at it here on this device. What do you want to know about it?";
-    line(note);
-    speakNow(note);
+    if(!window.IrisFile || !IrisFile.read){
+      showErr("Local text reading is unavailable in this build.");
+      setStatus("Local file reader unavailable","error");
+      line("I couldn't open that file here.");
+      return;
+    }
+    try {
+      var info = await IrisFile.read(f);
+      var note = "Read " + info.name + " locally (" + info.includedCharacters + " characters" +
+        (info.truncated ? ", first 20,000 characters only" : "") +
+        "). Ask a question to use it with your configured answer engine. The document stays in this tab unless you ask a question; it will not be sent to public search.";
+      showErr("");
+      setStatus("Local text loaded · ask a question to analyze it","ready");
+      line(note);
+      speakNow(note);
+    } catch (error) {
+      if(window.IrisFile && IrisFile.clear) IrisFile.clear();
+      var note = /FILE_TOO_LARGE/.test(String(error)) ? "That file is too large to read here. The local limit is 256 KB." :
+        "I can read text, Markdown, CSV, JSON, or log files locally. Image and PDF analysis is not connected yet.";
+      showErr(note);
+      setStatus("File not supported or could not be read","error");
+      line(note);
+      speakNow(note);
+    }
   });
 
   document.getElementById("hang").addEventListener("click",function(){
     if(rec) try{rec.stop();}catch(e){}
     if(window.IrisAV&&IrisAV.stopAll) IrisAV.stopAll();
     if(window.speechSynthesis) speechSynthesis.cancel();
+    if(window.IrisFile && IrisFile.clear) IrisFile.clear();
+    showErr("");
+    setStatus("Session ended · local document context cleared","ready");
     talk.classList.remove("on");
     document.getElementById("cam").classList.remove("on");
     document.getElementById("screen").classList.remove("on");
