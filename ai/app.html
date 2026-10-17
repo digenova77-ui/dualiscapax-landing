@@ -170,7 +170,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
       }
       var question = window.IrisFile && IrisFile.prompt ? IrisFile.prompt(text) : text;
       var recu = window.IrisSession&&IrisSession.think
-        ? await IrisSession.think(question)
+        ? await IrisSession.think(text, { prompt: question })
         : window.DCLMLook&&DCLMLook.run
           ? await DCLMLook.run(question)
           : {spoken:"I'm Iris."};
