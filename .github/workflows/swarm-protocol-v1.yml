@@ -6,10 +6,14 @@ on:
       - "src/engine/swarm_protocol.py"
       - "src/engine/swarm_lifecycle.py"
       - "src/engine/swarm_wave.py"
+      - "src/engine/domain_architecture.py"
+      - "config/dualis.seed.v1.json"
       - "tests/test_swarm_wave.py"
       - "tests/test_swarm_protocol.py"
       - "tests/test_swarm_lifecycle.py"
+      - "tests/test_domain_architecture.py"
       - "docs/architecture/SWARM_PROTOCOL_V1.md"
+      - "docs/architecture/THREE_RING_ONE_SEED.md"
       - ".github/workflows/swarm-protocol-v1.yml"
   workflow_dispatch:
 
@@ -25,9 +29,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Compile swarm modules
-        run: python3 -m py_compile src/engine/swarm_protocol.py src/engine/swarm_lifecycle.py src/engine/swarm_wave.py
-      - name: Run fail-closed protocol and autonomous-work tests
+      - name: Compile swarm and domain architecture modules
+        run: python3 -m py_compile src/engine/swarm_protocol.py src/engine/swarm_lifecycle.py src/engine/swarm_wave.py src/engine/domain_architecture.py
+      - name: Run fail-closed protocol, lifecycle, planner, and domain architecture tests
         env:
           PYTHONPATH: src/engine
-        run: python3 -m unittest discover -s tests -p "test_swarm_*.py" -v
+        run: python3 -m unittest discover -s tests -p "test_*.py" -v
