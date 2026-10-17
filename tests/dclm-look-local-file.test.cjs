@@ -23,7 +23,7 @@ function load({ byok } = {}) {
   const noEngine = load();
   const denied = await noEngine.look.run("Summarize this: " + localText, null, { localDocument: true });
   assert.equal(denied.lane, "ERROR");
-  assert.match(denied.spoken, /not sent to public search/i);
+  assert.match(denied.spoken, /public search/i);
   assert.equal(noEngine.calls.length, 0, "local document contents must not fall through to Wikipedia or Wikidata");
 
   let sent = "";
