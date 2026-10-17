@@ -170,9 +170,9 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
       }
       var question = window.IrisFile && IrisFile.prompt ? IrisFile.prompt(text) : text;
       var recu = window.IrisSession&&IrisSession.think
-        ? await IrisSession.think(text, { prompt: question })
+        ? await IrisSession.think(text, { prompt: question, localDocument: !!(window.IrisFile && IrisFile.snapshot && IrisFile.snapshot().loaded) })
         : window.DCLMLook&&DCLMLook.run
-          ? await DCLMLook.run(question)
+          ? await DCLMLook.run(question, null, { localDocument: !!(window.IrisFile && IrisFile.snapshot && IrisFile.snapshot().loaded) })
           : {spoken:"I'm Iris."};
       var spoken=(recu&&recu.spoken)||"I'm Iris.";
       line(spoken);
@@ -273,7 +273,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
       var info = await IrisFile.read(f);
       var note = "Read " + info.name + " locally (" + info.includedCharacters + " characters" +
         (info.truncated ? ", first 20,000 characters only" : "") +
-        "). Ask me a question about its text. It stays in this tab unless you ask a question that sends it to the configured answer engine.";
+        "). Ask a question to use it with your configured answer engine. The document stays in this tab unless you ask a question; it will not be sent to public search.";
       showErr("");
       line(note);
       speakNow(note);
