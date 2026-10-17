@@ -3,10 +3,13 @@ pages_build_output_dir = "."
 compatibility_date = "2026-09-04"
 
 # Static brochure only. No npm build.
-# Dashboard: Workers & Pages → dualiscapax-web (or attach this repo)
+# Apex owner: Cloudflare Pages project dualiscapax-web (bound to dualiscapax.ai).
+# Preferred publish: manual ZIP from package-cloudflare-pages / scripts/pack_hierarchical_flat_zip.py.
+# See docs/ops/ENVIRONMENT.md for current rails (Unity floor, Trinity preserved).
 # Build command: (empty)
 # Root directory: /
 # Output directory: /
+# Git-connected Builds are not the production rail; token/previews issues are dashboard-seated.
 
 # Empty previews block required by wrangler preview (Workers Builds)
 [previews]
