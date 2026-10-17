@@ -8,14 +8,14 @@
   var MAX_BYTES = 256 * 1024;
   var MAX_CHARS = 20000;
   var active = null;
-  var allowed = /\.(txt|md|markdown|csv|json|log)$/i;
+  var allowed = /\.(txt|md|markdown|csv|tsv|json|log)$/i;
 
   function read(file) {
     if (!file) return Promise.reject(new Error("NO_FILE"));
     if (file.size > MAX_BYTES) return Promise.reject(new Error("FILE_TOO_LARGE"));
     var name = String(file.name || "document");
     var type = String(file.type || "").toLowerCase();
-    if (!allowed.test(name) && !/^(text\/plain|text\/markdown|text\/csv|application\/json)$/.test(type)) {
+    if (!allowed.test(name) && !/^(text\/plain|text\/markdown|text\/csv|text\/tab-separated-values|application\/json)$/.test(type)) {
       return Promise.reject(new Error("UNSUPPORTED_FILE_TYPE"));
     }
     if (typeof file.text !== "function") return Promise.reject(new Error("TEXT_READER_UNAVAILABLE"));
