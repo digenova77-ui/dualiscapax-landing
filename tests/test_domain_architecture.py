@@ -8,7 +8,7 @@ from domain_architecture import (
     validate_correlation,
     validate_seed,
 )
-from swarm_protocol import ProtocolError
+from swarm_protocol import LAWS, ROLES, ProtocolError
 
 
 def reviews(**overrides):
@@ -30,6 +30,9 @@ class DomainArchitectureTests(unittest.TestCase):
             "discovery_execution", "independent_validation"
         })
         self.assertFalse(seed["invariants"]["live_actuators_enabled_by_seed"])
+        self.assertEqual(list(LAWS), seed["governing_laws"])
+        self.assertEqual(ROLES, set(seed["roles"]))
+        self.assertEqual(seed["event_protocol"], "dualis.swarm.event.v1")
 
     def test_seed_rejects_removed_ring(self):
         seed = copy.deepcopy(load_seed())
