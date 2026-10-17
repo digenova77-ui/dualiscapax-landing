@@ -50,8 +50,9 @@ jobs:
       - name: Build and verify ZIP
         run: |
           python3 scripts/pack_hierarchical_flat_zip.py --lander
-          unzip -l dist/cloudflare/lander-*.zip
-          sha256sum -c dist/cloudflare/lander-*.zip.sha256
+          unzip -t dist/cloudflare/lander-*.zip
+          cd dist/cloudflare
+          sha256sum -c lander-*.zip.sha256
 
       - name: Publish package artifact (not a deployment)
         uses: actions/upload-artifact@v4
