@@ -83,7 +83,8 @@ body{background:#02040c}
       note.className = 'warn ok';
       var name = (row.lease && row.lease.name) || '';
       var pack = (row.matrix && row.matrix.pack) || '';
-      note.textContent = 'PLUGGED · ONE · v2 · ' + (name || 'no-name') + ' · ' + (row.kind||'file') + ' · numbers ' + (row.numbers||0) + (pack ? ' · ' + pack : '') + ' · stays on this device';
+      var status = row.analysis === 'METADATA_ONLY' ? 'METADATA ONLY' : 'PLUGGED';
+      note.textContent = status + ' · ONE · v2 · ' + (name || 'no-name') + ' · ' + (row.kind||'file') + ' · numbers ' + (row.numbers||0) + (pack ? ' · ' + pack : '') + ' · stays on this device' + (row.note ? ' · ' + row.note : '') + (row.storage === 'MEMORY_ONLY' ? ' · session only (browser storage unavailable)' : '');
       if (window.HoloSense) HoloSense.pulse('seat');
     } else {
       note.className = 'warn bad';
