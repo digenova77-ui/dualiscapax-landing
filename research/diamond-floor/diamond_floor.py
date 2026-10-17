@@ -149,7 +149,14 @@ def ingest(source: Path, archive: Path, source_url: str, creator: str, rights_st
     ledger_path = archive / "provenance" / "ledger.jsonl"
     previous = "0" * 64
     if ledger_path.exists():
+        ledger_check = verify_ledger(ledger_path)
+        if ledger_check.get("status") != "PASS":
+            raise ValueError("Existing provenance ledger failed verification; refusing to append.")
         lines = [line for line in ledger_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        for line in lines:
+            existing = json.loads(line)
+            if existing.get("event") == "ARTIFACT_INGESTED" and existing.get("artifact_sha256") == raw_hash and existing.get("manifest_path") == manifest_path.relative_to(archive).as_posix():
+                return {"status": "PASS", "already_ingested": True, "sha256": raw_hash, "object_path": str(object_path), "manifest_path": str(manifest_path), "record_digest": existing.get("record_digest")}
         if lines:
             previous_record = json.loads(lines[-1])
             previous = previous_record.get("record_digest", "")
