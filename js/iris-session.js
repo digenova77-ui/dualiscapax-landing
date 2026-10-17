@@ -43,15 +43,21 @@
     if (w.IrisAV && w.IrisAV.listen) return w.IrisAV.listen();
     return Promise.resolve(null);
   }
-  function think(text) {
+  function think(text, options) {
+    options = options || {};
     last.text = String(text || "");
+    var input = typeof options.prompt === "string" ? options.prompt : last.text;
     last.ticket = admit(last.text);
     setState(STATE.THINK);
-    emit("think", { text: last.text, ticket: last.ticket });
+    emit("think", {
+      characters: last.text.length,
+      hasLocalFile: !!(w.IrisFile && w.IrisFile.snapshot && w.IrisFile.snapshot().loaded),
+      ticket: last.ticket
+    });
     var task;
     try {
-      if (w.DCLMLook && w.DCLMLook.run) task = Promise.resolve(w.DCLMLook.run(last.text, last.ticket));
-      else if (w.IrisLive && w.IrisLive.run) task = Promise.resolve(w.IrisLive.run(last.text));
+      if (w.DCLMLook && w.DCLMLook.run) task = Promise.resolve(w.DCLMLook.run(input, last.ticket));
+      else if (w.IrisLive && w.IrisLive.run) task = Promise.resolve(w.IrisLive.run(input));
       else task = Promise.resolve({ grant: "UNAVAILABLE", lane: "ERROR", spoken: "I can't reach an answer engine in this session. Please try again later." });
     } catch (error) { task = Promise.reject(error); }
     return task.then(function (rec) {
