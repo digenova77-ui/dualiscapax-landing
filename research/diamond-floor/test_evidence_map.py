@@ -48,6 +48,14 @@ class EvidenceMapTests(unittest.TestCase):
             self.assertTrue(all(e["verified"] is False for e in result["edges"]))
             self.assertEqual(result["nodes"][3]["content"]["http_findings"][0]["status"], 404)
             self.assertEqual(result["nodes"][4]["content"]["ledger_integrity"]["status"], "BLOCKED")
+            self.assertEqual(len(result["observations"]), 4)
+            endpoint = next(item for item in result["observations"] if item["kind"] == "https")
+            self.assertEqual(endpoint["status"], "FINDING")
+            self.assertEqual(endpoint["payload"]["status"], 404)
+            self.assertFalse(any(item["verified"] for item in result["observations"]))
+            for observation in result["observations"]:
+                expected = evidence_map.digest({k: v for k, v in observation.items() if k != "observation_sha256"})
+                self.assertEqual(observation["observation_sha256"], expected)
             for item in result["generated_from"]:
                 raw = (root / item["path"]).read_bytes()
                 self.assertEqual(item["sha256"], evidence_map.digest_bytes(raw))
