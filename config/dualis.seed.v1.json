@@ -1,0 +1,74 @@
+{
+  "protocol": "dualis.seed.v1",
+  "seed_id": "dualis-capax-one-seed",
+  "version": 1,
+  "status": "PROPOSED",
+  "purpose": "One canonical, versioned source for domain identities, pipeline separation, correlation typing, and fail-closed review rules.",
+  "governing_laws": [
+    "TRUTH_OR_NOTHING",
+    "NO_FORCE",
+    "HOST_SAFE",
+    "CLEANUP_FIRST"
+  ],
+  "rings": [
+    {
+      "id": "A",
+      "key": "philosophy",
+      "name": "Philosophy",
+      "remit": ["definitions", "assumptions", "meaning", "values", "scope", "counterexamples"],
+      "verdicts": ["SUPPORT", "CHALLENGE", "NOT_APPLICABLE_WITH_REASON", "UNRESOLVED"]
+    },
+    {
+      "id": "B",
+      "key": "physics",
+      "name": "Physics",
+      "remit": ["observations", "measurements", "units", "uncertainty", "predictions", "resource-effects"],
+      "verdicts": ["SUPPORT", "CHALLENGE", "NOT_APPLICABLE_WITH_REASON", "UNRESOLVED"]
+    },
+    {
+      "id": "C",
+      "key": "law",
+      "name": "Law",
+      "remit": ["authority", "consent", "rights", "safety", "privacy", "responsibility", "reversibility"],
+      "verdicts": ["SUPPORT", "CHALLENGE", "NOT_APPLICABLE_WITH_REASON", "UNRESOLVED"]
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "P1",
+      "key": "discovery_execution",
+      "name": "Discovery and bounded work",
+      "may": ["observe", "hypothesize", "propose", "perform_pre_authorized_bounded_work"],
+      "must_not": ["self_certify", "expand_permissions", "convert_proposal_into_authority"]
+    },
+    {
+      "id": "P2",
+      "key": "independent_validation",
+      "name": "Independent validation",
+      "must": ["inspect_evidence", "challenge_assumptions", "reproduce_results_when_applicable", "record_disagreement"],
+      "must_not": ["trust_author_claim_without_review", "silently_discard_failures"]
+    }
+  ],
+  "correlation_types": [
+    "PHYSICAL_COUPLING",
+    "MATHEMATICAL_CORRESPONDENCE",
+    "EMPIRICAL_HYPOTHESIS",
+    "PHILOSOPHICAL_CORRESPONDENCE"
+  ],
+  "gate_decisions": [
+    "ACCEPT",
+    "DECLINE",
+    "BLOCKED_WITH_EXACT_MISSING_PRIMITIVE",
+    "UNRESOLVED"
+  ],
+  "invariants": {
+    "rings_are_distinct": true,
+    "all_required_rings_review_same_claim": true,
+    "no_majority_vote_truth": true,
+    "independent_validation_required": true,
+    "gate_does_not_grant_execution_authority": true,
+    "correlations_must_be_typed": true,
+    "unknowns_and_disagreements_are_preserved": true,
+    "live_actuators_enabled_by_seed": false
+  }
+}
