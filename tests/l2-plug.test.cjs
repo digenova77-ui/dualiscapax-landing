@@ -4,12 +4,12 @@ const vm = require("node:vm");
 const { webcrypto } = require("node:crypto");
 const { TextEncoder } = require("node:util");
 
-function load() {
+function load(storageFails = false) {
   const values = new Map();
   const localStorage = {
     getItem: (key) => values.has(key) ? values.get(key) : null,
-    setItem: (key, value) => values.set(key, String(value)),
-    removeItem: (key) => values.delete(key)
+    setItem: (key, value) => { if (storageFails) throw new Error("STORAGE_BLOCKED"); values.set(key, String(value)); },
+    removeItem: (key) => { if (storageFails) throw new Error("STORAGE_BLOCKED"); values.delete(key); }
   };
   const window = {};
   const context = { window, localStorage, crypto: webcrypto, TextEncoder, Date, Promise, String, Number, RegExp, JSON, Array, Object, Math, isFinite };
@@ -42,5 +42,13 @@ function load() {
   const hugeWorkbook = await plug.plugFile({ name: "huge.xlsx", size: 25 * 1024 * 1024 + 1, lastModified: 4 });
   assert.equal(hugeWorkbook.status, "REFUSED");
   assert.equal(hugeWorkbook.reason, "FILE_TOO_LARGE");
-  console.log("L2 playground file tests: 12 assertions passed");
+
+  const normal = load();
+  const cleared = normal.plug.clear();
+  assert.equal(cleared, true, "clear reports successful cleanup");
+  const blocked = load(true);
+  const memoryRow = await blocked.plug.plugFile({ name: "small.csv", size: 9, lastModified: 6, text: async () => "a,b\\n1,2" });
+  assert.equal(memoryRow.storage, "MEMORY_ONLY", "storage failure must be visible instead of crashing");
+  assert.equal(blocked.plug.clear(), false, "clear must report a failed storage operation");
+  console.log("L2 playground file tests: 15 assertions passed");
 })().catch((error) => { console.error(error); process.exitCode = 1; });
