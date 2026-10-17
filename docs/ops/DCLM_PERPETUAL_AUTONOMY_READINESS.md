@@ -198,8 +198,9 @@ Run only in a disposable VM and isolated test repository:
 
 | Area | Initial status | Evidence / limitation |
 |---|---|---|
-| Factory queue validation | PARTIAL | PR #1 adds pre-claim validation and tests; current CI result must be checked on the candidate SHA. |
-| Workflow inventory | PARTIAL | Landing PR #103 describes a read-only scan of 53 workflows with four review flags; PR is still a draft at the time of this plan. |
+| Factory queue validation | PARTIAL | Factory PR #1, head `0068cd44b0517b41a4e548b4b6f8fcf580e40bed`: GitHub Actions run [39009225744](https://github.com/digenova77-ui/dualiscapax-factory-queue/actions/runs/39009225744) passed. Invalid/malformed tasks are rejected; `ingest` and `classify` are now explicitly blocked because handlers are not implemented. Still missing atomic multi-worker claims, leases/expiry, crash recovery, and an end-to-end worker-kill test. |
+| Landing preview / Worker build | PARTIAL / BLOCKED | Landing PR #104 head `7d00225a938810c47b3d84437d4503fd97bd5169`: Cloudflare Pages preview bot reported success; Cloudflare Workers bot reported failed build for `dualiscapax-depth` and failed preview build. Authenticated build logs were not available, so root cause is UNKNOWN. No production deploy or DNS change performed. |
+| Workflow inventory | PARTIAL | Landing PR #103 describes a read-only scan of 53 workflows with four review flags; draft status and current head must be rechecked before relying on it. |
 | Iris browser boundary | PARTIAL | HUD PR #1 describes mock-based browser tests; live API, vision, and CORS remain unverified. |
 | PlanckOS compile/runtime | REPORTED | Historical notes report a successful Rust check and telemetry service; not a current live verification. |
 | Bootable PlanckOS image | NOT TESTED | No reproducible boot-image evidence recorded here. |
