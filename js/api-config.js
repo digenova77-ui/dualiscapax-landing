@@ -21,6 +21,8 @@
     } catch (e) { return null; }
   }
 
+  g.DC_API_BASE = safeApiOverride(g.DC_API_BASE) || 'https://dualiscapax-depth.digenova77.workers.dev';
+
   try {
     var q = new URLSearchParams(location.search).get('api');
     var safe = q && safeApiOverride(q);
