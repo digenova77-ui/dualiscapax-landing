@@ -61,3 +61,24 @@ For future locally stored assets, record:
 - Any transformations, with originals preserved unchanged
 
 **Scientific rule:** visual similarity or correlation alone does not establish a shared physical mechanism. Keep observations, interpretations, and hypotheses distinct.
+
+
+## Live tools
+
+- [Open the gallery](./gallery.html) — searchable cards backed by the discovery index.
+- [Discovery index](./discoveries.json) — source-linked NASA image candidates.
+- [Updater](./update_discoveries.py) — refreshes the candidate index from the NASA Images API; it does not download binaries.
+- [Public DNS audit report](./public-dns-audit.json) — read-only DNS and HTTPS snapshots.
+- [DNS audit implementation](./audit_public_dns.py) — checks public DNS-over-HTTPS and HTTPS responses; never edits records.
+
+## Automation boundaries
+
+- `.github/workflows/earth-photo-archive.yml` refreshes the discovery index daily and on manual dispatch.
+- `.github/workflows/public-dns-audit.yml` checks public DNS and HTTPS every six hours and on manual dispatch.
+- Both workflows have repository-content write permission only. Neither has Cloudflare credentials, deploys Pages, changes DNS, touches the database, or modifies the Vultr servers.
+- GitHub scheduled workflows run from the repository's default branch. These schedules become active only after the proposed branch is reviewed and merged. A manual run can be tested against the branch first.
+- Discovery does not mean permission to mirror. Each image must pass item-level credit and rights review before binary files are copied into the repository.
+
+## Production simplification rule
+
+The current operations record states that the live domain, DNS, database, and New Jersey server must be preserved, and production publication/DNS cutover require explicit approval. The new archive and audit work is isolated on a review branch. It does not remove or replace the existing Pages worker or hosting configuration.
