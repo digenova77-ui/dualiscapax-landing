@@ -10,9 +10,21 @@
   g.DC_API_VERSION = world === 1 ? '2' : '1';
   g.DC_API_PATH = world === 1 ? '/v2/chat' : '/v1/chat';
   g.DC_API_BASE = g.DC_API_BASE || 'https://dualiscapax-depth.digenova77.workers.dev';
+
+  function safeApiOverride(value) {
+    try {
+      var u = new URL(String(value), location.origin);
+      var trustedOrigin = 'https://dualiscapax-depth.digenova77.workers.dev';
+      if (u.username || u.password || u.search || u.hash) return null;
+      if (u.origin !== location.origin && u.origin !== trustedOrigin) return null;
+      return (u.origin + u.pathname).replace(/\/$/, '');
+    } catch (e) { return null; }
+  }
+
   try {
     var q = new URLSearchParams(location.search).get('api');
-    if (q) g.DC_API_BASE = q.replace(/\/$/, '');
+    var safe = q && safeApiOverride(q);
+    if (safe) g.DC_API_BASE = safe;
     var wq = new URLSearchParams(location.search).get('world');
     if (wq === '1' || /^one$/i.test(wq)) {
       g.DC_WORLD = 1; g.DC_WORLD_NAME = 'ONE'; g.DC_API_VERSION = '2'; g.DC_API_PATH = '/v2/chat';
