@@ -13,12 +13,22 @@ import uuid
 from pathlib import Path
 from typing import Any, Iterable
 
-PROTOCOL = "dualis.swarm.event.v1"
-LAWS = ("TRUTH_OR_NOTHING", "NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST")
-ROLES = {
-    "iris", "scout", "builder", "sentinel", "verifier",
-    "infrastructure", "economics_ledger", "trinity_dclm",
-}
+SEED_PATH = Path(__file__).resolve().parents[2] / "config" / "dualis.seed.v1.json"
+try:
+    SEED_CONFIG = json.loads(SEED_PATH.read_text(encoding="utf-8"))
+    PROTOCOL = SEED_CONFIG["event_protocol"]
+    LAWS = tuple(SEED_CONFIG["governing_laws"])
+    ROLES = set(SEED_CONFIG["roles"])
+except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
+    raise RuntimeError("CANONICAL_DUALIS_SEED_UNAVAILABLE_OR_INVALID") from exc
+
+if (
+    SEED_CONFIG.get("protocol") != "dualis.seed.v1"
+    or SEED_CONFIG.get("seed_id") != "dualis-capax-one-seed"
+    or len(LAWS) != 4
+    or len(ROLES) != 8
+):
+    raise RuntimeError("CANONICAL_DUALIS_SEED_CONTRACT_MISMATCH")
 PHASES = {"discover", "propose", "challenge", "verify", "gate", "record"}
 STATUSES = {"OBSERVED", "PROPOSED", "CHALLENGED", "VERIFIED", "REJECTED", "BLOCKED"}
 DECISIONS = {"ACCEPT", "DECLINE", "BLOCKED_WITH_EXACT_MISSING_PRIMITIVE"}
