@@ -2,9 +2,10 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const vm = require("node:vm");
 
-function loadConfig(search, origin = "https://dualiscapax.ai") {
+function loadConfig(search, origin = "https://dualiscapax.ai", initialBase) {
   const calls = [];
   const window = { location: { origin, search, pathname: "/playground.html" } };
+  if (initialBase) window.DC_API_BASE = initialBase;
   const context = {
     window, location: window.location, URL, URLSearchParams, Promise, String, Date, Math,
     fetch: async (url, options) => {
@@ -17,9 +18,10 @@ function loadConfig(search, origin = "https://dualiscapax.ai") {
   return window;
 }
 
-function loadWorld(search, origin = "https://dualiscapax.ai") {
+function loadWorld(search, origin = "https://dualiscapax.ai", initialBase) {
   const calls = [];
   const window = { location: { origin, search, pathname: "/playground.html" } };
+  if (initialBase) window.DC_API_BASE = initialBase;
   const context = {
     window, location: window.location, URL, URLSearchParams, Promise, String, Date, Math,
     fetch: async (url) => {
@@ -36,6 +38,10 @@ function loadWorld(search, origin = "https://dualiscapax.ai") {
   assert.equal(loadConfig("?api=https%3A%2F%2Fevil.example").DC_API_BASE, trusted);
   assert.equal(loadConfig("?api=%2Fapi").DC_API_BASE, "https://dualiscapax.ai/api");
   assert.equal(loadConfig("?api=https%3A%2F%2Fdualiscapax-depth.digenova77.workers.dev").DC_API_BASE, trusted);
+  assert.equal(loadConfig("", "https://dualiscapax.ai", "https://evil.example").DC_API_BASE, trusted);
+  const preconfigured = loadWorld("", "https://dualiscapax.ai", "https://evil.example");
+  await preconfigured.window.DCWorld.chat([{ role: "user", content: "test" }]);
+  assert.equal(preconfigured.calls[0], trusted + "/v2/chat", "untrusted preconfigured API base must be rejected");
   const zero = loadConfig("?world=0");
   await zero.dcChatV2([{ role: "user", content: "ground-zero" }]);
   assert.equal(zero.calls[0].url, trusted + "/v1/chat");
