@@ -47,7 +47,7 @@ function load(storageFails = false) {
   const cleared = normal.plug.clear();
   assert.equal(cleared, true, "clear reports successful cleanup");
   const blocked = load(true);
-  const memoryRow = await blocked.plug.plugFile({ name: "small.csv", size: 9, lastModified: 6, text: async () => "a,b\\n1,2" });
+  const memoryRow = await blocked.plug.plugFile({ name: "small.csv", size: 9, lastModified: 6, text: async () => "a,b,1,2" });
   assert.equal(memoryRow.storage, "MEMORY_ONLY", "storage failure must be visible instead of crashing");
   assert.equal(blocked.plug.clear(), false, "clear must report a failed storage operation");
   console.log("L2 playground file tests: 15 assertions passed");
