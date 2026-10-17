@@ -56,7 +56,7 @@
     });
     var task;
     try {
-      if (w.DCLMLook && w.DCLMLook.run) task = Promise.resolve(w.DCLMLook.run(input, last.ticket));
+      if (w.DCLMLook && w.DCLMLook.run) task = Promise.resolve(w.DCLMLook.run(input, last.ticket, options));
       else if (w.IrisLive && w.IrisLive.run) task = Promise.resolve(w.IrisLive.run(input));
       else task = Promise.resolve({ grant: "UNAVAILABLE", lane: "ERROR", spoken: "I can't reach an answer engine in this session. Please try again later." });
     } catch (error) { task = Promise.reject(error); }
