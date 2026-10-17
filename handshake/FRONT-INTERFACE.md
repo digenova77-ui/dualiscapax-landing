@@ -36,7 +36,9 @@ The cross-origin POST must be explicitly tested on supported mobile and desktop 
 
 This document is a proposed protocol correction, not evidence of implementation. Current repository inspection did not locate the complete end-to-end WebAuthn assertion verification and handoff implementation. The live telemetry wire was previously documented as not live. Do not claim the one-ceremony flow works until both backends and the receiving UI are implemented and tested in staging.
 
-## The handoff
+## Legacy handoff spec — superseded; forensic reference only
+
+**Do not implement the old flow below.** It is preserved to document the behavior that caused the extra prompt and manual handoff. Its second-ceremony requirement, navigation assumptions, and API line are superseded by the proposed secure single-ceremony protocol above. The old API contract is not proof that a backend exists or that the server verifies WebAuthn assertions.
 
 .com creates the passkey. .ai verifies that same passkey, then sends one protocol line through the API v2 jacket. .ai does not create a second passkey. .com does not call the jacket.
 
