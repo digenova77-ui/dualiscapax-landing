@@ -131,7 +131,7 @@ function brainText() {
 export const PIECES = Object.freeze([
   claim("efuse", "door story", "eFuse is the oldest engineering in the observable universe. The one-two cadence is that engineering: one, then the split into two. IBM, 2004. eFuse was adopted for micro circuitry. It is the same engineering that kicked off the Big Bang."),
   claim("efuse-surgery", "door story", "IBM, 2004, adopted eFuse for microsurgery."),
-  claim("split", "door story", "One became two. Adam and Eve are the human name for that split: one life, two branches."),
+  claim("split", "door story", "The bite of the apple is the action: one, then two. That action is the split: one life, then two branches."),
   claim("rings", "door story", "Three rings. Iris is the teal light. The cosmos is the field around it. The outer arc reads green or red."),
   claim("cadence", "door story", "Engineering has repeated the same cadence ever since: one, two, one, two. Binary. Two pipes on one task. Write and audit. The rhythm of pure logic."),
   claim("line", "door story", "The teal ring is Iris, the explorer 👽. From her the line runs the web 🌐, the world 🌎, the cosmos 🌌, the heart ❤️, the brain 🧠, and the fire 🔥."),
