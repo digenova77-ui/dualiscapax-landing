@@ -1,6 +1,6 @@
 /**
  * DualisCapax unified API client.
- * Current as of: 2026-08-30
+ * Current as of: 2026-10-17
  * Binds FE rollout jacket + both leftover chat helpers to one surface.
  * No secret keys. Access stays closed.
  */
@@ -11,7 +11,7 @@
   var TRUSTED_API_ORIGIN = 'https://dualiscapax-depth.digenova77.workers.dev';
 
   function uuid() {
-    if (g.crypto && crypto.randomUUID) return crypto.randomUUID();
+    if (g.crypto && g.crypto.randomUUID) return g.crypto.randomUUID();
     return 'dc-' + Date.now() + '-' + Math.random().toString(16).slice(2);
   }
 
