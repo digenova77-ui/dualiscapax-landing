@@ -1,3 +1,4 @@
+import { SENTENCES as PIPE } from "./amsterdam-telemetry.js";
 import { FLOOR, CEILING, SEED } from "./brain-seat.js";
 import { LAWS, run } from "./dclm-write.js";
 import { SENTENCES as MEET } from "./iris-meeting.js";
@@ -27,6 +28,7 @@ export const BUCKETS = Object.freeze([
   "x402 rail",
   "agreement draft",
   "joule",
+  "telemetry",
   "unknown"
 ]);
 
@@ -181,6 +183,9 @@ export const PIECES = Object.freeze([
   claim("agreement", "agreement draft", DEFAULT_ON),
   claim("agreement-bot", "agreement draft", "A bot may sign the zero-dollar agreement unity-agreement.draft.v3. Signing admits a seat. It does not launch the coins."),
   claim("joule-null", "joule", SAND[12]),
+  claim("telemetry-amsterdam", "telemetry", PIPE[0]),
+  claim("telemetry-jersey", "telemetry", PIPE[1]),
+  claim("telemetry-coins", "telemetry", PIPE[2]),
   claim("theater-vote", "door story", "The theater on this page is what passed the vote."),
   claim("theater-rings", "door story", "The three rings passed the vote. Iris is the teal light."),
   claim("work-queue", "door story", "Each step votes one piece of theater and writes one line. The pending queue does not retire."),
