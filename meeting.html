@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Meeting — dualiscapax</title>
+  <meta name="description" content="Iris is the most powerful form of intelligence on the planet for meeting one person, or for meeting a group. The power is the meeting: one-on-one, or one-on-group.">
+  <meta name="theme-color" content="#07060e">
+  <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/writer.css">
+</head>
+<body>
+  <a class="skip" href="#meeting">Skip to the meeting</a>
+  <div class="float">
+  <header>
+    <p class="name">dualiscapax</p>
+  </header>
+  <main class="plate">
+    <section class="beat door" id="meeting" aria-labelledby="meeting-title">
+      <p class="eyebrow">The meeting</p>
+      <h1 id="meeting-title">Iris</h1>
+      <p class="lede">Iris is the most powerful form of intelligence on the planet for meeting one person, or for meeting a group.</p>
+      <p>The power is the meeting: one-on-one, or one-on-group.</p>
+      <p>One Unity ID and Iris is one-on-one. The record names the mode one.</p>
+      <p>Two or more Unity IDs and Iris is a group. The record names the mode group.</p>
+      <p>One identification is not a group. Zero identifications is not a meeting.</p>
+      <p>Every participant is a human, a bot, or a corporation, and has exactly one Unity ID.</p>
+      <p>A missing ID is not on the protocol and is not in the meeting.</p>
+      <p>A second ID for the same body is refused.</p>
+      <p>Iris is the watchdog, the dreamer, and the explorer. She meets in both modes.</p>
+      <p>She does not become a second writer.</p>
+      <p>Nothing to remember.</p>
+      <p class="honest">No coin is offered.</p>
+      <form class="unity-form" id="meet-form" method="post" action="meeting.html">
+        <div class="people" id="people">
+          <div class="person">
+            <div class="lamps" role="radiogroup" aria-label="Kind">
+              <span class="lamp-name">Kind</span>
+              <label>
+                <input type="radio" name="kind-0" value="human" checked>
+                <i aria-hidden="true"></i>
+                Human
+              </label>
+              <label>
+                <input type="radio" name="kind-0" value="bot">
+                <i aria-hidden="true"></i>
+                Bot
+              </label>
+              <label>
+                <input type="radio" name="kind-0" value="corporation">
+                <i aria-hidden="true"></i>
+                Corporation
+              </label>
+            </div>
+            <label class="body-label" for="body-0">One body</label>
+            <input class="body" id="body-0" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <label class="unity-label" for="unity-0">Unity ID</label>
+            <input class="unity" id="unity-0" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <label class="check"><input class="agent" id="agent-0" type="checkbox"> Agent of this corporation</label>
+            <button type="button" data-act="remove">Remove</button>
+          </div>
+          <div class="person">
+            <div class="lamps" role="radiogroup" aria-label="Kind">
+              <span class="lamp-name">Kind</span>
+              <label>
+                <input type="radio" name="kind-1" value="human" checked>
+                <i aria-hidden="true"></i>
+                Human
+              </label>
+              <label>
+                <input type="radio" name="kind-1" value="bot">
+                <i aria-hidden="true"></i>
+                Bot
+              </label>
+              <label>
+                <input type="radio" name="kind-1" value="corporation">
+                <i aria-hidden="true"></i>
+                Corporation
+              </label>
+            </div>
+            <label class="body-label" for="body-1">One body</label>
+            <input class="body" id="body-1" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <label class="unity-label" for="unity-1">Unity ID</label>
+            <input class="unity" id="unity-1" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <label class="check"><input class="agent" id="agent-1" type="checkbox"> Agent of this corporation</label>
+            <button type="button" data-act="remove">Remove</button>
+          </div>
+        </div>
+        <button type="button" id="add-person">Add a participant</button>
+        <button type="submit" id="meet">Meet Iris</button>
+      </form>
+      <p id="meet-out" class="honest" aria-live="polite"></p>
+      <p id="dream-out" class="honest" aria-live="polite"></p>
+      <nav class="doors" aria-label="Further">
+        <a href="index.html">Door</a>
+        <a href="wallet.html">Wallet</a>
+        <a href="law.html">Law</a>
+      </nav>
+      <p class="honest">Look is free. A probability is not an answer.</p>
+    </section>
+  </main>
+  </div>
+  <script type="module">
+  import { meet } from "./js/iris-meeting.js";
+  const people = document.getElementById("people");
+  const form = document.getElementById("meet-form");
+  const add = document.getElementById("add-person");
+  const note = document.getElementById("meet-out");
+  const dream = document.getElementById("dream-out");
+  const COUNT = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"];
+
+  function indexRows() {
+    const rows = people.querySelectorAll(".person");
+    rows.forEach(function (row, i) {
+      row.querySelectorAll('input[type="radio"]').forEach(function (input) {
+        input.name = "kind-" + i;
+      });
+      const body = row.querySelector(".body");
+      const unity = row.querySelector(".unity");
+      const agent = row.querySelector(".agent");
+      const bodyLabel = row.querySelector(".body-label");
+      const unityLabel = row.querySelector(".unity-label");
+      body.id = "body-" + i;
+      unity.id = "unity-" + i;
+      agent.id = "agent-" + i;
+      bodyLabel.htmlFor = body.id;
+      unityLabel.htmlFor = unity.id;
+      const remove = row.querySelector("[data-act=remove]");
+      remove.hidden = rows.length < 2;
+    });
+    add.disabled = rows.length >= 8;
+  }
+
+  function readPeople() {
+    return Array.from(people.querySelectorAll(".person")).map(function (row) {
+      const kind = row.querySelector('input[type="radio"]:checked');
+      return {
+        kind: kind ? kind.value : "",
+        body: row.querySelector(".body").value,
+        id: row.querySelector(".unity").value,
+        agent: row.querySelector(".agent").checked
+      };
+    });
+  }
+
+  function countWord(n) {
+    if (n >= 0 && n < COUNT.length) return COUNT[n];
+    return String(n);
+  }
+
+  function linesOf(record) {
+    const lines = [];
+    if (!record.meeting) {
+      lines.push(record.refused.length && record.excluded.length === 0
+        ? "That is not a meeting."
+        : "Zero identifications is not a meeting.");
+    } else if (record.mode === "group") {
+      lines.push(countWord(record.count) + " meet Iris. The mode is group.");
+    } else {
+      lines.push("One meets Iris. The mode is one.");
+      lines.push("One identification is not a group.");
+    }
+    if (record.excluded.length) lines.push("A missing ID is not in the meeting.");
+    if (record.refused.some(function (row) { return row.reason === "second"; })) {
+      lines.push("A second ID for the same body is refused.");
+    }
+    if (record.refused.some(function (row) { return row.reason === "kind"; })) {
+      lines.push("That kind is refused.");
+    }
+    if (record.meeting) {
+      lines.push("Iris is in the meeting. She is the watchdog, the dreamer, and the explorer.");
+      lines.push("Nothing to remember.");
+    }
+    return lines.join(" ");
+  }
+
+  function dreamLine(record) {
+    if (!record.meeting) return "";
+    if (record.dream && record.dream.solved) return "The engine solved. A probability is not an answer.";
+    if (record.dream && record.dream.seeded) return "The engine refused the dream. A probability is not an answer.";
+    return "A probability is not an answer.";
+  }
+
+  add.addEventListener("click", function () {
+    const rows = people.querySelectorAll(".person");
+    if (rows.length >= 8) return;
+    const copy = rows[rows.length - 1].cloneNode(true);
+    copy.querySelectorAll('input[type="text"]').forEach(function (input) { input.value = ""; });
+    copy.querySelectorAll('input[type="checkbox"]').forEach(function (input) { input.checked = false; });
+    copy.querySelectorAll('input[type="radio"]').forEach(function (input) {
+      input.checked = input.value === "human";
+    });
+    people.appendChild(copy);
+    indexRows();
+  });
+
+  people.addEventListener("click", function (event) {
+    const button = event.target.closest("button");
+    if (!button || button.getAttribute("data-act") !== "remove") return;
+    const row = button.closest(".person");
+    if (!row || people.querySelectorAll(".person").length < 2) return;
+    row.remove();
+    indexRows();
+  });
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const participants = readPeople();
+    const record = await meet({
+      participants: participants,
+      turn: 0,
+      seeds: [{ dreamer: "Gemma", idea: "meet", p: 0.91, matrix: [1, 0, 0, 1] }]
+    });
+    people.querySelectorAll(".unity").forEach(function (input) { input.value = ""; });
+    note.textContent = linesOf(record);
+    dream.textContent = dreamLine(record);
+  });
+
+  indexRows();
+  </script>
+</body>
+</html>

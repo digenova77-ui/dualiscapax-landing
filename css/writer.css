@@ -365,6 +365,15 @@ input,select{
 }
 .unity-form{margin-top:1.25rem;max-width:36rem}
 .unity-form .lamps{margin-top:.2rem}
+.unity-form [hidden]{display:none}
+.people{display:grid;gap:.85rem;margin-top:1.1rem}
+.person{
+  border:1px solid var(--line);
+  border-left:2px solid var(--iris);
+  padding:.85rem 1rem 1rem;
+  background:linear-gradient(90deg,rgba(62,224,255,.06),transparent 72%);
+}
+.person .lamps{margin-top:0}
 .check{display:flex;gap:.6rem;align-items:flex-start;margin:.7rem 0;color:var(--quiet);text-align:left;text-transform:none;letter-spacing:0;font-size:1rem}
 .check input{width:auto;margin-top:.2rem}
 html:not(.is-onboard) .pack .cad,
