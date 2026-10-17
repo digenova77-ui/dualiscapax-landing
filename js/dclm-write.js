@@ -1,3 +1,8 @@
+/**
+ * When the law passes, DCLM writes in that same step.
+ * Nothing is left to vote on. A failed law writes nothing.
+ */
+
 export const LAWS = Object.freeze([
   "NO_FORCE",
   "HOST_SAFE",
@@ -89,13 +94,24 @@ export function auditPipe(input) {
   return pipe("audit", true, "HOLD", []);
 }
 
-export function run(input) {
+const admissions = new Map();
+
+function markOf(task) {
+  return nameOf(task) + "\0" + whatOf(task);
+}
+
+export function invoke(input) {
   const task = taskOf(input);
   const write = writePipe(task);
   const audit = auditPipe(task);
   const gate = authorityOf(task);
   const agreed = write.ok === audit.ok;
-  const admitted = agreed && write.ok === true && gate.ok === true;
+  const admitted = agreed
+    && write.ok === true
+    && gate.ok === true
+    && write.reason === "HOLD"
+    && audit.reason === "HOLD"
+    && gate.reason === "HOLD";
   let reason = "ADMIT";
   if (!admitted) {
     if (!gate.ok) reason = gate.reason;
@@ -103,17 +119,39 @@ export function run(input) {
     else reason = write.reason;
   }
   const name = nameOf(task);
-  return {
+  if (!admitted) {
+    return {
+      task: name,
+      write: write,
+      audit: audit,
+      admitted: false,
+      reason: reason,
+      authority: AUTHORITY,
+      written: null,
+      look: 0,
+      joule: null
+    };
+  }
+  const mark = markOf(task);
+  const prior = admissions.get(mark);
+  if (prior) return prior;
+  const record = Object.freeze({
     task: name,
-    write: write,
-    audit: audit,
-    admitted: admitted,
-    reason: reason,
+    write: Object.freeze(write),
+    audit: Object.freeze(audit),
+    admitted: true,
+    reason: "ADMIT",
     authority: AUTHORITY,
-    written: admitted ? { task: name, what: whatOf(task) } : null,
+    written: Object.freeze({ task: name, what: whatOf(task) }),
     look: 0,
     joule: null
-  };
+  });
+  admissions.set(mark, record);
+  return record;
+}
+
+export function run(input) {
+  return invoke(input);
 }
 
 function json(status, body) {
