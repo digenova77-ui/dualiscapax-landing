@@ -1,7 +1,7 @@
 # Spectrum-to-System Research Log
 
 **Project:** DualisCapax / Three Rings · One Seed  
-**Log version:** 0.1  
+**Log version:** 0.2  
 **Started:** 2026-10-17  
 **Current state:** Research branch only; draft PR #109  
 **Production boundary:** No production deployment, DNS mutation, or live-server changes authorized or performed.
@@ -106,15 +106,17 @@ Do not rewrite earlier conclusions to make a new result look inevitable. Append 
 ### Wave 0 — Concept and repository checkpoint
 - Date: 2026-10-17
 - Question: can the recurring three-ring visual motif be turned into a testable research and implementation plan?
-- Result: interactive schematic workbench, research plan, analytic hydrogen reference module, unit tests, and pull-request CI were added on `research/diamond-floor-recursion-v1`.
+- Result: interactive schematic workbench, research plan, analytic hydrogen reference module, strict seed-manifest verifier, adversarial unit tests, and pull-request CI were added on `research/diamond-floor-recursion-v1`.
 - Evidence: repository artifacts and CI result associated with draft PR #109.
-- Status: PARTIAL PASS for the software reference tests; NOT TESTED for browser rendering and cross-domain mapping.
+- Status: PARTIAL PASS for the initial hydrogen reference tests. The expanded CI run after adding seed-verifier tests is pending re-check; browser rendering and cross-domain mapping remain NOT TESTED.
 - Limits: no claim of unified physics, physical causation, or production readiness.
 
 ### Wave 1 — Canonical seed and independent verification
 - Question: can the seed be serialized unambiguously and independently checked without executing user-supplied code?
-- Required work: strict schema; reject duplicate keys, NaN/Infinity, ambiguous floating-point values, and unknown rule versions; hash canonical bytes; test mutation and independent replay.
-- Status: NEXT.
+- Implemented on branch: `research/engineering/seed_verifier.py` and `research/engineering/test_seed_verifier.py`.
+- Scope: strict required-field/version validation; rejects duplicate keys, NaN/Infinity, binary floats, unknown fields and schema versions; canonical JSON bytes; SHA-256 commitment; tests for key-order stability and mutation. Manifest contents are treated as data; no embedded code is executed.
+- Important limit: this is schema validation and content commitment only, not proof of mathematical correctness or an independent replay implementation.
+- Status: IMPLEMENTED; expanded CI run pending re-check; independent second implementation remains NEXT.
 
 ### Wave 2 — Hydrogen numerical integration
 - Question: do numerical radial and angular distributions normalize within declared error bounds, and do calculated energies agree with the stated model/reference?
@@ -144,3 +146,13 @@ Do not rewrite earlier conclusions to make a new result look inevitable. Append 
 - Never claim a hash proves correctness or truth.
 - Never use a physical resemblance as a basis for a medical, financial, industrial, or safety-critical action.
 - Never change live DNS, production, or external actuators without explicit approval.
+
+
+### Wave 1a — Canonical manifest boundary
+- Date: 2026-10-17
+- Question: can ambiguous manifests be rejected before any model-specific processing?
+- Artifacts: `research/engineering/seed_verifier.py`; `research/engineering/test_seed_verifier.py`; expanded `.github/workflows/hydrogen-reference-tests.yml`.
+- Expected behavior: duplicate JSON keys, binary floats, non-finite values, unsupported schema versions, missing fields, and extra fields are rejected; key order does not change canonical bytes; changed content changes the SHA-256 commitment.
+- Execution status: code and CI workflow committed to the research branch; expanded workflow result not yet verified at log time.
+- Known limitation: Python JSON canonicalization here is a project-specific constrained format, not a claim of full RFC 8785 compliance. Cross-language independent replay is not yet implemented.
+- Next: verify CI; add an independent implementation and a formal canonical encoding specification before treating hashes as cross-language stable.
