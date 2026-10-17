@@ -99,7 +99,9 @@ body{background:#02040c}
   document.getElementById('pick').addEventListener('click', function(){ file.click(); });
   file.addEventListener('change', function(){
     if (!file.files || !file.files[0]) return;
-    DCL2.plugFile(file.files[0]).then(paint).catch(fail);
+    var selected = file.files[0];
+    file.value = '';
+    DCL2.plugFile(selected).then(paint).catch(fail);
   });
   drop.addEventListener('dragover', function(e){ e.preventDefault(); drop.classList.add('on'); });
   drop.addEventListener('dragleave', function(){ drop.classList.remove('on'); });
