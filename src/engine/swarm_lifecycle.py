@@ -1,14 +1,13 @@
 """Autonomous swarm work lifecycle: initiative is open; truth is gated by evidence.
 
-This module layers lifecycle rules over swarm_protocol.py. It does not authenticate
-identity labels or grant authority to perform external side effects.
+This module does not authenticate identity labels or grant authority for side effects.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any
 
-from swarm_protocol import ProtocolError, ROLES, validate_claim_verification
+from swarm_protocol import ProtocolError, ROLES
 
 
 @dataclass
@@ -19,11 +18,10 @@ class WorkItem:
     scope: str
     status: str = "PROPOSED"
     claims: list[dict[str, Any]] = field(default_factory=list)
-    findings: list[dict[str, Any]] = field(default_factory=list)
 
 
 def initiate_work(*, task_id: str, worker_id: str, worker_role: str, scope: str) -> WorkItem:
-    """Allow a worker to initiate bounded work without waiting for assignment."""
+    """Any registered worker can start bounded work without a prior assignment."""
     if not isinstance(task_id, str) or not task_id.strip():
         raise ProtocolError("TASK_ID_REQUIRED")
     if not isinstance(worker_id, str) or not worker_id.strip():
@@ -32,13 +30,12 @@ def initiate_work(*, task_id: str, worker_id: str, worker_role: str, scope: str)
         raise ProtocolError("UNKNOWN_ROLE")
     if not isinstance(scope, str) or not scope.strip() or len(scope) > 2000:
         raise ProtocolError("INITIATIVE_SCOPE_REQUIRED")
-    return WorkItem(task_id=task_id, originator_id=worker_id,
-                    originator_role=worker_role, scope=scope.strip())
+    return WorkItem(task_id, worker_id, worker_role, scope.strip())
 
 
 def record_finding(item: WorkItem, *, author_id: str, statement: str,
                    evidence_refs: list[str]) -> dict[str, Any]:
-    """Record a finding as a claim awaiting validation, never as established truth."""
+    """Record a claim as UNVERIFIED, regardless of the author's confidence."""
     if item.status in {"REJECTED", "CLOSED"}:
         raise ProtocolError("WORK_ITEM_NOT_OPEN")
     if not isinstance(author_id, str) or not author_id.strip():
@@ -57,17 +54,24 @@ def record_finding(item: WorkItem, *, author_id: str, statement: str,
 
 def validate_finding(item: WorkItem, *, claim_id: str, validator_id: str,
                      verdict: str, evidence_refs: list[str]) -> dict[str, Any]:
-    """An independent validator may promote a claim only with explicit evidence."""
-    claim = next((claim for claim in item.claims if claim["claim_id"] == claim_id), None)
+    """Require a distinct validator, passing verdict, and nonempty evidence refs.
+
+    This local check does not prove the validator ID is authentic. Production must
+    bind it to an authenticated principal and independently inspect the evidence.
+    """
+    claim = next((c for c in item.claims if c["claim_id"] == claim_id), None)
     if claim is None:
         raise ProtocolError("CLAIM_NOT_FOUND")
-    validation = validate_claim_verification(
-        claimant_id=claim["author_id"],
-        validator_id=validator_id,
-        verdict=verdict,
-        evidence_refs=evidence_refs,
-    )
-    claim["validation"] = validation
+    if not isinstance(validator_id, str) or not validator_id.strip():
+        raise ProtocolError("VALIDATOR_ID_REQUIRED")
+    if validator_id == claim["author_id"]:
+        raise ProtocolError("SELF_VALIDATION_FORBIDDEN")
+    if verdict not in {"PASS", "FAIL"}:
+        raise ProtocolError("INVALID_VERDICT")
+    if not isinstance(evidence_refs, list) or not evidence_refs or any(not isinstance(ref, str) or not ref.strip() for ref in evidence_refs):
+        raise ProtocolError("VERIFICATION_EVIDENCE_REQUIRED")
+    claim["validation"] = {"validator_id": validator_id, "verdict": verdict,
+                           "evidence_refs": list(evidence_refs)}
     claim["truth_status"] = "VERIFIED" if verdict == "PASS" else "REJECTED"
     item.status = "VALIDATED" if all(c["truth_status"] in {"VERIFIED", "REJECTED"} for c in item.claims) else "AWAITING_VALIDATION"
     return claim
