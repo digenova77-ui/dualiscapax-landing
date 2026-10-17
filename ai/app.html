@@ -287,7 +287,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-o
     if(!on){
       var vid=document.getElementById("you");
       if(vid && vid.srcObject){ vid.srcObject.getTracks().forEach(function(t){t.stop();}); vid.srcObject=null; }
-      pip.classList.remove("on"); btn.classList.remove("on"); return;
+      pip.classList.remove("on"); btn.classList.remove("on"); btn.setAttribute("aria-pressed","false"); setStatus("Ready · text and voice controls available","ready"); line("Camera preview stopped."); return;
     }
     navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false}).then(function(s){
       document.getElementById("you").srcObject=s;
