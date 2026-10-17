@@ -28,14 +28,21 @@
   }
 
   function save(row) {
-    localStorage.setItem(KEY, JSON.stringify(row));
+    try {
+      row.storage = "LOCAL_STORAGE";
+      localStorage.setItem(KEY, JSON.stringify(row));
+    } catch (e) {
+      row.storage = "MEMORY_ONLY";
+    }
     return row;
   }
 
   function clear() {
-    localStorage.removeItem(KEY);
-    if (w.DCMatrix && typeof w.DCMatrix.clear === "function") w.DCMatrix.clear();
-    if (w.OneNet && typeof w.OneNet.releaseAll === "function") w.OneNet.releaseAll();
+    var ok = true;
+    try { localStorage.removeItem(KEY); } catch (e) { ok = false; }
+    try { if (w.DCMatrix && typeof w.DCMatrix.clear === "function") w.DCMatrix.clear(); } catch (e2) { ok = false; }
+    try { if (w.OneNet && typeof w.OneNet.releaseAll === "function") w.OneNet.releaseAll(); } catch (e3) { ok = false; }
+    return ok;
   }
 
   function refuse(reason, extra) {
