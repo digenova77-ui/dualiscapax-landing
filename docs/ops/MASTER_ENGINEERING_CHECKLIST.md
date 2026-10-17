@@ -88,3 +88,25 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Deployment status — 2026-10-17
 
 Source changes are not a deployment. No Cloudflare dashboard credentials or direct deployment tool were available in this work session. Do not mark live deployment as PASS until the manual staging upload, route checks, and rollback target have been recorded. Do not change DNS or touch live servers/databases as part of this recovery.
+
+## Grok Bot production changes — declared 2026-10-17 (retroactive)
+
+Operator gave chat approval ("Go live"); **no reviewed plan existed on GitHub beforehand**, contrary to the Governing constraints above. Recorded here so every agent sees the actual live state. Further Grok Bot production changes are paused; Cloudflare DNS changes are frozen pending operator review. Facts below re-verified read-only on NJ at 2026-10-17 17:23 UTC unless marked NOT TESTED.
+
+| # | Change | Verified evidence | Status | Rollback |
+|---|---|---|---|---|
+| G1 | PlanckOS law core `law_v 8` (`planck_law`, std-only): hand-written P-256 ECDSA verify, `efuse_fuse` (write-once passkey public-key receipt; mints nothing; Merit locks unchanged), `unity_handoff`, `/v2/door` | `planck-law.service` pid 567097 started 17:15:54 UTC, listening 127.0.0.1:18788; binary mtime 17:15:55 UTC; ledger contains 5 receipts with `law_v:8` (rest are v5–v7). The ~5-day uptime seen on the public ledger belongs to `dualis_live`/`dualis_edge` (started 2026-10-12), not the law core. `src/main.rs` contains 48 `#[test]` functions | Deployed. Unit tests: NOT TESTED in this verification (not re-run; earlier run reported pass, no CI). Pre-deploy chain replay: reported match, NOT TESTED here. Real-device passkey ceremony: NOT TESTED | Restore `~/planckos/law/backup-20261017-171453-law-v8-handoff` (or `-171542-law-v8-door`) + `receipts.backup-20261017-171450-pre-v8.jsonl`; restart `planck-law` |
+| G2 | Caddy: `POST /api/v2/task` on host dualiscapax.ai, 4 KB body cap, rewritten to law core `/v2/door`; other methods → 403 `DOOR_OP_FORBIDDEN` | Present in `/etc/caddy/Caddyfile`; `curl -X POST https://dualiscapax.ai/api/v2/task -d '{}'` → 403 (op refused) | Deployed; positive path NOT TESTED externally | `/etc/caddy/Caddyfile.bak-task-door-20261017T171605Z`, `caddy reload` |
+| G3 | `.ai /bind/` receiver + world Unity-ID change (no passkey creation on .ai) | dualiscapax-deploy PR #1, merged `73735cf` | Merged; live behaviour NOT TESTED | Revert `73735cf` in dualiscapax-deploy |
+| G4 | dualiscapax.com served from NJ: **only** `/`, `/unity.js`, `/favicon.svg` on host .com map to `/srv/dualiscapax/com-unity` (not the whole site root) | Caddyfile `@com_seed_home` / `@com_unity_files`; `https://dualiscapax.com/` → 200. Page is a reduced single-function page; original Emergent content not carried over | Deployed; **FAIL** (operator Android Chrome: no text, button does nothing) | `/etc/caddy/Caddyfile.bak-com-unity-20261017T171653Z`, `caddy reload` |
+| G5 | Cloudflare DNS: dualiscapax.com apex A moved from Emergent 162.159.142.117 / 172.66.2.113 to 108.61.17.141; one record deleted | Pre-change zone export held on Grok Bot box: `/workspace/cf-backup/dns-20261017T131646-pre-com-golive.json` (not committed: zone data) | Deployed; current zone state NOT TESTED in this verification; DNS FROZEN | Re-create records from export — requires operator approval |
+
+Known effects and risks:
+- Passkeys registered on Emergent are orphaned; users must re-fuse.
+- The two .com "Live Ledger" links to .ai were removed with the reduced page.
+- Passkey-signed principals cannot yet send Merit payments.
+- Amsterdam chamber remains simulated in-process (not independent).
+- Uncommitted edits found in NJ `~/planckos` (`main.rs`, `node.js`, `package.json`) before deploy; ownership unknown; preserved, not committed.
+- law_v 8 source is not in any GitHub repo yet (source-of-truth gap).
+- A separate Node service on 127.0.0.1:18801 (pid 485208, not Grok Bot's) serves .com `/register/*`, `/auth/*`, `/api/webauthn/*` and .ai `/account/redeem`; it is a second, parallel passkey path to G1–G3. Owner to be confirmed.
+- Overlaps: #97 (server-verified one-ceremony handoff), #98, factory-queue PR #8 (pinned-library WebAuthn verifier), efuse-unity verifier, #103 map (.ai via Pages, .com via deploy worker), #110 DNS audit baseline.
