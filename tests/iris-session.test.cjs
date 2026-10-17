@@ -36,5 +36,5 @@ function load(overrides = {}) {
   assert.equal(thinkEvent.extra.hasLocalFile, true);
   assert.equal(JSON.stringify(thinkEvent).includes(privateText), false, "telemetry event must not include document text");
   assert.equal(privacy.snapshot().last.text, "what is in this file?");
-  console.log("IrisSession tests: 11 assertions passed");
+  console.log("IrisSession tests: 14 assertions passed");
 })().catch((error) => { console.error(error); process.exitCode = 1; });
