@@ -154,81 +154,97 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   if(window.IrisSphere&&IrisSphere.mount) IrisSphere.mount("#presence");
   if(window.IrisSphere&&IrisSphere.setWoken) IrisSphere.setWoken(true);
 
-  // Three-ring motion field. No waypoints, random destinations, or saved coordinates.
-  // Physics = viewport boundary response; philosophy = continuous drift; law = yield/avoid controls.
-  // The overlay is only a rendering surface. No position is authoritative or persisted.
+  // Three-ring motion field. No route, waypoints, or saved position.
+  // Physics: viewport gravity. Philosophy: smooth drift. Law: discreetness and human attention.
+  // Attention is inferred from pointer, focus, selection and page controls; never claim eye tracking
+  // unless a separately consented, supported gaze source is actually available.
   (function letIrisFloat(){
     var orb=document.getElementById("presence");
     if(!orb) return;
     orb.classList.add("iris-floater");
     var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    var px=(window.innerWidth||360)*.5, py=(window.innerHeight||640)*.44;
-    var vx=.13, vy=.07, last=0, pauseUntil=0, pointer={x:-9999,y:-9999,active:false};
-    var t=0;
+    var w=window.innerWidth||360,h=window.innerHeight||640;
+    var px=w*.5,py=h*.44,vx=.10,vy=.05,last=0,pauseUntil=0;
+    var pointer={x:-9999,y:-9999,active:false,at:0},t=0;
     function rect(){return orb.getBoundingClientRect();}
-    function controls(){
-      return [document.querySelector("header"),document.querySelector(".dock"),document.querySelector(".pip")].filter(function(el){
-        return el&&!el.hidden&&getComputedStyle(el).display!=="none";
-      }).map(function(el){return el.getBoundingClientRect();});
+    function visibleRect(el){
+      if(!el||el.hidden||getComputedStyle(el).display==="none"||getComputedStyle(el).visibility==="hidden")return null;
+      var r=el.getBoundingClientRect(),ww=window.innerWidth||360,hh=window.innerHeight||640;
+      if(r.right<0||r.left>ww||r.bottom<0||r.top>hh)return null;
+      return {left:Math.max(0,r.left),right:Math.min(ww,r.right),top:Math.max(0,r.top),bottom:Math.min(hh,r.bottom)};
     }
-    function inside(r,x,y,pad){return x>r.left-pad&&x<r.right+pad&&y>r.top-pad&&y<r.bottom+pad;}
+    function attentionRects(){
+      var selectors="header,.dock,.pip,main :focus,button:focus,input:focus,textarea:focus,select:focus,[aria-live='polite'],[aria-live='assertive']";
+      return Array.prototype.slice.call(document.querySelectorAll(selectors)).map(visibleRect).filter(Boolean);
+    }
+    function pushFromRect(cx,cy,r,pad){
+      var qx=Math.max(r.left-pad,Math.min(cx,r.right+pad));
+      var qy=Math.max(r.top-pad,Math.min(cy,r.bottom+pad));
+      var dx=cx-qx,dy=cy-qy,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<pad){d=d||1;var strength=(pad-d)/pad;return {x:dx/d*strength,y:dy/d*strength};}
+      return {x:0,y:0};
+    }
     function tick(now){
       requestAnimationFrame(tick);
       if(reduced||document.hidden||now<pauseUntil||talk.classList.contains("on")||
         (document.getElementById("cam")&&document.getElementById("cam").classList.contains("on"))||
-        (window.speechSynthesis&&speechSynthesis.speaking)) {last=now;return;}
-      var dt=last?Math.min(.04,(now-last)/1000):.016; last=now; t+=dt;
-      var w=window.innerWidth||360,h=window.innerHeight||640,r=rect();
-      var hw=Math.max(32,r.width/2),hh=Math.max(32,r.height/2);
-      var minX=hw+10,maxX=w-hw-10,minY=Math.max(82,hh+10),maxY=Math.min(h-hh-112,h*.84);
-      // Ring 1 — physics: continuous boundary repulsion, never a destination.
-      var ax=(px<minX+36? .8:0)-(px>maxX-36? .8:0);
-      var ay=(py<minY+36? .8:0)-(py>maxY-36? .8:0);
-      // Ring 2 — philosophy: smooth, continuous drift; no route or waypoint list.
-      ax+=Math.sin(t*.37+py*.0021)*.19+Math.sin(t*.13+px*.001)*.08;
-      ay+=Math.cos(t*.31+px*.0017)*.17+Math.sin(t*.19+py*.001)*.06;
-      // Ring 3 — law: yield to human proximity and avoid controls.
-      if(pointer.active){
-        var dx=px-pointer.x,dy=py-pointer.y,d=Math.sqrt(dx*dx+dy*dy)||1;
-        if(d<170){ax+=(dx/d)*(170-d)/170*.9;ay+=(dy/d)*(170-d)/170*.9;}
-      }
-      var cx=px+hw,cy=py+hh;
-      controls().forEach(function(cr){
-        var qx=Math.max(cr.left-20,Math.min(cx,cr.right+20));
-        var qy=Math.max(cr.top-20,Math.min(cy,cr.bottom+20));
-        var dx=cx-qx,dy=cy-qy,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<90){d=d||1;ax+=(dx/d)*(90-d)/90*1.2;ay+=(dy/d)*(90-d)/90*1.2;}
+        (window.speechSynthesis&&speechSynthesis.speaking)){last=now;return;}
+      var dt=last?Math.min(.04,(now-last)/1000):.016;last=now;t+=dt;
+      w=window.innerWidth||360;h=window.innerHeight||640;
+      var r=rect(),hw=Math.max(32,r.width/2),hh=Math.max(32,r.height/2);
+      var minX=hw+10,maxX=w-hw-10,minY=Math.max(82,hh+10),maxY=Math.max(minY,h-hh-112);
+      var cx=px,cy=py;
+      // Ring 1 — gravity is restorative, so the orb cannot drift beyond the viewport.
+      var safeX=Math.max(minX,Math.min(maxX,w*.5)),safeY=Math.max(minY,Math.min(maxY,h*.46));
+      var ax=(safeX-px)*.0018,ay=(safeY-py)*.0018;
+      if(px<minX+42)ax+=.9;if(px>maxX-42)ax-=.9;
+      if(py<minY+42)ay+=.9;if(py>maxY-42)ay-=.9;
+      // Ring 2 — gentle continuous drift, not a list of destinations.
+      ax+=Math.sin(t*.31+py*.0014)*.12+Math.sin(t*.11+px*.001)*.045;
+      ay+=Math.cos(t*.27+px*.0012)*.11+Math.sin(t*.17+py*.001)*.04;
+      // Ring 3 — avoid areas likely to need attention; keep the orb discreet.
+      attentionRects().forEach(function(ar){
+        var q=pushFromRect(cx,cy,ar,Math.max(hw,hh)+22);
+        ax+=q.x*.95;ay+=q.y*.95;
       });
-      vx=(vx+ax*dt)*.992;vy=(vy+ay*dt)*.992;
-      var speed=Math.sqrt(vx*vx+vy*vy)||1;
-      if(speed>.42){vx*=.42/speed;vy*=.42/speed;}
+      if(pointer.active&&now-pointer.at<1800){
+        var dx=px-pointer.x,dy=py-pointer.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+        if(d<190){var force=(190-d)/190;ax+=dx/d*force*.75;ay+=dy/d*force*.75;}
+      }
+      vx=(vx+ax*dt)*.987;vy=(vy+ay*dt)*.987;
+      var speed=Math.sqrt(vx*vx+vy*vy)||1;if(speed>.34){vx*=.34/speed;vy*=.34/speed;}
       px+=vx*dt*58;py+=vy*dt*58;
-      if(px<minX){px=minX;vx=Math.abs(vx)*.55;}
-      if(px>maxX){px=maxX;vx=-Math.abs(vx)*.55;}
-      if(py<minY){py=minY;vy=Math.abs(vy)*.55;}
-      if(py>maxY){py=maxY;vy=-Math.abs(vy)*.55;}
+      // Hard safety boundary is the final constraint; gravity gently turns her inward first.
+      if(px<minX){px=minX;vx=Math.abs(vx)*.35;}
+      if(px>maxX){px=maxX;vx=-Math.abs(vx)*.35;}
+      if(py<minY){py=minY;vy=Math.abs(vy)*.35;}
+      if(py>maxY){py=maxY;vy=-Math.abs(vy)*.35;}
       orb.style.left=px+"px";orb.style.top=py+"px";
       orb.style.transform="translate(-50%,-50%)";
+      // Become less visually assertive when the user is reading or interacting nearby.
+      var near=pointer.active&&now-pointer.at<900&&Math.hypot(px-pointer.x,py-pointer.y)<220;
+      orb.style.opacity=near?"0.72":"0.94";
     }
-    function yieldToHuman(ev){
-      pauseUntil=performance.now()+4200;
-      if(ev&&typeof ev.clientX==="number"&&typeof ev.clientY==="number"){
-        pointer.x=ev.clientX;pointer.y=ev.clientY;pointer.active=true;
-        vx+=(px-ev.clientX)*.0015;vy+=(py-ev.clientY)*.0015;
-      }
+    function yieldToHuman(){
+      pauseUntil=performance.now()+1800;
+      // Yield means stop competing for attention; never teleport to the pointer.
+      vx*=.2;vy*=.2;
     }
     document.addEventListener("pointermove",function(ev){
-      pointer.x=ev.clientX;pointer.y=ev.clientY;pointer.active=true;
+      pointer.x=ev.clientX;pointer.y=ev.clientY;pointer.active=true;pointer.at=performance.now();
+      var r=rect();
+      if(ev.clientX>r.left-16&&ev.clientX<r.right+16&&ev.clientY>r.top-16&&ev.clientY<r.bottom+16)yieldToHuman();
     },{passive:true});
     document.addEventListener("pointerleave",function(){pointer.active=false;},{passive:true});
     orb.addEventListener("pointerdown",yieldToHuman,{passive:true});
+    document.addEventListener("focusin",yieldToHuman,true);
     window.addEventListener("resize",function(){
-      px=Math.max(40,Math.min((window.innerWidth||360)-40,px));
-      py=Math.max(90,Math.min((window.innerHeight||640)-140,py));
-      pauseUntil=performance.now()+900;
+      w=window.innerWidth||360;h=window.innerHeight||640;
+      px=Math.max(48,Math.min(w-48,px));py=Math.max(90,Math.min(h-130,py));
+      pauseUntil=performance.now()+700;
     },{passive:true});
     orb.style.left=px+"px";orb.style.top=py+"px";orb.style.transform="translate(-50%,-50%)";
-    if(!reduced) requestAnimationFrame(tick);
+    if(!reduced)requestAnimationFrame(tick);
   })();
   line(greetText());
   window.addEventListener("pointerdown", meet, { capture: true, once: true });
