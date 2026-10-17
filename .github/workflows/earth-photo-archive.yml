@@ -1,6 +1,12 @@
 name: Earth photo archive updater
 
 on:
+  push:
+    branches:
+      - "research/earth-photo-archive"
+    paths:
+      - ".github/workflows/earth-photo-archive.yml"
+      - "research/photo-archive/update_discoveries.py"
   schedule:
     - cron: "23 12 * * *"
   workflow_dispatch:
