@@ -102,6 +102,10 @@ function main() {
   console.log("Review findings: " + report.findingCount);
   console.log("Report written to workflow-safety-audit.json");
   for (const row of workflows) {
+    console.log("CLASSIFY " + row.file + " :: " + row.classification +
+      " :: triggers=" + row.triggers.join(",") +
+      " :: permissions=" + row.permissions.join(",") +
+      " :: mutationSignals=" + row.mutationSignals.join(","));
     if (row.findings.length) {
       console.log("REVIEW " + row.file + " :: " + row.findings.join(", "));
     }
