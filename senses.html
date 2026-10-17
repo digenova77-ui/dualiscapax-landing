@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Senses — dualiscapax</title>
+  <meta name="description" content="Iris runs with the operating system, idempotently: asking twice does not double-open a sense, and off means off.">
+  <meta name="theme-color" content="#07060e">
+  <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/writer.css">
+</head>
+<body>
+  <a class="skip" href="#agreement">Skip to the agreement</a>
+  <div class="float">
+  <header>
+    <p class="name">dualiscapax</p>
+  </header>
+  <main class="plate">
+    <section class="beat door" id="door" aria-labelledby="door-title">
+      <figure data-theater="rings">
+        <svg viewBox="0 0 640 640" role="img" aria-labelledby="fig-title fig-desc">
+          <title id="fig-title">Three rings</title>
+          <desc id="fig-desc">An armillary of three rings. The inner ring is Iris, a teal light, the explorer. The middle ring is the cosmos, a thin orbit with a few stars. The outer ring reads green or red.</desc>
+          <defs>
+            <radialGradient id="iris-core" cx="38%" cy="34%" r="68%">
+              <stop offset="0" stop-color="#e8fbff"/>
+              <stop offset="0.28" stop-color="#3ee0ff"/>
+              <stop offset="0.62" stop-color="#1494d6"/>
+              <stop offset="1" stop-color="#062848"/>
+            </radialGradient>
+            <radialGradient id="iris-shine" cx="32%" cy="28%" r="40%">
+              <stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="iris-moon" cx="35%" cy="32%" r="70%">
+              <stop offset="0" stop-color="#e4c8ff"/>
+              <stop offset="0.45" stop-color="#9b5cff"/>
+              <stop offset="1" stop-color="#3a146e"/>
+            </radialGradient>
+            <radialGradient id="phos-green" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#b6ff9a" stop-opacity="0.75"/>
+              <stop offset="1" stop-color="#b6ff9a" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="phos-red" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#ff6a70" stop-opacity="0.75"/>
+              <stop offset="1" stop-color="#ff6a70" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.1" result="b"/>
+              <feMerge>
+                <feMergeNode in="b"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="phosphor" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3.2" result="b"/>
+              <feMerge>
+                <feMergeNode in="b"/>
+                <feMergeNode in="b"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="bloom" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="14"/>
+            </filter>
+          </defs>
+          <g class="ring is-sym" id="ring-sym">
+            <ellipse class="breath pass-green" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-green)" filter="url(#bloom)"/>
+            <ellipse class="breath pass-red" cx="320" cy="168" rx="108" ry="46" fill="url(#phos-red)" filter="url(#bloom)"/>
+            <g fill="none" stroke="rgba(99,247,221,0.62)" stroke-linecap="round">
+              <line x1="320.0" y1="96.0" x2="320.0" y2="84.0" stroke-width="1.15"/>
+              <line x1="432.0" y1="126.0" x2="438.0" y2="115.6" stroke-width="1.15"/>
+              <line x1="514.0" y1="208.0" x2="524.4" y2="202.0" stroke-width="1.15"/>
+              <line x1="544.0" y1="320.0" x2="556.0" y2="320.0" stroke-width="1.15"/>
+              <line x1="514.0" y1="432.0" x2="524.4" y2="438.0" stroke-width="1.15"/>
+              <line x1="432.0" y1="514.0" x2="438.0" y2="524.4" stroke-width="1.15"/>
+              <line x1="320.0" y1="544.0" x2="320.0" y2="556.0" stroke-width="1.15"/>
+              <line x1="208.0" y1="514.0" x2="202.0" y2="524.4" stroke-width="1.15"/>
+              <line x1="126.0" y1="432.0" x2="115.6" y2="438.0" stroke-width="1.15"/>
+              <line x1="96.0" y1="320.0" x2="84.0" y2="320.0" stroke-width="1.15"/>
+              <line x1="126.0" y1="208.0" x2="115.6" y2="202.0" stroke-width="1.15"/>
+              <line x1="208.0" y1="126.0" x2="202.0" y2="115.6" stroke-width="1.15"/>
+            </g>
+            <circle cx="320" cy="320" r="236" fill="none" stroke="rgba(99,247,221,0.46)" stroke-width="1.15"/>
+          </g>
+          <g class="ring is-cosmos" id="ring-cosmos">
+            <circle cx="320" cy="320" r="176" fill="none" stroke="rgba(170,140,255,0.62)" stroke-width="1.15"/>
+            <ellipse cx="320" cy="320" rx="176" ry="54" fill="none" stroke="rgba(170,140,255,0.38)" stroke-width="0.9" transform="rotate(-24 320 320)"/>
+            <g class="stars">
+              <circle cx="505.0" cy="317.9" r="1.5" opacity="1"/>
+              <circle cx="490.8" cy="391.1" r="0.9" opacity="0.7"/>
+              <circle cx="437.7" cy="456.2" r="0.9" opacity="0.45"/>
+              <circle cx="388.2" cy="479.0" r="0.7" opacity="0.45"/>
+              <circle cx="315.9" cy="500.0" r="1.5" opacity="0.7"/>
+              <circle cx="244.2" cy="488.8" r="0.7" opacity="0.45"/>
+              <circle cx="212.0" cy="455.2" r="0.7" opacity="1"/>
+              <circle cx="152.2" cy="397.9" r="0.9" opacity="0.7"/>
+              <circle cx="140.1" cy="313.9" r="0.7" opacity="0.45"/>
+              <circle cx="156.7" cy="254.3" r="1.5" opacity="0.45"/>
+              <circle cx="201.9" cy="189.5" r="0.9" opacity="0.9"/>
+              <circle cx="230.4" cy="158.1" r="0.7" opacity="1"/>
+              <circle cx="303.5" cy="144.8" r="1.5" opacity="0.45"/>
+              <circle cx="400.9" cy="172.8" r="0.9" opacity="0.7"/>
+              <circle cx="450.3" cy="214.0" r="1.5" opacity="1"/>
+              <circle cx="493.1" cy="270.7" r="1.5" opacity="0.45"/>
+            </g>
+          </g>
+          <g class="ring is-iris" id="ring-iris">
+            <circle class="breath" cx="320" cy="320" r="108" fill="url(#iris-core)"/>
+            <circle cx="320" cy="320" r="108" fill="url(#iris-shine)"/>
+            <circle cx="248" cy="392" r="38" fill="url(#iris-moon)" opacity="0.92"/>
+            <circle cx="248" cy="392" r="38" fill="url(#iris-shine)" opacity="0.45"/>
+            <circle cx="404" cy="246" r="34" fill="url(#iris-moon)" opacity="0.92"/>
+            <circle cx="404" cy="246" r="34" fill="url(#iris-shine)" opacity="0.4"/>
+          </g>
+          <g class="ring is-sym" id="ring-meet">
+            <circle class="pass-green" cx="320" cy="320" r="236" fill="none" stroke="#c8ffb4" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
+            <circle class="pass-red" cx="320" cy="320" r="236" fill="none" stroke="#ff6a70" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="250 1233" stroke-dashoffset="0" transform="rotate(-128 320 320)" filter="url(#phosphor)"/>
+          </g>
+        </svg>
+      </figure>
+      <p class="eyebrow">The door</p>
+      <h1 id="door-title">Senses</h1>
+      <p class="lede">Three rings. Iris is the teal light. The cosmos is the field around it. The outer arc reads green or red.</p>
+      <p id="idempotent">Iris runs with the operating system, idempotently: asking twice does not double-open a sense, and off means off.</p>
+      <label class="show-all">
+        <input type="radio" name="ring" id="all">
+        All three
+      </label>
+      <ol class="rings" id="rings">
+        <li>
+          <label class="ring-card" style="--c: var(--iris)">
+            <input type="radio" name="ring" id="pick-iris">
+            <span class="kicker">Iris</span>
+            <span class="say">Teal and blue. The explorer. One-on-one sits here.</span>
+          </label>
+        </li>
+        <li>
+          <label class="ring-card" style="--c: var(--cosmos)">
+            <input type="radio" name="ring" id="pick-cosmos">
+            <span class="kicker">Cosmos</span>
+            <span class="say">The field this record is written on. A group sits here.</span>
+          </label>
+        </li>
+        <li>
+          <label class="ring-card" style="--c: var(--pass)">
+            <input type="radio" name="ring" id="pick-sym" checked>
+            <span class="kicker">Arc</span>
+            <span class="say">The outer ring. Friends share the senses you leave on. It reads green or red.</span>
+          </label>
+        </li>
+      </ol>
+      <div class="lamps" role="group" aria-label="Outer arc">
+        <span class="lamp-name">Outer arc</span>
+        <label class="hold">
+          <input type="radio" name="pass" id="pass-green" disabled>
+          <i aria-hidden="true"></i>
+          Green
+        </label>
+        <label class="break">
+          <input type="radio" name="pass" id="pass-red" checked disabled>
+          <i aria-hidden="true"></i>
+          Red
+        </label>
+      </div>
+      <p class="honest">Green means the shared ring is open. Red means the host closed it. Before the agreement, the arc stays red and nothing is requested.</p>
+    </section>
+
+    <section class="beat" id="agreement" aria-labelledby="agreement-title">
+      <h2 id="agreement-title">The Unity agreement</h2>
+      <p id="default-on">When you sign the Unity agreement, every sense preference turns on. The operating system still has to grant each live sense. A preference can be on while the live grant is still pending.</p>
+      <p>Signing does not ask the operating system. You ask with a switch or with Ask. Off stops using that sense. Nothing here keeps a sense on after you or the operating system turns it off.</p>
+      <form class="unity-form" id="unity-agreement">
+        <label class="check"><input id="agree" name="agree" type="checkbox"> I sign the Unity agreement. Every sense preference turns on. I can turn each one off.</label>
+        <label for="host-body">One body</label>
+        <input id="host-body" name="body" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <label for="host-unity">Unity ID</label>
+        <input id="host-unity" name="unity" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button type="submit" id="sign">Sign the agreement</button>
+      </form>
+      <p id="sign-note" class="honest" aria-live="polite">The agreement is not signed. Every sense is off. Nothing has been requested.</p>
+    </section>
+
+    <section class="beat" id="senses" aria-labelledby="senses-title">
+      <h2 id="senses-title">The senses</h2>
+      <p>Each sense is its own switch. Place is where the phone is.</p>
+      <div class="hud" id="row-microphone">
+        <label class="check"><input id="sense-microphone" type="checkbox" disabled> Microphone</label>
+        <p class="honest" id="live-microphone">Off. Nothing has been requested.</p>
+        <button type="button" id="ask-microphone" disabled>Ask the operating system</button>
+      </div>
+      <div class="hud" id="row-front">
+        <label class="check"><input id="sense-front" type="checkbox" disabled> Front camera</label>
+        <p class="honest" id="live-front">Off. Nothing has been requested.</p>
+        <button type="button" id="ask-front" disabled>Ask the operating system</button>
+      </div>
+      <div class="hud" id="row-rear">
+        <label class="check"><input id="sense-rear" type="checkbox" disabled> Rear camera</label>
+        <p class="honest" id="live-rear">Off. Nothing has been requested.</p>
+        <button type="button" id="ask-rear" disabled>Ask the operating system</button>
+      </div>
+      <div class="hud" id="row-screen">
+        <label class="check"><input id="sense-screen" type="checkbox" disabled> Screen</label>
+        <p class="honest" id="live-screen">Off. Nothing has been requested.</p>
+        <button type="button" id="ask-screen" disabled>Ask the operating system</button>
+      </div>
+      <div class="hud" id="row-gyroscope">
+        <label class="check"><input id="sense-gyroscope" type="checkbox" disabled> Gyroscope</label>
+        <p class="honest" id="live-gyroscope">Off. Nothing has been requested.</p>
+        <button type="button" id="ask-gyroscope" disabled>Ask the operating system</button>
+      </div>
+      <div class="hud" id="row-motion">
+        <label class="check"><input id="sense-motion" type="checkbox" disabled> Motion</label>
+        <p class="honest" id="live-motion">Off. Nothing has been requested.</p>
+        <button type="button" id="ask-motion" disabled>Ask the operating system</button>
+      </div>
+      <div class="hud" id="row-orientation">
+        <label class="check"><input id="sense-orientation" type="checkbox" disabled> Orientation</label>
+        <p class="honest" id="live-orientation">Off. Nothing has been requested.</p>
+        <button type="button" id="ask-orientation" disabled>Ask the operating system</button>
+      </div>
+      <div class="hud" id="row-place">
+        <label class="check"><input id="sense-place" type="checkbox" disabled> Place</label>
+        <p class="honest" id="live-place">Off. Nothing has been requested.</p>
+        <button type="button" id="ask-place" disabled>Ask the operating system</button>
+      </div>
+      <p class="honest">This page stores no audio, no video, and no screen pixels. A share stores pegs. Look is free. The joule is null. The Merit gate stays shut. No coin. No child's record. No DNA. No microsurgery.</p>
+    </section>
+
+    <section class="beat" id="share" aria-labelledby="share-title">
+      <h2 id="share-title">Shared access</h2>
+      <p id="ring-rule">A friend joins a ring only with their own Unity ID. One ID each. A missing ID is not on the ring. A duplicate body is refused. A ring grants shared access to the senses the host has turned on. A friend does not gain a sense the host turned off. Leaving the ring removes that friend. The host can close the ring.</p>
+      <form class="unity-form" id="friend-form">
+        <label for="friend-body">Friend</label>
+        <input id="friend-body" name="body" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <label for="friend-unity">Unity ID</label>
+        <input id="friend-unity" name="unity" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button type="submit" id="join">Join the ring</button>
+        <button type="button" id="close-ring">Close the ring</button>
+      </form>
+      <p id="friend-note" class="honest" aria-live="polite">No friend is on the ring.</p>
+      <div id="friend-list"></div>
+    </section>
+
+    <section class="beat" id="world" aria-labelledby="world-title">
+      <h2 id="world-title">The New World</h2>
+      <p>The New World is how a person interacts with it.</p>
+      <p id="spatial">A spatial session is a meeting plus these sense preferences.</p>
+      <p>Iris is the most powerful form of intelligence on the planet for meeting one person, or for meeting a group. The power is the meeting: one-on-one, or one-on-group.</p>
+      <h2 id="example-iris-title">One with Iris</h2>
+      <p id="example-iris">You sit with Iris on the teal ring. Your microphone preference is on, and the two of you talk. No friend is on the ring.</p>
+      <h2 id="example-group-title">A group</h2>
+      <p id="example-group">Three people sit on the cosmos ring. Each one brought their own Unity ID. They share only the senses the host left on.</p>
+      <h2 id="example-on-title">A sense turned on</h2>
+      <p id="example-on">You turn the front camera on. That is one open. Asking again does not open a second camera. The operating system still has to grant it.</p>
+      <h2 id="example-off-title">A sense turned off</h2>
+      <p id="example-off">You turn the microphone off. Iris stops using it. The front camera and the other senses stay as they were. Off means off.</p>
+      <h2 id="example-friend-title">A friend on a shared ring</h2>
+      <p id="example-friend">Ada joins the outer arc with her own Unity ID. She receives the senses you left on. She does not receive a sense you turned off. When she leaves, she is off the ring.</p>
+      <p>One became two. Adam and Eve are the human name for that split: one life, two branches.</p>
+      <p class="efuse">eFuse is the oldest engineering in the observable universe. The one-two cadence is that engineering: one, then the split into two. IBM, 2004. eFuse was adopted for micro circuitry.</p>
+      <p>Engineering has repeated the same cadence ever since: one, two, one, two. Binary. Two pipes on one task. Write and audit. The rhythm of pure logic.</p>
+      <p>You have your Universal identification and your wallet.</p>
+      <p>Nothing to remember.</p>
+      <p>The identification is hashed, and that hash is the peg to permanent memory about you. Iris is pegged to the same permanence.</p>
+      <p>Everything on this network has one Unity ID. A human has one. A bot has one. A corporation has one. That is the identity.</p>
+      <p>The published joule is null, so the Merit gate stays shut.</p>
+      <p class="honest">No coin is offered.</p>
+      <nav class="doors" aria-label="Further">
+        <a href="index.html">Door</a>
+        <a href="meeting.html">Meeting</a>
+        <a href="wallet.html">Wallet</a>
+        <a href="law.html">Law</a>
+      </nav>
+      <p class="honest">Look is free. This page stores nothing.</p>
+    </section>
+  </main>
+  </div>
+  <script type="module">
+  import { LABELS, SENSES, open } from "./js/iris-senses.js";
+  import { askSense } from "./js/iris-senses-live.js";
+  const room = open();
+  const handles = new Map();
+  const inflight = new Map();
+  let painting = false;
+
+  function liveText(state, row) {
+    if (!state.signed) return "Off. Nothing has been requested.";
+    if (!row.preference) return "Off. Iris is not using it.";
+    if (row.live === "granted" && row.opens === 1) return "The operating system granted this sense. One open.";
+    if (row.live === "denied") return "The operating system did not grant this sense.";
+    if (row.requested) return "Asked. Waiting for the operating system.";
+    return "Preference on. The live grant is pending. The operating system has not been asked.";
+  }
+
+  function ringName() {
+    if (document.getElementById("pick-iris").checked) return "iris";
+    if (document.getElementById("pick-cosmos").checked) return "cosmos";
+    return "arc";
+  }
+
+  function ringLabel(name) {
+    if (name === "iris") return "Iris";
+    if (name === "cosmos") return "cosmos";
+    if (name === "arc") return "outer arc";
+    return "closed";
+  }
+
+  function sharedWords(names) {
+    const words = [];
+    for (let i = 0; i < names.length; i++) words.push(LABELS[names[i]] || names[i]);
+    return words.join(", ");
+  }
+
+  function render() {
+    painting = true;
+    const state = room.view();
+    for (let i = 0; i < SENSES.length; i++) {
+      const name = SENSES[i];
+      const row = state.senses[name];
+      const box = document.getElementById("sense-" + name);
+      const live = document.getElementById("live-" + name);
+      const ask = document.getElementById("ask-" + name);
+      box.disabled = state.signed !== true;
+      box.checked = row.preference === true;
+      ask.disabled = state.signed !== true || row.preference !== true;
+      live.textContent = liveText(state, row);
+    }
+    const green = document.getElementById("pass-green");
+    const red = document.getElementById("pass-red");
+    green.disabled = state.signed !== true;
+    red.disabled = state.signed !== true;
+    if (state.ringOpen) green.checked = true;
+    else red.checked = true;
+    const list = document.getElementById("friend-list");
+    list.replaceChildren();
+    const note = document.getElementById("friend-note");
+    if (!state.ringOpen) note.textContent = "The ring is closed.";
+    else if (state.friends.length === 0) note.textContent = "No friend is on the " + ringLabel(state.ring) + ".";
+    else note.textContent = state.friends.length + " on the " + ringLabel(state.ring) + ".";
+    for (let i = 0; i < state.friends.length; i++) {
+      const friend = state.friends[i];
+      const row = document.createElement("div");
+      row.className = "hud";
+      const name = document.createElement("p");
+      name.textContent = friend.body + " is on the " + ringLabel(friend.ring) + ".";
+      const senses = document.createElement("p");
+      senses.className = "honest";
+      senses.textContent = friend.senses.length
+        ? "Shared senses: " + sharedWords(friend.senses) + "."
+        : "No sense is shared. The host turned them off.";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = "Leave";
+      button.addEventListener("click", async function () {
+        await room.leave({ body: friend.body });
+        render();
+      });
+      row.append(name, senses, button);
+      list.append(row);
+    }
+    painting = false;
+  }
+
+  function stop(name) {
+    const handle = handles.get(name);
+    if (handle && typeof handle.stop === "function") handle.stop();
+    handles.delete(name);
+  }
+
+  async function askLive(name) {
+    const asked = room.ask(name);
+    if (asked.preference !== true) {
+      render();
+      return;
+    }
+    if (asked.same === true || handles.has(name)) {
+      if (handles.has(name)) room.grant(name, true);
+      render();
+      return;
+    }
+    if (asked.requested !== true) {
+      render();
+      return;
+    }
+    render();
+    if (inflight.has(name)) {
+      await inflight.get(name);
+      render();
+      return;
+    }
+    const job = askSense(name, null).then(function (result) {
+      const now = room.view().senses[name];
+      if (!now.preference) {
+        if (result.handle) result.handle.stop();
+        return;
+      }
+      if (result.granted === true && result.handle) {
+        handles.set(name, result.handle);
+        room.grant(name, true);
+      } else {
+        if (result.handle) result.handle.stop();
+        room.grant(name, false);
+      }
+    });
+    inflight.set(name, job);
+    try {
+      await job;
+    } finally {
+      inflight.delete(name);
+    }
+    render();
+  }
+
+  document.getElementById("unity-agreement").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const note = document.getElementById("sign-note");
+    if (!document.getElementById("agree").checked) {
+      note.textContent = "The agreement is not signed. Every sense stays off.";
+      return;
+    }
+    const result = await room.sign({
+      agree: true,
+      unityId: document.getElementById("host-unity").value,
+      body: document.getElementById("host-body").value,
+      kind: "human"
+    });
+    if (result.signed !== true) {
+      note.textContent = "A Unity ID is required. Nothing was requested.";
+      return;
+    }
+    document.getElementById("host-unity").value = "";
+    room.seat(ringName());
+    note.textContent = "Signed. Every sense preference is on. The live grant for each one is still pending.";
+    render();
+  });
+
+  for (let i = 0; i < SENSES.length; i++) {
+    const name = SENSES[i];
+    document.getElementById("sense-" + name).addEventListener("change", async function () {
+      if (painting) return;
+      const on = document.getElementById("sense-" + name).checked;
+      room.set(name, on);
+      if (!on) stop(name);
+      render();
+      if (on) await askLive(name);
+    });
+    document.getElementById("ask-" + name).addEventListener("click", async function () {
+      await askLive(name);
+    });
+  }
+
+  function seatSelected() {
+    if (room.view().signed !== true) return;
+    if (document.getElementById("pass-red").checked) return;
+    room.seat(ringName());
+    render();
+  }
+
+  document.getElementById("pick-iris").addEventListener("change", seatSelected);
+  document.getElementById("pick-cosmos").addEventListener("change", seatSelected);
+  document.getElementById("pick-sym").addEventListener("change", seatSelected);
+  document.getElementById("all").addEventListener("change", seatSelected);
+  document.getElementById("pass-green").addEventListener("change", function () {
+    if (room.view().signed !== true) return;
+    room.seat(ringName());
+    render();
+  });
+  document.getElementById("pass-red").addEventListener("change", function () {
+    if (room.view().signed !== true) return;
+    room.close();
+    render();
+  });
+  document.getElementById("close-ring").addEventListener("click", function () {
+    if (room.view().signed !== true) {
+      document.getElementById("friend-note").textContent = "The ring is closed.";
+      return;
+    }
+    document.getElementById("pass-red").checked = true;
+    room.close();
+    render();
+  });
+  document.getElementById("friend-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const note = document.getElementById("friend-note");
+    const result = await room.join({
+      unityId: document.getElementById("friend-unity").value,
+      body: document.getElementById("friend-body").value
+    });
+    if (result.joined !== true) {
+      if (result.reason === "absent") note.textContent = "A missing ID is not on the ring.";
+      else if (result.reason === "duplicate") note.textContent = "A duplicate body is refused.";
+      else note.textContent = "The ring is closed.";
+      return;
+    }
+    document.getElementById("friend-unity").value = "";
+    render();
+  });
+  </script>
+</body>
+</html>
