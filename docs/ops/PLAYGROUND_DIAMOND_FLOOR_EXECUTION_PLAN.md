@@ -11,11 +11,13 @@
 - [x] Add Node built-in tests for missing engine, successful answer, and rejected lookup paths.
 - [x] Restrict the browser-controlled `?api=` override to the same origin or the configured DualisCapax API worker in both API clients. The previous code could direct chat POSTs to an arbitrary origin.
 - [x] Add tests for untrusted, same-origin, and trusted API override paths.
+- [x] Add a request-level test proving World 0 remains `0` in the request body and `X-DC-World` header.
 - [x] Bound L2 text-file reads to 5 MiB and metadata-only workbook fingerprinting to 25 MiB.
 - [x] Parse quoted CSV/TSV fields and multiline quoted cells; count actual JSON numeric values rather than digits embedded in strings.
 - [x] Refuse persistent seating when browser storage is unavailable, and report incomplete local cleanup rather than claiming success.
 - [x] Make the playground label Excel workbooks as metadata-only because cell values are not parsed.
 - [x] Fix API world switching so `DCWorld.apply(0|1)` updates the active request route and metadata.
+- [x] Fix API config's falsy-value bug that turned World 0 into World 1 in request headers/body when the standalone client path was used.
 - [x] Add an isolated pull-request test workflow; its first execution is still pending.
 - [ ] Run all tests in a real checkout and verify the supported runtime.
 - [ ] Inspect Replit workspace changes when agent usage is available; do not assume all changes are committed.
