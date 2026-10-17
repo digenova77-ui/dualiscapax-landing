@@ -1,6 +1,12 @@
 name: Public DNS and HTTPS audit
 
 on:
+  push:
+    branches:
+      - "research/earth-photo-archive"
+    paths:
+      - ".github/workflows/public-dns-audit.yml"
+      - "research/photo-archive/audit_public_dns.py"
   schedule:
     - cron: "41 12 * * *"
   workflow_dispatch:
