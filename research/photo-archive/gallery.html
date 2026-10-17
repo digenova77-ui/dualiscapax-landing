@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="DualisCapax source-linked photo archive exploring Earth's hidden signals.">
+<title>Earth's Hidden Signals — DualisCapax Photo Archive</title>
+<style>
+:root{color-scheme:dark;--bg:#07111b;--panel:#101f2c;--line:#263b4b;--text:#eef5f8;--muted:#9bb0be;--accent:#8ce0d0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#15344a 0,transparent 45%),var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+header,main,footer{max-width:1200px;margin:auto;padding:24px}header{padding-top:52px}a{color:var(--accent)}h1{font-size:clamp(2rem,5vw,4rem);line-height:1.02;max-width:800px;margin:.3em 0}p{color:var(--muted)}.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:.75rem;color:var(--accent)}.tools{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.tools input,.tools select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;min-width:220px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}.card{border:1px solid var(--line);background:var(--panel);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}.card img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#132634}.body{padding:16px;display:flex;flex:1;flex-direction:column;gap:8px}.body h2{font-size:1.08rem;line-height:1.3;margin:0}.meta{font-size:.8rem;color:var(--muted)}.body p{font-size:.92rem;margin:0}.body a{margin-top:auto;padding-top:10px}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:.72rem;color:var(--accent);width:max-content}.status{padding:14px;border:1px solid var(--line);border-radius:12px;color:var(--muted)}footer{border-top:1px solid var(--line);margin-top:36px;font-size:.85rem}.small{font-size:.85rem}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">DUALISCAPAX · OPEN RESEARCH ARCHIVE</div>
+<h1>Earth's Hidden Signals</h1>
+<p>A living discovery shelf for imagery of seismic sensing, Earth's magnetic environment, the Sun–Earth connection, and the instruments that reveal them.</p>
+<div class="status" id="status" role="status">Loading source-linked image index…</div>
+<div class="tools"><input id="search" type="search" placeholder="Search titles, topics, credits…" aria-label="Search archive"><select id="topic" aria-label="Filter by topic"><option value="">All topics</option><option>seismology</option><option>magnetosphere</option><option>solar wind</option><option>atmosphere</option></select></div>
+</header>
+<main><section class="grid" id="grid" aria-live="polite"></section></main>
+<footer><strong>Evidence before inference.</strong> These are discovery candidates, not proof of a scientific claim. Images are linked to their original NASA source. This page does not imply NASA endorsement. Review item-level credits and usage restrictions before mirroring files locally. <p><a href="README.md">Archive policy and provenance guide</a> · <a href="discoveries.json">Machine-readable index</a></p></footer>
+<script>
+const grid=document.querySelector('#grid'),status=document.querySelector('#status'),search=document.querySelector('#search'),topic=document.querySelector('#topic');
+let items=[];
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function render(){
+ const q=search.value.trim().toLowerCase(),t=topic.value.toLowerCase();
+ const shown=items.filter(x=>{const hay=[x.title,x.description,x.photographer,x.center,...(x.keywords||[]),...(x.query_matches||[])].join(' ').toLowerCase();return (!q||hay.includes(q))&&(!t||hay.includes(t));});
+ grid.innerHTML=shown.map(x=>'<article class="card"><a href="'+esc(x.source_url)+'" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="'+esc(x.preview_url)+'" alt="'+esc(x.title)+'"></a><div class="body"><span class="pill">'+esc(x.status||'discovered')+'</span><h2>'+esc(x.title)+'</h2><div class="meta">'+esc(x.date_created||'Date not supplied')+' · '+esc(x.center||'NASA collection')+'</div><p>'+esc((x.description||'No description supplied.').slice(0,300))+'</p><div class="meta">Credit: '+esc(x.photographer||'See original source')+'</div><a href="'+esc(x.source_url)+'" target="_blank" rel="noopener noreferrer">View original source ↗</a></div></article>').join('');
+ if(!shown.length)grid.innerHTML='<p>No matching entries. Try another search.</p>';
+}
+search.addEventListener('input',render);topic.addEventListener('change',render);
+fetch('./discoveries.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(data=>{items=data.items||[];status.textContent='Index updated: '+(data.updated_at||'waiting for first scheduled refresh')+' · '+items.length+' candidates. Discovery records are not rights approvals.';render();}).catch(e=>{status.textContent='Index unavailable: '+e.message+'. Open discoveries.json or the GitHub source.';});
+</script>
+</body>
+</html>

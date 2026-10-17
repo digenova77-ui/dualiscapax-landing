@@ -1,0 +1,40 @@
+name: Public DNS and HTTPS audit
+
+on:
+  schedule:
+    - cron: "41 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: public-dns-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Query public DNS and HTTPS only
+        run: python research/photo-archive/audit_public_dns.py
+      - name: Commit audit snapshot when changed
+        run: |
+          if git diff --quiet -- research/photo-archive/public-dns-audit.json; then
+            echo "No report changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/photo-archive/public-dns-audit.json
+          git commit -m "Record read-only public DNS audit"
+          git push origin "HEAD:${{ github.ref_name }}"
