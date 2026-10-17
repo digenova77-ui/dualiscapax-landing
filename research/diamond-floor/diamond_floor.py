@@ -205,7 +205,9 @@ def derivative(before: dict, after: dict) -> dict:
         "added": [{"path": k, "sha256": b[k]["sha256"], "destination_class": b[k]["destination_class"]} for k in added],
         "removed": [{"path": k, "sha256": a[k]["sha256"], "destination_class": a[k]["destination_class"]} for k in removed],
         "changed": [{"path": k, "before_sha256": a[k]["sha256"], "after_sha256": b[k]["sha256"], "destination_class": b[k]["destination_class"]} for k in changed],
-        "status": "PASS" if not removed else "PARTIAL",
+        "change_count": len(added) + len(removed) + len(changed),
+        "status": "PASS" if not (added or removed or changed) else "PARTIAL",
+        "promotion": "NOT_AUTHORIZED",
         "policy": "Changes are reported, never automatically promoted or deployed.",
     }
     return {**payload, "derivative_digest": sha256_bytes(canonical_bytes(payload))}
