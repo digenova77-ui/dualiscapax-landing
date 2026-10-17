@@ -119,10 +119,13 @@ def derivative(baseline: dict, candidate: dict) -> dict:
     common_ids = old_nodes.keys() & new_nodes.keys()
     changed_ids = sorted(node_id for node_id in common_ids if old_nodes[node_id].get("content_sha256") != new_nodes[node_id].get("content_sha256"))
     spectral_changes = sorted(
-        ({"id": node_id, "layer": new_nodes[node_id].get("layer"), "before": old_nodes[node_id].get("spectrum"), "after": new_nodes[node_id].get("spectrum")})
-        for node_id in common_ids
-        if old_nodes[node_id].get("spectrum") != new_nodes[node_id].get("spectrum")
-    , key=lambda item: item["id"])
+        [
+            {"id": node_id, "layer": new_nodes[node_id].get("layer"), "before": old_nodes[node_id].get("spectrum"), "after": new_nodes[node_id].get("spectrum")}
+            for node_id in common_ids
+            if old_nodes[node_id].get("spectrum") != new_nodes[node_id].get("spectrum")
+        ],
+        key=lambda item: item["id"],
+    )
     def edge_map(graph: dict) -> dict:
         result = {}
         for edge in graph.get("edges", []):
