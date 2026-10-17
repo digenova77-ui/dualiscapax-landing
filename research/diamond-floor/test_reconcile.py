@@ -28,6 +28,18 @@ class ReconciliationTests(unittest.TestCase):
         self.assertEqual(result["status"], "BLOCKED")
         self.assertEqual(result["reason"], "dns-audit-not-run")
 
+    def test_dns_http_errors_are_not_green(self):
+        report = {
+            "schema": "dualis.public-dns-audit.v1",
+            "checked_at": "2026-10-17T00:00:00+00:00",
+            "mutations_performed": False,
+            "records": [{"name": "example.invalid", "type": "A", "status": 3}],
+            "https": [{"url": "https://example.invalid", "error": "URLError"}],
+        }
+        result = rc.check_dns(report)
+        self.assertEqual(result["status"], "PARTIAL")
+        self.assertEqual(len(result["findings"]), 2)
+
     def test_ledger_chain_and_digest(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.jsonl"
