@@ -1,6 +1,11 @@
 name: Diamond Floor deterministic checks
 
 on:
+  push:
+    branches:
+      - "research/earth-photo-archive"
+    paths:
+      - "research/diamond-floor/**"
   pull_request:
     paths:
       - "research/diamond-floor/**"
