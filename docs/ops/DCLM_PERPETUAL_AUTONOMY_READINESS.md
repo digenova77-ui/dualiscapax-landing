@@ -121,7 +121,7 @@ A checked box is not evidence by itself. Each PASS record must include UTC time,
 
 **Acceptance:** concurrent duplicate submissions and worker termination produce one auditable outcome with no duplicate side effect.
 
-## Gate 6 — Safe self-construction and self-repair
+| Supervised inventory polling loop | PARTIAL / ISOLATED | Factory PR #6: [supervised approved-inventory polling candidate](https://github.com/digenova77-ui/dualiscapax-factory-queue/pull/6), branch `workbench/supervised-inventory-loop`. Adds bounded polling cycles, approved-inventory-only dispatch, idle backoff, structured cycle events, and signal-based shutdown. Includes design-only architecture acceptance gates for eFuse, Unity ID, deterministic policy proofs, Merit policy, and append-only receipts. Exact-head CI validation pending for `3ce641139c319466b2de135b27109bce4f7bf980`; not integrated into `claim.py` or production scheduling. |\n\n## Gate 6 — Safe self-construction and self-repair
 
 - [ ] DCLM can inventory source, dependency graph, configuration, and tests without changing the baseline.
 - [ ] A generated change is a reviewable patch with a declared objective and affected files.
