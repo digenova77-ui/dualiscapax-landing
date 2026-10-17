@@ -13,8 +13,8 @@
 <style>
 :root{--bg:#050508;--fg:#f4f4f5;--muted:rgba(244,244,245,.88);--line:rgba(158,197,255,.18);--blue:#9ec5ff}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,sans-serif;overflow:hidden}
-body{height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
+html,body{min-height:100%;background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,sans-serif}
+body{min-height:100dvh;display:grid;grid-template-rows:auto minmax(18rem,1fr) auto;overflow-x:hidden;overflow-y:auto}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(safe-area-inset-top) max(.8rem,env(safe-area-inset-right)) 0 max(.8rem,env(safe-area-inset-left))}
 .brand{display:flex;align-items:center;text-decoration:none;color:inherit}
@@ -23,8 +23,8 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
 .tools{margin-left:auto;display:flex;gap:.35rem}
 .tools button{min-width:2.4rem;height:2.4rem;padding:0 .4rem;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .72rem ui-monospace,monospace}
 .tools button.on{border-color:var(--blue);color:var(--blue)}
-.plate{position:relative;min-height:0;display:grid;place-items:center}
-.presence{width:min(86vw,28rem);height:min(86vw,28rem);max-height:56dvh}
+.plate{position:relative;min-height:18rem;display:grid;place-items:center;padding:1rem 0}
+.presence{width:min(78vw,26rem);height:min(78vw,26rem);max-height:52rem}
 .presence canvas{display:block;width:100%;height:100%}
 .pip{position:absolute;right:max(.7rem,env(safe-area-inset-right));bottom:.7rem;width:min(34vw,9.5rem);border:1px solid var(--line);background:#000;display:none}
 .pip.on{display:block}
@@ -32,7 +32,7 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
 .dock{padding:.4rem max(.8rem,env(safe-area-inset-right)) calc(.7rem + env(safe-area-inset-bottom)) max(.8rem,env(safe-area-inset-left));text-align:center}
 .caption{
   min-height:2.8rem;
-  max-height:28dvh;
+  max-height:none;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   font:500 clamp(1.08rem,4.4vw,1.32rem)/1.4 system-ui,sans-serif;
