@@ -74,7 +74,7 @@ For future locally stored assets, record:
 ## Automation boundaries
 
 - `.github/workflows/earth-photo-archive.yml` refreshes the discovery index daily and on manual dispatch.
-- `.github/workflows/public-dns-audit.yml` checks public DNS and HTTPS every six hours and on manual dispatch.
+- `.github/workflows/public-dns-audit.yml` checks public DNS and HTTPS daily and on manual dispatch.
 - Both workflows have repository-content write permission only. Neither has Cloudflare credentials, deploys Pages, changes DNS, touches the database, or modifies the Vultr servers.
 - GitHub scheduled workflows run from the repository's default branch. These schedules become active only after the proposed branch is reviewed and merged. A manual run can be tested against the branch first.
 - Discovery does not mean permission to mirror. Each image must pass item-level credit and rights review before binary files are copied into the repository.
