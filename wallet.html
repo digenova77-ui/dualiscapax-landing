@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wallet — dualiscapax</title>
+  <meta name="description" content="You have your Universal identification and your wallet, and Iris keeps a peg to permanent memory because that identification is cryptographically hashed. Nothing to remember.">
+  <meta name="theme-color" content="#07060e">
+  <link rel="icon" href="brand/seal.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/writer.css">
+</head>
+<body>
+  <a class="skip" href="#wallet">Skip to the wallet</a>
+  <div class="float">
+    <header>
+      <p class="name">dualiscapax</p>
+    </header>
+    <main class="plate">
+      <section class="beat door" id="wallet" aria-labelledby="wallet-title">
+        <p class="eyebrow">Iris</p>
+        <h1 id="wallet-title">Wallet</h1>
+        <p class="lede" id="wallet-line">You have your Universal identification and your wallet, and Iris keeps a peg to permanent memory because that identification is cryptographically hashed. Nothing to remember.</p>
+        <form class="wallet-form" id="wallet-form">
+          <label for="identification">Universal identification</label>
+          <input id="identification" name="identification" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <button type="submit">Let Iris remember</button>
+        </form>
+        <p id="note" class="honest" aria-live="polite"></p>
+        <ol id="memory" class="memory" aria-label="Iris memory"></ol>
+        <nav class="doors" aria-label="Further">
+          <a href="index.html">Rings</a>
+        </nav>
+      </section>
+    </main>
+  </div>
+  <script>
+  (function () {
+    var form = document.getElementById("wallet-form");
+    var field = document.getElementById("identification");
+    var note = document.getElementById("note");
+    var list = document.getElementById("memory");
+    var log = [];
+
+    function hex(buffer) {
+      var bytes = new Uint8Array(buffer);
+      var out = "";
+      for (var i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, "0");
+      return out;
+    }
+
+    function pegOf(identification) {
+      var id = typeof identification === "string" ? identification.trim() : "";
+      if (!id || !window.crypto || !crypto.subtle) return Promise.resolve(null);
+      return crypto.subtle.digest("SHA-256", new TextEncoder().encode(id)).then(hex);
+    }
+
+    function paint(message) {
+      note.textContent = message;
+      list.replaceChildren();
+      for (var i = 0; i < log.length; i++) {
+        var item = document.createElement("li");
+        item.dataset.step = String(log[i].step);
+        item.dataset.peg = log[i].peg;
+        item.textContent = "Iris remembers.";
+        list.appendChild(item);
+      }
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var raw = field.value;
+      field.value = "";
+      pegOf(raw).then(function (mark) {
+        if (!mark) {
+          paint(log.length ? "Iris remembers." : "Nothing to remember.");
+          return;
+        }
+        var step = log.length ? log[log.length - 1].step + 1 : 1;
+        log = log.concat([{ peg: mark, step: step, remembers: true, look: 0, joule: null }]);
+        paint("Iris remembers.");
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -364,6 +364,9 @@ input,select{
 }
 .check{display:flex;gap:.6rem;align-items:flex-start;margin:.7rem 0;color:var(--quiet);text-align:left;text-transform:none;letter-spacing:0;font-size:1rem}
 .check input{width:auto;margin-top:.2rem}
+.wallet-form{margin:1.15rem 0 0;max-width:36rem}
+.memory{margin:1rem 0 0;padding:0;list-style:none}
+.memory li{margin:.45rem 0;color:var(--quiet);font-size:1.05rem;line-height:1.45}
 html:not(.is-onboard) .pack .cad,
 html:not(.is-onboard) [data-money]{display:none}
 html:not(.is-onboard) #earned{font-size:0;color:transparent;letter-spacing:0}
