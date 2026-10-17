@@ -36,3 +36,35 @@ class TestPurchaseSplit5050(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestEFuseGuard(unittest.TestCase):
+    def setUp(self):
+        self.v = t.EFuseVault()
+        self.v.record_purchase(1001, "crypto")
+
+    def test_deposit_from_purchase(self):
+        self.assertEqual(self.v.balance, 501)
+
+    def test_sell_withdraw_transfer_refused_for_everyone(self):
+        for who in ("buyer", "agent", "founder", "David"):
+            for call in (lambda: self.v.sell(1, who), lambda: self.v.withdraw(1, who),
+                         lambda: self.v.transfer(1, "x", who)):
+                with self.assertRaises(t.EFuseLocked):
+                    call()
+        self.assertEqual(self.v.balance, 501)
+
+    def test_every_forbidden_action_refused(self):
+        for a in t.FORBIDDEN_EFUSE_ACTIONS:
+            with self.assertRaises(t.EFuseLocked):
+                self.v.request(a, 1)
+        self.assertEqual(self.v.balance, 501)
+
+    def test_refusals_logged(self):
+        with self.assertRaises(t.EFuseLocked):
+            self.v.withdraw(5, "founder")
+        self.assertEqual(self.v.log[-1], ("refused", "withdraw", 5, "founder"))
+
+    def test_no_negative_deposit(self):
+        with self.assertRaises(ValueError):
+            self.v.deposit(-10)
