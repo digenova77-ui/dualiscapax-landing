@@ -21,4 +21,14 @@ jobs:
       - name: Run standard-library tests
         run: python -m unittest discover -s research/diamond-floor -p 'test_*.py' -v
       - name: Verify CLI help
-        run: python research/diamond-floor/diamond_floor.py --help
+        run: |
+          python research/diamond-floor/diamond_floor.py --help
+          python research/diamond-floor/world_status.py --help
+      - name: Generate unified evidence status (read-only)
+        run: python research/diamond-floor/world_status.py --root . --out /tmp/diamond-world-status.json
+      - name: Preserve status report
+        uses: actions/upload-artifact@v4
+        with:
+          name: diamond-world-status
+          path: /tmp/diamond-world-status.json
+          if-no-files-found: error
