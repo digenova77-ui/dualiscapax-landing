@@ -5,6 +5,8 @@ on:
     paths:
       - "src/engine/swarm_protocol.py"
       - "src/engine/swarm_lifecycle.py"
+      - "src/engine/swarm_wave.py"
+      - "tests/test_swarm_wave.py"
       - "tests/test_swarm_protocol.py"
       - "tests/test_swarm_lifecycle.py"
       - "docs/architecture/SWARM_PROTOCOL_V1.md"
@@ -24,7 +26,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Compile swarm modules
-        run: python3 -m py_compile src/engine/swarm_protocol.py src/engine/swarm_lifecycle.py
+        run: python3 -m py_compile src/engine/swarm_protocol.py src/engine/swarm_lifecycle.py src/engine/swarm_wave.py
       - name: Run fail-closed protocol and autonomous-work tests
         env:
           PYTHONPATH: src/engine
