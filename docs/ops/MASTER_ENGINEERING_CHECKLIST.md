@@ -193,3 +193,14 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Release gate
 
 Production release is **NO-GO** until all critical items in Phases 2, 3, 4, 6, 7, and 8 pass, the canonical deployment target is established, and the rollback path is verified. Non-critical documentation items may remain open only if explicitly listed and approved.
+
+
+## Phase 0A — Follow-up forensic findings (2026-10-17 UTC)
+
+- [x] Verified GitHub's generated `dynamic/pages/pages-build-deployment` run for commit `300befb2f7aa4e0589ed5ef333a83a39a556d5c1` completed successfully. Run: https://github.com/digenova77-ui/dualiscapax-landing/actions/runs/38991566805. The deploy log reports environment URL `http://dualiscapax.ai/`; this proves a Pages deployment associated with the custom domain, not which provider currently serves every public request.
+- [x] Verified the repository has a root `CNAME` containing `dualiscapax.ai` and that the GitHub-generated dynamic Pages workflow is active. This conflicts with repository docs that describe GitHub Pages publishing as retired. Do not change Pages settings until DNS/live origin is independently confirmed.
+- [x] Verified `.github/workflows/pages-direct-upload.yml` is dispatch-only and requires `cf-pages/index.html`; the current `main` tree contains no `cf-pages/` directory. That Cloudflare publish workflow will fail its preflight until the intended artifact source is restored or its contract is deliberately revised. Do not point it at the repository root as a guess.
+- [x] Verified `js/api-config.js` defaults to `https://dualiscapax-depth.digenova77.workers.dev`, while root `_headers` omitted that origin from `connect-src`. This is a concrete CSP/config mismatch if these headers are served by the Cloudflare Pages deployment. A minimal proposed fix is staged on branch `audit/verified-csp-and-deploy-findings-20261017`; it has not been deployed.
+- [x] Rechecked the root `_redirects` against the current tracked tree: `/synapse`, `/sport`, `/receipt`, `/look`, and `/sandbox/` target absent root paths (8 source rules, 5 distinct source routes). These need a route-by-route intent decision before changing redirects; GitHub Pages does not natively interpret Cloudflare's `_redirects` file.
+- [ ] Resolve deployment authority with read-only DNS/response evidence and repository Settings → Pages source; do not disable or switch Pages until it is clear whether GitHub Pages currently carries production traffic.
+- [ ] Validate the CSP patch in staging by checking browser console/network behavior and worker CORS/preflight. CSP permission alone does not prove the worker endpoint is healthy or allows the origin.
