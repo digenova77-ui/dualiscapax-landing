@@ -50,6 +50,7 @@ class DiamondDerivativeGraphTests(unittest.TestCase):
         baseline = make_graph()
         candidate = make_graph()
         candidate["nodes"][1]["content"]["value"] = "new"
+        candidate["nodes"][1]["spectrum"] = {"band": "alpha", "power": 0.42, "unit": "normalized"}
         candidate["nodes"][1]["content_sha256"] = dg.node_content_digest(candidate["nodes"][1])
         candidate["edges"].append({"from": "mesh", "to": "floor", "relation": "spectral-supports", "verified": True})
         candidate["rings"]["measurement"] = {"status": "PARTIAL", "evidence_refs": ["evidence://measurement/2"]}
@@ -57,6 +58,8 @@ class DiamondDerivativeGraphTests(unittest.TestCase):
         delta = dg.derivative(baseline, candidate)
         self.assertEqual(delta["nodes"]["changed"][0]["id"], "mesh")
         self.assertEqual(delta["edges"]["added"][0]["relation"], "spectral-supports")
+        self.assertEqual(delta["spectral_changes"][0]["id"], "mesh")
+        self.assertEqual(delta["cross_layer_edges"]["added"][0]["relation"], "spectral-supports")
         self.assertEqual(delta["rings_changed"], ["measurement"])
         self.assertEqual(delta["invariants_changed"], ["zero_residue"])
         self.assertEqual(delta["promotion"], "NOT_AUTHORIZED")
