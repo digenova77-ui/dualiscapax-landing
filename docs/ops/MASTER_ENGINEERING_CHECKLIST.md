@@ -193,3 +193,88 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Release gate
 
 Production release is **NO-GO** until all critical items in Phases 2, 3, 4, 6, 7, and 8 pass, the canonical deployment target is established, and the rollback path is verified. Non-critical documentation items may remain open only if explicitly listed and approved.
+
+
+## Handoff-loop investigation — 2026-10-17 UTC
+
+This is an evidence update, not a production release. No live DNS, server, database, or deployment was changed.
+
+### Confirmed evidence
+
+- [x] Read the live public https://dualiscapax.com/ page. Its visible description says the first tap creates a passkey, later taps prove that key, and the top window then moves to https://dualiscapax.ai/. It also explicitly describes “two ceremonies” and says the check is repeated on each host. Evidence: public page inspection on 2026-10-16; visible text appears in the Unity ID / Take Your Seat sections.
+- [x] Read handshake/FRONT-INTERFACE.md in the landing repository at base commit 300befb2f7aa4e0589ed5ef333a83a39a556d5c1. It directs .ai to call navigator.credentials.get and then POST the protocol line to /api/v2/compute; the document explicitly anticipates another passkey prompt after navigation.
+- [x] Read js/unity-session.js (blob dc52640cf5e6f89faa11332af2d86e1d918daa78). Its requireOrRedirect(next) calls location.replace("curtain.html") when dc.unity.session is absent. This is a concrete redirect candidate in repository code, but its involvement in the live passkey route is not proven until the deployed page and caller chain are identified.
+- [x] Read js/unity-bind.js (blob fdc18ffa5900973f2dfe5460783e4bd8c59a24a1). It mints a local visitor Unity ID and persists it in localStorage. That local ID is not evidence of a server-verified WebAuthn session.
+- [x] Read receiver/dualis-deploy.sh in digenova77-ui/dualiscapax-deploy at blob 31f2b87da10a83615707096070812de0bd4cec5b. The script describes .com as staged-only/cert-gated and rewrites the staged /api/ route to HTTP 501 ceremony_not_wired. This proves that this deployment package is not, by itself, evidence that the live .com API is wired.
+- [x] Inspected the current landing repository tree at commit 300befb2f7aa4e0589ed5ef333a83a39a556d5c1. Its root index.html is only 482 bytes and does not match the full public page returned for dualiscapax.com. Therefore the authoritative live source/publishing path remains unresolved; edits to this repository cannot be assumed to change the live page.
+- [x] Attempted read-only public inspection of https://dualiscapax.com/.well-known/webauthn and https://dualiscapax.ai/api/v2/compute. The web inspector returned an internal error for both URLs. This is inconclusive, not proof that either endpoint is down or misconfigured.
+
+### Engineering diagnosis (confidence-separated)
+
+1. High confidence: the documented UX intentionally asks for a second passkey ceremony after the cross-domain navigation. This matches the reported repeated prompt, but does not alone explain the page bounce.
+2. High confidence: the exact production source and deployment path must be identified before a code patch can be trusted. The landing repository and the staged deployment package do not establish the currently served source.
+3. Medium confidence: a missing or mismatched session may cause a redirect to curtain.html in repository code. The live route must be traced to prove or rule this out.
+4. Unverified: Related Origin Requests configuration, server-side assertion validation, the live .ai API route, and API-to-kernel routing. Do not infer a port or alter it without live read-only evidence.
+5. Security constraint: do not suppress the second prompt unless the first ceremony is verified server-side and a secure, short-lived, single-use cross-domain handoff is implemented. A displayed Unity ID or localStorage record is not authentication.
+
+### Remaining work — ordered closure gate
+
+- [ ] Identify the exact asset URL(s) and deployed artifact that render the live Face or finger control; record response headers, content hash, and source mapping where available.
+- [ ] Trace every handler bound to that control and every automatic navigation/redirect after success; check for duplicate event binding, duplicate initialization, service-worker cache, and location.replace/location.assign calls.
+- [ ] Capture browser Network + Console evidence for one controlled reproduction: passkey request, redirect chain, document reloads, failed assets, and the first failing HTTP status. Never capture or share assertion bodies, cookies, secrets, or private identity data.
+- [ ] Verify the .well-known/webauthn response with a direct HTTP client: status, JSON content type, exact origin list, TLS, and cache behavior.
+- [ ] Verify the .ai receiver's actual WebAuthn call and server verification path. Establish whether the second ceremony is intentional authentication or an accidental duplicate.
+- [ ] Probe POST /api/v2/compute only with a documented harmless test payload in an approved test context; record status, content type, sanitized body, and request ID. Do not send a live identity assertion or trigger a real job just to test availability.
+- [ ] Establish the authoritative deployment rail for the live .com page and confirm a preview/staging path before modifying implementation.
+- [ ] Implement the smallest source-of-truth fix on a branch: one guarded state machine, one navigation owner, idempotent initialization, explicit user-visible failure stage, and fail-closed behavior. Do not add a second competing passkey script.
+- [ ] Add automated tests for duplicate taps, duplicate script initialization, success handoff, missing session, cancellation, timeout, malformed response, HTTP 501/503, back/refresh, and retry.
+- [ ] Review the diff and tests; open a PR. Do not merge or deploy to production without a reviewed rollback path and explicit release approval.
+- [ ] After approved deployment, rerun mobile end-to-end tests and record the deployed artifact hash, commit, route responses, and rollback evidence.
+
+### Current release state
+
+NO-GO / investigation open. The repeated ceremony is supported by the written design, but the exact reload/bounce cause has not yet been proven. No production changes have been made. The next decisive evidence is the actual deployed script and a redacted browser Network/Console trace from one reproduction.
+
+
+### Follow-up source trace — 2026-10-17 UTC
+
+- [x] Followed the repository caller for the local session redirect: js/curtain-gate.js (blob 577ba36ac42893564f646ba3870d8afd68833d43) invokes DC_UNITY.require(here) for non-free paths when DC_UNITY is present. The FREE allowlist includes /curtain.html, /why.html, /story.html, /index.html, /ca.html, /world.html, /look.html, /hall/, and /hall/index.html. This makes the redirect path concrete for gated pages, but does not prove the root-page biometric flow loads this gate script.
+- [x] Read curtain.html (blob 72e78c1c1064c2434edb1507a555de39b66e0c98). Its form mints a local unity.session.v1 record and navigates to the requested next path or DC_UNITY.landPath(). This is a local session flow distinct from the documented WebAuthn handoff; integration between the two is not established by source evidence.
+- [x] Attempted direct public inspection of /passkey/owner.html, /owner, /owner.html, and /.well-known/webauthn. The web inspector could not access these URLs. This remains inconclusive; no status code or origin configuration is claimed.
+
+### Implementation boundary
+
+The current evidence does not justify editing js/curtain-gate.js, js/unity-session.js, the staged owner scaffold, or an API port: these may belong to separate flows from the public page the user is experiencing. A safe implementation is blocked until the deployed script / artifact and the actual failing navigation chain are identified. The next engineering action is to capture a redacted mobile-browser Network/Console trace or obtain the exact deployed bundle URL and source mapping, then patch the authoritative source on a branch and test it before deployment.
+
+
+### Cross-repository passkey deployment audit — 2026-10-17 UTC
+
+- [x] Inspected `digenova77-ui/dualiscapax-deploy/webroot/owner/owner.html` (default-branch blob `42c8ce4eadce4c879a1ee8691f646c4f59704903`). The page labels itself a scaffold and explicitly says its endpoints are not wired and will answer HTTP 501 `ceremony_not_wired`.
+- [x] Traced that scaffold's sign-in order: it POSTs to `/api/webauthn/auth/options` first; it only calls `navigator.credentials.get` after a successful options response. A 501 response should stop before the biometric prompt. Therefore this scaffold alone does **not** explain the reported sequence of a successful biometric prompt, displayed Unity ID, and subsequent navigation/re-prompt. The live behavior likely belongs to a different deployed page/build or API path; that is an inference, not a proven source match.
+- [x] Inspected `deploy/sovereign/nginx-dualiscapax-ai.conf` (blob `860f36ce7fd8d5f6e1ab4f1decf4e642ca1332b9`). Its comments state that the deployment receiver transforms `/api/` into explicit 501 `ceremony_not_wired`; the packaged `/api/` proxy to localhost:8410 is described as eventual-service design, not evidence that the service is live.
+- [x] Checked five passkey source paths listed in `dualiscapax-deploy/MANIFEST.md` against that repository's current default branch: `deploy/passkey/SERVICE-SPEC.md`, `deploy/passkey/SPEC.md`, `deploy/passkey/functions/api/webauthn/auth-options.js`, `deploy/passkey/functions/api/webauthn/auth-verify.js`, and `deploy/passkey/functions/api/owner/session.js`. All five returned GitHub 404 / not found. The manifest documents expected files that are absent from the current repository snapshot.
+- [x] Confirmed `deploy/sovereign/AI-ELEVATION.md` describes the intended `.ai` elevation but is a plan/runbook, not fresh proof that the elevation ran. The documented deployment history says the elevation should use the same receiver and can report a named layout failure while leaving the old site untouched.
+- [ ] Obtain a fresh, read-only runtime receipt for the live `.ai` and `.com` web roots, enabled nginx server blocks, actual `/api/` response, and running listener on the configured upstream port. No SSH/box-shell tool is available in this session; the public web inspector was inconclusive, and local outbound DNS resolution failed. Do not substitute old runbook text for a live check.
+- [ ] Match the reported passkey prompt and Unity ID screen to the exact deployed URL and JavaScript asset. Then trace one successful and one failed navigation through redacted browser Network/Console evidence.
+- [ ] Reconcile the stale/missing passkey source paths in the deploy repository before attempting a backend implementation. Do not invent a credential store, schema, upstream port, or production endpoint.
+- [ ] Implement and test the one-ceremony handoff only in the authoritative source after the runtime receipt identifies the real server and page. Acceptance requires server-side assertion validation, a fresh single-use handoff, audience/origin binding, replay refusal, a session established by the receiver, no credentials in URLs, and a clean landing in the actual HUD.
+- [ ] Release remains **NO-GO**. The current evidence narrows the packaging/configuration gap but does not prove which deployed code is producing the user's observed successful biometric prompt and subsequent bounce.
+
+
+
+### Bundled DCCP World Unity-ID path — 2026-10-17 UTC
+
+- [x] Read `dualiscapax-deploy/webroot/world/assets/unityid-BC-_TLAS.js`, blob `9e1fd01a23fd6ffc75fd63ab0986d1d2b96a38eb`. The module calls `navigator.credentials.create` with `rp.id = location.hostname`, generates the challenge and user ID in the browser, and writes a `dccpworld.unity-pilot.v1` record to origin-local `localStorage`. It contains no network request or server verification. Its own state declares `jacketBinding: "closed"` and `authorizedPublish: false`.
+- [x] Confirmed `webroot/world/index.html` imports the compiled `index-DbkjnjhP.js` and that the compiled app imports `unityid-BC-_TLAS.js`. The app's `ES()` path calls the local create function and then speaks: “Your Unity ID is bound on this device … The HUD is open.” This conflicts with other text in the same bundle that correctly says a pilot handle is not a validated Unity ID.
+- [x] Technical consequence: if this module is the one used in the reported flow, `location.hostname` makes `.com` and `.ai` distinct relying-party IDs. The localStorage record is also origin-scoped. That combination cannot carry one validated identity session across the two hosts; it can produce a second passkey-creation ceremony. This is a **high-confidence defect in the bundled pilot implementation**, but its match to the user's exact live page/navigation is not yet proven.
+- [x] Inspected `digenova77-ui/dccp-world` via the Git tree API: its current `main` tree contains only `README.md`, despite the README describing source modules under `src/dccp/`. The deploy repository contains compiled world assets but no source tree or package/build manifest. The current deploy tree also contains no `deploy/passkey/` server implementation despite the manifest's references.
+- [ ] Do not patch the compiled bundle as if it were canonical source. Recover or establish the actual source/build pipeline, then replace the local-only pilot with one server-verified WebAuthn ceremony and a receiver-validated session. Use a common RP ID only with a valid Related Origin Requests configuration and supported browser behavior; never assume two unrelated domains share passkeys automatically.
+- [ ] Add tests proving: the browser does not report “Unity ID bound” from local credential creation alone; no client-generated challenge is accepted as server proof; a second host does not create a second credential; server refusal/unavailability stays locked; and the HUD opens only after a receiver-verified session.
+
+
+### Deployment-rail verification — 2026-10-17 UTC
+
+- [x] Retrieved the latest recorded `dualiscapax-deploy` workflow run, `38425309591` (2026-10-13), and its job log. The deploy job refused before sending the bundle: `/usr/local/sbin/dualis-deploy` was not present/executable or the SSH probe could not establish the expected receiver response. No bundle was installed by that run.
+- [x] Read `dualiscapax-deploy/README.md` and `.github/workflows/deploy.yml`. The documented intended one-time installation is `install/install-on-box.sh` from the New Jersey console; the workflow's deploy mode is manual-dispatch only and does not fall back to copying files ad hoc. The designated SSH key is command-restricted to the receiver, not a general shell.
+- [ ] Do not run the install/deploy workflow as a workaround without a separately approved server-change plan. The installation changes the NJ host's receiver and SSH authorization; it is not a read-only inspection.
+- [ ] Until that server-side deployment rail is explicitly authorized and installed, this session can make isolated GitHub branch changes and audit source, but cannot honestly claim it can inspect arbitrary live files or deploy a tested fix to the New Jersey host.
