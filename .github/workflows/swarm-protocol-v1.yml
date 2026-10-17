@@ -9,6 +9,7 @@ on:
       - "src/engine/domain_architecture.py"
       - "src/engine/decision_energy.py"
       - "src/engine/derivative_registry.py"
+      - "src/engine/frontier_decision_bridge.py"
       - "config/dualis.seed.v1.json"
       - "config/dualis.derivative_registry.v1.json"
       - "tests/test_swarm_wave.py"
@@ -17,6 +18,7 @@ on:
       - "tests/test_domain_architecture.py"
       - "tests/test_decision_energy.py"
       - "tests/test_derivative_registry.py"
+      - "tests/test_frontier_decision_bridge.py"
       - "docs/architecture/SWARM_PROTOCOL_V1.md"
       - "docs/architecture/THREE_RING_ONE_SEED.md"
       - "docs/architecture/DIAMOND_UNIVERSAL_KEY_AND_DECISION_ENERGY.md"
@@ -37,7 +39,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Compile swarm and domain architecture modules
-        run: python3 -m py_compile src/engine/swarm_protocol.py src/engine/swarm_lifecycle.py src/engine/swarm_wave.py src/engine/domain_architecture.py src/engine/decision_energy.py src/engine/derivative_registry.py
+        run: python3 -m py_compile src/engine/swarm_protocol.py src/engine/swarm_lifecycle.py src/engine/swarm_wave.py src/engine/domain_architecture.py src/engine/decision_energy.py src/engine/derivative_registry.py src/engine/frontier_decision_bridge.py
       - name: Run fail-closed protocol, lifecycle, planner, and domain architecture tests
         env:
           PYTHONPATH: src/engine
