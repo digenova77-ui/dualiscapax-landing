@@ -1,6 +1,6 @@
 {
   "schema": "dualis.public-dns-audit.v1",
-  "checked_at": "2026-10-17T17:16:16+00:00",
+  "checked_at": "2026-10-17T17:16:53+00:00",
   "scope": "Public DNS-over-HTTPS and public HTTPS GET checks only",
   "mutations_performed": false,
   "records": [
@@ -80,13 +80,13 @@
           "name": "dualiscapax.ai.",
           "type": 16,
           "ttl": 3600,
-          "data": "google-site-verification=FuH-irctfv_fEfBEkj4i3AlQBC9BTzIbF4-90-F2vVQ"
+          "data": "v=spf1 include:_spf.google.com ~all"
         },
         {
           "name": "dualiscapax.ai.",
           "type": 16,
           "ttl": 3600,
-          "data": "v=spf1 include:_spf.google.com ~all"
+          "data": "google-site-verification=FuH-irctfv_fEfBEkj4i3AlQBC9BTzIbF4-90-F2vVQ"
         }
       ],
       "authority": []
@@ -101,7 +101,7 @@
           "name": "dualiscapax.ai.",
           "type": 15,
           "ttl": 3600,
-          "data": "5 alt1.aspmx.l.google.com."
+          "data": "10 alt4.aspmx.l.google.com."
         },
         {
           "name": "dualiscapax.ai.",
@@ -113,19 +113,19 @@
           "name": "dualiscapax.ai.",
           "type": 15,
           "ttl": 3600,
-          "data": "10 alt4.aspmx.l.google.com."
-        },
-        {
-          "name": "dualiscapax.ai.",
-          "type": 15,
-          "ttl": 3600,
-          "data": "5 alt2.aspmx.l.google.com."
+          "data": "5 alt1.aspmx.l.google.com."
         },
         {
           "name": "dualiscapax.ai.",
           "type": 15,
           "ttl": 3600,
           "data": "1 aspmx.l.google.com."
+        },
+        {
+          "name": "dualiscapax.ai.",
+          "type": 15,
+          "ttl": 3600,
+          "data": "5 alt2.aspmx.l.google.com."
         }
       ],
       "authority": []
