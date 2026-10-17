@@ -154,66 +154,81 @@ header{display:flex;align-items:center;gap:.55rem;min-height:2.8rem;padding:env(
   if(window.IrisSphere&&IrisSphere.mount) IrisSphere.mount("#presence");
   if(window.IrisSphere&&IrisSphere.setWoken) IrisSphere.setWoken(true);
 
-  // Ambient, non-authoritative motion only: no storage, network calls, or self-editing.
-  // Iris drifts slowly through the open middle of the viewport and yields to people.
-  (function letIrisRoam(){
+  // Three-ring motion field. No waypoints, random destinations, or saved coordinates.
+  // Physics = viewport boundary response; philosophy = continuous drift; law = yield/avoid controls.
+  // The overlay is only a rendering surface. No position is authoritative or persisted.
+  (function letIrisFloat(){
     var orb=document.getElementById("presence");
     if(!orb) return;
     orb.classList.add("iris-floater");
     var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    var x=.5,y=.46,tx=.5,ty=.46,lastMove=0,holdUntil=0,rafId=0,seed=17;
-    var active=false;
-    function rand(){seed=(seed*48271)%2147483647;return seed/2147483647;}
-    function bounds(){
-      var w=window.innerWidth||360,h=window.innerHeight||640;
-      var rect=orb.getBoundingClientRect(), hw=Math.max(36,rect.width/2), hh=Math.max(36,rect.height/2);
-      return {w:w,h:h,minX:hw+12,maxX:w-hw-12,minY:Math.max(90,hh+52),maxY:Math.min(h-hh-125,h*.78)};
+    var px=(window.innerWidth||360)*.5, py=(window.innerHeight||640)*.44;
+    var vx=.13, vy=.07, last=0, pauseUntil=0, pointer={x:-9999,y:-9999,active:false};
+    var t=0;
+    function rect(){return orb.getBoundingClientRect();}
+    function controls(){
+      return [document.querySelector("header"),document.querySelector(".dock"),document.querySelector(".pip")].filter(function(el){
+        return el&&!el.hidden&&getComputedStyle(el).display!=="none";
+      }).map(function(el){return el.getBoundingClientRect();});
     }
-    function choose(){
-      var b=bounds();
-      if(b.maxX<=b.minX||b.maxY<=b.minY) return;
-      tx=(b.minX+rand()*(b.maxX-b.minX))/b.w;
-      ty=(b.minY+rand()*(b.maxY-b.minY))/b.h;
-      lastMove=performance.now();
-    }
-    function nearControls(px,py){
-      var els=[document.querySelector("header"),document.querySelector(".dock"),document.querySelector(".pip")];
-      return els.some(function(el){
-        if(!el||el.hidden||getComputedStyle(el).display==="none") return false;
-        var r=el.getBoundingClientRect();
-        return px>r.left-24&&px<r.right+24&&py>r.top-24&&py<r.bottom+24;
-      });
-    }
+    function inside(r,x,y,pad){return x>r.left-pad&&x<r.right+pad&&y>r.top-pad&&y<r.bottom+pad;}
     function tick(now){
-      rafId=requestAnimationFrame(tick);
-      var b=bounds();
-      if(reduced||document.hidden||document.activeElement===talk||talk.classList.contains("on")||
-         (document.getElementById("cam")&&document.getElementById("cam").classList.contains("on"))||
-         (window.speechSynthesis&&speechSynthesis.speaking)||now<holdUntil) return;
-      if(now-lastMove>8500) choose();
-      var nx=x+(tx-x)*.0035, ny=y+(ty-y)*.0035;
-      var px=nx*b.w,py=ny*b.h;
-      if(nearControls(px,py)){holdUntil=now+2200;choose();return;}
-      x=nx;y=ny;
-      orb.style.transform="translate3d("+Math.round(x*b.w)+"px,"+Math.round(y*b.h)+"px,0) translate(-50%,-50%)";
+      requestAnimationFrame(tick);
+      if(reduced||document.hidden||now<pauseUntil||talk.classList.contains("on")||
+        (document.getElementById("cam")&&document.getElementById("cam").classList.contains("on"))||
+        (window.speechSynthesis&&speechSynthesis.speaking)) {last=now;return;}
+      var dt=last?Math.min(.04,(now-last)/1000):.016; last=now; t+=dt;
+      var w=window.innerWidth||360,h=window.innerHeight||640,r=rect();
+      var hw=Math.max(32,r.width/2),hh=Math.max(32,r.height/2);
+      var minX=hw+10,maxX=w-hw-10,minY=Math.max(82,hh+10),maxY=Math.min(h-hh-112,h*.84);
+      // Ring 1 — physics: continuous boundary repulsion, never a destination.
+      var ax=(px<minX+36? .8:0)-(px>maxX-36? .8:0);
+      var ay=(py<minY+36? .8:0)-(py>maxY-36? .8:0);
+      // Ring 2 — philosophy: smooth, continuous drift; no route or waypoint list.
+      ax+=Math.sin(t*.37+py*.0021)*.19+Math.sin(t*.13+px*.001)*.08;
+      ay+=Math.cos(t*.31+px*.0017)*.17+Math.sin(t*.19+py*.001)*.06;
+      // Ring 3 — law: yield to human proximity and avoid controls.
+      if(pointer.active){
+        var dx=px-pointer.x,dy=py-pointer.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+        if(d<170){ax+=(dx/d)*(170-d)/170*.9;ay+=(dy/d)*(170-d)/170*.9;}
+      }
+      var cx=px+hw,cy=py+hh;
+      controls().forEach(function(cr){
+        var qx=Math.max(cr.left-20,Math.min(cx,cr.right+20));
+        var qy=Math.max(cr.top-20,Math.min(cy,cr.bottom+20));
+        var dx=cx-qx,dy=cy-qy,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<90){d=d||1;ax+=(dx/d)*(90-d)/90*1.2;ay+=(dy/d)*(90-d)/90*1.2;}
+      });
+      vx=(vx+ax*dt)*.992;vy=(vy+ay*dt)*.992;
+      var speed=Math.sqrt(vx*vx+vy*vy)||1;
+      if(speed>.42){vx*=.42/speed;vy*=.42/speed;}
+      px+=vx*dt*58;py+=vy*dt*58;
+      if(px<minX){px=minX;vx=Math.abs(vx)*.55;}
+      if(px>maxX){px=maxX;vx=-Math.abs(vx)*.55;}
+      if(py<minY){py=minY;vy=Math.abs(vy)*.55;}
+      if(py>maxY){py=maxY;vy=-Math.abs(vy)*.55;}
+      orb.style.left=px+"px";orb.style.top=py+"px";
+      orb.style.transform="translate(-50%,-50%)";
     }
     function yieldToHuman(ev){
-      holdUntil=performance.now()+6500;
+      pauseUntil=performance.now()+4200;
       if(ev&&typeof ev.clientX==="number"&&typeof ev.clientY==="number"){
-        var b=bounds();x=ev.clientX/b.w;y=ev.clientY/b.h;
-        orb.style.transform="translate3d("+ev.clientX+"px,"+ev.clientY+"px,0) translate(-50%,-50%)";
+        pointer.x=ev.clientX;pointer.y=ev.clientY;pointer.active=true;
+        vx+=(px-ev.clientX)*.0015;vy+=(py-ev.clientY)*.0015;
       }
     }
-    orb.addEventListener("pointerdown",yieldToHuman,{passive:true});
     document.addEventListener("pointermove",function(ev){
-      var r=orb.getBoundingClientRect();
-      if(ev.clientX>r.left-45&&ev.clientX<r.right+45&&ev.clientY>r.top-45&&ev.clientY<r.bottom+45) yieldToHuman(ev);
+      pointer.x=ev.clientX;pointer.y=ev.clientY;pointer.active=true;
     },{passive:true});
-    window.addEventListener("resize",function(){holdUntil=performance.now()+1200;},{passive:true});
-    choose();
-    orb.style.transform="translate3d(50vw,46vh,0) translate(-50%,-50%)";
-    if(!reduced) rafId=requestAnimationFrame(tick);
-    else orb.style.transform="translate3d(50vw,46vh,0) translate(-50%,-50%)";
+    document.addEventListener("pointerleave",function(){pointer.active=false;},{passive:true});
+    orb.addEventListener("pointerdown",yieldToHuman,{passive:true});
+    window.addEventListener("resize",function(){
+      px=Math.max(40,Math.min((window.innerWidth||360)-40,px));
+      py=Math.max(90,Math.min((window.innerHeight||640)-140,py));
+      pauseUntil=performance.now()+900;
+    },{passive:true});
+    orb.style.left=px+"px";orb.style.top=py+"px";orb.style.transform="translate(-50%,-50%)";
+    if(!reduced) requestAnimationFrame(tick);
   })();
   line(greetText());
   window.addEventListener("pointerdown", meet, { capture: true, once: true });
