@@ -25,7 +25,9 @@ python3 scripts/pack_hierarchical_flat_zip.py --lander
 
 The packer:
 - Uses only Git-tracked regular files, not untracked local files.
-- Preserves repository-relative paths and puts `_worker.js`, `wrangler.toml`, and `index.html` at the ZIP root.
+- Preserves website-relative paths and puts `_worker.js`, `wrangler.toml`, and `index.html` at the ZIP root.
+- Excludes repository-control and engineering-only paths (`.github/`, `docs/`, `scripts/`), plus common credential/private-key names; these must never be part of the public Pages payload.
+- The package validator fails if any excluded internal path appears in the archive.
 - Excludes common credential/private-key names and local dependency/cache directories.
 - Checks for required files, duplicate archive paths, and ZIP CRC errors.
 - Writes `dist/cloudflare/lander-<commit>.zip` and a matching `.sha256` sidecar.
