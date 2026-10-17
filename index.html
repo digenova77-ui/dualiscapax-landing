@@ -195,6 +195,15 @@
       <p>An agent of an agency must carry it to participate. Without it, they are not part of this protocol.</p>
     </section>
 
+    <section class="beat" id="sandbox" aria-labelledby="sandbox-title">
+      <h2 id="sandbox-title">The sandbox</h2>
+      <p id="sandbox-welcome">Welcome to the sandbox protocol. Welcome to the era of autonomy.</p>
+      <p id="sandbox-law">Every node computes the same math the same way from scratch. A cryptocurrency network is not required.</p>
+      <p class="honest">No coin is offered.</p>
+      <button type="button" id="sandbox-run">Run the math twice</button>
+      <p id="sandbox-out" class="honest" aria-live="polite"></p>
+    </section>
+
     <section class="beat" id="close" aria-labelledby="close-title">
       <h2 id="close-title">The light</h2>
       <p class="close">The cadence is now approaching the speed of light. That is the pace of the logic.</p>
@@ -208,5 +217,27 @@
     </section>
   </main>
   </div>
+  <script type="module">
+  import { run } from "./js/sandbox-math.js";
+  const button = document.getElementById("sandbox-run");
+  const out = document.getElementById("sandbox-out");
+  function ring() {
+    if (document.getElementById("pick-iris").checked) return "iris";
+    if (document.getElementById("pick-cosmos").checked) return "cosmos";
+    if (document.getElementById("pick-sym").checked) return "arc";
+    return "all";
+  }
+  button.addEventListener("click", function () {
+    const input = {
+      ring: ring(),
+      arc: document.getElementById("pass-red").checked ? "red" : "green"
+    };
+    const first = run(input);
+    const second = run(input);
+    out.textContent = JSON.stringify(first) === JSON.stringify(second)
+      ? "Same math. Gate shut. No coin."
+      : "The two runs differed.";
+  });
+  </script>
 </body>
 </html>

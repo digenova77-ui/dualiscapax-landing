@@ -25,6 +25,9 @@
       <p>Iris is pegged to the same permanence.</p>
       <p>Everything on this network has one Unity ID. A human has one. A bot has one. A corporation has one. That is the identity.</p>
       <p>An agent of an agency must carry it to participate. Without it, they are not part of this protocol.</p>
+      <p id="sandbox-welcome">Welcome to the sandbox protocol. Welcome to the era of autonomy.</p>
+      <p id="sandbox-law">Every node computes the same math the same way from scratch. A cryptocurrency network is not required.</p>
+      <p class="honest">No coin is offered.</p>
       <form class="unity-form" id="unity-form">
         <div class="lamps" role="radiogroup" aria-label="Kind">
           <span class="lamp-name">Kind</span>
@@ -52,6 +55,8 @@
         <button type="submit">Participate</button>
       </form>
       <p id="unity-note" class="honest" aria-live="polite"></p>
+      <button type="button" id="sandbox-run">Run the math twice</button>
+      <p id="sandbox-out" class="honest" aria-live="polite"></p>
       <nav class="doors" aria-label="Further">
         <a href="index.html">Door</a>
         <a href="law.html">Law</a>
@@ -62,6 +67,7 @@
   </div>
   <script type="module">
   import { open } from "./js/unity-id-protocol.js";
+  import { run } from "./js/sandbox-math.js";
   const net = open();
   const form = document.getElementById("unity-form");
   const note = document.getElementById("unity-note");
@@ -89,6 +95,14 @@
       return;
     }
     note.textContent = "Without it, they are not part of this protocol.";
+  });
+  document.getElementById("sandbox-run").addEventListener("click", function () {
+    const input = { surface: "wallet" };
+    const first = run(input);
+    const second = run(input);
+    document.getElementById("sandbox-out").textContent = JSON.stringify(first) === JSON.stringify(second)
+      ? "Same math. Gate shut. No coin."
+      : "The two runs differed.";
   });
   </script>
 </body>
