@@ -1,7 +1,7 @@
 # Front interface — .com to .ai handoff
 
 From: DualisCapax engineering remediation
-Time (UTC): 2026-10-17
+Time (UTC): 2026-10-16
 Status: PROPOSED CORRECTION — specification only; not implemented or live-tested.
 
 ## Required user experience
