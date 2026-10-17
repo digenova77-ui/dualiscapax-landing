@@ -12,7 +12,31 @@
 </head>
 <body>
   <a class="skip" href="#split">Skip to the story</a>
-  <div class="float">
+  <div class="bang" id="bang" data-phase="orb" role="dialog" aria-modal="true" aria-labelledby="bang-name">
+    <canvas id="bang-sky" aria-hidden="true"></canvas>
+    <div class="bang-veil">
+      <p class="marks" id="bang-marks" aria-hidden="true"><span class="on">🤔</span><span>🤯</span><span>😂</span><span>💎</span><span>👽</span></p>
+      <div class="orb" aria-hidden="true">
+        <span class="orb-glow"></span>
+        <span class="orb-core"></span>
+        <span class="orb-ring"></span>
+      </div>
+      <p class="bang-name" id="bang-name">Iris</p>
+      <p class="bang-line" id="bang-line">Teal and blue. The explorer.</p>
+      <form class="bang-form" id="bind-form">
+        <label for="passphrase">Passphrase</label>
+        <input id="passphrase" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+        <button type="submit">Bind</button>
+      </form>
+      <button type="button" id="arrive" hidden>Arrive</button>
+      <div class="bang-floor" aria-hidden="true">
+        <span class="alien">👽</span>
+        <span class="explorer"></span>
+        <span class="diamond"><span class="gem">💎</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="float" inert>
   <header>
     <p class="name">dualiscapax</p>
   </header>
@@ -126,7 +150,7 @@
         </svg>
       </figure>
       <p class="eyebrow">The door</p>
-      <h1 id="door-title">One</h1>
+      <h1 id="door-title" tabindex="-1">One</h1>
       <p class="lede">Three rings. Iris is the teal light. The cosmos is the field around it. The outer arc reads green or red.</p>
       <label class="show-all">
         <input type="radio" name="ring" id="all" checked>
@@ -168,6 +192,7 @@
           Red
         </label>
       </div>
+      <p id="bind-note" class="honest" aria-live="polite"></p>
     </section>
 
     <section class="beat" id="split" aria-labelledby="split-title">
@@ -256,7 +281,9 @@
   </main>
   </div>
   <script type="module">
+  import { open } from "./js/unity-id-protocol.js";
   import { run } from "./js/sandbox-math.js";
+  const net = open();
   const button = document.getElementById("sandbox-run");
   const out = document.getElementById("sandbox-out");
   function ring() {
@@ -276,6 +303,247 @@
       ? "Same math. Gate shut. No coin."
       : "The two runs differed.";
   });
+
+  const bang = document.getElementById("bang");
+  const canvas = document.getElementById("bang-sky");
+  const marks = document.querySelectorAll("#bang-marks span");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const warpMs = 4200;
+  const earthMs = 1100;
+  let busy = false;
+  let seated = false;
+  let arrived = false;
+  let flying = false;
+  let raf = 0;
+  let warpTimer = 0;
+  let laughTimer = 0;
+  let earthTimer = 0;
+  let stars = [];
+
+  function setMarks(on) {
+    for (let i = 0; i < marks.length; i++) marks[i].classList.toggle("on", on.indexOf(i) !== -1);
+  }
+
+  function fit() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const pw = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+    const ph = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+    if (canvas.width !== pw || canvas.height !== ph) {
+      canvas.width = pw;
+      canvas.height = ph;
+    }
+    return { w: canvas.width, h: canvas.height };
+  }
+
+  function sky() {
+    return canvas.getContext("2d");
+  }
+
+  function paintStill() {
+    const size = fit();
+    const ctx = sky();
+    ctx.fillStyle = "#07060e";
+    ctx.fillRect(0, 0, size.w, size.h);
+    for (let i = 0; i < 90; i++) {
+      const x = Math.random() * size.w;
+      const y = Math.random() * size.h;
+      const r = Math.random() * 1.6 + 0.4;
+      ctx.fillStyle = i % 5 === 0 ? "#3ee0ff" : "#aa8cff";
+      ctx.globalAlpha = 0.35 + Math.random() * 0.65;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function seedStars() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * 2 - 1,
+        y: Math.random() * 2 - 1,
+        z: Math.random(),
+        hue: i % 5 === 0 ? "#3ee0ff" : "#aa8cff"
+      });
+    }
+  }
+
+  function project(star, w, h) {
+    const depth = 0.09 / star.z;
+    return {
+      x: w * 0.5 + star.x * w * 0.5 * depth,
+      y: h * 0.46 + star.y * h * 0.5 * depth
+    };
+  }
+
+  function frame() {
+    if (!flying) return;
+    const size = fit();
+    const ctx = sky();
+    ctx.fillStyle = "rgba(7,6,14,0.32)";
+    ctx.fillRect(0, 0, size.w, size.h);
+    for (let i = 0; i < stars.length; i++) {
+      const star = stars[i];
+      const from = project(star, size.w, size.h);
+      star.z -= 0.05;
+      if (star.z < 0.03) {
+        star.x = Math.random() * 2 - 1;
+        star.y = Math.random() * 2 - 1;
+        star.z = 1;
+        continue;
+      }
+      const to = project(star, size.w, size.h);
+      ctx.strokeStyle = star.hue;
+      ctx.globalAlpha = Math.min(1, (1 - star.z) * 1.6);
+      ctx.lineWidth = Math.max(1, (1 - star.z) * 4);
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    raf = requestAnimationFrame(frame);
+  }
+
+  function drawEarth() {
+    const size = fit();
+    const ctx = sky();
+    const w = size.w;
+    const h = size.h;
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#07060e";
+    ctx.fillRect(0, 0, w, h);
+    const cx = w * 0.5;
+    const cy = h * 0.4;
+    const radius = Math.min(w, h) * 0.2;
+    const glow = ctx.createRadialGradient(cx, cy, radius * 0.2, cx, cy, radius * 1.8);
+    glow.addColorStop(0, "rgba(62,224,255,0.35)");
+    glow.addColorStop(1, "rgba(62,224,255,0)");
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius * 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    const globe = ctx.createRadialGradient(cx - radius * 0.34, cy - radius * 0.36, radius * 0.08, cx, cy, radius);
+    globe.addColorStop(0, "#e8fbff");
+    globe.addColorStop(0.22, "#3ee0ff");
+    globe.addColorStop(0.5, "#1494d6");
+    globe.addColorStop(0.74, "#1c6b45");
+    globe.addColorStop(1, "#071828");
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.fillStyle = globe;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(62,224,255,0.55)";
+    ctx.lineWidth = Math.max(2, radius * 0.02);
+    ctx.stroke();
+  }
+
+  function clearFlight() {
+    flying = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+    clearTimeout(warpTimer);
+    clearTimeout(laughTimer);
+    clearTimeout(earthTimer);
+    warpTimer = 0;
+    laughTimer = 0;
+    earthTimer = 0;
+  }
+
+  function land(focusDoor) {
+    if (arrived) return;
+    arrived = true;
+    clearFlight();
+    const world = document.querySelector(".float");
+    if (world) world.removeAttribute("inert");
+    if (seated) {
+      const note = document.getElementById("bind-note");
+      if (note) note.textContent = "Iris is pegged to the same permanence. Nothing to remember.";
+    }
+    if (bang && bang.parentNode) bang.remove();
+    window.scrollTo(0, 0);
+    if (focusDoor) {
+      const title = document.getElementById("door-title");
+      if (title) title.focus();
+    }
+  }
+
+  function beginEarth() {
+    if (arrived) return;
+    flying = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+    bang.dataset.phase = "earth";
+    setMarks([3, 4]);
+    const line = document.getElementById("bang-line");
+    if (line) line.textContent = "";
+    drawEarth();
+    earthTimer = setTimeout(function () {
+      land(true);
+    }, earthMs);
+  }
+
+  function launch() {
+    const form = document.getElementById("bind-form");
+    if (form) form.remove();
+    if (reduceMotion.matches) {
+      land(true);
+      return;
+    }
+    bang.dataset.phase = "warp";
+    setMarks([1]);
+    const line = document.getElementById("bang-line");
+    if (line) line.textContent = "";
+    const arrive = document.getElementById("arrive");
+    if (arrive) arrive.hidden = false;
+    seedStars();
+    flying = true;
+    frame();
+    laughTimer = setTimeout(function () {
+      if (!arrived && bang.dataset.phase === "warp") setMarks([2]);
+    }, 900);
+    warpTimer = setTimeout(beginEarth, warpMs);
+  }
+
+  const bindForm = document.getElementById("bind-form");
+  bindForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    if (busy || arrived || seated) return;
+    const field = document.getElementById("passphrase");
+    const raw = field.value;
+    field.value = "";
+    if (!raw.trim()) return;
+    busy = true;
+    const held = await net.participate({ kind: "human", body: "one", id: raw });
+    if (!held.participates || held.iris !== "Iris" || held.look !== 0 || held.joule !== null || !held.peg) {
+      busy = false;
+      const line = document.getElementById("bang-line");
+      if (line) line.textContent = "Without it, they are not part of this protocol.";
+      return;
+    }
+    seated = true;
+    launch();
+  });
+
+  document.getElementById("arrive").addEventListener("click", function () {
+    land(true);
+  });
+  document.querySelector(".skip").addEventListener("click", function () {
+    land(false);
+  });
+  document.addEventListener("keydown", function (event) {
+    if (arrived || !bang.isConnected) return;
+    if (event.code === "Escape" && bang.dataset.phase !== "orb") land(true);
+  });
+  window.addEventListener("resize", function () {
+    if (arrived || !bang.isConnected) return;
+    if (bang.dataset.phase === "earth") drawEarth();
+    else if (!flying) paintStill();
+  });
+  paintStill();
+  const phrase = document.getElementById("passphrase");
+  if (phrase) phrase.focus();
   </script>
 </body>
 </html>
