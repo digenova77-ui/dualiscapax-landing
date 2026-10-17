@@ -177,25 +177,14 @@ export function voteAll() {
 
 export function step(state, host) {
   const prior = normalize(state);
-  const hostStop = !!(host && typeof host === "object" && host.stop === true);
-  if (hostStop) {
-    const line = {
-      task: "",
-      admitted: false,
-      reason: "HOST STOP",
-      authority: "DCLM",
-      shown: false,
-      what: "",
-      look: 0,
-      joule: null
-    };
-    const log = prior.log.concat([line]);
+  const hidden = !!(host && typeof host === "object" && host.hidden === true);
+  if (hidden) {
     return {
       pending: prior.pending.slice(),
-      shown: shownFrom(log),
-      log: log,
-      retired: true,
-      stop: true,
+      shown: prior.shown.map(function (item) { return { id: item.id, what: item.what }; }),
+      log: prior.log.slice(),
+      retired: false,
+      stop: false,
       look: 0,
       joule: null
     };
@@ -249,9 +238,8 @@ export async function handleWork(request) {
     } catch (err) {
       body = null;
     }
-    const host = body && body.stop === true ? { stop: true } : {};
     const state = body && body.state ? body.state : begin();
-    return json(200, step(state, host));
+    return json(200, step(state, {}));
   }
   return json(405, {
     admitted: false,
