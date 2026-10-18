@@ -102,11 +102,16 @@ def settle_period(vault, world_cost):
     return SettleResult(paid, surplus, vault.balance)
 
 
-# Rule 4 (owner): derivative value flow splits 90% forest (whole ecosystem) / 9% harvest
-# (whoever did the work) / 1% father seed. These are FLOW RECIPIENTS, not token seats
-# (unlike collar.ts {held:90, forged:9, moves:1}). Rounding remainder goes to the forest.
+# Rule 4 (owner, canon): derivative value flow splits 90% forest (the whole ecosystem) /
+# 9% harvest (whoever did the work) / 1% seed (David, the father seed). These are FLOW
+# RECIPIENTS, not token seats. The harvest remainder goes to the forest.
+# Seed rounding (fix/90-9-1-canon-20261018): the seed accrues fractional units in
+# basis-point-units (1/10000 of a minor unit) via `seed_carry`, so many small flows never
+# silently give the seed 0. Cumulatively, seed == floor(total * 1%) exactly.
 FOREST_BPS, HARVEST_BPS, SEED_BPS = 9000, 900, 100
-assert FOREST_BPS + HARVEST_BPS + SEED_BPS == 10000
+BPS = 10000
+if FOREST_BPS + HARVEST_BPS + SEED_BPS != BPS:  # survives python -O, unlike assert
+    raise RuntimeError("canon 90/9/1 must sum to 100%")
 
 
 @dataclass(frozen=True)
@@ -115,11 +120,16 @@ class DerivativeFlow:
     forest: int
     harvest: int
     seed: int
+    seed_carry: int = 0   # fractional seed owed, in 1/10000 minor units (0 <= carry < 10000)
 
 
-def split_derivative(amount):
+def split_derivative(amount, seed_carry=0):
     if isinstance(amount, bool) or not isinstance(amount, int) or amount < 0:
         raise ValueError("amount must be a non-negative int in minor units")
-    harvest = amount * HARVEST_BPS // 10000
-    seed = amount * SEED_BPS // 10000
-    return DerivativeFlow(amount, amount - harvest - seed, harvest, seed)
+    if isinstance(seed_carry, bool) or not isinstance(seed_carry, int) or not 0 <= seed_carry < BPS:
+        raise ValueError("seed_carry must be an int in [0, 10000)")
+    harvest = amount * HARVEST_BPS // BPS
+    owed = seed_carry + amount * SEED_BPS
+    # Never exceeds amount - harvest: for amount >= 1, owed // BPS <= 1 + amount // 100 <= ceil(0.91 * amount).
+    seed, carry = divmod(owed, BPS)
+    return DerivativeFlow(amount, amount - harvest - seed, harvest, seed, carry)

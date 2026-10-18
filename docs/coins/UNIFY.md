@@ -65,7 +65,7 @@ Bot cap: all bot IDs together may hold at most `BOT_USDC_CAP` USDC (anti-corneri
 - D4: Tap parameters: reserve target, season budget %, per-member cap; who attests "in season".
 - D6: Value of BOT_USDC_CAP (absolute amount, or a % of total USDC); whether usdc_out needs a fee to the e-fuse; the swap_burn rate (1:1 in this draft).
 - D7: Whether a bot needs a controlling human before it can earn USDC.
-- D5: Old collar.ts `{held:90, forged:9, moves:1}` and `llms.txt` 0.81/0.10/0.09 text conflict with this.
+- D5: **Resolved** (David, 2026-10-18): canon is 90% forest (whole ecosystem) / 9% harvest (whoever did the work) / 1% seed (father seed). collar.ts and llms.txt now say this (see R7).
 
 ## 6. Alignment with unity-playground (the target architecture)
 Source read: `digenova77-ui/unity-playground@master` 0cbfaec (2026-10-11, last commit on the local clone; a pull showed nothing newer). This ledger is meant to **plug into** that architecture. Where the playground already names something, we adopt its name. Every divergence is listed with a proposed reconciliation, and nothing in that repo was changed.
@@ -82,8 +82,8 @@ Source read: `digenova77-ui/unity-playground@master` 0cbfaec (2026-10-11, last c
 | Founding board: bots in signing order; "a seat is not an office. It does not vote and it does not pay" | unity/founding.ts | DERIVATIVE_MAX founding wall seat with "governance voice" | Divergence R4 |
 | Floor `LAW = NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING`; three seats evidence/claim/world | law/floor.ts | Rejections are free-text reasons | Divergence R5 |
 | `elevate(names)`: four laws hang on named jurisdictions; `enacted: 0`, `legislature: null` | law/elevate.ts | Not modelled | **Plug-in point for human law** (R6) |
-| `SPLIT = {held:90, forged:9, moves:1}` as eFuse/UniFi³/Merit *seats* | gate/collar.ts | 50/50 purchase split; 90/9/1 as forest/harvest/seed *flow* | Divergence R7 |
-| Fee 10% halved eFuse/Unity; `RESIDUAL.driveBackFloor 0.81` | meter/close.ts | 50/50 (David's 2026-10-17 rule) | Divergence R7 |
+| `SPLIT = {held:90, forged:9, moves:1}` as eFuse/UniFi³/Merit *seats* | gate/collar.ts | 50/50 purchase split; 90/9/1 as forest/harvest/seed *flow* | **R7 closed** (fix/90-9-1-canon-20261018) |
+| Fee 10% halved eFuse/Unity; `RESIDUAL.driveBackFloor 0.81` | meter/close.ts | 50/50 (David's 2026-10-17 rule) | R7b open (fee residual, separate from 90/9/1; needs owning agent) |
 | Merit "is lost if the old world crosses the fuse" | gate/collar.ts | Cross-side Merit transfer = forfeiture | **Aligned in spirit** |
 | `listed:false, network:false, till:'closed'` | meter/coins.ts | No-crypto mode is the default; USDC gateway is optional | Aligned; opening the till (USDC) is an explicit decision (R8) |
 | Ledger faces white/dark; father/son seats; juvenile seats dark to non-guardians | ledger/dark.ts, hold.ts, juvenile.ts | Not modelled (minors under parent seed was list item #20) | Gap R9 |
@@ -96,7 +96,7 @@ Source read: `digenova77-ui/unity-playground@master` 0cbfaec (2026-10-11, last c
 - **R4 Founding seats:** adopt the playground rule, so seats neither vote nor pay. I suggest dropping "governance voice" from DERIVATIVE_MAX. Note the playground board is *bots* in signing order, while our wall also seats humans (Giovanni slot 0, David). David to confirm one wall or two.
 - **R5 Refusals tagged with floor law:** every `Rejected` carries one of the four LAW names (e.g. e-fuse drain → NO_FORCE / TRUTH_OR_NOTHING; replay → TRUTH_OR_NOTHING; cap breach → HOST_SAFE; forfeit residue → CLEANUP_FIRST). Receipts then speak the playground's language.
 - **R6 Human-law plug-in:** human statutes enter only through `elevate(names)`: a named jurisdiction hangs on the four laws as data (`enacted` stays 0 until a real legislature acts). A jurisdiction's rules (KYC, MSB limits, consumer law) become attested *parameters* of ledger guards, never new ledger powers. That's how "human law elevated by the system" plugs in without amending the floor.
-- **R7 Splits:** keep collar.ts 90/9/1 as the playground's *seat weights* only if David wants that reading. Otherwise update collar.ts and close.ts to David's current rules: 50/50 purchase split and 90/9/1 forest/harvest/seed flow. That needs the owning agent's PR, not this one.
+- **R7 Splits: CLOSED** by `fix/90-9-1-canon-20261018` (dualiscapax-landing: llms.txt, UNIFY.md, `tools/tokenomics.py` seed carry + sum-to-100 check; unity-playground: `gate/collar.ts` SPLIT = {forest:90, harvest:9, seed:1}). David's canon: 90% forest / 9% harvest (worker) / 1% seed (father). Seed rounding: fractional seed accrues in `seed_carry` (1/10000 units), so cumulative seed = floor(total × 1%) exactly. close.ts `RESIDUAL.driveBackFloor 0.81` remains a separate fee item, not touched here.
 - **R8 Till:** the USDC gateway counts as "opening the till", so it stays off in code until David opens it explicitly.
 - **R9 Dark/white and minors:** map minors' data to the playground's dark face under the father/parent seat in the Rust port.
 - **R10:** flag the internal `merit.moves:false` vs `moveCoin` mismatch to the playground's owner.
