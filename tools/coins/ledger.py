@@ -80,7 +80,7 @@ class Ledger:
             "merit_pool": {"human": 0, "bot": 0},   # forfeited cross-side transfers, back to the network
             "efuse": {"balance": 0, "deposited": 0, "world_cost_paid": 0, "expansion": 0},
             "purchases_in": 0, "payments": {},      # payment_ref -> 1 (no double credit)
-            "deriv": {"in": 0, "forest": 0, "harvest_paid": 0, "seed_escrow": 0, "tapped": 0},
+            "deriv": {"in": 0, "forest": 0, "harvest_paid": 0, "seed_escrow": 0, "tapped": 0, "seed_carry": 0},
             "harvest": {},        # id_hash -> minor units
             "season": {"open": False, "id": 0, "budget": 0, "used": 0, "taps": {}},
             "reserve_target": reserve_target,
@@ -271,13 +271,16 @@ class Ledger:
             raise Rejected("unknown worker")
         if ref in self.s["payments"]:
             raise Rejected("double-spend: source already credited")
-        f = split_derivative(amt)
+        forest_mode = self.s["seed_mode"] == "forest"
+        f = split_derivative(amt, 0 if forest_mode else self.s["deriv"]["seed_carry"])
         forest, seed = f.forest, f.seed
-        if self.s["seed_mode"] == "forest":
+        if forest_mode:
             forest, seed = forest + seed, 0
         if not dry:
             d = self.s["deriv"]
             d["in"] += amt; d["forest"] += forest; d["harvest_paid"] += f.harvest; d["seed_escrow"] += seed
+            if not forest_mode:
+                d["seed_carry"] = f.seed_carry
             self.s["harvest"][worker] = self.s["harvest"].get(worker, 0) + f.harvest
             self.s["payments"][ref] = 1
         return {"forest": forest, "harvest": f.harvest, "seed": seed}

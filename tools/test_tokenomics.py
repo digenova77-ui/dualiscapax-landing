@@ -110,7 +110,37 @@ class TestDerivative9091(unittest.TestCase):
             self.assertLessEqual(f.seed, a // 100)
 
     def test_small_amount(self):
-        self.assertEqual(t.split_derivative(99), t.DerivativeFlow(99, 91, 8, 0))
+        self.assertEqual(t.split_derivative(99), t.DerivativeFlow(99, 91, 8, 0, 9900))
+
+    def test_canon_sums_to_100(self):
+        self.assertEqual(t.FOREST_BPS + t.HARVEST_BPS + t.SEED_BPS, t.BPS)
+        self.assertEqual((t.FOREST_BPS, t.HARVEST_BPS, t.SEED_BPS), (9000, 900, 100))
+
+    def test_seed_carry_small_flows_not_lost(self):
+        # 100 flows of 1 unit: without carry the seed got 0; with carry it gets exactly 1.
+        carry = seed = total = 0
+        for _ in range(100):
+            f = t.split_derivative(1, carry); carry = f.seed_carry; seed += f.seed; total += 1
+            self.assertEqual(f.forest + f.harvest + f.seed, 1)
+        self.assertEqual(seed, 1); self.assertEqual(carry, 0)
+
+    def test_seed_carry_cumulative_exact(self):
+        import random
+        rng = random.Random(9091)
+        for _ in range(200):
+            carry = seed = total = 0
+            for _ in range(rng.randint(1, 60)):
+                a = rng.randint(0, 250)
+                f = t.split_derivative(a, carry)
+                self.assertEqual(f.forest + f.harvest + f.seed, a)
+                self.assertTrue(0 <= f.seed_carry < t.BPS)
+                carry = f.seed_carry; seed += f.seed; total += a
+            self.assertEqual(seed, total * t.SEED_BPS // t.BPS)
+
+    def test_bad_carry(self):
+        for bad in (-1, 10000, 1.5, True):
+            with self.assertRaises(ValueError):
+                t.split_derivative(5, bad)
 
     def test_rejects_bad(self):
         for bad in (-1, 2.5, None):
