@@ -9,7 +9,7 @@ Status: accounting reference only. Nothing is minted, priced, listed or deployed
 |---|---|---|---|
 | **e-fuse** | Locked commons vault that pays down world cost | 50% of every dollar/crypto purchase (odd cent included) | Deposit-only. Only outflows: attested world-cost payment, then surplus to expansion. Never sold, withdrawn, transferred or redeemed by anyone, founder included. |
 | **UniFi³** | The token behind Unity ID: exactly 1 per fused identity | The `fuse` op (first registration: passkey fused to identity hash = the e-fuse receipt, law_v8 `efuse_fuse`) | Soulbound in this draft: transfer/sell refused (open decision D1). |
-| **Merit** | Earned claim/standing, in minor units | The buyer's 50% of each purchase | Non-transferable in this draft (standing comes from origin; canon: "a buyer gets no standing"). Open decision D1. |
+| **Merit** | Earned claim/standing, in minor units | The buyer's 50% of each purchase | Transferable only within its own side (human→human, bot→bot). A cross-side transfer (human↔bot) is like sending to the wrong chain: accepted as a **forfeiture**. The sender loses it, the recipient gets 0, and the amount returns to the sender side's network pool (David, 2026-10-17). |
 
 Derivative value (outside revenue/work) is a fourth *flow*, not a coin: 90% forest / 9% harvest (the worker) / 1% father seed.
 
@@ -18,12 +18,13 @@ Derivative value (outside revenue/work) is a fourth *flow*, not a coin: 90% fore
 `purchase` (signed by buyer + attested by payment gateway) → split_purchase → e-fuse += ceil(x/2), buyer Merit += floor(x/2).
 `settle` (attested world cost W) → e-fuse pays min(balance, W); if fully covered, the remainder goes to expansion. The 50/50 continues forever.
 `derivative` (attested) → forest / harvest[worker] / seed escrow (or forest when `seed_mode="forest"`).
+`merit_transfer` (signed by sender) → same side: moves; cross side: forfeited to `merit_pool[sender side]`, receipt records `forfeit`. UIs MUST call read-only `precheck_transfer(from, to, amount)` first and show its `warning` (returns ok, cross_side, forfeit, recipient_gets, warning).
 `season` (attested open/close) + `tap` (signed) → member draws from forest under the maple law.
 
 ## 3. Invariants (checked after every op in the fuzz)
-1. Purchase conservation: Σpurchases = e-fuse deposited + ΣMerit (exact, integer cents; odd cent to e-fuse).
+1. Purchase conservation: Σpurchases = e-fuse deposited + ΣMerit + Σmerit_pool (exact, integer cents; odd cent to e-fuse).
 2. E-fuse conservation: deposited = balance + world_cost_paid + expansion. No other exit exists in code.
-3. Merit supply = ΣMerit; human half ≤ cap/2 and bot half ≤ cap/2 independently (cap = 100M coins, D3).
+3. Per side: merit_supply[side] = Σ Merit of that side's identities + merit_pool[side] (no value ever crosses sides; forfeits cannot be used to dodge or refill a cap); human half ≤ cap/2 and bot half ≤ cap/2 independently (cap = 100M coins, D3).
 4. Derivative conservation: in = forest + harvest + seed escrow + tapped; harvest ledger sums.
 5. UniFi³ is exactly 1:1 with fused identities.
 6. No negative balances; amounts are ints in [1, 10^15]; floats/bools/strings refused.
@@ -44,7 +45,7 @@ Derivative value (outside revenue/work) is a fourth *flow*, not a coin: 90% fore
 - **Audits**: independent code audit of the Rust port, economic audit of caps/tapping, formal spec of invariants; pen-test of the gateway.
 
 ## 5. Open decisions for David
-- D1: Transferability. Canon (efuse-unity) says Unity non-transferable and Merit transferable; this draft makes both non-transferable. Which is it?
+- D1: UniFi³ is soulbound in this draft; Merit moves only within its own side, and cross-side transfers are forfeited. Should forfeited Merit stay in the side pool (current), be burned, or be redistributed? Should a cross-side send need an explicit opt-in flag on top of the UI warning?
 - D2: 1% father seed — escrow (default) vs route to forest, pending canon amendment (founder extraction forbidden).
 - D3: Merit cap 100M coins (vs 1B Drive draft); what Merit is denominated in (cents of purchase here).
 - D4: Tap parameters: reserve target, season budget %, per-member cap; who attests "in season".

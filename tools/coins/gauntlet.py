@@ -139,7 +139,7 @@ class Adversarial(unittest.TestCase):
         self.rej(o)
 
     def test_unifi_and_merit_non_transferable(self):
-        for t in ("unifi_transfer", "unifi_sell", "merit_transfer", "merit_sell"):
+        for t in ("unifi_transfer", "unifi_sell", "merit_sell"):
             self.rej(self.w.op(t, signer=self.a, to=self.b, amount=1))
 
     def test_malformed(self):
@@ -256,6 +256,10 @@ def random_run(seed, n_ops, check_every=1):
             elif r < 0.88:
                 m = rng.choice(ids)
                 w.L.apply(w.op("tap", signer=m, now=now, member=m, amount=rng.randint(1, 20_000)), now)
+            elif r < 0.91:
+                a, b = rng.choice(ids), rng.choice(ids)
+                w.L.apply(w.op("merit_transfer", signer=a, now=now, **{"from": a}, to=b,
+                               amount=rng.choice([1, 7, rng.randint(1, 10 ** 6)])), now)
             elif r < 0.94:
                 m = rng.choice(ids)
                 w.L.apply(w.op(rng.choice(["efuse_withdraw", "efuse_sell", "merit_transfer", "unifi_transfer",
@@ -272,6 +276,61 @@ def random_run(seed, n_ops, check_every=1):
         if i % check_every == 0: w.L.check_invariants()
     w.L.check_invariants()
     return w, acc, rej
+
+
+class MeritTransfer(unittest.TestCase):
+    def setUp(self):
+        self.w = W(); self.a = self.w.fuse("alice"); self.c = self.w.fuse("carol"); self.b = self.w.fuse("bot1", "bot")
+        self.w.buy(self.a, 2000); self.w.buy(self.b, 2000)
+
+    def tx(self, frm, to, amt, signer=None):
+        return self.w.L.apply(self.w.op("merit_transfer", signer=signer or frm, **{"from": frm}, to=to, amount=amt), T0)
+
+    def test_same_side_moves(self):
+        r = self.tx(self.a, self.c, 300)
+        self.assertEqual(r["effects"]["recipient_gets"], 300)
+        self.assertEqual((self.w.L.s["merit"][self.a], self.w.L.s["merit"][self.c]), (700, 300))
+        self.w.L.check_invariants()
+
+    def test_cross_side_forfeits_human_to_bot(self):
+        sup = dict(self.w.L.s["merit_supply"])
+        r = self.tx(self.a, self.b, 400)
+        self.assertEqual(r["effects"], {"cross_side": True, "forfeit": 400, "recipient_gets": 0, "pool_side": "human"})
+        s = self.w.L.s
+        self.assertEqual((s["merit"][self.a], s["merit"][self.b], s["merit_pool"]["human"]), (600, 1000, 400))
+        self.assertEqual(s["merit_supply"], sup); s and self.w.L.check_invariants()
+        self.assertTrue(Ledger.verify_chain(self.w.L.receipts))
+
+    def test_cross_side_forfeits_bot_to_human(self):
+        self.tx(self.b, self.a, 1000)
+        self.assertEqual(self.w.L.s["merit_pool"]["bot"], 1000); self.assertEqual(self.w.L.s["merit"][self.a], 1000)
+        self.w.L.check_invariants()
+
+    def test_precheck_warns_and_is_read_only(self):
+        h0 = self.w.L.state_hash()
+        p = self.w.L.precheck_transfer(self.a, self.b, 10)
+        self.assertTrue(p["ok"] and p["cross_side"]); self.assertIn("FORFEITED", p["warning"]); self.assertEqual(p["recipient_gets"], 0)
+        p = self.w.L.precheck_transfer(self.a, self.c, 10)
+        self.assertFalse(p["cross_side"]); self.assertIsNone(p["warning"])
+        for bad in [(self.a, self.b, 10 ** 6), (self.a, hx("nobody"), 1), (self.a, self.a, 1), (self.a, self.c, 0), (self.a, self.c, 1.5)]:
+            self.assertFalse(self.w.L.precheck_transfer(*bad)["ok"])
+        self.assertEqual(h0, self.w.L.state_hash())
+
+    def test_rejections_leave_state(self):
+        for args in [(self.a, self.c, 1001), (self.a, self.a, 1), (self.a, hx("x"), 1), (self.a, self.c, -5)]:
+            h0 = self.w.L.state_hash()
+            with self.assertRaises(Rejected): self.tx(*args)
+            self.assertEqual(h0, self.w.L.state_hash())
+        h0 = self.w.L.state_hash()
+        with self.assertRaises(Rejected): self.tx(self.a, self.c, 1, signer=self.c)   # not the owner
+        self.assertEqual(h0, self.w.L.state_hash())
+
+    def test_forfeit_cannot_be_reclaimed_or_dodge_caps(self):
+        old = L.MERIT_HALF; L.MERIT_HALF = 1000
+        try:
+            self.tx(self.b, self.a, 1000)               # bot side forfeits all; bot half still full
+            with self.assertRaises(Rejected): self.w.buy(self.b, 2)
+        finally: L.MERIT_HALF = old
 
 
 class Fuzz(unittest.TestCase):

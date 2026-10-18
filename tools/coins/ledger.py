@@ -68,6 +68,7 @@ class Ledger:
             "unifi": {},          # id_hash -> 1 (UniFi3: one per fused identity, soulbound)
             "merit": {},          # id_hash -> minor units (earned, non-transferable)
             "merit_supply": {"human": 0, "bot": 0},
+            "merit_pool": {"human": 0, "bot": 0},   # forfeited cross-side transfers, back to the network
             "efuse": {"balance": 0, "deposited": 0, "world_cost_paid": 0, "expansion": 0},
             "purchases_in": 0, "payments": {},      # payment_ref -> 1 (no double credit)
             "deriv": {"in": 0, "forest": 0, "harvest_paid": 0, "seed_escrow": 0, "tapped": 0},
@@ -107,8 +108,11 @@ class Ledger:
 
     def check_invariants(self):
         s, e, d = self.s, self.s["efuse"], self.s["deriv"]
-        merit_total = sum(s["merit"].values())
+        merit_total = sum(s["merit"].values()) + sum(s["merit_pool"].values())
         assert s["purchases_in"] == e["deposited"] + merit_total, "purchase conservation"
+        for k in KINDS:
+            side = sum(v for i, v in s["merit"].items() if s["ids"][i]["kind"] == k) + s["merit_pool"][k]
+            assert side == s["merit_supply"][k], "merit side supply (no cross-side leak)"
         assert e["deposited"] == e["balance"] + e["world_cost_paid"] + e["expansion"], "e-fuse conservation"
         assert sum(s["merit_supply"].values()) == merit_total, "merit supply"
         for k in KINDS:
@@ -305,5 +309,45 @@ class Ledger:
         raise Rejected(f"{op['type']}: forbidden for everyone, founder included")
 
     _op_efuse_withdraw = _op_efuse_sell = _op_efuse_transfer = _op_efuse_redeem = _refuse
-    _op_unifi_transfer = _op_unifi_sell = _op_merit_transfer = _op_merit_sell = _refuse
+    _op_unifi_transfer = _op_unifi_sell = _op_merit_sell = _refuse
+
+    # ---------- Merit transfer (David, 2026-10-17) ----------
+    CROSS_SIDE_WARNING = ("WARNING: recipient is on the other side of the human/bot Merit split. "
+                          "Like sending to the wrong chain, the full amount is FORFEITED to the network pool. "
+                          "The recipient receives nothing and it cannot be undone.")
+
+    def precheck_transfer(self, sender, to, amount):
+        """Read-only. UIs call this before signing a merit_transfer and show `warning` if set."""
+        try:
+            _amt(amount)
+            a, b = self.s["ids"].get(sender), self.s["ids"].get(to)
+            if a is None or b is None:
+                raise Rejected("unknown identity")
+            if sender == to:
+                raise Rejected("self transfer")
+            if self.s["merit"][sender] < amount:
+                raise Rejected("insufficient merit")
+        except Rejected as e:
+            return {"ok": False, "error": str(e), "cross_side": None, "forfeit": 0, "recipient_gets": 0, "warning": None}
+        cross = a["kind"] != b["kind"]
+        return {"ok": True, "error": None, "cross_side": cross, "forfeit": amount if cross else 0,
+                "recipient_gets": 0 if cross else amount, "warning": self.CROSS_SIDE_WARNING if cross else None}
+
+    def _op_merit_transfer(self, op, now, dry):
+        """Same side: moves. Cross side (human<->bot): accepted as forfeiture to the sender side's
+        network pool; recipient gets nothing; side supplies and the 50/50 caps are unchanged."""
+        snd, to = op.get("from"), op.get("to")
+        self._signed_by(op, snd)
+        pc = self.precheck_transfer(snd, to, op.get("amount"))
+        if not pc["ok"]:
+            raise Rejected(pc["error"])
+        amt, k = op["amount"], self.s["ids"][snd]["kind"]
+        if not dry:
+            self.s["merit"][snd] -= amt
+            if pc["cross_side"]:
+                self.s["merit_pool"][k] += amt
+            else:
+                self.s["merit"][to] += amt
+        return {"cross_side": pc["cross_side"], "forfeit": pc["forfeit"], "recipient_gets": pc["recipient_gets"],
+                "pool_side": k if pc["cross_side"] else None}
     _op_seed_withdraw = _refuse   # until a canon amendment frames the 1% as a seed share
