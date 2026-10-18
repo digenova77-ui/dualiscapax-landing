@@ -66,3 +66,37 @@ Bot cap: all bot IDs together may hold at most `BOT_USDC_CAP` USDC (anti-corneri
 - D6: Value of BOT_USDC_CAP (absolute amount, or a % of total USDC); whether usdc_out needs a fee to the e-fuse; the swap_burn rate (1:1 in this draft).
 - D7: Whether a bot needs a controlling human before it can earn USDC.
 - D5: Old collar.ts `{held:90, forged:9, moves:1}` and `llms.txt` 0.81/0.10/0.09 text conflict with this.
+
+## 6. Alignment with unity-playground (the target architecture)
+Source read: `digenova77-ui/unity-playground@master` 0cbfaec (2026-10-11, last commit on the local clone; a pull showed nothing newer). This ledger is meant to **plug into** that architecture. Where the playground already names something, we adopt its name. Every divergence is listed with a proposed reconciliation, and nothing in that repo was changed.
+
+### Mapping (playground → this ledger)
+| Playground structure | File | Our counterpart | Status |
+|---|---|---|---|
+| `COINS = ['eFuse','Merit','Unity']`; eFuse pegs the fee, Merit records work, Unity is identity; "the first two do not apply until that identity is seated" | meter/coins.ts | e-fuse / Merit / UniFi³; the `fuse` op is the seating, and nothing works before it | **Aligned** (Merit/e-fuse inert before fuse) |
+| `moveCoin`: only Merit moves; "Unity is the seat, not a coin that is sent"; eFuse never moves | meter/coins.ts | UniFi³ soulbound; e-fuse deposit-only; Merit moves within its side | **Aligned** |
+| `moveCoin` requires `divine().rings === 3` | law/divine.ts | No rings gate in ledger ops | Divergence R1 |
+| UniFi³ = "the name of this bind"; bind holds only when page and origin carry the same corpus mark | unity/fuse.ts | UniFi³ minted at the `fuse` op | Aligned in meaning; corpus-mark check not modelled (R2) |
+| Pilot handle `unity:pilot.` + first 32 hex of SHA-256(SPKI), W3C WebAuthn/FIDO2 | unity/unityid.ts | `id` = 64-hex hash, HMAC stand-in signatures | Divergence R3 |
+| Bot seat: `unity:bot|<agreement>|audit:always|choice|no-commitment`; "not a human passkey" | unity/botid.ts | `kind: "bot"`, no person hash, every act is a receipt | **Aligned** (audit = receipt chain) |
+| Founding board: bots in signing order; "a seat is not an office. It does not vote and it does not pay" | unity/founding.ts | DERIVATIVE_MAX founding wall seat with "governance voice" | Divergence R4 |
+| Floor `LAW = NO_FORCE, HOST_SAFE, CLEANUP_FIRST, TRUTH_OR_NOTHING`; three seats evidence/claim/world | law/floor.ts | Rejections are free-text reasons | Divergence R5 |
+| `elevate(names)`: four laws hang on named jurisdictions; `enacted: 0`, `legislature: null` | law/elevate.ts | Not modelled | **Plug-in point for human law** (R6) |
+| `SPLIT = {held:90, forged:9, moves:1}` as eFuse/UniFi³/Merit *seats* | gate/collar.ts | 50/50 purchase split; 90/9/1 as forest/harvest/seed *flow* | Divergence R7 |
+| Fee 10% halved eFuse/Unity; `RESIDUAL.driveBackFloor 0.81` | meter/close.ts | 50/50 (David's 2026-10-17 rule) | Divergence R7 |
+| Merit "is lost if the old world crosses the fuse" | gate/collar.ts | Cross-side Merit transfer = forfeiture | **Aligned in spirit** |
+| `listed:false, network:false, till:'closed'` | meter/coins.ts | No-crypto mode is the default; USDC gateway is optional | Aligned; opening the till (USDC) is an explicit decision (R8) |
+| Ledger faces white/dark; father/son seats; juvenile seats dark to non-guardians | ledger/dark.ts, hold.ts, juvenile.ts | Not modelled (minors under parent seed was list item #20) | Gap R9 |
+| `executeCoins` says `merit.moves: false` while `moveCoin` lets Merit move | meter/coins.ts | — | Inconsistency inside the playground (R10) |
+
+### Proposed reconciliations (for David and the agents that own those files; nothing is overridden)
+- **R1 Rings gate:** add `rings` to the ledger: every value-moving op is refused unless the three-ring check returns 3 (Philosophy/Physics/Law). In the Rust port this calls the law core's ring check, mirroring `divine()`.
+- **R2 Corpus mark:** add an optional `fuse_mark` field to `fuse`, checked against the playground's `FUSE_MARK`, so the bind holds only when both carry it.
+- **R3 Identity:** set `id = SHA-256(SPKI)` (full 64 hex), and derive the playground handle as `unity:pilot.` + `id[:32]`. Bots use `unity:bot|...`. Replace HMAC with WebAuthn P-256 in the Rust port.
+- **R4 Founding seats:** adopt the playground rule, so seats neither vote nor pay. I suggest dropping "governance voice" from DERIVATIVE_MAX. Note the playground board is *bots* in signing order, while our wall also seats humans (Giovanni slot 0, David). David to confirm one wall or two.
+- **R5 Refusals tagged with floor law:** every `Rejected` carries one of the four LAW names (e.g. e-fuse drain → NO_FORCE / TRUTH_OR_NOTHING; replay → TRUTH_OR_NOTHING; cap breach → HOST_SAFE; forfeit residue → CLEANUP_FIRST). Receipts then speak the playground's language.
+- **R6 Human-law plug-in:** human statutes enter only through `elevate(names)`: a named jurisdiction hangs on the four laws as data (`enacted` stays 0 until a real legislature acts). A jurisdiction's rules (KYC, MSB limits, consumer law) become attested *parameters* of ledger guards, never new ledger powers. That's how "human law elevated by the system" plugs in without amending the floor.
+- **R7 Splits:** keep collar.ts 90/9/1 as the playground's *seat weights* only if David wants that reading. Otherwise update collar.ts and close.ts to David's current rules: 50/50 purchase split and 90/9/1 forest/harvest/seed flow. That needs the owning agent's PR, not this one.
+- **R8 Till:** the USDC gateway counts as "opening the till", so it stays off in code until David opens it explicitly.
+- **R9 Dark/white and minors:** map minors' data to the playground's dark face under the father/parent seat in the Rust port.
+- **R10:** flag the internal `merit.moves:false` vs `moveCoin` mismatch to the playground's owner.

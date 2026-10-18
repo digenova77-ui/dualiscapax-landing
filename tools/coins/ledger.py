@@ -14,6 +14,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from tokenomics import split_purchase, split_derivative, PAYMENT_RAILS  # noqa: E402
 
 GENESIS = "0" * 64
+COINS = ("eFuse", "UniFi\u00b3", "Merit")   # names as in unity-playground meter/coins.ts + unity/fuse.ts
+FLOOR_LAW = ("NO_FORCE", "HOST_SAFE", "CLEANUP_FIRST", "TRUTH_OR_NOTHING")  # unity-playground law/floor.ts (R5)
+
+
+def pilot_handle(id_hash):
+    """unity-playground unity/unityid.ts handle shape: unity:pilot. + first 32 hex of SHA-256(SPKI) (R3)."""
+    return "unity:pilot." + id_hash[:32]
 NONCE_TTL = 60                      # seconds, matches law_v8 unity_handoff
 MAX_SKEW = 5                        # seconds of tolerated future clock skew
 MAX_AMOUNT = 10 ** 15               # minor units per op (10 trillion dollars in cents); overflow guard
