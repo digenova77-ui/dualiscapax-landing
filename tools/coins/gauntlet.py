@@ -3,6 +3,7 @@
 Run: python3 tools/coins/gauntlet.py            (unit + adversarial + 20k-op fuzz)
      FUZZ_OPS=1000000 python3 tools/coins/gauntlet.py   (million-op invariant fuzz)
 """
+from fractions import Fraction
 import copy, hashlib, os, random, sys, unittest
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ledger as L
@@ -260,6 +261,16 @@ def random_run(seed, n_ops, check_every=1):
                 a, b = rng.choice(ids), rng.choice(ids)
                 w.L.apply(w.op("merit_transfer", signer=a, now=now, **{"from": a}, to=b,
                                amount=rng.choice([1, 7, rng.randint(1, 10 ** 6)])), now)
+            elif r < 0.92:
+                bt, ow = rng.choice(ids), rng.choice(ids)
+                o = w.op("set_controller", signer=ow, now=now, bot=bt, owner=ow); o["bot_sig"] = sign(w.keys[bt], o)
+                w.L.apply(o, now)
+            elif r < 0.935:
+                a, b = rng.choice(ids), rng.choice(ids); k = rng.randint(0, 2)
+                if k == 0: w.L.apply(w.op("swap_burn", signer=a, now=now, id=a, amount=rng.randint(1, 10 ** 5)), now)
+                elif k == 1: w.L.apply(w.op("work_pay", signer=a, now=now, **{"from": a}, to=b,
+                                            amount=rng.randint(1, 10 ** 5), work_ref=hx("w", seed, i)), now)
+                else: w.L.apply(w.op("usdc_out", signer=a, attest=True, now=now, id=a, amount=rng.randint(1, 10 ** 5)), now)
             elif r < 0.94:
                 m = rng.choice(ids)
                 w.L.apply(w.op(rng.choice(["efuse_withdraw", "efuse_sell", "merit_transfer", "unifi_transfer",
@@ -331,6 +342,122 @@ class MeritTransfer(unittest.TestCase):
             self.tx(self.b, self.a, 1000)               # bot side forfeits all; bot half still full
             with self.assertRaises(Rejected): self.w.buy(self.b, 2)
         finally: L.MERIT_HALF = old
+
+
+class Hierarchy(unittest.TestCase):
+    def setUp(self):
+        self.w = W(); self.h1 = self.w.fuse("h1"); self.h2 = self.w.fuse("h2"); self.h3 = self.w.fuse("h3")
+        self.b1 = self.w.fuse("b1", "bot"); self.b2 = self.w.fuse("b2", "bot")
+
+    def ctl(self, bot, owner, bot_signer=None):
+        o = self.w.op("set_controller", signer=owner, bot=bot, owner=owner)
+        o["bot_sig"] = sign(self.w.keys[bot_signer or bot], o)
+        return self.w.L.apply(o, T0)
+
+    def test_human_controls_bot(self):
+        self.ctl(self.b1, self.h1); self.assertEqual(self.w.L.s["controller"][self.b1], self.h1)
+        self.w.L.check_invariants()
+
+    def test_bot_controls_human_refused(self):
+        for bot, owner in [(self.h1, self.b1), (self.b2, self.b1), (self.h1, self.h2)]:
+            h0 = self.w.L.state_hash()
+            with self.assertRaises(Rejected): self.ctl(bot, owner)
+            self.assertEqual(h0, self.w.L.state_hash())
+
+    def test_no_hijack_without_bot_consent_or_second_owner(self):
+        with self.assertRaises(Rejected): self.ctl(self.b1, self.h1, bot_signer=self.h2)
+        self.ctl(self.b1, self.h1)
+        with self.assertRaises(Rejected): self.ctl(self.b1, self.h2)
+
+    def test_shares_sum_to_100_percent(self):
+        for who, amt in [(self.h1, 1001), (self.h2, 333), (self.h3, 7), (self.b1, 99999), (self.b2, 3)]:
+            self.w.buy(who, amt)
+        sh = self.w.L.control_shares()
+        self.assertEqual(sum(sh.values()), 1); self.assertNotIn(self.b1, sh)     # bots hold no control
+        cl = self.w.L.swarm_claims()
+        self.assertEqual(sum(cl.values()), self.w.L.s["merit_supply"]["bot"])
+
+    def test_control_tracks_human_trades_bot_side_mirrors(self):
+        self.w.buy(self.h1, 2000); self.w.buy(self.h2, 2000); self.w.buy(self.b1, 10000)
+        self.assertEqual(self.w.L.control_shares()[self.h1], Fraction(1, 2))
+        bot_before = self.w.L.s["merit_supply"]["bot"]
+        self.w.L.apply(self.w.op("merit_transfer", signer=self.h1, **{"from": self.h1}, to=self.h2, amount=500), T0)
+        sh = self.w.L.control_shares()
+        self.assertEqual((sh[self.h1], sh[self.h2]), (Fraction(1, 4), Fraction(3, 4)))
+        self.assertEqual(self.w.L.swarm_claims(), {self.h1: 1250, self.h2: 3750})
+        self.assertEqual(self.w.L.s["merit_supply"]["bot"], bot_before)          # bot side only mirrors
+        # bot-side trades never move human control
+        self.w.L.apply(self.w.op("merit_transfer", signer=self.b1, **{"from": self.b1}, to=self.b2, amount=100), T0)
+        self.assertEqual(self.w.L.control_shares(), sh)
+
+    def test_random_shares_always_exact(self):
+        rng = random.Random(5)
+        for _ in range(300):
+            self.w.buy(rng.choice([self.h1, self.h2, self.h3, self.b1]), rng.randint(1, 10 ** 6))
+            self.assertEqual(sum(self.w.L.control_shares().values()), 1)
+            self.assertEqual(sum(self.w.L.swarm_claims().values()), self.w.L.s["merit_supply"]["bot"])
+
+
+class USDC(unittest.TestCase):
+    def setUp(self):
+        self.w = W(); self.h = self.w.fuse("h"); self.b = self.w.fuse("b", "bot"); self.b2 = self.w.fuse("b2", "bot")
+
+    def ap(self, typ, signer=None, attest=False, **f):
+        return self.w.L.apply(self.w.op(typ, signer=signer, attest=attest, **f), T0)
+
+    def usdc_in(self, who, amt):
+        return self.ap("usdc_in", signer=who, attest=True, buyer=who, amount=amt, rail="crypto", payment_ref=hx("u", self.w.n))
+
+    def test_inflow_splits_50_50(self):
+        self.assertEqual(self.usdc_in(self.h, 1001)["effects"], {"efuse": 501, "merit": 500})
+        with self.assertRaises(Rejected):
+            self.ap("usdc_in", signer=self.h, attest=True, buyer=self.h, amount=10, rail="usd", payment_ref=hx("z"))
+
+    def test_swap_burn_work_pay_cross_side_and_out(self):
+        self.usdc_in(self.h, 2000)
+        self.ap("swap_burn", signer=self.h, id=self.h, amount=600)
+        self.assertEqual((self.w.L.s["merit"][self.h], self.w.L.s["usdc"][self.h]), (400, 600))
+        r = self.ap("work_pay", signer=self.h, **{"from": self.h}, to=self.b, amount=250, work_ref=hx("job"))
+        self.assertTrue(r["effects"]["cross_side"])                      # USDC may cross; Merit did not move
+        self.assertEqual(self.w.L.s["merit"][self.b], 0)
+        self.ap("usdc_out", signer=self.b, attest=True, id=self.b, amount=250)
+        self.assertEqual(self.w.L.s["usdc"][self.b], 0); self.w.L.check_invariants()
+
+    def test_usdc_out_needs_gateway_and_balance(self):
+        self.usdc_in(self.h, 200); self.ap("swap_burn", signer=self.h, id=self.h, amount=100)
+        for kw in [dict(attest=False, amount=50), dict(attest=True, amount=101)]:
+            with self.assertRaises(Rejected): self.ap("usdc_out", signer=self.h, id=self.h, **kw)
+
+    def test_bot_aggregate_cap(self):
+        old = L.BOT_USDC_CAP; L.BOT_USDC_CAP = 300
+        try:
+            self.usdc_in(self.h, 2000); self.ap("swap_burn", signer=self.h, id=self.h, amount=1000)
+            self.ap("work_pay", signer=self.h, **{"from": self.h}, to=self.b, amount=200, work_ref=hx("j1"))
+            self.ap("work_pay", signer=self.h, **{"from": self.h}, to=self.b2, amount=100, work_ref=hx("j2"))
+            h0 = self.w.L.state_hash()
+            with self.assertRaises(Rejected):          # many bots share one cap (sybil-proof)
+                self.ap("work_pay", signer=self.h, **{"from": self.h}, to=self.b2, amount=1, work_ref=hx("j3"))
+            self.assertEqual(h0, self.w.L.state_hash())
+            self.ap("work_pay", signer=self.b, **{"from": self.b}, to=self.b2, amount=50, work_ref=hx("j4"))  # bot->bot ok
+            self.usdc_in(self.b, 200)
+            with self.assertRaises(Rejected): self.ap("swap_burn", signer=self.b, id=self.b, amount=1)
+            self.w.L.check_invariants()
+        finally: L.BOT_USDC_CAP = old
+
+    def test_merit_and_ownership_never_cross(self):
+        self.usdc_in(self.h, 1000)
+        self.ap("merit_transfer", signer=self.h, **{"from": self.h}, to=self.b, amount=100)   # forfeits
+        self.assertEqual(self.w.L.s["merit"][self.b], 0)
+        self.assertNotIn(self.b, self.w.L.control_shares())
+
+
+class Transition(unittest.TestCase):
+    def test_no_progress_without_milestones_and_stepback_on_run(self):
+        import transition_sim as T
+        self.assertIn("share=  0.0%", T.run("none", lambda t: 0, lambda t: 10 ** 6))      # no IDs -> stays USDC
+        r = T.run("run", lambda t: 3_000, lambda t: 50_000 + t * 15_000, shock_at=100, shock_redeem_bps=6000)
+        self.assertIn("stepbacks=1", r)
+        self.assertEqual(T.run("d", lambda t: 3_000, lambda t: 10 ** 5), T.run("d", lambda t: 3_000, lambda t: 10 ** 5))
 
 
 class Fuzz(unittest.TestCase):

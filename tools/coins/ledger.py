@@ -8,6 +8,7 @@ changes (all-or-nothing), then a hash-chained receipt is appended. Builds on too
 Pure accounting: nothing here moves money, touches a chain, production, DNS or secrets.
 """
 import hashlib, hmac, json, os, sys
+from fractions import Fraction
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from tokenomics import split_purchase, split_derivative, PAYMENT_RAILS  # noqa: E402
@@ -22,7 +23,8 @@ KINDS = ("human", "bot")
 SEED_MODES = ("escrow", "forest")   # 1% father seed: escrow until canon amendment, or route to forest
 HEALTH_MIN_BPS = 10_000             # forest must be >= reserve target to tap
 TAP_MEMBER_CAP = 10_000             # per member per season, minor units (placeholder, open decision)
-TAP_SEASON_BPS = 1_000              # at most 10% of the season's surplus over reserve can be tapped
+TAP_SEASON_BPS = 1_000
+BOT_USDC_CAP = 10 ** 9              # aggregate USDC (minor units) all bot IDs may hold together (open decision)              # at most 10% of the season's surplus over reserve can be tapped
 
 
 def canon(obj):
@@ -53,7 +55,7 @@ def _hex64(x, name):
 
 def sign(secret_hex, op):
     """Stand-in for a passkey/WebAuthn signature (stdlib has no ECDSA). See UNIFY.md gap list."""
-    body = {k: v for k, v in op.items() if k not in ("sig", "att")}
+    body = {k: v for k, v in op.items() if k not in ("sig", "att", "bot_sig")}
     return hmac.new(bytes.fromhex(secret_hex), canon(body), hashlib.sha256).hexdigest()
 
 
@@ -75,6 +77,9 @@ class Ledger:
             "harvest": {},        # id_hash -> minor units
             "season": {"open": False, "id": 0, "budget": 0, "used": 0, "taps": {}},
             "reserve_target": reserve_target,
+            "usdc": {},           # id_hash -> external USDC wallet balance (modelled; no chain calls)
+            "usdc_flow": {"burned_merit": 0, "out": 0},
+            "controller": {},     # bot id_hash -> human id_hash (humans may control bots; never the reverse)
             "nonces": {},         # nonce -> expires_at (single-use)
             "seq": 0, "head": GENESIS,
         }
@@ -109,7 +114,11 @@ class Ledger:
     def check_invariants(self):
         s, e, d = self.s, self.s["efuse"], self.s["deriv"]
         merit_total = sum(s["merit"].values()) + sum(s["merit_pool"].values())
-        assert s["purchases_in"] == e["deposited"] + merit_total, "purchase conservation"
+        uf = s["usdc_flow"]
+        assert s["purchases_in"] == e["deposited"] + merit_total + uf["burned_merit"], "purchase conservation"
+        assert uf["burned_merit"] == sum(s["usdc"].values()) + uf["out"], "usdc conservation"
+        assert self._bot_usdc() <= BOT_USDC_CAP, "bot usdc cap"
+        assert all(v >= 0 for v in s["usdc"].values()), "negative usdc"
         for k in KINDS:
             side = sum(v for i, v in s["merit"].items() if s["ids"][i]["kind"] == k) + s["merit_pool"][k]
             assert side == s["merit_supply"][k], "merit side supply (no cross-side leak)"
@@ -120,6 +129,8 @@ class Ledger:
         assert d["in"] == d["forest"] + d["harvest_paid"] + d["seed_escrow"] + d["tapped"], "derivative conservation"
         assert d["harvest_paid"] == sum(s["harvest"].values()), "harvest ledger"
         assert all(v >= 0 for v in list(e.values()) + list(d.values()) + list(s["merit"].values())), "negative"
+        for bot, own in s["controller"].items():
+            assert s["ids"][bot]["kind"] == "bot" and s["ids"][own]["kind"] == "human", "bot may never control a human"
         assert set(s["unifi"]) == set(s["ids"]) and all(v == 1 for v in s["unifi"].values()), "unifi 1:1"
         return True
 
@@ -303,6 +314,105 @@ class Ledger:
             d["forest"] -= amt; d["tapped"] += amt
             se["used"] += amt; se["taps"][who] = se["taps"].get(who, 0) + amt
         return {"tapped": amt}
+
+    # ---------- USDC: the only cross-side medium (David, 2026-10-17) ----------
+    # Inflow: USDC in == a purchase on the crypto rail -> 50/50 e-fuse / Merit.
+    # Out: swap_burn (Merit burned 1:1 into the holder's USDC wallet, paid from the Merit-half reserve),
+    #      work_pay (USDC for work, may cross human<->bot), usdc_out (attested gateway to open market).
+    # Merit and ownership never cross sides; only USDC does.
+    def _bot_usdc(self):
+        return sum(v for i, v in self.s["usdc"].items() if self.s["ids"][i]["kind"] == "bot")
+
+    def _bot_cap_ok(self, to, add, frm=None):
+        if self.s["ids"][to]["kind"] != "bot":
+            return
+        sub = add if frm is not None and self.s["ids"][frm]["kind"] == "bot" else 0
+        if self._bot_usdc() + add - sub > BOT_USDC_CAP:
+            raise Rejected("bot-side aggregate USDC cap reached (anti-cornering)")
+
+    def _op_usdc_in(self, op, now, dry):
+        """USDC inflow: identical to a purchase on the crypto rail (50/50). rail must be signed as "crypto"."""
+        if op.get("rail") != "crypto":
+            raise Rejected("usdc_in requires rail=crypto")
+        return self._op_purchase(op, now, dry)
+
+    def _op_swap_burn(self, op, now, dry):
+        who = op.get("id"); amt = _amt(op.get("amount"))
+        ident = self._signed_by(op, who)
+        if self.s["merit"][who] < amt:
+            raise Rejected("insufficient merit")
+        self._bot_cap_ok(who, amt)
+        if not dry:
+            k = ident["kind"]
+            self.s["merit"][who] -= amt; self.s["merit_supply"][k] -= amt
+            self.s["usdc_flow"]["burned_merit"] += amt
+            self.s["usdc"][who] = self.s["usdc"].get(who, 0) + amt
+        return {"merit_burned": amt, "usdc": amt}
+
+    def _op_work_pay(self, op, now, dry):
+        frm, to, ref = op.get("from"), op.get("to"), op.get("work_ref")
+        amt = _amt(op.get("amount")); _hex64(ref, "work_ref")
+        self._signed_by(op, frm)
+        if to not in self.s["ids"] or to == frm:
+            raise Rejected("bad recipient")
+        if self.s["usdc"].get(frm, 0) < amt:
+            raise Rejected("insufficient usdc")
+        self._bot_cap_ok(to, amt, frm)
+        if not dry:
+            self.s["usdc"][frm] -= amt
+            self.s["usdc"][to] = self.s["usdc"].get(to, 0) + amt
+        return {"usdc": amt, "cross_side": self.s["ids"][frm]["kind"] != self.s["ids"][to]["kind"]}
+
+    def _op_usdc_out(self, op, now, dry):
+        who = op.get("id"); amt = _amt(op.get("amount"))
+        self._attested(op); self._signed_by(op, who)
+        if self.s["usdc"].get(who, 0) < amt:
+            raise Rejected("insufficient usdc")
+        if not dry:
+            self.s["usdc"][who] -= amt; self.s["usdc_flow"]["out"] += amt
+        return {"usdc_out": amt}
+
+    # ---------- Hierarchy: humans own the bot swarm memory space (David, 2026-10-17) ----------
+    def _op_set_controller(self, op, now, dry):
+        """A human takes control of a bot's memory space. Signed by the human AND the bot (consent of the
+        current key holder). Refused if the controller is a bot or the target is a human."""
+        bot, own = op.get("bot"), op.get("owner")
+        b, o = self.s["ids"].get(bot), self.s["ids"].get(own)
+        if b is None or o is None:
+            raise Rejected("unknown identity")
+        if o["kind"] != "human":
+            raise Rejected("law: a bot may never own or control anything (only humans control)")
+        if b["kind"] != "bot":
+            raise Rejected("law: a human can never be owned or controlled")
+        self._signed_by(op, own)
+        sig2 = op.get("bot_sig")
+        if not isinstance(sig2, str) or not hmac.compare_digest(sign(b["key"], op), sig2):
+            raise Rejected("bad bot consent signature")
+        if bot in self.s["controller"] and self.s["controller"][bot] != own:
+            raise Rejected("bot already controlled; current owner must release")
+        if not dry:
+            self.s["controller"][bot] = own
+        return {"bot": bot, "owner": own}
+
+    def control_shares(self):
+        """Read-only. 100% of the human side holds a claim on 100% of the bot side: each human's share =
+        their Merit / total human Merit (exact Fractions, summing to exactly 1 when any human holds Merit).
+        Only human trading changes these; the bot side mirrors them."""
+        hm = {i: v for i, v in self.s["merit"].items() if self.s["ids"][i]["kind"] == "human" and v > 0}
+        tot = sum(hm.values())
+        return {i: Fraction(v, tot) for i, v in sorted(hm.items())} if tot else {}
+
+    def swarm_claims(self):
+        """Read-only. Integer split of the whole bot side (bot Merit supply) across humans by control share,
+        largest-remainder so it sums to the bot supply exactly, ties broken by id (deterministic)."""
+        total = self.s["merit_supply"]["bot"]; sh = self.control_shares()
+        if not sh:
+            return {}
+        base = {i: int(f * total) for i, f in sh.items()}
+        rem = total - sum(base.values())
+        for i in sorted(sh, key=lambda i: (-(sh[i] * total - base[i]), i))[:rem]:
+            base[i] += 1
+        return base
 
     # Every e-fuse outflow, UniFi3 transfer and Merit sale is refused by construction, for anyone.
     def _refuse(self, op, now, dry):
