@@ -24,6 +24,7 @@ REQUIRED = {
     "limits",
 }
 SCHEMA_VERSION = "dualis.seed.v1"
+MAX_SAFE_INTEGER = (1 << 53) - 1
 
 
 class ManifestError(ValueError):
@@ -43,17 +44,35 @@ def _reject_constant(value: str) -> None:
     raise ManifestError(f"non-finite JSON numeric constant is forbidden: {value}")
 
 
-def _reject_binary_float(value: Any, path: str = "$") -> None:
+def _validate_portable_value(value: Any, path: str = "$") -> None:
+    """Restrict values to the cross-language canonical JSON subset."""
+    if value is None or isinstance(value, bool):
+        return
+    if isinstance(value, int):
+        if abs(value) > MAX_SAFE_INTEGER:
+            raise ManifestError(f"integer outside cross-language safe range at {path}")
+        return
     if isinstance(value, float):
         raise ManifestError(
             f"binary floating-point value at {path}; use an integer or explicit decimal/rational string"
         )
+    if isinstance(value, str):
+        if any(0xD800 <= ord(char) <= 0xDFFF for char in value):
+            raise ManifestError(f"unpaired surrogate code point at {path}")
+        return
+    if isinstance(value, list):
+        for index, child in enumerate(value):
+            _validate_portable_value(child, f"{path}[{index}]")
+        return
     if isinstance(value, dict):
         for key, child in value.items():
-            _reject_binary_float(child, f"{path}.{key}")
-    elif isinstance(value, list):
-        for index, child in enumerate(value):
-            _reject_binary_float(child, f"{path}[{index}]")
+            if not isinstance(key, str):
+                raise ManifestError(f"object key must be a string at {path}")
+            if not key.isascii():
+                raise ManifestError(f"non-ASCII object key at {path}: {key!r}")
+            _validate_portable_value(child, f"{path}.{key}")
+        return
+    raise ManifestError(f"unsupported value type at {path}: {type(value).__name__}")
 
 
 def parse_manifest(source: str) -> dict[str, Any]:
@@ -70,13 +89,15 @@ def parse_manifest(source: str) -> dict[str, Any]:
         raise ManifestError(f"invalid JSON: {exc}") from exc
     if not isinstance(value, dict):
         raise ManifestError("manifest root must be a JSON object")
-    _reject_binary_float(value)
     validate_manifest(value)
     return value
 
 
 def validate_manifest(manifest: dict[str, Any]) -> None:
-    """Validate required fields and supported version without executing rules."""
+    """Validate the portable JSON subset and supported schema without executing rules."""
+    if not isinstance(manifest, dict):
+        raise ManifestError("manifest root must be a JSON object")
+    _validate_portable_value(manifest)
     missing = sorted(REQUIRED - manifest.keys())
     extra = sorted(manifest.keys() - REQUIRED)
     if missing:
@@ -106,7 +127,6 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
 def canonical_bytes(manifest: dict[str, Any]) -> bytes:
     """Return UTF-8 canonical JSON bytes for an already validated manifest."""
     validate_manifest(manifest)
-    _reject_binary_float(manifest)
     encoded = json.dumps(
         manifest,
         ensure_ascii=False,
