@@ -142,7 +142,8 @@
     if (w.IrisFuel && IrisFuel.admit) return IrisFuel.admit(text);
     return { ok: true, paid: false, grade: { lane: "LOOK", burn: 0, grant: "LOOK" } };
   }
-  async function run(text, ticket) {
+  async function run(text, ticket, options) {
+    options = options || {};
     var v = scanVeto(text);
     if (v) return { grant: "VETO", spoken: v, lane: "VETO" };
     var raw = String(text || "");
@@ -158,6 +159,13 @@
     }
     var talk = await xaiTalk(raw, facts);
     if (talk) return talk;
+    if (options.localDocument) {
+      return {
+        grant: "UNAVAILABLE",
+        lane: "ERROR",
+        spoken: "I read the text locally, but no configured answer engine is available to analyze it. I have not sent the document to public search."
+      };
+    }
     if (book && book.spoken) { book.lane = book.lane || "BOOK"; return book; }
     if (isWho(raw) || officeHint(raw)) {
       var who = await lookWho(raw);

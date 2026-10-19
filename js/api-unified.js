@@ -1,23 +1,40 @@
 /**
  * DualisCapax unified API client.
- * Current as of: 2026-08-30
+ * Current as of: 2026-10-17
  * Binds FE rollout jacket + both leftover chat helpers to one surface.
  * No secret keys. Access stays closed.
  */
 (function (g) {
   var CIRCUIT_MS = 4.20;
   var RESIDUAL_FLOOR = 4.18e-13;
+  var API_TIMEOUT_MS = 15000;
+  var TRUSTED_API_ORIGIN = 'https://dualiscapax-depth.digenova77.workers.dev';
 
   function uuid() {
-    if (g.crypto && crypto.randomUUID) return crypto.randomUUID();
+    if (g.crypto && g.crypto.randomUUID) return g.crypto.randomUUID();
     return 'dc-' + Date.now() + '-' + Math.random().toString(16).slice(2);
   }
 
-  function baseUrl() {
-    var base = (g.DC_API_BASE || '').replace(/\/$/, '');
+  function safeApiBase(value) {
     try {
-      var q = new URLSearchParams(location.search).get('api');
-      if (q) base = q.replace(/\/$/, '');
+      if (!value || !g.URL || !g.location) return null;
+      var u = new g.URL(String(value), g.location.origin);
+      if (u.username || u.password || u.search || u.hash) return null;
+      if (u.pathname !== '/') return null;
+      if (u.origin !== g.location.origin && u.origin !== TRUSTED_API_ORIGIN) return null;
+      return u.origin;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function baseUrl() {
+    var configured = safeApiBase(g.DC_API_BASE);
+    var base = configured || TRUSTED_API_ORIGIN;
+    try {
+      var q = new g.URLSearchParams(g.location.search).get('api');
+      var override = q && safeApiBase(q);
+      if (override) base = override;
     } catch (e) {}
     return base;
   }
@@ -34,20 +51,51 @@
         circuit_breaker_latency_ms: 0,
       };
     }
-    var t0 = (g.performance && performance.now) ? performance.now() : Date.now();
+    var t0 = (g.performance && g.performance.now) ? g.performance.now() : Date.now();
     var headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
     if (g.DC_SESSION) headers['X-DC-Session'] = g.DC_SESSION;
     if (opts.fuelBalance != null) headers['X-DC-Fuel'] = String(opts.fuelBalance);
-    var res = await fetch(base + path, {
+    var controller = typeof g.AbortController === 'function' ? new g.AbortController() : null;
+    var timeoutId;
+    var requestOptions = {
       method: opts.method || 'GET',
       headers: headers,
       body: opts.body ? JSON.stringify(opts.body) : undefined,
+      credentials: 'omit',
+      redirect: 'error',
+    };
+    if (controller) requestOptions.signal = controller.signal;
+    var timeout = new Promise(function (_, reject) {
+      timeoutId = g.setTimeout(function () {
+        if (controller) controller.abort();
+        var error = new Error('API request timed out');
+        error.code = 'API_TIMEOUT';
+        reject(error);
+      }, API_TIMEOUT_MS);
     });
-    var ms = ((g.performance && performance.now) ? performance.now() : Date.now()) - t0;
+    var request = Promise.resolve().then(function () {
+      if (typeof g.fetch !== 'function') throw new Error('Fetch unavailable');
+      return g.fetch(base + path, requestOptions);
+    });
+    var res;
+    try {
+      res = await Promise.race([request, timeout]);
+    } finally {
+      if (timeoutId != null) g.clearTimeout(timeoutId);
+    }
+    var ms = ((g.performance && g.performance.now) ? g.performance.now() : Date.now()) - t0;
     var data = await res.json().catch(function () {
       return { ok: false, error: 'Invalid response', code: 'BAD_JSON' };
     });
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+      data = { ok: false, error: 'Invalid response', code: 'BAD_RESPONSE' };
+    }
     data._http = res.status;
+    if (!res.ok) {
+      data.ok = false;
+      data.error = data.error || ('HTTP ' + res.status);
+      data.code = data.code || 'HTTP_ERROR';
+    }
     data.circuit_breaker_latency_ms = Math.round(ms * 1000) / 1000;
     if (ms >= CIRCUIT_MS && data.status !== 'FAIL_CLOSED_CIRCUIT_TRIPPED') {
       data.circuit_note = 'client_observed_over_sla';
@@ -56,7 +104,7 @@
   }
 
   g.dcApi = {
-    version: '2.40-unified',
+    version: '2.41-unified-origin-guard',
     circuitMs: CIRCUIT_MS,
     residualFloor: RESIDUAL_FLOOR,
 
@@ -84,7 +132,7 @@
           tee_quote: opts.tee_quote || { sandbox: true, isv_prod_id: '0x2P5L_SIM_V1' },
         },
       }).then(function (data) {
-        if (data.session_token) g.DC_SESSION = data.session_token;
+        if (data.session_token && data.ok !== false) g.DC_SESSION = data.session_token;
         return data;
       });
     },
@@ -125,7 +173,7 @@
         method: 'POST',
         body: { session_token: token || '' },
       }).then(function (data) {
-        g.DC_SESSION = '';
+        if (data.ok !== false) g.DC_SESSION = '';
         return data;
       });
     },
