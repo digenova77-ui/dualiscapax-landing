@@ -79,7 +79,12 @@
       return rec;
     });
     if (w.IrisLive && IrisLive.run) return Promise.resolve(IrisLive.run(last.text));
-    return Promise.resolve({ spoken: last.text || "I'm Iris.", lane: "LOOK" });
+    return Promise.resolve({
+      status: "UNAVAILABLE",
+      grant: "NONE",
+      lane: "UNAVAILABLE",
+      spoken: "Iris service is unavailable; no response was generated."
+    });
   }
 
   function speak(rec) {

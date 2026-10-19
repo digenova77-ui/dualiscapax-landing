@@ -10,6 +10,10 @@ on:
     paths:
       - "docs/ops/AUTOMATION_EXCELLENCE_CHECKLIST.md"
       - "scripts/validate-automation-checklist.cjs"
+      - "js/iris-session.js"
+      - "js/iris-fuel-gate.js"
+      - "ai/app.html"
+      - "scripts/test-diamond-derivative-fail-closed.cjs"
       - ".github/workflows/automation-checklist-quality.yml"
 
 permissions:
@@ -29,3 +33,5 @@ jobs:
           node-version: "20"
       - name: Validate checklist
         run: node scripts/validate-automation-checklist.cjs
+      - name: Run Diamond Derivative fail-closed regressions
+        run: node scripts/test-diamond-derivative-fail-closed.cjs

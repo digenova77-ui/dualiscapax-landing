@@ -57,12 +57,20 @@
     if (g.lane !== "DEPTH") return { ok: true, paid: false, grade: g };
     if (byok()) return { ok: true, paid: false, byok: true, grade: g };
     if (balance() >= 1) {
-      if (w.DCFuel && DCFuel.burn) {
-        try { DCFuel.burn(1, "iris-depth"); } catch (e) {}
-      } else if (w.FuelLedger && FuelLedger.burn) {
-        try { FuelLedger.burn(1, "iris-depth"); } catch (e2) {}
+      var burn = null;
+      try {
+        if (w.DCFuel && typeof DCFuel.burn === "function") {
+          burn = DCFuel.burn(1, "iris-depth");
+        } else if (w.FuelLedger && typeof FuelLedger.burn === "function") {
+          burn = FuelLedger.burn(1, "iris-depth");
+        }
+      } catch (e) {
+        burn = null;
       }
-      return { ok: true, paid: true, grade: g };
+      if (burn && burn.ok === true) {
+        return { ok: true, paid: true, grade: g, burn: burn };
+      }
+      return { ok: false, paid: false, grade: g, deny: deny(), reason: "FUEL_BURN_NOT_CONFIRMED" };
     }
     return { ok: false, paid: false, grade: g, deny: deny() };
   }
