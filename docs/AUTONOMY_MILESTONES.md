@@ -30,7 +30,7 @@ The milestones are acceptance criteria, not claims that all capabilities are alr
 ## M5 — Tamper-evident ledger
 - Each event contains a sequence, previous hash, canonical payload, and event hash.
 - Any modified payload, broken sequence, or changed parent hash fails verification.
-- Current implementation is in-memory only. Durable storage, key-backed signatures, external anchoring, access control, and crash recovery remain future milestones.
+- The in-memory implementation supports unit tests. A SQLite-backed append-only API now persists rows transactionally and verifies the hash chain after reopening. Hash chaining alone is not a signature or external anchor; database access control, backups, signed checkpoints, external anchoring, and crash recovery remain future work.
 - A one-shot orchestrator now requires an injected policy gate, exact least-privilege scopes, owner terms acceptance, matching task identity, official adapter metadata, and a policy version before calling an adapter.
 - An unknown adapter exception is not retried automatically because the external side effect may already have occurred.
 
@@ -59,4 +59,4 @@ The milestones are acceptance criteria, not claims that all capabilities are alr
 - Health checks and alerting must distinguish an unavailable provider from a failed integrity check.
 
 ## Current honest status
-M1–M2 are represented by pure modules and tests. M3 has a provider-neutral protocol contract. M4–M5 have in-memory reference implementations. M6 has a one-shot orchestration seam and tests using fake adapters, but no sandboxed worker or resource/egress isolation. M7–M9 remain incomplete. No live account creation, real provider adapter, persistent worker, or production autonomy is enabled by these modules.
+M1–M2 are represented by pure modules and tests. M3 has a provider-neutral protocol contract. M4–M5 have in-memory reference implementations. M6 has a one-shot orchestration seam and tests using fake adapters, but no sandboxed worker or resource/egress isolation. M9 has a standard-library SQLite ledger reference with reopen and tamper-detection tests, but production backup/restore, access control, external anchoring, and operational metrics are incomplete. M7 and the remaining M8–M9 work remain incomplete. No live account creation, real provider adapter, persistent worker, or production autonomy is enabled by these modules.
