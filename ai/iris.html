@@ -52,11 +52,11 @@ button{border:0;border-radius:999px;background:var(--iris);color:#061018;font-we
   async function send(text){
     text=String(text||"").trim(); if(!text) return;
     bubble("you",text);
-    var rec={spoken:"Ask about pay, law, rooms, or a public name."};
+    var rec={spoken:(window.DC_i18n&&DC_i18n.get)?DC_i18n.get("iris.fallback.ask","Ask about pay, law, rooms, or a public name."):"Ask about pay, law, rooms, or a public name."};
     try{
       if(window.DCLMLook&&DCLMLook.run) rec=await DCLMLook.run(text);
-    }catch(e){ rec={spoken:"I stumbled. Ask again in plain words."}; }
-    var spoken=(rec&&rec.spoken)||"I heard you.";
+    }catch(e){ rec={spoken:(window.DC_i18n&&DC_i18n.get)?DC_i18n.get("iris.fallback.stumble","I stumbled. Ask again in plain words."):"I stumbled. Ask again in plain words."}; }
+    var spoken=(rec&&rec.spoken)||(window.DC_i18n&&DC_i18n.get?DC_i18n.get("iris.fallback.heard","I heard you."):"I heard you.");
     bubble("them",spoken);
     if(window.dcStoreAnswer) dcStoreAnswer(text,spoken);
   }
@@ -64,7 +64,7 @@ button{border:0;border-radius:999px;background:var(--iris);color:#061018;font-we
   document.querySelectorAll(".chips button").forEach(function(b){ b.onclick=function(){ send(b.getAttribute("data-q")); }; });
   var seed=""; try{ seed=sessionStorage.getItem("dc.ask")||""; }catch(e){}
   if(seed) send(seed);
-  else bubble("them","Hi. I'm Iris. Looking is free. Grind is on Pay. Ask, or say go to pay.");
+  else bubble("them",(window.DC_i18n&&DC_i18n.get)?DC_i18n.get("iris.greeting","Hi. I'm Iris. Looking is free. Grind is on Pay. Ask, or say go to pay."):"Hi. I'm Iris. Looking is free. Grind is on Pay. Ask, or say go to pay.");
 })();
 </script>
 </body>
