@@ -8,7 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Optional
 
-from autonomy.adapters import ExecutionRequest, ExecutionResult, IntegrationAdapter
+from autonomy.adapters import AdapterCapabilities, ExecutionRequest, ExecutionResult, IntegrationAdapter
 from autonomy.ledger import HashChainLedger
 from autonomy.supervisor import Job, JobState, Supervisor
 
@@ -136,6 +136,13 @@ class Orchestrator:
                 "reason": "adapter_description_unavailable",
             })
             return OrchestrationOutcome(blocked, False, None, "adapter_description_unavailable")
+        if not isinstance(capabilities, AdapterCapabilities):
+            blocked = self.supervisor.start(job.job_id, authorized=False)
+            self.supervisor.ledger.append({
+                "type": "orchestration_refused", "job_id": job.job_id,
+                "reason": "adapter_capability_contract_invalid",
+            })
+            return OrchestrationOutcome(blocked, False, None, "adapter_capability_contract_invalid")
         if not isinstance(capabilities.required_scopes, frozenset) or not all(
             isinstance(scope, str) and scope.strip() for scope in capabilities.required_scopes
         ) or type(capabilities.official_api) is not bool:
