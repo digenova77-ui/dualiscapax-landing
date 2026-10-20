@@ -1,9 +1,11 @@
 """Fail-closed durable worker runner tests."""
+import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
 
 from autonomy.durable_queue import SQLiteJobQueue
+from autonomy.sqlite_ledger import SQLiteHashChainLedger
 from autonomy.worker_runner import (
     KnownRetryableFailure,
     WorkerAuthorization,
@@ -17,6 +19,7 @@ class WorkerRunnerTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.queue = SQLiteJobQueue(Path(self.temp.name) / "jobs.sqlite3")
+        self.ledger = SQLiteHashChainLedger(Path(self.temp.name) / "worker-ledger.sqlite3")
         self.job = self.queue.enqueue(
             "inspect", {"file": "README.md"}, idempotency_key="runner-1"
         )
@@ -35,7 +38,7 @@ class WorkerRunnerTests(unittest.TestCase):
 
     def runner(self, policy=None, executor=None):
         return WorkerRunner(
-            queue=self.queue, worker_id="worker-a",
+            queue=self.queue, ledger=self.ledger, worker_id="worker-a",
             policy=self.grant if policy is None else policy,
             executor=self._execute_successfully if executor is None else executor,
             lease_seconds=30,
@@ -50,7 +53,7 @@ class WorkerRunnerTests(unittest.TestCase):
 
     def test_missing_policy_fails_closed_before_executor(self):
         runner = WorkerRunner(
-            queue=self.queue, worker_id="worker-a", policy=None,
+            queue=self.queue, ledger=self.ledger, worker_id="worker-a", policy=None,
             executor=lambda job, grant, context: self.executed.append(job.job_id),
         )
         outcome = runner.run_one(now=100)
@@ -182,6 +185,25 @@ class WorkerRunnerTests(unittest.TestCase):
             return WorkerAuthorization(**{**grant.__dict__, "authority_id": None})
         outcome = self.runner(policy=malformed).run_one(now=100)
         self.assertEqual(outcome.job.state, "blocked")
+        self.assertEqual(self.executed, [])
+
+
+    def test_execution_is_recorded_in_durable_hash_chain(self):
+        outcome = self.runner().run_one(now=100)
+        self.assertEqual(outcome.job.state, "succeeded")
+        self.assertTrue(self.ledger.verify())
+        event_types = [event.payload["type"] for event in self.ledger.events]
+        self.assertIn("worker_claimed", event_types)
+        self.assertIn("worker_execution_started", event_types)
+        self.assertIn("worker_execution_succeeded", event_types)
+
+    def test_corrupt_audit_ledger_blocks_before_claim_or_execution(self):
+        self.ledger.append({"type": "seed"})
+        with sqlite3.connect(self.ledger.path) as db:
+            db.execute("UPDATE ledger_events SET payload_json = ? WHERE sequence = 1", ('{"type":"tampered"}',))
+        with self.assertRaisesRegex(RuntimeError, "integrity check failed"):
+            self.runner().run_one(now=100)
+        self.assertEqual(self.queue.get(self.job.job_id).state, "queued")
         self.assertEqual(self.executed, [])
 
     def test_invalid_authorization_type_fails_closed(self):
