@@ -66,3 +66,9 @@ The milestones are acceptance criteria, not claims that all capabilities are alr
 
 ## Current honest status
 M1–M2 are represented by pure modules and tests. M3 has a provider-neutral protocol contract. M4–M5 have in-memory reference implementations. M6 now has a fail-closed sandbox policy/launch-plan contract, queue lease renewal, bounded redacted evidence envelopes, and regression tests, but no OS-enforced sandbox backend, process launcher, cancellation supervisor, or real resource/egress isolation. The worker runner is synchronous and requires injected policy and executor functions. M9 has a standard-library SQLite ledger reference with reopen and tamper-detection tests, but production backup/restore, access control, external anchoring, and operational metrics are incomplete. M7 now has an approval-gated provisioning contract and fake-provider tests, but no real provider adapter, credential vault, or actual account creation has been connected. The remaining M8–M9 work remains incomplete. No live account creation, real provider adapter, continuously running worker process, or production autonomy is enabled by these modules. The queue and ledger are persistence primitives only; they do not themselves authorize or execute tasks.
+
+
+## GitHub Actions supply-chain visibility
+- Added a deterministic, report-only workflow risk inventory that identifies declared write permissions, `pull_request_target`, OIDC token minting, mutable third-party action refs, direct repository mutation commands, shell network calls, and checkout credential persistence with write permissions.
+- The autonomy CI lane publishes the inventory in the GitHub Actions step summary and tests the scanner against controlled examples.
+- The scanner is heuristic and intentionally does not claim exploitability or auto-repair repository workflows. Findings require human review; broad repository permissions and legacy mutation workflows remain separate remediation work.
