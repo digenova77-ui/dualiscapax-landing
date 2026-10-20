@@ -25,17 +25,19 @@ button{border:0;border-radius:999px;background:var(--iris);color:#061018;font-we
 <body>
 <header>
   <a class="brand" href="../hub.html">ASK</a>
-  <a href="../pay.html">Pay</a>
-  <a href="../law.html">Law</a>
+  <a href="../pay.html" data-i18n="nav.pay">Pay</a>
+  <a href="../law.html" data-i18n="nav.law">Law</a>
+<select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
 </header>
 <div class="chips">
-  <button type="button" data-q="What can you do?">Help</button>
-  <button type="button" data-q="How do I pay?">Pay</button>
-  <button type="button" data-q="go to rooms">Rooms</button>
-  <button type="button" data-q="go to compute">Engine</button>
+  <button type="button" data-q="What can you do?" data-i18n="iris.help">Help</button>
+  <button type="button" data-q="How do I pay?" data-i18n="iris.payPrompt">Pay</button>
+  <button type="button" data-q="go to rooms" data-i18n="iris.rooms">Rooms</button>
+  <button type="button" data-q="go to compute" data-i18n="iris.engine">Engine</button>
 </div>
 <div id="log"></div>
-<form id="f"><input id="q" placeholder="Ask Iris" autocomplete="off"><button type="submit">Send</button></form>
+<form id="f"><input id="q" placeholder="Ask Iris" data-i18n-placeholder="iris.placeholder" autocomplete="off"><button type="submit" data-i18n="iris.send">Send</button></form>
+<script src="../js/i18n.js"></script>
 <script src="go.js"></script>
 <script src="answer-store.js"></script>
 <script src="iris-book.js"></script>
