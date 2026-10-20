@@ -44,7 +44,6 @@ class WorkerRunnerTests(unittest.TestCase):
         self.assertIsNone(self.runner().run_one(now=101))
 
     def test_missing_policy_fails_closed_before_executor(self):
-        outcome = self.runner(policy=None).run_one(now=100) if False else None
         runner = WorkerRunner(
             queue=self.queue, worker_id="worker-a", policy=None,
             executor=lambda job: self.executed.append(job.job_id),
@@ -111,6 +110,24 @@ class WorkerRunnerTests(unittest.TestCase):
         outcome = self.runner(policy=cancel_in_policy).run_one(now=100)
         self.assertEqual(outcome.job.state, "cancelled")
         self.assertEqual(self.executed, [])
+
+
+    def test_cancel_requested_during_execution_preserves_success(self):
+        def finish_then_cancel(job):
+            self.queue.request_cancel(job.job_id)
+            self.executed.append(job.job_id)
+        outcome = self.runner(executor=finish_then_cancel).run_one(now=100)
+        self.assertTrue(outcome.executed)
+        self.assertEqual(outcome.job.state, "succeeded")
+        self.assertEqual(self.executed, [self.job.job_id])
+
+    def test_cancel_requested_during_uncertain_execution_blocks_without_retry(self):
+        def cancel_then_raise(job):
+            self.queue.request_cancel(job.job_id)
+            raise KnownRetryableFailure("uncertain", retry_safe=True)
+        outcome = self.runner(executor=cancel_then_raise).run_one(now=100)
+        self.assertEqual(outcome.job.state, "blocked")
+        self.assertIsNone(self.queue.claim("worker-b", now=101))
 
     def test_invalid_authorization_type_fails_closed(self):
         outcome = self.runner(policy=lambda _job: {"approved": True}).run_one(now=100)
