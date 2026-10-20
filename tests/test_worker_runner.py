@@ -6,7 +6,6 @@ from pathlib import Path
 from autonomy.durable_queue import SQLiteJobQueue
 from autonomy.worker_runner import (
     KnownRetryableFailure,
-    CancellationRequested,
     WorkerAuthorization,
     WorkerRunner,
 )
