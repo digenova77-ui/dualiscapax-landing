@@ -31,6 +31,8 @@ The milestones are acceptance criteria, not claims that all capabilities are alr
 - Each event contains a sequence, previous hash, canonical payload, and event hash.
 - Any modified payload, broken sequence, or changed parent hash fails verification.
 - Current implementation is in-memory only. Durable storage, key-backed signatures, external anchoring, access control, and crash recovery remain future milestones.
+- A one-shot orchestrator now requires an injected policy gate, exact least-privilege scopes, owner terms acceptance, matching task identity, official adapter metadata, and a policy version before calling an adapter.
+- An unknown adapter exception is not retried automatically because the external side effect may already have occurred.
 
 ## M6 — Isolated execution and recovery
 - Run adapters in an isolated worker with resource limits, timeouts, allowlisted egress, and cancellation.
@@ -57,4 +59,4 @@ The milestones are acceptance criteria, not claims that all capabilities are alr
 - Health checks and alerting must distinguish an unavailable provider from a failed integrity check.
 
 ## Current honest status
-M1–M2 are represented by pure modules and tests. M3 has a protocol contract. M4–M5 have in-memory reference implementations. M6–M9 are design/implementation work still required. No live account creation, provider integration, persistent worker, or production autonomy is enabled by these modules.
+M1–M2 are represented by pure modules and tests. M3 has a provider-neutral protocol contract. M4–M5 have in-memory reference implementations. M6 has a one-shot orchestration seam and tests using fake adapters, but no sandboxed worker or resource/egress isolation. M7–M9 remain incomplete. No live account creation, real provider adapter, persistent worker, or production autonomy is enabled by these modules.
