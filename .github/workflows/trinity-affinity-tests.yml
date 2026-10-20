@@ -11,6 +11,7 @@ on:
       - "tests/test_ledger.py"
       - "tests/test_supervisor.py"
       - "tests/test_orchestrator.py"
+      - "tests/test_sqlite_ledger.py"
       - ".github/workflows/trinity-affinity-tests.yml"
   pull_request:
     paths:
@@ -20,6 +21,7 @@ on:
       - "tests/test_ledger.py"
       - "tests/test_supervisor.py"
       - "tests/test_orchestrator.py"
+      - "tests/test_sqlite_ledger.py"
       - ".github/workflows/trinity-affinity-tests.yml"
 permissions:
   contents: read
@@ -39,6 +41,8 @@ jobs:
         run: PYTHONPATH=. python tests/test_integration_lifecycle.py -v
       - name: Run hash-chain ledger tests
         run: PYTHONPATH=. python tests/test_ledger.py -v
+      - name: Run durable SQLite ledger tests
+        run: PYTHONPATH=. python tests/test_sqlite_ledger.py -v
       - name: Run supervisor idempotency and retry tests
         run: PYTHONPATH=. python tests/test_supervisor.py -v
       - name: Run fail-closed orchestration tests
