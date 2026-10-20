@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import posixpath
+import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -65,11 +66,11 @@ def main() -> int:
     runtime_path = ROOT / "js" / "i18n.js"
     if runtime_path.is_file():
         runtime_text = runtime_path.read_text(encoding="utf-8")
-        supported_match = __import__("re").search(r"const\s+SUPPORTED\s*=\s*\[([^\]]*)\]", runtime_text)
+        supported_match = re.search(r"const\s+SUPPORTED\s*=\s*\[([^\]]*)\]", runtime_text)
         if not supported_match:
             errors.append("js/i18n.js: cannot determine supported locale list")
         else:
-            runtime_locales = set(__import__("re").findall(r"'([a-z]{2})'", supported_match.group(1)))
+            runtime_locales = set(re.findall(r"'([a-z]{2})'", supported_match.group(1)))
             if runtime_locales != set(LOCALES):
                 errors.append(f"js/i18n.js: supported locales {sorted(runtime_locales)} do not match catalog locales {sorted(LOCALES)}")
     else:
