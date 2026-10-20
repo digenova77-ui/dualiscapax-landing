@@ -17,6 +17,7 @@ on:
       - "tests/test_sandbox_policy.py"
       - "tests/test_evidence.py"
       - "tests/test_worker_runner.py"
+      - "tests/test_workflow_audit.py"
       - ".github/workflows/trinity-affinity-tests.yml"
   pull_request:
     paths:
@@ -67,5 +68,35 @@ jobs:
         run: PYTHONPATH=. python tests/test_evidence.py -v
       - name: Run fail-closed worker runner tests
         run: PYTHONPATH=. python tests/test_worker_runner.py -v
+      - name: Run workflow security inventory (report-only)
+        env:
+          PYTHONPATH: .
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from autonomy.workflow_audit import scan_workflows
+
+          findings = scan_workflows(".")
+          counts = {level: sum(f.severity == level for f in findings) for level in ("high", "medium", "low")}
+          lines = [
+              "## GitHub Actions static risk inventory",
+              "",
+              "Heuristic review leads only; findings are not proof of exploitability. This lane reports risks and does not hide or auto-fix them.",
+              "",
+              f"- High: {counts['high']}",
+              f"- Medium: {counts['medium']}",
+              f"- Low: {counts['low']}",
+              "",
+          ]
+          lines.extend(f"- **{f.severity.upper()}** `{f.rule_id}` — `{f.path}`: {f.message}" for f in findings)
+          summary = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary:
+              with open(summary, "a", encoding="utf-8") as handle:
+                  handle.write("\\n".join(lines) + "\\n")
+          print("\\n".join(lines))
+          PY
+      - name: Run workflow audit tests
+        run: PYTHONPATH=. python tests/test_workflow_audit.py -v
       - name: Run complete Python regression suite
         run: PYTHONPATH=. python -m unittest discover -s tests -p "test_*.py" -v
