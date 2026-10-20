@@ -10,6 +10,7 @@ on:
       - "tests/test_integration_lifecycle.py"
       - "tests/test_ledger.py"
       - "tests/test_supervisor.py"
+      - "tests/test_orchestrator.py"
       - ".github/workflows/trinity-affinity-tests.yml"
   pull_request:
     paths:
@@ -40,3 +41,5 @@ jobs:
         run: PYTHONPATH=. python tests/test_ledger.py -v
       - name: Run supervisor idempotency and retry tests
         run: PYTHONPATH=. python tests/test_supervisor.py -v
+      - name: Run fail-closed orchestration tests
+        run: PYTHONPATH=. python tests/test_orchestrator.py -v
