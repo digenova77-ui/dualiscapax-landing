@@ -8,6 +8,9 @@
 <meta name="description" content="Plain answers. What DualisCapax is, what it is not, and what you can do today."/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="theme.css"/>
+<style>
+#dc-lang-switch{background:transparent;border:1px solid rgba(158,197,255,.4);color:#e8f1ff;font-family:"IBM Plex Mono",monospace;font-size:.7rem;padding:.2rem .4rem;margin-left:.5rem}
+</style>
 </head>
 <body>
 <canvas class="quarks" id="quarks" aria-hidden="true"></canvas>
@@ -15,50 +18,61 @@
   <header>
     <a class="mark" href="index.html?land=1">DualisCapax</a>
     <nav>
-      <a href="look.html">Look</a>
+      <a href="look.html" data-i18n="nav.look">Look</a>
       <a href="for-people.html">For you</a>
       <a href="onboard.html">Start</a>
       <a href="donate.html">Give</a>
-      <a href="faq.html" class="on">FAQ</a>
+      <a href="faq.html" class="on" data-i18n="nav.faq">FAQ</a>
+      <select id="dc-lang-switch" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="es">ES</option>
+      </select>
     </nav>
   </header>
-  <p class="eyebrow">FAQ</p>
-  <h1>Ask it straight</h1>
-  <p class="lede">If a fifteen-year-old cannot follow the answer, the answer is wrong. Here are the short ones.</p>
+  <p class="eyebrow" data-i18n="faq.eyebrow">FAQ</p>
+  <h1 data-i18n="faq.h1">Ask it straight</h1>
+  <p class="lede" data-i18n="faq.lede">If a fifteen-year-old cannot follow the answer, the answer is wrong. Here are the short ones.</p>
   <section>
-    <h2>What is this?</h2>
-    <p>A small Canadian studio that builds tools to find leftover waste — extra steps, extra waiting, extra cost — the way you find a leak under a sink. We write the number down. You can check it.</p>
+    <h2 data-i18n="faq.q1">What is this?</h2>
+    <p data-i18n="faq.a1">A small Canadian studio that builds tools to find leftover waste — extra steps, extra waiting, extra cost — the way you find a leak under a sink. We write the number down. You can check it.</p>
   </section>
   <section>
-    <h2>What can I do today?</h2>
-    <p>Read. Talk to Iris, our helper. Give a research gift if you want. You do not need an account to look.</p>
+    <h2 data-i18n="faq.q2">What can I do today?</h2>
+    <p data-i18n="faq.a2">Read. Talk to Iris, our helper. Give a research gift if you want. You do not need an account to look.</p>
   </section>
   <section>
-    <h2>Is Iris a doctor?</h2>
-    <p>No. She is not a doctor, a lawyer, or a bank. She is a helper on this site. If you need care, call a real clinic.</p>
+    <h2 data-i18n="faq.q3">Is Iris a doctor?</h2>
+    <p data-i18n="faq.a3">No. She is not a doctor, a lawyer, or a bank. She is a helper on this site. If you need care, call a real clinic.</p>
   </section>
   <section>
-    <h2>Is Fuel a coin or a stock?</h2>
-    <p>No. Fuel is prepaid minutes for our tools, like putting money on a transit card. What you do not use stays yours. It is not a share. It is not investment advice.</p>
+    <h2 data-i18n="faq.q4">Is Fuel a coin or a stock?</h2>
+    <p data-i18n="faq.a4">No. Fuel is prepaid minutes for our tools, like putting money on a transit card. What you do not use stays yours. It is not a share. It is not investment advice.</p>
   </section>
   <section>
-    <h2>Do I have to pay?</h2>
-    <p>No. Looking is free. Talking to Iris is free. Giving is optional. Buying minutes is optional.</p>
+    <h2 data-i18n="faq.q5">Do I have to pay?</h2>
+    <p data-i18n="faq.a5">No. Looking is free. Talking to Iris is free. Giving is optional. Buying minutes is optional.</p>
   </section>
   <section>
-    <h2>What if the number is wrong?</h2>
-    <p>Then you owe nothing. If we cannot show the same figure again, the deal does not stand. That is the house rule.</p>
+    <h2 data-i18n="faq.q6">What if the number is wrong?</h2>
+    <p data-i18n="faq.a6">Then you owe nothing. If we cannot show the same figure again, the deal does not stand. That is the house rule.</p>
   </section>
   <section>
-    <h2>Can I leave?</h2>
-    <p>Yes. Close the tab. Walk away. We are only useful if you choose to use us.</p>
+    <h2 data-i18n="faq.q7">Can I leave?</h2>
+    <p data-i18n="faq.a7">Yes. Close the tab. Walk away. We are only useful if you choose to use us.</p>
   </section>
   <nav class="sec-break"><a href="index.html?land=1">Home</a><span class="dim">·</span><a href="look.html">Look</a><a href="ai/app.html">Iris</a><a href="donate.html">Give</a></nav>
-  <footer>DualisCapax · Truth Prevails · a tool you can check</footer>
+  <footer data-i18n="footer.truth">DualisCapax · Truth Prevails · a tool you can check</footer>
 </div>
 <a class="iris-mark" href="ai/app.html">Iris</a>
 <script src="js/home-quarks.js"></script>
 <script src="js/no-select.js"></script>
 <script src="assets/haptic.js"></script>
+<script src="js/i18n.js"></script>
+<script>
+document.getElementById('dc-lang-switch') && document.getElementById('dc-lang-switch').addEventListener('change', function(){
+  if (window.DC_i18n) DC_i18n.setLang(this.value);
+});
+</script>
 </body>
 </html>
