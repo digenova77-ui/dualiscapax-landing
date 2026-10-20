@@ -10,6 +10,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+MAX_TASK_TYPE_CHARS = 128
+MAX_IDEMPOTENCY_KEY_CHARS = 256
+MAX_PAYLOAD_BYTES = 65536
+
 
 @dataclass(frozen=True)
 class QueueJob:
@@ -25,7 +29,7 @@ class QueueJob:
 
 
 def _canonical(value: object) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
 
 
 def _job_id(task_type: str, payload: dict, idempotency_key: str) -> str:
@@ -70,12 +74,29 @@ class SQLiteJobQueue:
         self, task_type: str, payload: dict, *, idempotency_key: str,
         max_attempts: int = 3,
     ) -> QueueJob:
-        if not task_type.strip() or not idempotency_key.strip():
-            raise ValueError("task_type and idempotency_key are required")
+        if (
+            not isinstance(task_type, str) or not task_type.strip()
+            or len(task_type) > MAX_TASK_TYPE_CHARS
+            or any(ord(char) < 32 for char in task_type)
+        ):
+            raise ValueError("task_type is required and must be a valid bounded string")
+        if (
+            not isinstance(idempotency_key, str) or not idempotency_key.strip()
+            or len(idempotency_key) > MAX_IDEMPOTENCY_KEY_CHARS
+            or any(ord(char) < 32 for char in idempotency_key)
+        ):
+            raise ValueError("idempotency_key is required and must be a valid bounded string")
         if not 1 <= max_attempts <= 10:
             raise ValueError("max_attempts must be between 1 and 10")
-        safe_payload = json.loads(_canonical(payload))
-        payload_json = _canonical(safe_payload)
+        if not isinstance(payload, dict):
+            raise ValueError("payload must be a JSON object")
+        try:
+            payload_json = _canonical(payload)
+            safe_payload = json.loads(payload_json)
+        except (TypeError, ValueError, RecursionError) as exc:
+            raise ValueError("payload must be valid finite JSON") from exc
+        if len(payload_json.encode("utf-8")) > MAX_PAYLOAD_BYTES:
+            raise ValueError("payload exceeds maximum size")
         job_id = _job_id(task_type, safe_payload, idempotency_key)
         with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
