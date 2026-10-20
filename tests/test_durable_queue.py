@@ -51,6 +51,34 @@ class DurableQueueTests(unittest.TestCase):
         self.assertIsNone(exhausted)
         self.assertEqual(self.queue.get(job.job_id).state, "exhausted")
 
+
+    def test_live_lease_can_be_renewed_by_owner(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="renew")
+        claimed = self.queue.claim("worker-a", now=100, lease_seconds=5)
+        renewed = self.queue.renew_lease(job.job_id, "worker-a", now=104, lease_seconds=20)
+        self.assertEqual(renewed.lease_owner, "worker-a")
+        self.assertEqual(renewed.lease_until, 124)
+        done = self.queue.complete(job.job_id, "worker-a", success=True, now=123)
+        self.assertEqual(done.state, "succeeded")
+
+    def test_wrong_worker_cannot_renew_lease(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="renew-owner")
+        self.queue.claim("worker-a", now=100, lease_seconds=10)
+        with self.assertRaises(PermissionError):
+            self.queue.renew_lease(job.job_id, "worker-b", now=101, lease_seconds=20)
+
+    def test_expired_lease_cannot_be_resurrected(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="renew-expired")
+        self.queue.claim("worker-a", now=100, lease_seconds=5)
+        with self.assertRaises(PermissionError):
+            self.queue.renew_lease(job.job_id, "worker-a", now=105, lease_seconds=20)
+
+    def test_lease_renewal_duration_is_bounded(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="renew-bound")
+        self.queue.claim("worker-a", now=100, lease_seconds=5)
+        with self.assertRaises(ValueError):
+            self.queue.renew_lease(job.job_id, "worker-a", now=101, lease_seconds=3601)
+
     def test_nonretryable_failure_blocks_and_success_completes(self):
         blocked_job = self.queue.enqueue("write", {}, idempotency_key="block")
         running = self.queue.claim("worker", now=100, lease_seconds=30)
