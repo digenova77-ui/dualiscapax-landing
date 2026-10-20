@@ -69,7 +69,7 @@ steps:
                 ],
             }), encoding="utf-8")
             current = [
-                inspect_workflow("permissions:\n  contents: write\n", "a.yml")[0],
+                inspect_workflow("permissions: " + chr(10) + "  contents: write" + chr(10), "a.yml")[0],
                 *inspect_workflow("uses: vendor/action@v2\n", "c.yml"),
             ]
             added, resolved = compare_baseline(current, path)
