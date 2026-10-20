@@ -1,0 +1,30 @@
+name: Trinity affinity planner tests
+
+on:
+  push:
+    branches:
+      - "feat/trinity-affinity-autonomy-20261020"
+    paths:
+      - "autonomy/affinity.py"
+      - "tests/test_affinity.py"
+      - ".github/workflows/trinity-affinity-tests.yml"
+  pull_request:
+    paths:
+      - "autonomy/affinity.py"
+      - "tests/test_affinity.py"
+      - ".github/workflows/trinity-affinity-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-affinity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run offline affinity and authorization tests
+        run: python -m unittest tests/test_affinity.py -v
