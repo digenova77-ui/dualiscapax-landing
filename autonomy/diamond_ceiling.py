@@ -1,23 +1,9 @@
-"""Diamond Ceiling: a hard-gated integrity assessment, not a safety certificate.
-
-Scores summarize evidence coverage. They never override a failed gate. This
-module evaluates declared evidence only; it does not authenticate evidence,
-prove OS isolation, or independently validate scientific claims.
-"""
-from __future__ import annotations
-
+"""Diamond Ceiling coverage profile evaluated by the canonical Trinity gate."""
 from dataclasses import dataclass
 from typing import Tuple
+from autonomy.trinity import GateEvidence, decide
 
-
-DIMENSIONS = (
-    "authority",
-    "evidence_integrity",
-    "mesh_integrity",
-    "execution_safety",
-    "scientific_validity",
-)
-
+DIMENSIONS = ("authority", "evidence_integrity", "mesh_integrity", "execution_safety", "scientific_validity")
 
 @dataclass(frozen=True)
 class DimensionEvidence:
@@ -26,7 +12,6 @@ class DimensionEvidence:
     evidence_ref: str
     reviewer_ref: str = ""
 
-
 @dataclass(frozen=True)
 class CeilingAssessment:
     score: int
@@ -34,63 +19,26 @@ class CeilingAssessment:
     blockers: Tuple[str, ...]
     dimensions_passed: Tuple[str, ...]
 
-
-def assess_diamond_ceiling(
-    evidence: Tuple[DimensionEvidence, ...],
-    *,
-    required_policy_version: str,
-    supplied_policy_version: str,
-    owner_authorized: bool,
-) -> CeilingAssessment:
-    """Return deterministic coverage and blockers; malformed input fails closed."""
-    blockers = []
-    if not isinstance(required_policy_version, str) or not required_policy_version.strip():
-        blockers.append("required_policy_version_missing")
-    if not isinstance(supplied_policy_version, str):
-        blockers.append("supplied_policy_version_invalid")
-    elif supplied_policy_version != required_policy_version:
-        blockers.append("policy_version_mismatch")
-    if owner_authorized is not True:
-        blockers.append("owner_authorization_missing")
-
+def assess_diamond_ceiling(evidence: Tuple[DimensionEvidence, ...], *, required_policy_version: str, supplied_policy_version: str, owner_authorized: bool) -> CeilingAssessment:
+    """Calculate descriptive coverage through Trinity; coverage never overrides blockers."""
+    pre = []
     if not isinstance(evidence, (tuple, list)):
-        blockers.append("evidence_collection_invalid")
-        evidence_items = ()
-    else:
-        evidence_items = evidence
-
-    by_dimension = {}
-    for index, item in enumerate(evidence_items):
-        if not isinstance(item, DimensionEvidence):
-            blockers.append(f"evidence_record_invalid:{index}")
-            continue
-        if not isinstance(item.dimension, str) or item.dimension not in DIMENSIONS:
-            blockers.append(f"unknown_dimension:{item.dimension}")
-            continue
-        if item.dimension in by_dimension:
-            blockers.append(f"duplicate_dimension:{item.dimension}")
-            continue
-        by_dimension[item.dimension] = item
-
-    passed = []
-    for dimension in DIMENSIONS:
-        item = by_dimension.get(dimension)
-        if item is None:
-            blockers.append(f"dimension_missing:{dimension}")
-            continue
-        if item.passed is not True:
-            blockers.append(f"dimension_not_passed:{dimension}")
-            continue
-        if not isinstance(item.evidence_ref, str) or not item.evidence_ref.strip():
-            blockers.append(f"evidence_reference_missing:{dimension}")
-            continue
-        if not isinstance(item.reviewer_ref, str) or not item.reviewer_ref.strip():
-            blockers.append(f"reviewer_reference_missing:{dimension}")
-            continue
-        passed.append(dimension)
-
-    # Coverage is descriptive only: 100% coverage cannot bypass any blocker.
+        evidence = (); pre.append("evidence_collection_invalid")
+    if len(evidence) > 1000:
+        evidence = (); pre.append("evidence_collection_limit_exceeded")
+    converted = []
+    for i, item in enumerate(evidence):
+        if not isinstance(item, DimensionEvidence): pre.append(f"evidence_record_invalid:{i}"); continue
+        converted.append(GateEvidence(item.dimension, item.passed, item.evidence_ref, item.reviewer_ref))
+    decision = decide(DIMENSIONS, tuple(converted), required_policy_version=required_policy_version, supplied_policy_version=supplied_policy_version, owner_authorized=owner_authorized)
+    mapped = []
+    for blocker in decision.blockers:
+        if blocker.startswith("gate_missing:"): mapped.append("dimension_missing:" + blocker.split(":", 1)[1])
+        elif blocker.startswith("duplicate_gate:"): mapped.append("duplicate_dimension:" + blocker.split(":", 1)[1])
+        elif blocker.startswith("unknown_gate:"): mapped.append("unknown_dimension:" + blocker.split(":", 1)[1])
+        elif blocker.startswith("gate_not_passed:"): mapped.append("dimension_not_passed:" + blocker.split(":", 1)[1])
+        else: mapped.append(blocker)
+    blockers = tuple(sorted(set(mapped + pre)))
+    passed = tuple(decision.passed_gates)
     score = round(100 * len(passed) / len(DIMENSIONS))
-    blockers = sorted(set(blockers))
-    reached = score == 100 and not blockers
-    return CeilingAssessment(score, reached, tuple(blockers), tuple(passed))
+    return CeilingAssessment(score, score == 100 and not blockers, blockers, passed)
