@@ -69,33 +69,35 @@ jobs:
         run: PYTHONPATH=. python tests/test_evidence.py -v
       - name: Run fail-closed worker runner tests
         run: PYTHONPATH=. python tests/test_worker_runner.py -v
-      - name: Run workflow security inventory (report-only)
+      - name: Enforce reviewed workflow risk baseline
         env:
           PYTHONPATH: .
         run: |
           python - <<'PY'
           import os
-          from pathlib import Path
-          from autonomy.workflow_audit import scan_workflows
+          from autonomy.workflow_audit import compare_baseline, report_json, scan_workflows
 
           findings = scan_workflows(".")
-          counts = {level: sum(f.severity == level for f in findings) for level in ("high", "medium", "low")}
+          added, resolved = compare_baseline(findings, "autonomy/workflow_risk_baseline.json")
           lines = [
-              "## GitHub Actions static risk inventory",
+              "## GitHub Actions risk baseline gate",
               "",
-              "Heuristic review leads only; findings are not proof of exploitability. This lane reports risks and does not hide or auto-fix them.",
+              "Static heuristics are review leads, not confirmed vulnerabilities. Existing debt is tracked explicitly; new findings and stale baseline entries require review.",
               "",
-              f"- High: {counts['high']}",
-              f"- Medium: {counts['medium']}",
-              f"- Low: {counts['low']}",
+              f"- Current findings: {len(findings)}",
+              f"- New findings: {len(added)}",
+              f"- Resolved entries requiring baseline refresh: {len(resolved)}",
               "",
           ]
-          lines.extend(f"- **{f.severity.upper()}** `{f.rule_id}` — `{f.path}`: {f.message}" for f in findings)
+          lines.extend(f"- **NEW {f.severity.upper()}** `{f.rule_id}` — `{f.path}`: {f.message}" for f in added)
+          lines.extend(f"- **RESOLVED / REFRESH BASELINE** `{item['rule_id']}` — `{item['path']}` ({item['severity']})" for item in resolved)
           summary = os.environ.get("GITHUB_STEP_SUMMARY")
           if summary:
               with open(summary, "a", encoding="utf-8") as handle:
                   handle.write("\\n".join(lines) + "\\n")
           print("\\n".join(lines))
+          if added or resolved:
+              raise SystemExit("workflow risk baseline drift: review findings and update the baseline intentionally")
           PY
       - name: Run workflow audit tests
         run: PYTHONPATH=. python tests/test_workflow_audit.py -v
