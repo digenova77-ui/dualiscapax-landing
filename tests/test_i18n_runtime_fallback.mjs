@@ -18,6 +18,7 @@ function createHarness({ failFrench = false, malformedFrench = false, storageBlo
     return {
       attributes,
       getAttribute(name) { return attributes.has(name) ? attributes.get(name) : null; },
+      hasAttribute(name) { return attributes.has(name); },
       setAttribute(name, value) { attributes.set(name, String(value)); },
     };
   };
