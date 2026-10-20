@@ -47,11 +47,13 @@ class EvidenceTests(unittest.TestCase):
                 raise AssertionError("must not call user-defined __str__")
         self.assertEqual(redact(Dangerous()), "[UNSUPPORTED:Dangerous]")
 
-    def test_deep_payload_is_bounded(self):
+    def test_deep_payload_is_bounded_for_diagnostic_redaction(self):
         value = {"leaf": True}
         for _ in range(20):
             value = {"child": value}
         self.assertIn("TRUNCATED:MAX_DEPTH", repr(redact(value)))
+        with self.assertRaises(ValueError):
+            create_evidence_envelope(task_id="t", outcome="succeeded", evidence=value)
 
     def test_large_envelope_fails_closed(self):
         with self.assertRaises(ValueError):
@@ -61,20 +63,32 @@ class EvidenceTests(unittest.TestCase):
             )
 
     def test_required_identity_and_outcome_are_validated(self):
-        with self.assertRaises(ValueError):
-            create_evidence_envelope(task_id=" ", outcome="succeeded", evidence={})
-        with self.assertRaises(ValueError):
-            create_evidence_envelope(task_id="t" * 257, outcome="succeeded", evidence={})
-        with self.assertRaises(ValueError):
-            create_evidence_envelope(task_id="task-1", outcome="maybe", evidence={})
+        for task_id in (" ", 42, None, "t" * 257):
+            with self.subTest(task_id=repr(task_id)), self.assertRaises(ValueError):
+                create_evidence_envelope(task_id=task_id, outcome="succeeded", evidence={})
+        for outcome in ("maybe", [], None):
+            with self.subTest(outcome=repr(outcome)), self.assertRaises(ValueError):
+                create_evidence_envelope(task_id="task-1", outcome=outcome, evidence={})
 
-    def test_unsupported_objects_and_nonfinite_numbers_are_json_safe(self):
-        clean = redact({"value": object(), "infinity": float("inf")})
-        self.assertIn("UNSUPPORTED:object", clean["value"])
-        envelope = create_evidence_envelope(
-            task_id="task-1", outcome="unknown", evidence=clean
-        )
-        self.assertEqual(len(envelope.sha256), 64)
+    def test_unsupported_objects_and_nonfinite_numbers_rejected_for_envelopes(self):
+        for value in (object(), float("inf"), float("nan"), {1: "non-string key"}):
+            with self.subTest(value=repr(value)), self.assertRaises(ValueError):
+                create_evidence_envelope(task_id="task-1", outcome="unknown", evidence={"value": value})
+        self.assertEqual(redact({"value": object()})["value"], "[UNSUPPORTED:object]")
+
+    def test_redaction_key_collisions_are_rejected(self):
+        # Both input keys normalize to the same output key after redaction.
+        with self.assertRaises(ValueError):
+            create_evidence_envelope(
+                task_id="task-1", outcome="succeeded",
+                evidence={"api_key": "one", "api-key": "two"},
+            )
+
+    def test_string_and_item_limits_fail_closed(self):
+        with self.assertRaises(ValueError):
+            create_evidence_envelope(task_id="t", outcome="succeeded", evidence={"x": "a" * 8193})
+        with self.assertRaises(ValueError):
+            create_evidence_envelope(task_id="t", outcome="succeeded", evidence=list(range(1001)))
 
 
 if __name__ == "__main__":
