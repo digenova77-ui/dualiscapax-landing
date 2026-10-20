@@ -44,7 +44,7 @@
   function lookup(text) {
     var s = String(text || "").trim();
     for (var i = 0; i < ROWS.length; i++) {
-      if (ROWS[i].re.test(s)) return { grant: "MEASURE", kernel: VERSION, id: ROWS[i].id, spoken: ROWS[i].spoken, href: ROWS[i].href, label: ROWS[i].label };
+      if (ROWS[i].re.test(s)) return { grant: "MEASURE", kernel: VERSION, id: ROWS[i].id, spoken: (w.DC_i18n && w.DC_i18n.get) ? w.DC_i18n.get("iris.book." + ROWS[i].id, ROWS[i].spoken) : ROWS[i].spoken, href: ROWS[i].href, label: ROWS[i].label };
     }
     return null;
   }
