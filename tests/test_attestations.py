@@ -105,6 +105,18 @@ class AttestationTests(unittest.TestCase):
             now=self.now,
         ).verified)
 
+    def test_malformed_key_and_clock_objects_fail_closed_without_crashing(self):
+        malformed = ReviewerAttestation(**{
+            **self.attestation.__dict__, "key_id": ["not", "hashable"]
+        })
+        result = self.verify(malformed)
+        self.assertFalse(result.verified)
+        self.assertIn("key_id_invalid", result.blockers)
+        self.assertIn("reviewer_key_untrusted", result.blockers)
+        result = self.verify(now=object())
+        self.assertFalse(result.verified)
+        self.assertIn("verification_time_invalid", result.blockers)
+
     def test_signature_verifier_exception_fails_closed(self):
         result = self.verify(signature_verifier=lambda *_: (_ for _ in ()).throw(RuntimeError("no")))
         self.assertIn("signature_verification_failed", result.blockers)
