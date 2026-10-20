@@ -41,6 +41,31 @@
     {
       "severity": "medium",
       "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/factory_mill.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/factory_workers.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/factory_workers.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/factory_workers.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/factory_workers.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
       "path": ".github/workflows/factory-persist-bot.yml"
     },
     {
@@ -57,26 +82,6 @@
       "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/factory-persist-bot.yml"
-    },
-    {
-      "severity": "medium",
-      "rule_id": "ACTION_NOT_SHA_PINNED",
-      "path": ".github/workflows/factory_mill.yml"
-    },
-    {
-      "severity": "medium",
-      "rule_id": "ACTION_NOT_SHA_PINNED",
-      "path": ".github/workflows/factory_workers.yml"
-    },
-    {
-      "severity": "high",
-      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
-      "path": ".github/workflows/factory_workers.yml"
-    },
-    {
-      "severity": "high",
-      "rule_id": "WRITE_PERMISSION",
-      "path": ".github/workflows/factory_workers.yml"
     },
     {
       "severity": "medium",
@@ -105,6 +110,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/golf_usa_envelopes.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/golf_usa_envelopes.yml"
     },
@@ -120,6 +130,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/hockey_boys_omha_u16.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/hockey_boys_omha_u16.yml"
     },
@@ -135,6 +150,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/hockey_girls_owha.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/hockey_girls_owha.yml"
     },
@@ -150,6 +170,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/hockey_house_rec.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/hockey_house_rec.yml"
     },
@@ -161,6 +186,11 @@
     {
       "severity": "high",
       "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/hockey_ohf_five.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
       "path": ".github/workflows/hockey_ohf_five.yml"
     },
     {
@@ -186,6 +216,11 @@
     {
       "severity": "high",
       "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/ice_session_bot.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
       "path": ".github/workflows/ice_session_bot.yml"
     },
     {
@@ -295,6 +330,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/plate_live_watch.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/plate_live_watch.yml"
     },
@@ -340,6 +380,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/swarm_bot_fleet.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/swarm_bot_fleet.yml"
     },
@@ -355,6 +400,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/swarm_lane_adversarial.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/swarm_lane_adversarial.yml"
     },
@@ -370,6 +420,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/swarm_lane_biomed.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/swarm_lane_biomed.yml"
     },
@@ -385,6 +440,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/swarm_lane_core.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/swarm_lane_core.yml"
     },
@@ -400,6 +460,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/swarm_lane_seal.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/swarm_lane_seal.yml"
     },
@@ -415,6 +480,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/swarm_lane_sectors.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/swarm_lane_sectors.yml"
     },
@@ -430,6 +500,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/swarm_lane_treasury.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/swarm_lane_treasury.yml"
     },
@@ -441,6 +516,11 @@
     {
       "severity": "high",
       "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_six_hour.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
       "path": ".github/workflows/swarm_six_hour.yml"
     },
     {
@@ -465,6 +545,11 @@
     },
     {
       "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/unity_mesh.yml"
+    },
+    {
+      "severity": "high",
       "rule_id": "WRITE_PERMISSION",
       "path": ".github/workflows/unity_mesh.yml"
     },
@@ -476,6 +561,11 @@
     {
       "severity": "high",
       "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/unity_playground_idle.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
       "path": ".github/workflows/unity_playground_idle.yml"
     },
     {
@@ -499,5 +589,5 @@
       "path": ".github/workflows/wav-watch.yml"
     }
   ],
-  "last_review_note": "2026-10-20: retired swarm_runner.yml converted to an inert manual notice with no permissions, checkout, commits, or push; corresponding findings intentionally resolved."
+  "last_review_note": "2026-10-20: retired swarm_runner workflow write behavior removed. Improved mutation detector then surfaced 18 existing chained repository-push patterns in other workflows; these are recorded as review debt, not approved as safe, and require workflow-by-workflow remediation."
 }
