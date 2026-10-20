@@ -80,13 +80,43 @@ class Orchestrator:
             })
             return OrchestrationOutcome(blocked, False, None, "policy_gate_error")
 
+        # A gate returning malformed data is a refusal, never a crash-through.
+        if not isinstance(decision, AuthorizationDecision):
+            blocked = self.supervisor.start(job.job_id, authorized=False)
+            self.supervisor.ledger.append({
+                "type": "orchestration_refused", "job_id": job.job_id,
+                "reason": "authorization_decision_invalid",
+            })
+            return OrchestrationOutcome(blocked, False, None, "authorization_decision_invalid")
+
+        scopes_valid = (
+            isinstance(decision.allowed_scopes, frozenset)
+            and all(isinstance(scope, str) and scope.strip() for scope in decision.allowed_scopes)
+        )
+        decision_valid = (
+            type(decision.approved) is bool
+            and isinstance(decision.task_id, str)
+            and isinstance(decision.authority_id, str)
+            and isinstance(decision.policy_version, str)
+            and type(decision.owner_terms_accepted) is bool
+            and isinstance(decision.reason, str)
+            and scopes_valid
+        )
+        if not decision_valid:
+            blocked = self.supervisor.start(job.job_id, authorized=False)
+            self.supervisor.ledger.append({
+                "type": "orchestration_refused", "job_id": job.job_id,
+                "reason": "authorization_decision_malformed",
+            })
+            return OrchestrationOutcome(blocked, False, None, "authorization_decision_malformed")
+
         if (
-            not decision.approved
+            decision.approved is not True
             or decision.task_id != job.job_id
             or not decision.authority_id.strip()
             or not decision.policy_version.strip()
             or decision.allowed_scopes != required_scopes
-            or not decision.owner_terms_accepted
+            or decision.owner_terms_accepted is not True
         ):
             blocked = self.supervisor.start(job.job_id, authorized=False)
             reason = decision.reason or "authorization_or_scope_gate_failed"
@@ -106,7 +136,16 @@ class Orchestrator:
                 "reason": "adapter_description_unavailable",
             })
             return OrchestrationOutcome(blocked, False, None, "adapter_description_unavailable")
-        if not capabilities.official_api:
+        if not isinstance(capabilities.required_scopes, frozenset) or not all(
+            isinstance(scope, str) and scope.strip() for scope in capabilities.required_scopes
+        ) or type(capabilities.official_api) is not bool:
+            blocked = self.supervisor.start(job.job_id, authorized=False)
+            self.supervisor.ledger.append({
+                "type": "orchestration_refused", "job_id": job.job_id,
+                "reason": "adapter_capability_contract_invalid",
+            })
+            return OrchestrationOutcome(blocked, False, None, "adapter_capability_contract_invalid")
+        if capabilities.official_api is not True:
             blocked = self.supervisor.start(job.job_id, authorized=False)
             self.supervisor.ledger.append({
                 "type": "orchestration_refused", "job_id": job.job_id,
