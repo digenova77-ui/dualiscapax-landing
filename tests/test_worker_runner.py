@@ -7,6 +7,7 @@ from autonomy.durable_queue import SQLiteJobQueue
 from autonomy.worker_runner import (
     KnownRetryableFailure,
     WorkerAuthorization,
+    WorkerExecutionResult,
     WorkerRunner,
 )
 
@@ -28,11 +29,15 @@ class WorkerRunnerTests(unittest.TestCase):
             required_scopes=frozenset({"repo:read"}), owner_terms_accepted=True,
         )
 
+    def _execute_successfully(self, job, grant, context):
+        self.executed.append(job.job_id)
+        return WorkerExecutionResult(success=True, result_digest="a" * 64)
+
     def runner(self, policy=None, executor=None):
         return WorkerRunner(
             queue=self.queue, worker_id="worker-a",
             policy=self.grant if policy is None else policy,
-            executor=(lambda job, grant, context: self.executed.append(job.job_id)) if executor is None else executor,
+            executor=self._execute_successfully if executor is None else executor,
             lease_seconds=30,
         )
 
@@ -116,6 +121,7 @@ class WorkerRunnerTests(unittest.TestCase):
         def finish_then_cancel(job, _grant, _context):
             self.queue.request_cancel(job.job_id)
             self.executed.append(job.job_id)
+            return WorkerExecutionResult(success=True, result_digest="b" * 64)
         outcome = self.runner(executor=finish_then_cancel).run_one(now=100)
         self.assertTrue(outcome.executed)
         self.assertEqual(outcome.job.state, "succeeded")
@@ -135,6 +141,7 @@ class WorkerRunnerTests(unittest.TestCase):
             renewed = context.checkpoint()
             self.assertEqual(renewed.lease_until, 130)
             self.executed.append(job.job_id)
+            return WorkerExecutionResult(success=True, result_digest="c" * 64)
         outcome = self.runner(executor=work).run_one(now=100)
         self.assertEqual(outcome.job.state, "succeeded")
 
@@ -145,6 +152,36 @@ class WorkerRunnerTests(unittest.TestCase):
             self.executed.append("must-not-run")
         outcome = self.runner(executor=work).run_one(now=100)
         self.assertEqual(outcome.job.state, "cancelled")
+        self.assertEqual(self.executed, [])
+
+
+    def test_missing_or_malformed_execution_result_blocks(self):
+        outcome = self.runner(executor=lambda job, grant, context: None).run_one(now=100)
+        self.assertEqual(outcome.job.state, "blocked")
+        self.assertEqual(outcome.reason, "invalid_executor_result_blocked")
+
+    def test_explicit_failed_result_retries_only_when_safe(self):
+        outcome = self.runner(
+            executor=lambda job, grant, context: WorkerExecutionResult(
+                success=False, result_digest="d" * 64, retry_safe=True
+            )
+        ).run_one(now=100)
+        self.assertEqual(outcome.job.state, "retryable_failure")
+
+    def test_explicit_failed_result_without_retry_safety_is_blocked(self):
+        outcome = self.runner(
+            executor=lambda job, grant, context: WorkerExecutionResult(
+                success=False, result_digest="e" * 64, retry_safe=False
+            )
+        ).run_one(now=100)
+        self.assertEqual(outcome.job.state, "blocked")
+
+    def test_malformed_authority_fields_fail_closed(self):
+        def malformed(job):
+            grant = self.grant(job)
+            return WorkerAuthorization(**{**grant.__dict__, "authority_id": None})
+        outcome = self.runner(policy=malformed).run_one(now=100)
+        self.assertEqual(outcome.job.state, "blocked")
         self.assertEqual(self.executed, [])
 
     def test_invalid_authorization_type_fails_closed(self):
