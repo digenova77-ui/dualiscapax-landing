@@ -13,6 +13,7 @@ on:
       - "tests/test_orchestrator.py"
       - "tests/test_sqlite_ledger.py"
       - "tests/test_durable_queue.py"
+      - "tests/test_provisioning.py"
       - ".github/workflows/trinity-affinity-tests.yml"
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - "tests/test_orchestrator.py"
       - "tests/test_sqlite_ledger.py"
       - "tests/test_durable_queue.py"
+      - "tests/test_provisioning.py"
       - ".github/workflows/trinity-affinity-tests.yml"
 permissions:
   contents: read
@@ -41,6 +43,8 @@ jobs:
         run: PYTHONPATH=. python tests/test_affinity.py -v
       - name: Run integration lifecycle tests
         run: PYTHONPATH=. python tests/test_integration_lifecycle.py -v
+      - name: Run service identity provisioning tests
+        run: PYTHONPATH=. python tests/test_provisioning.py -v
       - name: Run hash-chain ledger tests
         run: PYTHONPATH=. python tests/test_ledger.py -v
       - name: Run durable SQLite ledger tests
