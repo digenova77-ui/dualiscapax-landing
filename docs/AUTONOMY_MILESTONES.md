@@ -37,7 +37,8 @@ The milestones are acceptance criteria, not claims that all capabilities are alr
 ## M6 — Isolated execution and recovery
 - Run adapters in an isolated worker with resource limits, timeouts, allowlisted egress, and cancellation.
 - A fail-closed sandbox policy contract now checks task/authority binding, backend attestation, least-privilege read/write/environment/egress grants, forbidden host credential/privileged access, and bounded CPU/memory/process/wall-time limits. It produces a deterministic launch plan only after approval; it does not itself enforce OS isolation or start a process.
-- The durable queue now supports owner-checked lease renewal; expired leases cannot be revived, and lease duration is bounded.
+- The durable queue supports owner-checked lease renewal; expired leases cannot be revived, and lease duration is bounded.
+- Cooperative cancellation now transitions queued work directly to `cancelled`, marks running work `cancel_requested`, and requires the lease-owning worker to acknowledge cancellation. Expired cancellation requests recover to `cancelled`; this is a protocol, not a hard process kill, so a future OS supervisor must enforce termination.
 - Use idempotency keys at the provider boundary where supported.
 - Retry only known-retryable failures; never retry unknown non-idempotent writes automatically.
 - Capture structured logs and redact secrets.
