@@ -16,12 +16,12 @@
     <a href="onboard.html">Sign in</a>
     <a href="runtime.html">Runtime</a>
     <a href="pay.html">Pay</a>
-  </nav>
+  <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select></nav>
 </header>
 <main>
   <p class="chips"><span class="chip">CAD $0 for 90 days</span><span class="chip">U1 can hatch</span><span class="chip warn">Not a court stamp</span></p>
-  <h1>Set up and start modeling today</h1>
-  <p class="lead">Finish the five steps. You leave with a workbench on this device. If the name is yours, the number is U1. Anyone else hatches under you. Founder zero does not have to be verified first.</p>
+  <h1 data-i18n="onboard.h1">Set up and start modeling today</h1>
+  <p class="lead" data-i18n="onboard.lede">Finish the five steps. You leave with a workbench on this device. If the name is yours, the number is U1. Anyone else hatches under you. Founder zero does not have to be verified first.</p>
 
   <div class="card" style="margin-top:1rem">
     <h2>1. Who you are</h2>
@@ -75,5 +75,6 @@
 <script src="pack.js"></script>
 <script src="unity-id.js"></script>
 <script src="onboard.js"></script>
+<script src="js/i18n.js"></script><script>document.getElementById('dc-lang-switch')?.addEventListener('change',function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
