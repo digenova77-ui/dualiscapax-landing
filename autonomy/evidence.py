@@ -16,7 +16,7 @@ from typing import Any
 _REDACTED = "[REDACTED]"
 _SECRET_KEY_MARKERS = (
     "password", "passwd", "secret", "token", "api_key", "apikey",
-    "private_key", "credential", "authorization", "cookie", "access_key",
+    "private_key", "credential", "authorization", "cookie", "access_key", "refresh_token", "client_secret",
 )
 _PATTERNS = (
     re.compile(r"(?i)\bBearer\s+[A-Za-z0-9._~+/=-]+"),
@@ -41,8 +41,9 @@ class EvidenceEnvelope:
 
 
 def _secret_key(key: str) -> bool:
-    normalized = re.sub(r"[^a-z0-9_]", "", key.lower())
-    return any(marker in normalized for marker in _SECRET_KEY_MARKERS)
+    normalized = re.sub(r"[^a-z0-9]", "", key.lower())
+    markers = (re.sub(r"[^a-z0-9]", "", marker.lower()) for marker in _SECRET_KEY_MARKERS)
+    return any(marker in normalized for marker in markers)
 
 
 def _clean_string(value: str) -> str:
