@@ -36,6 +36,17 @@ properties, plant compatibility, or biological effects from a graph edge.
    passed software checks. It does not independently authenticate a sensor,
    calibrate a measurement, establish causation, or validate a scientific claim.
 
+## Study protocol gate
+
+`autonomy/research_protocol.py` checks the minimum structure of a proposed
+non-invasive observation study: a falsifiable hypothesis, species, control
+description, sample size, supported measurement metrics, calibration evidence,
+predefined success criteria, stop conditions, and a recorded human review.
+It rejects physical grafting and other interventions outside the observation
+gate. Passing this software check means only that required fields and declared
+constraints are present; it does not authenticate the reviewer or grant
+scientific, ethical, legal, or laboratory approval.
+
 ## Real-world validation path
 
 1. Define a specific, falsifiable hypothesis and success/failure criteria.
