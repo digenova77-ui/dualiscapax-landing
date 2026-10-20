@@ -13,15 +13,17 @@
     <a href="ca.html">Canada</a>
     <a href="on.html">Ontario</a>
     <a href="municipality.html">Your town</a>
+    <select id="dc-lang-switch" aria-label="Language" data-i18n-aria-label="language.label"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
   </nav>
 </header>
 <main>
-  <h1>Ontario</h1>
-  <p class="lead">Province page. Your town is whatever you typed when you signed in. We do not pick it for you.</p>
+  <h1 data-i18n="on.h1">Ontario</h1>
+  <p class="lead" data-i18n="on.lede">Province page. Your town is whatever you typed when you signed in. We do not pick it for you.</p>
   <div class="grid two">
     <div class="card"><h2>Your town</h2><p>Pulled from your saved file, if you made one.</p><a class="btn" href="municipality.html">Open my town</a></div>
     <div class="card"><h2>Work email</h2><p>If your email matches a school or company domain, that is just extra proof of the name. It is not a login to their systems.</p><a class="btn ghost" href="onboard.html">Add it</a></div>
   </div>
 </main>
+<script src="js/i18n.js"></script>
 </body>
 </html>
