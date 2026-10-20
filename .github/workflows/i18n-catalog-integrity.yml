@@ -6,6 +6,7 @@ on:
       - "js/i18n.js"
       - "i18n/*.json"
       - "tests/test_i18n_catalog_integrity.py"
+      - "tests/test_i18n_runtime_fallback.mjs"
       - ".github/workflows/i18n-catalog-integrity.yml"
   pull_request:
     paths:
@@ -30,3 +31,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate catalog parity and safe rendering defaults
         run: python3 tests/test_i18n_catalog_integrity.py
+      - name: Exercise translation runtime fallback behavior
+        run: node --test tests/test_i18n_runtime_fallback.mjs
