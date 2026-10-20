@@ -40,7 +40,7 @@ class KnownRetryableFailure(Exception):
 
 
 Policy = Callable[[QueueJob], WorkerAuthorization]
-Executor = Callable[[QueueJob], object]
+Executor = Callable[[QueueJob, WorkerAuthorization], object]
 
 
 class WorkerRunner:
@@ -120,7 +120,7 @@ class WorkerRunner:
         if cancelled():
             return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_before_execution")
         try:
-            self.executor(job)
+            self.executor(job, grant)
         except KnownRetryableFailure as exc:
             # The exception type alone is insufficient: retry must be explicitly
             # declared safe for this exact operation.
