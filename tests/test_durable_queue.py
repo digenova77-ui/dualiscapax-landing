@@ -85,19 +85,19 @@ class DurableQueueTests(unittest.TestCase):
 
     def test_wrong_worker_cannot_renew_lease(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="renew-owner")
-        self.queue.claim("worker-a", now=100, lease_seconds=10)
+        claimed = self.queue.claim("worker-a", now=100, lease_seconds=10)
         with self.assertRaises(PermissionError):
             self.queue.renew_lease(job.job_id, "worker-b", lease_generation=claimed.lease_generation, now=101, lease_seconds=20)
 
     def test_expired_lease_cannot_be_resurrected(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="renew-expired")
-        self.queue.claim("worker-a", now=100, lease_seconds=5)
+        claimed = self.queue.claim("worker-a", now=100, lease_seconds=5)
         with self.assertRaises(PermissionError):
             self.queue.renew_lease(job.job_id, "worker-a", lease_generation=claimed.lease_generation, now=105, lease_seconds=20)
 
     def test_lease_renewal_duration_is_bounded(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="renew-bound")
-        self.queue.claim("worker-a", now=100, lease_seconds=5)
+        claimed = self.queue.claim("worker-a", now=100, lease_seconds=5)
         with self.assertRaises(ValueError):
             self.queue.renew_lease(job.job_id, "worker-a", lease_generation=claimed.lease_generation, now=101, lease_seconds=3601)
 
