@@ -6,12 +6,16 @@ on:
       - "feat/trinity-affinity-autonomy-20261020"
     paths:
       - "autonomy/affinity.py"
+      - "autonomy/integration_lifecycle.py"
       - "tests/test_affinity.py"
+      - "tests/test_integration_lifecycle.py"
       - ".github/workflows/trinity-affinity-tests.yml"
   pull_request:
     paths:
       - "autonomy/affinity.py"
+      - "autonomy/integration_lifecycle.py"
       - "tests/test_affinity.py"
+      - "tests/test_integration_lifecycle.py"
       - ".github/workflows/trinity-affinity-tests.yml"
 
 permissions:
@@ -28,3 +32,5 @@ jobs:
           python-version: "3.12"
       - name: Run offline affinity and authorization tests
         run: PYTHONPATH=. python tests/test_affinity.py -v
+      - name: Run fail-closed integration lifecycle tests
+        run: PYTHONPATH=. python tests/test_integration_lifecycle.py -v
