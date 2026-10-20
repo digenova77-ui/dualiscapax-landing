@@ -35,7 +35,7 @@ def inspect_workflow(source: str, path: str) -> list[WorkflowFinding]:
     if re.search(r"(?m)^\s*(?:-\s*)?uses:\s*[^./\s]+/[^@\s]+@(?![0-9a-fA-F]{40}\b)[^\s]+", source):
         findings.add(WorkflowFinding(path, "ACTION_NOT_SHA_PINNED", "medium",
             "At least one external action uses a mutable tag or ref instead of a full commit SHA."))
-    if re.search(r"(?im)(?:^|&&|\|\||;)\s*(?:git\s+push|gh\s+pr\s+merge|gh\s+release\s+create)\b", source):
+    if re.search(r"(?im)(?:^|&&|\|\||;)\s*(?:-\s*run:\s*)?(?:git\s+push|gh\s+pr\s+merge|gh\s+release\s+create)\b", source):
         findings.add(WorkflowFinding(path, "REPOSITORY_MUTATION_COMMAND", "high",
             "A workflow shell step contains a direct repository mutation command; require explicit gates and narrow permissions."))
     if re.search(r"(?im)^\s*(?:-\s*run:\s*)?(?:curl|wget)\b", source):
