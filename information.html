@@ -28,11 +28,12 @@
         <a href="residual-law.html">Law</a>
         <a href="tools.html">Tools</a>
         <a href="ai/app.html">Iris</a>
-    </nav>
+    <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
+  </nav>
   </header>
   <p class="eyebrow">Look</p>
-  <h1>Information</h1>
-  <p class="lede">Information is a fact you can check. A timestamp. A signed record. A meter reading. Something another person can run again and get the same answer.</p>
+  <h1 data-i18n="information.h1">Information</h1>
+  <p class="lede" data-i18n="information.lede">Information is a fact you can check. A timestamp. A signed record. A meter reading. Something another person can run again and get the same answer.</p>
   <section>
     <h2>Start here</h2>
     <div class="layer">
@@ -55,5 +56,6 @@
 </div>
 <script src="/js/no-select.js"></script>
 <script src="/assets/haptic.js"></script>
+<script src="js/i18n.js"></script><script>document.getElementById("dc-lang-switch")?.addEventListener("change",function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
