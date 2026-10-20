@@ -184,7 +184,7 @@ if __name__ == "__main__":
         for worker in ("", "worker\\nforged", "w" * 129, None):
             with self.subTest(worker=worker), self.assertRaises(ValueError):
                 self.queue.claim(worker, now=100)
-        for clock in (float("nan"), float("inf"), True, "100"):
+        for clock in (float("nan"), float("inf"), True, "100", 10 ** 1000):
             with self.subTest(clock=clock), self.assertRaises(ValueError):
                 self.queue.claim("worker", now=clock)
         for duration in (True, 0, 3601, 1.5):
