@@ -206,6 +206,17 @@ class WorkerRunnerTests(unittest.TestCase):
         self.assertEqual(self.queue.get(self.job.job_id).state, "queued")
         self.assertEqual(self.executed, [])
 
+
+    def test_unbounded_or_malformed_authority_metadata_fails_closed(self):
+        def malformed(job):
+            grant = self.grant(job)
+            return WorkerAuthorization(**{
+                **grant.__dict__, "granted_scopes": frozenset({"x" * 129})
+            })
+        outcome = self.runner(policy=malformed).run_one(now=100)
+        self.assertEqual(outcome.job.state, "blocked")
+        self.assertEqual(self.executed, [])
+
     def test_invalid_authorization_type_fails_closed(self):
         outcome = self.runner(policy=lambda _job: {"approved": True}).run_one(now=100)
         self.assertEqual(outcome.job.state, "blocked")
