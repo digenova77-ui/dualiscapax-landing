@@ -69,8 +69,8 @@ steps:
                 ],
             }), encoding="utf-8")
             current = [
-                inspect_workflow("permissions:\\n  contents: write\\n", "a.yml")[0],
-                *inspect_workflow("uses: vendor/action@v2\\n", "c.yml"),
+                inspect_workflow("permissions:\n  contents: write\n", "a.yml")[0],
+                *inspect_workflow("uses: vendor/action@v2\n", "c.yml"),
             ]
             added, resolved = compare_baseline(current, path)
             self.assertIn(("c.yml", "ACTION_NOT_SHA_PINNED"), [(f.path, f.rule_id) for f in added])
