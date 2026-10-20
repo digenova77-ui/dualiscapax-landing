@@ -111,6 +111,23 @@ class SandboxPolicyTests(unittest.TestCase):
         self.assertIn("memory_limit_out_of_bounds", decision.reasons)
         self.assertIn("wall_time_limit_out_of_bounds", decision.reasons)
 
+
+    def test_credential_like_environment_names_are_forbidden(self):
+        policy = approved(allowed_environment=frozenset({"LANG", "GITHUB_TOKEN"}))
+        decision = validate_sandbox_policy(
+            policy, task_id="task-123", backend_attested=True
+        )
+        self.assertFalse(decision.allowed)
+        self.assertIn("credential_environment_forbidden", decision.reasons)
+
+    def test_workspace_root_traversal_is_denied(self):
+        policy = approved(workspace_root="/srv/worker/../host")
+        decision = validate_sandbox_policy(
+            policy, task_id="task-123", backend_attested=True
+        )
+        self.assertFalse(decision.allowed)
+        self.assertIn("workspace_root_invalid", decision.reasons)
+
     def test_denied_decision_cannot_create_launch_plan(self):
         policy = approved()
         decision = validate_sandbox_policy(policy, task_id="wrong", backend_attested=True)
