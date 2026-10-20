@@ -25,6 +25,15 @@ function createHarness({ failFrench = false, malformedFrench = false, storageBlo
   const ariaLabel = makeElement({ "data-i18n-aria-label": "nav.home" });
   const title = makeElement({ "data-i18n-title": "nav.look" });
   const metaContent = makeElement({ "data-i18n-content": "meta.description" });
+  const textTarget = makeElement({ "data-i18n": "greeting" });
+  textTarget.childElementCount = 0;
+  textTarget.textContent = "Original";
+  const nestedTextNode = { nodeType: 3, nodeValue: "Original label" };
+  const nestedIcon = { nodeType: 1, marker: "icon-preserved" };
+  const nestedTarget = makeElement({ "data-i18n": "nav.home" });
+  nestedTarget.childElementCount = 1;
+  nestedTarget.childNodes = [nestedTextNode, nestedIcon];
+  nestedTarget.hasAttribute = name => nestedTarget.attributes.has(name);
   const warnings = [];
   const callbackCalls = [];
   const fetchCalls = [];
@@ -38,6 +47,7 @@ function createHarness({ failFrench = false, malformedFrench = false, storageBlo
     },
     querySelectorAll(selector) {
       if (selector === "#dc-lang-switch") return [switcher];
+      if (selector === "[data-i18n]") return [textTarget, nestedTarget];
       if (selector === "[data-i18n-placeholder]") return [placeholder];
       if (selector === "[data-i18n-aria-label]") return [ariaLabel];
       if (selector === "[data-i18n-title]") return [title];
@@ -98,6 +108,10 @@ function createHarness({ failFrench = false, malformedFrench = false, storageBlo
     ariaLabel,
     title,
     metaContent,
+    textTarget,
+    nestedTarget,
+    nestedTextNode,
+    nestedIcon,
     start() { const handler = documentHandlers.get("DOMContentLoaded"); if (handler) handler(); },
   };
 }
@@ -173,4 +187,15 @@ test("localizes placeholders, accessibility labels, titles, and metadata", async
   assert.equal(h.ariaLabel.attributes.get("aria-label"), "Accueil");
   assert.equal(h.title.attributes.get("title"), "Découvrir");
   assert.equal(h.metaContent.attributes.get("content"), "Description française");
+});
+
+
+test("updates translated text while preserving nested icon elements", async () => {
+  const h = createHarness();
+  await h.api.setLang("fr");
+
+  assert.equal(h.textTarget.textContent, "Bonjour");
+  assert.equal(h.nestedTextNode.nodeValue, "Accueil");
+  assert.equal(h.nestedTarget.childNodes[1], h.nestedIcon);
+  assert.equal(h.nestedIcon.marker, "icon-preserved");
 });
