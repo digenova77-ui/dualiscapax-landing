@@ -1,0 +1,32 @@
+name: Translation catalog integrity
+
+on:
+  push:
+    paths:
+      - "js/i18n.js"
+      - "i18n/*.json"
+      - "tests/test_i18n_catalog_integrity.py"
+      - ".github/workflows/i18n-catalog-integrity.yml"
+  pull_request:
+    paths:
+      - "js/i18n.js"
+      - "i18n/*.json"
+      - "tests/test_i18n_catalog_integrity.py"
+      - ".github/workflows/i18n-catalog-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: i18n-catalog-integrity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-catalogs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate catalog parity and safe rendering defaults
+        run: python3 -m unittest -v tests/test_i18n_catalog_integrity.py
