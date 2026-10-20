@@ -33,12 +33,13 @@
   <nav class="md-crumbs">
     <a href="index.html">DualisCapax</a>
     <span>/</span>
-    <span class="now">Residual integrity</span>
+    <span class="now" data-i18n="integrity.h1">Residual integrity</span>
+    <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
   </nav>
   <main class="md-shell">
-    <p class="md-kicker">Cryptographic residual · published bytes</p>
-    <h1 class="md-title">Integrity lock</h1>
-    <p class="md-subtitle">Table of contents of locked plane files. Each path is SHA-256 hashed. Root hash is the hash of those path:hash lines. Scan the QR to return here and compare history.</p>
+    <p class="md-kicker" data-i18n="integrity.kicker">Cryptographic residual · published bytes</p>
+    <h1 class="md-title" data-i18n="integrity.h1">Integrity lock</h1>
+    <p class="md-subtitle" data-i18n="integrity.lede">Table of contents of locked plane files. Each path is SHA-256 hashed. Root hash is the hash of those path:hash lines. Scan the QR to return here and compare history.</p>
 
     <div class="md-callout constraint">
       <strong>Dual-column.</strong> Column A — these hashes prove the <em>published files</em> match this snapshot.
@@ -51,7 +52,7 @@
 
     <div class="qr-box">
       <div>
-        <p class="md-kicker">QR · verify surface</p>
+        <p class="md-kicker" data-i18n="integrity.qr.kicker">QR · verify surface</p>
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://digenova77-ui.github.io/dualiscapax-landing/integrity.html" width="180" height="180" alt="QR code linking to residual integrity page">
       </div>
       <div>
@@ -104,5 +105,6 @@
       Citations inside medical packs stay dual-column; the lock is on the plane’s published residual bytes.
     </p>
   </main>
+<script src="js/i18n.js"></script>
 </body>
 </html>
