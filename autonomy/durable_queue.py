@@ -5,6 +5,7 @@ import hashlib
 import json
 import sqlite3
 import time
+import math
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
@@ -13,6 +14,29 @@ from typing import Optional
 MAX_TASK_TYPE_CHARS = 128
 MAX_IDEMPOTENCY_KEY_CHARS = 256
 MAX_PAYLOAD_BYTES = 65536
+MAX_WORKER_ID_CHARS = 128
+
+
+def _validate_worker_id(worker_id: str) -> None:
+    if (not isinstance(worker_id, str) or not worker_id.strip()
+            or len(worker_id) > MAX_WORKER_ID_CHARS
+            or any(ord(char) < 32 for char in worker_id)):
+        raise ValueError("worker_id must be a valid bounded string")
+
+
+def _validate_lease(lease_seconds: int, now: object) -> float:
+    if type(lease_seconds) is not int or not 1 <= lease_seconds <= 3600:
+        raise ValueError("lease_seconds must be an integer between 1 and 3600")
+    if now is None:
+        return time.time()
+    if isinstance(now, bool) or not isinstance(now, (int, float)) or not math.isfinite(now):
+        raise ValueError("now must be a finite timestamp")
+    return float(now)
+
+
+def _validate_generation(lease_generation: int | None) -> None:
+    if type(lease_generation) is not int or lease_generation < 1:
+        raise PermissionError("a valid lease generation is required")
 
 
 @dataclass(frozen=True)
@@ -127,11 +151,8 @@ class SQLiteJobQueue:
         return self.get(job_id)
 
     def claim(self, worker_id: str, *, lease_seconds: int = 60, now: Optional[float] = None) -> Optional[QueueJob]:
-        if not worker_id.strip():
-            raise ValueError("worker_id is required")
-        if not 1 <= lease_seconds <= 3600:
-            raise ValueError("lease_seconds must be between 1 and 3600")
-        now = time.time() if now is None else now
+        _validate_worker_id(worker_id)
+        now = _validate_lease(lease_seconds, now)
         with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
             # Expired running jobs can be reclaimed only within their retry budget.
@@ -167,9 +188,9 @@ class SQLiteJobQueue:
         now: Optional[float] = None,
     ) -> QueueJob:
         """Extend a live lease held by this worker; expired leases cannot be revived."""
-        if not 1 <= lease_seconds <= 3600:
-            raise ValueError("lease_seconds must be between 1 and 3600")
-        now = time.time() if now is None else now
+        _validate_worker_id(worker_id)
+        _validate_generation(lease_generation)
+        now = _validate_lease(lease_seconds, now)
         with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute(
@@ -232,7 +253,9 @@ class SQLiteJobQueue:
         self, job_id: str, worker_id: str, *, lease_generation: int | None = None, now: Optional[float] = None
     ) -> QueueJob:
         """Acknowledge cooperative cancellation while the worker still owns a live lease."""
-        now = time.time() if now is None else now
+        _validate_worker_id(worker_id)
+        _validate_generation(lease_generation)
+        now = _validate_lease(60, now)
         with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute(
@@ -255,7 +278,11 @@ class SQLiteJobQueue:
 
     def complete(self, job_id: str, worker_id: str, *, lease_generation: int | None = None, success: bool, retryable: bool = False,
                  now: Optional[float] = None) -> QueueJob:
-        now = time.time() if now is None else now
+        _validate_worker_id(worker_id)
+        _validate_generation(lease_generation)
+        now = _validate_lease(60, now)
+        if type(success) is not bool or type(retryable) is not bool:
+            raise ValueError("success and retryable must be booleans")
         with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute(
