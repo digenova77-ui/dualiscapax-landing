@@ -92,3 +92,20 @@ not sufficient for approval: authorization or policy drift still blocks the
 ceiling. This validator cannot authenticate evidence or reviewers and cannot
 prove actual OS isolation or scientific validity; those require independent
 verification outside this software model.
+
+
+## Reviewer attestations
+
+`autonomy/attestations.py` defines a fail-closed verification contract that
+binds a reviewer decision to a subject digest, reviewer identity, key ID,
+policy version, and bounded validity window. The signature covers canonical
+UTF-8 JSON. Unknown keys, mismatched subjects or policy versions, expired
+attestations, invalid signatures, verifier errors, and reviewer rejection all
+fail closed.
+
+The cryptographic verifier and trusted-key registry are injected trust
+boundaries. Unit tests use a test double and do not establish cryptographic
+security. Production use requires a reviewed signature implementation,
+controlled key enrollment/rotation/revocation, and independently managed trust
+roots. A digest alone does not authenticate the producer, reviewer, sensor, or
+truth of the underlying observation.
