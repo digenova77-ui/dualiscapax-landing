@@ -75,7 +75,7 @@ jobs:
         run: |
           python - <<'PY'
           import os
-          from autonomy.workflow_audit import compare_baseline, report_json, scan_workflows
+          from autonomy.workflow_audit import compare_baseline, scan_workflows
 
           findings = scan_workflows(".")
           added, resolved = compare_baseline(findings, "autonomy/workflow_risk_baseline.json")
@@ -95,7 +95,7 @@ jobs:
           if summary:
               with open(summary, "a", encoding="utf-8") as handle:
                   handle.write("\n".join(lines) + "\n")
-          print("\\n".join(lines))
+          print("\n".join(lines))
           if added or resolved:
               raise SystemExit("workflow risk baseline drift: review findings and update the baseline intentionally")
           PY
