@@ -29,9 +29,15 @@ def _validate_lease(lease_seconds: int, now: object) -> float:
         raise ValueError("lease_seconds must be an integer between 1 and 3600")
     if now is None:
         return time.time()
-    if isinstance(now, bool) or not isinstance(now, (int, float)) or not math.isfinite(now):
+    if isinstance(now, bool) or not isinstance(now, (int, float)):
         raise ValueError("now must be a finite timestamp")
-    return float(now)
+    try:
+        timestamp = float(now)
+    except (OverflowError, ValueError):
+        raise ValueError("now must be a finite timestamp") from None
+    if not math.isfinite(timestamp):
+        raise ValueError("now must be a finite timestamp")
+    return timestamp
 
 
 def _validate_generation(lease_generation: int | None) -> None:
