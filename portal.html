@@ -29,6 +29,7 @@ body{background:#02040c}
 .door b{display:block}
 .tiny{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,245,245,.42)}
 .hide{display:none}
+#dc-lang-switch{background:transparent;border:1px solid rgba(158,197,255,.4);color:#e8f1ff;font-family:"IBM Plex Mono",monospace;font-size:.7rem;padding:.2rem .4rem;margin-left:.5rem}
 </style>
 </head>
 <body>
@@ -37,52 +38,58 @@ body{background:#02040c}
   <header>
     <a class="mark" href="index.html?land=1">DualisCapax</a>
     <nav>
-      <a href="look.html">Look</a>
-      <a href="portal.html" class="on">Portal</a>
-      <a href="faq.html">FAQ</a>
+      <a href="look.html" data-i18n="nav.look">Look</a>
+      <a href="portal.html" class="on" data-i18n="nav.portal">Portal</a>
+      <a href="faq.html" data-i18n="nav.faq">FAQ</a>
+      <select id="dc-lang-switch" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="es">ES</option>
+      </select>
     </nav>
   </header>
-  <p class="eyebrow">Portal</p>
-  <h1>Your phrase. This device.</h1>
-  <p class="lede">No password. No account on our computers. The eight words stay on this phone or computer. If you lose the words, we cannot get you back in.</p>
+  <p class="eyebrow" data-i18n="portal.eyebrow">Portal</p>
+  <h1 data-i18n="portal.h1">Your phrase. This device.</h1>
+  <p class="lede" data-i18n="portal.lede">No password. No account on our computers. The eight words stay on this phone or computer. If you lose the words, we cannot get you back in.</p>
 
   <div id="gate" class="panel">
-    <p class="tiny" id="gate-state">Choose how you arrive</p>
+    <p class="tiny" id="gate-state" data-i18n="portal.choose">Choose how you arrive</p>
     <div class="roles">
-      <button type="button" class="role on" data-role="visitor"><b>For you</b><span>Look around. Talk to Iris. Nothing to buy.</span></button>
-      <button type="button" class="role" data-role="onboarder"><b>Onboarder</b><span>You bring other people in. Same device phrase.</span></button>
-      <button type="button" class="role" data-role="csuite"><b>C-suite / client</b><span>Your desk: measure, audit, pay, Iris. Tailored to your seat.</span></button>
+      <button type="button" class="role on" data-role="visitor"><b data-i18n="portal.role.you">For you</b><span data-i18n="portal.role.you.desc">Look around. Talk to Iris. Nothing to buy.</span></button>
+      <button type="button" class="role" data-role="onboarder"><b data-i18n="portal.role.onboarder">Onboarder</b><span data-i18n="portal.role.onboarder.desc">You bring other people in. Same device phrase.</span></button>
+      <button type="button" class="role" data-role="csuite"><b data-i18n="portal.role.csuite">C-suite / client</b><span data-i18n="portal.role.csuite.desc">Your desk: measure, audit, pay, Iris. Tailored to your seat.</span></button>
     </div>
-    <label class="tiny" for="phrase">Eight-word phrase</label>
+    <label class="tiny" for="phrase" data-i18n="portal.phrase.label">Eight-word phrase</label>
     <textarea id="phrase" class="phrase" autocomplete="off" spellcheck="false" placeholder="eight words that live only here"></textarea>
     <div class="rowbtns">
-      <button type="button" class="act" id="make">Make a phrase</button>
-      <button type="button" class="act" id="open">Open</button>
+      <button type="button" class="act" id="make" data-i18n="portal.btn.make">Make a phrase</button>
+      <button type="button" class="act" id="open" data-i18n="portal.btn.open">Open</button>
     </div>
-    <button type="button" class="act ghost" id="unlock" style="width:100%">I already have my words</button>
-    <p class="warn" id="note">Write the words on paper. We never see them. There is no reset email.</p>
+    <button type="button" class="act ghost" id="unlock" style="width:100%" data-i18n="portal.btn.unlock">I already have my words</button>
+    <p class="warn" id="note" data-i18n="portal.note.default">Write the words on paper. We never see them. There is no reset email.</p>
   </div>
 
   <div id="desk" class="hide">
     <div class="panel">
-      <p class="tiny">Open on this device</p>
+      <p class="tiny" data-i18n="portal.desk.open">Open on this device</p>
       <p id="who" class="ok"></p>
-      <p class="warn">This seat is local. Paying for minutes still happens on Pay. Other people pay for their own seat.</p>
+      <p class="warn" data-i18n="portal.desk.warn">This seat is local. Paying for minutes still happens on Pay. Other people pay for their own seat.</p>
       <div class="rowbtns">
-        <button type="button" class="act ghost" id="lock">Lock</button>
-        <button type="button" class="act ghost" id="forget">Forget this device</button>
+        <button type="button" class="act ghost" id="lock" data-i18n="portal.btn.lock">Lock</button>
+        <button type="button" class="act ghost" id="forget" data-i18n="portal.btn.forget">Forget this device</button>
       </div>
     </div>
-    <p class="tiny">Your doors</p>
+    <p class="tiny" data-i18n="portal.doors">Your doors</p>
     <div class="doors" id="doors"></div>
   </div>
 
-  <footer>DualisCapax · phrase on device · no password file</footer>
+  <footer data-i18n="portal.footer">DualisCapax · phrase on device · no password file</footer>
 </div>
 <script src="js/home-quarks.js"></script>
 <script src="js/session-stamp.js"></script>
 <script src="js/device-pass.js"></script>
 <script src="js/no-select.js"></script>
+<script src="js/i18n.js"></script>
 <script>
 (function(){
   var role = 'visitor';
@@ -133,12 +140,12 @@ body{background:#02040c}
   }
   function fail(e){
     note.className = 'warn bad';
-    note.textContent = (e && e.message) ? e.message : 'That phrase does not open this device.';
+    note.textContent = (e && e.message) ? e.message : (window.DC_i18n ? DC_i18n.get('portal.note.default', 'That phrase does not open this device.') : 'That phrase does not open this device.');
   }
   document.getElementById('make').addEventListener('click', function(){
     phrase.value = DCVault.generate();
     note.className = 'warn';
-    note.textContent = 'Copy these eight words now. Then tap Open. We cannot show them again.';
+    note.textContent = window.DC_i18n ? DC_i18n.get('portal.note.make', 'Copy these eight words now. Then tap Open. We cannot show them again.') : 'Copy these eight words now. Then tap Open. We cannot show them again.';
   });
   document.getElementById('open').addEventListener('click', function(){
     DCVault.create(phrase.value, role).then(function(s){
@@ -157,21 +164,34 @@ body{background:#02040c}
     desk.classList.add('hide');
     gate.classList.remove('hide');
     note.className = 'warn';
-    note.textContent = 'Locked. Same eight words open it again on this device.';
+    note.textContent = window.DC_i18n ? DC_i18n.get('portal.note.locked', 'Locked. Same eight words open it again on this device.') : 'Locked. Same eight words open it again on this device.';
   });
   document.getElementById('forget').addEventListener('click', function(){
-    if (!confirm('Erase the vault on this device? Your words will not open it here until you make a new phrase.')) return;
+    if (!confirm(window.DC_i18n ? DC_i18n.get('portal.confirm.forget', 'Erase the vault on this device? Your words will not open it here until you make a new phrase.') : 'Erase the vault on this device? Your words will not open it here until you make a new phrase.')) return;
     DCVault.clearDevice();
     desk.classList.add('hide');
     gate.classList.remove('hide');
     phrase.value = '';
     note.className = 'warn';
-    note.textContent = 'This device forgot you.';
+    note.textContent = window.DC_i18n ? DC_i18n.get('portal.note.forgot', 'This device forgot you.') : 'This device forgot you.';
   });
   var open = DCVault.session();
   if (open) paint(open);
   else if (DCVault.hasVault()) {
-    note.textContent = 'This device already has a phrase. Type the eight words and tap “I already have my words”.';
+    note.textContent = window.DC_i18n ? DC_i18n.get('portal.note.hasvault', 'This device already has a phrase. Type the eight words and tap “I already have my words”.') : 'This device already has a phrase. Type the eight words and tap “I already have my words”.';
+  }
+
+  // Language switcher
+  var langSel = document.getElementById('dc-lang-switch');
+  if (langSel) {
+    langSel.addEventListener('change', function(){
+      if (window.DC_i18n) DC_i18n.setLang(this.value);
+    });
+  }
+  // Apply placeholder if i18n supports it
+  if (window.DC_i18n) {
+    var ph = DC_i18n.get('portal.phrase.placeholder');
+    if (ph) phrase.placeholder = ph;
   }
 })();
 </script>
