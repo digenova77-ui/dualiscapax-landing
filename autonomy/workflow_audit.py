@@ -22,7 +22,6 @@ class WorkflowFinding:
 
 def inspect_workflow(source: str, path: str) -> list[WorkflowFinding]:
     findings: set[WorkflowFinding] = set()
-    lines = source.splitlines()
     permissions_write = bool(re.search(r"(?m)^\s*(?:contents|actions|packages|pull-requests|issues):\s*write\s*(?:#.*)?$", source))
     if re.search(r"(?m)^\s*pull_request_target\s*:", source):
         findings.add(WorkflowFinding(path, "PR_TARGET_EVENT", "high",
@@ -33,16 +32,16 @@ def inspect_workflow(source: str, path: str) -> list[WorkflowFinding]:
     if re.search(r"(?m)^\s*id-token:\s*write\s*(?:#.*)?$", source):
         findings.add(WorkflowFinding(path, "OIDC_TOKEN_MINTING", "medium",
             "Workflow can mint an OIDC token; restrict trusted refs, audiences, and cloud-side subject claims."))
-    if re.search(r"(?m)^\s*uses:\s*[^./\s]+/[^@\s]+@(?![0-9a-fA-F]{40}\b)[^\s]+", source):
+    if re.search(r"(?m)^\s*(?:-\s*)?uses:\s*[^./\s]+/[^@\s]+@(?![0-9a-fA-F]{40}\b)[^\s]+", source):
         findings.add(WorkflowFinding(path, "ACTION_NOT_SHA_PINNED", "medium",
             "At least one external action uses a mutable tag or ref instead of a full commit SHA."))
-    if re.search(r"(?im)^\s*(?:git\s+push|gh\s+pr\s+merge|gh\s+release\s+create)\b", source):
+    if re.search(r"(?im)^\s*(?:-\s*run:\s*)?(?:git\s+push|gh\s+pr\s+merge|gh\s+release\s+create)\b", source):
         findings.add(WorkflowFinding(path, "REPOSITORY_MUTATION_COMMAND", "high",
             "A workflow shell step contains a direct repository mutation command; require explicit gates and narrow permissions."))
-    if re.search(r"(?im)^\s*(?:curl|wget)\b", source):
+    if re.search(r"(?im)^\s*(?:-\s*run:\s*)?(?:curl|wget)\b", source):
         findings.add(WorkflowFinding(path, "SHELL_NETWORK_REQUEST", "medium",
             "A shell step performs network access; verify destination, response validation, and secret handling."))
-    checkout = re.search(r"(?m)^\s*uses:\s*actions/checkout@[^\s]+", source)
+    checkout = re.search(r"(?m)^\s*(?:-\s*)?uses:\s*actions/checkout@[^\s]+", source)
     persist_false = re.search(r"(?m)^\s*persist-credentials:\s*false\s*$", source)
     if checkout and permissions_write and not persist_false:
         findings.add(WorkflowFinding(path, "CHECKOUT_CREDENTIALS_WITH_WRITE", "high",
