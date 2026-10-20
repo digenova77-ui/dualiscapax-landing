@@ -43,11 +43,12 @@
       <a href="invert.html">Invert</a>
       <a href="tools.html">Tools</a>
       <a href="ai/app.html">Iris</a>
+    <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
     </nav>
   </header>
   <p class="eyebrow">Measure · Ontario</p>
   <h1>Time-of-use leftover</h1>
-  <p class="lede">One bill. Three buckets. Walk the dollars back to the kilowatt-hours. If they don't meet, the leftover is a hole — not a fee.</p>
+  <p class="lede" data-i18n="measure.lede">One bill. Three buckets. Walk the dollars back to the kilowatt-hours. If they don't meet, the leftover is a hole — not a fee.</p>
   <section>
     <h2>First read</h2>
     <div class="layer">
@@ -161,5 +162,7 @@
   });
 })();
 </script>
+<script src="js/i18n.js"></script>
+<script>document.getElementById('dc-lang-switch')?.addEventListener('change',function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
