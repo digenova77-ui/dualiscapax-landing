@@ -24,11 +24,12 @@
       <a href="onboard.html">Onboard</a>
       <a href="funding.html" class="on">Funding</a>
       <a href="founding.html">Seats</a>
+      <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
     </nav>
   </header>
-  <p class="eyebrow">Funding · look</p>
-  <h1>What is seated. What can be paid.</h1>
-  <p class="lede">Two different piles. Prepaid time you can buy. Founder measures that name how a seat sits in the house. Neither pile is a share of the company.</p>
+  <p class="eyebrow" data-i18n="funding.eyebrow">Funding · look</p>
+  <h1 data-i18n="funding.h1">What is seated. What can be paid.</h1>
+  <p class="lede" data-i18n="funding.lede">Two different piles. Prepaid time you can buy. Founder measures that name how a seat sits in the house. Neither pile is a share of the company.</p>
 
   <h2>Live tank</h2>
   <p id="tank">The live Stripe tank is not printed here unless the meter answers. If it does not answer, that is a hole. We will not invent a number.</p>
@@ -61,5 +62,6 @@
   sum.textContent = 'Seated measures total CAD $' + DCFounders.total().toLocaleString('en-CA') + ' · INDEXED · not a bank balance';
 })();
 </script>
+<script src="js/i18n.js"></script>
 </body>
 </html>
