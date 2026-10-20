@@ -123,10 +123,12 @@ def verify_reviewer_attestation(
         blockers.append("issued_at_invalid")
     if expires is None:
         blockers.append("expires_at_invalid")
-    current = now or datetime.now(timezone.utc)
-    if current.tzinfo is None or current.utcoffset() is None:
+    current = now if now is not None else datetime.now(timezone.utc)
+    if not isinstance(current, datetime):
+        blockers.append("verification_time_invalid")
+    elif current.tzinfo is None or current.utcoffset() is None:
         blockers.append("verification_time_must_be_timezone_aware")
-    else:
+    elif current.tzinfo is not None and current.utcoffset() is not None:
         current = current.astimezone(timezone.utc)
         if issued is not None and issued.timestamp() > current.timestamp() + 60:
             blockers.append("attestation_not_yet_valid")
