@@ -103,7 +103,16 @@ def verify_reviewer_attestation(
         blockers.append("policy_version_mismatch")
     if not isinstance(attestation.signature, str) or not attestation.signature.strip() or len(attestation.signature) > _MAX_SIGNATURE_CHARS:
         blockers.append("signature_invalid")
-    if not isinstance(trusted_keys, Mapping) or trusted_keys.get(attestation.key_id) != attestation.reviewer_id:
+    try:
+        key_is_trusted = (
+            isinstance(trusted_keys, Mapping)
+            and isinstance(attestation.key_id, str)
+            and isinstance(attestation.reviewer_id, str)
+            and trusted_keys.get(attestation.key_id) == attestation.reviewer_id
+        )
+    except Exception:
+        key_is_trusted = False
+    if not key_is_trusted:
         blockers.append("reviewer_key_untrusted")
     if not callable(signature_verifier):
         blockers.append("signature_verifier_missing")
