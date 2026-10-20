@@ -8,11 +8,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from itertools import islice
 import math
 from typing import Iterable, Tuple
 
 
 ALLOWED_LAYERS = frozenset({"foundation", "mesh", "biology"})
+MAX_NODES = 10000
+MAX_EDGES = 50000
+MAX_OBSERVATIONS = 50000
+MAX_TEXT_CHARS = 512
 
 # Small explicit catalog: values outside this contract require reviewed schema
 # expansion, not silent acceptance. Bounds are plausibility guards, not calibration.
@@ -66,6 +71,22 @@ class MeshValidation:
 def _required_text(value: str, field: str) -> None:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{field}_required")
+    if len(value) > MAX_TEXT_CHARS:
+        raise ValueError(f"{field}_too_long")
+    if any(ord(char) < 32 for char in value):
+        raise ValueError(f"{field}_contains_control_character")
+
+
+def _bounded_tuple(values: Iterable[object], limit: int, field: str) -> tuple:
+    """Materialize at most limit+1 items so infinite inputs fail boundedly."""
+    try:
+        iterator = iter(values)
+        items = tuple(islice(iterator, limit + 1))
+    except TypeError as exc:
+        raise ValueError(f"{field}_must_be_iterable") from exc
+    if len(items) > limit:
+        raise ValueError(f"{field}_limit_exceeded")
+    return items
 
 
 def _component_count(node_ids: set[str], edges: Iterable[MeshEdge]) -> int:
@@ -93,15 +114,17 @@ def validate_mesh(
     observations: Iterable[PlantObservation] = (),
 ) -> MeshValidation:
     """Validate identity, topology, and observation provenance fail-closed."""
-    node_list = tuple(nodes)
-    edge_list = tuple(edges)
-    observation_list = tuple(observations)
+    node_list = _bounded_tuple(nodes, MAX_NODES, "nodes")
+    edge_list = _bounded_tuple(edges, MAX_EDGES, "edges")
+    observation_list = _bounded_tuple(observations, MAX_OBSERVATIONS, "observations")
 
     node_ids: set[str] = set()
     for node in node_list:
+        if not isinstance(node, MeshNode):
+            raise ValueError("node_record_invalid")
         _required_text(node.node_id, "node_id")
         _required_text(node.label, "node_label")
-        if node.layer not in ALLOWED_LAYERS:
+        if not isinstance(node.layer, str) or node.layer not in ALLOWED_LAYERS:
             raise ValueError("unknown_node_layer")
         if node.node_id in node_ids:
             raise ValueError("duplicate_node_id")
@@ -109,6 +132,8 @@ def validate_mesh(
 
     seen_edges: set[tuple[str, str, str]] = set()
     for edge in edge_list:
+        if not isinstance(edge, MeshEdge):
+            raise ValueError("edge_record_invalid")
         _required_text(edge.source, "edge_source")
         _required_text(edge.target, "edge_target")
         _required_text(edge.relation, "edge_relation")
@@ -123,6 +148,8 @@ def validate_mesh(
 
     observation_ids: set[str] = set()
     for item in observation_list:
+        if not isinstance(item, PlantObservation):
+            raise ValueError("observation_record_invalid")
         for field in ("observation_id", "subject_id", "metric", "unit",
                       "measured_at", "source_id", "evidence_ref"):
             _required_text(getattr(item, field), field)
