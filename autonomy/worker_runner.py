@@ -8,6 +8,7 @@ never retried automatically.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Callable, Optional
 import time
 
@@ -31,6 +32,13 @@ class WorkerOutcome:
     job: QueueJob
     executed: bool
     reason: str
+
+
+@dataclass(frozen=True)
+class WorkerExecutionResult:
+    success: bool
+    result_digest: str
+    retry_safe: bool = False
 
 
 class KnownRetryableFailure(Exception):
@@ -131,12 +139,17 @@ class WorkerRunner:
 
         if (
             not isinstance(grant, WorkerAuthorization)
-            or not grant.approved
+            or grant.approved is not True
+            or not isinstance(grant.task_id, str)
             or grant.task_id != job.job_id
+            or not isinstance(grant.authority_id, str)
             or not grant.authority_id.strip()
+            or not isinstance(grant.policy_version, str)
             or not grant.policy_version.strip()
+            or not isinstance(grant.granted_scopes, frozenset)
+            or not isinstance(grant.required_scopes, frozenset)
             or grant.granted_scopes != grant.required_scopes
-            or not grant.owner_terms_accepted
+            or grant.owner_terms_accepted is not True
         ):
             if cancelled():
                 return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_during_authorization")
@@ -160,7 +173,7 @@ class WorkerRunner:
             clock=(lambda: now) if now is not None else time.time,
         )
         try:
-            self.executor(job, grant, context)
+            execution = self.executor(job, grant, context)
         except CancellationRequested:
             return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_at_checkpoint")
         except WorkerLeaseLost:
@@ -179,6 +192,25 @@ class WorkerRunner:
                 job.job_id, self.worker_id, success=False, now=now
             )
             return WorkerOutcome(blocked, False, "executor_outcome_unknown_manual_reconciliation_required")
+
+        if (
+            not isinstance(execution, WorkerExecutionResult)
+            or not isinstance(execution.success, bool)
+            or not isinstance(execution.result_digest, str)
+            or re.fullmatch(r"[0-9a-f]{64}", execution.result_digest) is None
+            or not isinstance(execution.retry_safe, bool)
+        ):
+            blocked = self.queue.complete(
+                job.job_id, self.worker_id, success=False, now=now
+            )
+            return WorkerOutcome(blocked, False, "invalid_executor_result_blocked")
+        if not execution.success:
+            completed = self.queue.complete(
+                job.job_id, self.worker_id, success=False,
+                retryable=execution.retry_safe, now=now,
+            )
+            reason = "retryable_failure" if execution.retry_safe else "executor_failure_not_retry_safe"
+            return WorkerOutcome(completed, False, reason)
 
         # Do not turn a completed external side effect into "cancelled" merely
         # because cancellation arrived during execution; preserve its outcome.
