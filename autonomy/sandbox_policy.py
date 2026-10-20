@@ -64,6 +64,14 @@ def _safe_relative_path(raw: str) -> bool:
     return not path.is_absolute() and all(part not in ("", ".", "..") for part in path.parts)
 
 
+def _credential_like_environment_name(name: str) -> bool:
+    normalized = name.upper()
+    return any(marker in normalized for marker in (
+        "TOKEN", "SECRET", "PASSWORD", "API_KEY", "PRIVATE_KEY",
+        "CREDENTIAL", "AUTHORIZATION", "COOKIE",
+    ))
+
+
 def validate_sandbox_policy(
     policy: Optional[SandboxPolicy],
     *,
@@ -94,8 +102,16 @@ def validate_sandbox_policy(
         reasons.append("host_credentials_access_forbidden")
     if policy.privileged_mode:
         reasons.append("privileged_mode_forbidden")
-    if not policy.workspace_root.startswith("/") or "/../" in policy.workspace_root:
+    root = PurePosixPath(policy.workspace_root)
+    if (
+        not root.is_absolute()
+        or str(root) == "/"
+        or ".." in root.parts
+        or "\\x00" in policy.workspace_root
+    ):
         reasons.append("workspace_root_invalid")
+    if any(_credential_like_environment_name(name) for name in policy.allowed_environment):
+        reasons.append("credential_environment_forbidden")
     if any(not _safe_relative_path(p) for p in policy.allowed_read_paths):
         reasons.append("unsafe_read_path")
     if any(not _safe_relative_path(p) for p in policy.allowed_write_paths):
