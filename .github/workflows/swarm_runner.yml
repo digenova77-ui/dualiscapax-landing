@@ -1,38 +1,28 @@
-name: DualisCapax Autonomous Swarm Runner (demoted)
+name: DualisCapax Autonomous Swarm Runner (retired)
 
-# DEMOTED 2026-09-14: hourly stub ledger flush removed from schedule.
-# Factory workers + purposeful harvest units own the clock.
-
+# Retired/demoted: this manual workflow is an inert notice only.
+# It must not write repository state, create commits, or push to main.
 on:
   workflow_dispatch:
     inputs:
       task_id:
-        description: 'Manual archaeology only'
+        description: "Reference only; no task is executed"
         required: false
-        default: ''
+        default: ""
+
+permissions: {}
 
 concurrency:
   group: dualis-swarm-engine
   cancel-in-progress: false
 
-permissions:
-  contents: write
-
 jobs:
-  demoted:
+  retired:
     runs-on: ubuntu-latest
+    timeout-minutes: 1
     steps:
-      - uses: actions/checkout@v4
-      - name: Refuse stub epoch
+      - name: Refuse execution without an authorized implementation
         run: |
-          echo "swarm_runner schedule demoted — use factory_workers / unit harvests."
-          mkdir -p src/engine/ledgers/factory
-          printf '%s\n' '{"kind":"swarm_runner_demoted","law":"no stub epoch SUCCESS"}'             > src/engine/ledgers/factory/swarm_runner_demoted_notice.json
-      - name: Commit notice
-        run: |
-          git config --local user.email "swarm@dualiscapax.ai"
-          git config --local user.name "Dualis Swarm (demoted)"
-          git add src/engine/ledgers/factory/swarm_runner_demoted_notice.json || true
-          git diff --cached --quiet && exit 0
-          git commit -m "chore(swarm): runner demoted [skip ci]"
-          git pull --rebase origin main && git push origin HEAD || true
+          set -eu
+          echo "Swarm runner is retired and has no repository or external side effects."
+          echo "No task was executed. Use the reviewed Trinity autonomy path."
