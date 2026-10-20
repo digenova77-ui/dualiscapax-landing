@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Callable, Optional
+import time
 
 from autonomy.durable_queue import QueueJob, SQLiteJobQueue
 
@@ -40,7 +41,41 @@ class KnownRetryableFailure(Exception):
 
 
 Policy = Callable[[QueueJob], WorkerAuthorization]
-Executor = Callable[[QueueJob, WorkerAuthorization], object]
+class CancellationRequested(Exception):
+    """Cooperative cancellation observed at a worker checkpoint."""
+
+
+class WorkerLeaseLost(Exception):
+    """The worker can no longer prove it owns a live lease."""
+
+
+@dataclass
+class WorkerExecutionContext:
+    queue: SQLiteJobQueue
+    job_id: str
+    worker_id: str
+    lease_seconds: int
+    clock: Callable[[], float]
+
+    def checkpoint(self) -> QueueJob:
+        """Observe cancellation and renew the lease before more work or side effects."""
+        current = self.queue.get(self.job_id)
+        now = self.clock()
+        if current.state == "cancel_requested":
+            self.queue.acknowledge_cancel(self.job_id, self.worker_id, now=now)
+            raise CancellationRequested("cancellation acknowledged")
+        if current.state == "cancelled":
+            raise CancellationRequested("job already cancelled")
+        try:
+            return self.queue.renew_lease(
+                self.job_id, self.worker_id,
+                lease_seconds=self.lease_seconds, now=now,
+            )
+        except (PermissionError, KeyError) as exc:
+            raise WorkerLeaseLost("worker lease is no longer valid") from exc
+
+
+Executor = Callable[[QueueJob, WorkerAuthorization, WorkerExecutionContext], object]
 
 
 class WorkerRunner:
@@ -119,8 +154,17 @@ class WorkerRunner:
         # deadline, cancellation and provider idempotency.
         if cancelled():
             return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_before_execution")
+        context = WorkerExecutionContext(
+            queue=self.queue, job_id=job.job_id, worker_id=self.worker_id,
+            lease_seconds=self.lease_seconds,
+            clock=(lambda: now) if now is not None else time.time,
+        )
         try:
-            self.executor(job, grant)
+            self.executor(job, grant, context)
+        except CancellationRequested:
+            return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_at_checkpoint")
+        except WorkerLeaseLost:
+            return WorkerOutcome(self.queue.get(job.job_id), False, "worker_lease_lost_stop_execution")
         except KnownRetryableFailure as exc:
             # The exception type alone is insufficient: retry must be explicitly
             # declared safe for this exact operation.
