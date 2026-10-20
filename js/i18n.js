@@ -73,6 +73,19 @@
       const value = translations[el.getAttribute('data-i18n-placeholder')];
       if (value != null) el.setAttribute('placeholder', String(value));
     });
+    // Translate selected accessibility and metadata attributes without injecting HTML.
+    [
+      ['aria-label', 'data-i18n-aria-label'],
+      ['title', 'data-i18n-title'],
+      ['content', 'data-i18n-content']
+    ].forEach(function (mapping) {
+      const attribute = mapping[0];
+      const keyAttribute = mapping[1];
+      document.querySelectorAll('[' + keyAttribute + ']').forEach(function (el) {
+        const value = translations[el.getAttribute(keyAttribute)];
+        if (value != null) el.setAttribute(attribute, String(value));
+      });
+    });
     document.documentElement.setAttribute('lang', currentLang);
     document.querySelectorAll('#dc-lang-switch').forEach(function (select) {
       select.value = currentLang;
