@@ -66,7 +66,7 @@ class I18nCoverageCheckerTests(unittest.TestCase):
         self.write_catalog("fr", {"nav.home": "Accueil"})
         result, output = self.run_checker()
         self.assertEqual(result, 1)
-        self.assertIn("missing key 'meta.description'", output)
+        self.assertIn("missing English key 'meta.description'", output)
 
     def test_duplicate_catalog_keys_are_rejected(self):
         (self.root / "i18n" / "en.json").write_text(
