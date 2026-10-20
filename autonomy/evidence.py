@@ -132,7 +132,7 @@ def redact(value: Any, *, _depth: int = 0) -> Any:
         if len(value) > MAX_ITEMS:
             output.append("[TRUNCATED:MAX_ITEMS]")
         return output
-    return f"[UNSUPPORTED:{type(value).__name__}"
+    return f"[UNSUPPORTED:{type(value).__name__}]"
 
 
 def create_evidence_envelope(*, task_id: str, outcome: str, evidence: Any) -> EvidenceEnvelope:
