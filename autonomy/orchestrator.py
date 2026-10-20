@@ -82,7 +82,7 @@ class Orchestrator:
             or decision.task_id != job.job_id
             or not decision.authority_id.strip()
             or not decision.policy_version.strip()
-            or not required_scopes.issubset(decision.allowed_scopes)
+            or decision.allowed_scopes != required_scopes
             or not decision.owner_terms_accepted
         ):
             blocked = self.supervisor.start(job.job_id, authorized=False)
