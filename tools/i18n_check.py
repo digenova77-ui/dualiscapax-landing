@@ -38,6 +38,10 @@ class PageParser(HTMLParser):
         placeholder_key = attrs.get("data-i18n-placeholder")
         if placeholder_key:
             self.keys.add(placeholder_key)
+        for attribute in ("aria-label", "title", "content"):
+            attribute_key = attrs.get("data-i18n-" + attribute)
+            if attribute_key:
+                self.keys.add(attribute_key)
         if attrs.get("id") == "dc-lang-switch":
             self.has_switcher = True
             self.switcher_count += 1
