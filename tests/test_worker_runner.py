@@ -32,7 +32,7 @@ class WorkerRunnerTests(unittest.TestCase):
         return WorkerRunner(
             queue=self.queue, worker_id="worker-a",
             policy=self.grant if policy is None else policy,
-            executor=(lambda job: self.executed.append(job.job_id)) if executor is None else executor,
+            executor=(lambda job, grant: self.executed.append(job.job_id)) if executor is None else executor,
             lease_seconds=30,
         )
 
@@ -46,7 +46,7 @@ class WorkerRunnerTests(unittest.TestCase):
     def test_missing_policy_fails_closed_before_executor(self):
         runner = WorkerRunner(
             queue=self.queue, worker_id="worker-a", policy=None,
-            executor=lambda job: self.executed.append(job.job_id),
+            executor=lambda job, grant: self.executed.append(job.job_id),
         )
         outcome = runner.run_one(now=100)
         self.assertEqual(outcome.job.state, "blocked")
@@ -82,7 +82,7 @@ class WorkerRunnerTests(unittest.TestCase):
         self.assertEqual(self.executed, [])
 
     def test_unknown_executor_exception_is_blocked_not_retried(self):
-        def uncertain(_job):
+        def uncertain(_job, _grant):
             raise RuntimeError("remote outcome uncertain")
         outcome = self.runner(executor=uncertain).run_one(now=100)
         self.assertEqual(outcome.job.state, "blocked")
@@ -90,14 +90,14 @@ class WorkerRunnerTests(unittest.TestCase):
         self.assertIsNone(self.queue.claim("worker-b", now=101))
 
     def test_retryable_failure_retries_only_when_explicitly_safe(self):
-        def safe_retry(_job):
+        def safe_retry(_job, _grant):
             raise KnownRetryableFailure("provider confirms no side effect", retry_safe=True)
         outcome = self.runner(executor=safe_retry).run_one(now=100)
         self.assertEqual(outcome.job.state, "retryable_failure")
         self.assertIsNotNone(self.queue.claim("worker-b", now=101))
 
     def test_retryable_exception_without_safety_proof_is_blocked(self):
-        def unsafe_retry(_job):
+        def unsafe_retry(_job, _grant):
             raise KnownRetryableFailure("timeout", retry_safe=False)
         outcome = self.runner(executor=unsafe_retry).run_one(now=100)
         self.assertEqual(outcome.job.state, "blocked")
@@ -113,7 +113,7 @@ class WorkerRunnerTests(unittest.TestCase):
 
 
     def test_cancel_requested_during_execution_preserves_success(self):
-        def finish_then_cancel(job):
+        def finish_then_cancel(job, _grant):
             self.queue.request_cancel(job.job_id)
             self.executed.append(job.job_id)
         outcome = self.runner(executor=finish_then_cancel).run_one(now=100)
@@ -122,7 +122,7 @@ class WorkerRunnerTests(unittest.TestCase):
         self.assertEqual(self.executed, [self.job.job_id])
 
     def test_cancel_requested_during_uncertain_execution_blocks_without_retry(self):
-        def cancel_then_raise(job):
+        def cancel_then_raise(job, _grant):
             self.queue.request_cancel(job.job_id)
             raise KnownRetryableFailure("uncertain", retry_safe=True)
         outcome = self.runner(executor=cancel_then_raise).run_one(now=100)
