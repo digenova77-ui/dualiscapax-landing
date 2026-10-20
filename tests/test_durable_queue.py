@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from autonomy.durable_queue import SQLiteJobQueue
+from autonomy.durable_queue import MAX_PAYLOAD_BYTES, SQLiteJobQueue
 
 
 class DurableQueueTests(unittest.TestCase):
@@ -17,6 +17,28 @@ class DurableQueueTests(unittest.TestCase):
         self.assertEqual(first.job_id, second.job_id)
         reopened = SQLiteJobQueue(Path(self.temp.name) / "jobs.sqlite3")
         self.assertEqual(reopened.get(first.job_id).state, "queued")
+
+
+    def test_payload_must_be_a_json_object(self):
+        with self.assertRaises(ValueError):
+            self.queue.enqueue("inspect", ["not", "an", "object"], idempotency_key="payload-array")
+
+    def test_nonfinite_payload_values_are_rejected(self):
+        with self.assertRaises(ValueError):
+            self.queue.enqueue("inspect", {"number": float("nan")}, idempotency_key="payload-nan")
+
+    def test_oversized_payload_is_rejected(self):
+        with self.assertRaises(ValueError):
+            self.queue.enqueue(
+                "inspect", {"data": "x" * MAX_PAYLOAD_BYTES},
+                idempotency_key="payload-large",
+            )
+
+    def test_control_characters_and_unbounded_identifiers_are_rejected(self):
+        with self.assertRaises(ValueError):
+            self.queue.enqueue("inspect\nrun", {}, idempotency_key="bad-task")
+        with self.assertRaises(ValueError):
+            self.queue.enqueue("inspect", {}, idempotency_key="x" * 257)
 
     def test_idempotency_key_cannot_change_payload(self):
         self.queue.enqueue("inspect", {"path": "a"}, idempotency_key="same")
