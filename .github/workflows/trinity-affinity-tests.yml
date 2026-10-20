@@ -47,3 +47,5 @@ jobs:
         run: PYTHONPATH=. python tests/test_supervisor.py -v
       - name: Run fail-closed orchestration tests
         run: PYTHONPATH=. python tests/test_orchestrator.py -v
+      - name: Run complete Python regression suite
+        run: PYTHONPATH=. python -m unittest discover -s tests -p "test_*.py" -v
