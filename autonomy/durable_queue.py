@@ -1,0 +1,178 @@
+"""Durable SQLite job queue with leases, idempotent submission, and bounded attempts."""
+from __future__ import annotations
+
+import hashlib
+import json
+import sqlite3
+import time
+from contextlib import closing
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
+
+
+@dataclass(frozen=True)
+class QueueJob:
+    job_id: str
+    idempotency_key: str
+    task_type: str
+    payload: dict
+    state: str
+    attempts: int
+    max_attempts: int
+    lease_owner: Optional[str]
+    lease_until: Optional[float]
+
+
+def _canonical(value: object) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def _job_id(task_type: str, payload: dict, idempotency_key: str) -> str:
+    return hashlib.sha256(_canonical({
+        "task_type": task_type, "payload": payload, "idempotency_key": idempotency_key
+    }).encode("utf-8")).hexdigest()
+
+
+class SQLiteJobQueue:
+    """Persistent coordination primitives, not an executor or authorization gate.
+
+    Callers must authorize each job before handing it to a worker. Leases prevent
+    two healthy workers from claiming the same queued job at once; they do not
+    make external side effects exactly-once. Provider-side idempotency is still needed.
+    """
+
+    def __init__(self, path: str | Path) -> None:
+        self.path = str(path)
+        with closing(self._connect()) as db:
+            db.execute("""
+                CREATE TABLE IF NOT EXISTS autonomy_jobs (
+                    job_id TEXT PRIMARY KEY,
+                    idempotency_key TEXT NOT NULL UNIQUE,
+                    task_type TEXT NOT NULL,
+                    payload_json TEXT NOT NULL,
+                    state TEXT NOT NULL,
+                    attempts INTEGER NOT NULL,
+                    max_attempts INTEGER NOT NULL,
+                    lease_owner TEXT,
+                    lease_until REAL
+                )
+            """)
+
+    def _connect(self) -> sqlite3.Connection:
+        db = sqlite3.connect(self.path, timeout=10, isolation_level=None)
+        db.execute("PRAGMA busy_timeout = 10000")
+        db.execute("PRAGMA journal_mode = WAL")
+        db.execute("PRAGMA synchronous = FULL")
+        return db
+
+    def enqueue(
+        self, task_type: str, payload: dict, *, idempotency_key: str,
+        max_attempts: int = 3,
+    ) -> QueueJob:
+        if not task_type.strip() or not idempotency_key.strip():
+            raise ValueError("task_type and idempotency_key are required")
+        if not 1 <= max_attempts <= 10:
+            raise ValueError("max_attempts must be between 1 and 10")
+        safe_payload = json.loads(_canonical(payload))
+        payload_json = _canonical(safe_payload)
+        job_id = _job_id(task_type, safe_payload, idempotency_key)
+        with closing(self._connect()) as db:
+            db.execute("BEGIN IMMEDIATE")
+            prior = db.execute(
+                "SELECT job_id, task_type, payload_json FROM autonomy_jobs WHERE idempotency_key = ?",
+                (idempotency_key,),
+            ).fetchone()
+            if prior:
+                if prior[1] != task_type or prior[2] != payload_json:
+                    db.execute("ROLLBACK")
+                    raise ValueError("idempotency key reused for a different task")
+                db.execute("COMMIT")
+                return self.get(prior[0])
+            db.execute(
+                """INSERT INTO autonomy_jobs
+                (job_id, idempotency_key, task_type, payload_json, state, attempts,
+                 max_attempts, lease_owner, lease_until)
+                VALUES (?, ?, ?, ?, 'queued', 0, ?, NULL, NULL)""",
+                (job_id, idempotency_key, task_type, payload_json, max_attempts),
+            )
+            db.execute("COMMIT")
+        return self.get(job_id)
+
+    def claim(self, worker_id: str, *, lease_seconds: int = 60, now: Optional[float] = None) -> Optional[QueueJob]:
+        if not worker_id.strip():
+            raise ValueError("worker_id is required")
+        if not 1 <= lease_seconds <= 3600:
+            raise ValueError("lease_seconds must be between 1 and 3600")
+        now = time.time() if now is None else now
+        with closing(self._connect()) as db:
+            db.execute("BEGIN IMMEDIATE")
+            # Expired running jobs can be reclaimed only within their retry budget.
+            db.execute(
+                """UPDATE autonomy_jobs
+                   SET state = CASE WHEN attempts >= max_attempts THEN 'exhausted' ELSE 'retryable_failure' END,
+                       lease_owner = NULL, lease_until = NULL
+                   WHERE state = 'running' AND lease_until <= ?""",
+                (now,),
+            )
+            row = db.execute(
+                """SELECT job_id, attempts, max_attempts FROM autonomy_jobs
+                   WHERE state IN ('queued', 'retryable_failure') AND attempts < max_attempts
+                   ORDER BY rowid LIMIT 1"""
+            ).fetchone()
+            if row is None:
+                db.execute("COMMIT")
+                return None
+            job_id, attempts, max_attempts = row
+            db.execute(
+                """UPDATE autonomy_jobs SET state = 'running', attempts = attempts + 1,
+                   lease_owner = ?, lease_until = ? WHERE job_id = ?""",
+                (worker_id, now + lease_seconds, job_id),
+            )
+            db.execute("COMMIT")
+        return self.get(job_id)
+
+    def complete(self, job_id: str, worker_id: str, *, success: bool, retryable: bool = False,
+                 now: Optional[float] = None) -> QueueJob:
+        now = time.time() if now is None else now
+        with closing(self._connect()) as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT state, attempts, max_attempts, lease_owner, lease_until FROM autonomy_jobs WHERE job_id = ?",
+                (job_id,),
+            ).fetchone()
+            if row is None:
+                db.execute("ROLLBACK")
+                raise KeyError("unknown job")
+            state, attempts, max_attempts, owner, lease_until = row
+            if state != "running" or owner != worker_id or lease_until is None or now >= lease_until:
+                db.execute("ROLLBACK")
+                raise PermissionError("worker does not hold a live lease for this job")
+            if success:
+                next_state = "succeeded"
+            elif retryable and attempts < max_attempts:
+                next_state = "retryable_failure"
+            elif retryable:
+                next_state = "exhausted"
+            else:
+                next_state = "blocked"
+            db.execute(
+                """UPDATE autonomy_jobs SET state = ?, lease_owner = NULL, lease_until = NULL
+                   WHERE job_id = ?""",
+                (next_state, job_id),
+            )
+            db.execute("COMMIT")
+        return self.get(job_id)
+
+    def get(self, job_id: str) -> QueueJob:
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """SELECT job_id, idempotency_key, task_type, payload_json, state, attempts,
+                   max_attempts, lease_owner, lease_until FROM autonomy_jobs WHERE job_id = ?""",
+                (job_id,),
+            ).fetchone()
+        if row is None:
+            raise KeyError("unknown job")
+        return QueueJob(
+            row[0], row[1], row[2], json.loads(row[3]), row[4], row[5], row[6], row[7], row[8]
+        )
