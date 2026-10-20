@@ -42,18 +42,29 @@ def assess_diamond_ceiling(
     supplied_policy_version: str,
     owner_authorized: bool,
 ) -> CeilingAssessment:
-    """Return a deterministic coverage score plus non-bypassable hard gates."""
+    """Return deterministic coverage and blockers; malformed input fails closed."""
     blockers = []
-    if not required_policy_version.strip():
+    if not isinstance(required_policy_version, str) or not required_policy_version.strip():
         blockers.append("required_policy_version_missing")
-    if supplied_policy_version != required_policy_version:
+    if not isinstance(supplied_policy_version, str):
+        blockers.append("supplied_policy_version_invalid")
+    elif supplied_policy_version != required_policy_version:
         blockers.append("policy_version_mismatch")
     if owner_authorized is not True:
         blockers.append("owner_authorization_missing")
 
+    if not isinstance(evidence, (tuple, list)):
+        blockers.append("evidence_collection_invalid")
+        evidence_items = ()
+    else:
+        evidence_items = evidence
+
     by_dimension = {}
-    for item in evidence:
-        if item.dimension not in DIMENSIONS:
+    for index, item in enumerate(evidence_items):
+        if not isinstance(item, DimensionEvidence):
+            blockers.append(f"evidence_record_invalid:{index}")
+            continue
+        if not isinstance(item.dimension, str) or item.dimension not in DIMENSIONS:
             blockers.append(f"unknown_dimension:{item.dimension}")
             continue
         if item.dimension in by_dimension:
