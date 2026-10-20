@@ -239,10 +239,14 @@ class SQLiteJobQueue:
                 db.execute("ROLLBACK")
                 raise KeyError("unknown job")
             state, attempts, max_attempts, owner, lease_until = row
-            if state != "running" or owner != worker_id or lease_until is None or now >= lease_until:
+            if state not in {"running", "cancel_requested"} or owner != worker_id or lease_until is None or now >= lease_until:
                 db.execute("ROLLBACK")
                 raise PermissionError("worker does not hold a live lease for this job")
-            if success:
+            if state == "cancel_requested":
+                # Cancellation cannot erase an external side effect already in flight.
+                # Preserve success; block failures instead of scheduling a retry.
+                next_state = "succeeded" if success else "blocked"
+            elif success:
                 next_state = "succeeded"
             elif retryable and attempts < max_attempts:
                 next_state = "retryable_failure"
