@@ -142,8 +142,7 @@ class WorkerRunnerTests(unittest.TestCase):
     def test_checkpoint_acknowledges_cancellation_before_next_side_effect(self):
         def work(job, grant, context):
             self.queue.request_cancel(job.job_id)
-            with self.assertRaises(CancellationRequested):
-                context.checkpoint()
+            context.checkpoint()
             self.executed.append("must-not-run")
         outcome = self.runner(executor=work).run_one(now=100)
         self.assertEqual(outcome.job.state, "cancelled")
