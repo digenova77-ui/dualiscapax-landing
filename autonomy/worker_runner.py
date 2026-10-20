@@ -194,6 +194,7 @@ class WorkerRunner:
             }
             reason = (
                 grant.reason if isinstance(grant, WorkerAuthorization)
+                and isinstance(grant.reason, str)
                 and grant.reason in allowed_reasons
                 else "authorization_or_scope_gate_failed"
             )
