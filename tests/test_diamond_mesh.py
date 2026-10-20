@@ -109,6 +109,32 @@ class DiamondMeshTests(unittest.TestCase):
         self.assertEqual(result.component_count, 2)
         self.assertEqual(result.isolated_nodes, ("plant-sensor-1",))
 
+    def test_malformed_records_and_unhashable_layer_fail_closed(self):
+        with self.assertRaisesRegex(ValueError, "node_record_invalid"):
+            validate_mesh((object(),), ())
+        bad_layer = MeshNode("bad", ["mesh"], "invalid layer type")
+        with self.assertRaisesRegex(ValueError, "unknown_node_layer"):
+            validate_mesh((bad_layer,), ())
+        with self.assertRaisesRegex(ValueError, "edge_record_invalid"):
+            validate_mesh(self.nodes, (object(),))
+        with self.assertRaisesRegex(ValueError, "observation_record_invalid"):
+            validate_mesh(self.nodes, (), (object(),))
+
+    def test_iterables_are_bounded_without_full_materialization(self):
+        def endless():
+            while True:
+                yield MeshNode("n", "foundation", "node")
+        with self.assertRaisesRegex(ValueError, "nodes_limit_exceeded"):
+            validate_mesh(endless(), ())
+        with self.assertRaisesRegex(ValueError, "nodes_must_be_iterable"):
+            validate_mesh(None, ())
+
+    def test_text_fields_reject_control_characters_and_oversize(self):
+        with self.assertRaisesRegex(ValueError, "node_id_contains_control_character"):
+            validate_mesh((MeshNode("bad\nid", "foundation", "node"),), ())
+        with self.assertRaisesRegex(ValueError, "node_label_too_long"):
+            validate_mesh((MeshNode("id", "foundation", "x" * 513),), ())
+
     def test_empty_mesh_is_valid_empty_inventory(self):
         result = validate_mesh((), ())
         self.assertEqual((result.node_count, result.edge_count, result.component_count), (0, 0, 0))
