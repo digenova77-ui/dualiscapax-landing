@@ -77,6 +77,25 @@ steps:
             self.assertIn({"path": "b.yml", "rule_id": "OIDC_TOKEN_MINTING", "severity": "medium"}, resolved)
 
 
+
+    def test_detects_chained_git_push(self):
+        source = """steps:
+  - run: git pull --rebase origin main && git push origin HEAD || true
+"""
+        rules = {item.rule_id for item in inspect_workflow(source, "mutation.yml")}
+        self.assertIn("REPOSITORY_MUTATION_COMMAND", rules)
+
+    def test_retired_swarm_runner_is_inert(self):
+        path = Path(".github/workflows/swarm_runner.yml")
+        if not path.exists():
+            self.skipTest("repository workflow file not present in this test environment")
+        findings = inspect_workflow(path.read_text(encoding="utf-8"), path.as_posix())
+        dangerous = {
+            "WRITE_PERMISSION", "CHECKOUT_CREDENTIALS_WITH_WRITE",
+            "REPOSITORY_MUTATION_COMMAND", "OIDC_TOKEN_MINTING",
+        }
+        self.assertFalse(dangerous.intersection(item.rule_id for item in findings))
+
     def test_matching_reviewed_baseline_has_zero_drift(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "baseline.json"
