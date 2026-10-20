@@ -13,6 +13,7 @@ on:
       - "js/i18n.js"
       - "i18n/*.json"
       - "tests/test_i18n_catalog_integrity.py"
+      - "tests/test_i18n_runtime_fallback.mjs"
       - ".github/workflows/i18n-catalog-integrity.yml"
   workflow_dispatch:
 
