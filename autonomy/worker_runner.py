@@ -201,7 +201,7 @@ class WorkerRunner:
             )
             self._audit("worker_authorization_refused", job.job_id, reason=reason)
             blocked = self.queue.complete(
-                job.job_id, self.worker_id, success=False, now=now
+                job.job_id, self.worker_id, lease_generation=job.lease_generation, success=False, now=now
             )
             return WorkerOutcome(blocked, False, reason)
 
@@ -233,7 +233,7 @@ class WorkerRunner:
             # The exception type alone is insufficient: retry must be explicitly
             # declared safe for this exact operation.
             completed = self.queue.complete(
-                job.job_id, self.worker_id, success=False,
+                job.job_id, self.worker_id, lease_generation=job.lease_generation, success=False,
                 retryable=exc.retry_safe, now=now,
             )
             reason = "known_retryable_failure" if exc.retry_safe else "retry_safety_not_proven"
@@ -241,7 +241,7 @@ class WorkerRunner:
             return WorkerOutcome(completed, False, reason)
         except Exception:
             blocked = self.queue.complete(
-                job.job_id, self.worker_id, success=False, now=now
+                job.job_id, self.worker_id, lease_generation=job.lease_generation, success=False, now=now
             )
             self._audit("worker_execution_unknown", job.job_id, state=blocked.state, manual_reconciliation_required=True)
             return WorkerOutcome(blocked, False, "executor_outcome_unknown_manual_reconciliation_required")
@@ -254,13 +254,13 @@ class WorkerRunner:
             or not isinstance(execution.retry_safe, bool)
         ):
             blocked = self.queue.complete(
-                job.job_id, self.worker_id, success=False, now=now
+                job.job_id, self.worker_id, lease_generation=job.lease_generation, success=False, now=now
             )
             self._audit("worker_execution_failed", job.job_id, reason="invalid_executor_result", state=blocked.state)
             return WorkerOutcome(blocked, False, "invalid_executor_result_blocked")
         if not execution.success:
             completed = self.queue.complete(
-                job.job_id, self.worker_id, success=False,
+                job.job_id, self.worker_id, lease_generation=job.lease_generation, success=False,
                 retryable=execution.retry_safe, now=now,
             )
             reason = "retryable_failure" if execution.retry_safe else "executor_failure_not_retry_safe"
@@ -270,7 +270,7 @@ class WorkerRunner:
         # Do not turn a completed external side effect into "cancelled" merely
         # because cancellation arrived during execution; preserve its outcome.
         completed = self.queue.complete(
-            job.job_id, self.worker_id, success=True, now=now
+            job.job_id, self.worker_id, lease_generation=job.lease_generation, success=True, now=now
         )
         self._audit("worker_execution_succeeded", job.job_id, result_digest=execution.result_digest, state=completed.state)
         return WorkerOutcome(completed, True, "executed")
