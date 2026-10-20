@@ -76,3 +76,19 @@ Run the repository's Python test suite with:
 ```sh
 python -m unittest discover -s tests -p 'test_*.py'
 ```
+
+
+## Diamond Ceiling
+
+`autonomy/diamond_ceiling.py` evaluates five evidence dimensions:
+authority, evidence integrity, mesh integrity, execution safety, and scientific
+validity. Each passing dimension must provide a non-empty evidence reference
+and reviewer reference. The assessment also requires owner authorization and
+an exact policy-version match. Missing, failed, duplicated, or unknown
+dimensions block the ceiling.
+
+The 0–100 score measures declared evidence coverage only. A score of 100 is
+not sufficient for approval: authorization or policy drift still blocks the
+ceiling. This validator cannot authenticate evidence or reviewers and cannot
+prove actual OS isolation or scientific validity; those require independent
+verification outside this software model.
