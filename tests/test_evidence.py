@@ -81,7 +81,7 @@ class EvidenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             create_evidence_envelope(
                 task_id="task-1", outcome="succeeded",
-                evidence={"api_key": "one", "api-key": "two"},
+                evidence={"api_key=one": "first", "api_key=two": "second"},
             )
 
     def test_string_and_item_limits_fail_closed(self):
