@@ -1,9 +1,10 @@
 """Tests for the static GitHub Actions risk inventory."""
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
-from autonomy.workflow_audit import inspect_workflow, report_json, scan_workflows
+from autonomy.workflow_audit import compare_baseline, inspect_workflow, report_json, scan_workflows
 
 
 class WorkflowAuditTests(unittest.TestCase):
@@ -55,6 +56,36 @@ steps:
             self.assertEqual(first, second)
             self.assertNotIn("super-secret-value", first)
             self.assertIn("WRITE_PERMISSION", first)
+
+
+    def test_baseline_detects_new_and_resolved_findings(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "baseline.json"
+            path.write_text(json.dumps({
+                "schema_version": "trinity-workflow-risk-baseline-v1",
+                "findings": [
+                    {"path": "a.yml", "rule_id": "WRITE_PERMISSION", "severity": "high"},
+                    {"path": "b.yml", "rule_id": "OIDC_TOKEN_MINTING", "severity": "medium"},
+                ],
+            }), encoding="utf-8")
+            current = [
+                inspect_workflow("permissions:\\n  contents: write\\n", "a.yml")[0],
+                *inspect_workflow("uses: vendor/action@v2\\n", "c.yml"),
+            ]
+            added, resolved = compare_baseline(current, path)
+            self.assertIn(("c.yml", "ACTION_NOT_SHA_PINNED"), [(f.path, f.rule_id) for f in added])
+            self.assertIn({"path": "b.yml", "rule_id": "OIDC_TOKEN_MINTING", "severity": "medium"}, resolved)
+
+    def test_baseline_rejects_duplicate_or_invalid_entries(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "baseline.json"
+            entry = {"path": "a.yml", "rule_id": "WRITE_PERMISSION", "severity": "high"}
+            path.write_text(json.dumps({
+                "schema_version": "trinity-workflow-risk-baseline-v1",
+                "findings": [entry, entry],
+            }), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "duplicate"):
+                compare_baseline([], path)
 
     def test_missing_workflow_directory_is_empty(self):
         with tempfile.TemporaryDirectory() as tmp:
