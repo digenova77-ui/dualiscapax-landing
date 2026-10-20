@@ -436,21 +436,6 @@
     {
       "severity": "medium",
       "rule_id": "ACTION_NOT_SHA_PINNED",
-      "path": ".github/workflows/swarm_runner.yml"
-    },
-    {
-      "severity": "high",
-      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
-      "path": ".github/workflows/swarm_runner.yml"
-    },
-    {
-      "severity": "high",
-      "rule_id": "WRITE_PERMISSION",
-      "path": ".github/workflows/swarm_runner.yml"
-    },
-    {
-      "severity": "medium",
-      "rule_id": "ACTION_NOT_SHA_PINNED",
       "path": ".github/workflows/swarm_six_hour.yml"
     },
     {
@@ -513,5 +498,6 @@
       "rule_id": "ACTION_NOT_SHA_PINNED",
       "path": ".github/workflows/wav-watch.yml"
     }
-  ]
+  ],
+  "last_review_note": "2026-10-20: retired swarm_runner.yml converted to an inert manual notice with no permissions, checkout, commits, or push; corresponding findings intentionally resolved."
 }
