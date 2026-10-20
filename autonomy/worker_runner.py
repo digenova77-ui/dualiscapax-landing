@@ -13,6 +13,7 @@ from typing import Callable, Optional
 import time
 
 from autonomy.durable_queue import QueueJob, SQLiteJobQueue
+from autonomy.sqlite_ledger import SQLiteHashChainLedger
 
 
 @dataclass(frozen=True)
@@ -91,6 +92,7 @@ class WorkerRunner:
         self,
         *,
         queue: SQLiteJobQueue,
+        ledger: SQLiteHashChainLedger,
         worker_id: str,
         policy: Optional[Policy],
         executor: Executor,
@@ -101,17 +103,34 @@ class WorkerRunner:
         if not 1 <= lease_seconds <= 3600:
             raise ValueError("lease_seconds must be between 1 and 3600")
         self.queue = queue
+        self.ledger = ledger
         self.worker_id = worker_id
         self.policy = policy
         self.executor = executor
         self.lease_seconds = lease_seconds
 
+    def _audit(self, event_type: str, job_id: str, **details: object) -> None:
+        if not self.ledger.verify():
+            raise RuntimeError("worker audit ledger integrity check failed")
+        self.ledger.append({
+            "type": event_type, "job_id": job_id,
+            "worker_id": self.worker_id, **details,
+        })
+        if not self.ledger.verify():
+            raise RuntimeError("worker audit ledger failed post-append verification")
+
     def run_one(self, *, now: float | None = None) -> WorkerOutcome | None:
+        if not self.ledger.verify():
+            raise RuntimeError("worker audit ledger integrity check failed")
         job = self.queue.claim(
             self.worker_id, lease_seconds=self.lease_seconds, now=now
         )
         if job is None:
             return None
+        self._audit(
+            "worker_claimed", job.job_id,
+            attempt=job.attempts, lease_until=job.lease_until,
+        )
 
         def cancelled() -> bool:
             current = self.queue.get(job.job_id)
@@ -123,8 +142,10 @@ class WorkerRunner:
             return current.state == "cancelled"
 
         if cancelled():
+            self._audit("worker_cancelled", job.job_id, phase="before_authorization")
             return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_before_authorization")
         if self.policy is None:
+            self._audit("worker_authorization_refused", job.job_id, reason="policy_gate_unavailable")
             blocked = self.queue.complete(
                 job.job_id, self.worker_id, success=False, now=now
             )
@@ -132,6 +153,7 @@ class WorkerRunner:
         try:
             grant = self.policy(job)
         except Exception:
+            self._audit("worker_authorization_refused", job.job_id, reason="policy_gate_error")
             blocked = self.queue.complete(
                 job.job_id, self.worker_id, success=False, now=now
             )
@@ -153,20 +175,24 @@ class WorkerRunner:
         ):
             if cancelled():
                 return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_during_authorization")
+            reason = grant.reason if isinstance(grant, WorkerAuthorization) and grant.reason else "authorization_or_scope_gate_failed"
+            self._audit("worker_authorization_refused", job.job_id, reason=reason)
             blocked = self.queue.complete(
                 job.job_id, self.worker_id, success=False, now=now
             )
-            return WorkerOutcome(
-                blocked, False,
-                grant.reason if isinstance(grant, WorkerAuthorization) and grant.reason
-                else "authorization_or_scope_gate_failed",
-            )
+            return WorkerOutcome(blocked, False, reason)
 
         # Cancellation and authorization are checked immediately before handing
         # control to the executor. A real executor must still enforce its own
         # deadline, cancellation and provider idempotency.
         if cancelled():
+            self._audit("worker_cancelled", job.job_id, phase="before_execution")
             return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_before_execution")
+        self._audit(
+            "worker_execution_started", job.job_id,
+            authority_id=grant.authority_id, policy_version=grant.policy_version,
+            scopes=sorted(grant.granted_scopes),
+        )
         context = WorkerExecutionContext(
             queue=self.queue, job_id=job.job_id, worker_id=self.worker_id,
             lease_seconds=self.lease_seconds,
@@ -175,8 +201,10 @@ class WorkerRunner:
         try:
             execution = self.executor(job, grant, context)
         except CancellationRequested:
+            self._audit("worker_cancelled", job.job_id, phase="execution_checkpoint")
             return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_at_checkpoint")
         except WorkerLeaseLost:
+            self._audit("worker_lease_lost", job.job_id, phase="execution")
             return WorkerOutcome(self.queue.get(job.job_id), False, "worker_lease_lost_stop_execution")
         except KnownRetryableFailure as exc:
             # The exception type alone is insufficient: retry must be explicitly
@@ -186,11 +214,13 @@ class WorkerRunner:
                 retryable=exc.retry_safe, now=now,
             )
             reason = "known_retryable_failure" if exc.retry_safe else "retry_safety_not_proven"
+            self._audit("worker_execution_failed", job.job_id, reason=reason, retry_safe=exc.retry_safe, state=completed.state)
             return WorkerOutcome(completed, False, reason)
         except Exception:
             blocked = self.queue.complete(
                 job.job_id, self.worker_id, success=False, now=now
             )
+            self._audit("worker_execution_unknown", job.job_id, state=blocked.state, manual_reconciliation_required=True)
             return WorkerOutcome(blocked, False, "executor_outcome_unknown_manual_reconciliation_required")
 
         if (
@@ -203,6 +233,7 @@ class WorkerRunner:
             blocked = self.queue.complete(
                 job.job_id, self.worker_id, success=False, now=now
             )
+            self._audit("worker_execution_failed", job.job_id, reason="invalid_executor_result", state=blocked.state)
             return WorkerOutcome(blocked, False, "invalid_executor_result_blocked")
         if not execution.success:
             completed = self.queue.complete(
@@ -210,6 +241,7 @@ class WorkerRunner:
                 retryable=execution.retry_safe, now=now,
             )
             reason = "retryable_failure" if execution.retry_safe else "executor_failure_not_retry_safe"
+            self._audit("worker_execution_failed", job.job_id, reason=reason, retry_safe=execution.retry_safe, result_digest=execution.result_digest, state=completed.state)
             return WorkerOutcome(completed, False, reason)
 
         # Do not turn a completed external side effect into "cancelled" merely
@@ -217,4 +249,5 @@ class WorkerRunner:
         completed = self.queue.complete(
             job.job_id, self.worker_id, success=True, now=now
         )
+        self._audit("worker_execution_succeeded", job.job_id, result_digest=execution.result_digest, state=completed.state)
         return WorkerOutcome(completed, True, "executed")
