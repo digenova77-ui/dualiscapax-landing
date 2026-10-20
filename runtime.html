@@ -14,11 +14,12 @@
     <a href="onboard.html">Sign in</a>
     <a href="runtime.html">Runtime</a>
     <a href="pay.html">Pay</a>
+  <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
   </nav>
 </header>
 <main>
-  <h1>Your workbench</h1>
-  <p class="lead">This page reads the file this browser sealed. The download named dualis-runtime.html is the same workbench you can open with no website at all.</p>
+  <h1 data-i18n="runtime.h1">Your workbench</h1>
+  <p class="lead" data-i18n="runtime.lede">This page reads the file this browser sealed. The download named dualis-runtime.html is the same workbench you can open with no website at all.</p>
   <div class="card" id="box"><p class="lead">No file in this browser yet. Sign in first.</p></div>
   <label for="notes">Model here</label>
   <textarea id="notes" style="width:100%;min-height:12rem;background:#0a0e14;color:#e8eef2;border:1px solid #3a4650;border-radius:8px;padding:.6rem" placeholder="What you run. What leaks money or time. No patient names."></textarea>
@@ -52,5 +53,6 @@
   };
 })();
 </script>
+<script src="js/i18n.js"></script><script>document.getElementById("dc-lang-switch")?.addEventListener("change",function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
