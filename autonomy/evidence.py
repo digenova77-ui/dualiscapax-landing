@@ -19,9 +19,9 @@ _SECRET_KEY_MARKERS = (
     "private_key", "credential", "authorization", "cookie", "access_key",
 )
 _PATTERNS = (
-    re.compile(r"(?i)\\bBearer\\s+[A-Za-z0-9._~+/=-]+"),
-    re.compile(r"(?i)\\b(?:sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9]{12,})\\b"),
-    re.compile(r"(?i)(api[_-]?key|access[_-]?token|client[_-]?secret)\\s*[:=]\\s*[^\\s,;]+"),
+    re.compile(r"(?i)\bBearer\s+[A-Za-z0-9._~+/=-]+"),
+    re.compile(r"(?i)\b(?:sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9]{12,})\b"),
+    re.compile(r"(?i)(api[_-]?key|access[_-]?token|client[_-]?secret)\s*[:=]\s*[^\s,;]+"),
 )
 MAX_DEPTH = 12
 MAX_ITEMS = 1000
