@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+from contextlib import closing
 import json
 import sqlite3
 from pathlib import Path
@@ -25,7 +26,7 @@ class SQLiteHashChainLedger:
 
     def __init__(self, path: str | Path) -> None:
         self.path = str(path)
-        with self._connect() as db:
+        with closing(self._connect()) as db:
             db.execute("""
                 CREATE TABLE IF NOT EXISTS ledger_events (
                     sequence INTEGER PRIMARY KEY,
