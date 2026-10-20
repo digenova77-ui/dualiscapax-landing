@@ -7,6 +7,11 @@ on:
     paths:
       - "autonomy/affinity.py"
       - "autonomy/integration_lifecycle.py"
+      - "tests/test_supervisor.py"
+      - "tests/test_ledger.py"
+      - "autonomy/adapters.py"
+      - "autonomy/supervisor.py"
+      - "autonomy/ledger.py"
       - "tests/test_affinity.py"
       - "tests/test_integration_lifecycle.py"
       - ".github/workflows/trinity-affinity-tests.yml"
@@ -34,3 +39,7 @@ jobs:
         run: PYTHONPATH=. python tests/test_affinity.py -v
       - name: Run fail-closed integration lifecycle tests
         run: PYTHONPATH=. python tests/test_integration_lifecycle.py -v
+      - name: Run ledger integrity tests
+        run: PYTHONPATH=. python tests/test_ledger.py -v
+      - name: Run supervisor idempotency and retry tests
+        run: PYTHONPATH=. python tests/test_supervisor.py -v
