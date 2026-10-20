@@ -56,13 +56,15 @@ class EvidenceTests(unittest.TestCase):
     def test_large_envelope_fails_closed(self):
         with self.assertRaises(ValueError):
             create_evidence_envelope(
-                task_id="task-1", outcome="succeeded",
-                evidence={"data": "x" * MAX_ENVELOPE_BYTES},
+                task_id="t" * (MAX_ENVELOPE_BYTES + 1), outcome="succeeded",
+                evidence={},
             )
 
     def test_required_identity_and_outcome_are_validated(self):
         with self.assertRaises(ValueError):
             create_evidence_envelope(task_id=" ", outcome="succeeded", evidence={})
+        with self.assertRaises(ValueError):
+            create_evidence_envelope(task_id="t" * 257, outcome="succeeded", evidence={})
         with self.assertRaises(ValueError):
             create_evidence_envelope(task_id="task-1", outcome="maybe", evidence={})
 
