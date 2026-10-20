@@ -35,7 +35,7 @@ def decide(required_gates: tuple[str, ...], evidence: Iterable[GateEvidence], *,
     records = {}
     for i, item in enumerate(evidence):
         if not isinstance(item, GateEvidence): blockers.append(f"evidence_record_invalid:{i}"); continue
-        if not isinstance(item.gate, str) or item.gate not in required_gates: blockers.append(f"unknown_gate:{i}"); continue
+        if not isinstance(item.gate, str) or item.gate not in required_gates: blockers.append(f"unknown_gate:{item.gate if isinstance(item.gate, str) else i}"); continue
         if item.gate in records: blockers.append(f"duplicate_gate:{item.gate}"); continue
         records[item.gate] = item
     passed = []
