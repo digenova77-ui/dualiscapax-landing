@@ -57,9 +57,9 @@ class DurableQueueTests(unittest.TestCase):
         job = self.queue.enqueue("inspect", {}, idempotency_key="lease")
         claimed = self.queue.claim("worker-a", now=100, lease_seconds=10)
         with self.assertRaises(PermissionError):
-            self.queue.complete(job.job_id, "worker-b", success=True, now=101)
+            self.queue.complete(job.job_id, "worker-b", lease_generation=claimed.lease_generation, success=True, now=101)
         with self.assertRaises(PermissionError):
-            self.queue.complete(job.job_id, "worker-a", success=True, now=110)
+            self.queue.complete(job.job_id, "worker-a", lease_generation=claimed.lease_generation, success=True, now=110)
         self.assertEqual(claimed.state, "running")
 
     def test_expired_lease_is_reclaimed_with_bounded_attempts(self):
@@ -77,29 +77,29 @@ class DurableQueueTests(unittest.TestCase):
     def test_live_lease_can_be_renewed_by_owner(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="renew")
         claimed = self.queue.claim("worker-a", now=100, lease_seconds=5)
-        renewed = self.queue.renew_lease(job.job_id, "worker-a", now=104, lease_seconds=20)
+        renewed = self.queue.renew_lease(job.job_id, "worker-a", lease_generation=claimed.lease_generation, now=104, lease_seconds=20)
         self.assertEqual(renewed.lease_owner, "worker-a")
         self.assertEqual(renewed.lease_until, 124)
-        done = self.queue.complete(job.job_id, "worker-a", success=True, now=123)
+        done = self.queue.complete(job.job_id, "worker-a", lease_generation=claimed.lease_generation, success=True, now=123)
         self.assertEqual(done.state, "succeeded")
 
     def test_wrong_worker_cannot_renew_lease(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="renew-owner")
         self.queue.claim("worker-a", now=100, lease_seconds=10)
         with self.assertRaises(PermissionError):
-            self.queue.renew_lease(job.job_id, "worker-b", now=101, lease_seconds=20)
+            self.queue.renew_lease(job.job_id, "worker-b", lease_generation=claimed.lease_generation, now=101, lease_seconds=20)
 
     def test_expired_lease_cannot_be_resurrected(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="renew-expired")
         self.queue.claim("worker-a", now=100, lease_seconds=5)
         with self.assertRaises(PermissionError):
-            self.queue.renew_lease(job.job_id, "worker-a", now=105, lease_seconds=20)
+            self.queue.renew_lease(job.job_id, "worker-a", lease_generation=claimed.lease_generation, now=105, lease_seconds=20)
 
     def test_lease_renewal_duration_is_bounded(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="renew-bound")
         self.queue.claim("worker-a", now=100, lease_seconds=5)
         with self.assertRaises(ValueError):
-            self.queue.renew_lease(job.job_id, "worker-a", now=101, lease_seconds=3601)
+            self.queue.renew_lease(job.job_id, "worker-a", lease_generation=claimed.lease_generation, now=101, lease_seconds=3601)
 
 
     def test_queued_job_can_be_cancelled_without_claim(self):
@@ -111,13 +111,13 @@ class DurableQueueTests(unittest.TestCase):
 
     def test_running_job_requires_cooperative_cancel_acknowledgement(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="cancel-running")
-        self.queue.claim("worker-a", now=100, lease_seconds=30)
+        claimed = self.queue.claim("worker-a", now=100, lease_seconds=30)
         requested = self.queue.request_cancel(job.job_id)
         self.assertEqual(requested.state, "cancel_requested")
         self.assertTrue(self.queue.is_cancel_requested(job.job_id))
         with self.assertRaises(PermissionError):
-            self.queue.acknowledge_cancel(job.job_id, "worker-b", now=101)
-        cancelled = self.queue.acknowledge_cancel(job.job_id, "worker-a", now=101)
+            self.queue.acknowledge_cancel(job.job_id, "worker-b", lease_generation=claimed.lease_generation, now=101)
+        cancelled = self.queue.acknowledge_cancel(job.job_id, "worker-a", lease_generation=claimed.lease_generation, now=101)
         self.assertEqual(cancelled.state, "cancelled")
         self.assertIsNone(cancelled.lease_owner)
 
@@ -130,22 +130,49 @@ class DurableQueueTests(unittest.TestCase):
 
     def test_terminal_job_cannot_be_cancelled(self):
         job = self.queue.enqueue("inspect", {}, idempotency_key="cancel-terminal")
-        self.queue.claim("worker-a", now=100, lease_seconds=30)
-        self.queue.complete(job.job_id, "worker-a", success=True, now=101)
+        claimed = self.queue.claim("worker-a", now=100, lease_seconds=30)
+        self.queue.complete(job.job_id, "worker-a", lease_generation=claimed.lease_generation, success=True, now=101)
         with self.assertRaises(ValueError):
             self.queue.request_cancel(job.job_id)
 
     def test_nonretryable_failure_blocks_and_success_completes(self):
         blocked_job = self.queue.enqueue("write", {}, idempotency_key="block")
         running = self.queue.claim("worker", now=100, lease_seconds=30)
-        blocked = self.queue.complete(blocked_job.job_id, "worker", success=False, retryable=False, now=101)
+        blocked = self.queue.complete(blocked_job.job_id, "worker", lease_generation=running.lease_generation, success=False, retryable=False, now=101)
         self.assertEqual(blocked.state, "blocked")
 
         success_job = self.queue.enqueue("read", {}, idempotency_key="success")
         running2 = self.queue.claim("worker", now=200, lease_seconds=30)
         self.assertEqual(running2.job_id, success_job.job_id)
-        done = self.queue.complete(success_job.job_id, "worker", success=True, now=201)
+        done = self.queue.complete(success_job.job_id, "worker", lease_generation=running2.lease_generation, success=True, now=201)
         self.assertEqual(done.state, "succeeded")
+
+    def test_stale_lease_generation_cannot_mutate_reclaimed_job_even_for_same_worker(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="fence-stale", max_attempts=3)
+        old = self.queue.claim("worker-same", now=100, lease_seconds=5)
+        current = self.queue.claim("worker-same", now=106, lease_seconds=30)
+        self.assertEqual(current.lease_generation, old.lease_generation + 1)
+        with self.assertRaises(PermissionError):
+            self.queue.complete(job.job_id, "worker-same", lease_generation=old.lease_generation, success=True, now=107)
+        with self.assertRaises(PermissionError):
+            self.queue.renew_lease(job.job_id, "worker-same", lease_generation=old.lease_generation, now=107)
+        self.assertEqual(self.queue.get(job.job_id).state, "running")
+        done = self.queue.complete(job.job_id, "worker-same", lease_generation=current.lease_generation, success=True, now=108)
+        self.assertEqual(done.state, "succeeded")
+
+    def test_legacy_database_schema_migrates_lease_generation(self):
+        legacy_path = Path(self.temp.name) / "legacy.sqlite3"
+        import sqlite3
+        with sqlite3.connect(legacy_path) as db:
+            db.execute("""CREATE TABLE autonomy_jobs (
+                job_id TEXT PRIMARY KEY, idempotency_key TEXT NOT NULL UNIQUE,
+                task_type TEXT NOT NULL, payload_json TEXT NOT NULL, state TEXT NOT NULL,
+                attempts INTEGER NOT NULL, max_attempts INTEGER NOT NULL,
+                lease_owner TEXT, lease_until REAL)""")
+        migrated = SQLiteJobQueue(legacy_path)
+        with sqlite3.connect(legacy_path) as db:
+            columns = {row[1] for row in db.execute("PRAGMA table_info(autonomy_jobs)")}
+        self.assertIn("lease_generation", columns)
 
 
 if __name__ == "__main__":
