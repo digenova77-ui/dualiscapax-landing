@@ -28,6 +28,8 @@ on:
       - "tests/test_sqlite_ledger.py"
       - "tests/test_durable_queue.py"
       - "tests/test_provisioning.py"
+      - "tests/test_sandbox_policy.py"
+      - "tests/test_evidence.py"
       - ".github/workflows/trinity-affinity-tests.yml"
 permissions:
   contents: read
