@@ -24,20 +24,22 @@ button{display:inline-block;margin-top:.7rem;border:1px solid #d6b25e;background
 </head>
 <body>
 <a class="mark" href="index.html">DualisCapax</a>
+<select id="dc-lang-switch" aria-label="Language" data-i18n-aria-label="language.label" style="position:fixed;top:1rem;right:1rem;z-index:6"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
 <main>
-  <p class="kicker">Ask</p>
-  <h1>What are you trying to do?</h1>
-  <p class="lede">Iris is the lawyer and the accountant <em>inside this house</em>. She can walk your idea through our rooms. Pages stay free. Her time is Fuel — the same way you would pay a specialist when you cannot read the file yourself.</p>
-  <p class="lede">She is not your counsel of record. If anything she says matters in the real world, take it to a real-world lawyer and have them check it. You are welcome to. You are encouraged to. That is how this stays honest.</p>
+  <p class="kicker" data-i18n="ask.kicker">Ask</p>
+  <h1 data-i18n="ask.h1">What are you trying to do?</h1>
+  <p class="lede" data-i18n="ask.lede1">Iris is the lawyer and the accountant <em>inside this house</em>. She can walk your idea through our rooms. Pages stay free. Her time is Fuel — the same way you would pay a specialist when you cannot read the file yourself.</p>
+  <p class="lede" data-i18n="ask.lede2">She is not your counsel of record. If anything she says matters in the real world, take it to a real-world lawyer and have them check it. You are welcome to. You are encouraged to. That is how this stays honest.</p>
   <form id="ask">
-    <label for="idea">Your idea or question</label>
-    <textarea id="idea" name="idea" required placeholder="Example: How does a school board plug a payroll sheet?"></textarea>
-    <button type="submit">Find the room</button>
+    <label for="idea" data-i18n="ask.label">Your idea or question</label>
+    <textarea id="idea" name="idea" required placeholder="Example: How does a school board plug a payroll sheet?" data-i18n-placeholder="ask.placeholder"></textarea>
+    <button type="submit" data-i18n="ask.submit">Find the room</button>
   </form>
   <div class="hit" id="hit" hidden></div>
   <p class="fine"><a href="look.html">Look around</a> · <a href="how.html">How it works</a> · <a href="legal.html">Rules</a> · <a href="payments.html">Iris time</a> · <a href="ai/app.html">Iris</a></p>
 </main>
 <script src="js/idea-router.js"></script>
+<script src="js/i18n.js"></script>
 <script>
 (function () {
   var form = document.getElementById("ask");
