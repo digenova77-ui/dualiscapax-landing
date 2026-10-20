@@ -159,6 +159,13 @@ class SandboxPolicyTests(unittest.TestCase):
         self.assertFalse(decision.allowed)
         self.assertIn("cpu_limit_out_of_bounds", decision.reasons)
 
+    def test_decision_cannot_be_replayed_after_same_version_policy_mutation(self):
+        policy = approved()
+        decision = validate_sandbox_policy(policy, task_id="task-123", backend_attested=True)
+        changed = approved(allowed_write_paths=frozenset({"out", "extra-output"}))
+        with self.assertRaisesRegex(PermissionError, "changed after authorization"):
+            build_launch_plan(changed, decision)
+
     def test_denied_decision_cannot_create_launch_plan(self):
         policy = approved()
         decision = validate_sandbox_policy(policy, task_id="wrong", backend_attested=True)
