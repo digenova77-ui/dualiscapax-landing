@@ -69,7 +69,7 @@ jobs:
         run: PYTHONPATH=. python tests/test_evidence.py -v
       - name: Run fail-closed worker runner tests
         run: PYTHONPATH=. python tests/test_worker_runner.py -v
-      - name: Enforce reviewed workflow risk baseline
+      - name: Enforce workflow risk inventory baseline
         env:
           PYTHONPATH: .
         run: |
@@ -82,7 +82,7 @@ jobs:
           lines = [
               "## GitHub Actions risk baseline gate",
               "",
-              "Static heuristics are review leads, not confirmed vulnerabilities. Existing debt is tracked explicitly; new findings and stale baseline entries require review.",
+              "Static heuristics are review leads, not confirmed vulnerabilities. Baseline entries are unreviewed debt, not safety approvals; new findings and stale entries require review.",
               "",
               f"- Current findings: {len(findings)}",
               f"- New findings: {len(added)}",
