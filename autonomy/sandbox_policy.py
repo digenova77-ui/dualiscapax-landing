@@ -7,7 +7,9 @@ execution requires a trusted backend that enforces these controls outside the wo
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 import ipaddress
+import json
 import re
 from pathlib import PurePosixPath
 from typing import FrozenSet, Optional
@@ -40,6 +42,7 @@ class SandboxDecision:
     reasons: tuple[str, ...]
     policy_version: str = ""
     task_id: str = ""
+    policy_digest: str = ""
 
 
 @dataclass(frozen=True)
@@ -104,6 +107,30 @@ def _credential_like_environment_name(name: str) -> bool:
         "CREDENTIAL", "AUTHORIZATION", "COOKIE",
     ))
 
+
+def _policy_fingerprint(policy: SandboxPolicy) -> str:
+    """Bind a decision to every security-relevant policy field."""
+    payload = {
+        "policy_version": policy.policy_version,
+        "approved_task_id": policy.approved_task_id,
+        "authority_id": policy.authority_id,
+        "workspace_root": policy.workspace_root,
+        "allowed_read_paths": sorted(policy.allowed_read_paths),
+        "allowed_write_paths": sorted(policy.allowed_write_paths),
+        "allowed_environment": sorted(policy.allowed_environment),
+        "allowed_egress_hosts": sorted(policy.allowed_egress_hosts),
+        "network_enabled": policy.network_enabled,
+        "host_filesystem_access": policy.host_filesystem_access,
+        "host_credentials_access": policy.host_credentials_access,
+        "privileged_mode": policy.privileged_mode,
+        "cpu_seconds": policy.cpu_seconds,
+        "memory_mb": policy.memory_mb,
+        "process_limit": policy.process_limit,
+        "wall_seconds": policy.wall_seconds,
+        "accepted": policy.accepted,
+    }
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 def validate_sandbox_policy(
     policy: Optional[SandboxPolicy],
@@ -197,7 +224,8 @@ def validate_sandbox_policy(
     for name in ("network_enabled", "host_filesystem_access", "host_credentials_access", "privileged_mode"):
         if type(getattr(policy, name)) is not bool:
             reasons.append(f"{name}_invalid")
-    return SandboxDecision(not reasons, tuple(reasons), policy.policy_version, task_id)
+    policy_digest = _policy_fingerprint(policy) if not reasons else ""
+    return SandboxDecision(not reasons, tuple(reasons), policy.policy_version, task_id, policy_digest)
 
 
 def build_launch_plan(policy: SandboxPolicy, decision: SandboxDecision) -> SandboxLaunchPlan:
@@ -206,6 +234,8 @@ def build_launch_plan(policy: SandboxPolicy, decision: SandboxDecision) -> Sandb
         raise PermissionError("sandbox launch denied: " + ",".join(decision.reasons))
     if decision.task_id != policy.approved_task_id or decision.policy_version != policy.policy_version:
         raise PermissionError("sandbox decision does not bind this policy")
+    if not decision.policy_digest or decision.policy_digest != _policy_fingerprint(policy):
+        raise PermissionError("sandbox policy changed after authorization")
     return SandboxLaunchPlan(
         task_id=policy.approved_task_id,
         authority_id=policy.authority_id,
