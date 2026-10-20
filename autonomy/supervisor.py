@@ -116,6 +116,16 @@ class Supervisor:
         self._jobs[job_id] = updated
         return updated
 
+    def block(self, job_id: str, *, reason: str) -> Job:
+        """Move a nonterminal job to a terminal blocked state with an audit event."""
+        job = self._require(job_id)
+        if job.state in {JobState.SUCCEEDED, JobState.BLOCKED, JobState.EXHAUSTED}:
+            raise ValueError(f"job cannot be blocked from {job.state.value}")
+        blocked = Job(**{**job.__dict__, "state": JobState.BLOCKED})
+        self._jobs[job_id] = blocked
+        self.ledger.append({"type": "job_blocked", "job_id": job_id, "reason": reason})
+        return blocked
+
     def _require(self, job_id: str) -> Job:
         try:
             return self._jobs[job_id]
