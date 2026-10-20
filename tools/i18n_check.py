@@ -90,10 +90,13 @@ def main() -> int:
         errors.append("js/i18n.js: runtime file is missing")
 
     checked = 0
+    total_pages = 0
+    not_wired: list[str] = []
     for path in sorted(ROOT.rglob("*.html")):
         if any(part in {".git", "node_modules", "dist"} for part in path.parts):
             continue
         relative = path.relative_to(ROOT).as_posix()
+        total_pages += 1
         parser = PageParser()
         try:
             parser.feed(path.read_text(encoding="utf-8"))
@@ -103,6 +106,7 @@ def main() -> int:
 
         uses_i18n = parser.has_switcher or bool(parser.keys)
         if not uses_i18n:
+            not_wired.append(relative)
             continue
         checked += 1
         if not parser.has_switcher:
@@ -132,7 +136,11 @@ def main() -> int:
         print("\n".join(f"- {error}" for error in errors))
         return 1
 
-    print(f"i18n check: PASS — {checked} HTML pages, {len(catalogs['en'])} keys per locale, {len(LOCALES)} locales.")
+    print(f"i18n check: PASS — {checked}/{total_pages} HTML pages wired to i18n, {len(catalogs['en'])} keys per locale, {len(LOCALES)} locales.")
+    if not_wired:
+        sample = ", ".join(not_wired[:12])
+        suffix = " …" if len(not_wired) > 12 else ""
+        print(f"i18n coverage backlog: {len(not_wired)} HTML pages are not yet wired to i18n. Sample: {sample}{suffix}")
     return 0
 
 
