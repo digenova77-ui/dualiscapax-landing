@@ -41,8 +41,8 @@ p{font-size:1.02rem;color:rgba(245,245,245,0.82);margin-bottom:0.75rem}
   </div>
 
   <p class="kicker">Boards · schools · facilities</p>
-  <h1>You already pay for waste</h1>
-  <p class="lede">Overtime, energy, empty rooms, procurement friction. Dualis names the residual and whether you can walk it back. Same measure engine the backend already runs — DCLM / Iris.</p>
+  <h1 data-i18n="schools.h1">You already pay for waste</h1>
+  <p class="lede" data-i18n="schools.lede">Overtime, energy, empty rooms, procurement friction. Dualis names the residual and whether you can walk it back. Same measure engine the backend already runs — DCLM / Iris.</p>
 
   <div class="closed">
     <strong>Seat packs are priced and closed.</strong>
@@ -65,5 +65,7 @@ p{font-size:1.02rem;color:rgba(245,245,245,0.82);margin-bottom:0.75rem}
 
   <p class="note">Current as of 2026-08-30. DualisCapax · residual product for institutions — not securities, not medical advice. Ontario / Canada first.</p>
 </div>
+<script src="js/i18n.js"></script>
+<script>document.getElementById('dc-lang-switch')?.addEventListener('change',function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
