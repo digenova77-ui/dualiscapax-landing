@@ -98,8 +98,11 @@ class WorkerRunner:
         executor: Executor,
         lease_seconds: int = 60,
     ) -> None:
-        if not worker_id.strip():
-            raise ValueError("worker_id is required")
+        if (
+            not isinstance(worker_id, str) or not worker_id.strip()
+            or len(worker_id) > 128 or any(ord(char) < 32 for char in worker_id)
+        ):
+            raise ValueError("worker_id must be a valid bounded string")
         if not 1 <= lease_seconds <= 3600:
             raise ValueError("lease_seconds must be between 1 and 3600")
         self.queue = queue
@@ -166,16 +169,34 @@ class WorkerRunner:
             or grant.task_id != job.job_id
             or not isinstance(grant.authority_id, str)
             or not grant.authority_id.strip()
+            or len(grant.authority_id) > 256
+            or any(ord(char) < 32 for char in grant.authority_id)
             or not isinstance(grant.policy_version, str)
             or not grant.policy_version.strip()
+            or len(grant.policy_version) > 128
+            or any(ord(char) < 32 for char in grant.policy_version)
             or not isinstance(grant.granted_scopes, frozenset)
             or not isinstance(grant.required_scopes, frozenset)
+            or len(grant.granted_scopes) > 64
+            or any(
+                not isinstance(scope, str) or not scope or len(scope) > 128
+                or any(ord(char) < 32 for char in scope)
+                for scope in grant.granted_scopes
+            )
             or grant.granted_scopes != grant.required_scopes
             or grant.owner_terms_accepted is not True
         ):
             if cancelled():
                 return WorkerOutcome(self.queue.get(job.job_id), False, "cancelled_during_authorization")
-            reason = grant.reason if isinstance(grant, WorkerAuthorization) and grant.reason else "authorization_or_scope_gate_failed"
+            allowed_reasons = {
+                "owner_denied", "terms_not_accepted", "scope_mismatch",
+                "task_mismatch", "policy_version_mismatch",
+            }
+            reason = (
+                grant.reason if isinstance(grant, WorkerAuthorization)
+                and grant.reason in allowed_reasons
+                else "authorization_or_scope_gate_failed"
+            )
             self._audit("worker_authorization_refused", job.job_id, reason=reason)
             blocked = self.queue.complete(
                 job.job_id, self.worker_id, success=False, now=now
