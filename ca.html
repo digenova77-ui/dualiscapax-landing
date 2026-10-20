@@ -14,11 +14,12 @@
     <a href="ca.html">Canada</a>
     <a href="on.html">Ontario</a>
     <a href="qc.html">Québec</a>
+    <select id="dc-lang-switch" aria-label="Language" data-i18n-aria-label="language.label"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
   </nav>
 </header>
 <main>
-  <h1>Canada</h1>
-  <p class="lead">This is the country page. Dualis is not the government. Next stop is the province of the desk you opened. Operator house stays Ontario.</p>
+  <h1 data-i18n="ca.h1">Canada</h1>
+  <p class="lead" data-i18n="ca.lede">This is the country page. Dualis is not the government. Next stop is the province of the desk you opened. Operator house stays Ontario.</p>
   <div class="grid two">
     <div class="card"><h2>Ontario</h2><p>First-class desk. Education Act, municipal act, PHIPA named.</p><a class="btn" href="on.html?jx=CA-ON">Ontario</a></div>
     <div class="card"><h2>Québec</h2><p>First-class desk. Loi sur l'instruction publique, LSSSS, Loi 25, QBCA named. Not a copy of Ontario with the footer swapped.</p><a class="btn" href="qc.html?jx=CA-QC">Québec</a></div>
@@ -28,5 +29,6 @@
   <p class="lead" data-jx-house="seat">535 Bridge St E, Belleville, Ontario, Canada K8N 1R7</p>
 </main>
 <script src="js/jurisdiction-adapter.js"></script>
+<script src="js/i18n.js"></script>
 </body>
 </html>
