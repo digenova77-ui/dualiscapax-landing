@@ -1,0 +1,517 @@
+{
+  "schema_version": "trinity-workflow-risk-baseline-v1",
+  "baseline_source_commit": "b9fd1c51c4b95f4f3aa04335236cff7b822cb106",
+  "purpose": "Reviewed debt snapshot for heuristic workflow findings. Every entry is a review lead, not a confirmed vulnerability. Changes to the baseline require explicit review.",
+  "findings": [
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/bulletin-handoff.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/bulletin-handoff.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "OIDC_TOKEN_MINTING",
+      "path": ".github/workflows/bulletin-handoff.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/bulletin-handoff.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/critical-drop.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/dualis-gate-replay.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/encyclopedia-verify.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/factory-persist-bot.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/factory-persist-bot.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/factory-persist-bot.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/factory-persist-bot.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/factory_mill.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/factory_workers.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/factory_workers.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/factory_workers.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/fail-order.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/flow-wattage.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/forensics.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/golf_usa_envelopes.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/golf_usa_envelopes.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/golf_usa_envelopes.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/hockey_boys_omha_u16.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/hockey_boys_omha_u16.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/hockey_boys_omha_u16.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/hockey_girls_owha.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/hockey_girls_owha.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/hockey_girls_owha.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/hockey_house_rec.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/hockey_house_rec.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/hockey_house_rec.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/hockey_ohf_five.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/hockey_ohf_five.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/hockey_ohf_five.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/i18n-catalog-integrity.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/i18n-check.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/ice_session_bot.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/ice_session_bot.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/ice_session_bot.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/iris-greet-mint.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/iris-greet-mint.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/iris-greet-mint.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/iris-greet-mint.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/iris-mint-greet.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/iris-mint-greet.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "REPOSITORY_MUTATION_COMMAND",
+      "path": ".github/workflows/iris-mint-greet.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/iris-mint-greet.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/jurisdiction-watch.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "SHELL_NETWORK_REQUEST",
+      "path": ".github/workflows/live-clock.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/oidc-auth.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "OIDC_TOKEN_MINTING",
+      "path": ".github/workflows/oidc-auth.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/pack-self-deploy.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/package-cloudflare-pages.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/pages-direct-upload.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/pages-direct-upload.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/pages-direct-upload.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/pinata-pin.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/plate_live_watch.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/plate_live_watch.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/plate_live_watch.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/purge-pages-deployments.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/purge-pages-deployments.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/purge-pages-deployments.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/residual-ring.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/secret-scan.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/stripe-fulfill.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_bot_fleet.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_bot_fleet.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_bot_fleet.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_lane_adversarial.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_lane_adversarial.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_lane_adversarial.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_lane_biomed.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_lane_biomed.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_lane_biomed.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_lane_core.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_lane_core.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_lane_core.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_lane_seal.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_lane_seal.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_lane_seal.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_lane_sectors.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_lane_sectors.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_lane_sectors.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_lane_treasury.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_lane_treasury.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_lane_treasury.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_runner.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_runner.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_runner.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/swarm_six_hour.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/swarm_six_hour.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/swarm_six_hour.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/trinity-affinity-tests.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/unity_mesh.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/unity_mesh.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/unity_mesh.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/unity_playground_idle.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "CHECKOUT_CREDENTIALS_WITH_WRITE",
+      "path": ".github/workflows/unity_playground_idle.yml"
+    },
+    {
+      "severity": "high",
+      "rule_id": "WRITE_PERMISSION",
+      "path": ".github/workflows/unity_playground_idle.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/vultr-control-plane.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "SHELL_NETWORK_REQUEST",
+      "path": ".github/workflows/vultr-control-plane.yml"
+    },
+    {
+      "severity": "medium",
+      "rule_id": "ACTION_NOT_SHA_PINNED",
+      "path": ".github/workflows/wav-watch.yml"
+    }
+  ]
+}
