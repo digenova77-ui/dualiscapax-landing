@@ -128,6 +128,37 @@ class SandboxPolicyTests(unittest.TestCase):
         self.assertFalse(decision.allowed)
         self.assertIn("workspace_root_invalid", decision.reasons)
 
+    def test_malformed_path_segments_and_egress_urls_fail_closed(self):
+        for path in ("src/./main.py", "src//main.py", "src/../outside", "/absolute", "src\\\\main.py"):
+            with self.subTest(path=path):
+                decision = validate_sandbox_policy(
+                    approved(allowed_read_paths=frozenset({path})),
+                    task_id="task-123", backend_attested=True,
+                )
+                self.assertFalse(decision.allowed)
+                self.assertIn("unsafe_read_path", decision.reasons)
+        for host in ("https://api.example.test", "api.example.test:443", "*.example.test", "API.example.test", "localhost"):
+            with self.subTest(host=host):
+                decision = validate_sandbox_policy(
+                    approved(network_enabled=True, allowed_egress_hosts=frozenset({host})),
+                    task_id="task-123", required_egress_hosts=frozenset({host}),
+                    backend_attested=True,
+                )
+                self.assertFalse(decision.allowed)
+                self.assertIn("egress_host_invalid", decision.reasons)
+
+    def test_malformed_allowlists_and_bool_resource_limits_fail_closed(self):
+        decision = validate_sandbox_policy(
+            approved(allowed_write_paths=["out"]), task_id="task-123", backend_attested=True
+        )
+        self.assertFalse(decision.allowed)
+        self.assertIn("write_allowlist_invalid", decision.reasons)
+        decision = validate_sandbox_policy(
+            approved(cpu_seconds=True), task_id="task-123", backend_attested=True
+        )
+        self.assertFalse(decision.allowed)
+        self.assertIn("cpu_limit_out_of_bounds", decision.reasons)
+
     def test_denied_decision_cannot_create_launch_plan(self):
         policy = approved()
         decision = validate_sandbox_policy(policy, task_id="wrong", backend_attested=True)
