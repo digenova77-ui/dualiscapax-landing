@@ -51,8 +51,12 @@ authority means no write.
 
 ## Initial implementation boundary
 
-The current planner is pure and offline: it ranks declared candidates and emits
-reasons. It does not connect to providers, create accounts, hold credentials,
-schedule background tasks, or perform production changes. Those capabilities
+The current planner and lifecycle are pure and offline: they rank declared
+candidates, enforce explicit state transitions, and emit refusal reasons. The
+lifecycle requires owner approval and owner acceptance of provider terms before
+authorization, then a verified provider-supported OAuth flow and least-privilege
+scopes before marking an integration connected. Neither module connects to
+providers, creates accounts, holds credentials, schedules background tasks, or
+performs production changes. Those capabilities
 must be added behind separately reviewed adapters, explicit grants, audit records,
 and tests before being enabled.
