@@ -67,6 +67,23 @@ class DiamondCeilingTests(unittest.TestCase):
         self.assertTrue(any(x.startswith("duplicate_dimension:") for x in result.blockers))
         self.assertIn("unknown_dimension:magic", result.blockers)
 
+    def test_malformed_evidence_inputs_fail_closed_without_crashing(self):
+        result = assess_diamond_ceiling(
+            None, **self.kwargs
+        )
+        self.assertFalse(result.ceiling_reached)
+        self.assertIn("evidence_collection_invalid", result.blockers)
+        result = assess_diamond_ceiling(
+            self.evidence + ("not-an-evidence-record",), **self.kwargs
+        )
+        self.assertFalse(result.ceiling_reached)
+        self.assertIn("evidence_record_invalid:5", result.blockers)
+        result = assess_diamond_ceiling(
+            self.evidence, **{**self.kwargs, "required_policy_version": None}
+        )
+        self.assertFalse(result.ceiling_reached)
+        self.assertIn("required_policy_version_missing", result.blockers)
+
     def test_score_is_coverage_not_permission(self):
         evidence = tuple(
             DimensionEvidence(name, True, f"evidence:{name}", f"review:{name}")
