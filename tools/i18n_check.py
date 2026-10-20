@@ -18,6 +18,7 @@ class PageParser(HTMLParser):
         self.keys: set[str] = set()
         self.scripts: list[str] = []
         self.has_switcher = False
+        self.switcher_count = 0
 
     def handle_starttag(self, tag: str, attrs) -> None:
         attrs = dict(attrs)
@@ -29,6 +30,7 @@ class PageParser(HTMLParser):
             self.keys.add(placeholder_key)
         if attrs.get("id") == "dc-lang-switch":
             self.has_switcher = True
+            self.switcher_count += 1
         if tag == "script" and attrs.get("src"):
             self.scripts.append(attrs["src"])
 
@@ -43,6 +45,11 @@ def main() -> int:
             if not isinstance(value, dict):
                 raise ValueError("catalog root must be an object")
             catalogs[locale] = value
+            for key, translation in value.items():
+                if not isinstance(key, str) or not key.strip():
+                    errors.append(f"{path.relative_to(ROOT)}: translation keys must be non-empty strings")
+                if not isinstance(translation, str) or not translation.strip():
+                    errors.append(f"{path.relative_to(ROOT)}: translation {key!r} must be a non-empty string")
         except (OSError, json.JSONDecodeError, ValueError) as exc:
             errors.append(f"{path.relative_to(ROOT)}: invalid catalog: {exc}")
 
@@ -54,6 +61,19 @@ def main() -> int:
                 errors.append(f"i18n/{locale}.json: missing English key {key!r}")
             for key in sorted(other - english_keys):
                 errors.append(f"i18n/{locale}.json: unknown key {key!r}")
+
+    runtime_path = ROOT / "js" / "i18n.js"
+    if runtime_path.is_file():
+        runtime_text = runtime_path.read_text(encoding="utf-8")
+        supported_match = __import__("re").search(r"const\s+SUPPORTED\s*=\s*\[([^\]]*)\]", runtime_text)
+        if not supported_match:
+            errors.append("js/i18n.js: cannot determine supported locale list")
+        else:
+            runtime_locales = set(__import__("re").findall(r"'([a-z]{2})'", supported_match.group(1)))
+            if runtime_locales != set(LOCALES):
+                errors.append(f"js/i18n.js: supported locales {sorted(runtime_locales)} do not match catalog locales {sorted(LOCALES)}")
+    else:
+        errors.append("js/i18n.js: runtime file is missing")
 
     checked = 0
     for path in sorted(ROOT.rglob("*.html")):
@@ -73,6 +93,8 @@ def main() -> int:
         checked += 1
         if not parser.has_switcher:
             errors.append(f"{relative}: has data-i18n keys but no #dc-lang-switch")
+        if parser.switcher_count > 1:
+            errors.append(f"{relative}: has {parser.switcher_count} #dc-lang-switch elements; use one unique id")
         if not any(src.endswith("js/i18n.js") for src in parser.scripts):
             errors.append(f"{relative}: has i18n markup but does not load js/i18n.js")
 
