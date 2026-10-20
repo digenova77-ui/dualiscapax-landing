@@ -132,6 +132,34 @@ class SQLiteJobQueue:
             db.execute("COMMIT")
         return self.get(job_id)
 
+    def renew_lease(
+        self, job_id: str, worker_id: str, *, lease_seconds: int = 60,
+        now: Optional[float] = None,
+    ) -> QueueJob:
+        """Extend a live lease held by this worker; expired leases cannot be revived."""
+        if not 1 <= lease_seconds <= 3600:
+            raise ValueError("lease_seconds must be between 1 and 3600")
+        now = time.time() if now is None else now
+        with closing(self._connect()) as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT state, lease_owner, lease_until FROM autonomy_jobs WHERE job_id = ?",
+                (job_id,),
+            ).fetchone()
+            if row is None:
+                db.execute("ROLLBACK")
+                raise KeyError("unknown job")
+            state, owner, lease_until = row
+            if state != "running" or owner != worker_id or lease_until is None or now >= lease_until:
+                db.execute("ROLLBACK")
+                raise PermissionError("worker does not hold a live lease for this job")
+            db.execute(
+                "UPDATE autonomy_jobs SET lease_until = ? WHERE job_id = ?",
+                (now + lease_seconds, job_id),
+            )
+            db.execute("COMMIT")
+        return self.get(job_id)
+
     def complete(self, job_id: str, worker_id: str, *, success: bool, retryable: bool = False,
                  now: Optional[float] = None) -> QueueJob:
         now = time.time() if now is None else now
