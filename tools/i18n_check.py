@@ -13,6 +13,15 @@ ROOT = Path(__file__).resolve().parents[1]
 LOCALES = ("en", "fr", "es")
 
 
+def reject_duplicate_keys(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate key {key!r}")
+        result[key] = value
+    return result
+
+
 class PageParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
@@ -42,7 +51,7 @@ def main() -> int:
     for locale in LOCALES:
         path = ROOT / "i18n" / f"{locale}.json"
         try:
-            value = json.loads(path.read_text(encoding="utf-8"))
+            value = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_keys)
             if not isinstance(value, dict):
                 raise ValueError("catalog root must be an object")
             catalogs[locale] = value
