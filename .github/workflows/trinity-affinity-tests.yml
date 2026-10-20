@@ -27,4 +27,4 @@ jobs:
         with:
           python-version: "3.12"
       - name: Run offline affinity and authorization tests
-        run: python -m unittest tests/test_affinity.py -v
+        run: python tests/test_affinity.py -v
