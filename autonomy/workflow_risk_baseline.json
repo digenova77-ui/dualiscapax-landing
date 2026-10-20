@@ -1,7 +1,7 @@
 {
   "schema_version": "trinity-workflow-risk-baseline-v1",
   "baseline_source_commit": "b9fd1c51c4b95f4f3aa04335236cff7b822cb106",
-  "purpose": "Reviewed debt snapshot for heuristic workflow findings. Every entry is a review lead, not a confirmed vulnerability. Changes to the baseline require explicit review.",
+  "purpose": "Initial snapshot of heuristic findings observed in existing workflows. Entries are unreviewed remediation debt, not confirmed vulnerabilities and not approval that a workflow is safe. Changes to this inventory require explicit review.",
   "findings": [
     {
       "severity": "medium",
@@ -589,5 +589,5 @@
       "path": ".github/workflows/wav-watch.yml"
     }
   ],
-  "last_review_note": "2026-10-20: retired swarm_runner workflow write behavior removed. Improved mutation detector then surfaced 18 existing chained repository-push patterns in other workflows; these are recorded as review debt, not approved as safe, and require workflow-by-workflow remediation."
+  "last_review_note": "2026-10-20: retired swarm_runner workflow write behavior removed. Improved mutation detector surfaced existing chained repository-push patterns in other workflows; they are recorded as unreviewed debt, not approved as safe, and require workflow-by-workflow remediation."
 }
