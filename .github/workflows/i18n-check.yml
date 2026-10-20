@@ -1,0 +1,31 @@
+name: Static i18n validation
+
+on:
+  pull_request:
+    paths:
+      - "i18n/**"
+      - "js/i18n.js"
+      - "**/*.html"
+      - "tools/i18n_check.py"
+      - ".github/workflows/i18n-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "i18n/**"
+      - "js/i18n.js"
+      - "**/*.html"
+      - "tools/i18n_check.py"
+      - ".github/workflows/i18n-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate locale dictionaries and static pages
+        run: python3 tools/i18n_check.py
