@@ -94,7 +94,7 @@ jobs:
           summary = os.environ.get("GITHUB_STEP_SUMMARY")
           if summary:
               with open(summary, "a", encoding="utf-8") as handle:
-                  handle.write("\\n".join(lines) + "\\n")
+                  handle.write("\n".join(lines) + "\n")
           print("\\n".join(lines))
           if added or resolved:
               raise SystemExit("workflow risk baseline drift: review findings and update the baseline intentionally")
