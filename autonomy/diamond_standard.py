@@ -1,28 +1,15 @@
-"""Diamond Standard v1: evidence-gated conformance, never a self-issued safety claim.
-
-A standard claim passes only when every mandatory requirement has a PASS result,
-a non-empty evidence reference, an independent reviewer reference, and the exact
-required policy version. This evaluates supplied attestations; it does not
-authenticate those references or independently execute the tests.
-"""
-from __future__ import annotations
-
+"""Diamond Standard v1 profile evaluated by the canonical Trinity gate."""
 from dataclasses import dataclass
 from typing import Tuple
+from autonomy.trinity import GateEvidence, TRINITY_POLICY_VERSION, decide
 
 STANDARD_ID = "DUALISCAPAX-DIAMOND-1.0"
 REQUIREMENTS = (
-    "authority_fail_closed",
-    "evidence_integrity",
-    "policy_binding",
-    "execution_containment",
-    "idempotency_and_recovery",
-    "audit_tamper_evidence",
-    "independent_verification",
-    "scientific_validity",
+    "authority_fail_closed", "evidence_integrity", "policy_binding",
+    "execution_containment", "idempotency_and_recovery", "audit_tamper_evidence",
+    "independent_verification", "scientific_validity",
 )
 ALLOWED_RESULTS = frozenset({"PASS", "FAIL", "UNKNOWN"})
-
 
 @dataclass(frozen=True)
 class RequirementEvidence:
@@ -30,7 +17,6 @@ class RequirementEvidence:
     result: str
     evidence_ref: str
     reviewer_ref: str
-
 
 @dataclass(frozen=True)
 class ConformanceReport:
@@ -41,65 +27,30 @@ class ConformanceReport:
     blockers: Tuple[str, ...]
     passed_requirements: Tuple[str, ...]
 
-
-def evaluate_conformance(
-    evidence: Tuple[RequirementEvidence, ...],
-    *,
-    required_policy_version: str,
-    supplied_policy_version: str,
-    owner_authorized: bool,
-) -> ConformanceReport:
-    """Evaluate conformance claims deterministically; any ambiguity blocks."""
-    blockers = []
-    if not isinstance(required_policy_version, str) or not required_policy_version.strip():
-        blockers.append("required_policy_version_missing")
-    if not isinstance(supplied_policy_version, str) or supplied_policy_version != required_policy_version:
-        blockers.append("policy_version_mismatch")
-    if owner_authorized is not True:
-        blockers.append("owner_authorization_missing")
+def evaluate_conformance(evidence: Tuple[RequirementEvidence, ...], *, required_policy_version: str = TRINITY_POLICY_VERSION, supplied_policy_version: str, owner_authorized: bool) -> ConformanceReport:
+    """Translate the standard vocabulary to Trinity; no second decision engine."""
+    pre = []
     if not isinstance(evidence, (tuple, list)):
-        evidence = ()
-        blockers.append("evidence_collection_invalid")
+        evidence = (); pre.append("evidence_collection_invalid")
     if len(evidence) > 1000:
-        evidence = ()
-        blockers.append("evidence_collection_limit_exceeded")
-
-    by_requirement = {}
-    for index, item in enumerate(evidence):
-        if not isinstance(item, RequirementEvidence):
-            blockers.append(f"evidence_record_invalid:{index}")
-            continue
-        if not isinstance(item.requirement, str) or item.requirement not in REQUIREMENTS:
-            blockers.append(f"unknown_requirement:{index}")
-            continue
-        if item.requirement in by_requirement:
-            blockers.append(f"duplicate_requirement:{item.requirement}")
-            continue
-        by_requirement[item.requirement] = item
-
-    passed = []
-    for requirement in REQUIREMENTS:
-        item = by_requirement.get(requirement)
-        if item is None:
-            blockers.append(f"requirement_missing:{requirement}")
-            continue
+        evidence = (); pre.append("evidence_collection_limit_exceeded")
+    converted = []
+    for i, item in enumerate(evidence):
+        if not isinstance(item, RequirementEvidence): pre.append(f"evidence_record_invalid:{i}"); continue
         if not isinstance(item.result, str) or item.result not in ALLOWED_RESULTS:
-            blockers.append(f"result_invalid:{requirement}")
-            continue
-        if item.result != "PASS":
-            blockers.append(f"requirement_not_passed:{requirement}:{item.result}")
-            continue
-        if not isinstance(item.evidence_ref, str) or not item.evidence_ref.strip():
-            blockers.append(f"evidence_reference_missing:{requirement}")
-            continue
-        if not isinstance(item.reviewer_ref, str) or not item.reviewer_ref.strip():
-            blockers.append(f"reviewer_reference_missing:{requirement}")
-            continue
-        passed.append(requirement)
-
-    blockers = tuple(sorted(set(blockers)))
+            pre.append(f"result_invalid:{item.requirement}"); continue
+        converted.append(GateEvidence(item.requirement, item.result == "PASS", item.evidence_ref, item.reviewer_ref))
+        if item.result != "PASS": pre.append(f"requirement_not_passed:{item.requirement}:{item.result}")
+    decision = decide(REQUIREMENTS, tuple(converted), required_policy_version=required_policy_version, supplied_policy_version=supplied_policy_version, owner_authorized=owner_authorized)
+    mapped = []
+    for blocker in decision.blockers:
+        if blocker.startswith("gate_missing:"): mapped.append("requirement_missing:" + blocker.split(":", 1)[1])
+        elif blocker.startswith("duplicate_gate:"): mapped.append("duplicate_requirement:" + blocker.split(":", 1)[1])
+        elif blocker.startswith("unknown_gate:"): mapped.append("unknown_requirement:" + blocker.split(":", 1)[1])
+        elif blocker.startswith("gate_not_passed:"): mapped.append("requirement_not_passed:" + blocker.split(":", 1)[1] + ":FAIL")
+        else: mapped.append(blocker)
+    blockers = tuple(sorted(set(mapped + pre)))
+    failed = {b.split(":")[1] for b in pre if b.startswith("requirement_not_passed:") or b.startswith("result_invalid:")}
+    passed = tuple(x for x in decision.passed_gates if x not in failed)
     score = round(100 * len(passed) / len(REQUIREMENTS))
-    return ConformanceReport(
-        STANDARD_ID, supplied_policy_version if isinstance(supplied_policy_version, str) else "",
-        score == 100 and not blockers, score, blockers, tuple(passed),
-    )
+    return ConformanceReport(STANDARD_ID, decision.policy_version, decision.allowed and not pre, score, blockers, passed)
