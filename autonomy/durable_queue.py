@@ -236,7 +236,7 @@ class SQLiteJobQueue:
         with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute(
-                "SELECT state, lease_owner, lease_until FROM autonomy_jobs WHERE job_id = ?",
+                "SELECT state, lease_owner, lease_until, lease_generation FROM autonomy_jobs WHERE job_id = ?",
                 (job_id,),
             ).fetchone()
             if row is None:
