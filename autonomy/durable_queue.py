@@ -110,9 +110,12 @@ class SQLiteJobQueue:
             # Expired running jobs can be reclaimed only within their retry budget.
             db.execute(
                 """UPDATE autonomy_jobs
-                   SET state = CASE WHEN attempts >= max_attempts THEN 'exhausted' ELSE 'retryable_failure' END,
+                   SET state = CASE
+                       WHEN state = 'cancel_requested' THEN 'cancelled'
+                       WHEN attempts >= max_attempts THEN 'exhausted'
+                       ELSE 'retryable_failure' END,
                        lease_owner = NULL, lease_until = NULL
-                   WHERE state = 'running' AND lease_until <= ?""",
+                   WHERE state IN ('running', 'cancel_requested') AND lease_until <= ?""",
                 (now,),
             )
             row = db.execute(
@@ -156,6 +159,69 @@ class SQLiteJobQueue:
             db.execute(
                 "UPDATE autonomy_jobs SET lease_until = ? WHERE job_id = ?",
                 (now + lease_seconds, job_id),
+            )
+            db.execute("COMMIT")
+        return self.get(job_id)
+
+    def request_cancel(self, job_id: str) -> QueueJob:
+        """Cancel queued work immediately or request cooperative cancellation of a worker."""
+        with closing(self._connect()) as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT state FROM autonomy_jobs WHERE job_id = ?", (job_id,)
+            ).fetchone()
+            if row is None:
+                db.execute("ROLLBACK")
+                raise KeyError("unknown job")
+            state = row[0]
+            if state in {"succeeded", "cancelled", "blocked", "exhausted"}:
+                db.execute("ROLLBACK")
+                raise ValueError(f"job cannot be cancelled from {state}")
+            if state in {"queued", "retryable_failure"}:
+                db.execute(
+                    "UPDATE autonomy_jobs SET state = 'cancelled', lease_owner = NULL, lease_until = NULL WHERE job_id = ?",
+                    (job_id,),
+                )
+            elif state == "running":
+                db.execute(
+                    "UPDATE autonomy_jobs SET state = 'cancel_requested' WHERE job_id = ?",
+                    (job_id,),
+                )
+            elif state == "cancel_requested":
+                db.execute("COMMIT")
+                return self.get(job_id)
+            else:
+                db.execute("ROLLBACK")
+                raise ValueError(f"unsupported job state: {state}")
+            db.execute("COMMIT")
+        return self.get(job_id)
+
+    def is_cancel_requested(self, job_id: str) -> bool:
+        """Workers must poll this before side effects and during long-running work."""
+        job = self.get(job_id)
+        return job.state in {"cancel_requested", "cancelled"}
+
+    def acknowledge_cancel(
+        self, job_id: str, worker_id: str, *, now: Optional[float] = None
+    ) -> QueueJob:
+        """Acknowledge cooperative cancellation while the worker still owns a live lease."""
+        now = time.time() if now is None else now
+        with closing(self._connect()) as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT state, lease_owner, lease_until FROM autonomy_jobs WHERE job_id = ?",
+                (job_id,),
+            ).fetchone()
+            if row is None:
+                db.execute("ROLLBACK")
+                raise KeyError("unknown job")
+            state, owner, lease_until = row
+            if state != "cancel_requested" or owner != worker_id or lease_until is None or now >= lease_until:
+                db.execute("ROLLBACK")
+                raise PermissionError("worker does not hold a live cancellation lease")
+            db.execute(
+                "UPDATE autonomy_jobs SET state = 'cancelled', lease_owner = NULL, lease_until = NULL WHERE job_id = ?",
+                (job_id,),
             )
             db.execute("COMMIT")
         return self.get(job_id)
