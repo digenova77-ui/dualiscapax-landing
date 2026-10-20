@@ -79,6 +79,40 @@ class DurableQueueTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.queue.renew_lease(job.job_id, "worker-a", now=101, lease_seconds=3601)
 
+
+    def test_queued_job_can_be_cancelled_without_claim(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="cancel-queued")
+        cancelled = self.queue.request_cancel(job.job_id)
+        self.assertEqual(cancelled.state, "cancelled")
+        self.assertIsNone(self.queue.claim("worker-a", now=100))
+        self.assertTrue(self.queue.is_cancel_requested(job.job_id))
+
+    def test_running_job_requires_cooperative_cancel_acknowledgement(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="cancel-running")
+        self.queue.claim("worker-a", now=100, lease_seconds=30)
+        requested = self.queue.request_cancel(job.job_id)
+        self.assertEqual(requested.state, "cancel_requested")
+        self.assertTrue(self.queue.is_cancel_requested(job.job_id))
+        with self.assertRaises(PermissionError):
+            self.queue.acknowledge_cancel(job.job_id, "worker-b", now=101)
+        cancelled = self.queue.acknowledge_cancel(job.job_id, "worker-a", now=101)
+        self.assertEqual(cancelled.state, "cancelled")
+        self.assertIsNone(cancelled.lease_owner)
+
+    def test_expired_cancel_request_is_recovered_as_cancelled(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="cancel-crash")
+        self.queue.claim("worker-a", now=100, lease_seconds=5)
+        self.queue.request_cancel(job.job_id)
+        self.assertIsNone(self.queue.claim("worker-b", now=106))
+        self.assertEqual(self.queue.get(job.job_id).state, "cancelled")
+
+    def test_terminal_job_cannot_be_cancelled(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="cancel-terminal")
+        self.queue.claim("worker-a", now=100, lease_seconds=30)
+        self.queue.complete(job.job_id, "worker-a", success=True, now=101)
+        with self.assertRaises(ValueError):
+            self.queue.request_cancel(job.job_id)
+
     def test_nonretryable_failure_blocks_and_success_completes(self):
         blocked_job = self.queue.enqueue("write", {}, idempotency_key="block")
         running = self.queue.claim("worker", now=100, lease_seconds=30)
