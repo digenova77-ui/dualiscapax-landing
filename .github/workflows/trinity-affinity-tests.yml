@@ -19,8 +19,8 @@ on:
       - "tests/test_integration_lifecycle.py"
       - "tests/test_ledger.py"
       - "tests/test_supervisor.py"
+      - "tests/test_orchestrator.py"
       - ".github/workflows/trinity-affinity-tests.yml"
-
 permissions:
   contents: read
 
