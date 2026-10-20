@@ -177,3 +177,26 @@ class DurableQueueTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+    def test_claim_rejects_malformed_worker_clock_and_lease_duration(self):
+        self.queue.enqueue("inspect", {}, idempotency_key="input-validation")
+        for worker in ("", "worker\\nforged", "w" * 129, None):
+            with self.subTest(worker=worker), self.assertRaises(ValueError):
+                self.queue.claim(worker, now=100)
+        for clock in (float("nan"), float("inf"), True, "100"):
+            with self.subTest(clock=clock), self.assertRaises(ValueError):
+                self.queue.claim("worker", now=clock)
+        for duration in (True, 0, 3601, 1.5):
+            with self.subTest(duration=duration), self.assertRaises(ValueError):
+                self.queue.claim("worker", now=100, lease_seconds=duration)
+
+    def test_lease_mutations_reject_boolean_generation_and_non_boolean_result(self):
+        job = self.queue.enqueue("inspect", {}, idempotency_key="strict-fence-types")
+        claimed = self.queue.claim("worker", now=100, lease_seconds=30)
+        with self.assertRaises(PermissionError):
+            self.queue.complete(job.job_id, "worker", lease_generation=True, success=True, now=101)
+        with self.assertRaises(ValueError):
+            self.queue.complete(job.job_id, "worker", lease_generation=claimed.lease_generation, success=1, now=101)
+        with self.assertRaises(PermissionError):
+            self.queue.renew_lease(job.job_id, "worker", lease_generation=True, now=101)
