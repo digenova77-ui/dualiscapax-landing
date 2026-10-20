@@ -14,6 +14,17 @@ from typing import Iterable, Tuple
 
 ALLOWED_LAYERS = frozenset({"foundation", "mesh", "biology"})
 
+# Small explicit catalog: values outside this contract require reviewed schema
+# expansion, not silent acceptance. Bounds are plausibility guards, not calibration.
+METRIC_CONTRACTS = {
+    "leaf_temperature": ("degC", -80.0, 100.0),
+    "air_temperature": ("degC", -80.0, 100.0),
+    "relative_humidity": ("percent", 0.0, 100.0),
+    "soil_moisture": ("fraction", 0.0, 1.0),
+    "light_intensity": ("lux", 0.0, 200000.0),
+    "soil_ph": ("pH", 0.0, 14.0),
+}
+
 
 @dataclass(frozen=True, order=True)
 class MeshNode:
@@ -124,6 +135,14 @@ def validate_mesh(
             raise ValueError("observation_value_must_be_numeric")
         if not math.isfinite(item.value):
             raise ValueError("observation_value_must_be_finite")
+        contract = METRIC_CONTRACTS.get(item.metric)
+        if contract is None:
+            raise ValueError("observation_metric_unknown")
+        expected_unit, minimum, maximum = contract
+        if item.unit != expected_unit:
+            raise ValueError("observation_unit_mismatch")
+        if not minimum <= item.value <= maximum:
+            raise ValueError("observation_value_out_of_range")
         try:
             measured_at = datetime.fromisoformat(item.measured_at.replace("Z", "+00:00"))
         except (TypeError, ValueError) as exc:
