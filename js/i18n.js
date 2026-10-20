@@ -109,6 +109,10 @@
       if (thisRequest !== requestId) return;
       pendingLang = null;
       console.warn('i18n load failed for ' + lang + '; using available English fallback.', error);
+      // Keep the document language, selector, persistence, and callback aligned
+      // with the English text shown after a failed locale load.
+      currentLang = DEFAULT_LANG;
+      saveLang(DEFAULT_LANG);
       try {
         const english = await load(DEFAULT_LANG);
         if (thisRequest !== requestId) return;
