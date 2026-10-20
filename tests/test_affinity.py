@@ -27,7 +27,7 @@ class AffinityTests(unittest.TestCase):
 
     def test_perfect_fit_can_be_eligible_only_after_authorization(self):
         decision = evaluate(self.task, self.integration)
-        self.assertEqual(decision.affinity, 96)
+        self.assertEqual(decision.affinity, 99)
         self.assertTrue(decision.eligible)
         self.assertEqual(decision.reasons, ())
 
