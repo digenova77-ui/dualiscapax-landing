@@ -40,6 +40,32 @@ def approved_gate(job_id, task_type, scopes):
 
 
 class OrchestratorTests(unittest.TestCase):
+    def test_malformed_policy_gate_results_fail_closed_without_adapter_calls(self):
+        for bad_result in (None, {"approved": True}, object()):
+            with self.subTest(result_type=type(bad_result).__name__):
+                adapter = FakeAdapter()
+                result = Orchestrator(policy_gate=lambda *_args, value=bad_result: value).run_once(
+                    task_type="read", payload={}, idempotency_key="bad-" + type(bad_result).__name__,
+                    adapter=adapter, required_scopes=frozenset({"repo:read"}),
+                )
+                self.assertFalse(result.executed)
+                self.assertEqual(result.reason, "authorization_decision_invalid")
+                self.assertEqual(adapter.calls, 0)
+
+    def test_malformed_decision_fields_fail_closed(self):
+        def malformed(job_id, task_type, scopes):
+            return AuthorizationDecision(
+                approved=1, task_id=job_id, authority_id="owner",
+                allowed_scopes=scopes, policy_version="v1", owner_terms_accepted=True,
+            )
+        adapter = FakeAdapter()
+        result = Orchestrator(policy_gate=malformed).run_once(
+            task_type="read", payload={}, idempotency_key="malformed-fields",
+            adapter=adapter, required_scopes=frozenset({"repo:read"}),
+        )
+        self.assertEqual(result.reason, "authorization_decision_malformed")
+        self.assertEqual(adapter.calls, 0)
+
     def test_missing_policy_gate_fails_closed(self):
         adapter = FakeAdapter()
         result = Orchestrator().run_once(
