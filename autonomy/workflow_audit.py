@@ -77,3 +77,47 @@ def report_json(findings: Iterable[WorkflowFinding]) -> str:
         [asdict(item) for item in sorted(findings)],
         sort_keys=True, separators=(",", ":"), ensure_ascii=False,
     )
+
+
+def compare_baseline(
+    findings: Iterable[WorkflowFinding],
+    baseline_path: str | Path,
+) -> tuple[list[WorkflowFinding], list[dict[str, str]]]:
+    """Return newly observed findings and baseline entries no longer observed.
+
+    Both directions matter: new risks must not silently enter the trusted branch,
+    and resolved risks require a reviewed baseline update so they cannot be
+    accidentally reintroduced under a stale suppression.
+    """
+    baseline_file = Path(baseline_path)
+    data = json.loads(baseline_file.read_text(encoding="utf-8"))
+    if data.get("schema_version") != "trinity-workflow-risk-baseline-v1":
+        raise ValueError("unsupported workflow risk baseline schema")
+    entries = data.get("findings")
+    if not isinstance(entries, list):
+        raise ValueError("workflow risk baseline findings must be a list")
+    baseline: set[tuple[str, str, str]] = set()
+    for item in entries:
+        if not isinstance(item, dict):
+            raise ValueError("invalid workflow risk baseline entry")
+        path, rule_id, severity = item.get("path"), item.get("rule_id"), item.get("severity")
+        if not all(isinstance(v, str) and v for v in (path, rule_id, severity)):
+            raise ValueError("invalid workflow risk baseline fields")
+        if severity not in {"high", "medium", "low"}:
+            raise ValueError("invalid workflow risk baseline severity")
+        key = (path, rule_id, severity)
+        if key in baseline:
+            raise ValueError("duplicate workflow risk baseline entry")
+        baseline.add(key)
+    current = {
+        (item.path, item.rule_id, item.severity): item
+        for item in findings
+    }
+    added = sorted(
+        (item for key, item in current.items() if key not in baseline)
+    )
+    resolved = [
+        {"path": path, "rule_id": rule_id, "severity": severity}
+        for path, rule_id, severity in sorted(baseline - set(current))
+    ]
+    return added, resolved
