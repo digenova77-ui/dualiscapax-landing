@@ -64,6 +64,7 @@ class WorkerExecutionContext:
     job_id: str
     worker_id: str
     lease_seconds: int
+    lease_generation: int
     clock: Callable[[], float]
 
     def checkpoint(self) -> QueueJob:
@@ -71,13 +72,13 @@ class WorkerExecutionContext:
         current = self.queue.get(self.job_id)
         now = self.clock()
         if current.state == "cancel_requested":
-            self.queue.acknowledge_cancel(self.job_id, self.worker_id, now=now)
+            self.queue.acknowledge_cancel(self.job_id, self.worker_id, lease_generation=self.lease_generation, now=now)
             raise CancellationRequested("cancellation acknowledged")
         if current.state == "cancelled":
             raise CancellationRequested("job already cancelled")
         try:
             return self.queue.renew_lease(
-                self.job_id, self.worker_id,
+                self.job_id, self.worker_id, lease_generation=self.lease_generation,
                 lease_seconds=self.lease_seconds, now=now,
             )
         except (PermissionError, KeyError) as exc:
@@ -139,7 +140,7 @@ class WorkerRunner:
             current = self.queue.get(job.job_id)
             if current.state == "cancel_requested":
                 self.queue.acknowledge_cancel(
-                    job.job_id, self.worker_id, now=now
+                    job.job_id, self.worker_id, lease_generation=job.lease_generation, now=now
                 )
                 return True
             return current.state == "cancelled"
@@ -150,7 +151,7 @@ class WorkerRunner:
         if self.policy is None:
             self._audit("worker_authorization_refused", job.job_id, reason="policy_gate_unavailable")
             blocked = self.queue.complete(
-                job.job_id, self.worker_id, success=False, now=now
+                job.job_id, self.worker_id, lease_generation=job.lease_generation, success=False, now=now
             )
             return WorkerOutcome(blocked, False, "policy_gate_unavailable")
         try:
@@ -158,7 +159,7 @@ class WorkerRunner:
         except Exception:
             self._audit("worker_authorization_refused", job.job_id, reason="policy_gate_error")
             blocked = self.queue.complete(
-                job.job_id, self.worker_id, success=False, now=now
+                job.job_id, self.worker_id, lease_generation=job.lease_generation, success=False, now=now
             )
             return WorkerOutcome(blocked, False, "policy_gate_error")
 
@@ -217,7 +218,7 @@ class WorkerRunner:
         )
         context = WorkerExecutionContext(
             queue=self.queue, job_id=job.job_id, worker_id=self.worker_id,
-            lease_seconds=self.lease_seconds,
+            lease_seconds=self.lease_seconds, lease_generation=job.lease_generation,
             clock=(lambda: now) if now is not None else time.time,
         )
         try:
