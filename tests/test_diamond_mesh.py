@@ -98,7 +98,7 @@ class DiamondMeshTests(unittest.TestCase):
 
     def test_observation_timestamp_must_include_timezone(self):
         bad = PlantObservation(
-            "obs-004", "plant-sensor-1", "moisture", 0.3, "fraction",
+            "obs-004", "plant-sensor-1", "leaf_temperature", 22.0, "degC",
             "2026-10-20T17:00:00", "sensor-1", "notebook:page-15",
         )
         with self.assertRaisesRegex(ValueError, "observation_timestamp_must_be_timezone_aware"):
