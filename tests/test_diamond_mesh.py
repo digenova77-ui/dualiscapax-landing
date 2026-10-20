@@ -73,6 +73,29 @@ class DiamondMeshTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "observation_value_must_be_finite"):
             validate_mesh(self.nodes, self.edges, (bad,))
 
+    def test_unknown_metric_and_wrong_unit_fail_closed(self):
+        unknown = PlantObservation(
+            "obs-005", "plant-sensor-1", "quantum_vitality", 1.0, "units",
+            "2026-10-20T17:00:00Z", "sensor-1", "notebook:page-16",
+        )
+        with self.assertRaisesRegex(ValueError, "observation_metric_unknown"):
+            validate_mesh(self.nodes, self.edges, (unknown,))
+
+        wrong_unit = PlantObservation(
+            "obs-006", "plant-sensor-1", "relative_humidity", 42.0, "fraction",
+            "2026-10-20T17:00:00Z", "sensor-1", "notebook:page-17",
+        )
+        with self.assertRaisesRegex(ValueError, "observation_unit_mismatch"):
+            validate_mesh(self.nodes, self.edges, (wrong_unit,))
+
+    def test_implausible_measurement_is_rejected(self):
+        bad = PlantObservation(
+            "obs-007", "plant-sensor-1", "relative_humidity", 142.0, "percent",
+            "2026-10-20T17:00:00Z", "sensor-1", "notebook:page-18",
+        )
+        with self.assertRaisesRegex(ValueError, "observation_value_out_of_range"):
+            validate_mesh(self.nodes, self.edges, (bad,))
+
     def test_observation_timestamp_must_include_timezone(self):
         bad = PlantObservation(
             "obs-004", "plant-sensor-1", "moisture", 0.3, "fraction",
