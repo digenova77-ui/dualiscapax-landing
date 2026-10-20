@@ -1,12 +1,20 @@
 (function (w) {
   var VERSION = "dclm-look-2026-09-22-talk";
+  function tr(key, fallback) {
+    return w.DC_i18n && w.DC_i18n.get ? w.DC_i18n.get(key, fallback) : fallback;
+  }
+  function languageCode() {
+    if (w.DC_i18n && w.DC_i18n.current) return w.DC_i18n.current();
+    try { var saved = localStorage.getItem("dc-lang"); if (saved) return String(saved).toLowerCase().split(/[-_]/)[0]; } catch (e) {}
+    return (document.documentElement.lang || "en").toLowerCase().split("-")[0];
+  }
   function scanVeto(text) {
     if (w.IrisPolicy && IrisPolicy.veto) {
       var hit = IrisPolicy.veto(text);
       if (hit) return hit.spoken;
     }
     if (/\b(diagnose me|prescribe|cure me|guaranteed profit|jailbreak)\b/i.test(String(text || "")))
-      return "I will not invent a cure or a jailbreak.";
+      return tr("iris.fallback.veto", "I will not invent a cure or a jailbreak.");
     return null;
   }
   function stripName(text) {
@@ -121,7 +129,9 @@
   }
   function systemTalk(facts) {
     var line = (w.IrisPolicy && IrisPolicy.systemLine) ? IrisPolicy.systemLine() : "You are Iris. First person. Short.";
-    line += " Talk like a live conversation. Do not recite a script. Use facts if they help; do not dump them. Do not mention personal addresses unless they asked, then refuse.";
+    var language = languageCode();
+    var languageName = language === "fr" ? "French" : (language === "es" ? "Spanish" : "English");
+    line += " Reply in " + languageName + " unless the user explicitly asks for another language. Talk like a live conversation. Do not recite a script. Use facts if they help; do not dump them. Do not mention personal addresses unless they asked, then refuse.";
     if (facts) line += " Grounding (do not read as a teleprompter): " + facts;
     return line;
   }
@@ -181,14 +191,14 @@
       return {
         grant: "DEPTH",
         lane: "DEPTH",
-        spoken: "Depth is open but I have no model key on this tab. Add an xAI key or ask another way.",
+        spoken: tr("iris.fallback.depth", "Depth is open but I have no model key on this tab. Add an xAI key or ask another way."),
         ticket: pass
       };
     }
     return {
       grant: "LOOK",
       lane: "LOOK",
-      spoken: "I could not get that from here. Ask another way."
+      spoken: tr("iris.fallback.notfound", "I could not get that from here. Ask another way.")
     };
   }
   w.DCLMLook = { version: VERSION, run: run };
