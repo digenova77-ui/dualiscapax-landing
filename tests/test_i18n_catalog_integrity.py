@@ -48,6 +48,13 @@ class TranslationCatalogIntegrityTests(unittest.TestCase):
         self.assertIn("el.hasAttribute('data-i18n-html')", self.runtime)
         self.assertIn("Only use data-i18n-html for trusted repository-authored catalog values", self.runtime)
 
+    def test_failed_locale_load_resets_language_metadata_to_english(self):
+        # A fallback must not announce French/Spanish while rendering English.
+        fallback = self.runtime.split("using available English fallback.", 1)[1]
+        fallback = fallback.split("if (typeof window.DC_i18n_onChange", 1)[0]
+        self.assertIn("currentLang = DEFAULT_LANG;", fallback)
+        self.assertIn("saveLang(DEFAULT_LANG);", fallback)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
