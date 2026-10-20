@@ -42,7 +42,7 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
   <div class="top"><a href="/index.html?land=1">DualisCapax</a><a href="/onboard.html">Onboard</a></div>
   <p class="kicker">Audit · crypto · real time</p>
   <h1>Anytime</h1>
-  <p class="lede">Name a residual. Get a SHA-256 receipt on this device. Chain to the last write. No appointment. No gate except Layer [0] truth.</p>
+  <p class="lede" data-i18n="audit.lede">Name a residual. Get a SHA-256 receipt on this device. Chain to the last write. No appointment. No gate except Layer [0] truth.</p>
 
   <div class="hud" id="hud">Session — · tip — · chain 0</div>
 
@@ -230,5 +230,7 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
   renderChain();
 })();
 </script>
+<script src="js/i18n.js"></script>
+<script>document.getElementById('dc-lang-switch')?.addEventListener('change',function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
