@@ -119,7 +119,7 @@ def validate_sandbox_policy(
     reasons: list[str] = []
     if not isinstance(policy, SandboxPolicy):
         safe_task_id = task_id if isinstance(task_id, str) else ""
-        return SandboxDecision(False, ("sandbox_policy_missing_or_invalid",), task_id=safe_task_id)
+        return SandboxDecision(False, ("sandbox_policy_missing",), task_id=safe_task_id)
     if not isinstance(policy.policy_version, str) or not policy.policy_version.strip():
         reasons.append("policy_version_missing")
     if not isinstance(policy.authority_id, str) or not policy.authority_id.strip():
