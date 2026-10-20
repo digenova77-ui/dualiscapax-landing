@@ -70,5 +70,5 @@ M1–M2 are represented by pure modules and tests. M3 has a provider-neutral pro
 
 ## GitHub Actions supply-chain visibility
 - Added a deterministic, report-only workflow risk inventory that identifies declared write permissions, `pull_request_target`, OIDC token minting, mutable third-party action refs, direct repository mutation commands, shell network calls, and checkout credential persistence with write permissions.
-- The autonomy CI lane publishes the inventory in the GitHub Actions step summary and tests the scanner against controlled examples.
-- The scanner is heuristic and intentionally does not claim exploitability or auto-repair repository workflows. Findings require human review; broad repository permissions and legacy mutation workflows remain separate remediation work.
+- The autonomy CI lane compares the current inventory against a versioned 102-finding baseline (53 high / 49 medium at capture time) and blocks on newly observed findings or stale baseline entries until the change is reviewed. The baseline records pre-existing review debt; it is not an assertion that those workflows are safe.
+- The scanner is heuristic and does not claim exploitability or auto-repair repository workflows. Baseline edits require explicit review; broad repository permissions and legacy mutation workflows remain separate remediation work.
