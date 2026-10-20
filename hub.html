@@ -28,12 +28,13 @@ h1{font-family:Georgia,serif;font-size:clamp(1.5rem,6vw,2.2rem)}
   <a class="brand" href="hub.html">ASK</a>
   <a class="chip" href="ai/iris.html">Iris</a>
   <a class="chip" href="pay.html">Pay</a>
+  <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
 </header>
 <main>
-  <h1>What are you trying to find out?</h1>
-  <p class="lead">Look is free. Packs and rooms are on Pay. Iris is the usable chat.</p>
-  <p><input id="q" placeholder="Ask in plain words"></p>
-  <p><button class="btn" type="button" id="go">Ask Iris</button> <a class="btn ghost" href="pay.html">Everything you can pay</a></p>
+  <h1 data-i18n="hub.h1">What are you trying to find out?</h1>
+  <p class="lead" data-i18n="hub.lede">Look is free. Packs and rooms are on Pay. Iris is the usable chat.</p>
+  <p><input id="q" placeholder="Ask in plain words" data-i18n-placeholder="hub.placeholder"></p>
+  <p><button class="btn" type="button" id="go" data-i18n="hub.ask">Ask Iris</button> <a class="btn ghost" href="pay.html" data-i18n="hub.pay">Everything you can pay</a></p>
   <div class="row">
     <a class="btn ghost" href="story.html">Story</a>
     <a class="btn ghost" href="compute.html">Engine</a>
@@ -51,5 +52,6 @@ h1{font-family:Georgia,serif;font-size:clamp(1.5rem,6vw,2.2rem)}
   document.getElementById("q").addEventListener("keydown",function(e){ if(e.key==="Enter") go(); });
 })();
 </script>
+<script src="js/i18n.js"></script>
 </body>
 </html>
