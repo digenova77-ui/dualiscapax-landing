@@ -28,11 +28,12 @@
         <a href="residual-law.html" class="on">Law</a>
         <a href="tools.html">Tools</a>
         <a href="ai/app.html">Iris</a>
-    </nav>
+    <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
+  </nav>
   </header>
   <p class="eyebrow">Law</p>
-  <h1>Residual Law</h1>
-  <p class="lede">Every decision leaves a cost behind. See that cost before you lock a door.</p>
+  <h1 data-i18n="residuallaw.h1">Residual Law</h1>
+  <p class="lede" data-i18n="residuallaw.lede">Every decision leaves a cost behind. See that cost before you lock a door.</p>
   <section>
     <h2>Start here</h2>
     <div class="layer">
@@ -62,5 +63,6 @@
 </div>
 <script src="/js/no-select.js"></script>
 <script src="/assets/haptic.js"></script>
+<script src="js/i18n.js"></script><script>document.getElementById("dc-lang-switch")?.addEventListener("change",function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
