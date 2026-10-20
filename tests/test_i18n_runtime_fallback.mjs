@@ -13,6 +13,18 @@ function createHarness({ failFrench = false, malformedFrench = false, storageBlo
     addEventListener() {},
   };
   const documentAttributes = new Map();
+  const makeElement = (initial = {}) => {
+    const attributes = new Map(Object.entries(initial));
+    return {
+      attributes,
+      getAttribute(name) { return attributes.has(name) ? attributes.get(name) : null; },
+      setAttribute(name, value) { attributes.set(name, String(value)); },
+    };
+  };
+  const placeholder = makeElement({ "data-i18n-placeholder": "form.prompt" });
+  const ariaLabel = makeElement({ "data-i18n-aria-label": "nav.home" });
+  const title = makeElement({ "data-i18n-title": "nav.look" });
+  const metaContent = makeElement({ "data-i18n-content": "meta.description" });
   const warnings = [];
   const callbackCalls = [];
   const fetchCalls = [];
@@ -26,6 +38,10 @@ function createHarness({ failFrench = false, malformedFrench = false, storageBlo
     },
     querySelectorAll(selector) {
       if (selector === "#dc-lang-switch") return [switcher];
+      if (selector === "[data-i18n-placeholder]") return [placeholder];
+      if (selector === "[data-i18n-aria-label]") return [ariaLabel];
+      if (selector === "[data-i18n-title]") return [title];
+      if (selector === "[data-i18n-content]") return [metaContent];
       return [];
     },
     addEventListener(name, callback) { documentHandlers.set(name, callback); },
@@ -48,7 +64,12 @@ function createHarness({ failFrench = false, malformedFrench = false, storageBlo
     if (locale === "fr" && failFrench) {
       return { ok: false, status: 503, async json() { return {}; } };
     }
-    const catalog = locale === "fr" ? { greeting: "Bonjour" } : locale === "es" ? { greeting: "Hola" } : { greeting: "Hello" };
+    const messages = locale === "fr"
+      ? { greeting: "Bonjour", "form.prompt": "Posez une question", "nav.home": "Accueil", "nav.look": "Découvrir", "meta.description": "Description française" }
+      : locale === "es"
+        ? { greeting: "Hola", "form.prompt": "Haga una pregunta", "nav.home": "Inicio", "nav.look": "Explorar", "meta.description": "Descripción en español" }
+        : { greeting: "Hello", "form.prompt": "Ask a question", "nav.home": "Home", "nav.look": "Look", "meta.description": "English description" };
+    const catalog = messages;
     return { ok: true, status: 200, async json() { return malformedFrench && locale === "fr" ? [] : catalog; } };
   }
 
@@ -74,6 +95,10 @@ function createHarness({ failFrench = false, malformedFrench = false, storageBlo
     callbackCalls,
     fetchCalls,
     warnings,
+    placeholder,
+    ariaLabel,
+    title,
+    metaContent,
     start() { const handler = documentHandlers.get("DOMContentLoaded"); if (handler) handler(); },
   };
 }
@@ -139,4 +164,15 @@ test("late stale locale response cannot overwrite the newest selection", async (
   assert.equal(h.documentAttributes.get("lang"), "es");
   assert.equal(h.switcher.value, "es");
   assert.equal(h.api.get("greeting"), "Hola");
+});
+
+
+test("localizes placeholders, accessibility labels, titles, and metadata", async () => {
+  const h = createHarness();
+  await h.api.setLang("fr");
+
+  assert.equal(h.placeholder.attributes.get("placeholder"), "Posez une question");
+  assert.equal(h.ariaLabel.attributes.get("aria-label"), "Accueil");
+  assert.equal(h.title.attributes.get("title"), "Découvrir");
+  assert.equal(h.metaContent.attributes.get("content"), "Description française");
 });
