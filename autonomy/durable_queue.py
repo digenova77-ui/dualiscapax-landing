@@ -26,6 +26,7 @@ class QueueJob:
     max_attempts: int
     lease_owner: Optional[str]
     lease_until: Optional[float]
+    lease_generation: int = 0
 
 
 def _canonical(value: object) -> str:
@@ -59,9 +60,14 @@ class SQLiteJobQueue:
                     attempts INTEGER NOT NULL,
                     max_attempts INTEGER NOT NULL,
                     lease_owner TEXT,
-                    lease_until REAL
+                    lease_until REAL,
+                    lease_generation INTEGER NOT NULL DEFAULT 0
                 )
             """)
+            # Forward-only migration for databases created before lease fencing.
+            columns = {row[1] for row in db.execute("PRAGMA table_info(autonomy_jobs)")}
+            if "lease_generation" not in columns:
+                db.execute("ALTER TABLE autonomy_jobs ADD COLUMN lease_generation INTEGER NOT NULL DEFAULT 0")
 
     def _connect(self) -> sqlite3.Connection:
         db = sqlite3.connect(self.path, timeout=10, isolation_level=None)
@@ -150,14 +156,14 @@ class SQLiteJobQueue:
             job_id, attempts, max_attempts = row
             db.execute(
                 """UPDATE autonomy_jobs SET state = 'running', attempts = attempts + 1,
-                   lease_owner = ?, lease_until = ? WHERE job_id = ?""",
+                   lease_owner = ?, lease_until = ?, lease_generation = lease_generation + 1 WHERE job_id = ?""",
                 (worker_id, now + lease_seconds, job_id),
             )
             db.execute("COMMIT")
         return self.get(job_id)
 
     def renew_lease(
-        self, job_id: str, worker_id: str, *, lease_seconds: int = 60,
+        self, job_id: str, worker_id: str, *, lease_generation: int | None = None, lease_seconds: int = 60,
         now: Optional[float] = None,
     ) -> QueueJob:
         """Extend a live lease held by this worker; expired leases cannot be revived."""
@@ -167,14 +173,14 @@ class SQLiteJobQueue:
         with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute(
-                "SELECT state, lease_owner, lease_until FROM autonomy_jobs WHERE job_id = ?",
+                "SELECT state, lease_owner, lease_until, lease_generation FROM autonomy_jobs WHERE job_id = ?",
                 (job_id,),
             ).fetchone()
             if row is None:
                 db.execute("ROLLBACK")
                 raise KeyError("unknown job")
-            state, owner, lease_until = row
-            if state != "running" or owner != worker_id or lease_until is None or now >= lease_until:
+            state, owner, lease_until, generation = row
+            if state != "running" or owner != worker_id or lease_generation is None or generation != lease_generation or lease_until is None or now >= lease_until:
                 db.execute("ROLLBACK")
                 raise PermissionError("worker does not hold a live lease for this job")
             db.execute(
@@ -223,7 +229,7 @@ class SQLiteJobQueue:
         return job.state in {"cancel_requested", "cancelled"}
 
     def acknowledge_cancel(
-        self, job_id: str, worker_id: str, *, now: Optional[float] = None
+        self, job_id: str, worker_id: str, *, lease_generation: int | None = None, now: Optional[float] = None
     ) -> QueueJob:
         """Acknowledge cooperative cancellation while the worker still owns a live lease."""
         now = time.time() if now is None else now
@@ -237,7 +243,7 @@ class SQLiteJobQueue:
                 db.execute("ROLLBACK")
                 raise KeyError("unknown job")
             state, owner, lease_until = row
-            if state != "cancel_requested" or owner != worker_id or lease_until is None or now >= lease_until:
+            if state != "cancel_requested" or owner != worker_id or lease_generation is None or generation != lease_generation or lease_until is None or now >= lease_until:
                 db.execute("ROLLBACK")
                 raise PermissionError("worker does not hold a live cancellation lease")
             db.execute(
@@ -247,20 +253,20 @@ class SQLiteJobQueue:
             db.execute("COMMIT")
         return self.get(job_id)
 
-    def complete(self, job_id: str, worker_id: str, *, success: bool, retryable: bool = False,
+    def complete(self, job_id: str, worker_id: str, *, lease_generation: int | None = None, success: bool, retryable: bool = False,
                  now: Optional[float] = None) -> QueueJob:
         now = time.time() if now is None else now
         with closing(self._connect()) as db:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute(
-                "SELECT state, attempts, max_attempts, lease_owner, lease_until FROM autonomy_jobs WHERE job_id = ?",
+                "SELECT state, attempts, max_attempts, lease_owner, lease_until, lease_generation FROM autonomy_jobs WHERE job_id = ?",
                 (job_id,),
             ).fetchone()
             if row is None:
                 db.execute("ROLLBACK")
                 raise KeyError("unknown job")
-            state, attempts, max_attempts, owner, lease_until = row
-            if state not in {"running", "cancel_requested"} or owner != worker_id or lease_until is None or now >= lease_until:
+            state, attempts, max_attempts, owner, lease_until, generation = row
+            if state not in {"running", "cancel_requested"} or owner != worker_id or lease_generation is None or generation != lease_generation or lease_until is None or now >= lease_until:
                 db.execute("ROLLBACK")
                 raise PermissionError("worker does not hold a live lease for this job")
             if state == "cancel_requested":
@@ -287,11 +293,11 @@ class SQLiteJobQueue:
         with closing(self._connect()) as db:
             row = db.execute(
                 """SELECT job_id, idempotency_key, task_type, payload_json, state, attempts,
-                   max_attempts, lease_owner, lease_until FROM autonomy_jobs WHERE job_id = ?""",
+                   max_attempts, lease_owner, lease_until, lease_generation FROM autonomy_jobs WHERE job_id = ?""",
                 (job_id,),
             ).fetchone()
         if row is None:
             raise KeyError("unknown job")
         return QueueJob(
-            row[0], row[1], row[2], json.loads(row[3]), row[4], row[5], row[6], row[7], row[8]
+            row[0], row[1], row[2], json.loads(row[3]), row[4], row[5], row[6], row[7], row[8], row[9]
         )
