@@ -59,6 +59,9 @@ class Orchestrator:
         job = self.supervisor.submit(
             task_type, payload, idempotency_key=idempotency_key, max_attempts=1
         )
+        if job.state != JobState.QUEUED:
+            return OrchestrationOutcome(job, False, None, "idempotent_replay_existing_job")
+
         if self._policy_gate is None:
             blocked = self.supervisor.start(job.job_id, authorized=False)
             self.supervisor.ledger.append({
@@ -94,7 +97,15 @@ class Orchestrator:
             })
             return OrchestrationOutcome(blocked, False, None, reason)
 
-        capabilities = adapter.describe()
+        try:
+            capabilities = adapter.describe()
+        except Exception:
+            blocked = self.supervisor.start(job.job_id, authorized=False)
+            self.supervisor.ledger.append({
+                "type": "orchestration_refused", "job_id": job.job_id,
+                "reason": "adapter_description_unavailable",
+            })
+            return OrchestrationOutcome(blocked, False, None, "adapter_description_unavailable")
         if not capabilities.official_api:
             blocked = self.supervisor.start(job.job_id, authorized=False)
             self.supervisor.ledger.append({
@@ -126,13 +137,24 @@ class Orchestrator:
         except Exception:
             # Unknown adapter exceptions are not automatically retried: the
             # adapter may have completed a side effect before raising.
-            blocked = Job(**{**running.__dict__, "state": JobState.BLOCKED})
-            self.supervisor._jobs[running.job_id] = blocked
+            blocked = self.supervisor.block(
+                running.job_id, reason="adapter_outcome_unknown_manual_reconciliation_required"
+            )
             self.supervisor.ledger.append({
                 "type": "adapter_outcome_unknown", "job_id": running.job_id,
                 "reason": "manual_reconciliation_required",
             })
             return OrchestrationOutcome(blocked, False, None, "adapter_outcome_unknown")
+
+        if not isinstance(result, ExecutionResult) or not isinstance(result.success, bool):
+            blocked = self.supervisor.block(
+                running.job_id, reason="invalid_adapter_result_manual_reconciliation_required"
+            )
+            self.supervisor.ledger.append({
+                "type": "adapter_outcome_unknown", "job_id": running.job_id,
+                "reason": "invalid_adapter_result",
+            })
+            return OrchestrationOutcome(blocked, False, None, "invalid_adapter_result")
 
         final = self.supervisor.finish(
             running.job_id,
