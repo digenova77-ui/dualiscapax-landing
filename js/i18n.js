@@ -73,6 +73,13 @@
       const value = translations[el.getAttribute('data-i18n-placeholder')];
       if (value != null) el.setAttribute('placeholder', String(value));
     });
+    ['aria-label', 'title', 'content'].forEach(function (attribute) {
+      const dataAttribute = 'data-i18n-' + attribute;
+      document.querySelectorAll('[' + dataAttribute + ']').forEach(function (el) {
+        const value = translations[el.getAttribute(dataAttribute)];
+        if (value != null) el.setAttribute(attribute, String(value));
+      });
+    });
     document.documentElement.setAttribute('lang', currentLang);
     document.querySelectorAll('#dc-lang-switch').forEach(function (select) {
       select.value = currentLang;
