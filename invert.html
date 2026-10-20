@@ -18,11 +18,12 @@
         <a href="/onboard.html">Desk</a>
         <a href="/invert.html" class="on">Invert</a>
         <a href="/leave.html">Leave</a>
-    </nav>
+    <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
+  </nav>
   </header>
   <p class="eyebrow">Measure</p>
-  <h1>Invert</h1>
-  <p class="lede">A number only counts if you can walk it back to its source. That is the invert rule.</p>
+  <h1 data-i18n="invert.h1">Invert</h1>
+  <p class="lede" data-i18n="invert.lede">A number only counts if you can walk it back to its source. That is the invert rule.</p>
   <section>
     <h2>The test</h2>
     <div class="layer">
@@ -42,5 +43,6 @@
   </section>
   <footer>DualisCapax · invert the claim</footer>
 </div>
+<script src="js/i18n.js"></script><script>document.getElementById("dc-lang-switch")?.addEventListener("change",function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
