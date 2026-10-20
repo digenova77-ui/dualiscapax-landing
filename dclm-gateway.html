@@ -54,7 +54,7 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
       <a href="/onboard.html">Onboard</a>
       · <a href="/alacarte.html">A la carte</a>
       · <a href="/payments.html">Pay later</a>
-    </div>
+    </div><select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
   </div>
 
   <div class="hud" id="hud">
@@ -73,8 +73,8 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
   </div>
 
   <p class="kicker">ED-MANIFEST-20260830-V5 · steps 1–5</p>
-  <h1>Gateway control plane</h1>
-  <p class="lede">Capacity tier, equal-CAD crypto rail, sealed slip, telemetry, parallel combos. Measure here. Money waits on live Payment Links.</p>
+  <h1 data-i18n="gateway.h1">Gateway control plane</h1>
+  <p class="lede" data-i18n="gateway.lede">Capacity tier, equal-CAD crypto rail, sealed slip, telemetry, parallel combos. Measure here. Money waits on live Payment Links.</p>
   <div class="closed"><strong>Checkout closed.</strong> Prices and rails are itemized. No Stripe URLs invented. No <code>sk_</code> keys. Equal-CAD crypto is not an exchange.</div>
 
   <section class="step" id="s1">
@@ -244,5 +244,6 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
   setInterval(ping, 1000);
 })();
 </script>
+<script src="js/i18n.js"></script><script>document.getElementById('dc-lang-switch')?.addEventListener('change',function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
 </body>
 </html>
