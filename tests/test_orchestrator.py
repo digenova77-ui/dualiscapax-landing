@@ -6,13 +6,16 @@ from autonomy.supervisor import JobState
 
 
 class FakeAdapter:
-    def __init__(self, *, official=True, required_scopes=frozenset({"repo:read"}), raises=False):
+    def __init__(self, *, official=True, required_scopes=frozenset({"repo:read"}), raises=False, describe_raises=False):
         self.official = official
         self.required_scopes = required_scopes
         self.raises = raises
+        self.describe_raises = describe_raises
         self.calls = 0
 
     def describe(self):
+        if self.describe_raises:
+            raise RuntimeError("provider metadata unavailable")
         return AdapterCapabilities(
             provider="test-provider", capabilities=frozenset({"read"}),
             required_scopes=self.required_scopes, official_api=self.official,
@@ -113,6 +116,32 @@ class OrchestratorTests(unittest.TestCase):
             adapter=adapter, required_scopes=frozenset({"repo:read"}),
         )
         self.assertFalse(result.executed)
+        self.assertEqual(adapter.calls, 0)
+
+    def test_replay_does_not_execute_same_job_twice(self):
+        adapter = FakeAdapter()
+        orchestrator = Orchestrator(policy_gate=approved_gate)
+        first = orchestrator.run_once(
+            task_type="read", payload={}, idempotency_key="same",
+            adapter=adapter, required_scopes=frozenset({"repo:read"}),
+        )
+        second = orchestrator.run_once(
+            task_type="read", payload={}, idempotency_key="same",
+            adapter=adapter, required_scopes=frozenset({"repo:read"}),
+        )
+        self.assertTrue(first.executed)
+        self.assertFalse(second.executed)
+        self.assertEqual(second.reason, "idempotent_replay_existing_job")
+        self.assertEqual(adapter.calls, 1)
+
+    def test_adapter_description_failure_blocks_before_execute(self):
+        adapter = FakeAdapter(describe_raises=True)
+        result = Orchestrator(policy_gate=approved_gate).run_once(
+            task_type="read", payload={}, idempotency_key="describe-error",
+            adapter=adapter, required_scopes=frozenset({"repo:read"}),
+        )
+        self.assertFalse(result.executed)
+        self.assertEqual(result.reason, "adapter_description_unavailable")
         self.assertEqual(adapter.calls, 0)
 
     def test_unknown_adapter_exception_is_not_retried(self):
