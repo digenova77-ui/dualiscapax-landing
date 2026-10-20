@@ -24,6 +24,9 @@ class PageParser(HTMLParser):
         key = attrs.get("data-i18n")
         if key:
             self.keys.add(key)
+        placeholder_key = attrs.get("data-i18n-placeholder")
+        if placeholder_key:
+            self.keys.add(placeholder_key)
         if attrs.get("id") == "dc-lang-switch":
             self.has_switcher = True
         if tag == "script" and attrs.get("src"):
