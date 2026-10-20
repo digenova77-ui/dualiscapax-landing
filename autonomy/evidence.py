@@ -84,6 +84,8 @@ def create_evidence_envelope(*, task_id: str, outcome: str, evidence: Any) -> Ev
     """Create a deterministic, size-bounded, redacted envelope or fail closed."""
     if not task_id or not task_id.strip():
         raise ValueError("task_id is required")
+    if len(task_id) > 256 or any(ord(char) < 32 for char in task_id):
+        raise ValueError("task_id is invalid or exceeds 256 characters")
     if outcome not in {"succeeded", "failed", "blocked", "cancelled", "unknown"}:
         raise ValueError("unsupported outcome")
     safe = redact(evidence)
