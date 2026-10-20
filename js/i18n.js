@@ -1,67 +1,127 @@
 (function () {
   'use strict';
+
   const SUPPORTED = ['en', 'fr', 'es'];
   const DEFAULT_LANG = 'en';
   const STORAGE_KEY = 'dc-lang';
+  const EN_URL = '/i18n/en.json';
+  let currentLang = DEFAULT_LANG;
+  let translations = {};
+  let requestId = 0;
 
-  function detectLang() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && SUPPORTED.includes(stored)) return stored;
-    const nav = (navigator.language || navigator.userLanguage || '').slice(0, 2).toLowerCase();
-    return SUPPORTED.includes(nav) ? nav : DEFAULT_LANG;
+  function normaliseLang(value) {
+    const lang = String(value || '').trim().toLowerCase().replace(/_/g, '-');
+    if (SUPPORTED.includes(lang)) return lang;
+    const base = lang.split('-')[0];
+    return SUPPORTED.includes(base) ? base : DEFAULT_LANG;
   }
 
-  let currentLang = detectLang();
-  let translations = {};
-
-  async function load(lang) {
+  function readStoredLang() {
     try {
-      const res = await fetch(`/i18n/${lang}.json`, { cache: 'no-cache' });
-      if (!res.ok) throw new Error(res.status);
-      return await res.json();
-    } catch (e) {
-      console.warn('i18n load failed for', lang, e);
-      return {};
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (stored) return normaliseLang(stored);
+    } catch (_) {
+      // Storage may be disabled in private browsing or restricted contexts.
+    }
+    return normaliseLang(navigator.language || navigator.userLanguage);
+  }
+
+  function saveLang(lang) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, lang);
+    } catch (_) {
+      // Language still works for this page even when persistence is unavailable.
     }
   }
 
-  function apply(t) {
-    translations = t || {};
-    document.querySelectorAll('[data-i18n]').forEach(function (el) {
-      const key = el.getAttribute('data-i18n');
-      const val = translations[key];
-      if (val == null) return;
-      if (el.hasAttribute('data-i18n-html')) {
-        el.innerHTML = val;
-      } else {
-        el.textContent = val;
-      }
-    });
-    document.documentElement.setAttribute('lang', currentLang);
-    const sel = document.getElementById('dc-lang-switch');
-    if (sel) sel.value = currentLang;
+  async function load(lang) {
+    const response = await fetch('/i18n/' + lang + '.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const value = await response.json();
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      throw new Error('Translation catalog must be a JSON object');
+    }
+    return value;
   }
 
-  async function setLang(lang) {
-    if (!SUPPORTED.includes(lang)) return;
+  function writeText(el, value) {
+    if (el.hasAttribute('data-i18n-html')) {
+      // Only use data-i18n-html for trusted repository-authored catalog values.
+      el.innerHTML = value;
+      return;
+    }
+    if (el.childElementCount === 0) {
+      el.textContent = value;
+      return;
+    }
+    // Preserve nested icons/controls: replace a direct text node only.
+    const textNode = Array.from(el.childNodes).find(function (node) {
+      return node.nodeType === Node.TEXT_NODE && node.nodeValue.trim();
+    });
+    if (textNode) textNode.nodeValue = value;
+  }
+
+  function apply(catalog) {
+    translations = catalog || {};
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      const key = el.getAttribute('data-i18n');
+      const value = translations[key];
+      if (value == null) return;
+      writeText(el, String(value));
+    });
+    document.documentElement.setAttribute('lang', currentLang);
+    document.querySelectorAll('#dc-lang-switch').forEach(function (select) {
+      select.value = currentLang;
+    });
+  }
+
+  async function setLang(value) {
+    const lang = normaliseLang(value);
     currentLang = lang;
-    localStorage.setItem(STORAGE_KEY, lang);
-    const t = await load(lang);
-    apply(t);
+    saveLang(lang);
+    const thisRequest = ++requestId;
+    try {
+      const english = lang === DEFAULT_LANG ? {} : await load(DEFAULT_LANG);
+      const selected = lang === DEFAULT_LANG ? english : await load(lang);
+      if (thisRequest !== requestId) return;
+      apply(Object.assign({}, english, selected));
+    } catch (error) {
+      if (thisRequest !== requestId) return;
+      console.warn('i18n load failed for ' + lang + '; using available English fallback.', error);
+      try {
+        const english = await load(DEFAULT_LANG);
+        if (thisRequest !== requestId) return;
+        apply(english);
+      } catch (fallbackError) {
+        console.warn('i18n English fallback unavailable.', fallbackError);
+        if (thisRequest === requestId) apply({});
+      }
+    }
     if (typeof window.DC_i18n_onChange === 'function') {
-      window.DC_i18n_onChange(lang, t);
+      window.DC_i18n_onChange(currentLang, translations);
     }
   }
 
   window.DC_i18n = {
     setLang: setLang,
-    get: function (key, fallback) { return translations[key] != null ? translations[key] : (fallback || key); },
+    get: function (key, fallback) {
+      return translations[key] != null ? translations[key] : (fallback || key);
+    },
     current: function () { return currentLang; },
-    translations: function () { return translations; }
+    translations: function () { return translations; },
+    supported: function () { return SUPPORTED.slice(); }
   };
 
-  document.addEventListener('DOMContentLoaded', async function () {
-    const t = await load(currentLang);
-    apply(t);
+  function bindSwitchers() {
+    document.querySelectorAll('#dc-lang-switch').forEach(function (select) {
+      if (select.dataset.dcI18nBound === 'true') return;
+      select.dataset.dcI18nBound = 'true';
+      select.addEventListener('change', function () { setLang(select.value); });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    bindSwitchers();
+    setLang(readStoredLang());
   });
 })();
