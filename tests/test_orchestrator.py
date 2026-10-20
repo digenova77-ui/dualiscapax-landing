@@ -49,7 +49,8 @@ class OrchestratorTests(unittest.TestCase):
 
     def test_approved_path_executes_and_records_evidence(self):
         adapter = FakeAdapter()
-        result = Orchestrator(policy_gate=approved_gate).run_once(
+        orchestrator = Orchestrator(policy_gate=approved_gate)
+        result = orchestrator.run_once(
             task_type="read", payload={}, idempotency_key="b",
             adapter=adapter, required_scopes=frozenset({"repo:read"}),
         )
@@ -57,7 +58,7 @@ class OrchestratorTests(unittest.TestCase):
         self.assertTrue(result.result.success)
         self.assertEqual(result.job.state, JobState.SUCCEEDED)
         self.assertTrue(result.job.result_digest)
-        self.assertTrue(Orchestrator(policy_gate=approved_gate).supervisor.ledger.verify())
+        self.assertTrue(orchestrator.supervisor.ledger.verify())
 
     def test_unofficial_adapter_is_never_called(self):
         adapter = FakeAdapter(official=False)
@@ -79,6 +80,21 @@ class OrchestratorTests(unittest.TestCase):
         adapter = FakeAdapter()
         result = Orchestrator(policy_gate=no_terms).run_once(
             task_type="read", payload={}, idempotency_key="d",
+            adapter=adapter, required_scopes=frozenset({"repo:read"}),
+        )
+        self.assertFalse(result.executed)
+        self.assertEqual(adapter.calls, 0)
+
+    def test_excess_scope_grant_blocks_execution(self):
+        def excess_scope(job_id, task_type, scopes):
+            return AuthorizationDecision(
+                approved=True, task_id=job_id, authority_id="owner-approval-extra",
+                allowed_scopes=frozenset({"repo:read", "admin:all"}),
+                policy_version="trinity-test-v1", owner_terms_accepted=True,
+            )
+        adapter = FakeAdapter()
+        result = Orchestrator(policy_gate=excess_scope).run_once(
+            task_type="read", payload={}, idempotency_key="extra",
             adapter=adapter, required_scopes=frozenset({"repo:read"}),
         )
         self.assertFalse(result.executed)
