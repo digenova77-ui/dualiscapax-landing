@@ -1,45 +1,42 @@
-name: Trinity affinity planner tests
+name: Trinity autonomy tests
 
 on:
   push:
     branches:
       - "feat/trinity-affinity-autonomy-20261020"
     paths:
-      - "autonomy/affinity.py"
-      - "autonomy/integration_lifecycle.py"
-      - "tests/test_supervisor.py"
-      - "tests/test_ledger.py"
-      - "autonomy/adapters.py"
-      - "autonomy/supervisor.py"
-      - "autonomy/ledger.py"
+      - "autonomy/**"
       - "tests/test_affinity.py"
       - "tests/test_integration_lifecycle.py"
+      - "tests/test_ledger.py"
+      - "tests/test_supervisor.py"
       - ".github/workflows/trinity-affinity-tests.yml"
   pull_request:
     paths:
-      - "autonomy/affinity.py"
-      - "autonomy/integration_lifecycle.py"
+      - "autonomy/**"
       - "tests/test_affinity.py"
       - "tests/test_integration_lifecycle.py"
+      - "tests/test_ledger.py"
+      - "tests/test_supervisor.py"
       - ".github/workflows/trinity-affinity-tests.yml"
 
 permissions:
   contents: read
 
 jobs:
-  deterministic-affinity:
+  autonomy-regression:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run offline affinity and authorization tests
+      - name: Run affinity and authorization tests
         run: PYTHONPATH=. python tests/test_affinity.py -v
-      - name: Run fail-closed integration lifecycle tests
+      - name: Run integration lifecycle tests
         run: PYTHONPATH=. python tests/test_integration_lifecycle.py -v
-      - name: Run ledger integrity tests
+      - name: Run hash-chain ledger tests
         run: PYTHONPATH=. python tests/test_ledger.py -v
       - name: Run supervisor idempotency and retry tests
         run: PYTHONPATH=. python tests/test_supervisor.py -v
