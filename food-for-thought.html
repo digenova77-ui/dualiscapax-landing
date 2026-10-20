@@ -35,9 +35,10 @@ footer{margin-top:1.5rem;font-size:.7rem;color:var(--muted)}
 </head>
 <body>
 <div class="wrap">
-  <span class="pill">Food for thought · Beta stash</span>
-  <h1>ID and other items</h1>
-  <p class="sub">Stashed notes toward a Unity Framework Standard — identity, ledger classes, admission, and account limits. Starting point: one holder graph. Not a securities offer. Not legal advice.</p>
+  <span class="pill" data-i18n="food.pill">Food for thought · Beta stash</span>
+  <select id="dc-lang-switch" aria-label="Language" data-i18n-aria-label="language.label"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
+  <h1 data-i18n="food.h1">ID and other items</h1>
+  <p class="sub" data-i18n="food.sub">Stashed notes toward a Unity Framework Standard — identity, ledger classes, admission, and account limits. Starting point: one holder graph. Not a securities offer. Not legal advice.</p>
 
   <div class="note">
     <strong>Stash label:</strong> food for thought — ID and other items.<br>
@@ -116,5 +117,6 @@ footer{margin-top:1.5rem;font-size:.7rem;color:var(--muted)}
   </nav>
   <footer>DualisCapax · Food for thought · UFS-0.1 draft · Not legal advice · No tribes preferred</footer>
 </div>
+<script src="js/i18n.js"></script>
 </body>
 </html>
