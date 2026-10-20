@@ -73,6 +73,8 @@ jobs:
         run: PYTHONPATH=. python tests/test_orchestrator.py -v
       - name: Run sandbox policy tests
         run: PYTHONPATH=. python tests/test_sandbox_policy.py -v
+      - name: Run Diamond Mesh topology and observation tests
+        run: PYTHONPATH=. python tests/test_diamond_mesh.py -v
       - name: Run evidence redaction tests
         run: PYTHONPATH=. python tests/test_evidence.py -v
       - name: Run reviewer attestation verification tests
