@@ -9,11 +9,11 @@
 <body>
 <header>
   <a class="brand" href="hub.html" style="text-decoration:none;color:inherit">ASK</a>
-  <nav><a href="pay.html">Pay</a><a href="study.html">Study</a></nav>
+  <nav><a href="pay.html">Pay</a><a href="study.html">Study</a><select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select></nav>
 </header>
 <main>
-  <h1>One schema. Every medical leaf.</h1>
-  <p class="lead">ALS was the prototype. Osteosarcoma, neurology, oncology, and any later leaf use the same depths. We do not sell a disease. We sell how far the work goes. Look is free. Checkout is Stripe CAD. Cards stay off the plate.</p>
+  <h1 data-i18n="pricing.h1">One schema. Every medical leaf.</h1>
+  <p class="lead" data-i18n="pricing.lede">ALS was the prototype. Osteosarcoma, neurology, oncology, and any later leaf use the same depths. We do not sell a disease. We sell how far the work goes. Look is free. Checkout is Stripe CAD. Cards stay off the plate.</p>
 
   <div class="card">
     <h2>How detailed the ALS schema is</h2>
@@ -49,5 +49,6 @@
     <p>Same plate for ALS and for every other leaf: public serial only. Stripe only. Webhook on the fulfill worker. Hospital / physician / pharmacy may ask the holder for a card. Dualis does not store it. No diagnosis for sale.</p>
   </div>
 </main>
+<script src="js/i18n.js"></script>
 </body>
 </html>

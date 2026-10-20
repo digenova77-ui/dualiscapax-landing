@@ -30,10 +30,11 @@ th{color:#8eb4c8;font-weight:600}
 </head>
 <body>
 <a class="mark" href="index.html">DualisCapax</a>
+<select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
 <main>
-  <p class="kicker">How it works</p>
-  <h1>Four steps. Your papers stay on your phone. The law stays the law.</h1>
-  <p class="lede">This is for anyone. You do not need a title. You can stop after step 1.</p>
+  <p class="kicker" data-i18n="how.kicker">How it works</p>
+  <h1 data-i18n="how.h1">Four steps. Your papers stay on your phone. The law stays the law.</h1>
+  <p class="lede" data-i18n="how.lede">This is for anyone. You do not need a title. You can stop after step 1.</p>
   <ol>
     <li><strong>Look around.</strong> Free. No account.</li>
     <li><strong>Pick the desk you already have.</strong> Country, province, company, shop, home, or just you.</li>
@@ -82,5 +83,6 @@ th{color:#8eb4c8;font-weight:600}
     <p class="fine">Not advice. Not a security. Not a signup club. DualisCapax Inc., Belleville, Ontario.</p>
   </section>
 </main>
+<script src="js/i18n.js"></script>
 </body>
 </html>

@@ -37,10 +37,11 @@ footer{border-top:1px solid var(--border);padding:1rem;text-align:center;font-si
     <li><a href="payments.html">Bind</a></li>
     <li><a class="on" href="participate.html">Participate</a></li>
   </ul>
+  <select id="dc-lang-switch" aria-label="Language"><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option></select>
 </nav>
 <main>
-  <h1>Participate</h1>
-  <p class="lead">We do not want your money as a pitch. If you bind, you name leftover you already pay — so more people can look for free. Buttons stay closed until settlement is real. Walk away whenever you want.</p>
+  <h1 data-i18n="participate.h1">Participate</h1>
+  <p class="lead" data-i18n="participate.lede">We do not want your money as a pitch. If you bind, you name leftover you already pay — so more people can look for free. Buttons stay closed until settlement is real. Walk away whenever you want.</p>
 
   <h2>If you choose to bind</h2>
   <div class="lane">
@@ -79,5 +80,6 @@ footer{border-top:1px solid var(--border);padding:1rem;text-align:center;font-si
   w('pay-cost',c.cost_reduction);w('pay-capacity',c.capacity);w('pay-fuel',c.fuel||c.fusion_meter);w('pay-ubi',c.ubi);
 })();
 </script>
+<script src="js/i18n.js"></script>
 </body>
 </html>
