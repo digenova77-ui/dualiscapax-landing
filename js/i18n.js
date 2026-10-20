@@ -8,6 +8,7 @@
   let currentLang = DEFAULT_LANG;
   let translations = {};
   let requestId = 0;
+  let pendingLang = null;
 
   function normaliseLang(value) {
     const lang = String(value || '').trim().toLowerCase().replace(/_/g, '-');
@@ -77,6 +78,14 @@
 
   async function setLang(value) {
     const lang = normaliseLang(value);
+    if (pendingLang === lang) return;
+    if (lang === currentLang && pendingLang === null && Object.keys(translations).length) {
+      document.querySelectorAll('#dc-lang-switch').forEach(function (select) {
+        select.value = currentLang;
+      });
+      return;
+    }
+    pendingLang = lang;
     currentLang = lang;
     saveLang(lang);
     const thisRequest = ++requestId;
@@ -84,9 +93,11 @@
       const english = lang === DEFAULT_LANG ? {} : await load(DEFAULT_LANG);
       const selected = lang === DEFAULT_LANG ? english : await load(lang);
       if (thisRequest !== requestId) return;
+      pendingLang = null;
       apply(Object.assign({}, english, selected));
     } catch (error) {
       if (thisRequest !== requestId) return;
+      pendingLang = null;
       console.warn('i18n load failed for ' + lang + '; using available English fallback.', error);
       try {
         const english = await load(DEFAULT_LANG);
