@@ -30,6 +30,8 @@ class EvidenceTests(unittest.TestCase):
         })
         self.assertEqual(clean["password"], "[REDACTED]")
         self.assertEqual(clean["nested"]["github_token"], "[REDACTED]")
+        self.assertEqual(redact({"privateKey": "never-log", "accessToken": "never-log"})["privateKey"], "[REDACTED]")
+        self.assertEqual(redact({"privateKey": "never-log", "accessToken": "never-log"})["accessToken"], "[REDACTED]")
         self.assertEqual(clean["safe"], "visible")
         self.assertNotIn("do-not-leak", repr(clean))
 
@@ -40,6 +42,9 @@ class EvidenceTests(unittest.TestCase):
         self.assertNotIn("abc.def-123", clean["message"])
         self.assertNotIn("supersecretvalue", clean["message"])
         self.assertIn("[REDACTED]", clean["message"])
+        for token in ("AKIAABCDEFGHIJKLMNOP", "glpat-abcdefghijklmnop", "xoxb-123456789012345"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, redact({"log": "credential=" + token})["log"])
 
     def test_unsupported_values_do_not_call_arbitrary_string_methods(self):
         class Dangerous:
