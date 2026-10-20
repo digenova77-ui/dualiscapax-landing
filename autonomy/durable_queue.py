@@ -242,7 +242,7 @@ class SQLiteJobQueue:
             if row is None:
                 db.execute("ROLLBACK")
                 raise KeyError("unknown job")
-            state, owner, lease_until = row
+            state, owner, lease_until, generation = row
             if state != "cancel_requested" or owner != worker_id or lease_generation is None or generation != lease_generation or lease_until is None or now >= lease_until:
                 db.execute("ROLLBACK")
                 raise PermissionError("worker does not hold a live cancellation lease")
