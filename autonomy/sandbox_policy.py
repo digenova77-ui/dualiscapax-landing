@@ -148,6 +148,7 @@ def validate_sandbox_policy(
             or "\\" in policy.workspace_root
         ):
             reasons.append("workspace_root_invalid")
+    invalid_allowlist = False
     for field_name, values in (
         ("read", policy.allowed_read_paths),
         ("write", policy.allowed_write_paths),
@@ -160,6 +161,9 @@ def validate_sandbox_policy(
     ):
         if not isinstance(values, (set, frozenset)) or any(not isinstance(value, str) for value in values):
             reasons.append(f"{field_name}_allowlist_invalid")
+            invalid_allowlist = True
+    if invalid_allowlist:
+        return SandboxDecision(False, tuple(sorted(set(reasons))), policy.policy_version if isinstance(policy.policy_version, str) else "", task_id if isinstance(task_id, str) else "")
     if any(not _valid_environment_name(name) for name in policy.allowed_environment):
         reasons.append("environment_name_invalid")
     if any(_credential_like_environment_name(name) for name in policy.allowed_environment if isinstance(name, str)):
