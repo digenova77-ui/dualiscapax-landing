@@ -66,6 +66,18 @@ class OrchestratorTests(unittest.TestCase):
         self.assertEqual(result.reason, "authorization_decision_malformed")
         self.assertEqual(adapter.calls, 0)
 
+    def test_malformed_adapter_description_fails_closed(self):
+        class MalformedAdapter(FakeAdapter):
+            def describe(self):
+                return None
+        adapter = MalformedAdapter()
+        result = Orchestrator(policy_gate=approved_gate).run_once(
+            task_type="read", payload={}, idempotency_key="bad-capabilities",
+            adapter=adapter, required_scopes=frozenset({"repo:read"}),
+        )
+        self.assertEqual(result.reason, "adapter_capability_contract_invalid")
+        self.assertEqual(adapter.calls, 0)
+
     def test_missing_policy_gate_fails_closed(self):
         adapter = FakeAdapter()
         result = Orchestrator().run_once(
