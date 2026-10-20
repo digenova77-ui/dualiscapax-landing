@@ -33,6 +33,7 @@ on:
       - "tests/test_sandbox_policy.py"
       - "tests/test_evidence.py"
       - "tests/test_worker_runner.py"
+      - "tests/test_workflow_audit.py"
       - ".github/workflows/trinity-affinity-tests.yml"
 permissions:
   contents: read
