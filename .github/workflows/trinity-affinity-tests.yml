@@ -16,6 +16,7 @@ on:
       - "tests/test_provisioning.py"
       - "tests/test_sandbox_policy.py"
       - "tests/test_evidence.py"
+      - "tests/test_worker_runner.py"
       - ".github/workflows/trinity-affinity-tests.yml"
   pull_request:
     paths:
@@ -30,6 +31,7 @@ on:
       - "tests/test_provisioning.py"
       - "tests/test_sandbox_policy.py"
       - "tests/test_evidence.py"
+      - "tests/test_worker_runner.py"
       - ".github/workflows/trinity-affinity-tests.yml"
 permissions:
   contents: read
@@ -63,5 +65,7 @@ jobs:
         run: PYTHONPATH=. python tests/test_sandbox_policy.py -v
       - name: Run evidence redaction tests
         run: PYTHONPATH=. python tests/test_evidence.py -v
+      - name: Run fail-closed worker runner tests
+        run: PYTHONPATH=. python tests/test_worker_runner.py -v
       - name: Run complete Python regression suite
         run: PYTHONPATH=. python -m unittest discover -s tests -p "test_*.py" -v
