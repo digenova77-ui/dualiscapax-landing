@@ -21,6 +21,7 @@ on:
       - "tests/test_workflow_audit.py"
       - "tests/test_research_protocol.py"
       - "tests/test_diamond_ceiling.py"
+      - "tests/test_diamond_standard.py"
       - "tests/test_diamond_mesh.py"
       - ".github/workflows/trinity-affinity-tests.yml"
   pull_request:
@@ -111,6 +112,8 @@ jobs:
           if added or resolved:
               raise SystemExit("workflow risk baseline drift: review findings and update the baseline intentionally")
           PY
+      - name: Run Diamond Standard conformance tests
+        run: PYTHONPATH=. python tests/test_diamond_standard.py -v
       - name: Run Diamond Ceiling integrity gate tests
         run: PYTHONPATH=. python tests/test_diamond_ceiling.py -v
       - name: Run plant research protocol safety tests
