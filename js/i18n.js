@@ -4,7 +4,6 @@
   const SUPPORTED = ['en', 'fr', 'es'];
   const DEFAULT_LANG = 'en';
   const STORAGE_KEY = 'dc-lang';
-  const EN_URL = '/i18n/en.json';
   let currentLang = DEFAULT_LANG;
   let translations = {};
   let requestId = 0;
@@ -69,6 +68,10 @@
       const value = translations[key];
       if (value == null) return;
       writeText(el, String(value));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+      const value = translations[el.getAttribute('data-i18n-placeholder')];
+      if (value != null) el.setAttribute('placeholder', String(value));
     });
     document.documentElement.setAttribute('lang', currentLang);
     document.querySelectorAll('#dc-lang-switch').forEach(function (select) {
