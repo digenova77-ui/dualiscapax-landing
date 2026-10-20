@@ -76,6 +76,24 @@ steps:
             self.assertIn(("c.yml", "ACTION_NOT_SHA_PINNED"), [(f.path, f.rule_id) for f in added])
             self.assertIn({"path": "b.yml", "rule_id": "OIDC_TOKEN_MINTING", "severity": "medium"}, resolved)
 
+
+    def test_matching_reviewed_baseline_has_zero_drift(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "baseline.json"
+            source = "permissions: " + chr(10) + "  contents: write" + chr(10)
+            finding = inspect_workflow(source, "a.yml")[0]
+            path.write_text(json.dumps({
+                "schema_version": "trinity-workflow-risk-baseline-v1",
+                "findings": [{
+                    "path": finding.path,
+                    "rule_id": finding.rule_id,
+                    "severity": finding.severity,
+                }],
+            }), encoding="utf-8")
+            added, resolved = compare_baseline([finding], path)
+            self.assertEqual(added, [])
+            self.assertEqual(resolved, [])
+
     def test_baseline_rejects_duplicate_or_invalid_entries(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "baseline.json"
