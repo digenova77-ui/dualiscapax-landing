@@ -16,6 +16,7 @@ on:
       - "tests/test_provisioning.py"
       - "tests/test_sandbox_policy.py"
       - "tests/test_evidence.py"
+      - "tests/test_attestations.py"
       - "tests/test_worker_runner.py"
       - "tests/test_workflow_audit.py"
       - "tests/test_research_protocol.py"
@@ -35,6 +36,7 @@ on:
       - "tests/test_provisioning.py"
       - "tests/test_sandbox_policy.py"
       - "tests/test_evidence.py"
+      - "tests/test_attestations.py"
       - "tests/test_research_protocol.py"
       - "tests/test_diamond_mesh.py"
       - "tests/test_diamond_ceiling.py"
@@ -73,6 +75,8 @@ jobs:
         run: PYTHONPATH=. python tests/test_sandbox_policy.py -v
       - name: Run evidence redaction tests
         run: PYTHONPATH=. python tests/test_evidence.py -v
+      - name: Run reviewer attestation verification tests
+        run: PYTHONPATH=. python tests/test_attestations.py -v
       - name: Run fail-closed worker runner tests
         run: PYTHONPATH=. python tests/test_worker_runner.py -v
       - name: Enforce workflow risk inventory baseline
