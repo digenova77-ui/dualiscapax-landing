@@ -1,0 +1,109 @@
+name: Residual Pulse
+
+on:
+  schedule:
+    # Daily at 06:00 UTC — low traffic window
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "i18n/**"
+      - "js/i18n.js"
+      - "tools/i18n_check.py"
+      - ".github/workflows/residual-pulse.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: residual-pulse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run i18n static validation
+        id: i18n
+        continue-on-error: true
+        run: |
+          set +e
+          python3 tools/i18n_check.py > /tmp/i18n-out.txt 2>&1
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+          cat /tmp/i18n-out.txt
+          echo "output<<EOF" >> $GITHUB_OUTPUT
+          cat /tmp/i18n-out.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Extract coverage numbers
+        id: coverage
+        run: |
+          OUT=$(cat /tmp/i18n-out.txt || true)
+          # Parse the PASS line if present
+          if echo "$OUT" | grep -q "i18n check: PASS"; then
+            # Example: i18n check: PASS — 42/180 HTML pages wired to i18n, 312 keys per locale, 3 locales.
+            WIRED=$(echo "$OUT" | grep -oE '[0-9]+/[0-9]+ HTML pages' | head -1 | cut -d'/' -f1)
+            TOTAL=$(echo "$OUT" | grep -oE '[0-9]+/[0-9]+ HTML pages' | head -1 | cut -d'/' -f2 | cut -d' ' -f1)
+            KEYS=$(echo "$OUT" | grep -oE '[0-9]+ keys per locale' | head -1 | cut -d' ' -f1)
+            BACKLOG=$(echo "$OUT" | grep -oE 'i18n coverage backlog: [0-9]+' | head -1 | cut -d' ' -f4 || echo "0")
+            STATUS="PASS"
+          else
+            WIRED="0"
+            TOTAL="0"
+            KEYS="0"
+            BACKLOG="unknown"
+            STATUS="FAIL"
+          fi
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "wired=$WIRED" >> $GITHUB_OUTPUT
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "keys=$KEYS" >> $GITHUB_OUTPUT
+          echo "backlog=$BACKLOG" >> $GITHUB_OUTPUT
+
+      - name: Write residual pulse artifact
+        run: |
+          mkdir -p residual
+          DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          SHA=${{ github.sha }}
+          cat > residual/pulse.md << EOF
+          # Residual Pulse
+          **Time:** $DATE
+          **Commit:** $SHA
+          **i18n status:** ${{ steps.coverage.outputs.status }}
+          **Pages wired:** ${{ steps.coverage.outputs.wired }} / ${{ steps.coverage.outputs.total }}
+          **Keys per locale:** ${{ steps.coverage.outputs.keys }}
+          **Unwired backlog:** ${{ steps.coverage.outputs.backlog }}
+
+          ## Raw i18n check
+          \`\`\`
+          ${{ steps.i18n.outputs.output }}
+          \`\`\`
+
+          ---
+          Fail-closed. Nothing claimed beyond the measured numbers above.
+          EOF
+          echo "Wrote residual/pulse.md"
+
+      - name: Upload pulse artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: residual-pulse-${{ github.run_id }}
+          path: residual/pulse.md
+          retention-days: 14
+
+      - name: Job summary
+        run: |
+          echo "## Residual Pulse" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| i18n status | \`${{ steps.coverage.outputs.status }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pages wired | ${{ steps.coverage.outputs.wired }} / ${{ steps.coverage.outputs.total }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Keys per locale | ${{ steps.coverage.outputs.keys }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unwired backlog | ${{ steps.coverage.outputs.backlog }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Artifact: residual-pulse-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
