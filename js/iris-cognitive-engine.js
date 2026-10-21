@@ -1,6 +1,7 @@
-// Agent Iris Cognitive Engine (v2.6 DCLM Kernel Client — i18n deepen)
+// Agent Iris Cognitive Engine (v2.7 DCLM Kernel Client — i18n + Residual Pulse badge)
 // DualisCapax Sovereign Control Plane
 // Uses DC_i18n.get when available; English fallbacks otherwise.
+// Residual Pulse badge is fail-closed: HOLE unless a measured PASS is loaded.
 
 document.addEventListener('DOMContentLoaded', () => {
   const stream = document.getElementById('embeddedIrisStream');
@@ -13,8 +14,41 @@ document.addEventListener('DOMContentLoaded', () => {
       : fallback;
   }
 
+  // Fail-closed Residual Pulse status. Defaults to HOLE.
+  let residualStatus = 'HOLE';
+  let residualDetail = 'no measured pulse loaded';
+
+  async function loadResidualPulse() {
+    try {
+      const res = await fetch('/residual/pulse.json', { cache: 'no-cache' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.status === 'PASS') {
+        residualStatus = 'PASS';
+        residualDetail = `wired ${data.wired || '?'}/${data.total || '?'} · keys ${data.keys || '?'}`;
+      } else {
+        residualStatus = 'HOLE';
+        residualDetail = data && data.status ? data.status : 'non-PASS';
+      }
+    } catch (_) {
+      residualStatus = 'HOLE';
+      residualDetail = 'fetch unavailable';
+    }
+  }
+
+  function pulseBadgeHtml() {
+    const color = residualStatus === 'PASS' ? '#10b981' : '#f59e0b';
+    const bg = residualStatus === 'PASS' ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)';
+    const label = residualStatus === 'PASS'
+      ? t('iris.cognitive.pulse.pass', 'Residual Pulse: PASS')
+      : t('iris.cognitive.pulse.hole', 'Residual Pulse: HOLE');
+    return `<span style="font-size: 0.7rem; font-family: var(--font-mono); color: ${color}; background: ${bg}; padding: 2px 6px; border-radius: 4px; margin-left: 6px;" title="${residualDetail}">${label}</span>`;
+  }
+
   // Interactive handler for embedded Iris chat if container exists
   if (stream) {
+    loadResidualPulse(); // fire-and-forget; badge updates on next render if needed
+
     window.submitIrisPrompt = function(customText) {
       const text = customText || (input ? input.value : '');
       if (!text || text.trim() === '') return;
@@ -35,7 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
         irisBubble.innerHTML = `
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700;">${t('iris.cognitive.header', 'Agent Iris · DCLM Sovereign Intelligence')}</span>
-            <span style="font-size: 0.7rem; font-family: var(--font-mono); color: #10b981; background: rgba(16,185,129,0.15); padding: 2px 6px; border-radius: 4px;">${t('iris.cognitive.invariant', 'Invariant M-S: <3.82ms [SEALED]')}</span>
+            <span>
+              <span style="font-size: 0.7rem; font-family: var(--font-mono); color: #10b981; background: rgba(16,185,129,0.15); padding: 2px 6px; border-radius: 4px;">${t('iris.cognitive.invariant', 'Invariant M-S: <3.82ms [SEALED]')}</span>
+              ${pulseBadgeHtml()}
+            </span>
           </div>
           <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-main);">${response}</div>
         `;
