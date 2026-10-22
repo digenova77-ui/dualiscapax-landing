@@ -5,7 +5,7 @@ const PORT = 18787;
 const BASE = `http://127.0.0.1:${PORT}`;
 
 const child = spawn("node", ["iris-voice-server.mjs"], {
-  cwd: "/workspace/artifacts",
+  cwd: process.cwd(),
   env: {
     ...process.env,
     PORT: String(PORT),

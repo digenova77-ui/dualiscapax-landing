@@ -41,6 +41,9 @@ button{border:0;border-radius:999px;background:var(--iris);color:#061018;font-we
 <script src="go.js"></script>
 <script src="answer-store.js"></script>
 <script src="iris-book.js"></script>
+<script src="/js/iris-policy.js"></script>
+<script src="/js/byok.js"></script>
+<script src="/js/iris-fuel-gate.js"></script>
 <script src="dclm-look.js"></script>
 <script>
 (function(){
@@ -54,7 +57,7 @@ button{border:0;border-radius:999px;background:var(--iris);color:#061018;font-we
     bubble("you",text);
     var rec={spoken:(window.DC_i18n&&DC_i18n.get)?DC_i18n.get("iris.fallback.ask","Ask about pay, law, rooms, or a public name."):"Ask about pay, law, rooms, or a public name."};
     try{
-      if(window.DCLMLook&&DCLMLook.run) rec=await DCLMLook.run(text);
+      if(window.DCLMLook&&DCLMLook.run){ var ticket=window.IrisFuel&&IrisFuel.admit?IrisFuel.admit(text):null; rec=await DCLMLook.run(text,ticket); }
     }catch(e){ rec={spoken:(window.DC_i18n&&DC_i18n.get)?DC_i18n.get("iris.fallback.stumble","I stumbled. Ask again in plain words."):"I stumbled. Ask again in plain words."}; }
     var spoken=(rec&&rec.spoken)||(window.DC_i18n&&DC_i18n.get?DC_i18n.get("iris.fallback.heard","I heard you."):"I heard you.");
     bubble("them",spoken);

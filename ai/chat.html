@@ -3,97 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Iris — Fullscreen DCLM Sovereign Cognitive Interface</title>
+  <meta name="theme-color" content="#060911">
+  <title>Iris · DualisCapax</title>
   <style>
-    :root {
-      --bg-primary: #060911;
-      --bg-card: #0c1220;
-      --bg-elevated: #162032;
-      --accent-cyan: #00f0ff;
-      --accent-blue: #3b82f6;
-      --accent-green: #10b981;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-color: #1e293b;
-      --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
-      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: var(--bg-primary); color: var(--text-main); font-family: var(--font-sans); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-    header { background: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .header-title { display: flex; align-items: center; gap: 12px; }
-    .live-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green); }
-    .header-title h1 { font-size: 1.25rem; font-weight: 700; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hud-badges { display: flex; gap: 10px; font-family: var(--font-mono); font-size: 0.75rem; }
-    .badge { padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-elevated); }
-    .badge-green { border-color: rgba(16,185,129,0.3); color: var(--accent-green); }
-    .badge-cyan { border-color: rgba(0,240,255,0.3); color: var(--accent-cyan); }
-    .btn-nav { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-color); }
-    .chat-container { flex: 1; display: flex; flex-direction: column; max-width: 1000px; width: 100%; margin: 0 auto; padding: 16px; overflow: hidden; }
-    .messages-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-    .msg-iris { background: var(--bg-card); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-cyan); padding: 14px 18px; border-radius: 8px; max-width: 90%; align-self: flex-start; }
-    .msg-user { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.4); border-right: 3px solid var(--accent-blue); padding: 12px 16px; border-radius: 8px; max-width: 85%; align-self: flex-end; }
-    .quick-prompts { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-    .quick-chip { background: var(--bg-elevated); border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 12px; border-radius: 20px; font-size: 0.78rem; cursor: pointer; }
-    .input-box-wrapper { display: flex; gap: 10px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; align-items: center; }
-    .input-box { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 0.95rem; outline: none; }
-    .btn-send { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); color: #000; font-weight: 700; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; }
+    :root{--bg-primary:#060911;--bg-card:#0c1220;--bg-elevated:#162032;--accent-cyan:#00f0ff;--accent-blue:#3b82f6;--accent-green:#10b981;--text-main:#f8fafc;--text-muted:#94a3b8;--border-color:#1e293b;--font-mono:"JetBrains Mono","SF Mono","Fira Code",monospace;--font-sans:Inter,-apple-system,BlinkMacSystemFont,sans-serif}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg-primary);color:var(--text-main);font-family:var(--font-sans);height:100dvh;display:flex;flex-direction:column}
+    header{background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .header-title{display:flex;align-items:center;gap:12px}.live-dot{width:10px;height:10px;border-radius:50%;background:var(--accent-cyan)}
+    h1{font-size:1.1rem;font-weight:700;color:var(--accent-cyan)}.hud-badges{display:flex;gap:8px;font-family:var(--font-mono);font-size:.7rem;flex-wrap:wrap}
+    .badge{padding:4px 8px;border-radius:4px;border:1px solid var(--border-color);background:var(--bg-elevated)}.badge-green{color:var(--accent-green)}.badge-cyan{color:var(--accent-cyan)}
+    .btn-nav{color:var(--text-muted);text-decoration:none;font-size:.8rem;padding:6px 10px;border-radius:6px;border:1px solid var(--border-color)}
+    .chat-container{flex:1;display:flex;flex-direction:column;max-width:1000px;width:100%;margin:0 auto;padding:16px;overflow:hidden;min-height:0}
+    .messages-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+    .msg-iris,.msg-user{padding:14px 18px;border-radius:8px;overflow-wrap:anywhere;white-space:pre-wrap}
+    .msg-iris{background:var(--bg-card);border:1px solid var(--border-color);border-left:3px solid var(--accent-cyan);max-width:92%;align-self:flex-start}
+    .msg-user{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);border-right:3px solid var(--accent-blue);max-width:88%;align-self:flex-end}
+    .quick-prompts{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.quick-chip{background:var(--bg-elevated);border:1px solid var(--border-color);color:var(--text-muted);padding:6px 12px;border-radius:20px;font-size:.78rem;cursor:pointer}
+    .input-box-wrapper{display:flex;gap:10px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:8px;padding:8px 12px;align-items:center}
+    .input-box{flex:1;min-width:0;background:transparent;border:none;color:var(--text-main);font-size:.95rem;outline:none}
+    .btn-send{background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue));color:#000;font-weight:700;border:none;padding:10px 18px;border-radius:6px;cursor:pointer}
+    .btn-send:disabled{opacity:.6;cursor:wait}.notice{color:var(--text-muted);font-size:.78rem;line-height:1.5;margin-bottom:12px}
+    @media(max-width:600px){header{align-items:flex-start;flex-direction:column}.chat-container{padding:10px}.msg-iris,.msg-user{max-width:100%}}
   </style>
 </head>
 <body>
   <header>
-    <div class="header-title">
-      <div class="live-dot"></div>
-      <h1>Agent Iris · DCLM Fullscreen Cognitive Hub</h1>
-    </div>
-    <div class="hud-badges">
-      <span class="badge badge-green">M-S: <4.20ms</span>
-      <span class="badge badge-cyan">Layer [0]: SEALED</span>
-      <a href="/" class="btn-nav">← Back to Portal</a>
-    </div>
+    <div class="header-title"><div class="live-dot" aria-hidden="true"></div><h1>Iris · DualisCapax</h1></div>
+    <div class="hud-badges"><span class="badge badge-green">IRIS PREVIEW</span><span class="badge badge-cyan">GOVERNED REQUESTS</span><a href="/" class="btn-nav">← Back to Portal</a></div>
   </header>
-  <div class="chat-container">
-    <div class="messages-area" id="chatArea">
-      <div class="msg-iris">
-        <div style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700; margin-bottom: 4px;">Agent Iris · DCLM Sovereign Intelligence</div>
-        <p style="font-size: 0.9rem; line-height: 1.6;">Welcome to the DualisCapax Sovereign Control Plane. I am configured with the DCLM Layer [0] Law Floor (<code>NO_FORCE</code>, <code>HOST_SAFE</code>, <code>CLEANUP_FIRST</code>, <code>TRUTH_OR_NOTHING</code>) and full offline access to the Ontario School Boards 72-Board Spine and 1,000-Indication Disease Compendium. How may I assist your analysis?</p>
-      </div>
+  <main class="chat-container">
+    <p class="notice">Local lookup is available for supported questions. External model responses require an admitted Depth request and a valid browser-held xAI key. This browser-side gate is not server-side authorization. Unavailable capabilities are reported rather than simulated.</p>
+    <div class="messages-area" id="chatArea" aria-live="polite">
+      <div class="msg-iris"><strong>Iris</strong><p>Hi. Ask a question about DualisCapax, Trinity, or a supported public lookup.</p></div>
     </div>
     <div class="quick-prompts">
-      <span class="quick-chip" onclick="askPreset('Simulate HPEDSB $0 Upfront Pilot')">Simulate HPEDSB $0 Pilot</span>
-      <span class="quick-chip" onclick="askPreset('Lookup Ontario School Boards registry structure')">School Boards Registry</span>
-      <span class="quick-chip" onclick="askPreset('Explain the 1,000-Indication Disease Compendium')">1,000 Disease Directory</span>
-      <span class="quick-chip" onclick="askPreset('Show DCLM Layer [0] Law Floor Invariants')">Layer [0] Law Floor</span>
-      <span class="quick-chip" onclick="askPreset('What are the 1:1 CAD-matched payment options?')">1:1 CAD Settlement</span>
+      <button class="quick-chip" type="button" onclick="askPreset('Explain Trinity governance')">Trinity governance</button>
+      <button class="quick-chip" type="button" onclick="askPreset('Explain the DualisCapax project')">About DualisCapax</button>
+      <button class="quick-chip" type="button" onclick="askPreset('Who is the current prime minister of Canada?')">Public office lookup</button>
+      <button class="quick-chip" type="button" onclick="askPreset('Explain the three-ring model')">Three-ring model</button>
     </div>
     <div class="input-box-wrapper">
-      <input type="text" id="chatInput" class="input-box" placeholder="Ask Agent Iris..." autofocus>
-      <button class="btn-send" onclick="sendMsg()">Transmit</button>
+      <input type="text" id="chatInput" class="input-box" placeholder="Ask Iris..." autocomplete="off" aria-label="Message Iris">
+      <button class="btn-send" id="sendButton" type="button">Transmit</button>
     </div>
-  </div>
-  <script src="/js/iris-cognitive-engine.js"></script>
+  </main>
+  <script src="/js/iris-policy.js"></script>
+  <script src="/js/byok.js"></script>
+  <script src="/ai/iris-book.js"></script>
+  <script src="/js/iris-fuel-gate.js"></script>
+  <script src="/ai/dclm-look.js"></script>
   <script>
     const chatArea = document.getElementById('chatArea');
     const chatInput = document.getElementById('chatInput');
-    function sendMsg() {
-      const txt = chatInput.value.trim();
-      if (!txt) return;
-      chatInput.value = '';
-      const u = document.createElement('div');
-      u.className = 'msg-user';
-      u.innerHTML = '<div style="font-size:0.75rem;font-family:var(--font-mono);color:var(--accent-blue);font-weight:700;">Operator</div><div>' + escapeHtml(txt) + '</div>';
-      chatArea.appendChild(u);
-      setTimeout(() => {
-        const resp = generateIrisResponse(txt);
-        const i = document.createElement('div');
-        i.className = 'msg-iris';
-        i.innerHTML = '<div style="font-size:0.8rem;font-family:var(--font-mono);color:var(--accent-cyan);font-weight:700;">Agent Iris</div><div style="font-size:0.9rem;line-height:1.6;">' + resp + '</div>';
-        chatArea.appendChild(i);
-        chatArea.scrollTop = chatArea.scrollHeight;
-      }, 350);
+    const sendButton = document.getElementById('sendButton');
+
+    function appendMessage(kind, text, detail) {
+      const bubble = document.createElement('div');
+      bubble.className = kind === 'user' ? 'msg-user' : 'msg-iris';
+      const label = document.createElement('div');
+      label.style.cssText = 'font-size:.78rem;font-family:var(--font-mono);font-weight:700;margin-bottom:4px;';
+      label.style.color = kind === 'user' ? 'var(--accent-blue)' : 'var(--accent-cyan)';
+      label.textContent = kind === 'user' ? 'Operator' : 'Iris';
+      const body = document.createElement('div');
+      body.style.cssText = 'font-size:.9rem;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;';
+      body.textContent = String(text || '');
+      bubble.appendChild(label);
+      bubble.appendChild(body);
+      if (detail) {
+        const meta = document.createElement('div');
+        meta.style.cssText = 'font-size:.72rem;color:var(--text-muted);margin-top:6px;font-family:var(--font-mono);';
+        meta.textContent = String(detail);
+        bubble.appendChild(meta);
+      }
+      chatArea.appendChild(bubble);
+      chatArea.scrollTop = chatArea.scrollHeight;
     }
-    function askPreset(p) { chatInput.value = p; sendMsg(); }
-    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMsg(); });
+
+    async function sendMsg() {
+      const txt = chatInput.value.trim();
+      if (!txt || sendButton.disabled) return;
+      chatInput.value = '';
+      appendMessage('user', txt);
+      sendButton.disabled = true;
+      sendButton.textContent = 'Working…';
+      try {
+        if (!window.IrisFuel || !window.DCLMLook) throw new Error('Iris request modules unavailable');
+        const ticket = IrisFuel.admit(txt);
+        const rec = await DCLMLook.run(txt, ticket);
+        appendMessage('iris', rec && rec.spoken ? rec.spoken : 'I could not verify a response.', rec ? ('lane=' + (rec.lane || 'unknown') + ' · grant=' + (rec.grant || 'unknown')) : 'unverified');
+      } catch (error) {
+        appendMessage('iris', 'Iris is unavailable for this request. No simulated answer was generated.', 'request failed');
+      } finally {
+        sendButton.disabled = false;
+        sendButton.textContent = 'Transmit';
+      }
+    }
+    function askPreset(text) { chatInput.value = text; sendMsg(); }
+    sendButton.addEventListener('click', sendMsg);
+    chatInput.addEventListener('keydown', function (event) { if (event.key === 'Enter') sendMsg(); });
   </script>
 </body>
 </html>

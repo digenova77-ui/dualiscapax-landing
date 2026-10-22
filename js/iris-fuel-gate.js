@@ -57,10 +57,24 @@
     if (g.lane !== "DEPTH") return { ok: true, paid: false, grade: g };
     if (byok()) return { ok: true, paid: false, byok: true, grade: g };
     if (balance() >= 1) {
-      if (w.DCFuel && DCFuel.burn) {
-        try { DCFuel.burn(1, "iris-depth"); } catch (e) {}
-      } else if (w.FuelLedger && FuelLedger.burn) {
-        try { FuelLedger.burn(1, "iris-depth"); } catch (e2) {}
+      var debit = null;
+      if (w.DCFuel && typeof DCFuel.burn === "function") {
+        debit = DCFuel.burn;
+      } else if (w.FuelLedger && typeof FuelLedger.burn === "function") {
+        debit = FuelLedger.burn;
+      }
+      // A displayed balance is not authorization to spend unless the debit
+      // operation exists and completes synchronously without refusal.
+      if (!debit) {
+        return { ok: false, paid: false, grade: g, deny: deny(), reason: "fuel-debit-unavailable" };
+      }
+      try {
+        var result = debit.call(w.DCFuel && typeof DCFuel.burn === "function" ? w.DCFuel : w.FuelLedger, 1, "iris-depth");
+        if (result === false || (result && typeof result.then === "function")) {
+          return { ok: false, paid: false, grade: g, deny: deny(), reason: "fuel-debit-unconfirmed" };
+        }
+      } catch (e) {
+        return { ok: false, paid: false, grade: g, deny: deny(), reason: "fuel-debit-failed" };
       }
       return { ok: true, paid: true, grade: g };
     }
