@@ -2,6 +2,11 @@
   "name": "iris-voice-standalone",
   "private": true,
   "type": "module",
+  "scripts": {
+    "start": "node iris-voice-server.mjs",
+    "test": "node test-local.mjs",
+    "dev": "LOCAL_VERIFIER=1 XAI_API_KEY=test node iris-voice-server.mjs"
+  },
   "dependencies": {
     "ws": "^8.18.0"
   }
