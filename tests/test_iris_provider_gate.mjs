@@ -6,6 +6,8 @@ import vm from "node:vm";
 const source = fs.readFileSync(new URL("../ai/dclm-look.js", import.meta.url), "utf8");
 const appPage = fs.readFileSync(new URL("../ai/app.html", import.meta.url), "utf8");
 const legacyPage = fs.readFileSync(new URL("../ai/iris.html", import.meta.url), "utf8");
+const legacyChatPage = fs.readFileSync(new URL("../ai/chat.html", import.meta.url), "utf8");
+const legacyEngine = fs.readFileSync(new URL("../js/iris-cognitive-engine.js", import.meta.url), "utf8");
 
 function harness() {
   let providerCalls = 0;
@@ -84,4 +86,14 @@ test("primary Iris page loads BYOK before Fuel admission", () => {
 test("legacy Iris chat passes its admission ticket into DCLMLook", () => {
   assert.ok(legacyPage.indexOf('/js/byok.js') < legacyPage.indexOf('/js/iris-fuel-gate.js'));
   assert.match(legacyPage, /IrisFuel\.admit\(text\)[\s\S]*DCLMLook\.run\(text,ticket\)/);
+});
+
+test("legacy chat uses the governed request path and contains no fabricated capability claims", () => {
+  assert.match(legacyChatPage, /DCLMLook\.run\(txt, ticket\)/);
+  assert.doesNotMatch(legacyChatPage, /generateIrisResponse|1,000-Indication|95\.0%|10\.42M|4\.20ms/);
+});
+
+test("legacy cognitive engine is explicitly disabled instead of fabricating answers", () => {
+  assert.match(legacyEngine, /available: false/);
+  assert.doesNotMatch(legacyEngine, /95\.0%|10\.42M|99\.6%|zero motive bias/);
 });
