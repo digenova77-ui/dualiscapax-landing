@@ -1,0 +1,32 @@
+name: Iris Voice CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "iris-voice-standalone/**"
+      - ".github/workflows/iris-voice-ci.yml"
+  pull_request:
+    paths:
+      - "iris-voice-standalone/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install and test
+        working-directory: iris-voice-standalone
+        run: |
+          npm install
+          node test-local.mjs

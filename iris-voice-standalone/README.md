@@ -1,6 +1,8 @@
-# Standalone Iris voice path (no Cloudflare Workers required)
+# Standalone Iris voice path
 
-## Run
+Fail-closed. Tested in CI.
+
+## Local
 ```bash
 npm install
 node iris-voice-server.mjs
@@ -9,14 +11,10 @@ node iris-voice-server.mjs
 ## Local success path
 ```bash
 LOCAL_VERIFIER=1 XAI_API_KEY=test node iris-voice-server.mjs
-# then POST with header x-test-session: valid
+# POST /sandbox/iris/turn with header x-test-session: valid
 ```
 
-## Deploy to Fly (ewr = New Jersey, ams = Amsterdam)
-```bash
-fly launch --no-deploy --copy-config
-fly secrets set XAI_API_KEY=...
-fly deploy
-```
+## CI
+`.github/workflows/iris-voice-ci.yml` runs `test-local.mjs` on every push.
 
-Fail-closed until verifySession is replaced with the real identity check.
+Authority remains NONE until the real verifier is wired.
