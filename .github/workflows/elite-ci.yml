@@ -37,3 +37,14 @@ jobs:
           test -f status.html
           test -f robots.txt
           test -f .well-known/security.txt
+
+  iris-provider-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify Iris provider authorization boundary
+        run: node --test tests/test_iris_provider_gate.mjs
