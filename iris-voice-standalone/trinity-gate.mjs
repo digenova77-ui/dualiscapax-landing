@@ -7,7 +7,8 @@ const deny = reason => ({ ok: false, reason, authority: "NONE" });
 
 /**
  * Minimal Trinity enforcement seam, not an authority source.
- * Production must inject the canonical session verifier and law decision.
+ * Inject only the canonical session verifier and a law adapter that validates
+ * the authoritative receipt's authenticity and binds it to this exact request.
  */
 export async function authorizeIrisAction({ request, action, sessionVerifier, lawDecision }) {
   if (!request || typeof request !== "object") return deny("request-required");
@@ -22,24 +23,32 @@ export async function authorizeIrisAction({ request, action, sessionVerifier, la
     return deny("session-unverified-or-actor-unbound");
   }
 
+  const mutation = WRITE_ACTIONS.has(action);
+  const input = {
+    actorId: session.actorId,
+    action,
+    target: "iris",
+    mutation,
+    requestId: typeof request.requestId === "string" ? request.requestId : null,
+  };
+
   let decision;
-  try {
-    decision = await lawDecision({
-      actorId: session.actorId,
-      action,
-      target: "iris",
-      mutation: WRITE_ACTIONS.has(action),
-      requestId: typeof request.requestId === "string" ? request.requestId : null,
-    });
-  } catch { return deny("trinity-decision-failed"); }
+  try { decision = await lawDecision(input); }
+  catch { return deny("trinity-decision-failed"); }
 
-  if (decision?.allow !== true || typeof decision.decisionId !== "string" || !decision.decisionId.trim()) {
-    return deny("trinity-decision-not-explicitly-allowed");
-  }
-  if (WRITE_ACTIONS.has(action) && decision.authority !== "FATHER") {
-    return deny("father-authority-required");
-  }
+  // A bare allow or decision ID is insufficient. The trusted adapter must
+  // authenticate the real receipt and return its verified request bindings.
+  if (
+    decision?.allow !== true ||
+    typeof decision.decisionId !== "string" || !decision.decisionId.trim() ||
+    decision.actorId !== input.actorId ||
+    decision.action !== input.action ||
+    decision.target !== input.target ||
+    decision.mutation !== input.mutation
+  ) return deny("trinity-receipt-invalid-or-mismatched");
 
-  // The gate records a decision; it does not itself possess writing authority.
-  return { ok: true, actorId: session.actorId, action, decisionId: decision.decisionId, authority: "NONE" };
+  if (mutation && decision.authority !== "FATHER") return deny("father-authority-required");
+
+  // This result is an authorization check, not a transferable capability.
+  return { ok: true, actorId: input.actorId, action, decisionId: decision.decisionId, authority: "NONE" };
 }
