@@ -155,6 +155,17 @@
   async function run(text, ticket) {
     var v = scanVeto(text);
     if (v) return { grant: "VETO", spoken: v, lane: "VETO" };
+
+    // Authorization must be evaluated before any external model-provider call.
+    // The browser-side ticket is a UX gate, not a server-side security boundary.
+    var pass = ticketOf(text, ticket);
+    var lane = pass && pass.grade && pass.grade.lane;
+    if (lane === "DEPTH" && !pass.ok) {
+      return (pass.deny && pass.deny.spoken)
+        ? pass.deny
+        : { grant: "VETO", lane: "DEPTH", spoken: "Depth is unavailable because authorization was not granted.", ticket: pass };
+    }
+
     var raw = String(text || "");
     var facts = "";
     var book = null;
@@ -166,8 +177,16 @@
       var here = IrisPage.explain(raw);
       if (here) { here.lane = here.lane || "HERE"; return here; }
     }
-    var talk = await xaiTalk(raw, facts);
-    if (talk) return talk;
+    var talk = null;
+    // External model access is reserved for explicitly admitted DEPTH requests.
+    if (lane === "DEPTH" && pass.ok) {
+      talk = await xaiTalk(raw, facts);
+      if (talk) {
+        talk.lane = "DEPTH";
+        talk.ticket = pass;
+        return talk;
+      }
+    }
     if (book && book.spoken) { book.lane = book.lane || "BOOK"; return book; }
     if (isWho(raw) || officeHint(raw)) {
       var who = await lookWho(raw);
@@ -175,19 +194,7 @@
     }
     var wiki = await wikiOffice(raw);
     if (wiki) return wiki;
-    var pass = ticketOf(raw, ticket);
-    var lane = pass.grade && pass.grade.lane;
     if (lane === "DEPTH") {
-      if (!pass.ok && pass.deny) return pass.deny;
-      var xai = await xaiTalk(raw, facts);
-      if (xai) {
-        xai.lane = "DEPTH";
-        xai.ticket = pass;
-        if (w.CosmicRuntime && CosmicRuntime.step) {
-          try { xai.runtime = CosmicRuntime.step(); } catch (e) {}
-        }
-        return xai;
-      }
       return {
         grant: "DEPTH",
         lane: "DEPTH",
