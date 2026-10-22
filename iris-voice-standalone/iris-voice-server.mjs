@@ -1,8 +1,9 @@
 /**
  * iris-voice-server.mjs
  * Self-contained fail-closed voice path.
- * Local mode: set LOCAL_VERIFIER=1 and use header x-test-session: valid
- * to exercise the success path without a real identity backend.
+ * Local mode: LOCAL_VERIFIER=1 + header x-test-session: valid
+ * exercises the success path without a real identity backend.
+ * All JSON responses include authority: NONE.
  */
 
 import http from "node:http";
@@ -99,7 +100,7 @@ const server = http.createServer(async (req, res) => {
     const path = url.pathname;
 
     if (path === "/health") {
-      return sendJSON(res, { ok: true, localVerifier: LOCAL_VERIFIER });
+      return sendJSON(res, { ok: true, localVerifier: LOCAL_VERIFIER, authority: "NONE" });
     }
 
     if (path === "/iris/status") {
@@ -131,7 +132,7 @@ const server = http.createServer(async (req, res) => {
 
     res.writeHead(404, { "content-type": "text/plain" });
     res.end("not found");
-  } catch (err) {
+  } catch {
     sendJSON(res, { available: false, reason: "internal-error" }, 500);
   }
 });
