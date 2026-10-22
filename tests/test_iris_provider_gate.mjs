@@ -20,6 +20,7 @@ function harness() {
   const document = { documentElement: { lang: "en" } };
   const context = {
     window,
+    IrisPolicy: window.IrisPolicy,
     document,
     localStorage: { getItem() { return null; } },
     fetch: async () => ({ async json() { return [null, [], []]; } }),
