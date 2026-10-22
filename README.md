@@ -14,6 +14,19 @@ Trinity defines the governing framework. Agents may observe, reason, and propose
 
 This repository contains the website and related interface and edge-runtime assets. The wider DualisCapax architecture spans additional services and experiments; the presence of a concept or interface here does not imply that every related service is connected or production-ready.
 
+## Unity Seal (UNITY_SEAL_v1)
+
+Canonical measure from efuse-unity. Empty center, Mirror ∈ {0,1}, exempt=false∀, same toll, fail-closed.
+
+Read-only verification routes (Cloudflare Pages Advanced Mode, no-store):
+
+- https://dualiscapax.ai/seal
+- https://dualiscapax.ai/unity/status
+
+Expected unity_hash: d95aa793e6bc330710ea6b9acab1ce6ed127c2c89c21715adba5a15e2e5fda41
+
+Match reports PASS; drift or error reports DRIFT or 503. Apex remains Pages assets.
+
 ## Principles
 
 - **Trinity governs.** Authorization rules must be enforced at the execution boundary, not merely described in prompts or documentation.
@@ -81,7 +94,7 @@ This repository is the website/interface and edge-related portion of the wider p
 
 Relevant files may include:
 
-- `_worker.js` — edge request handling.
+- `_worker.js` — edge request handling (includes Unity seal routes).
 - `wrangler.toml` — Wrangler/Cloudflare configuration.
 - `_headers` and `_redirects` — hosting headers and redirect rules.
 - `unity-id.html`, `unity-id.js`, and related Unity pages — identity-facing interface assets.
@@ -151,6 +164,7 @@ DualisCapax is under active development. Treat the following as the standard for
 | Identity/actor binding | Require valid, verifiable session and actor evidence. |
 | Accounting/ledger experiments | Verify the measurement method, implementation, and tests. |
 | Autonomous deployment | Require explicit authorization and independent result verification. |
+| Unity seal | Verify /seal and /unity/status report match against UNITY_SEAL_v1. |
 
 A feature is complete only when evidence appropriate to that feature supports the claim. Source files, configuration values, health endpoints, and placeholders alone are insufficient.
 
@@ -164,6 +178,7 @@ The long-term objective is a coherent and auditable environment for human–AI c
 - Clear separation between identity, authority, and resource/value accounting.
 - Minimal architecture with enforceable security boundaries.
 - Evidence-backed operation and carefully controlled autonomy.
+- Unity seal consistent across surfaces (empty center, Mirror, same toll).
 
 ## Contributing
 
