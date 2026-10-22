@@ -4,10 +4,22 @@ import fs from "node:fs";
 import vm from "node:vm";
 
 const source = fs.readFileSync(new URL("../ai/dclm-look.js", import.meta.url), "utf8");
+const fuelSource = fs.readFileSync(new URL("../js/iris-fuel-gate.js", import.meta.url), "utf8");
 const appPage = fs.readFileSync(new URL("../ai/app.html", import.meta.url), "utf8");
 const legacyPage = fs.readFileSync(new URL("../ai/iris.html", import.meta.url), "utf8");
 const legacyChatPage = fs.readFileSync(new URL("../ai/chat.html", import.meta.url), "utf8");
 const legacyEngine = fs.readFileSync(new URL("../js/iris-cognitive-engine.js", import.meta.url), "utf8");
+
+
+function fuelHarness({ balance = 1, burn, byok = false } = {}) {
+  const fuel = { balance: () => balance };
+  if (burn !== undefined) fuel.burn = burn;
+  const dcByok = byok ? { present: () => true } : null;
+  const window = { DCFuel: fuel, DCByok: dcByok };
+  const context = { window, DCFuel: fuel, DCByok: dcByok, String, Number, isFinite };
+  vm.runInNewContext(fuelSource, context, { filename: "js/iris-fuel-gate.js" });
+  return window.IrisFuel;
+}
 
 function harness() {
   let providerCalls = 0;
@@ -96,4 +108,35 @@ test("legacy chat uses the governed request path and contains no fabricated capa
 test("legacy cognitive engine is explicitly disabled instead of fabricating answers", () => {
   assert.match(legacyEngine, /available: false/);
   assert.doesNotMatch(legacyEngine, /95\.0%|10\.42M|99\.6%|zero motive bias/);
+});
+
+test("Fuel balance without a debit function fails closed", () => {
+  const fuel = fuelHarness({ balance: 1 });
+  const result = fuel.admit("build me a new application");
+  assert.equal(result.ok, false);
+  assert.equal(result.reason, "fuel-debit-unavailable");
+});
+
+test("Fuel debit failure or unconfirmed asynchronous debit fails closed", () => {
+  const throwing = fuelHarness({ balance: 1, burn() { throw new Error("ledger unavailable"); } });
+  assert.equal(throwing.admit("build me a new application").ok, false);
+
+  const asynchronous = fuelHarness({ balance: 1, burn() { return Promise.resolve(true); } });
+  assert.equal(asynchronous.admit("build me a new application").ok, false);
+});
+
+test("confirmed synchronous Fuel debit permits Depth", () => {
+  let debits = 0;
+  const fuel = fuelHarness({ balance: 1, burn(amount, reason) { debits += amount; assert.equal(reason, "iris-depth"); } });
+  const result = fuel.admit("build me a new application");
+  assert.equal(result.ok, true);
+  assert.equal(result.paid, true);
+  assert.equal(debits, 1);
+});
+
+test("valid BYOK path does not require a Fuel debit", () => {
+  const fuel = fuelHarness({ balance: 0, byok: true });
+  const result = fuel.admit("build me a new application");
+  assert.equal(result.ok, true);
+  assert.equal(result.byok, true);
 });
