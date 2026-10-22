@@ -2,6 +2,7 @@
  * Preserve the existing landing routes and ASSETS fallback.
  * HUD routes are served by this Pages Worker so they do not depend on a
  * separately deployed Worker route. Apex remains owned by Pages assets.
+ * Unity seal verification added: read-only, no-store, fail-closed.
  */
 const MAP = {
   "/look": "/look.html",
@@ -28,6 +29,27 @@ const HUD_ROUTES = new Map([
   ["/assets/holographic-hostess-40/hostess.svg", [HUD_RAW + "/assets/holographic-hostess-40/hostess.svg", "image/svg+xml; charset=utf-8"]]
 ]);
 
+const SEAL_BODY = `center=empty
+mirror=claim_vs_mark→0|1
+exempt=false∀
+accept=RF5→RF6→GateA→GateB→evidence_ok→spend→Mirror
+F_now=F_U+F_clearable
+R0_locked
+F_U_not_erasable_by_speech
+purity=residual_faced
+sin=residual_refused
+coin=fuel_not_Accept
+pure_own=cost_on_claim_paid_before_title
+physics_TOE=0
+theorem_of_all=0
+tip=append_only
+anti_reuse=atomic_spend
+evidence=merkle_under_tipped_root
+affinity=+1_under_same_stick
+road=same_toll_every_step
+THEOREM_U1=hygiene_complete→1_else_0_no_third_value`;
+const EXPECTED_UNITY_HASH = "d95aa793e6bc330710ea6b9acab1ce6ed127c2c89c21715adba5a15e2e5fda41";
+
 function noStoreHeaders(extra = {}) {
   return {
     "cache-control": "no-store, must-revalidate",
@@ -35,6 +57,11 @@ function noStoreHeaders(extra = {}) {
     "x-content-type-options": "nosniff",
     ...extra
   };
+}
+
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
 export default {
@@ -60,6 +87,38 @@ export default {
         apex_overwrite: false,
         cache: "no-store"
       }, { headers: noStoreHeaders({ "x-dc-iris": "pages-bridge" }) });
+    }
+
+    // Unity seal verification: read-only, fail-closed, no-store.
+    if (path === "/seal" || path === "/seal.json" || path === "/unity/status" || path === "/unity/status.json") {
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        return new Response("Method not allowed", {
+          status: 405,
+          headers: noStoreHeaders({ allow: "GET, HEAD" })
+        });
+      }
+      try {
+        const computed = await sha256Hex(SEAL_BODY);
+        const match = computed === EXPECTED_UNITY_HASH;
+        const body = {
+          seal: "UNITY_SEAL_v1",
+          center: "empty",
+          mirror: "0|1",
+          exempt: false,
+          unity_hash: computed,
+          expected: EXPECTED_UNITY_HASH,
+          match: match,
+          status: match ? "PASS" : "DRIFT",
+          runtime: "cloudflare-pages-advanced-mode",
+          cache: "no-store"
+        };
+        return Response.json(body, { headers: noStoreHeaders({ "x-dc-unity": match ? "seal-match" : "seal-drift" }) });
+      } catch {
+        return new Response("Seal verification unavailable", {
+          status: 503,
+          headers: noStoreHeaders({ "x-dc-unity": "error" })
+        });
+      }
     }
 
     // Isolated HUD paths are explicitly served from the HUD repository.
