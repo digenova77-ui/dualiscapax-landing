@@ -4,6 +4,8 @@ import fs from "node:fs";
 import vm from "node:vm";
 
 const source = fs.readFileSync(new URL("../ai/dclm-look.js", import.meta.url), "utf8");
+const appPage = fs.readFileSync(new URL("../ai/app.html", import.meta.url), "utf8");
+const legacyPage = fs.readFileSync(new URL("../ai/iris.html", import.meta.url), "utf8");
 
 function harness() {
   let providerCalls = 0;
@@ -73,4 +75,13 @@ test("LOOK request does not invoke the external model provider", async () => {
   await h.api.run("tell me something", ticket);
 
   assert.equal(h.getProviderCalls(), 0);
+});
+
+test("primary Iris page loads BYOK before Fuel admission", () => {
+  assert.ok(appPage.indexOf('/js/byok.js?v=54') < appPage.indexOf('/js/iris-fuel-gate.js?v=54'));
+});
+
+test("legacy Iris chat passes its admission ticket into DCLMLook", () => {
+  assert.ok(legacyPage.indexOf('/js/byok.js') < legacyPage.indexOf('/js/iris-fuel-gate.js'));
+  assert.match(legacyPage, /IrisFuel\.admit\(text\)[\s\S]*DCLMLook\.run\(text,ticket\)/);
 });
