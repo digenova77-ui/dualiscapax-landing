@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node iris-voice-server.mjs",
-    "test": "node test-local.mjs"
+    "test": "node --test provider-connector.test.mjs && node test-local.mjs"
   },
   "dependencies": {
     "ws": "^8.18.0"
