@@ -29,5 +29,26 @@ class OmniMatchTests(unittest.TestCase):
         self.assertEqual(g["reason"], "not 200")
 
 
+
+class LiveOddsTests(unittest.TestCase):
+    def test_measured_odds_one(self):
+        from omni_match import odds
+        o = odds(200, "no-store")
+        self.assertEqual(o["odds"], 1.0)
+        self.assertTrue(o["pass"])
+
+    def test_hypothetical_odds_zero(self):
+        from omni_match import odds
+        for status, cc in ((404, "no-store"), (200, "public"), (500, "")):
+            o = odds(status, cc)
+            self.assertEqual(o["odds"], 0.0)
+            self.assertFalse(o["pass"])
+
+    def test_no_invented_mid_odds(self):
+        from omni_match import odds
+        o = odds(200, "")
+        self.assertIn(o["odds"], (0.0, 1.0))
+
+
 if __name__ == "__main__":
     unittest.main()
