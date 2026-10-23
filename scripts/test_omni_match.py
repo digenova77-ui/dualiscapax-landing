@@ -1,0 +1,33 @@
+"""Tests for live /omni match grading. No network."""
+import unittest
+from omni_match import grade
+
+
+class OmniMatchTests(unittest.TestCase):
+    def test_200_nostore_measured(self):
+        g = grade(200, "no-store")
+        self.assertEqual(g["grade"], "MEASURED")
+        self.assertTrue(g["pass"])
+
+    def test_200_nostore_with_other_directives(self):
+        g = grade(200, "Cache-Control: no-store, max-age=0")
+        self.assertEqual(g["grade"], "MEASURED")
+
+    def test_404_hypothetical(self):
+        g = grade(404, "no-store")
+        self.assertEqual(g["grade"], "HYPOTHETICAL")
+        self.assertFalse(g["pass"])
+
+    def test_200_missing_nostore(self):
+        g = grade(200, "public, max-age=60")
+        self.assertEqual(g["grade"], "HYPOTHETICAL")
+        self.assertEqual(g["reason"], "missing no-store")
+
+    def test_500(self):
+        g = grade(500, "")
+        self.assertEqual(g["grade"], "HYPOTHETICAL")
+        self.assertEqual(g["reason"], "not 200")
+
+
+if __name__ == "__main__":
+    unittest.main()
