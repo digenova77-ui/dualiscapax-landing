@@ -81,7 +81,7 @@ test("legacy v1 receipts are retained but not falsely treated as payload-bound",
 });
 
 test("cryptographic unavailability fails closed instead of creating a weak receipt", async () => {
-  const h = harness({ crypto: undefined });
+  const h = harness({ crypto: null });
   await assert.rejects(() => h.api.commit({ value: "test" }), /crypto-unavailable/);
   assert.equal(h.api.chain().length, 0);
 });
