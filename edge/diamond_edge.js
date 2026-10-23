@@ -15,6 +15,17 @@
 export const CLARITY_PASS = new Set(["FL", "VVS", "VS"]);
 export const COLOR_PASS = new Set(["D", "E", "F"]);
 export const CUT_PASS = new Set(["Excellent", "Very Good"]);
+
+export const DIAMOND = {
+  protocol: "DIAMOND.FRONTIER.MAX.v1",
+  law: "LAW WINS",
+  origin: "immutable",
+  boundary: "NOT_FOR_EMISSION",
+  gate: { clarity: ["FL", "VVS", "VS"], color: ["D", "E", "F"], cut: ["Excellent", "Very Good"], reflects: "purity" },
+  frontier: { clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  learning: "advisory only — NOT_FOR_EMISSION"
+};
+
 export const MAX_BAND = { clarity: "FL", color: "D", cut: "Excellent" };
 
 export function grade(f) {
@@ -105,8 +116,8 @@ export const DEFAULT_FACETS = [
   { name: "DCLM", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "Iris", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "Twain²", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "summer", kind: "tree", clarity: "VS", color: "E", cut: "Very Good", reflects: "purity" },
-  { name: "winter", kind: "tree", clarity: "VS", color: "F", cut: "Very Good", reflects: "purity" },
+  { name: "summer", kind: "tree", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "winter", kind: "tree", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "merit", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "standing", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "ceiling", kind: "ceiling", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },

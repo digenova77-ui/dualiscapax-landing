@@ -185,6 +185,16 @@ export default {
     const clean = path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path;
     const status = (route) => ({ route, live: true, ok: true, ts: new Date().toISOString() });
     const edge = {
+      "/diamond": () => ({
+        protocol: "DIAMOND.FRONTIER.MAX.v1",
+        law: "LAW WINS",
+        origin: "immutable",
+        boundary: "NOT_FOR_EMISSION",
+        gate: "FL/VVS/VS · D/E/F · Excellent/Very Good · purity",
+        frontier: "FL · D · Excellent · purity",
+        learning: "advisory only — NOT_FOR_EMISSION"
+      }),
+      "/diamond/status": () => status("/diamond"),
       "/omni/status": () => status("/omni"),
       "/omni": () => omniSnapshot(),
       "/frontier/status": () => status("/frontier"),
