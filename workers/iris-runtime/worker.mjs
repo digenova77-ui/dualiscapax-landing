@@ -161,7 +161,13 @@ async function handleRequest(request, env) {
     claim = await callJson(env.IRIS_MEMORY, "/v1/requests/claim", {
       method: "POST",
       headers: { "content-type": "application/json", "idempotency-key": requestId },
-      body: JSON.stringify({ unity_id: unityId, request_id: requestId, action: computePlan.action }),
+      body: JSON.stringify({
+        contract: "dualis.idempotency.v1",
+        unity_id: unityId,
+        request_id: requestId,
+        action: computePlan.action,
+        input_sha256: inputSha256,
+      }),
     });
   } catch { return unavailable("idempotency-claim"); }
   if (claim.unity_id !== unityId || claim.request_id !== requestId || claim.claimed !== true) {
