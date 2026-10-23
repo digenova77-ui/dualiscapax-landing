@@ -181,31 +181,25 @@ export default {
       });
     }
 
-    // Pure diamond / frontier / Omni edge routes (no-store, fail-closed).
+    // Diamond edge. One table. Trailing slash stripped. Fail-closed.
+    const clean = path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path;
+    const status = (route) => ({ route, live: true, ok: true, ts: new Date().toISOString() });
     const edge = {
-      "/omni/status": () => ({ route: "/omni", live: true, ok: true, ts: new Date().toISOString() }),
+      "/omni/status": () => status("/omni"),
       "/omni": () => omniSnapshot(),
-      "/omni/": () => omniSnapshot(),
-      "/frontier/status": () => ({ route: "/frontier", live: true, ok: true, ts: new Date().toISOString() }),
+      "/frontier/status": () => status("/frontier"),
       "/frontier": () => frontierReport(),
-      "/frontier/": () => frontierReport(),
-      "/purity/status": () => ({ route: "/purity", live: true, ok: true, ts: new Date().toISOString() }),
-      "/standing-probe/status": () => ({ route: "/standing-probe", live: true, ok: true, ts: new Date().toISOString() }),
-      "/standing-probe": () => standingProbe(),
-      "/standing-probe/": () => standingProbe()
+      "/purity/status": () => status("/purity"),
+      "/purity": () => purityText(),
+      "/standing-probe/status": () => status("/standing-probe"),
+      "/standing-probe": () => standingProbe()
     };
-    if (Object.prototype.hasOwnProperty.call(edge, path)) {
+    if (Object.prototype.hasOwnProperty.call(edge, clean)) {
       try {
-        return jsonNoStore(edge[path]());
+        const body = edge[clean]();
+        return clean === "/purity" ? textNoStore(body) : jsonNoStore(body);
       } catch (err) {
-        return jsonNoStore({ ok: false, route: path, live: false, reason: "route failed", detail: String(err && err.message || err) }, 500);
-      }
-    }
-    if (path === "/purity" || path === "/purity/") {
-      try {
-        return textNoStore(purityText());
-      } catch (err) {
-        return jsonNoStore({ ok: false, route: path, live: false, reason: "route failed", detail: String(err && err.message || err) }, 500);
+        return jsonNoStore({ ok: false, route: clean, live: false, reason: "route failed", detail: String(err && err.message || err) }, 500);
       }
     }
 
@@ -215,7 +209,7 @@ export default {
         .catch(() => jsonNoStore({ ok: false, reason: "bad json" }, 400));
     }
 
-        const dest = MAP[path];
+    const dest = MAP[path];
     if (dest) {
       const target = new URL(request.url);
       target.pathname = dest;
