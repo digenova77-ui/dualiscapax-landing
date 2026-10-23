@@ -52,6 +52,19 @@ Required closure:
 4. Verify server-side signature, expiry, revocation, issuer, audience, origin/RP binding, and single-use handoff before provider invocation.
 5. Ensure the browser never treats a syntactically valid response as authority unless the server verifies the canonical signed assertion and law receipt.
 
+## Additional finding — the currently documented API/provider rails are not live proof
+
+A second cross-repository review found:
+
+- The landing site's default chat origin is `https://dualiscapax-depth.digenova77.workers.dev`; the maintained environment document explicitly records that host returning **404** as of its last update (2026-10-17). Current reachability from this review environment could not be independently established because the external endpoint fetch was unavailable. Treat the API as **NOT VERIFIED / release-blocking**, not as connected.
+- `iris-voice-standalone/iris-voice-server.mjs` currently treats a real cookie as `verifier-not-wired` outside local test mode. Its provider call is a local echo fixture when local verifier mode is enabled; it is not a production xAI conversation path. The provider adapter in PR #152 must not be wired until the canonical identity and Trinity/law gates are connected.
+- `dualiscapax-hud/workers/iris-bridge.js` is a static HUD origin bridge. It explicitly does not overwrite the apex and does not implement chat/session verification. It is not the missing API worker.
+- The published Replit app `dualiscapax` reports a successful last publish at `https://dualiscapax.replit.app`; that status alone does not establish its current backend routes or prove the GitHub source is synchronized with the Replit workspace. The read-only Replit audit request could not yet be submitted because the Replit agent was already busy.
+
+## Additional finding — cross-domain WebAuthn design is invalid as written
+
+The execution plan records a WebAuthn relying-party mismatch: an `.ai` page cannot use `dualiscapax.com` as its RP ID, because an RP ID must be the caller's host or a registrable-domain suffix of it. Do not implement or mark this handoff as passing. The safe direction is to verify the ceremony at a valid RP origin, then issue a short-lived, unpredictable, single-use, audience-bound handoff grant and atomically consume it at the trusted `.ai` backend. No credential or reusable token may be carried in a URL, browser storage, or logs. This remains blocked until the existing authoritative backend/session store is identified.
+
 ## Gate C — Iris provider path
 
 - [ ] Keep provider credentials server-side and out of URLs, browser storage, logs, and error responses.
