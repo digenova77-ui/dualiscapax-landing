@@ -1,8 +1,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import worker from "./worker.mjs";
+import worker, { canonicalJson as runtimeCanonicalJson } from "./worker.mjs";
 
+function compareUnicodeScalars(a, b) {
+  const left = Array.from(a, (character) => character.codePointAt(0));
+  const right = Array.from(b, (character) => character.codePointAt(0));
+  for (let i = 0; i < Math.min(left.length, right.length); i++) {
+    if (left[i] !== right[i]) return left[i] - right[i];
+  }
+  return left.length - right.length;
+}
 const sha256Text = (value) => createHash("sha256").update(value, "utf8").digest("hex");
 const canonicalJson = (value) => {
   if (value === null || typeof value === "string" || typeof value === "boolean") return JSON.stringify(value);
@@ -11,9 +19,16 @@ const canonicalJson = (value) => {
     return JSON.stringify(value);
   }
   if (Array.isArray(value)) return "[" + value.map(canonicalJson).join(",") + "]";
-  const keys = Object.keys(value).sort();
+  const keys = Object.keys(value).sort(compareUnicodeScalars);
   return "{" + keys.map((key) => JSON.stringify(key) + ":" + canonicalJson(value[key])).join(",") + "}";
 };
+test("runtime canonical JSON orders object keys by Unicode scalar value", () => {
+  const value = { ["\u{10000}"]: 1, ["\uE000"]: 2 };
+  const expected = "{" + JSON.stringify("\uE000") + ":2," + JSON.stringify("\u{10000}") + ":1}";
+  assert.equal(runtimeCanonicalJson(value), expected);
+  assert.equal(canonicalJson(value), expected);
+});
+
 const durableReceipt = (body, output, receiptId) => {
   const envelope = {
     contract: "dualis.receipt.v1",
