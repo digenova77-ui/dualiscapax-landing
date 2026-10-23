@@ -96,14 +96,25 @@ The static scanner is a baseline, not the end-to-end test. Release acceptance re
 
 As of the current inventory pass:
 
-- The landing/Iris repository static scanner covers 474 source files, including 244 HTML pages. It found 1,759 link-like references, 302 script/asset references, 8 form matches, 100 event-handler matches, 76 browser-storage references, 129 key-index-related lexical matches, 32 literal route patterns, 161 possible broken local references, and one duplicate DOM ID. These are heuristic counts; some local references are dynamic or route-rewritten and must be triaged.
+- The landing/Iris repository static scanner most recently covered 476 source files, including 244 HTML pages. It found 1,759 link-like references, 302 script/asset references, 8 form matches, 100 event-handler matches, 76 browser-storage references, 135 key-index-related lexical matches, 32 literal route patterns, 161 possible broken local references, and one duplicate DOM ID. These are heuristic counts; some local references are dynamic or route-rewritten and must be triaged.
 - The public dualiscapax-hud repository was also scanned: 11 source files, no heuristic broken-local-reference findings.
 - A separate read-only inventory now scans the private dualiscapax-deploy repository: 114 source/config files, 37 HTML pages, 203 link references, 41 asset references, 39 event-handler references, 8 literal API-call matches, 82 browser-storage references, 163 possible broken local references, and 0 duplicate DOM IDs. The scan found explicit ceremony_not_wired markers in 9 source files and simulated-settlement markers in 4 files. These are lexical/static counts, not proof of live behavior.
 - Replit workspace, production New Jersey/Amsterdam process state, live Cloudflare bindings, and live browser journeys remain outside the CI source scans. They must be verified through authorized, read-only routes before declaring whole-system coverage.
 - The local Fuel ledger is explicitly a local demonstration stub. The client-side Unity bind/session functions use browser storage and self-declared identifiers; those values cannot be authentication or authorization proof.
-- The API base can be overridden by a URL query parameter in existing client code. Remove that path or strictly allowlist destinations before sending any session/capability headers.
+- The current staging branch removes the untrusted `?api=` API-base override and tests that session/fuel headers cannot be sent to a query-selected origin. The default deployment API base is still a separate existing rail and is not yet wired to the new governed runtime.
 - The unified frontend's own verification notes grade the energy peg and Merit panel as DESIGN, state zero Merit issuance and no deployed Merit contract, and grade the physical binding chain as DESIGN. Keep those grades visible until live evidence changes them.
 - Public-facing copy must never imply a physics-backed settled Joule price, live Merit issuance, verified biometric binding, or production-grade identity unless the corresponding proof exists.
+
+
+
+### Staging runtime hardening increment (2026-10-23)
+
+- The staging runtime now checks the exact configured Origin, supports a credentialed CORS preflight for the allowed origin, and rejects unapproved origins before calling service bindings. This is contract-tested; live browser/cookie behavior remains unverified until real staging bindings are configured.
+- Trinity authorization now precedes private memory reads. A denied request must not access the memory adapter or provider.
+- After Trinity allow, the runtime claims a request ID through the memory service before reading context or invoking a provider. Missing/ambiguous claims fail closed; duplicate claims return conflict without provider inference. The deployed memory adapter must implement the versioned `POST /v1/requests/claim` contract atomically for this protection to be real.
+- Deterministic arithmetic uses a bounded parser and still passes through Trinity. Probabilistic inference is only selected when the input is not a complete exact arithmetic expression.
+- The Joule helper now rejects malformed index timestamps and refuses to call a caller-labeled measurement “metered.” A price computed from supplied values is explicitly `PRICED_UNVERIFIED` for a “measured” claim until a trusted meter verifier and settlement receipt exist; estimated input remains `PRICED_ESTIMATED`. No live meter, calibrated Joule source, index, or settlement is implemented by this helper.
+- The Cloudflare build log supplied for `npx wrangler preview` reports “Missing entry-point to Worker script or to assets directory.” The checked-in root `wrangler.toml` describes a static Pages site, not a Worker entry point, and has an empty `[previews]` section. That log is consistent with a command/configuration mismatch, but it does not identify which Cloudflare project emitted it. Do not change the production build command or deploy target until the failing project and intended output are confirmed. For a static Pages site, local preview and deployment should use the Pages workflow/commands for a confirmed output directory, not assume a Worker entry point exists.
 
 ## 9. Implementation sequence
 
