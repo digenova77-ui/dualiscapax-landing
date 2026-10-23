@@ -21,7 +21,7 @@ function fixture(overrides = {}) {
     IRIS_MEMORY: binding("memory", async (body, request) => {
       const route = new URL(request.url).pathname;
       if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
-      if (route.endsWith("/claim")) return { unity_id: body.unity_id, request_id: body.request_id, claimed: true };
+      if (route.endsWith("/claim")) return { contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true };
       return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-1", receipt_sha256: "a".repeat(64) };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({
@@ -154,10 +154,10 @@ test("same request ID with changed input is rejected before a second effect", as
           if (prior) {
             // Model the required durable-store behavior: the operation key is
             // already bound, so a changed semantic request cannot be claimed.
-            return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: false });
+            return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
           }
           claims.set(key, { action: body.action, input_sha256: body.input_sha256 });
-          return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: true });
+          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         }
         if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
         return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-1", receipt_sha256: "a".repeat(64) });
@@ -175,7 +175,7 @@ test("same request ID with changed input is rejected before a second effect", as
   assert.equal(first.status, 200);
   const second = await worker.fetch(req({ text: "different request" }, { "x-request-id": requestId }), base.env);
   assert.equal(second.status, 409);
-  assert.equal((await second.json()).stage, "idempotency-claim");
+  assert.equal((await second.json()).reason, "operation-content-conflict");
   assert.equal(calls.filter(c => c.name === "provider").length, 1);
   assert.equal(calls.filter(c => c.name === "memory" && c.path.endsWith("/append")).length, 1);
   const claimBodies = calls.filter(c => c.name === "memory" && c.path.endsWith("/claim")).map(c => c.body);
@@ -196,7 +196,7 @@ test("duplicate request ID fails closed before memory context or provider infere
   });
   const res = await worker.fetch(req({ text: "Hello Iris" }, { "x-request-id": "request-duplicate-123" }), env);
   assert.equal(res.status, 409);
-  assert.equal((await res.json()).stage, "idempotency-claim");
+  assert.equal((await res.json()).reason, "operation-content-conflict");
   assert.equal(calls.some(c => c.name === "provider"), false);
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/context")), false);
 });
