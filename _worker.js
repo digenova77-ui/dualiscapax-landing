@@ -90,9 +90,11 @@ export default {
         route_owner: "dualiscapax-web Pages _worker.js",
         hud_source: "digenova77-ui/dualiscapax-hud main",
         hud_path: "/holographic-core/v2",
+        hud_available: false,
+        reason: "session-gated-origin-route-not-verified",
         apex_overwrite: false,
         cache: "no-store"
-      }, { headers: noStoreHeaders({ "x-dc-iris": "pages-bridge" }) });
+      }, { status: 503, headers: noStoreHeaders({ "x-dc-iris": "session-gate-unverified" }) });
     }
 
     // Unity seal verification: read-only, fail-closed, no-store.
@@ -127,43 +129,16 @@ export default {
       }
     }
 
-    // Isolated HUD paths are explicitly served from the HUD repository.
-    // The homepage and every other path continue through the Pages asset binding.
-    const hud = HUD_ROUTES.get(path);
-    if (hud) {
-      if (request.method !== "GET" && request.method !== "HEAD") {
-        return new Response("Method not allowed", {
-          status: 405,
-          headers: noStoreHeaders({ allow: "GET, HEAD" })
-        });
-      }
-
-      let upstream;
-      try {
-        upstream = await fetch(hud[0], {
-          method: request.method,
-          headers: { accept: request.headers.get("accept") || "*/*" }
-        });
-      } catch {
-        return new Response("HUD upstream unavailable", {
-          status: 502,
-          headers: noStoreHeaders({ "x-dc-iris": "upstream-error" })
-        });
-      }
-
-      if (!upstream.ok) {
-        return new Response("HUD upstream unavailable", {
-          status: 502,
-          headers: noStoreHeaders({ "x-dc-iris": "upstream-error" })
-        });
-      }
-
-      return new Response(request.method === "HEAD" ? null : await upstream.arrayBuffer(), {
-        status: 200,
+    // Never serve protected HUD HTML from this Pages fallback. This handler
+    // has no verified receiver-session binding, so serving bytes here would
+    // bypass the origin-join/session gate. Keep the path closed until the
+    // actual gated route is independently proven in staging.
+    if (HUD_ROUTES.has(path)) {
+      return new Response("HUD session-gated route unavailable", {
+        status: 503,
         headers: noStoreHeaders({
-          "content-type": hud[1],
-          "x-dc-iris": "pages-bridge",
-          "x-dc-hud-source": "github-raw"
+          "content-type": "text/plain; charset=utf-8",
+          "x-dc-iris": "session-gate-unverified"
         })
       });
     }
