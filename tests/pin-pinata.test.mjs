@@ -28,7 +28,8 @@ function response({ ok = true, status = 200, json, bytes } = {}) {
 test('public path allowlist rejects source, test, secret, and traversal paths', () => {
   assert.equal(isPublicSitePath('index.html'), true);
   assert.equal(isPublicSitePath('assets/app.js'), true);
-  assert.equal(isPublicSitePath('.well-known/security.txt', { full: true }), true);
+  assert.equal(isPublicSitePath('.well-known/security.txt'), true);
+  assert.equal(isPublicSitePath('robots.txt'), true);
   assert.equal(isPublicSitePath('../outside.html'), false);
   assert.equal(isPublicSitePath('/absolute.html'), false);
   assert.equal(isPublicSitePath('workers/iris-runtime/worker.mjs'), false);
@@ -123,5 +124,17 @@ test('invalid manifest entry fails before upload', async () => {
     fetchImpl: async () => { calls++; },
   });
   assert.equal(result.reason, 'invalid-public-file-entry');
+  assert.equal(calls, 0);
+});
+
+
+test('duplicate directory paths fail before any upload', async () => {
+  let calls = 0;
+  const duplicate = [files[0], { ...files[0], bytes: Buffer.from(files[0].bytes) }];
+  const result = await runPinataDirectoryPublication({
+    jwt: 'test-secret', files: duplicate, sourceRevision,
+    fetchImpl: async () => { calls++; },
+  });
+  assert.equal(result.reason, 'duplicate-public-file-path');
   assert.equal(calls, 0);
 });
