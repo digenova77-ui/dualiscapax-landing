@@ -15,6 +15,7 @@ const MAX_OUTPUT_CHARS = 12000;
 const MAX_MEMORY_CONTEXT_BYTES = 32 * 1024;
 const RECEIPT_HASH_RE = /^[a-f0-9]{64}$/;
 const REQUEST_ID_RE = /^[A-Za-z0-9._:-]{8,128}$/;
+const RECEIPT_CONTRACT = "dualis.receipt.v1";
 
 const json = (body, status = 200, headers = {}) =>
   Response.json(body, {
@@ -29,6 +30,41 @@ const json = (body, status = 200, headers = {}) =>
 
 const unavailable = (stage) =>
   json({ available: false, stage, reason: "required-service-unavailable" }, 503);
+
+function canonicalJson(value) {
+  if (value === null || typeof value === "string" || typeof value === "boolean") return JSON.stringify(value);
+  if (typeof value === "number") {
+    if (!Number.isSafeInteger(value)) throw new Error("non-canonical-number");
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) return "[" + value.map(canonicalJson).join(",") + "]";
+  if (!value || typeof value !== "object") throw new Error("non-canonical-value");
+  const keys = Object.keys(value).sort();
+  return "{" + keys.map((key) => JSON.stringify(key) + ":" + canonicalJson(value[key])).join(",") + "}";
+}
+
+async function verifyReceiptEnvelope(receipt, expected) {
+  if (!receipt || typeof receipt !== "object" || Array.isArray(receipt)) return false;
+  const envelope = {
+    contract: RECEIPT_CONTRACT,
+    unity_id: expected.unity_id,
+    request_id: expected.request_id,
+    action: expected.action,
+    input_sha256: expected.input_sha256,
+    result_sha256: expected.result_sha256,
+    receipt_id: expected.receipt_id,
+  };
+  if (receipt.contract !== envelope.contract ||
+      receipt.unity_id !== envelope.unity_id ||
+      receipt.request_id !== envelope.request_id ||
+      receipt.action !== envelope.action ||
+      receipt.input_sha256 !== envelope.input_sha256 ||
+      receipt.result_sha256 !== envelope.result_sha256 ||
+      receipt.receipt_id !== envelope.receipt_id) return false;
+  return typeof expected.receipt_sha256 === "string" &&
+    RECEIPT_HASH_RE.test(expected.receipt_sha256) &&
+    await sha256(canonicalJson(envelope)) === expected.receipt_sha256;
+}
 
 function allowedOrigin(request, env) {
   const origin = request.headers.get("origin");
@@ -198,7 +234,8 @@ async function handleRequest(request, env) {
       !replay.result.trim() || replay.result.length > MAX_OUTPUT_CHARS ||
       typeof replay.result_sha256 !== "string" || replay.result_sha256 !== await sha256(replay.result) ||
       typeof replay.receipt_id !== "string" || !replay.receipt_id.trim() ||
-      typeof replay.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(replay.receipt_sha256)
+      typeof replay.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(replay.receipt_sha256) ||
+      !(await verifyReceiptEnvelope(replay.receipt, { unity_id: unityId, request_id: requestId, action: computePlan.action, input_sha256: inputSha256, result_sha256: replay.result_sha256, receipt_id: replay.receipt_id, receipt_sha256: replay.receipt_sha256 }))
     ) {
       return json({ available: false, stage: "idempotency-claim", reason: "invalid-replay-receipt" }, 503);
     }
@@ -289,7 +326,8 @@ async function handleRequest(request, env) {
     receipt.request_id !== requestId || receipt.action !== computePlan.action ||
     receipt.input_sha256 !== inputSha256 || receipt.result_sha256 !== resultSha256 ||
     typeof receipt.receipt_id !== "string" || !receipt.receipt_id.trim() ||
-    typeof receipt.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(receipt.receipt_sha256)
+    typeof receipt.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(receipt.receipt_sha256) ||
+    !(await verifyReceiptEnvelope(receipt.receipt, { unity_id: unityId, request_id: requestId, action: computePlan.action, input_sha256: inputSha256, result_sha256: resultSha256, receipt_id: receipt.receipt_id, receipt_sha256: receipt.receipt_sha256 }))
   ) {
     return json({ available: false, stage: "memory-write", reason: "persistence-unconfirmed" }, 503);
   }
