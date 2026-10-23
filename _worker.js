@@ -163,29 +163,31 @@ export default {
     }
 
     // Pure diamond / frontier / Omni edge routes (no-store, fail-closed).
-    if (path === "/omni/status") {
-      return jsonNoStore({ route: "/omni", live: true, ok: true, ts: new Date().toISOString() });
-    }
-    if (path === "/omni" || path === "/omni/") {
-      return jsonNoStore(omniSnapshot());
-    }
-    if (path === "/frontier/status") {
-      return jsonNoStore({ route: "/frontier", live: true, ok: true, ts: new Date().toISOString() });
-    }
-    if (path === "/frontier" || path === "/frontier/") {
-      return jsonNoStore(frontierReport());
-    }
-    if (path === "/purity/status") {
-      return jsonNoStore({ route: "/purity", live: true, ok: true, ts: new Date().toISOString() });
+    const edge = {
+      "/omni/status": () => ({ route: "/omni", live: true, ok: true, ts: new Date().toISOString() }),
+      "/omni": () => omniSnapshot(),
+      "/omni/": () => omniSnapshot(),
+      "/frontier/status": () => ({ route: "/frontier", live: true, ok: true, ts: new Date().toISOString() }),
+      "/frontier": () => frontierReport(),
+      "/frontier/": () => frontierReport(),
+      "/purity/status": () => ({ route: "/purity", live: true, ok: true, ts: new Date().toISOString() }),
+      "/standing-probe/status": () => ({ route: "/standing-probe", live: true, ok: true, ts: new Date().toISOString() }),
+      "/standing-probe": () => standingProbe(),
+      "/standing-probe/": () => standingProbe()
+    };
+    if (Object.prototype.hasOwnProperty.call(edge, path)) {
+      try {
+        return jsonNoStore(edge[path]());
+      } catch (err) {
+        return jsonNoStore({ ok: false, route: path, live: false, reason: "route failed", detail: String(err && err.message || err) }, 500);
+      }
     }
     if (path === "/purity" || path === "/purity/") {
-      return textNoStore(purityText());
-    }
-    if (path === "/standing-probe/status") {
-      return jsonNoStore({ route: "/standing-probe", live: true, ok: true, ts: new Date().toISOString() });
-    }
-    if (path === "/standing-probe" || path === "/standing-probe/") {
-      return jsonNoStore(standingProbe());
+      try {
+        return textNoStore(purityText());
+      } catch (err) {
+        return jsonNoStore({ ok: false, route: path, live: false, reason: "route failed", detail: String(err && err.message || err) }, 500);
+      }
     }
 
     if (path === "/receipts/verify" && request.method === "POST") {
