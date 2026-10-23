@@ -22,7 +22,7 @@ function fixture(overrides = {}) {
       const route = new URL(request.url).pathname;
       if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
       if (route.endsWith("/claim")) return { unity_id: body.unity_id, request_id: body.request_id, claimed: true };
-      return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-1" };
+      return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-1", receipt_sha256: "a".repeat(64) };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({
       decision: "allow", authorized: true, request_id: body.request_id,
