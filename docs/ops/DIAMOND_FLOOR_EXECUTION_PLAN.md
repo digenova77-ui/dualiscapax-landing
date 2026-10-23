@@ -18,7 +18,7 @@ Required direction: authenticate at a valid RP origin, verify the assertion serv
 | ID | Priority | Task | Acceptance evidence | Status |
 |---|---|---|---|---|
 | DF-001 | P0 | Preserve Replit workspace | Export or verified Git sync, compared without overwriting either side | BLOCKED: Replit agent paused; workspace not inspected |
-| DF-002 | P0 | Confirm source of truth | Branch, HEAD, entry points, generated assets, deployment rail recorded | PARTIAL |
+| DF-002 | P0 | Confirm source of truth | Branch, HEAD, entry points, generated assets, deployment path recorded | PARTIAL |
 | DF-003 | P0 | Correct WebAuthn design | RP ID and origin rules respected; server-side validation documented | IN PROGRESS: incompatibility identified |
 | DF-004 | P0 | Implement one-time handoff | Expiring single-use grant consumed atomically; secure .ai session | BLOCKED: backend/session implementation unconfirmed |
 | DF-005 | P0 | Test identity failure paths | cancel, timeout, invalid/stale/replayed challenge and missing session all fail closed | NOT STARTED |
@@ -29,7 +29,7 @@ Required direction: authenticate at a valid RP origin, verify the assertion serv
 | DF-010 | P0 | Verify API v2/kernel | canonical base, schema, auth, failure behavior and real kernel connection tested | BLOCKED: route/backend unverified |
 | DF-011 | P1 | Reconcile routes | redirects match intended existing destinations and pass route tests | NOT STARTED |
 | DF-012 | P0 | Build and test | clean build, tests, browser/mobile checks and artifact hash recorded | NOT STARTED |
-| DF-013 | P0 | Staging and rollback | safe preview and rollback verified; release separately approved | BLOCKED: delivery rail unresolved |
+| DF-013 | P0 | Staging and rollback | safe preview and rollback verified; release separately approved | BLOCKED: delivery path unresolved |
 | DF-014 | P1 | Import Replit work | export compared; only verified changes transplanted | BLOCKED: workspace changes unknown |
 
 ## Release acceptance tests
