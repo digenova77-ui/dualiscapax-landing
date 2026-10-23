@@ -29,7 +29,7 @@ export function isPublicSitePath(filePath, { full = false } = {}) {
   if (parts.some(part => DENIED_DIRS.has(part))) return false;
   if (parts[0] === '.well-known' && filePath !== '.well-known/security.txt') return false;
   const name = parts.at(-1);
-  if (/^(?:\.env|.*(?:secret|credential|private[-_.]?key|token|backup|\.bak)(?:\.|$))/i.test(name)) return false;
+  if (/^\.env$/i.test(name) || /(?:secret|credentials?|private[-_.]?key|token|backup|\.bak)/i.test(name)) return false;
   const ext = path.posix.extname(name).toLowerCase();
   return WEB_EXT.has(ext) || (full && FULL_EXTRA_EXT.has(ext));
 }
