@@ -195,6 +195,9 @@ export default {
         learning: "advisory only — NOT_FOR_EMISSION"
       }),
       "/diamond/status": () => status("/diamond"),
+      "/pricing": () => pricingReport(),
+      "/pricing/status": () => status("/pricing"),
+      
       "/omni/status": () => status("/omni"),
       "/omni": () => omniSnapshot(),
       "/frontier/status": () => status("/frontier"),
@@ -291,6 +294,30 @@ function purityText() {
   lines.push("boundary: NOT_FOR_EMISSION");
   return lines.join("\n");
 }
+
+const PRICE = {
+  clarity: { FL: 1.00, VVS: 0.82, VS: 0.68 },
+  color: { D: 1.00, E: 0.91, F: 0.85 },
+  cut: { Excellent: 1.00, "Very Good": 0.94 }
+};
+function priceIndex(f) {
+  const c = PRICE.clarity[f.clarity] || 0;
+  const col = PRICE.color[f.color] || 0;
+  const cut = PRICE.cut[f.cut] || 0;
+  const purity = f.reflects === "purity" ? 1 : 0;
+  return { name: f.name, index: +(c * col * cut * purity).toFixed(3), factors: { clarity: c, color: col, cut } };
+}
+function pricingReport() {
+  const facets = DEFAULT_FACETS.filter(f => f.kind !== "ceiling").map(priceIndex);
+  return {
+    protocol: "DIAMOND.PRICE.v1",
+    base: "FL·D·Excellent·purity = 1.000",
+    facets,
+    boundary: "NOT_FOR_EMISSION",
+    note: "advisory index — not a spend"
+  };
+}
+
 function standingProbe() {
   return { standing_callable: true, emission_source: "standing() — origin only", boundary: "NOT_FOR_EMISSION" };
 }

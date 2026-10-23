@@ -143,6 +143,31 @@ export function verifyReceiptChain(receipts) {
 }
 
 /** Read-only standing probe. Does not emit. */
+
+/** Grade pricing index. Advisory. NOT_FOR_EMISSION.
+ * Base 1.000 is FL · D · Excellent · purity (frontier).
+ * Steps from market bands: color ~4% per letter, clarity larger, cut smaller.
+ */
+export const PRICE_INDEX = {
+  clarity: { FL: 1.00, VVS: 0.82, VS: 0.68, SI: 0.50, I: 0.30 },
+  color: { D: 1.00, E: 0.91, F: 0.85, G: 0.75 },
+  cut: { Excellent: 1.00, "Very Good": 0.94, Good: 0.85, Fair: 0.70, Poor: 0.50 }
+};
+export function priceIndex(f) {
+  const c = PRICE_INDEX.clarity[f.clarity] ?? 0;
+  const col = PRICE_INDEX.color[f.color] ?? 0;
+  const cut = PRICE_INDEX.cut[f.cut] ?? 0;
+  const purity = f.reflects === "purity" ? 1 : 0;
+  const index = +(c * col * cut * purity).toFixed(3);
+  return {
+    name: f.name,
+    index,
+    base: "FL·D·Excellent·purity = 1.000",
+    factors: { clarity: c, color: col, cut },
+    boundary: "NOT_FOR_EMISSION"
+  };
+}
+
 export function standingProbe() {
   return {
     standing_callable: true,

@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 
 REQUIRED = [
+    "/pricing",
     "/diamond",
     "/standing-probe/status",
     "/purity/status",
