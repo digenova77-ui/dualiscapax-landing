@@ -2,6 +2,9 @@ name: Cloudflare Read-Only Inventory
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - ops/cloudflare-readonly-audit-20261023
 
 permissions:
   contents: read
