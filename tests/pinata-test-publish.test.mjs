@@ -9,7 +9,10 @@ function response({ ok = true, status = 200, json, bytes } = {}) {
   return {
     ok, status,
     async json() { return json; },
-    async arrayBuffer() { return Buffer.from(bytes).buffer.slice(Buffer.from(bytes).byteOffset, Buffer.from(bytes).byteOffset + Buffer.from(bytes).byteLength); },
+    async arrayBuffer() {
+      const buffer = Buffer.from(bytes);
+      return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+    },
   };
 }
 
