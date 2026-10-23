@@ -11,7 +11,6 @@
     "geo": "this device"
   },
   "public_hosts": [
-    {"id":"house-depth","label":"House depth","geo":"edge","host":"dualiscapax-depth.digenova77.workers.dev","role":"API","domain":"bind","access":"public look · depth needs fuel or BYOK"},
     {"id":"house-fulfill","label":"House fulfill","geo":"edge","host":"dualiscapax-stripe-fulfill-v2.digenova77.workers.dev","role":"API","domain":"bind","access":"signed webhook only"},
     {"id":"house-site","label":"House face","geo":"Canada / edge","host":"dualiscapax.ai","role":"site","domain":"bind","access":"public"},
     {"id":"resolver-cf","label":"Public resolver","geo":"edge","host":"1.1.1.1","role":"public DNS","domain":"bind","access":"open resolver · not a person"},

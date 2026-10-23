@@ -31,7 +31,7 @@
   var world = apply(detectWorld());
 
   function baseUrl() {
-    var base = (g.DC_API_BASE || "https://dualiscapax-depth.digenova77.workers.dev").replace(/\/$/, "");
+    var base = (g.DC_API_BASE || "").replace(/\/$/, ""); // no default host (former default Worker deleted 2026-10-17)
     try {
       var q = new URLSearchParams(location.search).get("api");
       if (q) base = String(q).replace(/\/$/, "");
@@ -46,6 +46,9 @@
   }
 
   async function post(path, body, headers) {
+    if (!baseUrl()) {
+      return { ok: false, error: "DC_API_BASE not set", code: "NO_API_BASE", _http: 0, _path: path, world: world, api_version: g.DC_API_VERSION };
+    }
     var res = await fetch(baseUrl() + path, {
       method: "POST",
       headers: headers,

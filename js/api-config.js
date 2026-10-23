@@ -9,7 +9,8 @@
   g.DC_WORLD_NAME = world === 1 ? 'ONE' : 'GROUND_ZERO';
   g.DC_API_VERSION = world === 1 ? '2' : '1';
   g.DC_API_PATH = world === 1 ? '/v2/chat' : '/v1/chat';
-  g.DC_API_BASE = g.DC_API_BASE || 'https://dualiscapax-depth.digenova77.workers.dev';
+  // No default API host: former default Worker deleted 2026-10-17. Set DC_API_BASE or ?api= explicitly.
+  g.DC_API_BASE = g.DC_API_BASE || '';
   try {
     var q = new URLSearchParams(location.search).get('api');
     if (q) g.DC_API_BASE = q.replace(/\/$/, '');
