@@ -29,4 +29,4 @@ jobs:
         with:
           node-version: "22"
       - name: Run governed runtime contract tests
-        run: node --test workers/iris-runtime/worker.test.mjs
+        run: node --test workers/iris-runtime/worker.test.mjs tests/test_api_base_trust.mjs
