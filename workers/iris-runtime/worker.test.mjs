@@ -67,6 +67,9 @@ test("happy path verifies identity, exact Trinity binding, claim ordering, and s
   assert.equal(calls[1].body.action, "iris.inference");
   assert.equal(calls[1].body.memory_requested, true);
   assert.match(calls[1].body.input_sha256, /^[a-f0-9]{64}$/);
+  assert.equal(calls[2].body.contract, "dualis.idempotency.v1");
+  assert.equal(calls[2].body.input_sha256, calls[1].body.input_sha256,
+    "the durable claim must bind the same digest Trinity authorized");
 });
 
 test("browser-supplied authorization ticket cannot bypass Trinity deny", async () => {
