@@ -79,5 +79,6 @@ test("runtime runs exact arithmetic only after Trinity allows it and skips provi
   assert.equal(calls.some(c => c.name === "trinity" && c.body.action === "iris.compute.deterministic"), true);
   assert.equal(calls.some(c => c.name === "provider"), false);
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/claim")), true);
+  assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/context")), false);
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/append")), true);
 });
