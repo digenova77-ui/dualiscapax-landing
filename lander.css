@@ -1,0 +1,17 @@
+/* Compatibility bridge for legacy Ice pages. Canonical shared design lives in theme.css. */
+@import url("/theme.css");
+
+.ice-body { min-height: 100vh; margin: 0; }
+.ice-chrome, .ice-demo-banner, .ice-rail, .ice-stage, .ice-sheet { box-sizing: border-box; }
+.ice-chrome { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem; }
+.ice-chrome a, .ice-demo-banner a, .ice-rail a { color:inherit; }
+.ice-demo-banner { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.75rem; padding:.75rem 1rem; border-block:1px solid rgba(158,197,255,.2); }
+.ice-rink { display:grid; grid-template-columns:minmax(9rem,14rem) minmax(0,1fr); gap:1rem; max-width:72rem; margin:0 auto; padding:1rem; }
+.ice-rail { display:flex; flex-direction:column; gap:.5rem; }
+.ice-rail button, .ice-btn, .ice-seat-chip { min-height:2.75rem; padding:.65rem .85rem; border:1px solid rgba(158,197,255,.3); border-radius:.5rem; background:transparent; color:inherit; cursor:pointer; }
+.ice-rail button[aria-current="page"] { border-color:#9ec5ff; background:rgba(158,197,255,.12); }
+.ice-stage { min-width:0; }
+.ice-stage-card { padding:1rem; margin-block:0 .75rem; border:1px solid rgba(158,197,255,.2); border-radius:.75rem; }
+.ice-note { color:rgba(245,245,245,.7); line-height:1.55; }
+.ice-status { padding:.75rem; border-left:3px solid #9ec5ff; background:rgba(158,197,255,.07); }
+@media(max-width:640px) { .ice-rink { grid-template-columns:1fr; } .ice-rail { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); } .ice-rail button { padding:.5rem .35rem; } }
