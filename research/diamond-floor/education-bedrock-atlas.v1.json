@@ -1,0 +1,800 @@
+{
+  "schema": "dualis.education-bedrock-atlas.v1",
+  "version": "0.1.0",
+  "status": "CANDIDATE",
+  "generated_scope": "Curated high-level discipline index; not exhaustive, not source-complete, not independently reviewed.",
+  "policy": {
+    "source_backed_claims_required_for_acceptance": true,
+    "independent_review_required": true,
+    "automatic_promotion": false,
+    "fabricated_verification": false
+  },
+  "vertical_layers": [
+    {
+      "id": "bedrock",
+      "label": "Admissibility",
+      "question": "What kind of claim is this and what would justify it?"
+    },
+    {
+      "id": "formal-foundations",
+      "label": "Formal foundations",
+      "question": "What structures, definitions, axioms, or representations does it depend on?"
+    },
+    {
+      "id": "methods",
+      "label": "Methods",
+      "question": "How was the claim derived, observed, tested, or interpreted?"
+    },
+    {
+      "id": "disciplines",
+      "label": "Core disciplines",
+      "question": "Which domain supplies the concepts and evidence standards?"
+    },
+    {
+      "id": "subdisciplines",
+      "label": "Subdisciplines",
+      "question": "What narrower scope and methods apply?"
+    },
+    {
+      "id": "applications",
+      "label": "Applications",
+      "question": "Which decisions or interventions rely on it?"
+    },
+    {
+      "id": "audit-feedback",
+      "label": "Audit and feedback",
+      "question": "How can it be challenged, replicated, corrected, and preserved?"
+    }
+  ],
+  "disciplines": [
+    {
+      "id": "logic-mathematics",
+      "label": "Logic, mathematics, and formal systems",
+      "methods": [
+        "proof",
+        "formalization",
+        "counterexample",
+        "numerical analysis"
+      ],
+      "branches": [
+        "logic and foundations",
+        "algebra",
+        "number theory",
+        "geometry and topology",
+        "analysis",
+        "probability and statistics",
+        "combinatorics",
+        "optimization",
+        "dynamical systems",
+        "information theory",
+        "type theory",
+        "applied mathematics"
+      ],
+      "applications": [
+        "proofs",
+        "algorithms",
+        "quantitative models",
+        "optimization"
+      ],
+      "dependencies": [
+        "bedrock",
+        "formal-foundations"
+      ],
+      "open_questions": [
+        "formal verification at scale",
+        "complexity limits",
+        "models of emergence"
+      ]
+    },
+    {
+      "id": "computer-information",
+      "label": "Computer science and information",
+      "methods": [
+        "algorithms",
+        "semantics",
+        "complexity analysis",
+        "testing",
+        "formal methods"
+      ],
+      "branches": [
+        "theory of computation",
+        "programming languages",
+        "operating systems",
+        "distributed systems",
+        "databases",
+        "networking",
+        "security and privacy",
+        "AI and machine learning",
+        "human-computer interaction",
+        "robotics",
+        "scientific computing"
+      ],
+      "applications": [
+        "software",
+        "protocols",
+        "data systems",
+        "verified computations"
+      ],
+      "dependencies": [
+        "logic-mathematics",
+        "engineering-design"
+      ],
+      "open_questions": [
+        "dependable AI",
+        "distributed trust",
+        "long-term data preservation"
+      ]
+    },
+    {
+      "id": "physics",
+      "label": "Physics",
+      "methods": [
+        "measurement",
+        "mathematical modeling",
+        "controlled experiment",
+        "dimensional analysis"
+      ],
+      "branches": [
+        "mechanics",
+        "electromagnetism",
+        "thermodynamics",
+        "quantum physics",
+        "relativity",
+        "optics",
+        "atomic and molecular physics",
+        "nuclear and particle physics",
+        "condensed matter",
+        "plasma physics",
+        "acoustics",
+        "biophysics"
+      ],
+      "applications": [
+        "instruments",
+        "energy technology",
+        "materials",
+        "physical predictions"
+      ],
+      "dependencies": [
+        "logic-mathematics"
+      ],
+      "open_questions": [
+        "quantum gravity",
+        "dark matter and dark energy",
+        "nonequilibrium systems"
+      ]
+    },
+    {
+      "id": "chemistry-materials",
+      "label": "Chemistry and materials",
+      "methods": [
+        "synthesis",
+        "spectroscopy",
+        "chromatography",
+        "microscopy",
+        "kinetic modeling"
+      ],
+      "branches": [
+        "organic",
+        "inorganic",
+        "physical",
+        "analytical",
+        "theoretical",
+        "electrochemistry",
+        "biochemistry",
+        "polymer science",
+        "surface chemistry",
+        "atmospheric chemistry"
+      ],
+      "applications": [
+        "medicines",
+        "catalysts",
+        "batteries",
+        "semiconductors",
+        "remediation"
+      ],
+      "dependencies": [
+        "physics",
+        "biology-life"
+      ],
+      "open_questions": [
+        "predictive synthesis",
+        "sustainable materials",
+        "catalysis"
+      ]
+    },
+    {
+      "id": "biology-life",
+      "label": "Biology and life sciences",
+      "methods": [
+        "observation",
+        "controlled experiments",
+        "field studies",
+        "sequencing",
+        "imaging",
+        "statistics"
+      ],
+      "branches": [
+        "cell biology",
+        "genetics and genomics",
+        "evolution",
+        "ecology",
+        "microbiology",
+        "botany",
+        "zoology",
+        "physiology",
+        "developmental biology",
+        "neuroscience",
+        "immunology",
+        "systems biology"
+      ],
+      "applications": [
+        "conservation",
+        "agriculture",
+        "biotechnology",
+        "diagnostics"
+      ],
+      "dependencies": [
+        "chemistry-materials",
+        "physics",
+        "logic-mathematics"
+      ],
+      "open_questions": [
+        "origin of life",
+        "ecosystem resilience",
+        "multiscale regulation"
+      ]
+    },
+    {
+      "id": "earth-environment",
+      "label": "Earth, ocean, climate, and environmental sciences",
+      "methods": [
+        "field sampling",
+        "remote sensing",
+        "geophysics",
+        "inverse problems",
+        "earth-system modeling"
+      ],
+      "branches": [
+        "geology",
+        "seismology",
+        "geodesy",
+        "hydrology",
+        "oceanography",
+        "atmospheric science",
+        "meteorology",
+        "climatology",
+        "glaciology",
+        "soil science",
+        "paleontology",
+        "biogeochemistry",
+        "natural hazards"
+      ],
+      "applications": [
+        "hazard assessment",
+        "water management",
+        "climate projections",
+        "environmental monitoring"
+      ],
+      "dependencies": [
+        "physics",
+        "chemistry-materials",
+        "biology-life",
+        "computer-information"
+      ],
+      "open_questions": [
+        "subsurface observability",
+        "coupled feedbacks",
+        "deep-time reconstruction"
+      ],
+      "caution": "Environmental signals do not establish arbitrary recoverable information or consciousness without a specific falsifiable mechanism."
+    },
+    {
+      "id": "astronomy-space",
+      "label": "Astronomy and space science",
+      "methods": [
+        "telescopic observation",
+        "spectroscopy",
+        "astrometry",
+        "timing",
+        "statistical inference"
+      ],
+      "branches": [
+        "solar physics",
+        "planetary science",
+        "stellar astrophysics",
+        "galactic astronomy",
+        "cosmology",
+        "exoplanets",
+        "high-energy astrophysics",
+        "gravitational-wave astronomy",
+        "space weather",
+        "astrobiology"
+      ],
+      "applications": [
+        "navigation",
+        "space missions",
+        "solar monitoring",
+        "cosmological constraints"
+      ],
+      "dependencies": [
+        "physics",
+        "logic-mathematics",
+        "computer-information"
+      ],
+      "open_questions": [
+        "planetary habitability",
+        "dark components",
+        "multi-messenger inference"
+      ]
+    },
+    {
+      "id": "engineering-design",
+      "label": "Engineering and design",
+      "methods": [
+        "requirements",
+        "modeling",
+        "prototyping",
+        "verification",
+        "validation",
+        "safety analysis"
+      ],
+      "branches": [
+        "mechanical",
+        "electrical",
+        "civil",
+        "chemical",
+        "aerospace",
+        "biomedical",
+        "environmental",
+        "industrial",
+        "systems",
+        "control",
+        "software",
+        "materials",
+        "energy",
+        "manufacturing",
+        "human factors"
+      ],
+      "applications": [
+        "infrastructure",
+        "machines",
+        "software",
+        "products",
+        "resilient services"
+      ],
+      "dependencies": [
+        "physics",
+        "chemistry-materials",
+        "computer-information",
+        "law-governance"
+      ],
+      "open_questions": [
+        "autonomous-system safety",
+        "circular design",
+        "verification under uncertainty"
+      ]
+    },
+    {
+      "id": "medicine-public-health",
+      "label": "Medicine and public health",
+      "methods": [
+        "clinical examination",
+        "diagnostic validation",
+        "clinical studies",
+        "epidemiology",
+        "evidence synthesis"
+      ],
+      "branches": [
+        "anatomy",
+        "physiology",
+        "pathology",
+        "pharmacology",
+        "clinical specialties",
+        "nursing",
+        "dentistry",
+        "rehabilitation",
+        "mental health",
+        "epidemiology",
+        "biostatistics",
+        "health systems"
+      ],
+      "applications": [
+        "prevention",
+        "diagnosis",
+        "treatment",
+        "rehabilitation",
+        "public-health policy"
+      ],
+      "dependencies": [
+        "biology-life",
+        "chemistry-materials",
+        "psychology-neuroscience",
+        "social-sciences"
+      ],
+      "open_questions": [
+        "personalized care",
+        "health inequities",
+        "evidence translation"
+      ]
+    },
+    {
+      "id": "psychology-neuroscience",
+      "label": "Psychology, cognition, and neuroscience",
+      "methods": [
+        "behavioral experiments",
+        "psychometrics",
+        "neuroimaging",
+        "longitudinal studies",
+        "computational models"
+      ],
+      "branches": [
+        "cognitive",
+        "developmental",
+        "social",
+        "clinical",
+        "educational",
+        "personality",
+        "neuropsychology",
+        "affective neuroscience",
+        "computational neuroscience",
+        "perception and action"
+      ],
+      "applications": [
+        "learning design",
+        "mental-health care",
+        "accessibility",
+        "human factors"
+      ],
+      "dependencies": [
+        "biology-life",
+        "logic-mathematics",
+        "education-learning"
+      ],
+      "open_questions": [
+        "testable consciousness theories",
+        "measurement validity",
+        "cross-cultural generalization"
+      ]
+    },
+    {
+      "id": "social-sciences",
+      "label": "Social sciences and society",
+      "methods": [
+        "surveys",
+        "experiments",
+        "ethnography",
+        "interviews",
+        "causal inference",
+        "comparative methods"
+      ],
+      "branches": [
+        "sociology",
+        "anthropology",
+        "political science",
+        "human geography",
+        "demography",
+        "communication",
+        "criminology",
+        "international relations",
+        "science and technology studies"
+      ],
+      "applications": [
+        "institutional design",
+        "social policy",
+        "community research",
+        "program evaluation"
+      ],
+      "dependencies": [
+        "psychology-neuroscience",
+        "humanities",
+        "economics-management"
+      ],
+      "open_questions": [
+        "collective behavior",
+        "digital social systems",
+        "causal inference in complex settings"
+      ]
+    },
+    {
+      "id": "economics-management",
+      "label": "Economics, finance, and management",
+      "methods": [
+        "formal models",
+        "econometrics",
+        "experiments",
+        "accounting",
+        "risk analysis"
+      ],
+      "branches": [
+        "microeconomics",
+        "macroeconomics",
+        "behavioral",
+        "development",
+        "labor",
+        "public",
+        "environmental",
+        "financial economics",
+        "accounting",
+        "operations research",
+        "strategy",
+        "organizational behavior"
+      ],
+      "applications": [
+        "policy analysis",
+        "resource allocation",
+        "risk management",
+        "organizational decisions"
+      ],
+      "dependencies": [
+        "logic-mathematics",
+        "social-sciences",
+        "law-governance"
+      ],
+      "open_questions": [
+        "systemic risk",
+        "distributional effects",
+        "limits of prediction"
+      ]
+    },
+    {
+      "id": "humanities",
+      "label": "Humanities: history, philosophy, languages, and religion",
+      "methods": [
+        "close reading",
+        "archival criticism",
+        "philology",
+        "argument analysis",
+        "source comparison",
+        "oral history"
+      ],
+      "branches": [
+        "history",
+        "philosophy",
+        "ethics",
+        "epistemology",
+        "metaphysics",
+        "political philosophy",
+        "linguistics",
+        "literature",
+        "classics",
+        "religious studies",
+        "cultural studies"
+      ],
+      "applications": [
+        "interpretation",
+        "ethical reasoning",
+        "historical understanding",
+        "cultural preservation"
+      ],
+      "dependencies": [
+        "bedrock",
+        "law-governance"
+      ],
+      "open_questions": [
+        "contested memory",
+        "translation",
+        "plural ethical frameworks"
+      ]
+    },
+    {
+      "id": "arts-media",
+      "label": "Arts, music, media, and creative practice",
+      "methods": [
+        "making",
+        "rehearsal",
+        "critique",
+        "formal analysis",
+        "archival study",
+        "audience research"
+      ],
+      "branches": [
+        "visual arts",
+        "music",
+        "theatre",
+        "dance",
+        "film",
+        "photography",
+        "architecture",
+        "design",
+        "creative writing",
+        "media arts",
+        "craft",
+        "game design"
+      ],
+      "applications": [
+        "artworks",
+        "performances",
+        "communication",
+        "cultural memory"
+      ],
+      "dependencies": [
+        "humanities",
+        "psychology-neuroscience",
+        "engineering-design"
+      ],
+      "open_questions": [
+        "authorship with generative tools",
+        "preservation of ephemeral work",
+        "cultural interpretation"
+      ]
+    },
+    {
+      "id": "law-governance",
+      "label": "Law, governance, and ethics",
+      "methods": [
+        "statutory analysis",
+        "case analysis",
+        "interpretation",
+        "comparative law",
+        "policy analysis",
+        "ethical argument"
+      ],
+      "branches": [
+        "constitutional",
+        "administrative",
+        "criminal",
+        "civil",
+        "contract",
+        "property",
+        "intellectual property",
+        "international",
+        "environmental",
+        "privacy",
+        "technology law",
+        "jurisprudence",
+        "bioethics"
+      ],
+      "applications": [
+        "rules",
+        "institutions",
+        "remedies",
+        "accountability"
+      ],
+      "dependencies": [
+        "humanities",
+        "social-sciences",
+        "economics-management"
+      ],
+      "open_questions": [
+        "autonomous-system governance",
+        "cross-border data",
+        "intergenerational justice"
+      ]
+    },
+    {
+      "id": "education-learning",
+      "label": "Education and learning sciences",
+      "methods": [
+        "learning theory",
+        "classroom studies",
+        "assessment design",
+        "longitudinal research",
+        "program evaluation"
+      ],
+      "branches": [
+        "pedagogy",
+        "curriculum",
+        "instructional design",
+        "assessment",
+        "educational psychology",
+        "special education",
+        "adult learning",
+        "early childhood",
+        "higher education",
+        "vocational education",
+        "educational technology",
+        "policy and leadership"
+      ],
+      "applications": [
+        "curricula",
+        "teaching practice",
+        "learning resources",
+        "accessible environments"
+      ],
+      "dependencies": [
+        "psychology-neuroscience",
+        "social-sciences",
+        "computer-information"
+      ],
+      "open_questions": [
+        "transfer of learning",
+        "equitable measurement",
+        "adaptive systems"
+      ]
+    },
+    {
+      "id": "agriculture-food",
+      "label": "Agriculture, food, and ecological stewardship",
+      "methods": [
+        "field trials",
+        "soil and crop measurement",
+        "food chemistry",
+        "supply-chain analysis",
+        "ecological modeling"
+      ],
+      "branches": [
+        "agronomy",
+        "animal science",
+        "horticulture",
+        "forestry",
+        "fisheries",
+        "food science",
+        "nutrition",
+        "agroecology",
+        "food safety",
+        "agricultural economics"
+      ],
+      "applications": [
+        "resilient food production",
+        "safe processing",
+        "conservation",
+        "sustainable supply chains"
+      ],
+      "dependencies": [
+        "biology-life",
+        "chemistry-materials",
+        "earth-environment",
+        "economics-management"
+      ],
+      "open_questions": [
+        "climate adaptation",
+        "biodiversity",
+        "waste reduction"
+      ]
+    },
+    {
+      "id": "interdisciplinary",
+      "label": "Interdisciplinary and emerging fields",
+      "methods": [
+        "cross-domain modeling",
+        "network analysis",
+        "multi-method synthesis",
+        "systems analysis"
+      ],
+      "branches": [
+        "complex systems",
+        "network science",
+        "cognitive science",
+        "bioinformatics",
+        "computational social science",
+        "sustainability science",
+        "science of science",
+        "planetary health",
+        "digital humanities",
+        "systems biology",
+        "quantum information"
+      ],
+      "applications": [
+        "integrated models",
+        "cross-domain tools",
+        "shared evidence systems"
+      ],
+      "dependencies": [
+        "all disciplines"
+      ],
+      "open_questions": [
+        "scale translation",
+        "method compatibility",
+        "preserving uncertainty and values"
+      ]
+    }
+  ],
+  "edge_types": [
+    "depends_on",
+    "method_used_by",
+    "evidence_supports",
+    "contradicts",
+    "applies_to",
+    "derived_from",
+    "reviewed_by"
+  ],
+  "acceptance_requirements": [
+    "Stable concept ID and versioned schema",
+    "Source attribution and retained evidence where feasible",
+    "Claim type distinguished from evidence type",
+    "Scope, time, units, uncertainty, and missingness recorded when applicable",
+    "Counterevidence and disagreement preserved",
+    "Independent review recorded against an exact candidate digest",
+    "No automatic promotion from observation to verified fact"
+  ]
+}

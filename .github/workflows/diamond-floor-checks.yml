@@ -1,0 +1,57 @@
+name: Diamond Floor deterministic checks
+
+on:
+  push:
+    branches:
+      - "research/earth-photo-archive"
+    paths:
+      - ".github/workflows/diamond-floor-checks.yml"
+      - "research/diamond-floor/**"
+      - "research/photo-archive/discoveries.json"
+      - "research/photo-archive/public-dns-audit.json"
+      - "research/photo-archive/assets/**"
+      - "research/photo-archive/provenance/**"
+  pull_request:
+    paths:
+      - "research/diamond-floor/**"
+      - "research/photo-archive/discoveries.json"
+      - "research/photo-archive/public-dns-audit.json"
+      - "research/photo-archive/assets/**"
+      - "research/photo-archive/provenance/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run standard-library tests
+        run: python -m unittest discover -s research/diamond-floor -p 'test_*.py' -v
+      - name: Verify CLI help
+        run: |
+          python research/diamond-floor/diamond_floor.py --help
+          python research/diamond-floor/world_status.py --help
+          python research/diamond-floor/evidence_map.py --help
+      - name: Generate unified evidence status (read-only)
+        run: python research/diamond-floor/world_status.py --root . --out /tmp/diamond-world-status.json
+      - name: Generate fail-closed evidence map (read-only)
+        run: python research/diamond-floor/evidence_map.py --root . --out /tmp/diamond-evidence-map.json
+      - name: Preserve evidence map
+        uses: actions/upload-artifact@v4
+        with:
+          name: diamond-evidence-map
+          path: /tmp/diamond-evidence-map.json
+          if-no-files-found: error
+      - name: Preserve status report
+        uses: actions/upload-artifact@v4
+        with:
+          name: diamond-world-status
+          path: /tmp/diamond-world-status.json
+          if-no-files-found: error
