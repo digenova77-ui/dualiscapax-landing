@@ -83,8 +83,10 @@ export function priceCompute({ joules, cadPerJoule, providerCad = 0, serviceCad 
   if (!finiteNonnegative(cadPerJoule) || !indexId || !indexTimestamp) {
     return { status: measurement === "estimated" ? "ESTIMATED_UNPRICED" : "UNPRICED", totalCad: null };
   }
-  const energyCad = joules * cadPerJoule;
-  const totalCad = energyCad + providerCad + serviceCad;
+  // Normalize binary floating-point noise while retaining sub-cent precision.
+  const money = (value) => Math.round((value + Number.EPSILON) * 1e10) / 1e10;
+  const energyCad = money(joules * cadPerJoule);
+  const totalCad = money(energyCad + providerCad + serviceCad);
   if (!Number.isFinite(totalCad)) return { status: "INVALID_INPUT", totalCad: null };
   return {
     status: measurement === "measured" ? "PRICED_METERED" : "PRICED_ESTIMATED",
