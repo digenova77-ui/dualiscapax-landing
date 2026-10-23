@@ -1,10 +1,16 @@
 {
-  "name": "DualisCapax Ice Demo",
-  "short_name": "Ice Demo",
-  "description": "A demonstration interface. TeamSnap, passkey unlock, and seat claiming remain unavailable until verified integrations are connected.",
-  "start_url": "/ice.html",
+  "name": "DualisCapax",
+  "short_name": "DualisCapax",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0B0E14",
-  "theme_color": "#0B0E14",
-  "icons": []
+  "background_color": "#080b19",
+  "theme_color": "#080b19",
+  "icons": [
+    {
+      "src": "/brand/liquid-orb.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }
