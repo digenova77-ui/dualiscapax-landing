@@ -114,6 +114,20 @@ jobs:
             fi
           done
 
+          for project in dualiscapax-landing dualiscapax; do
+            code="$(curl --silent --output "$tmp/deployments.json" --write-out '%{http_code}' \
+              --max-time 20 --request GET \
+              --header "Authorization: Bearer $token" \
+              --header "Accept: application/json" \
+              "${base}/pages/projects/${project}/deployments?env=production&per_page=5" || true)"
+            printf '\n== Recent production deployments: %s ==\nHTTP: %s\n' "$project" "${code:-CURL_ERROR}"
+            if [[ "$code" == "200" ]] && jq -e '.success == true' "$tmp/deployments.json" >/dev/null 2>&1; then
+              jq -r '.result[]? | "deployment: " + (.id // "unknown") + " | status: " + (.latest_stage.status // .deployment_trigger.type // "unknown") + " | url: " + (.url // "unknown") + " | created: " + (.created_on // "unknown")' "$tmp/deployments.json"
+            else
+              echo "Deployment details unavailable; response body withheld."
+            fi
+          done
+
           for domain in dualiscapax.ai dualiscapax.com; do
             code="$(curl --silent --output "$tmp/zones.json" --write-out '%{http_code}' \
               --max-time 20 --request GET \
