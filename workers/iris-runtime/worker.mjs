@@ -191,9 +191,12 @@ async function handleRequest(request, env) {
   if (claim.state === "APPLIED") {
     const replay = claim.replay;
     if (
-      !replay || replay.unity_id !== unityId || replay.request_id !== requestId ||
+      !replay || replay.contract !== "dualis.idempotency.v1" ||
+      replay.unity_id !== unityId || replay.request_id !== requestId ||
+      replay.input_sha256 !== inputSha256 || replay.action !== computePlan.action ||
       replay.authorization !== "trinity-allow" || typeof replay.result !== "string" ||
       !replay.result.trim() || replay.result.length > MAX_OUTPUT_CHARS ||
+      typeof replay.result_sha256 !== "string" || replay.result_sha256 !== await sha256(replay.result) ||
       typeof replay.receipt_id !== "string" || !replay.receipt_id.trim() ||
       typeof replay.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(replay.receipt_sha256)
     ) {
@@ -251,14 +254,19 @@ async function handleRequest(request, env) {
     }
   }
 
+  const resultSha256 = await sha256(inference.output);
   let receipt;
   try {
     receipt = await callJson(env.IRIS_MEMORY, "/v1/memory/append", {
       method: "POST",
       headers: { "content-type": "application/json", "idempotency-key": requestId },
       body: JSON.stringify({
+        contract: "dualis.idempotency.v1",
         unity_id: unityId,
         request_id: requestId,
+        action: computePlan.action,
+        input_sha256: inputSha256,
+        result_sha256: resultSha256,
         kind: "conversation_turn",
         input: body.text,
         output: inference.output,
@@ -275,7 +283,14 @@ async function handleRequest(request, env) {
       }),
     });
   } catch { return unavailable("memory-write"); }
-  if (receipt.unity_id !== unityId || receipt.persisted !== true || receipt.request_id !== requestId || typeof receipt.receipt_id !== "string" || !receipt.receipt_id.trim() || typeof receipt.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(receipt.receipt_sha256)) {
+  if (
+    receipt.contract !== "dualis.idempotency.v1" ||
+    receipt.unity_id !== unityId || receipt.persisted !== true ||
+    receipt.request_id !== requestId || receipt.action !== computePlan.action ||
+    receipt.input_sha256 !== inputSha256 || receipt.result_sha256 !== resultSha256 ||
+    typeof receipt.receipt_id !== "string" || !receipt.receipt_id.trim() ||
+    typeof receipt.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(receipt.receipt_sha256)
+  ) {
     return json({ available: false, stage: "memory-write", reason: "persistence-unconfirmed" }, 503);
   }
 
