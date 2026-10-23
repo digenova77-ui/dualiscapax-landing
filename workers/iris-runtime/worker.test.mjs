@@ -89,3 +89,30 @@ test("health reports unavailable until every service binding and origin is confi
   assert.equal(res.status, 503);
   assert.equal((await res.json()).available, false);
 });
+
+test("allowed origin receives credentialed CORS headers and preflight is handled without service calls", async () => {
+  const { env, calls } = fixture();
+  const options = new Request("https://iris-runtime.test/v1/turn", {
+    method: "OPTIONS",
+    headers: { origin: "https://dualiscapax.ai", "access-control-request-method": "POST" },
+  });
+  const preflight = await worker.fetch(options, env);
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get("access-control-allow-origin"), "https://dualiscapax.ai");
+  assert.equal(preflight.headers.get("access-control-allow-credentials"), "true");
+  assert.equal(calls.length, 0);
+
+  const response = await worker.fetch(req(), env);
+  assert.equal(response.headers.get("access-control-allow-origin"), "https://dualiscapax.ai");
+  assert.equal(response.headers.get("vary"), "Origin");
+});
+
+test("unapproved preflight origin is rejected", async () => {
+  const { env, calls } = fixture();
+  const response = await worker.fetch(new Request("https://iris-runtime.test/v1/turn", {
+    method: "OPTIONS", headers: { origin: "https://evil.invalid" },
+  }), env);
+  assert.equal(response.status, 403);
+  assert.equal(response.headers.get("access-control-allow-origin"), null);
+  assert.equal(calls.length, 0);
+});
