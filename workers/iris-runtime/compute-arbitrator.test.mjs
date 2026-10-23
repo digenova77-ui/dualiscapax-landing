@@ -51,9 +51,12 @@ function fixture() {
   const env = {
     IRIS_ALLOWED_ORIGINS: "https://dualiscapax.ai",
     IDENTITY_API: binding("identity", async () => ({ verified: true, unity_id: "unity_user_123" })),
-    IRIS_MEMORY: binding("memory", async (body, request) => new URL(request.url).pathname.endsWith("/context")
-      ? ({ unity_id: body.unity_id, items: [] })
-      : ({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-math" })),
+    IRIS_MEMORY: binding("memory", async (body, request) => {
+      const route = new URL(request.url).pathname;
+      if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
+      if (route.endsWith("/claim")) return { unity_id: body.unity_id, request_id: body.request_id, claimed: true };
+      return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-math" };
+    }),
     TRINITY_LAW: binding("trinity", async (body) => ({ decision: "allow", authorized: true, request_id: body.request_id, action: body.action })),
     MODEL_PROVIDER: binding("provider", async () => ({ output: "should not be called for exact math", provider: "test-provider" })),
   };
