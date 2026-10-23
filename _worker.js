@@ -1,3 +1,5 @@
+import { edgeRoutes } from "./edge/worker_snippet.js";
+
 /* Cloudflare Pages Advanced Mode.
  * Preserve the existing landing routes and ASSETS fallback.
  * HUD routes are served by this Pages Worker so they do not depend on a
@@ -76,6 +78,10 @@ export default {
 
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // Pure, read-only Diamond edge endpoints; evaluated before HUD and ASSETS fallbacks.
+    const diamondResponse = edgeRoutes(url, request.method);
+    if (diamondResponse) return diamondResponse;
 
     // Read-only route proves which runtime is answering; no user/request data.
     if (path === "/iris/status" || path === "/iris/status.json") {
