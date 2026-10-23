@@ -4,15 +4,16 @@
 
 ## Runtime
 
-The repository's `wrangler.toml` declares `pages_build_output_dir = "."`. The root `_worker.js` is the Cloudflare Pages Advanced Mode request handler; its `env.ASSETS` binding must be provided by the Pages runtime. The separate `dualiscapax-hud/workers/iris-bridge.js` file is not automatically executed by Pages just because it exists in GitHub.
+The repository's root `wrangler.toml` declares `pages_build_output_dir = "."`. The root `_worker.js` is the Cloudflare Pages Advanced Mode request handler; its `env.ASSETS` binding must be provided by the Pages runtime. The separate `dualiscapax-hud/workers/iris-bridge.js` file is not automatically executed by Pages just because it exists in GitHub.
 
-The root Pages worker now explicitly routes:
-- `/holographic-core/v2`, `/holographic-core/v2/`, and `/holographic-core/v2/index.html` to the HUD HTML source.
-- `/assets/holographic-hostess-40/hostess.svg` to the HUD asset.
-- `/iris/status` and `/iris/status.json` to a content-free Pages runtime status.
-- Other requests, including `/`, to the existing Pages asset binding.
+The root Pages worker preserves ordinary landing-page assets and friendly route mappings. **Protected HUD paths currently fail closed** because this handler has no verified receiver-session binding:
 
-The HUD HTML route fetches the current HUD repository's raw GitHub source at request time. A failed upstream fetch returns 502 rather than a fabricated success. This is an initial route bridge, not a claim that the full Iris backend, speech, camera, API, or durable refusal ledger is live.
+- `/holographic-core/v2`, its trailing-slash and `index.html` variants, and `/assets/holographic-hostess-40/hostess.svg` return `503` with `x-dc-iris: session-gate-unverified`.
+- `/iris/status` and `/iris/status.json` return `503`, `hud_available: false`, and reason `session-gated-origin-route-not-verified`.
+- The Pages fallback does **not** fetch or serve HUD HTML/SVG bytes. The HUD URL mapping in source is not proof of availability.
+- The root path `/` remains served by the Pages asset binding; it is not rewritten to the HUD.
+
+This is an intentional fail-closed source state, not proof of live route ownership or a working identity/session path. A protected HUD route must not be opened until the actual origin-join/receiver-session-gated path is implemented and verified in isolated staging.
 
 ## Build the upload package
 
@@ -37,33 +38,35 @@ Check the printed commit and SHA-256 before using the archive. The output ZIP is
 
 ## Manual Cloudflare Pages upload
 
-1. Sign in to the Cloudflare dashboard and open **Workers & Pages → dualiscapax-web** (confirm this is the project actually bound to `dualiscapax.ai` before continuing).
-2. Use a **preview/staging deployment** first if the project provides one. Upload the exact `dist/cloudflare/lander-<commit>.zip` package using the Pages upload/deployment interface.
-3. Confirm the deployed preview serves `/` and existing routes correctly, then check:
-   - `/iris/status` returns JSON with `runtime: cloudflare-pages-advanced-mode`.
-   - `/holographic-core/v2` returns the HUD page and response header `x-dc-iris: pages-bridge`.
-   - `/assets/holographic-hostess-40/hostess.svg` returns SVG.
-   - An unavailable upstream returns an explicit 502; it must not be treated as an accepted/healthy Iris state.
-4. Check the Pages deployment logs and any standalone Worker routes for overlap. The independent Worker must not intercept the same paths unexpectedly.
-5. Do not promote the preview to production or change DNS unless David explicitly approves that production cutover.
+1. Sign in to the Cloudflare dashboard and confirm which Pages project is actually bound to `dualiscapax.ai`. The root Wrangler config names `dualiscapax-web`, while `.github/workflows/pages-direct-upload.yml` currently targets `dualiscapax-landing`. This is an unresolved project-name/source-of-truth conflict; **do not run the dispatch-only upload workflow until an operator confirms the correct project and its token scope**.
+2. If the project provides a preview/staging deployment, upload the exact `dist/cloudflare/lander-<commit>.zip` package there first.
+3. Check the preview's ordinary public landing routes and explicitly record the expected HUD refusal:
+   - `/iris/status` returns `503` with `hud_available: false` and reason `session-gated-origin-route-not-verified`.
+   - `/holographic-core/v2` returns `503` with `x-dc-iris: session-gate-unverified`.
+   - `/assets/holographic-hostess-40/hostess.svg` returns `503` until the session-gated origin path is verified.
+   - `/` continues to serve the ordinary landing page.
+4. Inspect Pages deployment logs and any standalone Worker routes for overlap. The independent Worker must not intercept the same paths unexpectedly.
+5. Do not promote a preview to production or change DNS unless David explicitly approves that specific production cutover.
+
+The current HUD refusal is expected until the protected route is connected to the real receiver-session gate. Do not treat the `503` as a healthy end-to-end Iris result; it is a deliberate safe fallback. Once an isolated staging path is implemented and verified, update this runbook and its checks to reflect the actual route contract.
 
 ## Rollback
 
-Keep the previous successful Pages deployment available in the Cloudflare deployment history. If the preview fails any existing route or the checks above, do not promote it. Use Cloudflare's previous deployment rollback mechanism rather than improvising DNS changes.
+Keep the previous successful Pages deployment available in the Cloudflare deployment history. If a preview breaks existing public routes or fails its documented checks, do not promote it. Use Cloudflare's previous deployment rollback mechanism rather than improvising DNS changes.
 
 ## Truth boundary
 
-A source commit or locally generated ZIP is not a deployment. A successful Pages deployment is not proof that every Iris capability works. Record the actual deployment URL, commit, checks, and failure responses before reporting a live pass.
+A source commit or locally generated ZIP is not a deployment. A successful Pages deployment is not proof that every Iris capability works. Record the actual deployment URL, commit SHA, checks, and failure responses before reporting a live pass.
 
 ## Current rails (Unity floor, Trinity preserved)
 
-As of 2026-10-17:
+As of 2026-10-23:
 
-- **Apex owner:** Cloudflare Pages project bound to `dualiscapax.ai`. Preferred publish path is the manual ZIP produced by `package-cloudflare-pages` (or local `pack_hierarchical_flat_zip.py`). Git-connected Workers Builds on `dualiscapax-landing` / `dualiscapax-depth` have been observed failing (missing `previews` block resolved in root `wrangler.toml`; stale/rolled build token remains a dashboard-only repair). Automatic Git builds are not the production rail.
-- **Root `wrangler.toml`:** `name = "dualiscapax-web"`, `pages_build_output_dir = "."`, empty `[previews]` block present so `npx wrangler preview` can run if Builds is retained.
-- **Pages handler:** root `_worker.js` (Advanced Mode) owns route bridge for HUD paths and `/iris/status`. Apex `/` stays on Pages assets.
-- **Depth / API workers:** Standalone Workers (previously under `server/` or `workers/`) are source-only. Auto-deploy workflow `workers-live.yml` is retired. Operator deploys with local `wrangler` when seated. `dualiscapax-depth.digenova77.workers.dev` currently returns 404.
-- **GitHub Actions:** Majority of historical workflows are `disabled_manually`. Active ones include packaging (artifact only, not deploy), deterministic checks, and smoke tests. They do not promote to the live apex.
-- **Unification rule:** Nothing is deleted; existing surfaces are transformed or parked. Unity remains the sole framework identity. Trinity, Climate, and prior content are preserved underneath. Dashboard token and project disconnect/reconnect actions stay operator-seated; this repository records the source of truth and the preferred manual path.
+- **Apex owner:** Cloudflare Pages project bound to `dualiscapax.ai`. The root `wrangler.toml` identifies `dualiscapax-web`; the dispatch-only `.github/workflows/pages-direct-upload.yml` still targets `dualiscapax-landing`. Confirm the real project before running any upload workflow.
+- **Root `wrangler.toml`:** `name = "dualiscapax-web"`, `pages_build_output_dir = "."`, and an empty `[previews]` block.
+- **Pages handler:** root `_worker.js` (Advanced Mode) owns the source-level Pages fallback. Ordinary landing assets pass through; protected HUD paths and `/iris/status` fail closed until a receiver-session-gated origin route is independently verified.
+- **Depth / API workers:** standalone Workers (previously under `server/` or `workers/`) are source-only unless a concrete deployment record proves otherwise. Auto-deploy workflow `workers-live.yml` is retired. The operator-seated deployment process must be confirmed before any deployment; repository source is not proof of live configuration.
+- **GitHub Actions:** packaging jobs create artifacts, not production deployments, unless a separate explicit dispatch-only deployment workflow is invoked. Dashboard token and project disconnect/reconnect actions remain operator-seated.
+- **Unification rule:** nothing is deleted merely to make the deployment simpler; existing surfaces are transformed or parked. Unity remains the framework identity. Trinity remains the sole authorization gate. Dashboard token and project changes require operator confirmation.
 
 A push to `main` is not a live overwrite. Record the actual Pages deployment, commit SHA, and route checks before any claim of production currency.
