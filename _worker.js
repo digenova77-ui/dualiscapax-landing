@@ -241,8 +241,8 @@ const DEFAULT_FACETS = [
   { name: "DCLM", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "Iris", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "Twain²", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "summer", kind: "tree", clarity: "VS", color: "E", cut: "Very Good", reflects: "purity" },
-  { name: "winter", kind: "tree", clarity: "VS", color: "F", cut: "Very Good", reflects: "purity" },
+  { name: "summer", kind: "tree", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "winter", kind: "tree", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "merit", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "standing", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "ceiling", kind: "ceiling", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" }
