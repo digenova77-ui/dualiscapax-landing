@@ -38,6 +38,17 @@ jobs:
           test -f robots.txt
           test -f .well-known/security.txt
 
+  diamond-edge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test deterministic Diamond edge routes
+        run: node --test tests/diamond-edge-routes.test.mjs
+
   iris-provider-gate:
     runs-on: ubuntu-latest
     timeout-minutes: 5
