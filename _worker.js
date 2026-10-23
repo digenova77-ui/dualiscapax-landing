@@ -321,12 +321,30 @@ function pricingReport() {
 function standingProbe() {
   return { standing_callable: true, emission_source: "standing() — origin only", boundary: "NOT_FOR_EMISSION" };
 }
+
+function finger16(prev) {
+  const s = String(prev && prev.id || "");
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h & 0xffff;
+}
+
 function verifyReceiptChain(receipts) {
   if (!Array.isArray(receipts) || receipts.length === 0) return { ok: true, length: 0, reason: "empty" };
-  for (let i = 1; i < receipts.length; i++) {
-    const prev = receipts[i - 1], cur = receipts[i];
+  for (let i = 0; i < receipts.length; i++) {
+    const cur = receipts[i];
     if (!cur || !cur.id || !String(cur.id).startsWith("rcpt:")) return { ok: false, length: i, reason: "bad id" };
+    if (i === 0) {
+      if (cur.finger != null && cur.finger !== 0) return { ok: false, length: 0, reason: "first finger must be 0" };
+      continue;
+    }
+    const prev = receipts[i - 1];
     if (cur.prev !== prev.id) return { ok: false, length: i, reason: "prev mismatch" };
+    const expected = finger16(prev);
+    if (cur.finger !== expected) return { ok: false, length: i, reason: "finger mismatch", expected };
   }
   return { ok: true, length: receipts.length, last: receipts[receipts.length - 1].id };
 }
