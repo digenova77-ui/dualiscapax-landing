@@ -59,11 +59,8 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders(origin) });
     }
     let response;
-    try {
-      response = await handleRequest(request, env);
-    } catch {
-      response = unavailable("request");
-    }
+    try { response = await handleRequest(request, env); }
+    catch { response = unavailable("request"); }
     return origin ? withCors(response, origin) : response;
   },
 };
@@ -96,8 +93,11 @@ async function handleRequest(request, env) {
   const origin = allowedOrigin(request, env);
   if (!origin) return json({ available: false, stage: "origin", reason: "origin-not-authorized" }, 403);
 
-  const requestId = request.headers.get("x-request-id") || crypto.randomUUID();
-  if (!REQUEST_ID_RE.test(requestId)) return json({ available: false, stage: "request", reason: "invalid-request-id" }, 400);
+  // A caller-stable ID is mandatory: generating a new ID server-side cannot protect retries.
+  const requestId = request.headers.get("x-request-id");
+  if (!requestId || !REQUEST_ID_RE.test(requestId)) {
+    return json({ available: false, stage: "request", reason: "valid-client-request-id-required" }, 400);
+  }
 
   const body = await readBody(request);
   if (body === null) return json({ available: false, stage: "request", reason: "body-too-large" }, 413);
@@ -107,7 +107,6 @@ async function handleRequest(request, env) {
 
   const computePlan = arbitrateCompute(body.text);
 
-  // A browser-side ticket is deliberately ignored. Only the identity service can establish identity.
   let identity;
   try {
     identity = await callJson(env.IDENTITY_API, "/v1/session/verify", {
@@ -142,8 +141,6 @@ async function handleRequest(request, env) {
     });
   } catch { return unavailable("trinity"); }
 
-  // An allow decision must bind to this exact principal, action, request, and input.
-  // A generic "allow" or a decision for another request is never sufficient.
   const lawPrincipal = law.principal && typeof law.principal === "object" ? law.principal.unity_id : null;
   if (
     law.decision !== "allow" ||
@@ -156,7 +153,6 @@ async function handleRequest(request, env) {
     return json({ available: false, stage: "trinity", reason: "authorization-denied-or-unbound" }, 403);
   }
 
-  // Claim the request idempotently before memory reads or provider work.
   let claim;
   try {
     claim = await callJson(env.IRIS_MEMORY, "/v1/requests/claim", {
