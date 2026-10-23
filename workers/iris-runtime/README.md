@@ -44,3 +44,11 @@ The accounting helper accepts supplied inputs; it does not measure compute, sele
 The root `wrangler.toml` is for the static Pages brochure and does not declare a Worker `main`. Running a Worker preview command against that root configuration can produce “Missing entry-point to Worker script or to assets directory.” This dedicated config declares the Iris Worker entry point, but it is deliberately not production-ready and does not establish which Cloudflare project emitted the supplied log. Confirm the failing project's root directory and intended output before changing any build command.
 
 No production route, DNS, deployment, secret, binding, database, permission, or payment setting is changed by these files.
+
+## Existing frontend is not yet wired to this Worker
+
+The current `ai/app.html` and legacy `ai/iris.html` load `ai/dclm-look.js`, `js/iris-fuel-gate.js`, and `js/byok.js`. The Fuel ticket is explicitly a browser-side UX gate, not a server authorization boundary. A supplied ticket object can influence the client-side lane, and BYOK inference calls the provider directly from the browser with the visitor's own session-stored key.
+
+Therefore these pages are **not proof of a live Trinity-governed backend**. The staging Worker in this directory is not connected to them by this PR. Do not claim that the existing UI is server-authorized, that private memory is governed by this Worker, or that a provider call has a server-issued Trinity receipt.
+
+The safe integration sequence is: configure authorized staging service bindings; prove session verification, request-bound Trinity allow/deny, idempotency, scoped memory, provider invocation, and hashed persistence receipts end-to-end; then migrate the UI to the governed endpoint and remove direct provider calls for protected operations. Keep current behavior clearly labelled as a client-side UX / BYOK path until that sequence passes.
