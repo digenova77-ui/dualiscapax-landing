@@ -70,7 +70,7 @@ test("runtime runs exact arithmetic only after Trinity allows it and skips provi
   const { env, calls } = fixture();
   const request = new Request("https://iris-runtime.test/v1/turn", {
     method: "POST",
-    headers: { origin: "https://dualiscapax.ai", "content-type": "application/json" },
+    headers: { origin: "https://dualiscapax.ai", "content-type": "application/json", "x-request-id": "request-math-12345678" },
     body: JSON.stringify({ text: "6 * 7" }),
   });
   const response = await worker.fetch(request, env);
