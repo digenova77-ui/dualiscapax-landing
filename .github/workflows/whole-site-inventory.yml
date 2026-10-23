@@ -11,6 +11,12 @@ on:
       - "ai/**"
       - "server/**"
       - "workers/**"
+      - "**/*.css"
+      - "**/*.svg"
+      - "**/*.json"
+      - "_redirects"
+      - "tests/**"
+      - "scripts/pin-pinata.mjs"
   pull_request:
     paths:
       - "scripts/whole-site-audit.mjs"
@@ -20,6 +26,12 @@ on:
       - "ai/**"
       - "server/**"
       - "workers/**"
+      - "**/*.css"
+      - "**/*.svg"
+      - "**/*.json"
+      - "_redirects"
+      - "tests/**"
+      - "scripts/pin-pinata.mjs"
   workflow_dispatch:
 
 permissions:
