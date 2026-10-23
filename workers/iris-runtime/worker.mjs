@@ -110,19 +110,6 @@ export default {
       return json({ available: false, stage: "identity", reason: "session-not-verified" }, 401);
     }
 
-    // The memory adapter must be available before any model call. Scope every read/write to verified Unity ID.
-    let memory;
-    try {
-      memory = await callJson(env.IRIS_MEMORY, "/v1/memory/context", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ unity_id: unityId, request_id: requestId, limit: 12 }),
-      });
-    } catch { return unavailable("memory-read"); }
-    if (memory.unity_id !== unityId || !Array.isArray(memory.items)) {
-      return json({ available: false, stage: "memory-read", reason: "invalid-memory-response" }, 503);
-    }
-
     let law;
     try {
       law = await callJson(env.TRINITY_LAW, "/v1/authorize", {
@@ -133,13 +120,26 @@ export default {
           action: computePlan.action,
           request_id: requestId,
           input_sha256: await sha256(body.text),
-          memory_count: memory.items.length,
+          memory_requested: true,
           compute_lane: computePlan.lane,
         }),
       });
     } catch { return unavailable("trinity"); }
     if (law.decision !== "allow" || law.authorized !== true || law.request_id !== requestId) {
       return json({ available: false, stage: "trinity", reason: "authorization-denied" }, 403);
+    }
+
+    // Trinity must authorize before the runtime reads private conversational memory.
+    let memory;
+    try {
+      memory = await callJson(env.IRIS_MEMORY, "/v1/memory/context", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ unity_id: unityId, request_id: requestId, limit: 12 }),
+      });
+    } catch { return unavailable("memory-read"); }
+    if (memory.unity_id !== unityId || !Array.isArray(memory.items)) {
+      return json({ available: false, stage: "memory-read", reason: "invalid-memory-response" }, 503);
     }
 
     let inference;
