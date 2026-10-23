@@ -57,7 +57,10 @@ function fixture() {
       if (route.endsWith("/claim")) return { unity_id: body.unity_id, request_id: body.request_id, claimed: true };
       return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-math" };
     }),
-    TRINITY_LAW: binding("trinity", async (body) => ({ decision: "allow", authorized: true, request_id: body.request_id, action: body.action })),
+    TRINITY_LAW: binding("trinity", async (body) => ({
+      decision: "allow", authorized: true, request_id: body.request_id,
+      action: body.action, input_sha256: body.input_sha256, principal: body.principal,
+    })),
     MODEL_PROVIDER: binding("provider", async () => ({ output: "should not be called for exact math", provider: "test-provider" })),
   };
   return { env, calls };
@@ -77,6 +80,7 @@ test("runtime runs exact arithmetic only after Trinity allows it and skips provi
   assert.equal(data.compute.lane, "deterministic");
   assert.equal(data.compute.provider_called, false);
   assert.equal(calls.some(c => c.name === "trinity" && c.body.action === "iris.compute.deterministic"), true);
+  assert.equal(calls.find(c => c.name === "trinity").body.memory_requested, false);
   assert.equal(calls.some(c => c.name === "provider"), false);
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/claim")), true);
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/context")), false);
