@@ -162,7 +162,21 @@ export default {
       });
     }
 
-    const dest = MAP[path];
+    // Pure diamond / frontier / Omni edge routes (no-store, fail-closed).
+    if (path === "/omni" || path === "/omni/") {
+      return jsonNoStore(omniSnapshot());
+    }
+    if (path === "/frontier" || path === "/frontier/") {
+      return jsonNoStore(frontierReport());
+    }
+    if (path === "/purity" || path === "/purity/") {
+      return textNoStore(purityText());
+    }
+    if (path === "/standing-probe" || path === "/standing-probe/") {
+      return jsonNoStore(standingProbe());
+    }
+
+        const dest = MAP[path];
     if (dest) {
       const target = new URL(request.url);
       target.pathname = dest;
@@ -177,3 +191,63 @@ export default {
     return assets.fetch(request);
   }
 };
+
+function jsonNoStore(body, status = 200) {
+  return new Response(JSON.stringify(body, null, 2), {
+    status,
+    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" }
+  });
+}
+function textNoStore(body) {
+  return new Response(body + "\n", {
+    headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" }
+  });
+}
+const DEFAULT_FACETS = [
+  { name: "foundation", kind: "floor", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "DCLM", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "Iris", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "Twain²", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "summer", kind: "tree", clarity: "VS", color: "E", cut: "Very Good", reflects: "purity" },
+  { name: "winter", kind: "tree", clarity: "VS", color: "F", cut: "Very Good", reflects: "purity" },
+  { name: "merit", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "standing", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "ceiling", kind: "ceiling", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" }
+];
+const CLARITY_PASS = new Set(["FL", "VVS", "VS"]);
+const COLOR_PASS = new Set(["D", "E", "F"]);
+const CUT_PASS = new Set(["Excellent", "Very Good"]);
+function grade(f) {
+  const pure = CLARITY_PASS.has(f.clarity) && COLOR_PASS.has(f.color) && CUT_PASS.has(f.cut) && f.reflects === "purity";
+  return { pure, verdict: pure ? "PASS" : "GLASS" };
+}
+function facesFrontier(f) {
+  return f.clarity === "FL" && f.color === "D" && f.cut === "Excellent" && f.reflects === "purity";
+}
+function frontierReport() {
+  const facing = [], held = [];
+  for (const f of DEFAULT_FACETS) {
+    if (f.kind === "ceiling") continue;
+    if (facesFrontier(f)) facing.push(f.name); else held.push(f.name);
+  }
+  const floor = DEFAULT_FACETS.find(f => f.kind === "floor");
+  return { protocol: "DIAMOND.FRONTIER.MAX.v1", facing, held, ceiling_claimable: held.length === 0 && grade(floor).pure, law: "LAW WINS", origin: "immutable", learning: "advisory only — NOT_FOR_EMISSION" };
+}
+function omniSnapshot() {
+  const facets = DEFAULT_FACETS.filter(f => f.kind !== "ceiling").map(f => ({ name: f.name, verdict: grade(f).verdict }));
+  const fr = frontierReport();
+  const floor = DEFAULT_FACETS.find(f => f.kind === "floor");
+  const glass = facets.some(x => x.verdict === "GLASS");
+  return { label: "OMNI", diamond: { floor_holds: grade(floor).pure, rise_ok: !glass, ceiling_reached: !glass, facets }, frontier: { protocol: fr.protocol, facing: fr.facing, held_count: fr.held.length, ceiling_claimable: fr.ceiling_claimable }, contract: { law: "LAW WINS", origin: "immutable", boundary: "NOT_FOR_EMISSION" }, integrity: "UNCHANGED — core not touched" };
+}
+function purityText() {
+  const o = omniSnapshot();
+  const lines = ["DIAMOND PURITY (edge)", "floor: " + (o.diamond.floor_holds ? "HOLD" : "FAIL")];
+  for (const f of o.diamond.facets) lines.push((f.verdict === "PASS" ? "◆ " : "◇ ") + f.name + " " + f.verdict);
+  lines.push("frontier_claimable: " + o.frontier.ceiling_claimable);
+  lines.push("boundary: NOT_FOR_EMISSION");
+  return lines.join("\n");
+}
+function standingProbe() {
+  return { standing_callable: true, emission_source: "standing() — origin only", boundary: "NOT_FOR_EMISSION" };
+}
