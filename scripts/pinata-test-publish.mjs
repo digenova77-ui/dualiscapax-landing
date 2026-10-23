@@ -16,11 +16,8 @@ export async function runPinataTestPublication({ jwt, fetchImpl = fetch, sourceR
   form.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
 
   let uploadResponse;
-  try {
-    uploadResponse = await fetchImpl(apiUrl, { method: 'POST', headers: { Authorization: `Bearer ${jwt}` }, body: form });
-  } catch {
-    return { ok: false, stage: 'publish', reason: 'pinata-upload-request-failed' };
-  }
+  try { uploadResponse = await fetchImpl(apiUrl, { method: 'POST', headers: { Authorization: `Bearer ${jwt}` }, body: form }); }
+  catch { return { ok: false, stage: 'publish', reason: 'pinata-upload-request-failed' }; }
   if (!uploadResponse?.ok) return { ok: false, stage: 'publish', reason: 'pinata-upload-rejected', httpStatus: uploadResponse?.status ?? null };
 
   let uploadJson;
@@ -34,16 +31,9 @@ export async function runPinataTestPublication({ jwt, fetchImpl = fetch, sourceR
     const response = await fetchImpl(`${gatewayBase}/${encodeURIComponent(cid)}`, { method: 'GET', headers: { Accept: 'application/octet-stream' } });
     if (!response?.ok) return { ok: false, stage: 'retrieval', reason: 'gateway-retrieval-rejected', httpStatus: response?.status ?? null, cid };
     retrieved = Buffer.from(await response.arrayBuffer());
-  } catch {
-    return { ok: false, stage: 'retrieval', reason: 'gateway-retrieval-failed', cid };
-  }
+  } catch { return { ok: false, stage: 'retrieval', reason: 'gateway-retrieval-failed', cid }; }
 
-  const receipt = buildPublicationReceipt({
-    sourceRevision,
-    contentCid: cid,
-    contentSha256: sha256Hex(bytes),
-    byteLength: bytes.byteLength,
-  });
+  const receipt = buildPublicationReceipt({ sourceRevision, contentCid: cid, contentSha256: sha256Hex(bytes), byteLength: bytes.byteLength });
   const verification = verifyPublicationReceipt(receipt, retrieved);
   if (!verification.ok) return { ok: false, stage: 'receipt-verification', reason: verification.reason, cid };
   return {
@@ -70,9 +60,15 @@ async function main() {
     return;
   }
   const jwt = process.env.PINATA_JWT;
+  if (!jwt) {
+    const result = await runPinataTestPublication({ jwt, sourceRevision: '' });
+    process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+    process.exitCode = 1;
+    return;
+  }
   let sourceRevision = process.env.GITHUB_SHA || process.env.SOURCE_REVISION;
   if (!sourceRevision) {
-    try { sourceRevision = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(); }
+    try { sourceRevision = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); }
     catch { sourceRevision = ''; }
   }
   const result = await runPinataTestPublication({ jwt, sourceRevision });
