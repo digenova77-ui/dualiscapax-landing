@@ -57,6 +57,9 @@ test('manifest is deterministic, hashes each selected file, and excludes denied 
 test('private key and known credential formats are detected', () => {
   assert.equal(findSecretMaterial(Buffer.from('-----BEGIN PRIVATE KEY-----\nnot-a-key')), true);
   assert.equal(findSecretMaterial(Buffer.from('ghp_abcdefghijklmnopqrstuvwxyz1234567890')), true);
+  assert.equal(findSecretMaterial(Buffer.from('sk' + '_live_' + 'a'.repeat(40))), true);
+  assert.equal(findSecretMaterial(Buffer.from('Bearer ' + 'a'.repeat(40))), true);
+  assert.equal(findSecretMaterial(Buffer.from(['eyJabcdefghijk', 'abcdefghijk', 'abcdefghijk'].join('.'))), true);
   assert.equal(findSecretMaterial(Buffer.from('ordinary public website copy')), false);
 });
 
