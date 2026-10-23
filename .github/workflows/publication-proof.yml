@@ -7,8 +7,10 @@ on:
       - 'scripts/mock-publication-adapter.mjs'
       - 'scripts/pinata-test-publish.mjs'
       - 'scripts/pin-pinata.mjs'
+      - 'scripts/pin-pinata.mjs'
       - 'tests/publication-*.test.mjs'
       - 'tests/pinata-test-publish.test.mjs'
+      - 'tests/pin-pinata.test.mjs'
       - 'tests/pin-pinata.test.mjs'
       - '.github/workflows/publication-proof.yml'
   push:
@@ -18,8 +20,10 @@ on:
       - 'scripts/publication-*.mjs'
       - 'scripts/mock-publication-adapter.mjs'
       - 'scripts/pinata-test-publish.mjs'
+      - 'scripts/pin-pinata.mjs'
       - 'tests/publication-*.test.mjs'
       - 'tests/pinata-test-publish.test.mjs'
+      - 'tests/pin-pinata.test.mjs'
       - '.github/workflows/publication-proof.yml'
 
 permissions:
