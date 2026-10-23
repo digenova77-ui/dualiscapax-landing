@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { arbitrateCompute, evaluateExactArithmetic, priceCompute } from "./compute-arbitrator.mjs";
 import worker from "./worker.mjs";
 
@@ -36,6 +37,7 @@ test("Joule accounting refuses to invent an energy index or settled price", () =
   assert.equal(priceCompute({ joules: 1, cadPerJoule: 0.1, indexId: "x", indexTimestamp: "2026-10-23T00:00:00Z", measurement: "mystery" }).status, "INVALID_MEASUREMENT_CLASS");
 });
 
+const sha256Text = (value) => createHash("sha256").update(value, "utf8").digest("hex");
 const jsonResponse = (body, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { "content-type": "application/json" },
 });
@@ -55,7 +57,7 @@ function fixture() {
       const route = new URL(request.url).pathname;
       if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
       if (route.endsWith("/claim")) return { contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true };
-      return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-math", receipt_sha256: "b".repeat(64) };
+      return { contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), receipt_id: "receipt-math", receipt_sha256: "b".repeat(64) };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({
       decision: "allow", authorized: true, request_id: body.request_id,
