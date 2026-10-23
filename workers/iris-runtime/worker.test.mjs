@@ -240,7 +240,7 @@ test("same request ID and same input replay the original committed result withou
           ...durableReceipt(body, body.output, "receipt-original"),
         };
         records.set(key, { ...records.get(key), state: "APPLIED", replay });
-        return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), receipt_id: replay.receipt_id, receipt_sha256: replay.receipt_sha256 });
+        return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), receipt_id: replay.receipt_id, receipt: replay.receipt, receipt_sha256: replay.receipt_sha256 });
       },
     },
     MODEL_PROVIDER: {
