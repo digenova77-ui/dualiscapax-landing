@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080d15">
+<title>Diamond Floor — Three Rings, One Seed | DualisCapax</title>
+<style>
+:root{color-scheme:dark;--bg:#080d15;--panel:#0e1723;--line:#26394b;--text:#edf5fb;--muted:#9aafc1;--cyan:#76dff7;--violet:#b7a8ff;--silver:#d6e3ed;--good:#a5e5c0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0%,#14283a 0%,var(--bg) 55%);color:var(--text);font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1120px;margin:auto;padding:clamp(16px,3vw,34px)}header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding-bottom:18px}.brand{font-size:.82rem;letter-spacing:.2em;font-weight:750}.status{font-size:.72rem;color:var(--good);border:1px solid #315f51;padding:4px 9px;border-radius:999px}
+h1{font-size:clamp(2rem,5vw,4rem);line-height:1.02;letter-spacing:-.045em;margin:30px 0 12px}h1 span{color:var(--cyan)}.lede{max-width:760px;color:var(--muted);font-size:1.06rem}
+.layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.8fr);gap:16px;margin-top:26px}.panel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(150deg,#101c2aee,#0b121cee);overflow:hidden}.visual{position:relative;min-height:440px}.visual canvas{display:block;width:100%;height:100%;min-height:440px}.visual-label{position:absolute;top:16px;left:18px;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}.visual-note{position:absolute;bottom:13px;left:18px;right:18px;font-size:.75rem;color:#9eb1c0;background:#0a1119d9;padding:8px 10px;border:1px solid #253647;border-radius:9px}
+.controls{padding:20px;display:flex;flex-direction:column;gap:16px}.field label,.field legend{display:block;font-size:.77rem;color:var(--muted);margin-bottom:7px;letter-spacing:.06em;text-transform:uppercase}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}button,select{font:inherit;color:var(--text);background:#111f2d;border:1px solid #30465a;border-radius:10px;padding:10px 12px;min-height:42px}button{cursor:pointer;text-align:left}button:hover{border-color:var(--cyan)}button[aria-pressed="true"]{border-color:var(--cyan);background:#163243;box-shadow:inset 0 0 0 1px #76dff733}select{width:100%}.toggle{display:flex;align-items:center;gap:10px;color:var(--text);font-size:.9rem}.toggle input{accent-color:var(--cyan);width:18px;height:18px}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}.metric{padding:14px;border:1px solid var(--line);border-radius:13px;background:#0c1520}.metric strong{display:block;font-size:.9rem}.metric span{display:block;color:var(--muted);font-size:.75rem;margin-top:3px}
+.details{margin-top:16px;padding:20px}.details h2{font-size:1.1rem;margin:0 0 8px}.details p{color:var(--muted);margin:0}.tag{display:inline-block;font-size:.7rem;color:var(--cyan);border:1px solid #315568;padding:3px 8px;border-radius:999px;margin-bottom:9px}.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}.principle{padding:16px;border:1px solid var(--line);border-radius:14px;background:#0c1520}.principle h3{font-size:.9rem;margin:0 0 6px}.principle p{font-size:.82rem;color:var(--muted);margin:0}.warning{border-left:3px solid #d7bb75;padding:12px 14px;margin-top:18px;background:#1b1a14;color:#d8cfb6;font-size:.82rem}footer{margin-top:24px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.75rem;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}a{color:var(--cyan)}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.visual,.visual canvas{min-height:360px}.principles{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr 1fr}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="brand">DUALISCAPAX <span style="color:var(--cyan)">/ RESEARCH</span></div><div class="status">NON-PRODUCTION PROTOTYPE</div></header>
+<h1>Diamond floor.<br><span>Diamond ceiling.</span></h1>
+<p class="lede">A research workbench for the “Three Rings · One Seed” hypothesis: compare recurring structure across hydrogen, Earth, and the solar system without confusing visual analogy with physical proof.</p>
+<div class="layout">
+<section class="panel visual" aria-label="Interactive conceptual model">
+<div class="visual-label" id="visualTitle">Seed / three rings</div>
+<canvas id="scene" role="img" aria-label="Conceptual three-dimensional diagram; not measured physical data"></canvas>
+<div class="visual-note" id="visualNote">Conceptual geometry only. Rings are an architectural metaphor, not known physical boundaries.</div>
+</section>
+<aside class="panel controls" aria-label="Visualization controls">
+<div class="field"><label for="model">Choose the system</label><select id="model">
+<option value="seed">DualisCapax seed</option><option value="hydrogen1s">Hydrogen · 1s state</option><option value="hydrogen2p">Hydrogen · 2p state</option><option value="hydrogen3d">Hydrogen · 3d-like schematic</option><option value="earth">Earth · layered interior</option><option value="solar">Solar system · orbital structure</option>
+</select></div>
+<div class="field"><label>Three-ring overlay</label><div class="choices"><button type="button" id="overlayOn" aria-pressed="true">Show rings</button><button type="button" id="overlayOff" aria-pressed="false">Hide rings</button></div></div>
+<div class="field"><label>View motion</label><div class="choices"><button type="button" id="motionOn" aria-pressed="true">Rotate</button><button type="button" id="motionOff" aria-pressed="false">Hold still</button></div></div>
+<div class="field"><label>What this view represents</label><div id="modelDescription" style="color:var(--muted);font-size:.9rem">One origin and three conceptual rings representing foundation, verification, and equilibrium.</div></div>
+<div class="field"><label>Verification state</label><div style="border:1px solid #354b5d;border-radius:10px;padding:12px;font-size:.82rem"><strong style="color:var(--good)">Visual prototype only</strong><br><span style="color:var(--muted)">No wavefunction solver, orbital simulation, or physical prediction is running in this page.</span></div></div>
+</aside>
+</div>
+<div class="metrics">
+<div class="metric"><strong>State</strong><span>What describes the system?</span></div>
+<div class="metric"><strong>Rules</strong><span>What governs its evolution?</span></div>
+<div class="metric"><strong>Invariants</strong><span>What remains unchanged?</span></div>
+</div>
+<section class="panel details">
+<span class="tag">THE RESEARCH QUESTION</span>
+<h2 id="detailTitle">Can one seed describe recurring relationships?</h2>
+<p id="detailText">The hypothesis becomes scientific only when we define a precise mapping between mathematical objects, derive consequences, and test them against known results or measurements.</p>
+</section>
+<div class="principles">
+<article class="principle"><h3>01 · Foundation</h3><p>Canonical inputs, explicit units, declared rules, precision, and boundaries.</p></article>
+<article class="principle"><h3>02 · Independent verification</h3><p>Recompute from the inputs and rules. A matching hash commits to bytes; it does not prove the claim is true.</p></article>
+<article class="principle"><h3>03 · Symbiotic equilibrium</h3><p>Measure state and deviation; test whether a proposed correction improves the defined objective without violating constraints.</p></article>
+</div>
+<div class="warning"><strong>Scientific boundary:</strong> hydrogen orbitals are probability distributions derived from quantum states; Earth's layers are material regions; solar-system paths are dynamical trajectories. Similar shapes do not establish a shared physical mechanism. This page's drawings are intentionally schematic.</div>
+<footer><span>DualisCapax · Diamond Floor Research · v0.1</span><span>Branch-only artifact · No production or DNS changes</span></footer>
+</main>
+<script>
+(() => {
+  const canvas = document.getElementById('scene'), ctx = canvas.getContext('2d');
+  const model = document.getElementById('model');
+  const title = document.getElementById('visualTitle'), note = document.getElementById('visualNote');
+  const description = document.getElementById('modelDescription');
+  const detailTitle = document.getElementById('detailTitle'), detailText = document.getElementById('detailText');
+  const overlayOn = document.getElementById('overlayOn'), overlayOff = document.getElementById('overlayOff');
+  const motionOn = document.getElementById('motionOn'), motionOff = document.getElementById('motionOff');
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let overlay = true, rotating = !prefersReduced, angle = 0, width = 0, height = 0, dpr = 1;
+  const copy = {
+    seed: ['Seed / three rings','Conceptual geometry only. Rings are an architectural metaphor, not known physical boundaries.','One origin and three conceptual rings representing foundation, verification, and equilibrium.','One seed, multiple manifestations','The seed is a proposed computational schema. To become more than metaphor, its rules must be explicit enough to derive reproducible results.'],
+    hydrogen1s: ['Hydrogen / 1s','Schematic spherical density cue. This is not a numerically solved or normalized wavefunction.','The hydrogen ground state is spherically symmetric in the nonrelativistic Coulomb model. Orbital pictures show probability information, not a hard shell.','Symmetry can be exact within a model','For hydrogen, the stationary state separates into radial and angular factors. The 1s angular part is spherically symmetric; the drawing here only signals that symmetry.'],
+    hydrogen2p: ['Hydrogen / 2p','Schematic two-lobe cue only; no quantum amplitude or density is computed here.','A p-state has directional angular structure and a nodal plane. The exact orientation depends on the selected state and representation.','Same atom, different allowed state','A meaningful comparison must specify the quantum numbers and compare actual mathematical properties, not only the outline of the visualization.'],
+    hydrogen3d: ['Hydrogen / 3d family','Schematic multi-lobe cue only; not a computed orbital isosurface.','Hydrogen d-states have angular structure determined by spherical harmonics; specific real-orbital renderings can have four lobes or other forms.','Complexity from constrained solutions','A real cross-scale correspondence would need a structure-preserving mapping, an invariant, or a falsifiable prediction.'],
+    earth: ['Earth / layered interior','Illustrative cutaway. Layer radii, colours, and thicknesses are not to scale.','Earth's layers are physical materials with different composition and state, shaped by planetary formation and geophysical evolution.','Layers are material, not probability','The Earth is a useful contrast case: its concentric appearance arises from physical stratification, not a quantum orbital.'],
+    solar: ['Solar system / orbital structure','Schematic orbits, not to scale; not a current ephemeris or a stability simulation.','Orbital motion is governed primarily by gravity. Actual trajectories depend on masses, positions, velocities, and perturbations.','Dynamics, not orbital shells','A solar-system view supplies trajectories in time. The shared abstraction is state plus rules plus evolution—not identical physics.']
+  };
+  const rings = [
+    {r:.29,tilt:.22,spin:0,color:'#b8a8ff'},
+    {r:.48,tilt:1.00,spin:1.08,color:'#76dff7'},
+    {r:.68,tilt:1.72,spin:-.65,color:'#d7e5ef'}
+  ];
+  function resize(){
+    const rect = canvas.getBoundingClientRect(); dpr = Math.min(devicePixelRatio || 1,2);
+    width = Math.max(1,rect.width); height = Math.max(1,rect.height);
+    canvas.width = Math.round(width*dpr); canvas.height = Math.round(height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function project(p, rot, scale){
+    const x = p[0]*Math.cos(rot)-p[2]*Math.sin(rot), z0 = p[0]*Math.sin(rot)+p[2]*Math.cos(rot);
+    const y = p[1], tilt=.68, y2=y*Math.cos(tilt)-z0*Math.sin(tilt), z=y*Math.sin(tilt)+z0*Math.cos(tilt);
+    const perspective = 3.4/(3.4+z*.45);
+    return [width/2+x*scale*perspective,height*.48+y2*scale*perspective,z];
+  }
+  function line3(a,b,rot,scale,color,lw=1,alpha=1){
+    const A=project(a,rot,scale), B=project(b,rot,scale); ctx.globalAlpha=alpha; ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);ctx.stroke();ctx.globalAlpha=1;
+  }
+  function ring3(r,tilt,spin,rot,scale,color,alpha=.85){
+    ctx.beginPath();let first=true;
+    for(let i=0;i<=180;i++){const t=i/180*Math.PI*2;let x=r*Math.cos(t),z=r*Math.sin(t);const y=z*Math.sin(tilt);z=z*Math.cos(tilt);const xx=x*Math.cos(spin)-z*Math.sin(spin),zz=x*Math.sin(spin)+z*Math.cos(spin);const p=project([xx,y,zz],rot,scale);if(first){ctx.moveTo(p[0],p[1]);first=false}else ctx.lineTo(p[0],p[1]);}
+    ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=1.3;ctx.stroke();ctx.globalAlpha=1;
+  }
+  function sphere(r,rot,scale,color,alpha=.7){
+    for(let lat=-1.35;lat<=1.36;lat+=.28){const points=[];for(let i=0;i<=100;i++){const t=i/100*Math.PI*2;points.push([r*Math.cos(lat)*Math.cos(t),r*Math.sin(lat),r*Math.cos(lat)*Math.sin(t)]);}ctx.beginPath();points.forEach((p,i)=>{const q=project(p,rot,scale);if(!i)ctx.moveTo(q[0],q[1]);else ctx.lineTo(q[0],q[1]);});ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=.75;ctx.stroke();ctx.globalAlpha=1;}
+    for(let lon=0;lon<Math.PI;lon+=Math.PI/6){const pts=[];for(let i=0;i<=100;i++){const t=-Math.PI/2+i/100*Math.PI;pts.push([r*Math.cos(t)*Math.cos(lon),r*Math.sin(t),r*Math.cos(t)*Math.sin(lon)]);}ctx.beginPath();pts.forEach((p,i)=>{const q=project(p,rot,scale);if(!i)ctx.moveTo(q[0],q[1]);else ctx.lineTo(q[0],q[1]);});ctx.globalAlpha=alpha*.65;ctx.strokeStyle=color;ctx.lineWidth=.7;ctx.stroke();ctx.globalAlpha=1;}
+  }
+  function dot(p,rot,scale,color,r=2,alpha=.7){const q=project(p,rot,scale);ctx.globalAlpha=alpha;ctx.fillStyle=color;ctx.beginPath();ctx.arc(q[0],q[1],r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+  function drawCloud(mode,rot,scale){
+    // Fixed deterministic point set: visual texture only, not a physical probability sampler.
+    for(let i=0;i<540;i++){
+      const a=Math.sin(i*12.9898)*43758.5453, u=a-Math.floor(a);
+      const b=Math.sin((i+19)*78.233)*12345.6789, v=b-Math.floor(b);
+      const c=Math.sin((i+7)*39.425)*32123.4567, w=c-Math.floor(c);
+      let x,y,z,accept=true;
+      if(mode==='hydrogen1s'){
+        const rr=.10+Math.pow(u,0.72)*.86, theta=Math.acos(2*v-1), phi=2*Math.PI*w;
+        x=rr*Math.sin(theta)*Math.cos(phi);y=rr*Math.cos(theta);z=rr*Math.sin(theta)*Math.sin(phi);
+      } else if(mode==='hydrogen2p'){
+        const rr=.12+Math.pow(u,.58)*.75, sign=v>.5?1:-1, theta=Math.acos(2*w-1);
+        x=rr*Math.sin(theta)*Math.cos(2*Math.PI*v)*.52;y=sign*(.20+rr*Math.abs(Math.cos(theta)));z=rr*Math.sin(theta)*Math.sin(2*Math.PI*v)*.52;
+      } else {
+        const lobe=i%4, sx=lobe<2?1:-1, sy=(lobe%2===0)?1:-1, rr=.10+Math.pow(u,.55)*.55;
+        x=sx*(.20+rr*v);y=sy*(.20+rr*(1-v));z=(w-.5)*.34;
+      }
+      if(accept)dot([x,y,z],rot,scale,mode==='hydrogen1s'?'#75d9ff':'#9dbeff',.7+u*1.5,.14+v*.34);
+    }
+    const o=project([0,0,0],rot,scale);ctx.fillStyle='#e8fbff';ctx.globalAlpha=.95;ctx.beginPath();ctx.arc(o[0],o[1],3,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+  }
+  function drawEarth(rot,scale){
+    const layers=[{r:.20,c:'#f5bd79'},{r:.31,c:'#d77d64'},{r:.54,c:'#b47b64'},{r:.78,c:'#588fa7'}];
+    for(const layer of layers)sphere(layer.r,rot,scale,layer.c,.8);
+    const p=project([0,0,0],rot,scale);ctx.fillStyle='#f6c879';ctx.beginPath();ctx.arc(p[0],p[1],scale*.2,0,Math.PI*2);ctx.fill();
+  }
+  function drawSolar(rot,scale){
+    const colors=['#e7c78b','#a6d5ef','#e8e2d6','#b4a8ff','#d8a18a'];
+    const radii=[.15,.29,.42,.56,.72];
+    const sun=project([0,0,0],rot,scale);const glow=ctx.createRadialGradient(sun[0],sun[1],2,sun[0],sun[1],scale*.12);glow.addColorStop(0,'#fff5c4');glow.addColorStop(1,'#f6a85200');ctx.fillStyle=glow;ctx.beginPath();ctx.arc(sun[0],sun[1],scale*.13,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#ffe7a2';ctx.beginPath();ctx.arc(sun[0],sun[1],5,0,Math.PI*2);ctx.fill();
+    radii.forEach((r,i)=>{ring3(r,.14+i*.08,0,rot,scale,colors[i],.5);const t=angle*(.45+i*.12)+i*.8;dot([r*Math.cos(t),.025*Math.sin(t),r*Math.sin(t)],rot,scale,colors[i],2.5+i*.15,.95);});
+  }
+  function draw(){
+    ctx.clearRect(0,0,width,height);
+    const s=Math.min(width,height)*.43, rot=angle*.55;
+    // Quiet coordinate axes make the three-dimensional projection legible.
+    line3([-.88,0,0],[.88,0,0],rot,s,'#4b6479',.7,.28);
+    line3([0,-.88,0],[0,.88,0],rot,s,'#4b6479',.7,.28);
+    line3([0,0,-.88],[0,0,.88],rot,s,'#4b6479',.7,.28);
+    const m=model.value;
+    if(m==='seed'){
+      if(overlay)rings.forEach(r=>ring3(r.r,r.tilt,r.spin,rot,s,r.color,.94));
+      const p=project([0,0,0],rot,s);ctx.fillStyle='#fff';ctx.shadowBlur=22;ctx.shadowColor='#76dff7';ctx.beginPath();ctx.arc(p[0],p[1],4,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+    } else if(m.startsWith('hydrogen')){
+      drawCloud(m,rot,s);
+      if(overlay)rings.forEach(r=>ring3(r.r,r.tilt,r.spin,rot,s,r.color,.52));
+    } else if(m==='earth'){
+      drawEarth(rot,s);
+      if(overlay)rings.forEach(r=>ring3(r.r,r.tilt,r.spin,rot,s,r.color,.38));
+    } else if(m==='solar'){
+      drawSolar(rot,s);
+      if(overlay)rings.forEach(r=>ring3(r.r,r.tilt,r.spin,rot,s,r.color,.34));
+    }
+    if(rotating)angle+=.004;
+    requestAnimationFrame(draw);
+  }
+  function sync(){
+    const c=copy[model.value];title.textContent=c[0];note.textContent=c[1];description.textContent=c[2];detailTitle.textContent=c[3];detailText.textContent=c[4];
+    canvas.setAttribute('aria-label',c[0]+'. Conceptual illustration; not measured physical data.');
+  }
+  function setPressed(a,b,first){a.setAttribute('aria-pressed',String(first));b.setAttribute('aria-pressed',String(!first));}
+  model.addEventListener('change',sync);
+  overlayOn.addEventListener('click',()=>{overlay=true;setPressed(overlayOn,overlayOff,true);});
+  overlayOff.addEventListener('click',()=>{overlay=false;setPressed(overlayOn,overlayOff,false);});
+  motionOn.addEventListener('click',()=>{rotating=true;setPressed(motionOn,motionOff,true);});
+  motionOff.addEventListener('click',()=>{rotating=false;setPressed(motionOn,motionOff,false);});
+  new ResizeObserver(resize).observe(canvas);
+  resize();sync();
+  if(prefersReduced){rotating=false;setPressed(motionOn,motionOff,false);}
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+name: Research reference tests
+
+on:
+  pull_request:
+    paths:
+      - "research/engineering/hydrogen_reference.py"
+      - "research/engineering/test_hydrogen_reference.py"
+      - "research/engineering/seed_verifier.py"
+      - "research/engineering/test_seed_verifier.py"
+      - ".github/workflows/hydrogen-reference-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  research-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out proposed branch
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run analytic hydrogen reference tests
+        working-directory: research/engineering
+        run: python -m unittest -v test_hydrogen_reference.py
+      - name: Run strict seed verifier tests
+        working-directory: research/engineering
+        run: python -m unittest -v test_seed_verifier.py
