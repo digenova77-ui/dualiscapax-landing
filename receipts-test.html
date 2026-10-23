@@ -17,6 +17,7 @@
 <p>Computes the 16-bit finger from the previous id and posts to <code>/receipts/verify</code>.</p>
 <button id="good">Run good chain</button>
 <button id="bad">Run bad finger</button>
+<button id="prev">Run prev mismatch</button>
 <pre id="out">waiting</pre>
 <script>
 function finger16(prev){
@@ -25,14 +26,16 @@ function finger16(prev){
   for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,0x01000193); }
   return h&0xffff;
 }
-function chain(bad){
+function chain(mode){
   const a={id:"rcpt:1",finger:0};
   const f=finger16(a);
-  const b={id:"rcpt:2",prev:"rcpt:1",finger:bad?f^1:f};
+  const prev = mode==="prev" ? "rcpt:missing" : "rcpt:1";
+  const finger = mode==="bad" ? (f^1) : f;
+  const b={id:"rcpt:2",prev,finger};
   return [a,b];
 }
-async function run(bad){
-  const receipts=chain(bad);
+async function run(mode){
+  const receipts=chain(mode);
   const out=document.getElementById("out");
   out.textContent="posting…";
   const res=await fetch("/receipts/verify",{
@@ -45,8 +48,9 @@ async function run(bad){
   out.className=ok?"ok":"bad";
   out.textContent=JSON.stringify({sent:receipts,status:res.status,body},null,2);
 }
-document.getElementById("good").onclick=()=>run(false);
-document.getElementById("bad").onclick=()=>run(true);
+document.getElementById("good").onclick=()=>run("good");
+document.getElementById("bad").onclick=()=>run("bad");
+document.getElementById("prev").onclick=()=>run("prev");
 </script>
 </body>
 </html>
