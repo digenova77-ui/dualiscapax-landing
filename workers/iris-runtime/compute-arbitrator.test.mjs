@@ -55,7 +55,7 @@ function fixture() {
       const route = new URL(request.url).pathname;
       if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
       if (route.endsWith("/claim")) return { unity_id: body.unity_id, request_id: body.request_id, claimed: true };
-      return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-math" };
+      return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-math", receipt_sha256: "b".repeat(64) };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({
       decision: "allow", authorized: true, request_id: body.request_id,
