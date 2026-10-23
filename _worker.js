@@ -21,12 +21,13 @@ const MAP = {
   "/desk/": "/rte/sima-dclm/index.html"
 };
 
-const HUD_RAW = "https://raw.githubusercontent.com/digenova77-ui/dualiscapax-hud/main";
-const HUD_ROUTES = new Map([
-  ["/holographic-core/v2", [HUD_RAW + "/holographic-core/v2/index.html", "text/html; charset=utf-8"]],
-  ["/holographic-core/v2/", [HUD_RAW + "/holographic-core/v2/index.html", "text/html; charset=utf-8"]],
-  ["/holographic-core/v2/index.html", [HUD_RAW + "/holographic-core/v2/index.html", "text/html; charset=utf-8"]],
-  ["/assets/holographic-hostess-40/hostess.svg", [HUD_RAW + "/assets/holographic-hostess-40/hostess.svg", "image/svg+xml; charset=utf-8"]]
+// Only identify protected paths here; do not retain a raw upstream URL that
+// could be mistaken for an active or approved way to serve protected HUD bytes.
+const HUD_ROUTES = new Set([
+  "/holographic-core/v2",
+  "/holographic-core/v2/",
+  "/holographic-core/v2/index.html",
+  "/assets/holographic-hostess-40/hostess.svg"
 ]);
 
 const SEAL_BODY = `center=empty
