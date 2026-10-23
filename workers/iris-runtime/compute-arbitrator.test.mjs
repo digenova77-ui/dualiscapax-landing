@@ -58,7 +58,7 @@ const receiptFor = (body) => {
     result_sha256: sha256Text(body.output),
     receipt_id: "receipt-math",
   };
-  return { receipt, receipt_sha256: sha256Text(canonicalJson(receipt)) };
+  return { receipt_id: receipt.receipt_id, receipt, receipt_sha256: sha256Text(canonicalJson(receipt)) };
 };
 const jsonResponse = (body, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { "content-type": "application/json" },
