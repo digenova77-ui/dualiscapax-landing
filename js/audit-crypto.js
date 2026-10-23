@@ -142,6 +142,8 @@
   g.DCAudit = {
     version: 2,
     canonicalJson: canonicalJson,
+    hash: async function (value) { return sha256(String(value)); },
+    status: function () { load(); return { ok: !storageError, reason: storageError }; },
     chain: load,
 
     tip: function () {
