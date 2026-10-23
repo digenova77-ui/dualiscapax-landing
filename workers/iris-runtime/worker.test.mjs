@@ -271,3 +271,67 @@ test("unsupported method is rejected without calling any binding", async () => {
   assert.equal(res.headers.get("allow"), "POST");
   assert.equal(calls.length, 0);
 });
+
+
+test("oversized provider output is rejected and never persisted", async () => {
+  const { env, calls } = fixture({
+    MODEL_PROVIDER: { async fetch() { calls.push({ name: "provider" }); return jsonResponse({ output: "x".repeat(12001) }); } },
+  });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).stage, "inference");
+  assert.equal(calls.some(c => c.name === "memory" && c.path?.endsWith("/append")), false);
+});
+
+test("oversized private memory context fails before provider inference", async () => {
+  const { env, calls } = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json();
+        const route = new URL(request.url).pathname;
+        calls.push({ name: "memory", path: route, body });
+        if (route.endsWith("/claim")) return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: true });
+        if (route.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: Array.from({ length: 13 }, (_, i) => ({ id: i })) });
+        return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt", receipt_sha256: "a".repeat(64) });
+      },
+    },
+  });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).stage, "memory-read");
+  assert.equal(calls.some(c => c.name === "provider"), false);
+});
+
+test("persistence without a durable receipt hash is not reported as success", async () => {
+  const { env } = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json();
+        const route = new URL(request.url).pathname;
+        if (route.endsWith("/claim")) return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: true });
+        if (route.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
+        return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-without-hash" });
+      },
+    },
+  });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).reason, "persistence-unconfirmed");
+});
+
+test("malformed durable receipt hash is rejected", async () => {
+  const { env } = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json();
+        const route = new URL(request.url).pathname;
+        if (route.endsWith("/claim")) return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: true });
+        if (route.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
+        return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-bad-hash", receipt_sha256: "not-a-hash" });
+      },
+    },
+  });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).reason, "persistence-unconfirmed");
+});
