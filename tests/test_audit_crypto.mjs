@@ -7,9 +7,10 @@ import { webcrypto } from "node:crypto";
 const source = fs.readFileSync(new URL("../js/audit-crypto.js", import.meta.url), "utf8");
 const pageSource = fs.readFileSync(new URL("../audit.html", import.meta.url), "utf8");
 
-function harness({ crypto = webcrypto, failWrite = false, initial = null } = {}) {
+function harness({ crypto = webcrypto, failWrite = false, initial = null, legacyInitial = null } = {}) {
   const store = new Map();
-  if (initial !== null) store.set("dc_audit_chain_v1", JSON.stringify(initial));
+  if (initial !== null) store.set("dc_audit_chain_v2", JSON.stringify(initial));
+  if (legacyInitial !== null) store.set("dc_audit_chain_v1", JSON.stringify(legacyInitial));
   const localStorage = {
     getItem(key) { return store.has(key) ? store.get(key) : null; },
     setItem(key, value) {
@@ -50,9 +51,9 @@ test("new receipts bind nested payloads and verify the complete stored chain", a
 test("tampering with a nested payload invalidates its receipt", async () => {
   const h = harness();
   await h.api.commit({ nested: { value: "original" } });
-  const chain = JSON.parse(h.store.get("dc_audit_chain_v1"));
+  const chain = JSON.parse(h.store.get("dc_audit_chain_v2"));
   chain[0].payload.nested.value = "tampered";
-  h.store.set("dc_audit_chain_v1", JSON.stringify(chain));
+  h.store.set("dc_audit_chain_v2", JSON.stringify(chain));
   const result = await h.api.verifyChain();
   assert.equal(result.ok, false);
   assert.equal(result.reason, "receipt-hash-mismatch");
@@ -63,21 +64,25 @@ test("parent-link tampering invalidates the stored chain even when the tip paylo
   const h = harness();
   await h.api.commit({ n: 1 });
   await h.api.commit({ n: 2 });
-  const chain = JSON.parse(h.store.get("dc_audit_chain_v1"));
+  const chain = JSON.parse(h.store.get("dc_audit_chain_v2"));
   chain[1].parent = "f".repeat(64);
-  h.store.set("dc_audit_chain_v1", JSON.stringify(chain));
+  h.store.set("dc_audit_chain_v2", JSON.stringify(chain));
   const result = await h.api.verifyTip();
   assert.equal(result.ok, false);
   assert.equal(result.reason, "parent-link-mismatch");
   assert.equal(result.index, 1);
 });
 
-test("legacy v1 receipts are retained but not falsely treated as payload-bound", async () => {
+test("legacy v1 receipts remain preserved separately and are never called verified", async () => {
   const legacy = [{ id: "old", at: "2026-01-01T00:00:00.000Z", session: null, parent: null, receipt: "a".repeat(64), payload: { text: "legacy" }, algo: "SHA-256" }];
-  const h = harness({ initial: legacy });
-  const result = await h.api.verifyChain();
-  assert.equal(result.ok, false);
-  assert.equal(result.reason, "legacy-receipt-format-unbound-payload");
+  const h = harness({ legacyInitial: legacy });
+  assert.equal(h.api.legacyCount(), 1);
+  assert.equal(h.api.status().legacyUnverified, true);
+  assert.equal((await h.api.verifyChain()).reason, "empty");
+  const v2 = await h.api.commit({ fresh: true });
+  assert.equal(v2.version, 2);
+  assert.equal(h.store.get("dc_audit_chain_v1"), JSON.stringify(legacy));
+  assert.equal((await h.api.verifyChain()).ok, true);
 });
 
 test("cryptographic unavailability fails closed instead of creating a weak receipt", async () => {
@@ -121,14 +126,10 @@ test("audit page does not render receipt content through innerHTML or accept a q
 test("tampered existing chain blocks further commits instead of extending false history", async () => {
   const h = harness();
   await h.api.commit({ nested: { value: "original" } });
-  const chain = JSON.parse(h.store.get("dc_audit_chain_v1"));
+  const chain = JSON.parse(h.store.get("dc_audit_chain_v2"));
   chain[0].payload.nested.value = "tampered";
-  h.store.set("dc_audit_chain_v1", JSON.stringify(chain));
+  h.store.set("dc_audit_chain_v2", JSON.stringify(chain));
   await assert.rejects(() => h.api.commit({ next: true }), /existing-audit-chain-invalid:receipt-hash-mismatch/);
 });
 
-test("legacy chain blocks new v2 commits until explicitly cleared", async () => {
-  const legacy = [{ id: "old", at: "2026-01-01T00:00:00.000Z", session: null, parent: null, receipt: "a".repeat(64), payload: { text: "legacy" }, algo: "SHA-256" }];
-  const h = harness({ initial: legacy });
-  await assert.rejects(() => h.api.commit({ next: true }), /existing-audit-chain-invalid:legacy-receipt-format-unbound-payload/);
-});
+
