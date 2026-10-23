@@ -5,6 +5,8 @@ on:
     branches: [feat/iris-single-governed-runtime-20261023]
     paths:
       - "workers/iris-runtime/**"
+      - "_worker.js"
+      - "tests/pages-hud-fail-closed.test.mjs"
       - ".github/workflows/iris-runtime-adapter-ci.yml"
       - "tests/test_api_base_trust.mjs"
       - "tests/test_audit_crypto.mjs"
@@ -43,4 +45,4 @@ jobs:
         with:
           node-version: "22"
       - name: Run governed runtime, compute, trust, audit-chain, and medical-gate tests
-        run: node --test workers/iris-runtime/worker.test.mjs workers/iris-runtime/compute-arbitrator.test.mjs tests/test_api_base_trust.mjs tests/test_audit_crypto.mjs tests/test_medical_gate.mjs
+        run: node --test workers/iris-runtime/worker.test.mjs workers/iris-runtime/compute-arbitrator.test.mjs tests/test_api_base_trust.mjs tests/test_audit_crypto.mjs tests/test_medical_gate.mjs tests/pages-hud-fail-closed.test.mjs
