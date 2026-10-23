@@ -154,17 +154,20 @@ async function handleRequest(request, env) {
       return json({ available: false, stage: "idempotency-claim", reason: "request-not-claimed" }, 409);
     }
 
-    // Trinity must authorize before the runtime reads private conversational memory.
-    let memory;
-    try {
-      memory = await callJson(env.IRIS_MEMORY, "/v1/memory/context", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ unity_id: unityId, request_id: requestId, limit: 12 }),
-      });
-    } catch { return unavailable("memory-read"); }
-    if (memory.unity_id !== unityId || !Array.isArray(memory.items)) {
-      return json({ available: false, stage: "memory-read", reason: "invalid-memory-response" }, 503);
+    // Exact arithmetic does not need private memory. Read memory only for the
+    // probabilistic lane, and only after Trinity has authorized the request.
+    let memory = { unity_id: unityId, items: [] };
+    if (computePlan.lane === "probabilistic") {
+      try {
+        memory = await callJson(env.IRIS_MEMORY, "/v1/memory/context", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ unity_id: unityId, request_id: requestId, limit: 12 }),
+        });
+      } catch { return unavailable("memory-read"); }
+      if (memory.unity_id !== unityId || !Array.isArray(memory.items)) {
+        return json({ available: false, stage: "memory-read", reason: "invalid-memory-response" }, 503);
+      }
     }
 
     let inference;
