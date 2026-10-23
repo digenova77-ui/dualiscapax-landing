@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 const SHA256_RE = /^[a-f0-9]{64}$/;
 const CID_RE = /^(bafy[a-z2-7]{20,}|Qm[1-9A-HJ-NP-Za-km-z]{44})$/;
+const RECEIPT_PROTOCOL = 'dualis-publication-receipt-v1';
 
 export function sha256Hex(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
@@ -39,7 +40,7 @@ export function buildPublicationReceipt({ sourceRevision, contentCid, contentSha
   if (resolvedCid !== null && resolvedCid !== contentCid) throw new TypeError('ipns-resolution-mismatch');
 
   const body = {
-    protocol: 'dualis-publication-receipt-v1',
+    protocol: RECEIPT_PROTOCOL,
     source_revision: sourceRevision.toLowerCase(),
     content_cid: contentCid,
     content_sha256: contentSha256,
@@ -56,6 +57,8 @@ export function verifyPublicationReceipt(receipt, retrievedBytes) {
     const allowed = new Set(['protocol', 'source_revision', 'content_cid', 'content_sha256', 'byte_length', 'ipns_name', 'resolved_cid', 'receipt_sha256']);
     if (Object.keys(receipt).length !== allowed.size || Object.keys(receipt).some((key) => !allowed.has(key))) return { ok: false, reason: 'invalid-receipt-shape' };
     const { receipt_sha256, ...body } = receipt;
+    if (body.protocol !== RECEIPT_PROTOCOL) return { ok: false, reason: 'unsupported-receipt-protocol' };
+    if (typeof body.source_revision !== 'string' || body.source_revision !== body.source_revision.toLowerCase()) return { ok: false, reason: 'noncanonical-source-revision' };
     if (typeof receipt_sha256 !== 'string' || !SHA256_RE.test(receipt_sha256)) return { ok: false, reason: 'invalid-receipt-hash' };
     const rebuilt = buildPublicationReceipt({
       sourceRevision: body.source_revision,
