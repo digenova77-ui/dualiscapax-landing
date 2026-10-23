@@ -122,13 +122,32 @@ jobs:
               --header "Authorization: Bearer $token" \
               --header "Accept: application/json" \
               "https://api.cloudflare.com/client/v4/zones?name=${domain}" || true)"
-            printf '\\n== Zone lookup: %s ==\\nHTTP: %s\\n' "$domain" "${code:-CURL_ERROR}"
+            printf '\n== Zone lookup: %s ==\nHTTP: %s\n' "$domain" "${code:-CURL_ERROR}"
             if [[ "$code" == "200" ]] && jq -e '.success == true' "$tmp/zones.json" >/dev/null 2>&1; then
               zone_ids="$(jq -r '.result[]? | [.id, .name] | @tsv' "$tmp/zones.json")"
               if [[ -z "$zone_ids" ]]; then
                 echo "No zones returned for this name."
               else
-                while IFS=
+                while IFS="$(printf '\\t')" read -r zone_id zone_name; do
+                  printf 'zone: %s\n' "$zone_name"
+                  route_code="$(curl --silent --output "$tmp/routes.json" --write-out '%{http_code}' \
+                    --max-time 20 --request GET \
+                    --header "Authorization: Bearer $token" \
+                    --header "Accept: application/json" \
+                    "https://api.cloudflare.com/client/v4/zones/${zone_id}/workers/routes" || true)"
+                  printf 'Workers routes HTTP: %s\n' "${route_code:-CURL_ERROR}"
+                  if [[ "$route_code" == "200" ]] && jq -e '.success == true' "$tmp/routes.json" >/dev/null 2>&1; then
+                    jq -r '.result[]? | "pattern: " + (.pattern // "unknown") + " | script: " + (.script // "(zone default)")' "$tmp/routes.json"
+                  else
+                    echo "Route access not confirmed; response body withheld."
+                  fi
+                done <<< "$zone_ids"
+              fi
+            else
+              echo "Zone access not confirmed; response body withheld."
+            fi
+          done
+
           echo "Safety: GET-only inventory. No resources were created, changed, deleted, deployed, or published."
 \\t' read -r zone_id zone_name; do
                   printf 'zone: %s\\n' "$zone_name"
