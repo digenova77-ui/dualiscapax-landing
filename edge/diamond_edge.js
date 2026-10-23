@@ -12,15 +12,15 @@
  * Frontier maximum:
  *   FL / D / Excellent / purity
  */
-export const CLARITY_PASS = new Set(["FL", "VVS", "VS"]);
-export const COLOR_PASS = new Set(["D", "E", "F"]);
-export const CUT_PASS = new Set(["Excellent", "Very Good"]);
+export const CLARITY_PASS = Object.freeze(["FL", "VVS", "VS"]);
+export const COLOR_PASS = Object.freeze(["D", "E", "F"]);
+export const CUT_PASS = Object.freeze(["Excellent", "Very Good"]);
 export const MAX_BAND = Object.freeze({ clarity: "FL", color: "D", cut: "Excellent" });
 
 export function grade(f) {
-  const clarity_ok = CLARITY_PASS.has(f?.clarity);
-  const color_ok = COLOR_PASS.has(f?.color);
-  const cut_ok = CUT_PASS.has(f?.cut);
+  const clarity_ok = CLARITY_PASS.includes(f?.clarity);
+  const color_ok = COLOR_PASS.includes(f?.color);
+  const cut_ok = CUT_PASS.includes(f?.cut);
   const reflects_ok = f?.reflects === "purity";
   const pure = clarity_ok && color_ok && cut_ok && reflects_ok;
   const failed = [];
