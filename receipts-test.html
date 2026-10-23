@@ -18,6 +18,7 @@
 <button id="good">Run good chain</button>
 <button id="bad">Run bad finger</button>
 <button id="match">Run prev match</button>
+<button id="next">Run next match</button>
 <button id="prev">Run prev mismatch</button>
 <pre id="out">waiting</pre>
 <script>
@@ -33,7 +34,9 @@ function chain(mode){
   const prev = mode==="prev" ? "rcpt:missing" : "rcpt:1";
   const finger = mode==="bad" ? (f^1) : f;
   const b={id:"rcpt:2",prev,finger};
-  return [a,b];
+  if(mode!=="next") return [a,b];
+  const c={id:"rcpt:3",prev:"rcpt:2",finger:finger16(b)};
+  return [a,b,c];
 }
 async function run(mode){
   const receipts=chain(mode);
@@ -52,6 +55,7 @@ async function run(mode){
 document.getElementById("good").onclick=()=>run("good");
 document.getElementById("bad").onclick=()=>run("bad");
 document.getElementById("match").onclick=()=>run("good");
+document.getElementById("next").onclick=()=>run("next");
 document.getElementById("prev").onclick=()=>run("prev");
 </script>
 </body>
