@@ -125,8 +125,18 @@ export const DEFAULT_FACETS = [
 
 
 /** Append-only receipt chain check. Pure. */
+export function wordOf(r) {
+  if (!r) return "";
+  const copy = {};
+  for (const k of Object.keys(r).sort()) {
+    if (k === "finger" || k === "prev") continue;
+    copy[k] = r[k];
+  }
+  return JSON.stringify(copy);
+}
+
 export function finger16(prev) {
-  const s = String(prev && prev.id || "");
+  const s = wordOf(prev);
   let h = 0x811c9dc5;
   for (let i = 0; i < s.length; i++) {
     h ^= s.charCodeAt(i);

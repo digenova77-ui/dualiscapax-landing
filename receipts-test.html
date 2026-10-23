@@ -20,22 +20,36 @@
 <button id="match">Run prev match</button>
 <button id="next">Run next match</button>
 <button id="prev">Run prev mismatch</button>
+<button id="body">Run body mismatch</button>
 <pre id="out">waiting</pre>
 <script>
+function wordOf(r){
+  if(!r) return "";
+  const copy={};
+  for(const k of Object.keys(r).sort()){
+    if(k==="finger"||k==="prev") continue;
+    copy[k]=r[k];
+  }
+  return JSON.stringify(copy);
+}
 function finger16(prev){
-  const s=String(prev&&prev.id||"");
+  const s=wordOf(prev);
   let h=0x811c9dc5;
   for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,0x01000193); }
   return h&0xffff;
 }
 function chain(mode){
-  const a={id:"rcpt:1",finger:0};
+  const a={id:"rcpt:1",finger:0,body:"alpha"};
   const f=finger16(a);
   const prev = mode==="prev" ? "rcpt:missing" : "rcpt:1";
   const finger = mode==="bad" ? (f^1) : f;
-  const b={id:"rcpt:2",prev,finger};
+  const b={id:"rcpt:2",prev,finger,body:"beta"};
+  if(mode==="body"){
+    const tampered={id:"rcpt:1",finger:0,body:"changed"};
+    return [tampered, b];
+  }
   if(mode!=="next") return [a,b];
-  const c={id:"rcpt:3",prev:"rcpt:2",finger:finger16(b)};
+  const c={id:"rcpt:3",prev:"rcpt:2",finger:finger16(b),body:"gamma"};
   return [a,b,c];
 }
 async function run(mode){
@@ -57,6 +71,7 @@ document.getElementById("bad").onclick=()=>run("bad");
 document.getElementById("match").onclick=()=>run("good");
 document.getElementById("next").onclick=()=>run("next");
 document.getElementById("prev").onclick=()=>run("prev");
+document.getElementById("body").onclick=()=>run("body");
 </script>
 </body>
 </html>

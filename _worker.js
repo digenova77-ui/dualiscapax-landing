@@ -192,7 +192,8 @@ export default {
         boundary: "NOT_FOR_EMISSION",
         gate: "FL/VVS/VS · D/E/F · Excellent/Very Good · purity",
         frontier: "FL · D · Excellent · purity",
-        learning: "advisory only — NOT_FOR_EMISSION"
+        learning: "advisory only — NOT_FOR_EMISSION",
+        faces: { grade: "diamond", cost: "residual", decision: "DCLM", write: "Twain²", spend: "none" }
       }),
       "/diamond/status": () => status("/diamond"),
       "/pricing": () => pricingReport(),
@@ -322,8 +323,18 @@ function standingProbe() {
   return { standing_callable: true, emission_source: "standing() — origin only", boundary: "NOT_FOR_EMISSION" };
 }
 
+function wordOf(r) {
+  if (!r) return "";
+  const copy = {};
+  for (const k of Object.keys(r).sort()) {
+    if (k === "finger" || k === "prev") continue;
+    copy[k] = r[k];
+  }
+  return JSON.stringify(copy);
+}
+
 function finger16(prev) {
-  const s = String(prev && prev.id || "");
+  const s = wordOf(prev);
   let h = 0x811c9dc5;
   for (let i = 0; i < s.length; i++) {
     h ^= s.charCodeAt(i);
@@ -331,6 +342,7 @@ function finger16(prev) {
   }
   return h & 0xffff;
 }
+
 
 function verifyReceiptChain(receipts) {
   if (!Array.isArray(receipts) || receipts.length === 0) return { ok: true, length: 0, reason: "empty" };
