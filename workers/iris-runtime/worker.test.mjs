@@ -19,7 +19,9 @@ function fixture(overrides = {}) {
     IRIS_ALLOWED_ORIGINS: "https://dualiscapax.ai",
     IDENTITY_API: binding("identity", async () => ({ verified: true, unity_id: "unity_user_123" })),
     IRIS_MEMORY: binding("memory", async (body, request) => {
-      if (new URL(request.url).pathname.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
+      const route = new URL(request.url).pathname;
+      if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
+      if (route.endsWith("/claim")) return { unity_id: body.unity_id, request_id: body.request_id, claimed: true };
       return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-1" };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({ decision: "allow", authorized: true, request_id: body.request_id })),
@@ -41,10 +43,11 @@ test("happy path verifies identity, authorizes with Trinity before memory/infere
   assert.equal(res.status, 200);
   assert.equal(data.available, true);
   assert.equal(data.result, "Iris response");
-  assert.deepEqual(calls.map(c => c.name), ["identity", "trinity", "memory", "provider", "memory"]);
-  assert.equal(calls[2].body.unity_id, "unity_user_123");
+  assert.deepEqual(calls.map(c => c.name), ["identity", "trinity", "memory", "memory", "provider", "memory"]);
+  assert.equal(calls[2].path.endsWith("/claim"), true);
   assert.equal(calls[3].body.unity_id, "unity_user_123");
   assert.equal(calls[4].body.unity_id, "unity_user_123");
+  assert.equal(calls[5].body.unity_id, "unity_user_123");
   assert.equal(calls[1].body.action, "iris.inference");
   assert.equal(calls[1].body.memory_requested, true);
 });
@@ -115,4 +118,23 @@ test("unapproved preflight origin is rejected", async () => {
   assert.equal(response.status, 403);
   assert.equal(response.headers.get("access-control-allow-origin"), null);
   assert.equal(calls.length, 0);
+});
+
+test("duplicate request ID fails closed before memory context or provider inference", async () => {
+  const { env, calls } = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json().catch(() => ({}));
+        const route = new URL(request.url).pathname;
+        calls.push({ name: "memory", path: route, body });
+        if (route.endsWith("/claim")) return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: false });
+        return jsonResponse({ unity_id: body.unity_id, items: [] });
+      },
+    },
+  });
+  const res = await worker.fetch(req({ text: "Hello Iris" }, { "x-request-id": "request-duplicate-123" }), env);
+  assert.equal(res.status, 409);
+  assert.equal((await res.json()).stage, "idempotency-claim");
+  assert.equal(calls.some(c => c.name === "provider"), false);
+  assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/context")), false);
 });
