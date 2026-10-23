@@ -81,7 +81,7 @@ test("Ice practice cards are generic guidance, not personalized athlete data", (
 });
 
 test("all local script, stylesheet, manifest, and SVG references resolve in Ice entry pages", () => {
-  const pages = ["ice.html", "rink.html", "sheet.html", "ice-desk/index.html", "rte/ice/index.html", "ai/app.html"];
+  const pages = ["ice.html", "rink.html", "sheet.html", "hockey.html", "ice-desk/index.html", "rte/ice/index.html", "ai/app.html", "ai/room.html", "look.html", "pillars.html", "synapse.html", "manifold.html", "rtesimadclm/manifold.html", "research/access.html", "research/medical/affinity.html", "research/medical/identification.html", "research/medical/osteosarcoma.html", "research/medical/the-path.html", "research/medical/how-we-draw.html", "research/medical/sources.html", "rte/easthill/bind.html", "rte/easthill/iep.html", "rte/easthill/week.html", "rte/easthill/report.html"];
   const missing = [];
   const pattern = /\b(?:src|href)\s*=\s*["']([^"'#]+)["']/gi;
   for (const page of pages) {
@@ -90,7 +90,7 @@ test("all local script, stylesheet, manifest, and SVG references resolve in Ice 
       const raw = match[1];
       if (/^(?:https?:|data:|mailto:|javascript:|\/\/)/i.test(raw)) continue;
       const clean = raw.split(/[?#]/, 1)[0];
-      if (!/\.(?:js|mjs|css|json|svg|png|jpe?g|webp|ico|woff2?)$/i.test(clean)) continue;
+      if (!/\.(?:html|md|js|mjs|css|json|svg|png|jpe?g|webp|ico|woff2?)$/i.test(clean)) continue;
       const target = clean.startsWith("/")
         ? path.join(root, clean.slice(1))
         : path.resolve(root, path.dirname(page), clean);
