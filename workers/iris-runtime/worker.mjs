@@ -155,6 +155,14 @@ async function handleRequest(request, env) {
 
   const computePlan = arbitrateCompute(body.text);
 
+  // Fail before identity/authorization/claim side effects when a required service
+  // binding is absent. Never reserve probabilistic work that cannot reach inference.
+  const hasBinding = (binding) => !!binding && typeof binding.fetch === "function";
+  if (!hasBinding(env.IDENTITY_API)) return unavailable("identity");
+  if (!hasBinding(env.TRINITY_LAW)) return unavailable("trinity");
+  if (!hasBinding(env.IRIS_MEMORY)) return unavailable("idempotency-claim");
+  if (computePlan.lane === "probabilistic" && !hasBinding(env.MODEL_PROVIDER)) return unavailable("inference");
+
   let identity;
   try {
     identity = await callJson(env.IDENTITY_API, "/v1/session/verify", {
