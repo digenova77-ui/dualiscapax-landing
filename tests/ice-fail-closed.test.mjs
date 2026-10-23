@@ -101,7 +101,7 @@ test("all local script, stylesheet, manifest, and SVG references resolve in Ice 
 });
 
 
-test("site-wide and Ice-demo manifests have separate identities and scopes", () => {
+test("site-wide and Ice-demo manifests have separate identities and correct start URLs", () => {
   const siteManifest = JSON.parse(read("manifest.json"));
   const iceManifest = JSON.parse(read("ice-manifest.json"));
   assert.equal(siteManifest.name, "DualisCapax");
