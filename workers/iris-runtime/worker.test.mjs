@@ -131,11 +131,20 @@ test("unverified identity blocks all memory, law, and provider access", async ()
   assert.deepEqual(calls.map(c => c.name), ["identity"]);
 });
 
-test("missing provider fails closed and does not claim success", async () => {
-  const { env } = fixture({ MODEL_PROVIDER: undefined });
-  const res = await worker.fetch(req(), env);
-  assert.equal(res.status, 503);
-  assert.equal((await res.json()).stage, "inference");
+test("missing required service bindings fail before any service side effect", async () => {
+  const missingBindings = [
+    ["IDENTITY_API", "identity"],
+    ["TRINITY_LAW", "trinity"],
+    ["IRIS_MEMORY", "idempotency-claim"],
+    ["MODEL_PROVIDER", "inference"],
+  ];
+  for (const [binding, stage] of missingBindings) {
+    const { env, calls } = fixture({ [binding]: undefined });
+    const res = await worker.fetch(req(), env);
+    assert.equal(res.status, 503, binding);
+    assert.equal((await res.json()).stage, stage, binding);
+    assert.deepEqual(calls, [], `${binding} absence must be detected before any service call`);
+  }
 });
 
 test("wrong origin and invalid inputs are rejected before services are called", async () => {
@@ -369,8 +378,8 @@ for (const mismatch of [
   });
 }
 
-test("deterministic arithmetic tells Trinity it does not request private memory", async () => {
-  const { env, calls } = fixture();
+test("deterministic arithmetic works without a model-provider binding and tells Trinity it does not request private memory", async () => {
+  const { env, calls } = fixture({ MODEL_PROVIDER: undefined });
   const res = await worker.fetch(req({ text: "6 * 7" }), env);
   const data = await res.json();
   assert.equal(res.status, 200);
