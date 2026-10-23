@@ -44,6 +44,7 @@
   <p class="eyebrow">Medical door</p>
   <h1>Open to the houses that hold the public</h1>
   <p class="lede">Health notes are not a clinic. Dualis opens the file to every qualifying house — including .org. Simulation is not treatment.</p>
+  <p class="note" role="note">Demo only: this browser-side form does not verify ownership of an email domain or the authenticity of a SEAL mark. It is not access control and must not protect private medical records. Do not enter sensitive personal or health information. Only a domain-level demo classification is kept in this tab's session storage.</p>
   <section>
     <h2>Who the door lets through</h2>
     <div class="layer">
@@ -52,7 +53,7 @@
       <p>A charity on .org. A government desk on .gov. A ranked partner already marked SEAL-1. Everyone in those three lines gets the same door. No tribe preferred inside the line.</p>
     </div>
     <p id="med-grant" hidden></p>
-    <form class="med-form layer" id="med-form" autocomplete="on">
+    <form class="med-form layer" id="med-form" autocomplete="off">
       <p class="tag">Ask the door</p>
       <label for="med-email">Work email</label>
       <input id="med-email" name="email" type="email" inputmode="email" required placeholder="name@house.org"/>
