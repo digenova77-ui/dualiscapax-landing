@@ -214,7 +214,7 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
         source: measure.source,
       });
     } catch (receiptError) {
-      out.textContent = 'Receipt not created: cryptography or local storage could not be verified. No receipt was claimed.';
+      out.textContent = 'Receipt not created: cryptography, prior-chain integrity, or local storage could not be verified. No receipt was claimed.';
       run.disabled = false;
       return;
     }
