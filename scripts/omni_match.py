@@ -19,3 +19,7 @@ def odds(status: int, cache_control: str) -> dict:
     if g["pass"]:
         return {"odds": 1.0, "grade": "MEASURED", "pass": True}
     return {"odds": 0.0, "grade": "HYPOTHETICAL", "pass": False, "reason": g["reason"]}
+
+
+def match_found(status: int, cache_control: str) -> bool:
+    return grade(status, cache_control)["pass"]

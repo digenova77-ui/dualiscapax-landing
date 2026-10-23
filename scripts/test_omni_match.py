@@ -30,6 +30,20 @@ class OmniMatchTests(unittest.TestCase):
 
 
 
+class MatchNotFoundTests(unittest.TestCase):
+    def test_match_not_found(self):
+        from omni_match import grade, match_found, odds
+        g = grade(404, "no-store")
+        self.assertEqual(g["grade"], "HYPOTHETICAL")
+        self.assertEqual(g["reason"], "not 200")
+        self.assertFalse(match_found(404, "no-store"))
+        self.assertEqual(odds(404, "")["odds"], 0.0)
+
+    def test_match_not_found_zero_status(self):
+        from omni_match import match_found
+        self.assertFalse(match_found(0, ""))
+
+
 class LiveOddsTests(unittest.TestCase):
     def test_measured_odds_one(self):
         from omni_match import odds
