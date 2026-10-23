@@ -176,6 +176,12 @@ export default {
       return jsonNoStore(standingProbe());
     }
 
+    if (path === "/receipts/verify" && request.method === "POST") {
+      return request.json()
+        .then((body) => jsonNoStore(verifyReceiptChain(body.receipts || [])))
+        .catch(() => jsonNoStore({ ok: false, reason: "bad json" }, 400));
+    }
+
         const dest = MAP[path];
     if (dest) {
       const target = new URL(request.url);
@@ -250,4 +256,13 @@ function purityText() {
 }
 function standingProbe() {
   return { standing_callable: true, emission_source: "standing() — origin only", boundary: "NOT_FOR_EMISSION" };
+}
+function verifyReceiptChain(receipts) {
+  if (!Array.isArray(receipts) || receipts.length === 0) return { ok: true, length: 0, reason: "empty" };
+  for (let i = 1; i < receipts.length; i++) {
+    const prev = receipts[i - 1], cur = receipts[i];
+    if (!cur || !cur.id || !String(cur.id).startsWith("rcpt:")) return { ok: false, length: i, reason: "bad id" };
+    if (cur.prev !== prev.id) return { ok: false, length: i, reason: "prev mismatch" };
+  }
+  return { ok: true, length: receipts.length, last: receipts[receipts.length - 1].id };
 }
