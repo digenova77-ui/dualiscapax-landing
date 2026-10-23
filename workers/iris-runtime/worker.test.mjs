@@ -377,8 +377,8 @@ for (const mismatch of [
   });
 }
 
-test("deterministic arithmetic tells Trinity it does not request private memory", async () => {
-  const { env, calls } = fixture();
+test("deterministic arithmetic works without a model-provider binding and tells Trinity it does not request private memory", async () => {
+  const { env, calls } = fixture({ MODEL_PROVIDER: undefined });
   const res = await worker.fetch(req({ text: "6 * 7" }), env);
   const data = await res.json();
   assert.equal(res.status, 200);
