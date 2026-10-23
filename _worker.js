@@ -1,8 +1,8 @@
 /* Cloudflare Pages Advanced Mode.
  * Preserve the existing landing routes and ASSETS fallback.
- * HUD routes are served by this Pages Worker so they do not depend on a
- * separately deployed Worker route. Apex remains owned by Pages assets.
- * Unity seal verification added: read-only, no-store, fail-closed.
+ * Protected HUD routes intentionally fail closed here until a receiver-session-
+ * gated origin route is independently verified in staging. Apex remains owned
+ * by Pages assets. Unity seal verification is read-only, no-store, fail-closed.
  */
 const MAP = {
   "/look": "/look.html",
