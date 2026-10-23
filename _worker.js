@@ -4,6 +4,25 @@
  * separately deployed Worker route. Apex remains owned by Pages assets.
  * Unity seal verification added: read-only, no-store, fail-closed.
  */
+
+async function fetchRetry(url, opts, tries = 3) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try {
+      const res = await fetch(url, opts);
+      if (res.ok || res.status < 500) return res;
+      last = res;
+    } catch (err) {
+      last = err;
+    }
+    if (i < tries - 1) {
+      await new Promise((r) => setTimeout(r, 200 * Math.pow(2, i)));
+    }
+  }
+  if (last instanceof Response) return last;
+  throw last;
+}
+
 const MAP = {
   "/look": "/look.html",
   "/look/": "/look.html",
@@ -134,7 +153,7 @@ export default {
 
       let upstream;
       try {
-        upstream = await fetch(hud[0], {
+        upstream = await fetchRetry(hud[0], {
           method: request.method,
           headers: { accept: request.headers.get("accept") || "*/*" }
         });
