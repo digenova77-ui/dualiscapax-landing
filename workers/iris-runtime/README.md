@@ -16,7 +16,7 @@ Before a staging route can be considered available, an authorized staging operat
 
 - `IDENTITY_API`: server-side session verification at `POST /v1/session/verify`, returning `verified: true` and the authoritative `unity_id`.
 - `TRINITY_LAW`: request-bound authorization at `POST /v1/authorize`. A valid allow response must echo the exact `request_id`, `action`, `input_sha256`, and `principal.unity_id`, alongside `decision: "allow"` and `authorized: true`. A generic allow is insufficient.
-- `IRIS_MEMORY`: atomic idempotency claim at `POST /v1/requests/claim`, scoped context at `POST /v1/memory/context`, and append/receipt at `POST /v1/memory/append`.
+- `IRIS_MEMORY`: atomic idempotency claim at `POST /v1/requests/claim`, scoped context at `POST /v1/memory/context`, and append/receipt at `POST /v1/memory/append`. The append response must bind the same `unity_id` and `request_id`, set `persisted: true`, and return a non-empty `receipt_id` plus a 64-character lowercase SHA-256 `receipt_sha256`.
 - `MODEL_PROVIDER`: bounded inference at `POST /v1/infer`.
 
 These are adapter contracts, not assertions that the services currently implement them. Do not create duplicate production services to satisfy a placeholder contract; inventory the existing source of truth first.
@@ -29,8 +29,8 @@ Set `IRIS_ALLOWED_ORIGINS` to exact, authorized staging origins only. Do not use
 2. Verify the session with the identity service; never trust browser-supplied identity or authorization tickets.
 3. Ask Trinity to authorize the exact principal, action, request ID, and input hash; validate every binding in the response.
 4. Atomically claim the request ID before context reads or provider work. The adapter must scope idempotency by principal and request ID and atomically prevent concurrent duplicate claims.
-5. Read private memory only for the probabilistic lane, scoped to the verified Unity ID.
-6. Execute deterministic arithmetic locally or invoke the provider for probabilistic inference.
+5. Read private memory only for the probabilistic lane, scoped to the verified Unity ID, with at most 12 context items and a 32 KiB serialized-context cap.
+6. Execute deterministic arithmetic locally or invoke the provider for probabilistic inference. Provider output is bounded to 12,000 characters.
 7. Persist the result and require a matching durable receipt.
 
 A denied or mismatched Trinity decision must not read memory, call a provider, claim a request, or write a conversation. A duplicate/ambiguous claim must not call a provider. Neither a unit test nor a configured binding proves the real service obeys these contracts; staging end-to-end tests must verify them.
