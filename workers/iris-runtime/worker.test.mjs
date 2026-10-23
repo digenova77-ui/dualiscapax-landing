@@ -25,12 +25,8 @@ function fixture(overrides = {}) {
       return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-1" };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({
-      decision: "allow",
-      authorized: true,
-      request_id: body.request_id,
-      action: body.action,
-      input_sha256: body.input_sha256,
-      principal: body.principal,
+      decision: "allow", authorized: true, request_id: body.request_id,
+      action: body.action, input_sha256: body.input_sha256, principal: body.principal,
     })),
     MODEL_PROVIDER: binding("provider", async () => ({ output: "Iris response", provider: "test-provider", confidence: 0.8 })),
     ...overrides,
@@ -39,8 +35,21 @@ function fixture(overrides = {}) {
 }
 const req = (body = { text: "Hello Iris" }, extra = {}) => new Request("https://iris-runtime.test/v1/turn", {
   method: "POST",
-  headers: { origin: "https://dualiscapax.ai", "content-type": "application/json", ...extra },
+  headers: { origin: "https://dualiscapax.ai", "content-type": "application/json", "x-request-id": "request-test-12345678", ...extra },
   body: JSON.stringify(body),
+});
+
+test("missing client request ID is rejected before service calls", async () => {
+  const { env, calls } = fixture();
+  const request = new Request("https://iris-runtime.test/v1/turn", {
+    method: "POST",
+    headers: { origin: "https://dualiscapax.ai", "content-type": "application/json" },
+    body: JSON.stringify({ text: "Hello Iris" }),
+  });
+  const res = await worker.fetch(request, env);
+  assert.equal(res.status, 400);
+  assert.equal((await res.json()).reason, "valid-client-request-id-required");
+  assert.equal(calls.length, 0);
 });
 
 test("happy path verifies identity, exact Trinity binding, claim ordering, and scoped persistence", async () => {
@@ -88,7 +97,7 @@ test("missing provider fails closed and does not claim success", async () => {
 
 test("wrong origin and invalid inputs are rejected before services are called", async () => {
   const { env, calls } = fixture();
-  const badOrigin = new Request("https://iris-runtime.test/v1/turn", { method: "POST", headers: { origin: "https://evil.invalid", "content-type": "application/json" }, body: JSON.stringify({ text: "hello there" }) });
+  const badOrigin = new Request("https://iris-runtime.test/v1/turn", { method: "POST", headers: { origin: "https://evil.invalid", "content-type": "application/json", "x-request-id": "request-bad-origin-123" }, body: JSON.stringify({ text: "hello there" }) });
   assert.equal((await worker.fetch(badOrigin, env)).status, 403);
   assert.equal((await worker.fetch(req({ text: "" }), env)).status, 400);
   assert.equal(calls.length, 0);
