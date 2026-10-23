@@ -192,3 +192,82 @@ test("deterministic arithmetic tells Trinity it does not request private memory"
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/context")), false);
   assert.equal(calls.some(c => c.name === "provider"), false);
 });
+
+
+test("malformed JSON and oversized body fail before identity access", async () => {
+  const { env, calls } = fixture();
+  const malformed = new Request("https://iris-runtime.test/v1/turn", {
+    method: "POST", headers: { origin: "https://dualiscapax.ai", "content-type": "application/json", "x-request-id": "request-malformed-123" }, body: "{bad",
+  });
+  assert.equal((await worker.fetch(malformed, env)).status, 400);
+  const huge = new Request("https://iris-runtime.test/v1/turn", {
+    method: "POST", headers: { origin: "https://dualiscapax.ai", "content-type": "application/json", "x-request-id": "request-huge-12345678" }, body: JSON.stringify({ text: "x".repeat(17000) }),
+  });
+  assert.equal((await worker.fetch(huge, env)).status, 413);
+  assert.equal(calls.length, 0);
+});
+
+test("Trinity service outage fails closed before claim, memory, or provider", async () => {
+  const { env, calls } = fixture({ TRINITY_LAW: { async fetch() { calls.push({ name: "trinity" }); throw new Error("upstream failure"); } } });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).stage, "trinity");
+  assert.deepEqual(calls.map(c => c.name), ["identity", "trinity"]);
+});
+
+test("memory context response for another Unity ID fails before provider", async () => {
+  const { env, calls } = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json();
+        const route = new URL(request.url).pathname;
+        calls.push({ name: "memory", path: route, body });
+        if (route.endsWith("/claim")) return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: true });
+        if (route.endsWith("/context")) return jsonResponse({ unity_id: "unity_someone_else", items: [{ text: "private" }] });
+        return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id });
+      },
+    },
+  });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).stage, "memory-read");
+  assert.equal(calls.some(c => c.name === "provider"), false);
+  assert.equal(calls.some(c => c.path?.endsWith("/append")), false);
+});
+
+test("invalid provider output is never persisted", async () => {
+  const { env, calls } = fixture({ MODEL_PROVIDER: { async fetch(request) { calls.push({ name: "provider" }); return jsonResponse({ output: "   " }); } } });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).stage, "inference");
+  assert.equal(calls.some(c => c.name === "memory" && c.path?.endsWith("/append")), false);
+});
+
+test("persistence response must bind Unity ID and request ID", async () => {
+  const { env, calls } = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json();
+        const route = new URL(request.url).pathname;
+        calls.push({ name: "memory", path: route, body });
+        if (route.endsWith("/claim")) return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: true });
+        if (route.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
+        return jsonResponse({ unity_id: "unity_other_999", persisted: true, request_id: "request-other-123" });
+      },
+    },
+  });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).reason, "persistence-unconfirmed");
+  assert.equal(res.headers.get("cache-control"), "no-store, max-age=0");
+});
+
+test("unsupported method is rejected without calling any binding", async () => {
+  const { env, calls } = fixture();
+  const res = await worker.fetch(new Request("https://iris-runtime.test/v1/turn", {
+    method: "GET", headers: { origin: "https://dualiscapax.ai" },
+  }), env);
+  assert.equal(res.status, 405);
+  assert.equal(res.headers.get("allow"), "POST");
+  assert.equal(calls.length, 0);
+});
