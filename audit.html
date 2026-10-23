@@ -67,7 +67,7 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
     <div id="list"></div>
   </div>
 
-  <p class="note">Local Web Crypto SHA-256 when available. Optional server measure via ?api=. Seats closed. Not securities. Not medical advice. Ontario / Canada first.</p>
+  <p class="note">Local Web Crypto SHA-256 only; receipts are unsigned and stored in this browser, not remote or tamper-proof. Audit summaries are retained locally. Do not enter secrets or sensitive personal/medical data. Server measure uses trusted deployment configuration only.</p>
 </div>
 
 <script src="/js/session-stamp.js"></script>
@@ -97,25 +97,36 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
 
   function renderChain() {
     var chain = DCAudit.chain().slice().reverse();
-    if (!chain.length) {
-      list.innerHTML = '<p class="m" style="color:rgba(245,245,245,.45)">No audits yet. Run one.</p>';
+    var status = DCAudit.status ? DCAudit.status() : { ok: true };
+    list.replaceChildren();
+    if (!status.ok) {
+      var problem = document.createElement('p');
+      problem.className = 'm';
+      problem.textContent = 'Local audit storage is unavailable or unreadable. Existing receipts are not being treated as verified.';
+      list.appendChild(problem);
       return;
     }
-    list.innerHTML = chain
-      .slice(0, 12)
-      .map(function (e) {
-        var line = (e.payload && (e.payload.sentence || e.payload.grant)) || 'receipt';
-        return (
-          '<div class="item"><div class="h">' +
-          e.receipt +
-          '</div><div class="m">' +
-          e.at +
-          ' · ' +
-          String(line).slice(0, 120) +
-          '</div></div>'
-        );
-      })
-      .join('');
+    if (!chain.length) {
+      var empty = document.createElement('p');
+      empty.className = 'm';
+      empty.textContent = 'No audits yet. Run one.';
+      list.appendChild(empty);
+      return;
+    }
+    chain.slice(0, 12).forEach(function (e) {
+      var item = document.createElement('div');
+      item.className = 'item';
+      var hash = document.createElement('div');
+      hash.className = 'h';
+      hash.textContent = String(e.receipt || '');
+      var detail = document.createElement('div');
+      detail.className = 'm';
+      var summary = (e.payload && (e.payload.sentence || e.payload.grant)) || 'receipt';
+      detail.textContent = String(e.at || '') + ' · ' + String(summary).slice(0, 120);
+      item.appendChild(hash);
+      item.appendChild(detail);
+      list.appendChild(item);
+    });
   }
 
   document.querySelectorAll('.chip').forEach(function (c) {
@@ -167,11 +178,6 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
     var measure;
     try {
       var base = (window.DC_API_BASE || '').replace(/\/$/, '');
-      try {
-        var q = new URLSearchParams(location.search).get('api');
-        if (q) base = q.replace(/\/$/, '');
-      } catch (e) {}
-
       if (base && window.dcApi && typeof window.dcApi.sandboxExecute === 'function') {
         var data = await window.dcApi.sandboxExecute({ text: text, voice: 'cfo', case_id: 'audit-web' });
         measure = {
@@ -192,26 +198,37 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
       measure.note = 'api_fail_local: ' + (err.message || err);
     }
 
-    var entry = await DCAudit.commit({
-      text: text.slice(0, 500),
-      grant: measure.grant,
-      sentence: measure.sentence,
-      commitment: measure.commitment || null,
-      residual_value: measure.residual_value,
-      residual_unit: measure.residual_unit,
-      invertibility: measure.invertibility,
-      domain: measure.domain,
-      source: measure.source,
-    });
+    var entry;
+    try {
+      var inputHash = await DCAudit.hash(text);
+      entry = await DCAudit.commit({
+        input_sha256: inputHash,
+        input_length: text.length,
+        grant: measure.grant,
+        sentence: measure.sentence,
+        commitment: measure.commitment || null,
+        residual_value: measure.residual_value,
+        residual_unit: measure.residual_unit,
+        invertibility: measure.invertibility,
+        domain: measure.domain,
+        source: measure.source,
+      });
+    } catch (receiptError) {
+      out.textContent = 'Receipt not created: cryptography or local storage could not be verified. No receipt was claimed.';
+      run.disabled = false;
+      return;
+    }
 
-    out.innerHTML =
-      measure.sentence +
-      '<div class="rcpt">receipt ' +
-      entry.receipt +
+    out.replaceChildren();
+    var resultText = document.createElement('p');
+    resultText.textContent = String(measure.sentence || '');
+    var receiptBox = document.createElement('div');
+    receiptBox.className = 'rcpt';
+    receiptBox.textContent = 'receipt ' + entry.receipt +
       (entry.parent ? '\nparent  ' + entry.parent : '') +
-      '\nalgo    ' +
-      entry.algo +
-      '</div>';
+      '\nalgo    ' + entry.algo;
+    out.appendChild(resultText);
+    out.appendChild(receiptBox);
 
     refreshHud();
     renderChain();
@@ -219,11 +236,13 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
   });
 
   document.getElementById('verify').addEventListener('click', async function () {
-    var v = await DCAudit.verifyTip();
+    var v = await DCAudit.verifyChain();
     out.className = 'out show';
     out.textContent = v.ok
-      ? 'Tip verifies. receipt matches recomputed hash (' + (v.algo || 'SHA-256') + ').'
-      : 'Verify fail: ' + (v.reason || 'mismatch');
+      ? (v.complete
+        ? 'Stored receipt chain verifies (' + v.count + ' entries, ' + (v.algo || 'SHA-256') + ').'
+        : 'Stored segment verifies (' + v.count + ' entries), but earlier history is truncated by the local retention limit.')
+      : 'Verify fail: ' + (v.reason || 'mismatch') + (v.index != null ? ' at entry ' + v.index : '');
   });
 
   refreshHud();
