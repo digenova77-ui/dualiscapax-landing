@@ -1,0 +1,50 @@
+name: Iris Runtime Adapter CI
+
+on:
+  push:
+    branches: [feat/iris-single-governed-runtime-20261023]
+    paths:
+      - "workers/iris-runtime/**"
+      - "_worker.js"
+      - "tests/pages-hud-fail-closed.test.mjs"
+      - ".github/workflows/iris-runtime-adapter-ci.yml"
+      - "tests/test_api_base_trust.mjs"
+      - "tests/test_audit_crypto.mjs"
+      - "js/audit-crypto.js"
+      - "audit.html"
+      - "js/medical-gate.js"
+      - "research/healthcare/**"
+      - "tests/test_medical_gate.mjs"
+  pull_request:
+    paths:
+      - "workers/iris-runtime/**"
+      - "_worker.js"
+      - "tests/pages-hud-fail-closed.test.mjs"
+      - ".github/workflows/iris-runtime-adapter-ci.yml"
+      - "tests/test_api_base_trust.mjs"
+      - "tests/test_audit_crypto.mjs"
+      - "js/audit-crypto.js"
+      - "audit.html"
+      - "js/medical-gate.js"
+      - "research/healthcare/**"
+      - "tests/test_medical_gate.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: iris-runtime-adapter-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run governed runtime, compute, trust, audit-chain, and medical-gate tests
+        run: node --test workers/iris-runtime/worker.test.mjs workers/iris-runtime/compute-arbitrator.test.mjs tests/test_api_base_trust.mjs tests/test_audit_crypto.mjs tests/test_medical_gate.mjs tests/pages-hud-fail-closed.test.mjs

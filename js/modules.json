@@ -1,0 +1,11 @@
+{
+  "schema": "dualis-ice-module-inventory-v1",
+  "status": "static-inventory-only",
+  "modules": [
+    {"path": "/js/ice-portal.js", "role": "demo navigation and status messaging", "live_integration": false},
+    {"path": "/js/ice-skills.js", "role": "static practice guidance", "live_integration": false},
+    {"path": "/js/ice-gameday.js", "role": "game-day availability status", "live_integration": false},
+    {"path": "/js/ice-seat-teamsnap-only.js", "role": "fail-closed seat and unlock controls", "live_integration": false}
+  ],
+  "note": "This manifest is not proof of authentication, TeamSnap connectivity, live schedules, or seat persistence."
+}

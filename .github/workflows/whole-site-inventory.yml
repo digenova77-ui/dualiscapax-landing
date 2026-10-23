@@ -1,0 +1,87 @@
+name: Whole-Site and Iris Inventory
+
+on:
+  push:
+    branches: [feat/iris-single-governed-runtime-20261023]
+    paths:
+      - "scripts/whole-site-audit.mjs"
+      - ".github/workflows/whole-site-inventory.yml"
+      - "**/*.html"
+      - "js/**"
+      - "ai/**"
+      - "server/**"
+      - "workers/**"
+      - "**/*.css"
+      - "**/*.svg"
+      - "**/*.json"
+      - "_redirects"
+      - "tests/**"
+      - "scripts/pin-pinata.mjs"
+  pull_request:
+    paths:
+      - "scripts/whole-site-audit.mjs"
+      - ".github/workflows/whole-site-inventory.yml"
+      - "**/*.html"
+      - "js/**"
+      - "ai/**"
+      - "server/**"
+      - "workers/**"
+      - "**/*.css"
+      - "**/*.svg"
+      - "**/*.json"
+      - "_redirects"
+      - "tests/**"
+      - "scripts/pin-pinata.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: whole-site-inventory-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Scan landing and Iris repository
+        run: node scripts/whole-site-audit.mjs
+      - name: Scan public spatial HUD repository
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/digenova77-ui/dualiscapax-hud.git /tmp/dualiscapax-hud
+          cd /tmp/dualiscapax-hud
+          node "$GITHUB_WORKSPACE/scripts/whole-site-audit.mjs"
+          cp -R audit-output "$GITHUB_WORKSPACE/audit-output-hud"
+      - name: Publish inventories
+        uses: actions/upload-artifact@v4
+        with:
+          name: whole-site-iris-inventory
+          path: |
+            audit-output/
+            audit-output-hud/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Summarize counts and first broken-reference leads
+        shell: bash
+        run: |
+          {
+            echo "## Whole-site / Iris static inventory"
+            echo
+            echo "Landing + Iris source counts:"
+            node -e 'const x=require("./audit-output/whole-site-inventory.json"); for (const [k,v] of Object.entries(x.counts)) console.log("- "+k+": "+v)'
+            echo
+            echo "Public HUD source counts:"
+            node -e 'const x=require("./audit-output-hud/whole-site-inventory.json"); for (const [k,v] of Object.entries(x.counts)) console.log("- "+k+": "+v)'
+            echo
+            echo "First 40 possible broken local references (some may be dynamic-route false positives):"
+            node -e 'const x=require("./audit-output/whole-site-inventory.json"); for (const f of x.findings.filter(y=>y.type==="possibly-broken-local-reference").slice(0,40)) console.log("- "+f.file+":"+f.line+" -> "+f.value)'
+            echo
+            echo "Key / energy / pricing / deterministic-probabilistic hits are included in the JSON and Markdown artifacts. Static matches are not implementation proof."
+          } >> "$GITHUB_STEP_SUMMARY"

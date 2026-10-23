@@ -11,8 +11,8 @@
   g.DC_API_PATH = world === 1 ? '/v2/chat' : '/v1/chat';
   g.DC_API_BASE = g.DC_API_BASE || 'https://dualiscapax-depth.digenova77.workers.dev';
   try {
-    var q = new URLSearchParams(location.search).get('api');
-    if (q) g.DC_API_BASE = q.replace(/\/$/, '');
+    // Never accept an API origin from the URL: this client may send session and
+    // capability headers. API base is deployment configuration, not user input.
     var wq = new URLSearchParams(location.search).get('world');
     if (wq === '1' || /^one$/i.test(wq)) {
       g.DC_WORLD = 1; g.DC_WORLD_NAME = 'ONE'; g.DC_API_VERSION = '2'; g.DC_API_PATH = '/v2/chat';

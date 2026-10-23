@@ -1,0 +1,30 @@
+name: Pinata Test Fixture Publication
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_test_fixture:
+        description: "Upload one fixed harmless JSON fixture to Pinata (not the website)"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  test-publication:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm dry-run behavior
+        run: node scripts/pinata-test-publish.mjs
+      - name: Publish and retrieve only the test fixture
+        if: ${{ inputs.publish_test_fixture }}
+        env:
+          PINATA_JWT: ${{ secrets.PINATAJWT }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/pinata-test-publish.mjs --publish-test-fixture

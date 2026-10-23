@@ -1,0 +1,39 @@
+name: Publication Proof Tests
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/publication-*.mjs'
+      - 'scripts/mock-publication-adapter.mjs'
+      - 'scripts/pinata-test-publish.mjs'
+      - 'scripts/pin-pinata.mjs'
+      - 'tests/publication-*.test.mjs'
+      - 'tests/pinata-test-publish.test.mjs'
+      - 'tests/pin-pinata.test.mjs'
+      - '.github/workflows/publication-proof.yml'
+  push:
+    branches:
+      - feat/iris-single-governed-runtime-20261023
+    paths:
+      - 'scripts/publication-*.mjs'
+      - 'scripts/mock-publication-adapter.mjs'
+      - 'scripts/pinata-test-publish.mjs'
+      - 'scripts/pin-pinata.mjs'
+      - 'tests/publication-*.test.mjs'
+      - 'tests/pinata-test-publish.test.mjs'
+      - 'tests/pin-pinata.test.mjs'
+      - '.github/workflows/publication-proof.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  publication-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run publication integrity and failure-path tests
+        run: node --test tests/publication-proof.test.mjs tests/publication-pipeline.test.mjs tests/pinata-test-publish.test.mjs tests/publication-signature.test.mjs tests/pin-pinata.test.mjs
