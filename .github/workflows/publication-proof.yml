@@ -32,4 +32,4 @@ jobs:
         with:
           node-version: '22'
       - name: Run publication integrity and failure-path tests
-        run: node --test tests/publication-proof.test.mjs tests/publication-pipeline.test.mjs tests/pinata-test-publish.test.mjs
+        run: node --test tests/publication-proof.test.mjs tests/publication-pipeline.test.mjs tests/pinata-test-publish.test.mjs tests/publication-signature.test.mjs
