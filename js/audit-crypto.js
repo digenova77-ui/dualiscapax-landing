@@ -4,7 +4,8 @@
  * Version 2 binds recursively canonicalized JSON. Legacy v1 receipts are retained but not trusted.
  */
 (function (g) {
-  var KEY = "dc_audit_chain_v1";
+  var KEY = "dc_audit_chain_v2";
+  var LEGACY_KEY = "dc_audit_chain_v1";
   var MAX_ENTRIES = 200;
   var storageError = null;
 
@@ -71,6 +72,17 @@
     } catch (e) {
       storageError = "audit-storage-unreadable";
       return [];
+    }
+  }
+
+  function legacyCount() {
+    try {
+      var raw = localStorage.getItem(LEGACY_KEY);
+      if (!raw) return 0;
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.length : -1;
+    } catch (e) {
+      return -1;
     }
   }
 
@@ -143,7 +155,8 @@
     version: 2,
     canonicalJson: canonicalJson,
     hash: async function (value) { return sha256(String(value)); },
-    status: function () { load(); return { ok: !storageError, reason: storageError }; },
+    status: function () { load(); var legacy = legacyCount(); return { ok: !storageError, reason: storageError, legacyCount: legacy, legacyUnverified: legacy !== 0 }; },
+    legacyCount: legacyCount,
     chain: load,
 
     tip: function () {
