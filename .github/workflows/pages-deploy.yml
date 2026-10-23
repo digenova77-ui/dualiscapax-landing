@@ -16,6 +16,9 @@ jobs:
       - name: Check edge routes
         run: python3 scripts/check_edge_routes.py
 
+      - name: Live match unit tests
+        run: python3 scripts/test_omni_match.py -q
+
       - name: Package
         run: |
           python3 scripts/pack_hierarchical_flat_zip.py --lander --check
@@ -33,5 +36,8 @@ jobs:
             --project-name=dualiscapax-web \
             --commit-dirty=true
 
-      - name: Verify
+      - name: Verify routes
         run: ./scripts/verify_live_routes.sh https://dualiscapax.ai
+
+      - name: Live omni match
+        run: ./scripts/verify_omni_match.sh https://dualiscapax.ai
