@@ -6,6 +6,10 @@ from pathlib import Path
 import sys
 
 REQUIRED = [
+    "/standing-probe/status",
+    "/purity/status",
+    "/frontier/status",
+    "/omni/status",
     "/omni",
     "/frontier",
     "/purity",

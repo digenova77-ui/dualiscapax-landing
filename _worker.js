@@ -163,14 +163,26 @@ export default {
     }
 
     // Pure diamond / frontier / Omni edge routes (no-store, fail-closed).
+    if (path === "/omni/status") {
+      return jsonNoStore({ route: "/omni", live: true, ok: true, ts: new Date().toISOString() });
+    }
     if (path === "/omni" || path === "/omni/") {
       return jsonNoStore(omniSnapshot());
+    }
+    if (path === "/frontier/status") {
+      return jsonNoStore({ route: "/frontier", live: true, ok: true, ts: new Date().toISOString() });
     }
     if (path === "/frontier" || path === "/frontier/") {
       return jsonNoStore(frontierReport());
     }
+    if (path === "/purity/status") {
+      return jsonNoStore({ route: "/purity", live: true, ok: true, ts: new Date().toISOString() });
+    }
     if (path === "/purity" || path === "/purity/") {
       return textNoStore(purityText());
+    }
+    if (path === "/standing-probe/status") {
+      return jsonNoStore({ route: "/standing-probe", live: true, ok: true, ts: new Date().toISOString() });
     }
     if (path === "/standing-probe" || path === "/standing-probe/") {
       return jsonNoStore(standingProbe());
