@@ -29,3 +29,22 @@ Run with Node.js 22:
 `node --test tests/publication-proof.test.mjs tests/publication-pipeline.test.mjs`
 
 All tests must pass before integrating a real adapter. Passing these tests establishes behavior of the local logic and its mock contract only.
+
+## Public-tree publisher
+
+`scripts/pin-pinata.mjs` is the implementation used by the existing manual Pinata workflow. With no arguments it performs a dry run and makes no network calls. The workflow's explicit `--pin` path publishes an allowlisted public-static tree as a wrapped directory, rejects source-only directories and likely credential/private-key material, and retrieves every listed path through the returned gateway CID for byte comparison.
+
+- `node scripts/pin-pinata.mjs` — dry-run manifest only.
+- `node scripts/pin-pinata.mjs --full` — dry-run expanded static/documentation allowlist only.
+- `PINATA_JWT=... node scripts/pin-pinata.mjs --pin` — external publication; run only when explicitly authorized.
+- `PINATA_JWT=... node scripts/pin-pinata.mjs --pin --full` — expanded external publication; run only when explicitly authorized.
+
+The directory CID's UnixFS multihash is **not independently recomputed** by this script. Gateway byte checks establish that each listed path was retrievable and matched the selected local bytes at the time of the check; they do not prove second-provider availability, IPNS publication, or durable pinning. Do not call this an end-to-end decentralized proof until those independent checks exist.
+
+## Tests
+
+Run with Node.js 22:
+
+`node --test tests/publication-proof.test.mjs tests/publication-pipeline.test.mjs tests/pinata-test-publish.test.mjs tests/publication-signature.test.mjs tests/pin-pinata.test.mjs`
+
+All tests are offline mocks. No test publishes website content or uses a live credential.
