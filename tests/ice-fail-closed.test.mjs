@@ -99,3 +99,28 @@ test("all local script, stylesheet, manifest, and SVG references resolve in Ice 
   }
   assert.deepEqual(missing, []);
 });
+
+
+test("site-wide and Ice-demo manifests have separate identities and scopes", () => {
+  const siteManifest = JSON.parse(read("manifest.json"));
+  const iceManifest = JSON.parse(read("ice-manifest.json"));
+  assert.equal(siteManifest.name, "DualisCapax");
+  assert.equal(siteManifest.start_url, "/");
+  assert.equal(siteManifest.icons[0].src, "/brand/liquid-orb.svg");
+  assert.equal(iceManifest.name, "DualisCapax Ice Demo");
+  assert.equal(iceManifest.start_url, "/ice.html");
+  for (const page of ["ice.html", "rink.html", "sheet.html", "rte/ice/index.html"]) {
+    assert.match(read(page), /ice-manifest\.json/);
+    assert.doesNotMatch(read(page), /href=["']\/?manifest\.json["']/);
+  }
+});
+
+test("Look remains a full page and receipt stays on its separate route", () => {
+  const look = read("look.html");
+  const redirects = read("_redirects");
+  assert.match(look, /See the hall/);
+  assert.match(look, /aria-label="Main navigation"/);
+  assert.doesNotMatch(look, /http-equiv="refresh"/i);
+  assert.match(redirects, /\/look\s+\/look\.html\s+200/);
+  assert.match(redirects, /\/receipt\s+\/look-page\.html\s+200/);
+});
