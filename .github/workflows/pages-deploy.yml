@@ -32,9 +32,13 @@ jobs:
             echo "CLOUDFLARE_API_TOKEN secret is empty. Seat it in Actions secrets."
             exit 1
           fi
+          # Pages rejects [previews] in wrangler.toml (Workers Builds only).
+          # Deploy from a config without that block. Token is seated.
+          grep -v '^\[previews\]' wrangler.toml > /tmp/pages.toml
           npx --yes wrangler pages deploy . \
             --project-name=dualiscapax-web \
-            --commit-dirty=true
+            --commit-dirty=true \
+            --config /tmp/pages.toml
 
       - name: Verify routes
         run: ./scripts/verify_live_routes.sh https://dualiscapax.ai
