@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Receipt finger test — DualisCapax</title>
+<style>
+  body{font-family:ui-monospace,monospace;background:#0b1020;color:#e8eefc;margin:0;padding:1.25rem}
+  h1{font-size:1.1rem;letter-spacing:.04em}
+  button{background:#1c2744;color:#e8eefc;border:1px solid #3a4a72;border-radius:8px;padding:.5rem .8rem;margin:.25rem .25rem .25rem 0}
+  pre{background:#070b16;border:1px solid #243056;border-radius:8px;padding:.8rem;overflow:auto}
+  .ok{color:#7dffa1}.bad{color:#ff8b8b}
+</style>
+</head>
+<body>
+<h1>Receipt finger test</h1>
+<p>Computes the 16-bit finger from the previous id and posts to <code>/receipts/verify</code>.</p>
+<button id="good">Run good chain</button>
+<button id="bad">Run bad finger</button>
+<pre id="out">waiting</pre>
+<script>
+function finger16(prev){
+  const s=String(prev&&prev.id||"");
+  let h=0x811c9dc5;
+  for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,0x01000193); }
+  return h&0xffff;
+}
+function chain(bad){
+  const a={id:"rcpt:1",finger:0};
+  const f=finger16(a);
+  const b={id:"rcpt:2",prev:"rcpt:1",finger:bad?f^1:f};
+  return [a,b];
+}
+async function run(bad){
+  const receipts=chain(bad);
+  const out=document.getElementById("out");
+  out.textContent="posting…";
+  const res=await fetch("/receipts/verify",{
+    method:"POST",
+    headers:{"content-type":"application/json"},
+    body:JSON.stringify({receipts})
+  });
+  const body=await res.json();
+  const ok=body.ok===true;
+  out.className=ok?"ok":"bad";
+  out.textContent=JSON.stringify({sent:receipts,status:res.status,body},null,2);
+}
+document.getElementById("good").onclick=()=>run(false);
+document.getElementById("bad").onclick=()=>run(true);
+</script>
+</body>
+</html>
