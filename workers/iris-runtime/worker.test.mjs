@@ -240,6 +240,48 @@ test("same request ID and same input replay the original committed result withou
   assert.equal(calls.filter(c => c.path.endsWith("/append")).length, 1);
 });
 
+test("concurrent duplicate requests cannot both reserve or execute", async () => {
+  const calls = [];
+  const records = new Map();
+  const env = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json().catch(() => ({}));
+        const path = new URL(request.url).pathname;
+        calls.push({ path, body });
+        if (path.endsWith("/claim")) {
+          const key = body.unity_id + ":" + body.request_id;
+          const prior = records.get(key);
+          if (prior) {
+            const state = prior.input_sha256 !== body.input_sha256 ? "CONFLICT" : "IN_DOUBT";
+            return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state, claimed: false });
+          }
+          records.set(key, { state: "RESERVED", input_sha256: body.input_sha256 });
+          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+        }
+        if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
+        return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-race", receipt_sha256: "c".repeat(64) });
+      },
+    },
+    MODEL_PROVIDER: {
+      async fetch(request) {
+        calls.push({ path: "/provider", body: await request.clone().json() });
+        await new Promise(resolve => setTimeout(resolve, 20));
+        return jsonResponse({ output: "One winner", provider: "test-provider" });
+      },
+    },
+  }).env;
+  const requestId = "request-concurrent-12345";
+  const [a, b] = await Promise.all([
+    worker.fetch(req({ text: "same operation" }, { "x-request-id": requestId }), env),
+    worker.fetch(req({ text: "same operation" }, { "x-request-id": requestId }), env),
+  ]);
+  const statuses = [a.status, b.status].sort((x, y) => x - y);
+  assert.deepEqual(statuses, [200, 503]);
+  assert.equal(calls.filter(c => c.path === "/provider").length, 1);
+  assert.equal(calls.filter(c => c.path.endsWith("/append")).length, 1);
+});
+
 test("duplicate request ID fails closed before memory context or provider inference", async () => {
   const { env, calls } = fixture({
     IRIS_MEMORY: {
