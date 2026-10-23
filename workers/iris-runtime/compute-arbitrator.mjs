@@ -80,8 +80,12 @@ export function priceCompute({ joules, cadPerJoule, providerCad = 0, serviceCad 
   if (!finiteNonnegative(joules) || !finiteNonnegative(providerCad) || !finiteNonnegative(serviceCad)) {
     return { status: "INVALID_INPUT", totalCad: null };
   }
-  if (!finiteNonnegative(cadPerJoule) || !indexId || !indexTimestamp) {
+  if (!finiteNonnegative(cadPerJoule) || typeof indexId !== "string" || !indexId.trim() ||
+      typeof indexTimestamp !== "string" || !Number.isFinite(Date.parse(indexTimestamp))) {
     return { status: measurement === "estimated" ? "ESTIMATED_UNPRICED" : "UNPRICED", totalCad: null };
+  }
+  if (measurement !== "measured" && measurement !== "estimated") {
+    return { status: "INVALID_MEASUREMENT_CLASS", totalCad: null };
   }
   // Normalize binary floating-point noise while retaining sub-cent precision.
   const money = (value) => Math.round((value + Number.EPSILON) * 1e10) / 1e10;
@@ -89,7 +93,9 @@ export function priceCompute({ joules, cadPerJoule, providerCad = 0, serviceCad 
   const totalCad = money(energyCad + providerCad + serviceCad);
   if (!Number.isFinite(totalCad)) return { status: "INVALID_INPUT", totalCad: null };
   return {
-    status: measurement === "measured" ? "PRICED_METERED" : "PRICED_ESTIMATED",
+    // The helper has no authority to verify a meter or settle a charge.
+    // A caller-supplied "measured" label is not evidence of calibrated metering.
+    status: measurement === "measured" ? "PRICED_UNVERIFIED" : "PRICED_ESTIMATED",
     joules,
     measurement,
     indexId,
