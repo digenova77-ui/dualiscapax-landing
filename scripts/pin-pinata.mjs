@@ -7,6 +7,7 @@ const API_URL = 'https://api.pinata.cloud/pinning/pinFileToIPFS';
 const GATEWAY_BASE = 'https://gateway.pinata.cloud/ipfs';
 const MAX_FILE_BYTES = 25 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 100 * 1024 * 1024;
+const MAX_FILES = 2000;
 const CID_RE = /^(bafy[a-z2-7]{20,}|Qm[1-9A-HJ-NP-Za-km-z]{44})$/;
 const WEB_EXT = new Set(['.html','.htm','.css','.js','.mjs','.json','.svg','.png','.jpg','.jpeg','.webp','.gif','.ico','.woff','.woff2','.ttf','.otf','.webmanifest','.xml','.wasm','.glb','.gltf','.bin']);
 const FULL_EXTRA_EXT = new Set(['.md','.txt','.pdf','.csv']);
@@ -34,6 +35,7 @@ export function isPublicSitePath(filePath, { full = false } = {}) {
   if (parts.some(part => part.startsWith('.') && part !== '.well-known')) return false;
   if (parts.some(part => DENIED_DIRS.has(part))) return false;
   if (parts[0] === '.well-known' && filePath !== '.well-known/security.txt') return false;
+  if (filePath === '.well-known/security.txt' || filePath === 'robots.txt') return true;
   const name = parts.at(-1);
   if (/^\.env$/i.test(name) || /(?:secret|credentials?|private[-_.]?key|token|backup|\.bak)/i.test(name)) return false;
   const ext = path.posix.extname(name).toLowerCase();
@@ -72,9 +74,13 @@ export async function runPinataDirectoryPublication({ jwt, files, fetchImpl = fe
   if (typeof jwt !== 'string' || !jwt.trim()) return { ok: false, stage: 'preflight', reason: 'missing-pinata-jwt' };
   if (typeof sourceRevision !== 'string' || !/^[a-f0-9]{40,64}$/i.test(sourceRevision)) return { ok: false, stage: 'preflight', reason: 'invalid-source-revision' };
   if (!Array.isArray(files) || files.length === 0) return { ok: false, stage: 'preflight', reason: 'empty-public-manifest' };
+  if (files.length > MAX_FILES) return { ok: false, stage: 'preflight', reason: 'too-many-public-files' };
+  const seenPaths = new Set();
   let totalBytes = 0;
   for (const file of files) {
     if (!file || !isPublicSitePath(file.path, { full: true }) || !(file.bytes instanceof Uint8Array)) return { ok: false, stage: 'preflight', reason: 'invalid-public-file-entry' };
+    if (seenPaths.has(file.path)) return { ok: false, stage: 'preflight', reason: 'duplicate-public-file-path' };
+    seenPaths.add(file.path);
     if (file.bytes.byteLength > MAX_FILE_BYTES || findSecretMaterial(file.bytes)) return { ok: false, stage: 'preflight', reason: 'unsafe-or-oversized-public-file' };
     totalBytes += file.bytes.byteLength;
     if (totalBytes > MAX_TOTAL_BYTES) return { ok: false, stage: 'preflight', reason: 'public-tree-too-large' };
@@ -94,7 +100,7 @@ export async function runPinataDirectoryPublication({ jwt, files, fetchImpl = fe
   form.append('pinataOptions', JSON.stringify({ cidVersion: 1, wrapWithDirectory: true }));
 
   let uploadResponse;
-  try { uploadResponse = await fetchImpl(apiUrl, { method: 'POST', headers: { Authorization: 'Bearer ' + jwt }, body: form }); }
+  try { uploadResponse = await fetchImpl(apiUrl, { method: 'POST', headers: { Authorization: 'Bearer ' + jwt }, body: form, signal: AbortSignal.timeout(30000) }); }
   catch { return { ok: false, stage: 'publish', reason: 'pinata-upload-request-failed' }; }
   if (!uploadResponse?.ok) return { ok: false, stage: 'publish', reason: 'pinata-upload-rejected', httpStatus: uploadResponse?.status ?? null };
   let uploadJson;
@@ -108,7 +114,7 @@ export async function runPinataDirectoryPublication({ jwt, files, fetchImpl = fe
   for (const file of files) {
     const encodedPath = file.path.split('/').map(encodeURIComponent).join('/');
     try {
-      const response = await fetchImpl(gatewayBase + '/' + cid + '/' + encodedPath, { method: 'GET', headers: { Accept: 'application/octet-stream' } });
+      const response = await fetchImpl(gatewayBase + '/' + cid + '/' + encodedPath, { method: 'GET', headers: { Accept: 'application/octet-stream' }, signal: AbortSignal.timeout(15000) });
       if (!response?.ok) {
         failed.push({ path: file.path, reason: 'gateway-retrieval-rejected', httpStatus: response?.status ?? null });
         continue;
