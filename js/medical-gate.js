@@ -41,9 +41,7 @@
     var m = String(raw || "").trim().toUpperCase().replace(/\s+/g, "");
     if (!m) return "";
     if (RANKING[m]) return m;
-    var head = m.split(/[\/:_-]/)[0] + (m.indexOf("-") > -1 ? "-" + m.split(/[-_\/:]/)[1] : "");
-    if (RANKING[head]) return head;
-    if (/^SEAL-?1/.test(m) || /^DC-SEAL-?1/.test(m) || /^SEAL-T1/.test(m)) return m;
+    /* Exact allowlist only. Prefix-shaped strings are not proof of a ranking mark. */
     return "";
   }
 
@@ -100,8 +98,7 @@
     open: function (email, org, mark) {
       var d = decide(email, mark);
       if (!d.ok) return d;
-      d.org = String(org || "").trim();
-      d.email = norm(email);
+      /* Do not persist the full email or organization; only the domain-level UI classification is needed. */
       d.at = Date.now();
       asClientLocalUiMark(d);
       write(d);
