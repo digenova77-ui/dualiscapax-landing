@@ -34,16 +34,19 @@ const req = (body = { text: "Hello Iris" }, extra = {}) => new Request("https://
   body: JSON.stringify(body),
 });
 
-test("happy path verifies identity, asks Trinity before inference, and persists scoped memory", async () => {
+test("happy path verifies identity, authorizes with Trinity before memory/inference, and persists scoped memory", async () => {
   const { env, calls } = fixture();
   const res = await worker.fetch(req(), env);
   const data = await res.json();
   assert.equal(res.status, 200);
   assert.equal(data.available, true);
   assert.equal(data.result, "Iris response");
-  assert.deepEqual(calls.map(c => c.name), ["identity", "memory", "trinity", "provider", "memory"]);
+  assert.deepEqual(calls.map(c => c.name), ["identity", "trinity", "memory", "provider", "memory"]);
+  assert.equal(calls[2].body.unity_id, "unity_user_123");
   assert.equal(calls[3].body.unity_id, "unity_user_123");
   assert.equal(calls[4].body.unity_id, "unity_user_123");
+  assert.equal(calls[1].body.action, "iris.inference");
+  assert.equal(calls[1].body.memory_requested, true);
 });
 
 test("browser-supplied authorization ticket cannot bypass Trinity deny", async () => {
@@ -53,7 +56,7 @@ test("browser-supplied authorization ticket cannot bypass Trinity deny", async (
   const res = await worker.fetch(req({ text: "do something", ticket: { ok: true, authorized: true } }), env);
   assert.equal(res.status, 403);
   assert.equal(calls.some(c => c.name === "provider"), false);
-  assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/append")), false);
+  assert.equal(calls.some(c => c.name === "memory"), false);
 });
 
 test("unverified identity blocks all memory, law, and provider access", async () => {
