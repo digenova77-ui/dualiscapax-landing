@@ -3,16 +3,141 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="canonical" href="/look-page.html">
-  <meta http-equiv="refresh" content="0;url=/look-page.html">
+  <meta name="description" content="Look is free. Explore the DualisCapax hall before choosing a desk. A card is not a contract.">
+  <meta name="theme-color" content="#080b19">
+  <link rel="canonical" href="/look.html">
+  <link rel="stylesheet" href="/theme.css">
   <title>Look — DualisCapax</title>
+  <style>
+    :root{color-scheme:dark;--look-ink:#f4f4f5;--look-muted:#a9b3c4;--look-line:rgba(203,213,225,.16);--look-panel:rgba(15,23,42,.72);--look-warm:#f3e6d0;--look-cyan:#91e6f3}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(ellipse at 50% -15%,rgba(65,88,145,.26),transparent 52%),#080b19;color:var(--look-ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+    a{color:inherit;text-underline-offset:.22em}
+    a:focus-visible{outline:2px solid var(--look-cyan);outline-offset:4px;border-radius:4px}
+    .look-shell{width:min(1120px,calc(100% - 2rem));margin-inline:auto}
+    .look-header{display:flex;align-items:center;gap:1.1rem;justify-content:space-between;padding:1.1rem 0;border-bottom:1px solid var(--look-line)}
+    .look-brand{font:700 .78rem/1.2 ui-monospace,monospace;letter-spacing:.17em;text-decoration:none;text-transform:uppercase}
+    .look-nav{display:flex;flex-wrap:wrap;gap:.85rem;color:var(--look-muted);font-size:.86rem}
+    .look-nav a{text-decoration:none}
+    .look-nav a:hover{color:var(--look-ink)}
+    .look-hero{padding:clamp(2.8rem,7vw,6rem) 0 2.2rem;max-width:820px}
+    .eyebrow{color:var(--look-warm);font:600 .7rem/1.5 ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase}
+    h1{font-size:clamp(2.7rem,8vw,5.8rem);line-height:.98;letter-spacing:-.065em;margin:.8rem 0 1.2rem}
+    .lead{font-size:clamp(1.15rem,2.5vw,1.45rem);max-width:45rem;color:#e4e9f2}
+    .muted{color:var(--look-muted)}
+    .notice{margin:1.5rem 0 2rem;padding:1rem 1.1rem;border:1px solid var(--look-line);border-left:3px solid var(--look-cyan);border-radius:.7rem;background:rgba(15,23,42,.45);color:#d8e0eb}
+    .look-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.8rem;margin:1.4rem 0 3.5rem}
+    .look-card{display:flex;flex-direction:column;gap:.6rem;min-height:180px;padding:1rem;border:1px solid var(--look-line);border-radius:1rem;background:linear-gradient(160deg,var(--look-panel),rgba(15,23,42,.24));text-decoration:none;transition:transform .16s ease,border-color .16s ease}
+    .look-card:hover{transform:translateY(-2px);border-color:rgba(145,230,243,.55)}
+    .look-num{font:600 .65rem/1.3 ui-monospace,monospace;color:var(--look-cyan);letter-spacing:.12em}
+    .look-card strong{font-size:1rem;line-height:1.25}
+    .look-card span:last-child{font-size:.82rem;line-height:1.45;color:var(--look-muted)}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:1rem;margin:2.8rem 0 1rem}
+    .section-head h2{font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.035em;margin:0}
+    .section-head p{margin:0;color:var(--look-muted);font-size:.88rem;max-width:26rem}
+    .link-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-bottom:3rem}
+    .link-card{display:block;padding:1.1rem;border:1px solid var(--look-line);border-radius:.9rem;background:rgba(15,23,42,.48);text-decoration:none}
+    .link-card strong{display:block;margin-bottom:.35rem}
+    .link-card span{display:block;color:var(--look-muted);font-size:.88rem}
+    .look-footer{padding:1.5rem 0 2.5rem;border-top:1px solid var(--look-line);color:var(--look-muted);font-size:.82rem}
+    .footer-nav{display:flex;flex-wrap:wrap;gap:.8rem;margin-bottom:.9rem}
+    @media(max-width:900px){.look-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:620px){.look-header{align-items:flex-start;flex-direction:column}.look-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.link-grid{grid-template-columns:1fr}.look-card{min-height:155px}.section-head{align-items:flex-start;flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){.look-card{transition:none}.look-card:hover{transform:none}}
+  </style>
 </head>
-<body>
-  <main>
-    <h1>Look</h1>
-    <p>This page has moved to the canonical Look page.</p>
-    <p><a href="/look-page.html">Continue to Look</a></p>
+<body id="top">
+  <header class="look-shell look-header">
+    <a class="look-brand" href="/" aria-label="DualisCapax home">DualisCapax</a>
+    <nav class="look-nav" aria-label="Main navigation">
+      <a href="/look.html" aria-current="page">Look</a>
+      <a href="/why.html">Why</a>
+      <a href="#for-you">For you</a>
+      <a href="#field-notes">Field notes</a>
+      <a href="/desk/">Pick a desk</a>
+    </nav>
+  </header>
+
+  <main class="look-shell">
+    <section class="look-hero" aria-labelledby="look-title">
+      <p class="eyebrow">Look is free · a card is not a contract</p>
+      <h1 id="look-title">See the hall.<br>Then pick a desk.</h1>
+      <p class="lead">Nation, province, employer, street. Every card is the same access. Deeper cards are still look. Nothing here asks you to pay just to stand in the room.</p>
+      <p class="muted">The cards go country first, then the room that spends, then the line on that sheet. The last card is this device. The books stay here. A card is not a signed deal.</p>
+      <p class="muted">If you want a first talk, Iris is available. If you want the working notes, the research rooms are open. Neither one is a diagnosis. Neither one is a ministry contract.</p>
+    </section>
+
+    <div class="notice" role="note">Looking is free. A card is not a signed deal. The document titles and demonstration sheets are orientation only; they do not represent a verified contract, medical advice, ministry endorsement, or live settlement.</div>
+
+    <section aria-labelledby="cards-title">
+      <div class="section-head">
+        <h2 id="cards-title">Five cards, one hall</h2>
+        <p>Same playground. Different reasons to enter. No second home and no hidden claim of authority.</p>
+      </div>
+      <div class="look-grid">
+        <a class="look-card" href="/ca.html">
+          <span class="look-num">01 · NATION</span>
+          <strong>Canada</strong>
+          <span>Start with the public map.</span>
+        </a>
+        <a class="look-card" href="/on.html">
+          <span class="look-num">02 · PROVINCE</span>
+          <strong>Ontario</strong>
+          <span>Open the provincial desk. Québec is available too.</span>
+        </a>
+        <a class="look-card" href="/for-people.html">
+          <span class="look-num">03 · EMPLOYER</span>
+          <strong>For the people who pay</strong>
+          <span>How leftover money is supposed to come home.</span>
+        </a>
+        <a class="look-card" href="/research/access.html">
+          <span class="look-num">04 · STREET</span>
+          <strong>Field notes</strong>
+          <span>Methods and leftover rails. Named papers, not a bank.</span>
+        </a>
+        <a class="look-card" href="/sheet.html">
+          <span class="look-num">05 · THIS DEVICE</span>
+          <strong>Demonstration sheet</strong>
+          <span>Invented rows for orientation, not a signed deal.</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="for-you" aria-labelledby="for-you-title">
+      <div class="section-head">
+        <h2 id="for-you-title">For you</h2>
+        <p>Choose a room to understand the system. Nothing here establishes an identity, a seat, or an entitlement.</p>
+      </div>
+      <div class="link-grid">
+        <a class="link-card" href="/story.html"><strong>Why the five cards</strong><span>Same playground. The reasons behind the map.</span></a>
+        <a class="link-card" href="/research/docs.html"><strong>Document catalog</strong><span>Look at titles. Depth remains gated until the real gate is connected.</span></a>
+        <a class="link-card" href="/desk/"><strong>Pick a desk</strong><span>Same hall, a more focused working surface.</span></a>
+        <a class="link-card" href="/for-people.html"><strong>For the people who pay</strong><span>How leftover cost is meant to come home.</span></a>
+        <a class="link-card" href="/sheet.html"><strong>Demonstration sheets</strong><span>Illustrative data only; not a signed deal.</span></a>
+        <a class="link-card" href="/ai/app.html"><strong>Talk to Iris</strong><span>A first talk is free. Current BYOK mode is browser-side, not server-governed.</span></a>
+      </div>
+    </section>
+
+    <section id="field-notes" aria-labelledby="field-title">
+      <div class="section-head">
+        <h2 id="field-title">Field notes</h2>
+        <p>Read the method and the limits before treating any claim as proof.</p>
+      </div>
+      <div class="link-grid">
+        <a class="link-card" href="/research/access.html"><strong>Research access</strong><span>What is available and what has not been verified.</span></a>
+        <a class="link-card" href="/sources.html"><strong>Sources</strong><span>Public source register and medical-content limits.</span></a>
+        <a class="link-card" href="/why.html"><strong>Why DualisCapax</strong><span>The public explanation, not a signed contract.</span></a>
+      </div>
+    </section>
+
+    <p class="notice">Prepaid minutes are optional and sit on a separate page. Looking does not require them. Deeper access stays closed until a real settlement flow and a processor-side check exist.</p>
   </main>
-  <script>location.replace("/look-page.html");</script>
+
+  <footer class="look-shell look-footer">
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <a href="/">Home</a><a href="/why.html">Why</a><a href="/desk/">Pick a desk</a><a href="/research/access.html">Field notes</a><a href="/pay.html">Prepaid minutes</a>
+    </nav>
+    <p>DualisCapax · a card is not a contract · look stays free</p>
+  </footer>
 </body>
 </html>
