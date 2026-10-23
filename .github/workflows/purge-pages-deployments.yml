@@ -1,49 +1,29 @@
 name: purge-pages-deployments
 
-# Deletes Cloudflare Pages deployments for dualiscapax-landing.
-# Does not delete Workers. Does not edit DNS. Does not touch encyclopedia source.
+# RETIRED 2026-10-17 (fix/retire-cf-pages-rail-20261017, see PR #113).
+# Production is self-hosted on the NJ server (Caddy) for dualiscapax.com and dualiscapax.ai.
+# DNS resolves both to 108.61.17.141 directly (not proxied through Cloudflare).
+# Cloudflare Pages project dualiscapax-landing is an orphaned copy and does not serve either domain.
+# This workflow stays in tree so old badges and links do not 404. It does not deploy, upload or purge anything.
+# Previous content: git show 2e74c779:.github/workflows/purge-pages-deployments.yml
 
 on:
   workflow_dispatch:
     inputs:
-      confirm:
-        description: PURGE = previews only. PURGE_ALL = also production (blanks apex).
+      confirm_retirement:
+        description: "Type RETIRED — this workflow does not publish"
         required: true
-        default: HOLD
+        default: "RETIRED"
 
 permissions:
-  contents: write
-  actions: write
-
-concurrency:
-  group: purge-pages-deployments
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  purge:
+  retired:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - name: Guard — never delete workers
+      - name: Refuse Cloudflare Pages rail
         run: |
-          set -euo pipefail
-          test -d workers
-          test -f workers/iris-gateway/wrangler.toml
-          test -f workers/stripe-fulfill/wrangler.toml
-          echo "Workers source present. This job will not wrangler delete a Worker."
-      - name: Purge Pages deployments
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          chmod +x BULLETIN/PURGE_PAGES_DEPLOYMENTS.sh
-          bash BULLETIN/PURGE_PAGES_DEPLOYMENTS.sh "${{ github.event.inputs.confirm }}"
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: purge-pages-receipt
-          path: |
-            BULLETIN/PURGE_RECEIPT.md
-            BULLETIN/PURGE_PAGES_DEPLOYMENTS.sh
-          if-no-files-found: warn
+          echo "Cloudflare Pages deployment purge is retired."
+          echo "Production = NJ Caddy (.com and .ai). See docs/ops/ENVIRONMENT.md."
+          exit 0
