@@ -48,7 +48,7 @@ jobs:
           unzip -q dist/cloudflare/lander-*.zip -d /tmp/pages-out
           # Pages project. No [previews]. No custom --config path.
           npx --yes wrangler pages deploy /tmp/pages-out \
-            --project-name=dualiscapax-web \
+            --project-name=dualiscapax-landing \
             --commit-dirty=true
 
       - name: Verify routes
