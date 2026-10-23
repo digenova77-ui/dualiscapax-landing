@@ -170,8 +170,49 @@ async function handleRequest(request, env) {
       }),
     });
   } catch { return unavailable("idempotency-claim"); }
-  if (claim.unity_id !== unityId || claim.request_id !== requestId || claim.claimed !== true) {
-    return json({ available: false, stage: "idempotency-claim", reason: "request-not-claimed" }, 409);
+  if (
+    claim.unity_id !== unityId ||
+    claim.request_id !== requestId ||
+    claim.input_sha256 !== inputSha256 ||
+    claim.contract !== "dualis.idempotency.v1"
+  ) {
+    return json({ available: false, stage: "idempotency-claim", reason: "claim-binding-mismatch" }, 503);
+  }
+
+  // The store must distinguish a new reservation, a committed replay, a semantic
+  // conflict, and an unresolved prior effect. A boolean-only claim cannot prove
+  // safe retry behavior, so legacy/ambiguous responses fail closed.
+  if (claim.state === "CONFLICT") {
+    return json({ available: false, stage: "idempotency-claim", reason: "operation-content-conflict" }, 409);
+  }
+  if (claim.state === "IN_DOUBT") {
+    return json({ available: false, stage: "idempotency-claim", reason: "prior-operation-in-doubt" }, 503);
+  }
+  if (claim.state === "APPLIED") {
+    const replay = claim.replay;
+    if (
+      !replay || replay.unity_id !== unityId || replay.request_id !== requestId ||
+      replay.authorization !== "trinity-allow" || typeof replay.result !== "string" ||
+      !replay.result.trim() || replay.result.length > MAX_OUTPUT_CHARS ||
+      typeof replay.receipt_id !== "string" || !replay.receipt_id.trim() ||
+      typeof replay.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(replay.receipt_sha256)
+    ) {
+      return json({ available: false, stage: "idempotency-claim", reason: "invalid-replay-receipt" }, 503);
+    }
+    return json({
+      available: true,
+      replayed: true,
+      request_id: requestId,
+      unity_id: unityId,
+      authorization: "trinity-allow",
+      memory: { persisted: true, replayed: true, receipt: replay.receipt_id },
+      result: replay.result,
+      compute: { lane: computePlan.lane, provider_called: false },
+      provider: replay.provider || "stored-result",
+    });
+  }
+  if (claim.state !== "RESERVED" || claim.claimed !== true) {
+    return json({ available: false, stage: "idempotency-claim", reason: "ambiguous-claim-state" }, 503);
   }
 
   let memory = { unity_id: unityId, items: [] };
