@@ -139,6 +139,49 @@ test("unapproved preflight origin is rejected", async () => {
   assert.equal(calls.length, 0);
 });
 
+test("same request ID with changed input is rejected before a second effect", async () => {
+  const calls = [];
+  const claims = new Map();
+  const base = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json().catch(() => ({}));
+        const path = new URL(request.url).pathname;
+        calls.push({ name: "memory", path, body });
+        if (path.endsWith("/claim")) {
+          const key = body.unity_id + ":" + body.request_id;
+          const prior = claims.get(key);
+          if (prior) {
+            // Model the required durable-store behavior: the operation key is
+            // already bound, so a changed semantic request cannot be claimed.
+            return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: false });
+          }
+          claims.set(key, { action: body.action, input_sha256: body.input_sha256 });
+          return jsonResponse({ unity_id: body.unity_id, request_id: body.request_id, claimed: true });
+        }
+        if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
+        return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-1", receipt_sha256: "a".repeat(64) });
+      },
+    },
+    MODEL_PROVIDER: {
+      async fetch(request) {
+        calls.push({ name: "provider", body: await request.clone().json() });
+        return jsonResponse({ output: "Iris response", provider: "test-provider" });
+      },
+    },
+  });
+  const requestId = "request-same-id-123456";
+  const first = await worker.fetch(req({ text: "first request" }, { "x-request-id": requestId }), base.env);
+  assert.equal(first.status, 200);
+  const second = await worker.fetch(req({ text: "different request" }, { "x-request-id": requestId }), base.env);
+  assert.equal(second.status, 409);
+  assert.equal((await second.json()).stage, "idempotency-claim");
+  assert.equal(calls.filter(c => c.name === "provider").length, 1);
+  assert.equal(calls.filter(c => c.name === "memory" && c.path.endsWith("/append")).length, 1);
+  const claimBodies = calls.filter(c => c.name === "memory" && c.path.endsWith("/claim")).map(c => c.body);
+  assert.notEqual(claimBodies[0].input_sha256, claimBodies[1].input_sha256);
+});
+
 test("duplicate request ID fails closed before memory context or provider inference", async () => {
   const { env, calls } = fixture({
     IRIS_MEMORY: {
