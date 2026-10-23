@@ -182,6 +182,64 @@ test("same request ID with changed input is rejected before a second effect", as
   assert.notEqual(claimBodies[0].input_sha256, claimBodies[1].input_sha256);
 });
 
+test("same request ID and same input replay the original committed result without a second effect", async () => {
+  const calls = [];
+  const records = new Map();
+  const env = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json().catch(() => ({}));
+        const path = new URL(request.url).pathname;
+        calls.push({ path, body });
+        if (path.endsWith("/claim")) {
+          const key = body.unity_id + ":" + body.request_id;
+          const prior = records.get(key);
+          if (prior?.state === "APPLIED") {
+            if (prior.input_sha256 !== body.input_sha256) {
+              return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
+            }
+            return jsonResponse({
+              contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
+              input_sha256: body.input_sha256, state: "APPLIED", claimed: false,
+              replay: prior.replay,
+            });
+          }
+          records.set(key, { state: "RESERVED", input_sha256: body.input_sha256 });
+          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+        }
+        if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
+        const key = body.unity_id + ":" + body.request_id;
+        const replay = {
+          unity_id: body.unity_id, request_id: body.request_id, authorization: "trinity-allow",
+          result: body.output, provider: body.provenance.provider,
+          receipt_id: "receipt-original", receipt_sha256: "b".repeat(64),
+        };
+        records.set(key, { ...records.get(key), state: "APPLIED", replay });
+        return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: replay.receipt_id, receipt_sha256: replay.receipt_sha256 });
+      },
+    },
+    MODEL_PROVIDER: {
+      async fetch(request) {
+        calls.push({ path: "/provider", body: await request.clone().json() });
+        return jsonResponse({ output: "Original answer", provider: "test-provider", confidence: 0.8 });
+      },
+    },
+  }).env;
+  const requestId = "request-replay-same-1234";
+  const first = await worker.fetch(req({ text: "same input" }, { "x-request-id": requestId }), env);
+  const firstBody = await first.json();
+  assert.equal(first.status, 200);
+  assert.equal(firstBody.result, "Original answer");
+  const second = await worker.fetch(req({ text: "same input" }, { "x-request-id": requestId }), env);
+  const secondBody = await second.json();
+  assert.equal(second.status, 200);
+  assert.equal(secondBody.replayed, true);
+  assert.equal(secondBody.result, firstBody.result);
+  assert.equal(secondBody.memory.receipt, firstBody.memory.receipt);
+  assert.equal(calls.filter(c => c.path === "/provider").length, 1);
+  assert.equal(calls.filter(c => c.path.endsWith("/append")).length, 1);
+});
+
 test("duplicate request ID fails closed before memory context or provider inference", async () => {
   const { env, calls } = fixture({
     IRIS_MEMORY: {
