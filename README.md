@@ -1,5 +1,7 @@
 # DualisCapax
 
+[![Pages deploy](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/pages-deploy.yml/badge.svg)](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/pages-deploy.yml)
+
 ### Trinity-governed computing, identity, and human–AI collaboration
 
 [Website](https://dualiscapax.ai) · [GitHub repository](https://github.com/digenova77-ui/dualiscapax-landing)
