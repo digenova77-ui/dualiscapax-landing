@@ -1,0 +1,32 @@
+name: Iris Runtime Adapter CI
+
+on:
+  push:
+    branches: [feat/iris-single-governed-runtime-20261023]
+    paths:
+      - "workers/iris-runtime/**"
+      - ".github/workflows/iris-runtime-adapter-ci.yml"
+  pull_request:
+    paths:
+      - "workers/iris-runtime/**"
+      - ".github/workflows/iris-runtime-adapter-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: iris-runtime-adapter-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run governed runtime contract tests
+        run: node --test workers/iris-runtime/worker.test.mjs
