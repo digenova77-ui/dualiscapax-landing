@@ -48,6 +48,8 @@ jobs:
           node-version: "22"
       - name: Test deterministic Diamond edge routes
         run: node --test tests/diamond-edge-routes.test.mjs
+      - name: Verify shared idempotency contract vectors
+        run: node --test tests/idempotency-v1-contract.test.mjs
 
   iris-provider-gate:
     runs-on: ubuntu-latest
