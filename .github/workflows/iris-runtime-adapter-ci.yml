@@ -10,6 +10,9 @@ on:
       - "tests/test_audit_crypto.mjs"
       - "js/audit-crypto.js"
       - "audit.html"
+      - "js/medical-gate.js"
+      - "research/healthcare/**"
+      - "tests/test_medical_gate.mjs"
   pull_request:
     paths:
       - "workers/iris-runtime/**"
@@ -37,4 +40,4 @@ jobs:
         with:
           node-version: "22"
       - name: Run governed runtime, compute, trust, and audit-chain tests
-        run: node --test workers/iris-runtime/worker.test.mjs workers/iris-runtime/compute-arbitrator.test.mjs tests/test_api_base_trust.mjs tests/test_audit_crypto.mjs
+        run: node --test workers/iris-runtime/worker.test.mjs workers/iris-runtime/compute-arbitrator.test.mjs tests/test_api_base_trust.mjs tests/test_audit_crypto.mjs tests/test_medical_gate.mjs
