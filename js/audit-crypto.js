@@ -155,6 +155,12 @@
     commit: async function (payload) {
       var chain = load();
       if (storageError) throw new Error(storageError);
+      if (chain.length) {
+        var existing = await verifyChain();
+        if (!existing.ok) throw new Error("existing-audit-chain-invalid:" + existing.reason);
+        chain = load();
+        if (storageError) throw new Error(storageError);
+      }
       var parent = chain.length ? chain[chain.length - 1] : null;
       var body = {
         version: 2,
