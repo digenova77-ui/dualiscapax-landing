@@ -28,10 +28,12 @@ test("Joule accounting refuses to invent an energy index or settled price", () =
     joules: 10, cadPerJoule: 0.002, providerCad: 0.01, serviceCad: 0.005,
     measurement: "measured", indexId: "test-index-v1", indexTimestamp: "2026-10-23T00:00:00Z"
   });
-  assert.equal(p.status, "PRICED_METERED");
+  assert.equal(p.status, "PRICED_UNVERIFIED");
   assert.equal(p.energyCad, 0.02);
   assert.equal(p.totalCad, 0.035);
   assert.equal(priceCompute({ joules: -1, cadPerJoule: 0.1, indexId: "x", indexTimestamp: "t" }).status, "INVALID_INPUT");
+  assert.equal(priceCompute({ joules: 1, cadPerJoule: 0.1, indexId: "x", indexTimestamp: "not-a-date" }).status, "UNPRICED");
+  assert.equal(priceCompute({ joules: 1, cadPerJoule: 0.1, indexId: "x", indexTimestamp: "2026-10-23T00:00:00Z", measurement: "mystery" }).status, "INVALID_MEASUREMENT_CLASS");
 });
 
 const jsonResponse = (body, status = 200) => new Response(JSON.stringify(body), {
