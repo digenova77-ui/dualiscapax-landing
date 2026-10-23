@@ -27,6 +27,16 @@ test('altered receipt fields are rejected', () => {
   assert.equal(verifyPublicationReceipt(receipt, content).reason, 'receipt-hash-mismatch');
 });
 
+test('tampered protocol identifier is rejected even if checksum is unchanged', () => {
+  const receipt = { ...buildPublicationReceipt(base), protocol: 'attacker-selected-protocol' };
+  assert.equal(verifyPublicationReceipt(receipt, content).reason, 'unsupported-receipt-protocol');
+});
+
+test('noncanonical uppercase source revision is rejected', () => {
+  const receipt = { ...buildPublicationReceipt(base), source_revision: base.sourceRevision.toUpperCase() };
+  assert.equal(verifyPublicationReceipt(receipt, content).reason, 'noncanonical-source-revision');
+});
+
 test('IPNS resolved CID must match content CID', () => {
   assert.throws(() => buildPublicationReceipt({ ...base, ipnsName: 'test-only-key', resolvedCid: 'bafybbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' }), /ipns-resolution-mismatch/);
 });
