@@ -4,11 +4,35 @@ import path from "node:path";
 const root=process.cwd(), skip=new Set([".git","node_modules",".next","dist","build","coverage",".wrangler"]);
 const exts=new Set([".html",".htm",".js",".mjs",".cjs",".ts",".tsx",".jsx",".css",".json",".jsonl",".md",".mdx",".yml",".yaml",".toml",".xml",".svg",".txt",".sql",".sh",".py"]);
 const files=[];
-function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){if(skip.has(e.name))continue;const f=path.join(dir,e.name);if(e.isDirectory())walk(f);else if(exts.has(path.extname(e.name).toLowerCase()))files.push(f);}}
+function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){if(skip.has(e.name))continue;const f=path.join(dir,e.name);if(e.isDirectory())walk(f);else if(exts.has(path.extname(e.name).toLowerCase()) || ["LICENSE","NOTICE"].includes(e.name))files.push(f);}}
 walk(root);
 const rel=p=>path.relative(root,p).split(path.sep).join("/");
 const rows=files.map(file=>({path:rel(file),text:fs.readFileSync(file,"utf8"),ext:path.extname(file).toLowerCase()}));
 const paths=new Set(rows.map(x=>x.path)), findings=[];
+const redirects=new Map();
+const redirectFile=path.join(root,"_redirects");
+if(fs.existsSync(redirectFile)){
+ for(const line of fs.readFileSync(redirectFile,"utf8").split(/\r?\n/)){
+  const trimmed=line.trim();
+  if(!trimmed||trimmed.startsWith("#"))continue;
+  const parts=trimmed.split(/\s+/);
+  if(parts.length>=2)redirects.set(parts[0],parts[1]);
+ }
+}
+function targetExists(value,seen=new Set()){
+ const clean=String(value||"").split("?")[0].split("#")[0];
+ if(!clean)return false;
+ const route=clean.startsWith("/")?clean:"/"+clean;
+ if(seen.has(route))return false;
+ const nextSeen=new Set(seen);nextSeen.add(route);
+ if(route==="/")return paths.has("index.html");
+ const relPath=route.replace(/^\//,"").replace(/\/$/,"");
+ const candidates=[relPath,relPath+".html",relPath+"/index.html"];
+ if(candidates.some(candidate=>paths.has(candidate)))return true;
+ const redirectTarget=redirects.get(route)||redirects.get(route.replace(/\/$/,""))||redirects.get(route.replace(/\/$/,"")+"/");
+ if(redirectTarget)return targetExists(redirectTarget,nextSeen);
+ return false;
+}
 const surface={pages:[],links:[],scripts:[],forms:[],events:[],endpoints:[],storage:[],concepts:[],keyReferences:[],routes:[]};
 const lineAt=(s,i)=>s.slice(0,i).split("\n").length;
 function add(type,file,line,value,severity="info"){findings.push({type,file,line,severity,value:String(value).slice(0,220)});}
@@ -35,7 +59,7 @@ for(const r of rows){
    if(value.startsWith("#")){surface.links.push(item);continue;}
    const pathname=value.split("?")[0].split("#")[0];if(!pathname)continue;
    const target=pathname.startsWith("/")?pathname.slice(1):path.posix.normalize(path.posix.join(path.posix.dirname(p),pathname));
-   const exists=paths.has(target)||paths.has(target+"/index.html")||paths.has(target+".html")||paths.has(target.replace(/\/$/,"")+"/index.html");
+   const exists=targetExists(pathname.startsWith("/")?pathname:target);
    if(!exists&&!pathname.includes("{")&&!pathname.startsWith("{{"))add("possibly-broken-local-reference",p,lineAt(t,m.index),value,"warning");
    (attr==="href"?surface.links:attr==="action"?surface.forms:surface.scripts).push({...item,target,exists,local:true});
   }
