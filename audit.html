@@ -106,6 +106,14 @@ textarea{width:100%;min-height:6.5rem;border:1px solid rgba(158,197,255,.3);back
       list.appendChild(problem);
       return;
     }
+    if (status.legacyUnverified) {
+      var legacy = document.createElement('p');
+      legacy.className = 'm';
+      legacy.textContent = status.legacyCount < 0
+        ? 'Legacy v1 receipt storage exists but could not be read. It has not been overwritten.'
+        : status.legacyCount + ' legacy v1 receipts are retained separately but are not trusted as payload-bound. New v2 receipts use a separate chain.';
+      list.appendChild(legacy);
+    }
     if (!chain.length) {
       var empty = document.createElement('p');
       empty.className = 'm';
