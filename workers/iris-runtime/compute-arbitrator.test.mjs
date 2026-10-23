@@ -54,7 +54,7 @@ function fixture() {
     IRIS_MEMORY: binding("memory", async (body, request) => {
       const route = new URL(request.url).pathname;
       if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
-      if (route.endsWith("/claim")) return { unity_id: body.unity_id, request_id: body.request_id, claimed: true };
+      if (route.endsWith("/claim")) return { contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true };
       return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-math", receipt_sha256: "b".repeat(64) };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({
