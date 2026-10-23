@@ -10,6 +10,8 @@
   .toggle{display:flex;gap:.5rem;margin:1rem 0}
   button{background:#1c2744;color:#e8eefc;border:1px solid #3a4a72;border-radius:8px;padding:.5rem .9rem}
   button.on{border-color:#7dffa1;color:#7dffa1}
+  .row{display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap}
+  img{width:min(220px,100%);border-radius:12px;background:#070b16}
   table{border-collapse:collapse;width:100%;max-width:28rem}
   th,td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid #243056}
   .note{color:#9aa6c3;font-size:.85rem;max-width:36rem}
@@ -22,10 +24,13 @@
   <button id="nat" class="on">Natural</button>
   <button id="lab">Lab-grown</button>
 </div>
+<div class="row">
+<img src="assets/diamond-round.jpg" alt="Round brilliant diamond">
 <table>
   <thead><tr><th>Carat</th><th id="col">Natural</th></tr></thead>
   <tbody id="rows"></tbody>
 </table>
+</div>
 <p class="note" id="src"></p>
 <script>
 const DATA = {
