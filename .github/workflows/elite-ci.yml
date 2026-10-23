@@ -72,3 +72,14 @@ jobs:
         run: |
           node scripts/pin-pinata.mjs
           node scripts/pin-pinata.mjs --full
+
+  audit-crypto:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify local audit receipt integrity and safe rendering
+        run: node --test tests/test_audit_crypto.mjs
