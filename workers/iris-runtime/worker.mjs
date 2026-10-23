@@ -31,7 +31,16 @@ const json = (body, status = 200, headers = {}) =>
 const unavailable = (stage) =>
   json({ available: false, stage, reason: "required-service-unavailable" }, 503);
 
-function canonicalJson(value) {
+function compareUnicodeScalars(a, b) {
+  const left = Array.from(a, (character) => character.codePointAt(0));
+  const right = Array.from(b, (character) => character.codePointAt(0));
+  for (let i = 0; i < Math.min(left.length, right.length); i++) {
+    if (left[i] !== right[i]) return left[i] - right[i];
+  }
+  return left.length - right.length;
+}
+
+export function canonicalJson(value) {
   if (value === null || typeof value === "string" || typeof value === "boolean") return JSON.stringify(value);
   if (typeof value === "number") {
     if (!Number.isSafeInteger(value)) throw new Error("non-canonical-number");
@@ -39,7 +48,7 @@ function canonicalJson(value) {
   }
   if (Array.isArray(value)) return "[" + value.map(canonicalJson).join(",") + "]";
   if (!value || typeof value !== "object") throw new Error("non-canonical-value");
-  const keys = Object.keys(value).sort();
+  const keys = Object.keys(value).sort(compareUnicodeScalars);
   return "{" + keys.map((key) => JSON.stringify(key) + ":" + canonicalJson(value[key])).join(",") + "}";
 }
 
