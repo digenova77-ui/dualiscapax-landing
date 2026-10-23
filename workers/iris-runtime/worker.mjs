@@ -53,6 +53,17 @@ async function readBody(request) {
 
 export default {
   async fetch(request, env) {
+    const origin = allowedOrigin(request, env);
+    if (request.method === "OPTIONS") {
+      if (!origin) return json({ available: false, reason: "origin-not-authorized" }, 403);
+      return new Response(null, { status: 204, headers: corsHeaders(origin) });
+    }
+    const response = await handleRequest(request, env);
+    return origin ? withCors(response, origin) : response;
+  },
+};
+
+async function handleRequest(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/health" && request.method === "GET") {
       const bindings = {
@@ -204,8 +215,25 @@ export default {
       compute: { lane: computePlan.lane, provider_called: computePlan.provider_required },
       provider: inference.provider || "configured-model-provider",
     });
-  },
-};
+}
+
+function corsHeaders(origin) {
+  return {
+    "access-control-allow-origin": origin,
+    "access-control-allow-credentials": "true",
+    "access-control-allow-methods": "GET, POST, OPTIONS",
+    "access-control-allow-headers": "content-type, x-request-id",
+    "access-control-max-age": "600",
+    "vary": "Origin",
+    "cache-control": "no-store, max-age=0",
+  };
+}
+
+function withCors(response, origin) {
+  const headers = new Headers(response.headers);
+  for (const [key, value] of Object.entries(corsHeaders(origin))) headers.set(key, value);
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
 
 async function sha256(text) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
