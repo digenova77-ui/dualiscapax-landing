@@ -4,6 +4,28 @@ import { createHash } from "node:crypto";
 import worker from "./worker.mjs";
 
 const sha256Text = (value) => createHash("sha256").update(value, "utf8").digest("hex");
+const canonicalJson = (value) => {
+  if (value === null || typeof value === "string" || typeof value === "boolean") return JSON.stringify(value);
+  if (typeof value === "number") {
+    if (!Number.isSafeInteger(value)) throw new Error("non-canonical-number");
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) return "[" + value.map(canonicalJson).join(",") + "]";
+  const keys = Object.keys(value).sort();
+  return "{" + keys.map((key) => JSON.stringify(key) + ":" + canonicalJson(value[key])).join(",") + "}";
+};
+const durableReceipt = (body, output, receiptId) => {
+  const envelope = {
+    contract: "dualis.receipt.v1",
+    unity_id: body.unity_id,
+    request_id: body.request_id,
+    action: body.action,
+    input_sha256: body.input_sha256,
+    result_sha256: sha256Text(output),
+    receipt_id: receiptId,
+  };
+  return { receipt_id: receiptId, receipt: envelope, receipt_sha256: sha256Text(canonicalJson(envelope)) };
+};
 const jsonResponse = (body, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { "content-type": "application/json" },
 });
@@ -24,7 +46,7 @@ function fixture(overrides = {}) {
       const route = new URL(request.url).pathname;
       if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
       if (route.endsWith("/claim")) return { contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true };
-      return { contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), receipt_id: "receipt-1", receipt_sha256: "a".repeat(64) };
+      return { contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), ...durableReceipt(body, body.output, "receipt-1") };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({
       decision: "allow", authorized: true, request_id: body.request_id,
@@ -162,7 +184,7 @@ test("same request ID with changed input is rejected before a second effect", as
           return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         }
         if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
-        return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), receipt_id: "receipt-1", receipt_sha256: "a".repeat(64) });
+        return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), ...durableReceipt(body, body.output, "receipt-1") });
       },
     },
     MODEL_PROVIDER: {
@@ -215,7 +237,7 @@ test("same request ID and same input replay the original committed result withou
           contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
           input_sha256: body.input_sha256, action: body.action, authorization: "trinity-allow",
           result: body.output, result_sha256: sha256Text(body.output), provider: body.provenance.provider,
-          receipt_id: "receipt-original", receipt_sha256: "b".repeat(64),
+          ...durableReceipt(body, body.output, "receipt-original"),
         };
         records.set(key, { ...records.get(key), state: "APPLIED", replay });
         return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), receipt_id: replay.receipt_id, receipt_sha256: replay.receipt_sha256 });
@@ -263,7 +285,7 @@ test("concurrent duplicate requests cannot both reserve or execute", async () =>
           return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         }
         if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
-        return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), receipt_id: "receipt-race", receipt_sha256: "c".repeat(64) });
+        return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), ...durableReceipt(body, body.output, "receipt-race") });
       },
     },
     MODEL_PROVIDER: {
