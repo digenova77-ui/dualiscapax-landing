@@ -34,6 +34,8 @@ check() {
     fail=1
   fi
 }
+check /diamond
+check /pricing
 check /omni
 check /frontier
 check /purity
