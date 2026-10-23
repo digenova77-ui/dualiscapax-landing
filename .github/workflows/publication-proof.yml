@@ -5,7 +5,9 @@ on:
     paths:
       - 'scripts/publication-*.mjs'
       - 'scripts/mock-publication-adapter.mjs'
+      - 'scripts/pinata-test-publish.mjs'
       - 'tests/publication-*.test.mjs'
+      - 'tests/pinata-test-publish.test.mjs'
       - '.github/workflows/publication-proof.yml'
   push:
     branches:
@@ -13,7 +15,9 @@ on:
     paths:
       - 'scripts/publication-*.mjs'
       - 'scripts/mock-publication-adapter.mjs'
+      - 'scripts/pinata-test-publish.mjs'
       - 'tests/publication-*.test.mjs'
+      - 'tests/pinata-test-publish.test.mjs'
       - '.github/workflows/publication-proof.yml'
 
 permissions:
@@ -28,4 +32,4 @@ jobs:
         with:
           node-version: '22'
       - name: Run publication integrity and failure-path tests
-        run: node --test tests/publication-proof.test.mjs tests/publication-pipeline.test.mjs
+        run: node --test tests/publication-proof.test.mjs tests/publication-pipeline.test.mjs tests/pinata-test-publish.test.mjs
