@@ -24,8 +24,8 @@ const canonicalJson = (value) => {
   return "{" + keys.map((key) => JSON.stringify(key) + ":" + canonicalJson(value[key])).join(",") + "}";
 };
 test("runtime canonical JSON orders object keys by Unicode scalar value", () => {
-  const value = { ["\\u{10000}"]: 1, ["\\uE000"]: 2 };
-  const expected = "{" + JSON.stringify("\\uE000") + ":2," + JSON.stringify("\\u{10000}") + ":1}";
+  const value = { ["\u{10000}"]: 1, ["\uE000"]: 2 };
+  const expected = "{" + JSON.stringify("\uE000") + ":2," + JSON.stringify("\u{10000}") + ":1}";
   assert.equal(runtimeCanonicalJson(value), expected);
   assert.equal(canonicalJson(value), expected);
 });
