@@ -140,6 +140,20 @@ async function handleRequest(request, env) {
       return json({ available: false, stage: "trinity", reason: "authorization-denied" }, 403);
     }
 
+    // Claim the request idempotently before memory reads or provider work.
+    // A duplicate/ambiguous claim fails closed rather than risking duplicate side effects or charges.
+    let claim;
+    try {
+      claim = await callJson(env.IRIS_MEMORY, "/v1/requests/claim", {
+        method: "POST",
+        headers: { "content-type": "application/json", "idempotency-key": requestId },
+        body: JSON.stringify({ unity_id: unityId, request_id: requestId, action: computePlan.action }),
+      });
+    } catch { return unavailable("idempotency-claim"); }
+    if (claim.unity_id !== unityId || claim.request_id !== requestId || claim.claimed !== true) {
+      return json({ available: false, stage: "idempotency-claim", reason: "request-not-claimed" }, 409);
+    }
+
     // Trinity must authorize before the runtime reads private conversational memory.
     let memory;
     try {
