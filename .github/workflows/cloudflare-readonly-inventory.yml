@@ -100,14 +100,13 @@ jobs:
           probe "Workflows" "/workflows"
           probe "AI Gateway gateways" "/ai-gateway/gateways"
 
-          # Resolve exact Pages project details, including custom domains and branch.
           for project in dualiscapax-landing dualiscapax; do
             code="$(curl --silent --output "$tmp/project.json" --write-out '%{http_code}' \
               --max-time 20 --request GET \
               --header "Authorization: Bearer $token" \
               --header "Accept: application/json" \
               "${base}/pages/projects/${project}" || true)"
-            printf '\\n== Pages project detail: %s ==\\nHTTP: %s\\n' "$project" "${code:-CURL_ERROR}"
+            printf '\n== Pages project detail: %s ==\nHTTP: %s\n' "$project" "${code:-CURL_ERROR}"
             if [[ "$code" == "200" ]] && jq -e '.success == true' "$tmp/project.json" >/dev/null 2>&1; then
               jq -r '.result | "name: " + (.name // "unknown"), "production_branch: " + (.production_branch // "unknown"), "domains: " + ((.domains // []) | join(", "))' "$tmp/project.json"
             else
@@ -115,7 +114,6 @@ jobs:
             fi
           done
 
-          # Check whether the same credential can enumerate the two domain zones.
           for domain in dualiscapax.ai dualiscapax.com; do
             code="$(curl --silent --output "$tmp/zones.json" --write-out '%{http_code}' \
               --max-time 20 --request GET \
@@ -124,46 +122,7 @@ jobs:
               "https://api.cloudflare.com/client/v4/zones?name=${domain}" || true)"
             printf '\n== Zone lookup: %s ==\nHTTP: %s\n' "$domain" "${code:-CURL_ERROR}"
             if [[ "$code" == "200" ]] && jq -e '.success == true' "$tmp/zones.json" >/dev/null 2>&1; then
-              zone_ids="$(jq -r '.result[]? | [.id, .name] | @tsv' "$tmp/zones.json")"
-              if [[ -z "$zone_ids" ]]; then
-                echo "No zones returned for this name."
-              else
-                while IFS="$(printf '\\t')" read -r zone_id zone_name; do
-                  printf 'zone: %s\n' "$zone_name"
-                  route_code="$(curl --silent --output "$tmp/routes.json" --write-out '%{http_code}' \
-                    --max-time 20 --request GET \
-                    --header "Authorization: Bearer $token" \
-                    --header "Accept: application/json" \
-                    "https://api.cloudflare.com/client/v4/zones/${zone_id}/workers/routes" || true)"
-                  printf 'Workers routes HTTP: %s\n' "${route_code:-CURL_ERROR}"
-                  if [[ "$route_code" == "200" ]] && jq -e '.success == true' "$tmp/routes.json" >/dev/null 2>&1; then
-                    jq -r '.result[]? | "pattern: " + (.pattern // "unknown") + " | script: " + (.script // "(zone default)")' "$tmp/routes.json"
-                  else
-                    echo "Route access not confirmed; response body withheld."
-                  fi
-                done <<< "$zone_ids"
-              fi
-            else
-              echo "Zone access not confirmed; response body withheld."
-            fi
-          done
-
-          echo "Safety: GET-only inventory. No resources were created, changed, deleted, deployed, or published."
-\\t' read -r zone_id zone_name; do
-                  printf 'zone: %s\\n' "$zone_name"
-                  route_code="$(curl --silent --output "$tmp/routes.json" --write-out '%{http_code}' \
-                    --max-time 20 --request GET \
-                    --header "Authorization: Bearer $token" \
-                    --header "Accept: application/json" \
-                    "https://api.cloudflare.com/client/v4/zones/${zone_id}/workers/routes" || true)"
-                  printf 'Workers routes HTTP: %s\\n' "${route_code:-CURL_ERROR}"
-                  if [[ "$route_code" == "200" ]] && jq -e '.success == true' "$tmp/routes.json" >/dev/null 2>&1; then
-                    jq -r '.result[]? | "pattern: " + (.pattern // "unknown") + " | script: " + (.script // "(zone default)")' "$tmp/routes.json"
-                  else
-                    echo "Route access not confirmed; response body withheld."
-                  fi
-                done <<< "$zone_ids"
-              fi
+              jq -r '.result[]? | "zone: " + (.name // "unknown") + " | id: " + (.id // "unknown")' "$tmp/zones.json"
             else
               echo "Zone access not confirmed; response body withheld."
             fi
