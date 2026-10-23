@@ -109,7 +109,7 @@ test("retention cap reports a verified but truncated segment", async () => {
 
 test("corrupt local storage is reported instead of silently verified as an empty chain", async () => {
   const h = harness();
-  h.store.set("dc_audit_chain_v1", "{broken-json");
+  h.store.set("dc_audit_chain_v2", "{broken-json");
   const result = await h.api.verifyChain();
   assert.equal(result.ok, false);
   assert.equal(result.reason, "audit-storage-unreadable");
