@@ -4,14 +4,18 @@ import { canonicalJson, verifyPublicationReceipt } from './publication-proof.mjs
 const SIGNATURE_ALGORITHM = 'Ed25519';
 const SIGNATURE_PROTOCOL = 'dualis-publication-signature-v1';
 
-function publicKeyBytes(key) {
-  return createPublicKey(key).export({ format: 'der', type: 'spki' });
+function asPrivateKey(key) {
+  return key?.type === 'private' ? key : createPrivateKey(key);
 }
-
+function asPublicKey(key) {
+  return key?.type === 'public' ? key : createPublicKey(key);
+}
+function publicKeyBytes(key) {
+  return asPublicKey(key).export({ format: 'der', type: 'spki' });
+}
 function keyIdFor(key) {
   return createHash('sha256').update(publicKeyBytes(key)).digest('hex');
 }
-
 function unsignedPayload(receipt) {
   const { signature, ...payload } = receipt;
   return payload;
@@ -19,24 +23,21 @@ function unsignedPayload(receipt) {
 
 export function signPublicationReceipt(receipt, privateKey, publicKey) {
   if (!receipt || typeof receipt !== 'object' || !privateKey || !publicKey) throw new TypeError('receipt-and-keypair-required');
-  const privateKeyObject = createPrivateKey(privateKey);
-  const publicKeyObject = createPublicKey(publicKey);
-  if (privateKeyObject.asymmetricKeyType !== SIGNATURE_ALGORITHM.toLowerCase() || publicKeyObject.asymmetricKeyType !== SIGNATURE_ALGORITHM.toLowerCase()) {
-    throw new TypeError('ed25519-keypair-required');
-  }
+  const privateKeyObject = asPrivateKey(privateKey);
+  const publicKeyObject = asPublicKey(publicKey);
+  if (privateKeyObject.asymmetricKeyType !== SIGNATURE_ALGORITHM.toLowerCase() || publicKeyObject.asymmetricKeyType !== SIGNATURE_ALGORITHM.toLowerCase()) throw new TypeError('ed25519-keypair-required');
   const derivedPublic = createPublicKey(privateKeyObject).export({ format: 'der', type: 'spki' });
   const suppliedPublic = publicKeyObject.export({ format: 'der', type: 'spki' });
   if (!Buffer.from(derivedPublic).equals(Buffer.from(suppliedPublic))) throw new TypeError('public-private-key-mismatch');
   const payload = unsignedPayload(receipt);
   const bytes = Buffer.from(canonicalJson({ protocol: SIGNATURE_PROTOCOL, receipt: payload }), 'utf8');
-  const signature = sign(null, bytes, privateKeyObject).toString('base64');
   return {
     ...payload,
     signature: {
       protocol: SIGNATURE_PROTOCOL,
       algorithm: SIGNATURE_ALGORITHM,
       key_id: keyIdFor(publicKeyObject),
-      value: signature,
+      value: sign(null, bytes, privateKeyObject).toString('base64'),
     },
   };
 }
@@ -47,7 +48,7 @@ export function verifySignedPublicationReceipt(signedReceipt, retrievedBytes, tr
     const { signature, ...receipt } = signedReceipt;
     if (signature.protocol !== SIGNATURE_PROTOCOL || signature.algorithm !== SIGNATURE_ALGORITHM) return { ok: false, reason: 'unsupported-signature-protocol' };
     if (typeof signature.value !== 'string' || !/^[A-Za-z0-9+/]+={0,2}$/.test(signature.value)) return { ok: false, reason: 'invalid-signature-encoding' };
-    const publicKey = createPublicKey(trustedPublicKey);
+    const publicKey = asPublicKey(trustedPublicKey);
     if (publicKey.asymmetricKeyType !== SIGNATURE_ALGORITHM.toLowerCase()) return { ok: false, reason: 'trusted-ed25519-key-required' };
     if (signature.key_id !== keyIdFor(publicKey)) return { ok: false, reason: 'signing-key-id-mismatch' };
     const integrity = verifyPublicationReceipt(receipt, retrievedBytes);
