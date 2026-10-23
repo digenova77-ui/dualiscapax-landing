@@ -24,7 +24,14 @@ function fixture(overrides = {}) {
       if (route.endsWith("/claim")) return { unity_id: body.unity_id, request_id: body.request_id, claimed: true };
       return { unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-1" };
     }),
-    TRINITY_LAW: binding("trinity", async (body) => ({ decision: "allow", authorized: true, request_id: body.request_id })),
+    TRINITY_LAW: binding("trinity", async (body) => ({
+      decision: "allow",
+      authorized: true,
+      request_id: body.request_id,
+      action: body.action,
+      input_sha256: body.input_sha256,
+      principal: body.principal,
+    })),
     MODEL_PROVIDER: binding("provider", async () => ({ output: "Iris response", provider: "test-provider", confidence: 0.8 })),
     ...overrides,
   };
@@ -36,7 +43,7 @@ const req = (body = { text: "Hello Iris" }, extra = {}) => new Request("https://
   body: JSON.stringify(body),
 });
 
-test("happy path verifies identity, authorizes with Trinity before memory/inference, and persists scoped memory", async () => {
+test("happy path verifies identity, exact Trinity binding, claim ordering, and scoped persistence", async () => {
   const { env, calls } = fixture();
   const res = await worker.fetch(req(), env);
   const data = await res.json();
@@ -50,6 +57,7 @@ test("happy path verifies identity, authorizes with Trinity before memory/infere
   assert.equal(calls[5].body.unity_id, "unity_user_123");
   assert.equal(calls[1].body.action, "iris.inference");
   assert.equal(calls[1].body.memory_requested, true);
+  assert.match(calls[1].body.input_sha256, /^[a-f0-9]{64}$/);
 });
 
 test("browser-supplied authorization ticket cannot bypass Trinity deny", async () => {
@@ -104,7 +112,6 @@ test("allowed origin receives credentialed CORS headers and preflight is handled
   assert.equal(preflight.headers.get("access-control-allow-origin"), "https://dualiscapax.ai");
   assert.equal(preflight.headers.get("access-control-allow-credentials"), "true");
   assert.equal(calls.length, 0);
-
   const response = await worker.fetch(req(), env);
   assert.equal(response.headers.get("access-control-allow-origin"), "https://dualiscapax.ai");
   assert.equal(response.headers.get("vary"), "Origin");
@@ -137,4 +144,42 @@ test("duplicate request ID fails closed before memory context or provider infere
   assert.equal((await res.json()).stage, "idempotency-claim");
   assert.equal(calls.some(c => c.name === "provider"), false);
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/context")), false);
+});
+
+for (const mismatch of [
+  ["principal", (body) => ({ principal: { unity_id: "unity_other_999" } })],
+  ["action", (body) => ({ action: "iris.admin.override" })],
+  ["input digest", (body) => ({ input_sha256: "0".repeat(64) })],
+  ["request ID", (body) => ({ request_id: "request-other-123" })],
+]) {
+  test(`Trinity ${mismatch[0]} mismatch blocks all downstream side effects`, async () => {
+    const { env, calls } = fixture({
+      TRINITY_LAW: {
+        async fetch(request) {
+          const body = await request.clone().json();
+          calls.push({ name: "trinity", body });
+          return jsonResponse({
+            decision: "allow", authorized: true, request_id: body.request_id,
+            action: body.action, input_sha256: body.input_sha256, principal: body.principal,
+            ...mismatch[1](body),
+          });
+        },
+      },
+    });
+    const res = await worker.fetch(req({ text: "Hello Iris" }), env);
+    assert.equal(res.status, 403);
+    assert.equal((await res.json()).stage, "trinity");
+    assert.deepEqual(calls.map(c => c.name), ["identity", "trinity"]);
+  });
+}
+
+test("deterministic arithmetic tells Trinity it does not request private memory", async () => {
+  const { env, calls } = fixture();
+  const res = await worker.fetch(req({ text: "6 * 7" }), env);
+  const data = await res.json();
+  assert.equal(res.status, 200);
+  assert.equal(data.result, "42");
+  assert.equal(calls.find(c => c.name === "trinity").body.memory_requested, false);
+  assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/context")), false);
+  assert.equal(calls.some(c => c.name === "provider"), false);
 });
