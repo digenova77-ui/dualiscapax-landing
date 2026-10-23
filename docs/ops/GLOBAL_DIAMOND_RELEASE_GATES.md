@@ -34,6 +34,24 @@ This document records verifiable release gates so a green build, static status p
 - [ ] Ensure missing, invalid, expired, mismatched, replayed, or unavailable authority denies before provider invocation or any side effect.
 - [ ] Do not invent a new session endpoint or identity store to fill a missing implementation.
 
+## Additional finding — world session-verification backend is not established
+
+A focused source audit on 2026-10-23 found the following:
+
+- `website-packages/unified-frontend/world.html` calls `POST /api/session/verify` with a `session_token` held in `sessionStorage`.
+- The page sets `GATE_BASE = ""` for non-local hosts, so the request is sent to the same origin that serves the static page unless a separate routing layer intercepts it.
+- The maintained repository's `_worker.js` does not implement or name `/api/session/verify`; its `wrangler.toml` names the Pages project `dualiscapax-web`, not a session service.
+- The maintained source search located the endpoint in the client page and a binding plan, but did not locate a server-side handler or `createSessionVerifier` implementation in the accessible repositories.
+
+**Interpretation:** the front-end contract exists; the authoritative server-side verifier is **NOT LOCATED / UNKNOWN**, not proven absent from every possible host or private workspace. Do not connect a model provider or mark the user as seated based on the current page code alone. The page's catch branch correctly labels an unreachable check UNKNOWN, but a reachable static host returning HTML/404 must also be tested explicitly.
+
+Required closure:
+1. Identify the real existing session issuer/verifier and its maintained source; do not invent a parallel identity system.
+2. Prove the configured `GATE_BASE` and route owner from deployment configuration.
+3. Test 404, 405, HTML instead of JSON, malformed JSON, timeout, expired/replayed token, wrong origin/audience, and unavailable law authority.
+4. Verify server-side signature, expiry, revocation, issuer, audience, origin/RP binding, and single-use handoff before provider invocation.
+5. Ensure the browser never treats a syntactically valid response as authority unless the server verifies the canonical signed assertion and law receipt.
+
 ## Gate C — Iris provider path
 
 - [ ] Keep provider credentials server-side and out of URLs, browser storage, logs, and error responses.
