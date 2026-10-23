@@ -14,12 +14,9 @@
   }
 
   function baseUrl() {
-    var base = (g.DC_API_BASE || '').replace(/\/$/, '');
-    try {
-      var q = new URLSearchParams(location.search).get('api');
-      if (q) base = q.replace(/\/$/, '');
-    } catch (e) {}
-    return base;
+    // API destinations come from trusted deployment configuration only.
+    // A URL query parameter must never redirect session/capability headers.
+    return (g.DC_API_BASE || '').replace(/\/$/, '');
   }
 
   async function http(path, opts) {
