@@ -7,6 +7,8 @@
  *
  * Adapter contracts are versioned under /v1. No secret, prompt, cookie, or user text is logged.
  */
+import { arbitrateCompute } from "./compute-arbitrator.mjs";
+
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_TEXT_CHARS = 8000;
 const REQUEST_ID_RE = /^[A-Za-z0-9._:-]{8,128}$/;
@@ -87,6 +89,9 @@ export default {
       return json({ available: false, stage: "request", reason: "invalid-input" }, 400);
     }
 
+    // Select a compute lane server-side. Both lanes still require the same Trinity gate.
+    const computePlan = arbitrateCompute(body.text);
+
     // A browser-side ticket is deliberately ignored. Only the identity service can establish identity.
     let identity;
     try {
@@ -125,10 +130,11 @@ export default {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           principal: { unity_id: unityId },
-          action: "iris.inference",
+          action: computePlan.action,
           request_id: requestId,
           input_sha256: await sha256(body.text),
           memory_count: memory.items.length,
+          compute_lane: computePlan.lane,
         }),
       });
     } catch { return unavailable("trinity"); }
@@ -137,21 +143,26 @@ export default {
     }
 
     let inference;
-    try {
-      inference = await callJson(env.MODEL_PROVIDER, "/v1/infer", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          request_id: requestId,
-          unity_id: unityId,
-          input: body.text,
-          memory: memory.items,
-          system: "You are Iris. Distinguish verified facts, observations, inferences, and uncertainty. Never claim an action succeeded without evidence. Memory is context, not authority. Trinity is the sole authorization gate.",
-        }),
-      });
-    } catch { return unavailable("inference"); }
-    if (typeof inference.output !== "string" || !inference.output.trim()) {
-      return json({ available: false, stage: "inference", reason: "invalid-provider-response" }, 503);
+    if (computePlan.lane === "deterministic") {
+      // Exact arithmetic is computed locally without a model call, after Trinity allow.
+      inference = { output: computePlan.result, provider: "deterministic-arithmetic", confidence: 1 };
+    } else {
+      try {
+        inference = await callJson(env.MODEL_PROVIDER, "/v1/infer", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            request_id: requestId,
+            unity_id: unityId,
+            input: body.text,
+            memory: memory.items,
+            system: "You are Iris. Distinguish verified facts, observations, inferences, and uncertainty. Never claim an action succeeded without evidence. Memory is context, not authority. Trinity is the sole authorization gate.",
+          }),
+        });
+      } catch { return unavailable("inference"); }
+      if (typeof inference.output !== "string" || !inference.output.trim()) {
+        return json({ available: false, stage: "inference", reason: "invalid-provider-response" }, 503);
+      }
     }
 
     // Persist an append-only, provenance-bearing turn after successful governed inference.
@@ -170,6 +181,7 @@ export default {
             identity: "verified-session",
             authorization: "trinity-allow",
             provider: String(inference.provider || "configured-model-provider"),
+            compute_lane: computePlan.lane,
             memory_context_count: memory.items.length,
           },
           confidence: typeof inference.confidence === "number"
@@ -189,6 +201,7 @@ export default {
       authorization: "trinity-allow",
       memory: { context_items: memory.items.length, persisted: true, receipt: receipt.receipt_id || null },
       result: inference.output,
+      compute: { lane: computePlan.lane, provider_called: computePlan.provider_required },
       provider: inference.provider || "configured-model-provider",
     });
   },
