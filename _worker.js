@@ -193,7 +193,7 @@ export default {
         gate: "FL/VVS/VS · D/E/F · Excellent/Very Good · purity",
         frontier: "FL · D · Excellent · purity",
         learning: "advisory only — NOT_FOR_EMISSION",
-        faces: { grade: "diamond", cost: "residual", decision: "DCLM", write: "Twain²", spend: "none" }
+        faces: FACES
       }),
       "/diamond/status": () => status("/diamond"),
       "/pricing": () => pricingReport(),
@@ -271,6 +271,7 @@ function grade(f) {
 function facesFrontier(f) {
   return f.clarity === "FL" && f.color === "D" && f.cut === "Excellent" && f.reflects === "purity";
 }
+const FACES = { grade: "diamond", cost: "residual", decision: "DCLM", write: "Twain²", spend: "none" };
 function frontierReport() {
   const facing = [], held = [];
   for (const f of DEFAULT_FACETS) {
@@ -278,14 +279,14 @@ function frontierReport() {
     if (facesFrontier(f)) facing.push(f.name); else held.push(f.name);
   }
   const floor = DEFAULT_FACETS.find(f => f.kind === "floor");
-  return { protocol: "DIAMOND.FRONTIER.MAX.v1", facing, held, ceiling_claimable: held.length === 0 && grade(floor).pure, law: "LAW WINS", origin: "immutable", learning: "advisory only — NOT_FOR_EMISSION" };
+  return { protocol: "DIAMOND.FRONTIER.MAX.v1", facing, held, ceiling_claimable: held.length === 0 && grade(floor).pure, law: "LAW WINS", origin: "immutable", learning: "advisory only — NOT_FOR_EMISSION", faces: FACES };
 }
 function omniSnapshot() {
   const facets = DEFAULT_FACETS.filter(f => f.kind !== "ceiling").map(f => ({ name: f.name, verdict: grade(f).verdict }));
   const fr = frontierReport();
   const floor = DEFAULT_FACETS.find(f => f.kind === "floor");
   const glass = facets.some(x => x.verdict === "GLASS");
-  return { label: "OMNI", diamond: { floor_holds: grade(floor).pure, rise_ok: !glass, ceiling_reached: !glass, facets }, frontier: { protocol: fr.protocol, facing: fr.facing, held_count: fr.held.length, ceiling_claimable: fr.ceiling_claimable }, contract: { law: "LAW WINS", origin: "immutable", boundary: "NOT_FOR_EMISSION" }, integrity: "UNCHANGED — core not touched" };
+  return { label: "OMNI", diamond: { floor_holds: grade(floor).pure, rise_ok: !glass, ceiling_reached: !glass, facets }, frontier: { protocol: fr.protocol, facing: fr.facing, held_count: fr.held.length, ceiling_claimable: fr.ceiling_claimable }, contract: { law: "LAW WINS", origin: "immutable", boundary: "NOT_FOR_EMISSION", faces: FACES }, integrity: "UNCHANGED — core not touched" };
 }
 function purityText() {
   const o = omniSnapshot();
@@ -293,6 +294,7 @@ function purityText() {
   for (const f of o.diamond.facets) lines.push((f.verdict === "PASS" ? "◆ " : "◇ ") + f.name + " " + f.verdict);
   lines.push("frontier_claimable: " + o.frontier.ceiling_claimable);
   lines.push("boundary: NOT_FOR_EMISSION");
+  lines.push("spend: none");
   return lines.join("\n");
 }
 
