@@ -15,43 +15,67 @@ concurrency:
 
 jobs:
   inventory:
-    name: Inventory Cloudflare resources (GET only)
+    name: Verify credential and inventory Cloudflare resources (GET only)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Query account resources without exposing credentials
+      - name: Verify existing credential candidates and inventory
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_PAGES_DEPLOY: ${{ secrets.CF_PAGES_DEPLOY }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
           set -euo pipefail
           set +x
-          if [[ -z "${CLOUDFLARE_API_TOKEN:-}" ]]; then
-            echo "BLOCKED: CLOUDFLARE_API_TOKEN secret is missing."
-            exit 2
-          fi
           if [[ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]]; then
             echo "BLOCKED: CLOUDFLARE_ACCOUNT_ID secret is missing."
             exit 2
           fi
 
-          base="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
+          token=""
+          verify_candidate() {
+            local label="$1"
+            local candidate="${2:-}"
+            local code
+            if [[ -z "$candidate" ]]; then
+              printf '%s: NOT PRESENT\n' "$label"
+              return 1
+            fi
+            code="$(curl --silent --output "$tmp/verify.json" --write-out '%{http_code}' \
+              --max-time 15 --request GET \
+              --header "Authorization: Bearer $candidate" \
+              --header "Accept: application/json" \
+              "https://api.cloudflare.com/client/v4/user/tokens/verify" || true)"
+            printf '%s token verification HTTP: %s\n' "$label" "${code:-CURL_ERROR}"
+            if [[ "$code" == "200" ]] && jq -e '.success == true and .result.status == "active"' "$tmp/verify.json" >/dev/null 2>&1; then
+              token="$candidate"
+              printf 'Selected credential candidate: %s (value withheld)\n' "$label"
+              return 0
+            fi
+            return 1
+          }
 
-          # Every request below is HTTP GET. Never print response bodies wholesale.
+          if ! verify_candidate "CLOUDFLARE_API_TOKEN" "${CLOUDFLARE_API_TOKEN:-}"; then
+            if ! verify_candidate "CF_PAGES_DEPLOY" "${CF_PAGES_DEPLOY:-}"; then
+              echo "BLOCKED: No active token verified. No account inventory calls were made."
+              exit 3
+            fi
+          fi
+
+          base="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
           probe() {
             local label="$1"
             local path="$2"
-            local file="$tmp/response.json"
             local code
-            code="$(curl --silent --show-error --output "$file" --write-out '%{http_code}' \
+            code="$(curl --silent --output "$tmp/response.json" --write-out '%{http_code}' \
               --max-time 20 --request GET \
-              --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              --header "Authorization: Bearer $token" \
               --header "Accept: application/json" \
-              "${base}${path}")" || code="CURL_ERROR"
-            printf '\n== %s ==\nHTTP: %s\n' "$label" "$code"
+              "${base}${path}" || true)"
+            printf '\n== %s ==\nHTTP: %s\n' "$label" "${code:-CURL_ERROR}"
             if [[ "$code" == "200" ]]; then
               jq -r '
                 if .success == true then
@@ -63,7 +87,7 @@ jobs:
                 else
                   "API success: false (response details withheld)"
                 end
-              ' "$file" 2>/dev/null || echo "Response shape was not recognized; body withheld."
+              ' "$tmp/response.json" 2>/dev/null || echo "Response shape not recognized; body withheld."
             else
               echo "Access not confirmed. Response body withheld."
             fi
