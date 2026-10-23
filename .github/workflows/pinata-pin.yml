@@ -18,6 +18,12 @@ jobs:
           node-version: "20"
       - name: dry-run listing
         run: node scripts/pin-pinata.mjs
+      - name: write snapshot artifact
+        run: node edge/pin_snapshot.mjs > omni-frontier.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omni-frontier
+          path: omni-frontier.json
       - name: pin if JWT present
         env:
           PINATA_JWT: ${{ secrets.PINATAJWT }}
