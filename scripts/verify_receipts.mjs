@@ -35,8 +35,9 @@ function verifyReceiptChain(receipts) {
 const a = { id: "rcpt:1", finger: 0, body: "alpha" };
 const b = { id: "rcpt:2", prev: "rcpt:1", finger: finger16(a), body: "beta" };
 const good = verifyReceiptChain([a, b]);
-const bad = verifyReceiptChain([a, { ...b, body: "changed" }]);
-if (!good.ok || bad.ok) {
+const tampered = { ...a, body: "changed" };
+const bad = verifyReceiptChain([tampered, b]);
+if (!good.ok || bad.ok || bad.reason !== "finger mismatch") {
   console.error({ good, bad });
   process.exit(1);
 }
