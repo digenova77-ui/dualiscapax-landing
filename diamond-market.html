@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diamond market — natural or lab</title>
+<style>
+  body{font-family:ui-sans-serif,system-ui,sans-serif;background:#0b1020;color:#e8eefc;margin:0;padding:1.25rem}
+  h1{font-size:1.15rem}
+  .toggle{display:flex;gap:.5rem;margin:1rem 0}
+  button{background:#1c2744;color:#e8eefc;border:1px solid #3a4a72;border-radius:8px;padding:.5rem .9rem}
+  button.on{border-color:#7dffa1;color:#7dffa1}
+  table{border-collapse:collapse;width:100%;max-width:28rem}
+  th,td{text-align:left;padding:.4rem .5rem;border-bottom:1px solid #243056}
+  .note{color:#9aa6c3;font-size:.85rem;max-width:36rem}
+</style>
+</head>
+<body>
+<h1>1 ct round · market medians</h1>
+<p class="note">Advisory. Not a Dualis price. Not an offer. <code>/pricing</code> remains a grade index.</p>
+<div class="toggle">
+  <button id="nat" class="on">Natural</button>
+  <button id="lab">Lab-grown</button>
+</div>
+<table>
+  <thead><tr><th>Carat</th><th id="col">Natural</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+<p class="note" id="src"></p>
+<script>
+const DATA = {
+  natural: { "0.5": "$770–$887", "1.0": "$3,420–$3,840", "1.5": "$8,760–$9,160", "2.0": "$19,900–$20,090" },
+  lab: { "0.5": "$188–$360", "1.0": "$350–$710", "1.5": "$613–$1,440", "2.0": "$798–$2,350" }
+};
+function show(kind){
+  document.getElementById("nat").classList.toggle("on", kind==="natural");
+  document.getElementById("lab").classList.toggle("on", kind==="lab");
+  document.getElementById("col").textContent = kind==="natural" ? "Natural" : "Lab-grown";
+  const rows = Object.entries(DATA[kind]).map(([c,p]) => `<tr><td>${c}</td><td>${p}</td></tr>`).join("");
+  document.getElementById("rows").innerHTML = rows;
+  document.getElementById("src").textContent = "October 2026 medians. Bands differ by tracker (G–I / VS–SI vs G / VS1).";
+}
+document.getElementById("nat").onclick = () => show("natural");
+document.getElementById("lab").onclick = () => show("lab");
+show("natural");
+</script>
+</body>
+</html>
