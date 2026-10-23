@@ -116,3 +116,19 @@ test("audit page does not render receipt content through innerHTML or accept a q
   assert.match(pageSource, /input_sha256: inputHash/);
   assert.match(pageSource, /out\.textContent = 'Receipt not created/);
 });
+
+
+test("tampered existing chain blocks further commits instead of extending false history", async () => {
+  const h = harness();
+  await h.api.commit({ nested: { value: "original" } });
+  const chain = JSON.parse(h.store.get("dc_audit_chain_v1"));
+  chain[0].payload.nested.value = "tampered";
+  h.store.set("dc_audit_chain_v1", JSON.stringify(chain));
+  await assert.rejects(() => h.api.commit({ next: true }), /existing-audit-chain-invalid:receipt-hash-mismatch/);
+});
+
+test("legacy chain blocks new v2 commits until explicitly cleared", async () => {
+  const legacy = [{ id: "old", at: "2026-01-01T00:00:00.000Z", session: null, parent: null, receipt: "a".repeat(64), payload: { text: "legacy" }, algo: "SHA-256" }];
+  const h = harness({ initial: legacy });
+  await assert.rejects(() => h.api.commit({ next: true }), /existing-audit-chain-invalid:legacy-receipt-format-unbound-payload/);
+});
