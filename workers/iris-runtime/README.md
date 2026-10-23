@@ -15,7 +15,7 @@ node --test workers/iris-runtime/worker.test.mjs workers/iris-runtime/compute-ar
 Before a staging route can be considered available, an authorized staging operator must map existing services to all four service bindings:
 
 - `IDENTITY_API`: server-side session verification at `POST /v1/session/verify`, returning `verified: true` and the authoritative `unity_id`.
-- `TRINITY_LAW`: request-bound authorization at `POST /v1/authorize`, returning an exact `request_id`, `decision: "allow"`, and `authorized: true`.
+- `TRINITY_LAW`: request-bound authorization at `POST /v1/authorize`. A valid allow response must echo the exact `request_id`, `action`, `input_sha256`, and `principal.unity_id`, alongside `decision: "allow"` and `authorized: true`. A generic allow is insufficient.
 - `IRIS_MEMORY`: atomic idempotency claim at `POST /v1/requests/claim`, scoped context at `POST /v1/memory/context`, and append/receipt at `POST /v1/memory/append`.
 - `MODEL_PROVIDER`: bounded inference at `POST /v1/infer`.
 
@@ -25,15 +25,15 @@ Set `IRIS_ALLOWED_ORIGINS` to exact, authorized staging origins only. Do not use
 
 ## Security ordering
 
-1. Validate origin, method, body, and request ID.
+1. Validate origin, method, body, and a **caller-stable `x-request-id`**. Missing IDs are rejected because a fresh server-generated ID cannot deduplicate a client retry.
 2. Verify the session with the identity service; never trust browser-supplied identity or authorization tickets.
-3. Ask Trinity to authorize the exact action and input hash.
-4. Atomically claim the request ID before context reads or provider work.
+3. Ask Trinity to authorize the exact principal, action, request ID, and input hash; validate every binding in the response.
+4. Atomically claim the request ID before context reads or provider work. The adapter must scope idempotency by principal and request ID and atomically prevent concurrent duplicate claims.
 5. Read private memory only for the probabilistic lane, scoped to the verified Unity ID.
 6. Execute deterministic arithmetic locally or invoke the provider for probabilistic inference.
 7. Persist the result and require a matching durable receipt.
 
-A denied Trinity decision must not read memory, call a provider, or write a conversation. A duplicate/ambiguous claim must not call a provider. Neither a unit test nor a configured binding proves the real service obeys these contracts; staging end-to-end tests must verify them.
+A denied or mismatched Trinity decision must not read memory, call a provider, claim a request, or write a conversation. A duplicate/ambiguous claim must not call a provider. Neither a unit test nor a configured binding proves the real service obeys these contracts; staging end-to-end tests must verify them.
 
 ## Joule / Merit boundary
 
