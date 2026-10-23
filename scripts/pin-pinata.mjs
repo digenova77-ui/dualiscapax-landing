@@ -18,6 +18,12 @@ const SECRET_PATTERNS = [
   /\bsk-proj-[A-Za-z0-9_-]{20,}\b/,
   /\bxai-[A-Za-z0-9_-]{20,}\b/,
   /\bAKIA[0-9A-Z]{16}\b/,
+  /\bsk_live_[A-Za-z0-9]{20,}\b/,
+  /\brk_live_[A-Za-z0-9]{20,}\b/,
+  /\bxox[baprs]-[A-Za-z0-9-]{20,}\b/,
+  /\bAIza[0-9A-Za-z_-]{35}\b/,
+  /\bBearer\s+[A-Za-z0-9._~-]{24,}/i,
+  /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/,
 ];
 
 export const sha256Hex = (bytes) => createHash('sha256').update(bytes).digest('hex');
