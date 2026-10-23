@@ -88,3 +88,14 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Deployment status — 2026-10-17
 
 Source changes are not a deployment. No Cloudflare dashboard credentials or direct deployment tool were available in this work session. Do not mark live deployment as PASS until the manual staging upload, route checks, and rollback target have been recorded. Do not change DNS or touch live servers/databases as part of this recovery.
+
+## Workers Builds checks failing on every commit — 2026-10-17
+
+Declared in branch `fix/workers-builds-orphaned-checks-20261017`.
+
+- [x] Scope: `Workers Builds: dualiscapax-landing` and `Workers Builds: dualiscapax-depth` — FAIL on main and on every one of the last 100 commits on main (checked via GitHub check-runs API, 2026-10-17 ~18:20 UTC); also FAIL on PRs #107, #108, #110, #111, #112. Cloudflare Pages check — PASS. These checks have never passed in that window.
+- [x] Root cause (reproduced locally, `npx wrangler@4.40.0 deploy --dry-run` on main): `✘ ERROR It looks like you've run a Workers-specific command in a Pages project. For Pages, please run wrangler pages deploy instead.` The repo's `wrangler.toml` is a Pages config (`pages_build_output_dir = "."`, name `dualiscapax-web`). Two Workers Builds projects in the Cloudflare dashboard are git-connected to this repo and run `wrangler deploy`, which refuses a Pages config. Also warns: `Unexpected fields found in top-level field: "previews"` (warning only, not the failure).
+- [ ] Cloudflare build logs via API — BLOCKED: available token returns `12006 Invalid token` on the Builds API (no Workers Builds scope). Workers scripts list returned empty for that token (scope unclear; not taken as proof the Workers don't exist).
+- [ ] Repo-side fix — NOT APPLICABLE: converting `wrangler.toml` to a Workers config would change the config the live Cloudflare Pages build reads (Pages is the working deploy). Not done.
+- [ ] Proposed dashboard change — BLOCKED on David's approval: in Workers & Pages → `dualiscapax-landing` (Worker) → Settings → Builds, and the same for `dualiscapax-depth`: disconnect the Git repository `digenova77-ui/dualiscapax-landing` (or, if either Worker is meant to build from this repo, give it its own root directory with its own Workers `wrangler.toml`). Leave the Pages project untouched.
+- Remaining risk: if either Worker serves live traffic from an earlier manual deploy, disconnecting Builds does not affect it (it only stops CI builds). Rollback: reconnect the repo in the same settings page.
