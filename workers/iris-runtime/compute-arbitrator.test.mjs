@@ -86,3 +86,29 @@ test("runtime runs exact arithmetic only after Trinity allows it and skips provi
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/context")), false);
   assert.equal(calls.some(c => c.name === "memory" && c.path.endsWith("/append")), true);
 });
+
+
+test("seeded malformed arithmetic corpus never throws or produces non-finite output", () => {
+  let seed = 0x71a15;
+  const random = () => { seed = (Math.imul(seed, 1103515245) + 12345) >>> 0; return seed / 0x100000000; };
+  const alphabet = "0123456789.+-*/%() abcdefXYZ";
+  for (let i = 0; i < 2000; i++) {
+    const length = Math.floor(random() * 280);
+    let input = "";
+    for (let j = 0; j < length; j++) input += alphabet[Math.floor(random() * alphabet.length)];
+    const result = evaluateExactArithmetic(input);
+    assert.ok(result === null || (typeof result === "number" && Number.isFinite(result) && Math.abs(result) <= 1e15), `unexpected parser result for case ${i}`);
+  }
+});
+
+test("arithmetic bounds reject oversized magnitude, token floods, and long expressions", () => {
+  assert.equal(evaluateExactArithmetic("9999999999999999 * 9999999999999999"), null);
+  assert.equal(evaluateExactArithmetic(Array(70).fill("1").join("+")), null);
+  assert.equal(evaluateExactArithmetic("1+".repeat(140) + "1"), null);
+  assert.equal(evaluateExactArithmetic("1".repeat(257) + "+1"), null);
+});
+
+test("division and modulo by zero are rejected through nested expressions", () => {
+  assert.equal(evaluateExactArithmetic("1 / (2 - 2)"), null);
+  assert.equal(evaluateExactArithmetic("7 % (3 - 3)"), null);
+});
