@@ -1,0 +1,37 @@
+name: Pages deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check edge routes
+        run: python3 scripts/check_edge_routes.py
+
+      - name: Package
+        run: |
+          python3 scripts/pack_hierarchical_flat_zip.py --lander --check
+          python3 scripts/pack_hierarchical_flat_zip.py --lander
+
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "CLOUDFLARE_API_TOKEN secret is empty. Seat it in Actions secrets."
+            exit 1
+          fi
+          npx --yes wrangler pages deploy . \
+            --project-name=dualiscapax-web \
+            --commit-dirty=true
+
+      - name: Verify
+        run: ./scripts/verify_live_routes.sh https://dualiscapax.ai
