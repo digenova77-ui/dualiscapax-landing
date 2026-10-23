@@ -11,6 +11,9 @@ import { arbitrateCompute } from "./compute-arbitrator.mjs";
 
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_TEXT_CHARS = 8000;
+const MAX_OUTPUT_CHARS = 12000;
+const MAX_MEMORY_CONTEXT_BYTES = 32 * 1024;
+const RECEIPT_HASH_RE = /^[a-f0-9]{64}$/;
 const REQUEST_ID_RE = /^[A-Za-z0-9._:-]{8,128}$/;
 
 const json = (body, status = 200, headers = {}) =>
@@ -174,7 +177,7 @@ async function handleRequest(request, env) {
         body: JSON.stringify({ unity_id: unityId, request_id: requestId, limit: 12 }),
       });
     } catch { return unavailable("memory-read"); }
-    if (memory.unity_id !== unityId || !Array.isArray(memory.items)) {
+    if (memory.unity_id !== unityId || !Array.isArray(memory.items) || memory.items.length > 12 || new TextEncoder().encode(JSON.stringify(memory.items)).byteLength > MAX_MEMORY_CONTEXT_BYTES) {
       return json({ available: false, stage: "memory-read", reason: "invalid-memory-response" }, 503);
     }
   }
@@ -196,7 +199,7 @@ async function handleRequest(request, env) {
         }),
       });
     } catch { return unavailable("inference"); }
-    if (typeof inference.output !== "string" || !inference.output.trim()) {
+    if (typeof inference.output !== "string" || !inference.output.trim() || inference.output.length > MAX_OUTPUT_CHARS) {
       return json({ available: false, stage: "inference", reason: "invalid-provider-response" }, 503);
     }
   }
@@ -219,13 +222,13 @@ async function handleRequest(request, env) {
           compute_lane: computePlan.lane,
           memory_context_count: memory.items.length,
         },
-        confidence: typeof inference.confidence === "number"
+        confidence: typeof inference.confidence === "number" && Number.isFinite(inference.confidence)
           ? Math.max(0, Math.min(1, inference.confidence)) : null,
         created_at: new Date().toISOString(),
       }),
     });
   } catch { return unavailable("memory-write"); }
-  if (receipt.unity_id !== unityId || receipt.persisted !== true || receipt.request_id !== requestId) {
+  if (receipt.unity_id !== unityId || receipt.persisted !== true || receipt.request_id !== requestId || typeof receipt.receipt_id !== "string" || !receipt.receipt_id.trim() || typeof receipt.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(receipt.receipt_sha256)) {
     return json({ available: false, stage: "memory-write", reason: "persistence-unconfirmed" }, 503);
   }
 
