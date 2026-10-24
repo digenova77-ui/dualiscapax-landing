@@ -14,7 +14,8 @@ const checks = {
   contextReadRoute: source.includes('"/v1/context/read"'),
   principalIndex: source.includes('"principal:" + principal'),
   serviceTokenGate: source.includes("IRIS_MEMORY_SERVICE_TOKEN") && source.includes("service-auth-required"),
-  noProductionRoutes: !/\[\[routes\]\]|workers_dev\s*=\s*false/.test(config),
+  noRoutes: !/\[\[routes\]\]/.test(config),
+  noPublicWorkersDev: /^workers_dev\s*=\s*false$/m.test(config),
 };
 console.log(JSON.stringify({ checks, stagingOnly: true, productionUntouched: true }, null, 2));
 if (Object.values(checks).some((value) => value !== true)) process.exit(1);
