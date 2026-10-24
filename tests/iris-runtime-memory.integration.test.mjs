@@ -249,3 +249,68 @@ test("ambiguous claim timeout recovers through durable idempotent replay", async
   assert.equal(stored.receipt.id, retryData.receipt.id);
 });
 
+test("context-read outage after claim is recoverable by an exact retry", async () => {
+  const env = integratedEnv();
+  const underlying = env.IRIS_MEMORY;
+  let failContextOnce = true;
+  env.IRIS_MEMORY = {
+    fetch: async (url, init) => {
+      if (new URL(url).pathname === "/v1/context/read" && failContextOnce) {
+        failContextOnce = false;
+        return new Response(JSON.stringify({ ok: false, reason: "temporary-context-outage" }), { status: 503 });
+      }
+      return underlying.fetch(url, init);
+    },
+  };
+  const body = {
+    request_id: "integration-context-recovery",
+    principal: { unity_id: "unity-integration" },
+    action: "iris.turn.look",
+    text: "retry after context outage",
+  };
+
+  const first = await signedPost(env, "/v1/authorize", body);
+  const firstData = await first.json();
+  assert.equal(first.status, 503);
+  assert.equal(firstData.authorized, false);
+
+  // Claim is durable even though context retrieval failed. Exact retry must
+  // reuse the stored receipt and finish once the dependency recovers.
+  const retry = await signedPost(env, "/v1/authorize", body);
+  const retryData = await retry.json();
+  assert.equal(retry.status, 200);
+  assert.equal(retryData.authorized, true);
+  assert.equal(retryData.replay, true);
+  assert.equal(retryData.receipt.id, "rct_integration-context-recovery");
+});
+
+test("Trinity dependency timeout fails closed without creating a durable claim", async () => {
+  const env = integratedEnv();
+  env.IRIS_BINDING_TIMEOUT_MS = 5;
+  env.TRINITY_LAW = {
+    fetch: async () => new Promise((resolve) => setTimeout(() => resolve(
+      new Response(JSON.stringify({ ok: true, authorized: true, decision: "allow" }), { status: 200 })
+    ), 30)),
+  };
+  const body = {
+    request_id: "integration-trinity-timeout",
+    principal: { unity_id: "unity-integration" },
+    action: "iris.turn.look",
+    text: "must not be claimed",
+  };
+  const response = await signedPost(env, "/v1/authorize", body);
+  const data = await response.json();
+  assert.equal(response.status, 403);
+  assert.equal(data.authorized, false);
+
+  const lookup = await env.IRIS_MEMORY.fetch("https://memory.test/v1/requests/get", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN,
+    },
+    body: JSON.stringify({ request_id: body.request_id }),
+  });
+  assert.equal((await lookup.json()).found, false);
+});
+
