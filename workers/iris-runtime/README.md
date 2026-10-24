@@ -64,3 +64,22 @@ The current `ai/app.html` and legacy `ai/iris.html` load `ai/dclm-look.js`, `js/
 Therefore these pages are **not proof of a live Trinity-governed backend**. The staging Worker in this directory is not connected to them by this PR. Do not claim that the existing UI is server-authorized, that private memory is governed by this Worker, or that a provider call has a server-issued Trinity receipt.
 
 The safe integration sequence is: configure authorized staging service bindings; prove session verification, request-bound Trinity allow/deny, idempotency, scoped memory, provider invocation, and hashed persistence receipts end-to-end; then migrate the UI to the governed endpoint and remove direct provider calls for protected operations. Keep current behavior clearly labelled as a client-side UX / BYOK path until that sequence passes.
+
+
+## x402-paid runtime path
+
+`POST /v1/paid-turn` is implemented as a distinct paid operation path. It shares the same identity verification and exact Trinity authorization checks as `/v1/turn`; an unauthorized request never reaches the facilitator. With an authorized request and no `PAYMENT-SIGNATURE`, it returns the x402 v2 payment challenge. With a signature, it requires the durable `X402_LEDGER` service binding before settlement.
+
+The payment ledger is a required production dependency, not an in-memory map. It must atomically implement these versioned endpoints:
+
+- `POST /v1/payments/claim`: idempotently bind Unity ID, request ID, action, input digest and payment-header digest. Return `RESERVED` + `claimed:true` for a new transaction, `SETTLED` or `EXECUTED` with the original `payment_receipt` and transaction for the same payment, `CONFLICT` for a different payment/request binding, or `IN_DOUBT` for unresolved settlement.
+- `POST /v1/payments/record`: durably record the facilitator settlement receipt and transition only the matching reserved payment to `SETTLED`.
+- `POST /v1/payments/release`: release a reservation only when the runtime has evidence that no settlement occurred.
+- `POST /v1/payments/in-doubt`: preserve unresolved facilitator or post-settlement failures for reconciliation; never reset them to a fresh chargeable state.
+- `POST /v1/payments/complete`: bind the settled payment to the durable execution receipt and transition to `EXECUTED`. This operation must be idempotent.
+
+Every response must echo the contract, Unity ID, request ID, action, input digest and payment digest. The store must prevent concurrent duplicate claims and must never allow a different payment digest to overwrite an existing settlement. If the facilitator outcome is ambiguous, the runtime records `IN_DOUBT` and does not execute again automatically. If payment is settled but inference or persistence fails, the payment remains unresolved and requires a defined refund/compensation workflow; no automatic refund is claimed by this code.
+
+The runtime verifies that a stored settlement receipt has the exact scheme, amount shape, recipient, asset, network, payer and transaction-hash shape. The x402 facilitator is still the authority for cryptographic signature/chain verification; the runtime additionally binds the returned receipt to the ledger's idempotent request.
+
+**Current deployment status:** the checked-in Worker configuration does not bind `X402_LEDGER`, identity, Trinity, memory or model services. Consequently the paid route fails closed with 503 until the actual ledger service is implemented, independently tested and configured in staging. The current tests use fake service bindings and a mocked facilitator; they prove the runtime control flow, not the real ledger's atomicity or a live payment. Do not attach this route to production or use real funds until the ledger, compensation path, staging facilitator, exact price policy and operator approval are verified.
