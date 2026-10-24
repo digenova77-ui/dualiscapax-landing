@@ -1,6 +1,9 @@
 /**
  * Seat API v1 on Ground Zero (0) and API v2 on One (1).
  * Does not invent a third rail. Does not put secrets in the page.
+ *
+ * API origin must come from trusted code configuration. Never accept an
+ * arbitrary API origin from location.search: prompts could be exfiltrated.
  */
 (function (g) {
   var VERSION = "api-world-2026-09-01";
@@ -31,12 +34,7 @@
   var world = apply(detectWorld());
 
   function baseUrl() {
-    var base = (g.DC_API_BASE || "https://dualiscapax-depth.digenova77.workers.dev").replace(/\/$/, "");
-    try {
-      var q = new URLSearchParams(location.search).get("api");
-      if (q) base = String(q).replace(/\/$/, "");
-    } catch (e) {}
-    return base;
+    return (g.DC_API_BASE || "https://dualiscapax-depth.digenova77.workers.dev").replace(/\/$/, "");
   }
 
   function caps() {

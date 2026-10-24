@@ -48,3 +48,5 @@ jobs:
           node-version: "22"
       - name: Verify Iris provider authorization boundary
         run: node --test tests/test_iris_provider_gate.mjs
+      - name: Verify API origin cannot be overridden by URL parameters
+        run: node --test tests/test_api_origin_trust.mjs
