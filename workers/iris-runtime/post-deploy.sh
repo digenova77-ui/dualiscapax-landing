@@ -9,7 +9,7 @@ cd "$(dirname "$0")/../.."
 echo "=== Local suites ==="
 node workers/iris-runtime/verify-staging.mjs
 node workers/iris-memory/verify-staging.mjs
-node --test tests/iris-memory.test.mjs
+node --test tests/iris-memory.test.mjs tests/iris-runtime-memory.integration.test.mjs
 node --test tests/iris-authorize-regression.test.mjs
 node --test tests/iris-receipt-gate.test.mjs
 node --test tests/test_iris_provider_gate.mjs
