@@ -158,10 +158,10 @@ assert(facesFrontier({ clarity: "VVS", color: "D", cut: "Excellent", reflects: "
 assert(facesFrontier({ clarity: "FL", color: "E", cut: "Excellent", reflects: "purity" }) === false, "E not frontier");
 assert(facesFrontier({ clarity: "FL", color: "D", cut: "Very Good", reflects: "purity" }) === false, "VG not frontier");
 
-// --- geometric faces ---
-// Shape is orthogonal to purity bands for every geometric face.
+// --- diamond cuts ---
+// Shape is orthogonal to purity bands for every diamond cut.
 // Grade and frontier depend only on clarity / color / cut / reflects.
-const DIAMOND_SHAPES = [
+const DIAMOND_CUTS = [
   // Standard diamond cuts
   "round", "brilliant", "ideal", "oval", "princess", "cushion",
   "emerald", "asscher", "radiant", "pear", "marquise", "heart",
@@ -172,7 +172,7 @@ const DIAMOND_SHAPES = [
   "kite", "shield", "bullet", "trapezoid", "lozenge", "briolette"
 ];
 
-for (const shape of DIAMOND_SHAPES) {
+for (const shape of DIAMOND_CUTS) {
   // Pure configuration
   const pure = { name: shape, kind: "face", shape, clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" };
   const gPure = grade(pure);
@@ -191,10 +191,10 @@ for (const shape of DIAMOND_SHAPES) {
   assert(grade(noRef).failed.includes("reflects:not-purity"), `${shape} reflects failure recorded`);
 }
 
-// Mixed pure + glass geometric faces in one frontierReport
+// Mixed pure + glass diamond cuts in one frontierReport
 const geoFacets = [
   { name: "geo-floor", kind: "floor", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  ...DIAMOND_SHAPES.slice(0, 5).map(shape => ({
+  ...DIAMOND_CUTS.slice(0, 5).map(shape => ({
     name: `${shape}-pure`,
     kind: "face",
     shape,
@@ -203,7 +203,7 @@ const geoFacets = [
     cut: "Excellent",
     reflects: "purity",
   })),
-  ...DIAMOND_SHAPES.slice(5, 10).map(shape => ({
+  ...DIAMOND_CUTS.slice(5, 10).map(shape => ({
     name: `${shape}-glass`,
     kind: "face",
     shape,
@@ -214,9 +214,9 @@ const geoFacets = [
   })),
 ];
 const geoFr = frontierReport(geoFacets);
-assert(geoFr.facing.length >= 5, "pure geometric faces appear in facing");
-assert(geoFr.held.length >= 5, "glass geometric faces appear in held");
-assert(geoFr.ceiling_claimable === false, "any glass geometric face blocks ceiling claim");
-assert(geoFr.protocol === "DIAMOND.FRONTIER.MAX.v2", "protocol preserved with geometric faces");
+assert(geoFr.facing.length >= 5, "pure diamond cuts appear in facing");
+assert(geoFr.held.length >= 5, "glass diamond cuts appear in held");
+assert(geoFr.ceiling_claimable === false, "any glass diamond cut blocks ceiling claim");
+assert(geoFr.protocol === "DIAMOND.FRONTIER.MAX.v2", "protocol preserved with diamond cuts");
 
 console.log("All diamond edge tests passed");
