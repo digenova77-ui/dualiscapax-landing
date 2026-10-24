@@ -15,8 +15,21 @@ export async function verifyRootedPuelBundle({
   rootPublicKeySpkiBase64,
   now = Date.now(),
   maxAgeMs = 86400000,
-  minimumRegistryVersion = 1,
+  minimumRegistryVersion,
 }) {
+  // A default floor of 1 is not rollback protection: callers must supply the
+  // floor from trusted monotonic state (for example, protected durable storage).
+  if (!Number.isSafeInteger(minimumRegistryVersion) || minimumRegistryVersion < 1) {
+    return {
+      valid: false,
+      status: "PUEL_REJECTED",
+      proof_claim: "NOT_PROVEN",
+      errors: ["trust-registry-version-floor-unconfigured"],
+      trust_registry: { status: "NOT_CHECKED", valid: false },
+      verified_roles: [],
+    };
+  }
+
   const trust = await verifyPuelTrustRegistry({
     registry,
     rootPublicKeySpkiBase64,
@@ -36,8 +49,7 @@ export async function verifyRootedPuelBundle({
     };
   }
 
-  if (!Number.isSafeInteger(minimumRegistryVersion) || minimumRegistryVersion < 1 ||
-      trust.registry_version < minimumRegistryVersion) {
+  if (trust.registry_version < minimumRegistryVersion) {
     return {
       valid: false,
       status: "PUEL_REJECTED",
