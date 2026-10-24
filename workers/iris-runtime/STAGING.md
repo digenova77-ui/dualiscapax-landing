@@ -48,21 +48,27 @@ Must pass:
 - Receipt verification (id + sha256 present on allow)
 - Production client path does not require a browser secret
 
-## Atomic claim contract (required for a real staging deployment)
+## Durable claim and receipt contract (required for staging)
 
-After identity and Trinity allow, the Worker calls `IRIS_MEMORY` at
-`/v1/requests/claim` with `request_id`, verified principal, action,
-server-computed `input_sha256`, and the proposed receipt.
+The memory service must implement a durable, cross-isolate contract. The Worker calls
+`IRIS_MEMORY` at `/v1/requests/claim` only after identity and Trinity allow, passing
+`request_id`, principal, action, server-computed `input_sha256`, and the proposed receipt.
 
-The service must implement this contract atomically across requests and isolates:
-- HTTP 200 with no replay marker means this request acquired the claim.
-- HTTP 200 with `replay: true` must return the original stored receipt; the Worker checks its request ID and text digest before replaying it.
-- HTTP 409 means the request ID is already claimed with a conflicting body or claim.
-- Other non-2xx results fail closed; the Worker must not fall back to local-only state.
+The claim endpoint must atomically persist both the unique request claim and its receipt:
+- **HTTP 200, `claimed: true`, `receipt`** means this request acquired the claim. The returned receipt must match the request ID and server-computed text digest.
+- **HTTP 200, `replay: true`, `receipt`** means the same request/digest already exists. Return the original receipt unchanged.
+- **HTTP 409** means the request ID conflicts with an existing claim.
+- Any other result or malformed success response fails closed. The Worker does not issue a second non-atomic `/record` call.
 
-A generic stub returning HTTP 200 is sufficient for unit tests only. Before staging deploy,
-verify the actual `iris-memory-staging` service implements this exact contract and persists
-claims and receipts across isolate restarts. The Wrangler service name is currently a
+Inference and receipt verification query `IRIS_MEMORY` at `/v1/requests/get` with
+`request_id`. The service returns `{ found: true, receipt }` only for a persisted record.
+A missing record, malformed response, timeout, or binding error must deny the operation.
+This is the source of truth; isolate-local maps are not authoritative.
+
+The test fixture simulates this API in memory and is **not** evidence of persistence across
+Workers isolates or restarts. Before staging deploy, inspect and test the actual
+`iris-memory-staging` service implementation, including concurrent claims, conflict handling,
+receipt persistence, and lookup after a cold start. The Wrangler service name is still a
 placeholder until that service is confirmed.
 
 ## Production boundary
