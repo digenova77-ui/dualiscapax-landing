@@ -20,7 +20,7 @@ export function memoryBinding() {
         if (!body.request_id || !body.input_sha256 || !body.receipt) {
           return new Response(JSON.stringify({ ok: false, reason: "invalid-claim" }), { status: 400 });
         }
-        records.set(body.request_id, { input_sha256: body.input_sha256, receipt: body.receipt });
+        records.set(body.request_id, { input_sha256: body.input_sha256, receipt: body.receipt, principal: body.principal, action: body.action, claimed_at: new Date().toISOString(), request_id: body.request_id });
         return new Response(JSON.stringify({ ok: true, claimed: true, receipt: body.receipt }), { status: 200 });
       }
       if (path === "/v1/requests/get") {
@@ -28,6 +28,10 @@ export function memoryBinding() {
         return new Response(JSON.stringify(record
           ? { ok: true, found: true, receipt: record.receipt }
           : { ok: true, found: false }), { status: 200 });
+      }
+      if (path === "/v1/context/read") {
+        const items = Array.from(records.values()).filter((record) => record.principal === body.principal && record.request_id !== body.request_id).sort((a, b) => String(b.claimed_at).localeCompare(String(a.claimed_at))).slice(0, Math.min(10, Math.max(1, Number(body.limit) || 5))).map((record) => ({ request_id: record.request_id, action: record.action, input_sha256: record.input_sha256, receipt_id: record.receipt.id, claimed_at: record.claimed_at }));
+        return new Response(JSON.stringify({ ok: true, principal: body.principal, count: items.length, items }), { status: 200 });
       }
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     },
