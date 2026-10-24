@@ -224,7 +224,7 @@ export default {
         if (!identity.ok) {
           return json(403, { authorized: false, reason: identity.reason || "identity-denied", request_id: requestId });
         }
-        const law = await callBinding(env.TRINITY_LAW, "/evaluate", { request_id: requestId, text: inputText, action: body.action || "iris.turn.look" }, env.IRIS_BINDING_TIMEOUT_MS);
+        const law = await callBinding(env.TRINITY_LAW, "/evaluate", { request_id: requestId, principal, input_sha256: digest, text: inputText, action: body.action || "iris.turn.look" }, env.IRIS_BINDING_TIMEOUT_MS);
         if (!law.ok) {
           return json(403, { authorized: false, reason: law.reason || "law-denied", request_id: requestId });
         }
@@ -307,6 +307,8 @@ export default {
     if (url.pathname === "/v1/receipt/verify" && request.method === "POST") {
       const missing = missingBindings(env);
       if (missing.length) return json(503, { valid: false, reason: "bindings-unavailable", missing });
+      const inert = inertBindings(env);
+      if (inert.length) return json(503, { valid: false, reason: "binding-inert", missing: inert });
       if (!env.TRINITY_HMAC_SECRET) return json(503, { valid: false, reason: "signing-secret-unavailable" });
       let body;
       try { body = await request.json(); } catch { return json(400, { valid: false, reason: "invalid-json" }); }
