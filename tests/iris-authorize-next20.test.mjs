@@ -17,6 +17,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import vm from "node:vm";
 import worker from "../workers/iris-runtime/worker.mjs";
+import { memoryBinding } from "./fixtures/iris-memory-binding.mjs";
 
 function allowBinding() {
   return { fetch: async () => new Response(JSON.stringify({ ok: true }), { status: 200 }) };
@@ -24,7 +25,7 @@ function allowBinding() {
 const ENV = {
   IDENTITY_API: allowBinding(),
   TRINITY_LAW: allowBinding(),
-  IRIS_MEMORY: allowBinding(),
+  IRIS_MEMORY: memoryBinding(),
   MODEL_PROVIDER: allowBinding(),
   TRINITY_HMAC_SECRET: "test-secret",
 };
