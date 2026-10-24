@@ -665,3 +665,61 @@ test("paid runtime refuses before identity when the durable payment ledger is mi
   assert.equal((await response.json()).stage, "payment-ledger");
   assert.equal(calls.length, 0);
 });
+
+test("paid runtime never contacts facilitator when Trinity denies the request", async () => {
+  const { env, calls } = fixture({
+    TRINITY_LAW: {
+      async fetch(request) {
+        calls.push({ name: "trinity" });
+        const body = await request.json();
+        return jsonResponse({
+          decision: "deny", authorized: false, request_id: body.request_id,
+          action: body.action, input_sha256: body.input_sha256, principal: body.principal,
+        }, 200);
+      },
+    },
+  });
+  const facilitatorCalls = [];
+  env.X402_FACILITATOR_FETCH = async (url) => {
+    facilitatorCalls.push(new URL(url).pathname);
+    return Response.json({ isValid: true });
+  };
+  const response = await worker.fetch(paidReq(true), env);
+  assert.equal(response.status, 403);
+  assert.deepEqual(facilitatorCalls, []);
+  assert.equal(calls.some((call) => call.name === "paymentLedger"), false);
+  assert.equal(calls.some((call) => call.name === "memory"), false);
+});
+
+test("rejected payment releases the ledger reservation and never executes", async () => {
+  const { env, calls } = fixture();
+  env.X402_FACILITATOR_FETCH = async (url) => {
+    if (new URL(url).pathname.endsWith("/verify")) {
+      return Response.json({ isValid: false, invalidReason: "invalid_signature" }, { status: 400 });
+    }
+    throw new Error("settlement must not run after failed verification");
+  };
+  const response = await worker.fetch(paidReq(true), env);
+  assert.equal(response.status, 402);
+  assert.deepEqual(calls.filter((call) => call.name === "paymentLedger").map((call) => call.path), [
+    "/v1/payments/claim", "/v1/payments/attempting", "/v1/payments/release",
+  ]);
+  assert.equal(calls.some((call) => call.name === "memory"), false);
+});
+
+test("ambiguous facilitator outcome marks payment in doubt and blocks execution", async () => {
+  const { env, calls } = fixture();
+  env.X402_FACILITATOR_FETCH = async (url) => {
+    if (new URL(url).pathname.endsWith("/verify")) {
+      return Response.json({ isValid: true, payer: "0x" + "1".repeat(40) });
+    }
+    throw new Error("simulated settle timeout");
+  };
+  const response = await worker.fetch(paidReq(true), env);
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).stage, "payment-settlement-in-doubt");
+  assert.deepEqual(calls.filter((call) => call.name === "paymentLedger").map((call) => call.path), [
+    "/v1/payments/claim", "/v1/payments/attempting", "/v1/payments/in-doubt",
+  ]);
+  assert.equal(calls.some((call) => call.name === "memory"), false);
+});
