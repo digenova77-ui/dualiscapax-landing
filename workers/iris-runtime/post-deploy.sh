@@ -19,12 +19,12 @@ node --test tests/iris-authorize-next10.test.mjs
 node --test tests/iris-authorize-next20.test.mjs
 python -m unittest tests.test_iris_authorize_contract -v
 
-if [[ -n "${IRIS_STAGING_URL:-}" && -n "${IRIS_STAGING_SIGNING_SECRET:-}" ]]; then
+if [[ -n "${IRIS_STAGING_URL:-}" && -n "${IRIS_STAGING_SIGNING_SECRET:-}" && -n "${IRIS_STAGING_UNITY_ID:-}" ]]; then
   echo
   echo "=== Live staging (${IRIS_STAGING_URL}) ==="
   node workers/iris-runtime/verify-live.mjs
 else
   echo
   echo "IRIS_STAGING_URL is not set. Live checks skipped."
-  echo "Set IRIS_STAGING_URL and IRIS_STAGING_SIGNING_SECRET to run signed live checks."
+  echo "Set IRIS_STAGING_URL, IRIS_STAGING_SIGNING_SECRET, and a valid IRIS_STAGING_UNITY_ID to run live checks."
 fi
