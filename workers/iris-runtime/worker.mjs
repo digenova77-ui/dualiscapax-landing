@@ -292,8 +292,14 @@ export default {
       if (!receiptShape(body && body.receipt)) {
         return json(403, { ok: false, reason: "receipt-required" });
       }
-      const stored = issued.get(body.receipt.request_id);
-      if (!stored || stored.id !== body.receipt.id || stored.sha256 !== body.receipt.sha256) {
+      const storedResult = await callBinding(env.IRIS_MEMORY, "/v1/requests/get", {
+        request_id: body.receipt.request_id,
+      }, env.IRIS_BINDING_TIMEOUT_MS);
+      const stored = storedResult.data && storedResult.data.receipt;
+      if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true ||
+          !receiptShape(stored) || stored.id !== body.receipt.id ||
+          stored.request_id !== body.receipt.request_id ||
+          stored.sha256.toLowerCase() !== body.receipt.sha256.toLowerCase()) {
         return json(403, { ok: false, reason: "receipt-unknown" });
       }
       if (typeof body.text === "string") {
@@ -323,9 +329,14 @@ export default {
         const digest = await sha256Hex(body.text);
         if (digest !== receipt.sha256.toLowerCase()) return json(200, { valid: false, reason: "sha256-mismatch" });
       }
-      const stored = issued.get(receipt.request_id);
-      if (!stored) return json(200, { valid: false, known: false, reason: "receipt-unknown" });
-      if (stored.id !== receipt.id || stored.sha256 !== receipt.sha256.toLowerCase() || stored.request_id !== receipt.request_id) {
+      const storedResult = await callBinding(env.IRIS_MEMORY, "/v1/requests/get", {
+        request_id: receipt.request_id,
+      }, env.IRIS_BINDING_TIMEOUT_MS);
+      const stored = storedResult.data && storedResult.data.receipt;
+      if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true || !receiptShape(stored)) {
+        return json(200, { valid: false, known: false, reason: "receipt-unknown" });
+      }
+      if (stored.id !== receipt.id || stored.sha256.toLowerCase() !== receipt.sha256.toLowerCase() || stored.request_id !== receipt.request_id) {
         return json(200, { valid: false, reason: "stored-mismatch" });
       }
       return json(200, {
