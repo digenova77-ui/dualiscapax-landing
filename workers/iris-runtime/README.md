@@ -19,6 +19,7 @@ Before a staging route can be considered available, an authorized staging operat
 - `IRIS_MEMORY`: atomic idempotency claim at `POST /v1/requests/claim`, scoped context at `POST /v1/memory/context`, and append/receipt at `POST /v1/memory/append`. The append request carries the contract version, Unity ID, request ID, action, input SHA-256, and result SHA-256. Its response must echo those bindings exactly, set `persisted: true`, and return a non-empty `receipt_id` plus a 64-character lowercase SHA-256 `receipt_sha256` plus a canonical receipt envelope whose SHA-256 the runtime recomputes. The runtime computes the output digest itself and rejects a receipt whose request/action/input/output bindings differ.
 
 The claim response is a strict versioned contract and must echo `contract: "dualis.idempotency.v1"`, `unity_id`, `request_id`, and the exact `input_sha256`. It must distinguish `state: "RESERVED"` with `claimed: true` (new reservation), `state: "APPLIED"` with a stored `replay` object (same request already committed), `state: "CONFLICT"` (same operation key with different semantic input), and `state: "IN_DOUBT"` (effect outcome unresolved). The replay object must bind the same Unity ID/request ID and authorization label and include the original result, provider label, receipt ID, and receipt SHA-256. A replay returns the original result/receipt without calling the provider or appending again. Unknown states, mismatched digests, or malformed replay receipts fail closed. The adapter must implement these semantics atomically; tests using a fake adapter are not evidence that it does.
+
 - `MODEL_PROVIDER`: bounded inference at `POST /v1/infer`.
 
 These are adapter contracts, not assertions that the services currently implement them. Do not create duplicate production services to satisfy a placeholder contract; inventory the existing source of truth first.
@@ -65,7 +66,6 @@ Therefore these pages are **not proof of a live Trinity-governed backend**. The 
 
 The safe integration sequence is: configure authorized staging service bindings; prove session verification, request-bound Trinity allow/deny, idempotency, scoped memory, provider invocation, and hashed persistence receipts end-to-end; then migrate the UI to the governed endpoint and remove direct provider calls for protected operations. Keep current behavior clearly labelled as a client-side UX / BYOK path until that sequence passes.
 
-
 ## x402-paid runtime path
 
 `POST /v1/paid-turn` is implemented as a distinct paid operation path. It shares the same identity verification and exact Trinity authorization checks as `/v1/turn`; an unauthorized request never reaches the facilitator. With an authorized request and no `PAYMENT-SIGNATURE`, it returns the x402 v2 payment challenge. With a signature, it requires the durable `X402_LEDGER` service binding before settlement.
@@ -103,5 +103,13 @@ This endpoint makes the contract inspectable by developers without weakening the
 Test the preparation and validation routes:
 
 ```sh
-node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-runtime/universal-work-route.test.mjs workers/iris-runtime/universal-work-prepare.test.mjs
+node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-runtime/universal-work-route.test.mjs workers/iris-runtime/universal-work-prepare.test.mjs workers/iris-runtime/puel-evidence.test.mjs
 ```
+
+## PUEL — Proof of Universal Legitimacy evidence bundle v0.1
+
+`puel-evidence.mjs` validates a strict, request-bound evidence bundle that ties together the work envelope, identity attestation, exact Trinity allow decision, execution receipt, resource-measurement records, and optional settlement evidence. Mismatched principal, request ID, action, input digest, policy version, or settlement state is rejected. Unknown fields fail closed.
+
+**Important:** the current implementation is a structural binding validator, not the final PUEL proof system. It does not verify signatures, trusted issuer keys, hardware attestations, consensus, meter calibration, or the truth of any source. A valid result is explicitly labelled `STRUCTURALLY_BOUND` with `proof_claim: NOT_CRYPTOGRAPHICALLY_VERIFIED`. This is intentional: a receipt-shaped object or a field saying `verified: true` cannot itself establish legitimacy.
+
+Next proof-system milestones are to define trusted issuer/key registries, canonical signed evidence, revocation and freshness rules, independent verifier behavior, and reproducible test vectors before any status can mean cryptographically verified. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
