@@ -19,11 +19,21 @@ import vm from "node:vm";
 import worker from "../workers/iris-runtime/worker.mjs";
 import { memoryBinding } from "./fixtures/iris-memory-binding.mjs";
 
+function identityBinding() {
+  return {
+    fetch: async (_url, init) => {
+      const body = JSON.parse(init.body || "{}");
+      const unityId = body.principal && body.principal.unity_id;
+      return new Response(JSON.stringify({ ok: true, verified: !!unityId, unity_id: unityId }), { status: 200, headers: { "content-type": "application/json" } });
+    },
+  };
+}
+
 function allowBinding() {
   return { fetch: async () => new Response(JSON.stringify({ ok: true }), { status: 200 }) };
 }
 const ENV = {
-  IDENTITY_API: allowBinding(),
+  IDENTITY_API: identityBinding(),
   TRINITY_LAW: allowBinding(),
   IRIS_MEMORY: memoryBinding(),
   MODEL_PROVIDER: allowBinding(),
