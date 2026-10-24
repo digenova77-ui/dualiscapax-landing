@@ -8,6 +8,7 @@ const validSignature = "0x" + "a".repeat(130);
 const validAddress = "0x" + "1".repeat(40);
 const validNonce = "0x" + "b".repeat(64);
 const baseUrl = "https://dualiscapax.ai/api/x402/exchange";
+const TEST_ENV = { X402_ENABLE_MAINNET: "true", X402_AMOUNT: AMOUNT, X402_PAY_TO: PAY_TO };
 
 function paymentPayload(overrides = {}) {
   const rail = {
@@ -68,9 +69,9 @@ test("GET without payment returns x402 402 challenge with exact rails", async ()
   assert.equal(response.status, 402);
   const body = await response.json();
   assert.equal(body.x402Version, 2);
-  assert.equal(body.accepts.length, 2);
+  assert.equal(body.accepts.length, 1);
   assert.equal(body.accepts[0].scheme, "exact");
-  assert.equal(body.accepts[0].network, "eip155:8453");
+  assert.equal(body.accepts[0].network, "eip155:84532");
   assert.equal(body.accepts[0].amount, "10000");
   assert.equal(decodeHeader(response.headers.get("PAYMENT-REQUIRED")).x402Version, 2);
   assert.equal(response.headers.get("cache-control"), "no-store");
@@ -78,7 +79,7 @@ test("GET without payment returns x402 402 challenge with exact rails", async ()
 
 test("valid TEST-shaped payment calls facilitator verify before settle and returns receipt only after success", async () => {
   const { fetchImpl, calls } = mockFetch();
-  const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: {} });
+  const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: TEST_ENV });
   const body = await response.json();
   assert.equal(response.status, 200);
   assert.equal(body.exchanged, true);
@@ -92,7 +93,7 @@ test("malformed payment header fails without calling facilitator", async () => {
   const { fetchImpl, calls } = mockFetch();
   const response = await handleExchange(new Request(baseUrl, {
     method: "POST", headers: { "payment-signature": "%%%not-base64%%%" },
-  }), { fetch: fetchImpl, env: {} });
+  }), { fetch: fetchImpl, env: TEST_ENV });
   assert.equal(response.status, 400);
   assert.equal((await response.json()).error, "invalid_payload");
   assert.equal(calls.length, 0);
@@ -104,7 +105,7 @@ test("wrong x402 version and wrong amount are refused before facilitator", async
     paymentPayload({ accepted: { ...paymentPayload().accepted, amount: "1" } }),
   ]) {
     const { fetchImpl, calls } = mockFetch();
-    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: {} });
+    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: TEST_ENV });
     assert.equal(response.status, 402);
     assert.equal(calls.length, 0);
   }
@@ -117,7 +118,7 @@ test("malformed signature and recipient mismatch are refused before facilitator"
   badRecipient.payload.authorization.to = "0x" + "2".repeat(40);
   for (const payload of [badSignature, badRecipient]) {
     const { fetchImpl, calls } = mockFetch();
-    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: {} });
+    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: TEST_ENV });
     assert.equal(response.status, 402);
     assert.equal(calls.length, 0);
   }
@@ -125,19 +126,19 @@ test("malformed signature and recipient mismatch are refused before facilitator"
 
 test("invalid facilitator verification refuses settlement", async () => {
   const { fetchImpl, calls } = mockFetch({ verify: { isValid: false, invalidReason: "invalid_signature" } });
-  const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: {} });
+  const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: TEST_ENV });
   assert.equal(response.status, 402);
   assert.deepEqual(calls.map((call) => call.path), ["/verify"]);
 });
 
 test("facilitator HTTP errors cannot be treated as successful verification or settlement", async () => {
   const verifyFailure = mockFetch({ verifyStatus: 503, verify: { isValid: true, payer: validAddress } });
-  const verifyResponse = await handleExchange(request(paymentPayload()), { fetch: verifyFailure.fetchImpl, env: {} });
+  const verifyResponse = await handleExchange(request(paymentPayload()), { fetch: verifyFailure.fetchImpl, env: TEST_ENV });
   assert.notEqual(verifyResponse.status, 200);
   assert.deepEqual(verifyFailure.calls.map((call) => call.path), ["/verify"]);
 
   const settleFailure = mockFetch({ settleStatus: 503, settle: { success: true, transaction: "0x" + "c".repeat(64) } });
-  const settleResponse = await handleExchange(request(paymentPayload()), { fetch: settleFailure.fetchImpl, env: {} });
+  const settleResponse = await handleExchange(request(paymentPayload()), { fetch: settleFailure.fetchImpl, env: TEST_ENV });
   assert.notEqual(settleResponse.status, 200);
   assert.deepEqual(settleFailure.calls.map((call) => call.path), ["/verify", "/settle"]);
 });
@@ -149,7 +150,7 @@ test("failed settlement or missing transaction hash never returns an exchange re
     { success: true, transaction: "" },
   ]) {
     const { fetchImpl } = mockFetch({ settle });
-    const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: {} });
+    const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: TEST_ENV });
     assert.notEqual(response.status, 200);
     assert.notEqual((await response.json()).exchanged, true);
   }
@@ -158,7 +159,7 @@ test("failed settlement or missing transaction hash never returns an exchange re
 test("facilitator network errors fail closed", async () => {
   for (const path of ["/verify", "/settle"]) {
     const { fetchImpl } = mockFetch({ throwAt: path });
-    const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: {} });
+    const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: TEST_ENV });
     assert.equal(response.status, 500);
   }
 });
@@ -169,7 +170,7 @@ test("invalid payment configuration fails closed", async () => {
 });
 
 test("unsupported methods are refused", async () => {
-  const response = await handleExchange(new Request(baseUrl, { method: "DELETE" }), { env: {} });
+  const response = await handleExchange(new Request(baseUrl, { method: "DELETE" }), { env: TEST_ENV });
   assert.equal(response.status, 405);
 });
 
@@ -184,7 +185,7 @@ test("resource binding and authorization window are checked before facilitator c
   futureStart.payload.authorization.validAfter = String(Math.floor(Date.now() / 1000) + 1);
   for (const payload of [wrongResource, expired, tooLong, futureStart]) {
     const { fetchImpl, calls } = mockFetch();
-    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: {} });
+    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: TEST_ENV });
     assert.equal(response.status, 402);
     assert.equal(calls.length, 0);
   }
@@ -196,7 +197,7 @@ test("settlement cannot report a different network or payer than the verified pa
     { success: true, transaction: "0x" + "c".repeat(64), payer: "0x" + "2".repeat(40), network: "eip155:8453" },
   ]) {
     const { fetchImpl } = mockFetch({ settle });
-    const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: {} });
+    const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: TEST_ENV });
     assert.notEqual(response.status, 200);
     assert.notEqual((await response.json()).exchanged, true);
   }
@@ -209,8 +210,20 @@ test("non-canonical authorization timestamps are refused before facilitator", as
   invalidBefore.payload.authorization.validBefore = "0" + invalidBefore.payload.authorization.validBefore;
   for (const payload of [leadingZero, invalidBefore]) {
     const { fetchImpl, calls } = mockFetch();
-    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: {} });
+    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: TEST_ENV });
     assert.equal(response.status, 402);
     assert.equal(calls.length, 0);
   }
+});
+
+test("mainnet rail is not offered unless explicitly enabled with amount and recipient policy", async () => {
+  const challenge = await handleExchange(new Request(baseUrl), { env: {} });
+  const body = await challenge.json();
+  assert.equal(body.accepts.length, 1);
+  assert.equal(body.accepts[0].network, "eip155:84532");
+
+  const missingPolicy = await handleExchange(new Request(baseUrl), {
+    env: { X402_ENABLE_MAINNET: "true" },
+  });
+  assert.equal(missingPolicy.status, 500);
 });
