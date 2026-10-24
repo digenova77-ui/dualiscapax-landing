@@ -243,7 +243,7 @@ export default {
         if (!law.ok || !law.data || law.data.decision !== "allow" || law.data.authorized !== true ||
             law.data.request_id !== requestId || lawPrincipal !== principal ||
             law.data.action !== action || law.data.input_sha256 !== digest) {
-          return json(403, { authorized: false, reason: law.reason || "trinity-binding-mismatch", request_id: requestId });
+          return json(403, { authorized: false, reason: !law.ok ? (law.reason || "law-denied") : "trinity-binding-mismatch", request_id: requestId });
         }
 
         const receipt = {
