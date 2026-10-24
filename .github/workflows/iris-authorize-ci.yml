@@ -47,6 +47,14 @@ jobs:
       - name: Verify staging Worker config
         run: node workers/iris-runtime/verify-staging.mjs
 
+      # Verify the durable memory worker uses a Durable Object and has an atomic claim contract.
+      - name: Verify Iris Memory staging config
+        run: node workers/iris-memory/verify-staging.mjs
+
+      # Direct Durable Object contract tests: auth, persistence, replay, conflict, concurrency.
+      - name: Run Iris Memory tests
+        run: node --test tests/iris-memory.test.mjs
+
       # Client-side regression: denial, timeout, duplicate request_id,
       # concurrent claims, receipt shape, and production path (no browser secret).
       - name: Run Iris authorize regression (Node)
