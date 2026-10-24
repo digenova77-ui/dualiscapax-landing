@@ -3,6 +3,7 @@
  * Capability does not confer authority.
  * Fail-closed. No decorative routes. No external bridges. No maps.
  * Read-only verification of the seal, hash, and Ed25519 signature.
+ * Authorization endpoint uses env.SIGNING_SECRET + Durable Object bindings.
  */
 
 const SEAL_BODY = `center=empty
@@ -26,8 +27,6 @@ road=same_toll_every_step
 THEOREM_U1=hygiene_complete→1_else_0_no_third_value`;
 const EXPECTED_UNITY_HASH = "d95aa793e6bc330710ea6b9acab1ce6ed127c2c89c21715adba5a15e2e5fda41";
 
-// Ed25519 evidence of origin for the seal body.
-// Public key is fixed. Signature covers the exact SEAL_BODY bytes.
 const SEAL_PUBLIC_KEY_HEX = "ec4785c5ca91e2545d7ecd2476a29a7d58ae6ad5d5688c4ee54daab68ddf9364";
 const SEAL_SIGNATURE_HEX = "f8b90a7b5f1c2bbfacf8767a41fb358b80b5bb385107173c26ee9d645f57430d03b72e8615fc358ad2905a3dc94c6822cd62e86c54b7964e93ba700477bb6c06";
 
@@ -109,6 +108,161 @@ function purityReport() {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Durable Objects
+// ---------------------------------------------------------------------------
+export class RateLimiter {
+  constructor(state) {
+    this.state = state;
+  }
+
+  async fetch(request) {
+    const url = new URL(request.url);
+    if (request.method !== "POST" || url.pathname !== "/check") {
+      return new Response("not-found", { status: 404 });
+    }
+    const { key, limit = 10, windowMs = 60_000 } = await request.json();
+    const now = Date.now();
+    const windowKey = `win:${key}`;
+    let record = (await this.state.storage.get(windowKey)) || { count: 0, resetAt: now + windowMs };
+
+    if (now >= record.resetAt) {
+      record = { count: 0, resetAt: now + windowMs };
+    }
+
+    if (record.count >= limit) {
+      return Response.json({ allowed: false, remaining: 0, resetAt: record.resetAt });
+    }
+
+    record.count += 1;
+    await this.state.storage.put(windowKey, record);
+
+    return Response.json({
+      allowed: true,
+      remaining: limit - record.count,
+      resetAt: record.resetAt,
+    });
+  }
+}
+
+export class AuditLog {
+  constructor(state) {
+    this.state = state;
+  }
+
+  async fetch(request) {
+    const url = new URL(request.url);
+
+    if (request.method === "POST" && url.pathname === "/record") {
+      const entry = await request.json();
+      const key = `req:${entry.request_id}`;
+      const existing = await this.state.storage.get(key);
+      if (!existing) {
+        const record = { ...entry, recorded_at: new Date().toISOString() };
+        await this.state.storage.put(key, record);
+      }
+      return Response.json({ ok: true });
+    }
+
+    if (request.method === "GET" && url.pathname.startsWith("/get/")) {
+      const requestId = decodeURIComponent(url.pathname.slice(5));
+      const record = await this.state.storage.get(`req:${requestId}`);
+      if (!record) return Response.json({ found: false }, { status: 404 });
+      return Response.json({ found: true, record });
+    }
+
+    return new Response("not-found", { status: 404 });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Policy
+// ---------------------------------------------------------------------------
+const POLICIES = {
+  "iris.turn.look": { lanes: ["look"], memory: true },
+  "iris.turn.depth": { lanes: ["depth"], memory: true },
+  "iris.turn.work": { lanes: ["work"], memory: false },
+};
+
+function evaluatePolicy(ctx) {
+  const policy = POLICIES[ctx.action];
+  if (!policy) return { ok: false, reason: "unknown-action" };
+  if (ctx.computeLane && !policy.lanes.includes(ctx.computeLane)) {
+    return { ok: false, reason: "lane-not-permitted" };
+  }
+  if (ctx.memoryRequested && !policy.memory) {
+    return { ok: false, reason: "memory-not-permitted" };
+  }
+  return { ok: true, policy: ctx.action };
+}
+
+// ---------------------------------------------------------------------------
+// Request signing (HMAC-SHA256)
+// ---------------------------------------------------------------------------
+async function verifySignature(request, secret) {
+  const timestamp = request.headers.get("x-timestamp");
+  const signature = request.headers.get("x-signature");
+  if (!timestamp || !signature || !secret) return false;
+
+  const age = Math.floor(Date.now() / 1000) - parseInt(timestamp, 10);
+  if (isNaN(age) || age > 300 || age < -30) return false;
+
+  const bodyText = await request.clone().text();
+  const payload = `${timestamp}.${bodyText}`;
+
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["verify"]
+  );
+
+  const signatureBytes = Uint8Array.from(
+    signature.match(/.{2}/g)?.map((b) => parseInt(b, 16)) || []
+  );
+  if (signatureBytes.length === 0) return false;
+
+  return crypto.subtle.verify(
+    "HMAC",
+    key,
+    signatureBytes,
+    new TextEncoder().encode(payload)
+  );
+}
+
+async function checkRateLimit(env, unityId, limit, windowMs) {
+  if (!env.RATE_LIMITER) return { allowed: true, remaining: limit };
+  const id = env.RATE_LIMITER.idFromName(unityId);
+  const stub = env.RATE_LIMITER.get(id);
+  const res = await stub.fetch("https://limiter/check", {
+    method: "POST",
+    body: JSON.stringify({ key: unityId, limit, windowMs }),
+  });
+  return res.json();
+}
+
+async function recordAudit(env, requestId, decision, originalBody) {
+  if (!env.AUDIT_LOG) return;
+  try {
+    const id = env.AUDIT_LOG.idFromName(requestId || "unknown");
+    const stub = env.AUDIT_LOG.get(id);
+    await stub.fetch("https://audit/record", {
+      method: "POST",
+      body: JSON.stringify({
+        request_id: requestId || null,
+        decision,
+        original_body: originalBody,
+      }),
+    });
+  } catch {
+    // Audit failure must not change the authorization decision.
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Main fetch
+// ---------------------------------------------------------------------------
 export default {
   async fetch(request, env) {
     const assets = env && env.ASSETS;
@@ -119,6 +273,7 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.length > 1 && url.pathname.endsWith("/") ? url.pathname.slice(0, -1) : url.pathname;
 
+    // Existing seal / law / purity routes (unchanged)
     if (path === "/law" || path === "/trinity") {
       return json(lawReport());
     }
@@ -161,6 +316,83 @@ export default {
       } catch {
         return new Response("Seal verification unavailable", { status: 503, headers: noStore() });
       }
+    }
+
+    // New authorization endpoint
+    if (path === "/v1/authorize" && request.method === "POST") {
+      const secret = env.SIGNING_SECRET;
+      const valid = await verifySignature(request, secret);
+      if (!valid) {
+        return json({ decision: "deny", authorized: false, reason: "invalid-signature" }, 401);
+      }
+
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return json({ decision: "deny", authorized: false, reason: "invalid-json" }, 400);
+      }
+
+      const unityId = body?.principal?.unity_id;
+      const action = body?.action;
+      const requestId = body?.request_id;
+      const inputSha256 = body?.input_sha256;
+
+      if (typeof unityId !== "string") {
+        return json({ decision: "deny", authorized: false, reason: "malformed-request" }, 400);
+      }
+
+      const limitResult = await checkRateLimit(env, unityId, 10, 60_000);
+      if (!limitResult.allowed) {
+        return json(
+          {
+            decision: "deny",
+            authorized: false,
+            reason: "rate-limited",
+            reset_at: limitResult.resetAt,
+          },
+          429
+        );
+      }
+
+      if (
+        typeof action !== "string" ||
+        typeof requestId !== "string" ||
+        typeof inputSha256 !== "string" ||
+        !/^[a-f0-9]{64}$/.test(inputSha256)
+      ) {
+        const deny = { decision: "deny", authorized: false, reason: "malformed-request" };
+        await recordAudit(env, requestId, deny, body);
+        return json(deny, 400);
+      }
+
+      const allowed = evaluatePolicy({
+        unityId,
+        action,
+        requestId,
+        inputSha256,
+        computeLane: body.compute_lane,
+        memoryRequested: body.memory_requested === true,
+      });
+
+      const result = allowed.ok
+        ? {
+            decision: "allow",
+            authorized: true,
+            request_id: requestId,
+            action,
+            input_sha256: inputSha256,
+            principal: { unity_id: unityId },
+            remaining: limitResult.remaining,
+          }
+        : {
+            decision: "deny",
+            authorized: false,
+            reason: allowed.reason,
+          };
+
+      await recordAudit(env, requestId, result, body);
+      return json(result, allowed.ok ? 200 : 403);
     }
 
     // All other paths fall through to Pages assets. No rewriting. No external fetch.

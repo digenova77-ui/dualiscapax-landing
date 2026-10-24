@@ -5,3 +5,18 @@ compatibility_date = "2026-09-04"
 # Apex owner: Cloudflare Pages project dualiscapax-landing (bound to dualiscapax.ai).
 # Production rail: wrangler pages deploy of the lander package.
 # [previews] is Workers Builds only. Pages rejects it. Do not add it here.
+
+# Secrets (set via wrangler secret put or dashboard):
+#   SIGNING_SECRET  — HMAC-SHA256 shared secret for /v1/authorize
+
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiter"
+
+[[durable_objects.bindings]]
+name = "AUDIT_LOG"
+class_name = "AuditLog"
+
+[[migrations]]
+tag = "v1-trinity-auth"
+new_classes = ["RateLimiter", "AuditLog"]
