@@ -185,3 +185,26 @@ Important proof boundaries:
 - No claim is made here that the named files are currently present in the active repository, that the described path is connected to the live telemetry service, or that the model is running in production. Recovery and source/runtime verification are the next steps.
 
 This historical model may be valuable as a deterministic compatibility and capacity-gating technique within DualisCapax. It should be evaluated on correctness, explainability, rejection behavior, resource use, and whether it improves on simpler explicit constraint checks—not treated as quantum hardware.
+
+
+### 9.1 Historical threshold finding: $300 / $500 and the 0.60 ratio
+
+A search of prior engineering notes recovered an earlier description of two hardcoded checks:
+- `SINGLE_TX_LAW_LIMIT = 300`
+- `POOL_CAP_LIMIT = 500`
+- A related described invariant map: `Z3_INVARIANTS = { MAX_SINGLE_TX: 300, MAX_POOL_CAP: 500 }`
+- A described rejection condition when a proposal's `txAmount > 300` or `poolAmount > 500`.
+
+The arithmetic relationship is exact: 300 / 500 = 0.60. However, the recovered notes do **not** establish that 0.60 was derived from a governing specification, that it replaced the absolute limits, or that a live source file currently enforces it. Exact-name searches of the accessible GitHub source and indexed Library artifacts did not recover the original implementation. These are historical findings from prior engineering notes, not a current source-level verification.
+
+**Current disposition: keep the absolute limits and ratio as separate candidate rules until the authoritative source and intended semantics are recovered. Do not silently replace the limits with 0.60.** Plausible but materially different interpretations include (a) absolute ceilings of $300 per transaction and $500 per pool, (b) a transaction-to-pool ratio `txAmount / poolAmount <= 0.60`, or (c) a normalized capacity/occupancy ratio of 0.60 with the dollar figures serving only as historical examples. The available evidence does not select among these.
+
+To decide whether adjustment is required, recover the original source/specification and run tests that distinguish the hypotheses:
+- exact boundaries at 300 and 500, plus one cent above each;
+- ratios just below, exactly at, and just above 0.60;
+- small and large pools with the same ratio, to reveal whether the rule scales;
+- concurrent proposals, to verify aggregate pool usage is reserved atomically rather than checked against stale totals;
+- missing, negative, non-finite, or inconsistent amounts, which must fail closed;
+- if Z3 is claimed, verify an actual solver dependency, submitted constraints, and SAT/UNSAT results rather than trusting a function name.
+
+The ratio is therefore a promising candidate for the *normalized law*, but not yet a verified replacement for the dollar thresholds. The decisive acceptance criterion is behavioral: tests must prove the intended invariant independently of any chosen example amounts.
