@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dualiscapax.ai/schemas/dualis-work-v1.schema.json",
+  "title": "DualisCapax Universal Work Contract v1",
+  "description": "Canonical request envelope for modular governed computation. Schema validation does not grant authority, prove measurement truth, execute work, or settle payment.",
+  "oneOf": [
+    { "$ref": "#/$defs/workEnvelope" },
+    { "$ref": "#/$defs/resourceMeasurement" }
+  ],
+  "$defs": {
+    "requestId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]{8,128}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,63}$"
+    },
+    "workEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "request_id",
+        "input_sha256",
+        "unity_id",
+        "action",
+        "module",
+        "policy_version",
+        "complexity",
+        "resource_budget",
+        "verification"
+      ],
+      "properties": {
+        "contract": { "const": "dualis.work.v1" },
+        "request_id": { "$ref": "#/$defs/requestId" },
+        "input_sha256": { "$ref": "#/$defs/sha256" },
+        "unity_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{8,128}$"
+        },
+        "action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+        },
+        "module": { "$ref": "#/$defs/version" },
+        "policy_version": { "$ref": "#/$defs/version" },
+        "complexity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["class", "features", "estimate_basis"],
+          "properties": {
+            "class": {
+              "enum": ["constant", "logarithmic", "linear", "linearithmic", "quadratic", "exponential", "unknown", "empirical"]
+            },
+            "features": {
+              "type": "object",
+              "propertyNames": { "pattern": "^[a-z][a-z0-9_]{0,63}$" },
+              "additionalProperties": { "type": "number", "minimum": 0 }
+            },
+            "estimate_basis": { "type": "string", "minLength": 1, "maxLength": 256 }
+          }
+        },
+        "resource_budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "cpu_ms": { "type": "number", "minimum": 0 },
+            "memory_bytes": { "type": "number", "minimum": 0 },
+            "energy_joules": { "type": "number", "minimum": 0 },
+            "network_bytes": { "type": "number", "minimum": 0 }
+          }
+        },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["class", "acceptance_criterion"],
+          "properties": {
+            "class": {
+              "enum": ["deterministic-check", "proof-check", "independent-validation", "domain-validation", "none"]
+            },
+            "acceptance_criterion": { "type": "string", "minLength": 1, "maxLength": 512 }
+          }
+        }
+      }
+    },
+    "resourceMeasurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "request_id",
+        "resource",
+        "value",
+        "unit",
+        "classification",
+        "source_id",
+        "observed_at",
+        "evidence_ref"
+      ],
+      "properties": {
+        "contract": { "const": "dualis.resource-measurement.v1" },
+        "request_id": { "$ref": "#/$defs/requestId" },
+        "resource": {
+          "enum": ["energy", "cpu-time", "memory", "network", "storage", "accelerator-time"]
+        },
+        "value": { "type": "number", "minimum": 0 },
+        "unit": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "classification": {
+          "enum": ["measured", "estimated", "provider-reported"]
+        },
+        "source_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "observed_at": { "type": "string", "format": "date-time" },
+        "evidence_ref": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "uncertainty": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}
