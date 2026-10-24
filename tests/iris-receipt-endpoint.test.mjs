@@ -78,12 +78,13 @@ test("receipt verify rejects a bad contract", async () => {
   assert.equal(data.reason, "bad-receipt");
 });
 
-test("receipt verify accepts a well-formed receipt", async () => {
+test("receipt verify rejects a well-formed but unknown receipt", async () => {
   const res = await verify({ receipt: good });
   const data = await res.json();
   assert.equal(res.status, 200);
-  assert.equal(data.valid, true);
-  assert.equal(data.id, "rct_r1");
+  assert.equal(data.valid, false);
+  assert.equal(data.known, false);
+  assert.equal(data.reason, "receipt-unknown");
 });
 
 test("receipt verify rejects a sha256 that does not match the text", async () => {
@@ -93,19 +94,29 @@ test("receipt verify rejects a sha256 that does not match the text", async () =>
   assert.equal(data.reason, "sha256-mismatch");
 });
 
-test("receipt verify accepts a receipt whose sha256 matches the text", async () => {
+test("receipt verify rejects an unknown receipt even when its text hash matches", async () => {
   const text = "hello";
   const receipt = { ...good, sha256: await sha256Hex(text) };
   const res = await verify({ receipt, text });
   const data = await res.json();
-  assert.equal(data.valid, true);
+  assert.equal(data.valid, false);
+  assert.equal(data.reason, "receipt-unknown");
 });
 
+async function signedHeaders(body) {
+  const timestamp = String(Math.floor(Date.now() / 1000));
+  const payload = timestamp + "." + JSON.stringify(body);
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode("test-secret"), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  return { "content-type": "application/json", "x-timestamp": timestamp, "x-signature": Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("") };
+}
+
 test("an authorize allow receipt verifies", async () => {
+  const authBody = { request_id: "chain-1", text: "hello" };
   const auth = await worker.fetch(new Request("https://staging.test/v1/authorize", {
     method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ request_id: "chain-1", text: "hello" }),
+    headers: await signedHeaders(authBody),
+    body: JSON.stringify(authBody),
   }), FULL_ENV);
   const issued = await auth.json();
   const res = await verify({ receipt: issued.receipt, text: "hello" });
