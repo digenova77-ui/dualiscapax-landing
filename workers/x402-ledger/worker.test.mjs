@@ -173,3 +173,13 @@ test("concurrent duplicate claim cannot start a second payment attempt", async (
   assert.equal(second.body.claimed, false);
   assert.equal(second.body.claim_token, undefined);
 });
+
+test("releasing a known-unpaid payment reservation is idempotent", async () => {
+  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const claim = await call(object, "/v1/payments/claim", OP);
+  await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
+  const first = await call(object, "/v1/payments/release", { ...OP, reason: "invalid_signature" });
+  const second = await call(object, "/v1/payments/release", { ...OP, reason: "retry" });
+  assert.equal(first.body.state, "RELEASED");
+  assert.equal(second.body.state, "RELEASED");
+});
