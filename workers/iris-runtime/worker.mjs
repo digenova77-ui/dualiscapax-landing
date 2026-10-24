@@ -303,6 +303,9 @@ export default {
       if (!env.IRIS_MEMORY_SERVICE_TOKEN) return json(503, { ok: false, reason: "memory-service-token-unavailable" });
       let body;
       try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
+      if (new TextEncoder().encode(JSON.stringify(body)).byteLength > MAX_BODY_BYTES) {
+        return json(413, { ok: false, reason: "body-too-large" });
+      }
       if (!receiptShape(body && body.receipt)) {
         return json(403, { ok: false, reason: "receipt-required" });
       }
@@ -341,6 +344,9 @@ export default {
       if (!env.TRINITY_HMAC_SECRET) return json(503, { valid: false, reason: "signing-secret-unavailable" });
       let body;
       try { body = await request.json(); } catch { return json(400, { valid: false, reason: "invalid-json" }); }
+      if (new TextEncoder().encode(JSON.stringify(body)).byteLength > MAX_BODY_BYTES) {
+        return json(413, { valid: false, reason: "body-too-large" });
+      }
       const receipt = body && body.receipt;
       if (!receiptShape(receipt)) return json(200, { valid: false, reason: "bad-receipt" });
       if (typeof body.text === "string") {
