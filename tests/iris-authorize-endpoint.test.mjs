@@ -137,6 +137,24 @@ test("Trinity allow must bind the exact input digest", async () => {
   assert.equal(data.receipt, undefined);
 });
 
+test("Trinity rejects mismatched request ID, principal, or action", async () => {
+  for (const field of ["request_id", "principal", "action"]) {
+    const env = { ...FULL_ENV, TRINITY_LAW: { fetch: async (_url, init) => {
+      const body = JSON.parse(init.body || "{}");
+      const result = { ok: true, authorized: true, decision: "allow", request_id: body.request_id, principal: { unity_id: body.principal }, action: body.action, input_sha256: body.input_sha256 };
+      if (field === "request_id") result.request_id = "different-request";
+      if (field === "principal") result.principal.unity_id = "different-unity";
+      if (field === "action") result.action = "different-action";
+      return new Response(JSON.stringify(result), { status: 200 });
+    } } };
+    const res = await post({ request_id: "trinity-mismatch-" + field, text: "hello" }, env);
+    const data = await res.json();
+    assert.equal(res.status, 403, field);
+    assert.equal(data.reason, "trinity-binding-mismatch", field);
+    assert.equal(data.receipt, undefined, field);
+  }
+});
+
 test("authorize rejects a missing principal", async () => {
   const body = { request_id: "no-principal-1", text: "hi" };
   const headers = await testSignature(body);
