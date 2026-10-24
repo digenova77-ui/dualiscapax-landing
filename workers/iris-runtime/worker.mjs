@@ -124,7 +124,7 @@ async function handleRequest(request, env) {
       provider: !!env.MODEL_PROVIDER,
       payment_ledger: !!env.X402_LEDGER && typeof env.X402_LEDGER_TOKEN === "string" && env.X402_LEDGER_TOKEN.length >= 32 && validPaymentPolicy(env),
     };
-    const complete = Object.values(bindings).every(Boolean) &&
+    const complete = bindings.identity && bindings.trinity && bindings.memory && bindings.provider &&
       typeof env.IRIS_ALLOWED_ORIGINS === "string" &&
       env.IRIS_ALLOWED_ORIGINS.trim().length > 0;
     return json({
