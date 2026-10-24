@@ -95,3 +95,13 @@ node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-r
 ```
 
 This endpoint makes the contract inspectable by developers without weakening the separate Trinity authorization gate for consequential operations.
+
+### Prepare a content-bound work envelope
+
+`POST /v1/work/prepare` accepts a task description plus request/policy/module metadata, hashes the exact UTF-8 input with SHA-256, validates the resulting `dualis.work.v1` envelope, and returns it only if structurally valid. The caller-provided Unity ID is metadata only: the endpoint explicitly returns `identity_verified: false`. It does not authorize or execute the task, measure resource use, calculate a charge, or settle payment. Do not use this endpoint as an execution permission check.
+
+Test the preparation and validation routes:
+
+```sh
+node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-runtime/universal-work-route.test.mjs workers/iris-runtime/universal-work-prepare.test.mjs
+```
