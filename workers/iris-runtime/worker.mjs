@@ -238,7 +238,7 @@ export default {
 
         const receipt = {
           contract: RECEIPT_CONTRACT,
-          unity_id: body.unity_id || (body.principal && body.principal.unity_id) || "staging",
+          unity_id: principal,
           request_id: requestId,
           sha256: digest,
           id: "rct_" + requestId,
