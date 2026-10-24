@@ -166,3 +166,23 @@ test("12. receipt revocation rejects an invalid HMAC signature", async () => {
   assert.equal((await verify.json()).valid, true);
 });
 
+test("13. direct receipt lookup rejects expired receipts", async () => {
+  const env = envWith();
+  env.IRIS_RECEIPT_TTL_MS = -1;
+  const issued = await post("/v1/authorize", { ...base, request_id: "get-expired-40", text: "hello" }, env);
+  const auth = await issued.json();
+  const res = await worker.fetch(new Request("https://staging.test/v1/receipt/" + auth.receipt.id, { method: "GET" }), env);
+  assert.equal(res.status, 410);
+  assert.equal((await res.json()).reason, "receipt-expired");
+});
+
+test("14. inference rejects receipts missing issued_at or action", async () => {
+  const env = envWith();
+  const issued = await post("/v1/authorize", { ...base, request_id: "incomplete-receipt-40", text: "hello" }, env);
+  const auth = await issued.json();
+  const { issued_at, action, ...incomplete } = auth.receipt;
+  const res = await post("/v1/infer", { receipt: incomplete, text: "hello" }, env);
+  assert.equal(res.status, 403);
+  assert.equal((await res.json()).reason, "receipt-required");
+});
+
