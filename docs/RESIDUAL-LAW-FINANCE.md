@@ -223,3 +223,38 @@ Report separately:
 - customer fee and collected revenue, if any.
 
 The pilot succeeds only if its method is reproducible, net benefit is real, the customer agrees with attribution, and the delivery economics support a repeatable business.
+
+
+## 13. Economic footprint is not token market capitalization
+
+The ambition must be evaluated across separate, explicitly defined quantities. They are related, but they are not interchangeable:
+
+1. **Economic activity measured:** the annual value of authorized transactions, expenses, resource use, or operations analyzed by the system.
+2. **Eligible activity:** the subset with adequate permissions, relevant data, and a realistic opportunity for intervention.
+3. **Residual opportunity identified:** candidate waste, discrepancies, underutilization, or avoidable costs flagged by the method.
+4. **Net value verified:** benefit actually realized, net of relevant implementation and operating costs, with attribution and uncertainty disclosed.
+5. **Commercial value captured:** fees or other lawful revenue contractually earned and actually collected by the business.
+6. **Protocol utility and demand:** the independently demonstrated need for any token or accounting unit to access, meter, coordinate, or settle a defined function.
+7. **Token market capitalization:** market price multiplied by circulating supply, where the instrument is transferable and has a meaningful market price.
+
+These quantities must not be substituted for one another. Annual spend is not collateral. Gross opportunity is not realized savings. Savings are not automatically revenue. Company revenue is not protocol value. Protocol utility is not automatically token-holder value. A market capitalization cannot be derived from the total spend monitored by the system.
+
+### 13.1 A cost reference is not necessarily a market peg
+
+A cost reference can make a unit useful for accounting—for example, expressing verified compute consumption against a defined energy or service-cost methodology. But a reference price alone does not guarantee redemption, stable purchasing power, liquidity, reserve backing, or a fixed market price.
+
+Any proposed cost-pegged unit must specify the reference basket or meter, unit conversion, data sources, update frequency, geographic and time differences, fees, dispute process, redemption rights if any, reserve or settlement obligations if any, and who bears deviations between the reference value and the market price. It must also be explicit whether the unit is an internal non-transferable measure, a usage credit, a contractual claim, or a transferable financial instrument.
+
+### 13.2 Model adoption before assigning a token valuation
+
+Token economics should be evaluated from the actual function of the instrument, not from a top-down estimate of corporate spending. A scenario model should separately vary:
+- annual eligible activity and verified net benefit;
+- customer adoption, retention, and implementation cost;
+- fees earned and collected by the operating business;
+- the portion of the workflow that genuinely requires the token or meter;
+- unit issuance, circulation, velocity, and holding requirements, where relevant;
+- redemption, settlement, legal, liquidity, and counterparty obligations.
+
+If the system creates value without requiring a token, the product can still be successful. If a token is required, its necessity and value proposition must be demonstrated rather than manufactured. The architecture should avoid forcing speculative token demand into an otherwise useful recovery system.
+
+**Valuation discipline:** present adoption and value-capture scenarios as conditional models, with assumptions and sensitivities—not as a token price target, guaranteed peg, or prediction that any asset will exceed Bitcoin or Ethereum.
