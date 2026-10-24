@@ -163,3 +163,13 @@ test("ledger refuses a receipt whose token asset does not match its network", as
   });
   assert.equal(response.body.state, "CONFLICT");
 });
+
+test("concurrent duplicate claim cannot start a second payment attempt", async () => {
+  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const first = await call(object, "/v1/payments/claim", OP);
+  const second = await call(object, "/v1/payments/claim", OP);
+  assert.equal(first.body.claimed, true);
+  assert.equal(second.body.state, "RESERVED");
+  assert.equal(second.body.claimed, false);
+  assert.equal(second.body.claim_token, undefined);
+});
