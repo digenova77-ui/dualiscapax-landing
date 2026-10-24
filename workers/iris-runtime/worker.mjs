@@ -401,9 +401,11 @@ async function handleRequest(request, env) {
   // conflict, and an unresolved prior effect. A boolean-only claim cannot prove
   // safe retry behavior, so legacy/ambiguous responses fail closed.
   if (claim.state === "CONFLICT") {
+    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "settled-payment-operation-conflict" });
     return json({ available: false, stage: "idempotency-claim", reason: "operation-content-conflict" }, 409);
   }
   if (claim.state === "IN_DOUBT") {
+    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "memory-operation-in-doubt-after-payment" });
     return json({ available: false, stage: "idempotency-claim", reason: "prior-operation-in-doubt" }, 503);
   }
   if (claim.state === "APPLIED") {
@@ -421,6 +423,9 @@ async function handleRequest(request, env) {
     ) {
       return json({ available: false, stage: "idempotency-claim", reason: "invalid-replay-receipt" }, 503);
     }
+    if (paymentContext && !(await completePaidPayment(env, paymentContext, replay, replay.result_sha256))) {
+      return unavailable("payment-ledger-complete");
+    }
     return json({
       available: true,
       replayed: true,
@@ -434,6 +439,7 @@ async function handleRequest(request, env) {
     });
   }
   if (claim.state !== "RESERVED" || claim.claimed !== true) {
+    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "ambiguous-memory-claim-after-payment" });
     return json({ available: false, stage: "idempotency-claim", reason: "ambiguous-claim-state" }, 503);
   }
 
@@ -445,8 +451,12 @@ async function handleRequest(request, env) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ unity_id: unityId, request_id: requestId, limit: 12 }),
       });
-    } catch { return unavailable("memory-read"); }
+    } catch {
+      if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "memory-read-failed-after-payment" });
+      return unavailable("memory-read");
+    }
     if (memory.unity_id !== unityId || !Array.isArray(memory.items) || memory.items.length > 12 || new TextEncoder().encode(JSON.stringify(memory.items)).byteLength > MAX_MEMORY_CONTEXT_BYTES) {
+      if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "invalid-memory-response-after-payment" });
       return json({ available: false, stage: "memory-read", reason: "invalid-memory-response" }, 503);
     }
   }
@@ -467,8 +477,12 @@ async function handleRequest(request, env) {
           system: "You are Iris. Distinguish verified facts, observations, inferences, and uncertainty. Never claim an action succeeded without evidence. Memory is context, not authority. Trinity is the sole authorization gate.",
         }),
       });
-    } catch { return unavailable("inference"); }
+    } catch {
+      if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "inference-failed-after-payment" });
+      return unavailable("inference");
+    }
     if (typeof inference.output !== "string" || !inference.output.trim() || inference.output.length > MAX_OUTPUT_CHARS) {
+      if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "invalid-inference-response-after-payment" });
       return json({ available: false, stage: "inference", reason: "invalid-provider-response" }, 503);
     }
   }
@@ -495,13 +509,17 @@ async function handleRequest(request, env) {
           provider: String(inference.provider || "configured-model-provider"),
           compute_lane: computePlan.lane,
           memory_context_count: memory.items.length,
+          ...(paymentContext ? { payment: paymentContext.payment_receipt } : {}),
         },
         confidence: typeof inference.confidence === "number" && Number.isFinite(inference.confidence)
           ? Math.max(0, Math.min(1, inference.confidence)) : null,
         created_at: new Date().toISOString(),
       }),
     });
-  } catch { return unavailable("memory-write"); }
+  } catch {
+    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "memory-write-failed-after-payment" });
+    return unavailable("memory-write");
+  }
   if (
     receipt.contract !== "dualis.idempotency.v1" ||
     receipt.unity_id !== unityId || receipt.persisted !== true ||
@@ -511,7 +529,12 @@ async function handleRequest(request, env) {
     typeof receipt.receipt_sha256 !== "string" || !RECEIPT_HASH_RE.test(receipt.receipt_sha256) ||
     !(await verifyReceiptEnvelope(receipt.receipt, { unity_id: unityId, request_id: requestId, action: computePlan.action, input_sha256: inputSha256, result_sha256: resultSha256, receipt_id: receipt.receipt_id, receipt_sha256: receipt.receipt_sha256 }))
   ) {
+    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "persistence-unconfirmed-after-payment" });
     return json({ available: false, stage: "memory-write", reason: "persistence-unconfirmed" }, 503);
+  }
+
+  if (paymentContext && !(await completePaidPayment(env, paymentContext, receipt, resultSha256))) {
+    return unavailable("payment-ledger-complete");
   }
 
   return json({
@@ -523,6 +546,7 @@ async function handleRequest(request, env) {
     result: inference.output,
     compute: { lane: computePlan.lane, provider_called: computePlan.provider_required },
     provider: inference.provider || "configured-model-provider",
+    ...(paymentContext ? { payment: paymentContext.payment_receipt } : {}),
   });
 }
 
