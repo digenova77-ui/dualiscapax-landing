@@ -70,7 +70,7 @@ The safe integration sequence is: configure authorized staging service bindings;
 
 `POST /v1/paid-turn` is implemented as a distinct paid operation path. It shares the same identity verification and exact Trinity authorization checks as `/v1/turn`; an unauthorized request never reaches the facilitator. With an authorized request and no `PAYMENT-SIGNATURE`, it returns the x402 v2 payment challenge. With a signature, it requires the durable `X402_LEDGER` service binding before settlement.
 
-The payment ledger is a required production dependency, not an in-memory map. It must atomically implement these versioned endpoints:
+The Durable Object ledger implementation is in `workers/x402-ledger/worker.mjs`; it uses per-operation Durable Objects and atomic storage transactions. These are the implemented versioned endpoints:
 
 - `POST /v1/payments/claim`: idempotently bind Unity ID, request ID, action, input digest and payment-header digest. Return `RESERVED` + `claimed:true` for a new transaction, `SETTLED` or `EXECUTED` with the original `payment_receipt` and transaction for the same payment, `CONFLICT` for a different payment/request binding, or `IN_DOUBT` for unresolved settlement.
 - `POST /v1/payments/record`: durably record the facilitator settlement receipt and transition only the matching reserved payment to `SETTLED`.
