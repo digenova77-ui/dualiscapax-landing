@@ -59,6 +59,10 @@ Must pass:
 
 ## Durable claim and receipt contract (required for staging)
 
+The Identity and Trinity service response contracts are also strict:
+- `IDENTITY_API /check` must return `verified: true` and the exact `unity_id` (or `principal.unity_id`) requested. A generic HTTP 200 is not identity proof.
+- `TRINITY_LAW /evaluate` must return `authorized: true`, `decision: "allow"`, the exact `request_id`, `principal.unity_id`, `action`, and `input_sha256` that were evaluated. Any missing or mismatched field denies the turn before a claim is attempted.
+
 The memory service must implement a durable, cross-isolate contract. The Worker calls
 `IRIS_MEMORY` at `/v1/requests/claim` only after identity and Trinity allow, passing
 `request_id`, principal, action, server-computed `input_sha256`, and the proposed receipt.
