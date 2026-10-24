@@ -34,12 +34,20 @@ function validOperation(body) {
     typeof body.payment_sha256 === "string" && DIGEST_RE.test(body.payment_sha256);
 }
 
-function validPaymentReceipt(receipt) {
+function validPaymentReceipt(receipt, env) {
+  const assets = {
+    "eip155:8453": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "eip155:84532": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  };
+  const expectedAmount = String(env.X402_AMOUNT || "10000");
+  const expectedPayTo = String(env.X402_PAY_TO || "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4");
   return !!receipt && typeof receipt === "object" && !Array.isArray(receipt) &&
     receipt.exchanged === true && receipt.scheme === "exact" &&
-    typeof receipt.amount === "string" && /^[1-9]\d*$/.test(receipt.amount) &&
+    receipt.amount === expectedAmount &&
     ADDRESS_RE.test(receipt.asset || "") &&
+    receipt.asset.toLowerCase() === String(assets[receipt.network] || "").toLowerCase() &&
     ADDRESS_RE.test(receipt.payTo || "") &&
+    receipt.payTo.toLowerCase() === expectedPayTo.toLowerCase() &&
     ADDRESS_RE.test(receipt.payer || "") &&
     ["eip155:8453", "eip155:84532"].includes(receipt.network) &&
     TX_RE.test(receipt.transaction || "");
@@ -59,8 +67,9 @@ function baseReply(body, state, extra = {}) {
 }
 
 export class PaymentTransaction {
-  constructor(state) {
+  constructor(state, env = {}) {
     this.state = state;
+    this.env = env;
   }
 
   async fetch(request) {
@@ -140,7 +149,7 @@ export class PaymentTransaction {
       }
 
       if (path.endsWith("/record")) {
-        if (!validPaymentReceipt(body.payment_receipt)) return baseReply(body, "CONFLICT", { reason: "invalid-payment-receipt" });
+        if (!validPaymentReceipt(body.payment_receipt, this.env)) return baseReply(body, "CONFLICT", { reason: "invalid-payment-receipt" });
         if (current.state === "SETTLED" || current.state === "EXECUTED") {
           return current.payment_receipt.transaction === body.payment_receipt.transaction
             ? baseReply(body, current.state, { payment_receipt: current.payment_receipt, transaction: current.transaction })
