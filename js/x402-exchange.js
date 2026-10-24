@@ -157,9 +157,10 @@ function matchesOffer(accepted, offer) {
   return true;
 }
 
-function checkPayload(payload, offer) {
+function checkPayload(payload, offer, resourceUrl) {
   if (!payload || payload.x402Version !== X402_VERSION) return "invalid_x402_version";
   if (!matchesOffer(payload.accepted, offer)) return "invalid_payment_requirements";
+  if (!payload.resource || payload.resource.url !== resourceUrl) return "resource_mismatch";
   const body = payload.payload;
   const auth = body && body.authorization;
   if (!body || !auth) return "invalid_payload";
@@ -169,6 +170,11 @@ function checkPayload(payload, offer) {
   if (!NONCE.test(auth.nonce)) return "invalid_payload";
   if (auth.value !== offer.amount) return "invalid_exact_evm_payload_authorization_value_mismatch";
   if (!sameAddress(auth.to, offer.payTo)) return "invalid_exact_evm_payload_recipient_mismatch";
+  if (!/^(0|[1-9]\\d*)$/.test(String(auth.validAfter)) || !/^[1-9]\\d*$/.test(String(auth.validBefore))) return "invalid_authorization_window";
+  const now = Math.floor(Date.now() / 1000);
+  const validAfter = Number(auth.validAfter);
+  const validBefore = Number(auth.validBefore);
+  if (!Number.isSafeInteger(validAfter) || !Number.isSafeInteger(validBefore) || validAfter > now || validBefore <= now || validBefore - now > offer.maxTimeoutSeconds) return "invalid_authorization_window";
   return "";
 }
 
@@ -248,7 +254,7 @@ export async function handleExchange(request, options) {
   const acceptedNetwork = payload && payload.accepted && payload.accepted.network;
   const rail = rails.find((item) => item.network === acceptedNetwork) || null;
   const offer = rail ? requirementOf(rail) : null;
-  const reason = checkPayload(payload, offer);
+  const reason = checkPayload(payload, offer, resourceUrl);
   if (reason) return requiredResponse(resourceUrl, rails, reason);
 
   const facilitatorBody = {
@@ -264,7 +270,8 @@ export async function handleExchange(request, options) {
   } catch (err) {
     return jsonResponse(500, { error: "facilitator did not verify" });
   }
-  if (!verified.ok || !verified.json || verified.json.isValid !== true) {
+  if (!verified.ok || !verified.json || verified.json.isValid !== true ||
+      (verified.json.payer && !sameAddress(verified.json.payer, payload.payload.authorization.from))) {
     const why = (verified.json && verified.json.invalidReason) || "invalid_payload";
     return requiredResponse(resourceUrl, rails, why, {
       success: false,
@@ -283,7 +290,9 @@ export async function handleExchange(request, options) {
   }
   const settlement = settled.json || {};
   const transaction = String(settlement.transaction || "");
-  if (!settled.ok || settlement.success !== true || !TX.test(transaction)) {
+  if (!settled.ok || settlement.success !== true || !TX.test(transaction) ||
+      (settlement.network && settlement.network !== offer.network) ||
+      (settlement.payer && verified.json.payer && !sameAddress(settlement.payer, verified.json.payer))) {
     return requiredResponse(resourceUrl, rails, settlement.errorReason || "unexpected_settle_error", {
       success: false,
       errorReason: settlement.errorReason || "unexpected_settle_error",
