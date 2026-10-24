@@ -310,11 +310,9 @@ async function handleRequest(request, env) {
   // conflict, and an unresolved prior effect. A boolean-only claim cannot prove
   // safe retry behavior, so legacy/ambiguous responses fail closed.
   if (claim.state === "CONFLICT") {
-    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "settled-payment-operation-conflict" });
     return json({ available: false, stage: "idempotency-claim", reason: "operation-content-conflict" }, 409);
   }
   if (claim.state === "IN_DOUBT") {
-    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "memory-operation-in-doubt-after-payment" });
     return json({ available: false, stage: "idempotency-claim", reason: "prior-operation-in-doubt" }, 503);
   }
   // Only a clean reservation or a validated committed replay may proceed to
