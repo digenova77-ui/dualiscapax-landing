@@ -226,11 +226,22 @@ export default {
       return request.json().then((body) => {
         const ref = String(body.ref || "").trim();
         const rail = String(body.rail || "").trim().slice(0, 16);
+        const prev = body.prev && typeof body.prev === "object" ? body.prev : null;
         if (!ref || ref.length < 4 || ref.length > 128 || !/^[A-Za-z0-9_.:@\-]+$/.test(ref)) {
           return jsonNoStore({ ok: false, reason: "bad_ref" }, 400);
         }
-        const receipt = "rcpt-" + Date.now().toString(36) + "-" + ref.slice(0, 8);
-        return jsonNoStore({ ok: true, receipt, rail, note: "recorded; company does not hold funds" });
+        const id = "rcpt:" + Date.now().toString(36) + ":" + ref.slice(0, 12);
+        const finger = prev && prev.id ? finger16(prev) : 0;
+        const receipt = {
+          id,
+          prev: prev && prev.id ? prev.id : null,
+          finger,
+          rail,
+          ref,
+          ts: Date.now(),
+          note: "recorded; company does not hold funds; interaction is with the address or coin, not the company"
+        };
+        return jsonNoStore({ ok: true, receipt });
       }).catch(() => jsonNoStore({ ok: false, reason: "bad_json" }, 400));
     }
 

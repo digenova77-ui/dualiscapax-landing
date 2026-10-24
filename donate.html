@@ -47,6 +47,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <button type="button" class="rail" id="eft">Open email for EFT instructions</button>
   <h2>Crypto payment options</h2>
   <p class="lede">Send on one chain only. Click a button to open a wallet link or copy the address.</p>
+  <p class="lede">Coin interaction: you pay the architecture or the address directly with whatever currency you choose. The company advertises and does not process the payment.</p>
   <button type="button" class="rail" id="xrp" data-chain="xrp">Open XRP send</button>
   <button type="button" class="rail" id="zec" data-chain="zec">Open Zcash send</button>
   <button type="button" class="rail" id="sol" data-chain="sol">Open Solana send</button>
@@ -215,28 +216,47 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
 
   var form = document.getElementById('confirm-form');
   var out = document.getElementById('confirm-out');
+  var chain = [];
+  function renderOut(title, lines){
+    out.hidden = false;
+    while (out.firstChild) out.removeChild(out.firstChild);
+    var s = document.createElement('strong');
+    s.textContent = title;
+    out.appendChild(s);
+    lines.forEach(function(line){
+      var p = document.createElement('p');
+      p.style.marginTop = '.4rem';
+      p.textContent = line;
+      out.appendChild(p);
+    });
+  }
   if (form) form.addEventListener('submit', function(e){
     e.preventDefault();
     var ref = (document.getElementById('confirm-ref').value || '').trim();
     var rail = document.getElementById('confirm-rail').value;
     if (!ref || ref.length < 4 || ref.length > 128) return;
+    var prev = chain.length ? chain[chain.length - 1] : null;
     fetch('/donate/confirm', {
       method: 'POST',
       headers: {'content-type':'application/json'},
-      body: JSON.stringify({rail: rail, ref: ref})
+      body: JSON.stringify({rail: rail, ref: ref, prev: prev})
     }).then(function(r){ return r.json(); }).then(function(j){
-      out.hidden = false;
-      while (out.firstChild) out.removeChild(out.firstChild);
-      var s = document.createElement('strong');
-      s.textContent = j.ok ? 'Receipt recorded' : 'Could not record';
-      out.appendChild(s);
-      var p = document.createElement('p');
-      p.style.marginTop = '.4rem';
-      p.textContent = j.ok ? ('Receipt ' + j.receipt + '. Funds go to the address you sent to. This page does not hold them.') : (j.reason || 'Failed');
-      out.appendChild(p);
+      if (!j.ok || !j.receipt) { renderOut('Could not record', [j.reason || 'Failed']); return; }
+      chain.push(j.receipt);
+      return fetch('/receipts/verify', {
+        method: 'POST',
+        headers: {'content-type':'application/json'},
+        body: JSON.stringify({receipts: chain})
+      }).then(function(r){ return r.json(); }).then(function(v){
+        renderOut('Receipt recorded', [
+          'Receipt ' + j.receipt.id + ' (finger ' + j.receipt.finger + ').',
+          'Chain length ' + chain.length + '. Verify: ' + (v.ok ? 'ok' : 'fail'),
+          'Funds go to the address you sent to. This page and the company do not hold them.',
+          'Coin interaction stays with the address or the architecture.'
+        ]);
+      });
     }).catch(function(){
-      out.hidden = false;
-      out.textContent = 'Network error. Try again.';
+      renderOut('Network error', ['Try again.']);
     });
   });
 })();
