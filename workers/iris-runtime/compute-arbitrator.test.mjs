@@ -59,5 +59,5 @@ test("priceCompute labels supplied measurements as unverified rather than metere
 test("priceCompute rejects negative and non-finite resource amounts", () => {
   assert.equal(priceCompute({ joules: -1, cadPerJoule: 0.1 }).status, "INVALID_INPUT");
   assert.equal(priceCompute({ joules: Infinity, cadPerJoule: 0.1 }).status, "INVALID_INPUT");
-  assert.equal(priceCompute({ joules: 1, cadPerJoule: 0.1, measurement: "magic" }).status, "UNPRICED");
+  assert.equal(priceCompute({ joules: 1, cadPerJoule: 0.1, measurement: "magic", indexId: "test-index", indexTimestamp: "2026-10-24T12:00:00Z" }).status, "INVALID_MEASUREMENT_CLASS");
 });
