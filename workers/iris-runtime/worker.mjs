@@ -194,7 +194,10 @@ export default {
         }
       }
 
-      const principal = (body.principal && body.principal.unity_id) || body.unity_id || "anonymous";
+      const principal = (body.principal && body.principal.unity_id) || body.unity_id || null;
+      if (typeof principal !== "string" || !principal.trim()) {
+        return json(400, { authorized: false, reason: "missing-principal", request_id: requestId });
+      }
       if (!rateOk(principal)) {
         recordAudit({ request_id: requestId, decision: "deny", reason: "rate-limited" });
         return json(429, { authorized: false, reason: "rate-limited", request_id: requestId });
