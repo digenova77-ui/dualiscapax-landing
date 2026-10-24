@@ -2,9 +2,10 @@
  * IrisAuthorize — client-side HMAC signing helper for /v1/authorize.
  * The SIGNING_SECRET must be supplied by a secure context (server-injected,
  * session, or agent runtime). Never hardcode it here.
+ * Staging builds may override the base URL via window.IrisAuthorizeBase.
  */
 (function (w) {
-  var VERSION = "iris-authorize-2026-10-24";
+  var VERSION = "iris-authorize-2026-10-24-staging";
 
   async function signRequest(body, secret) {
     if (!secret) throw new Error("signing-secret-unavailable");
@@ -25,8 +26,10 @@
   }
 
   async function authorize(body, secret) {
+    var base = (w.IrisAuthorizeBase || "").replace(/\/$/, "");
+    var url = base + "/v1/authorize";
     var signed = await signRequest(body, secret);
-    var res = await fetch("/v1/authorize", {
+    var res = await fetch(url, {
       method: "POST",
       headers: {
         "content-type": "application/json",
