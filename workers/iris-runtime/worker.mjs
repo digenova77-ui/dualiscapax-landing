@@ -446,7 +446,7 @@ export default {
       let body;
       try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
       if (new TextEncoder().encode(JSON.stringify(body)).byteLength > MAX_BODY_BYTES) return json(413, { ok: false, reason: "body-too-large" });
-      const expected = await hmacHex(env.TRINITY_HMAC_SECRET, timestamp + "." + JSON.stringify(body));
+      const expected = await hmacHex(env.TRINITY_HMAC_SECRET, timestamp + ".POST./v1/receipt/revoke." + JSON.stringify(body));
       if (expected !== signature) return json(401, { ok: false, reason: "invalid-signature" });
       const id = body && (body.id || body.request_id);
       if (typeof id !== "string" || !id || id.length > 133 || !/^(rct_)?[A-Za-z0-9._:-]{1,128}$/.test(id)) {
