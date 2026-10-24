@@ -94,7 +94,7 @@ test("2. concurrent in-flight claim is 409", async () => {
   const gate = new Promise((resolve) => { release = resolve; });
   const env = {
     ...ENV,
-    IDENTITY_API: { fetch: () => gate.then(() => new Response(JSON.stringify({ ok: true }), { status: 200 })) },
+    IDENTITY_API: { fetch: (_url, init) => gate.then(() => { const body = JSON.parse(init.body || "{}"); const unityId = body.principal && body.principal.unity_id; return new Response(JSON.stringify({ ok: true, verified: !!unityId, unity_id: unityId }), { status: 200 }); }) },
   };
   const first = post("/v1/authorize", { request_id: "race-10", text: "a" }, env);
   await new Promise((r) => setTimeout(r, 10));
