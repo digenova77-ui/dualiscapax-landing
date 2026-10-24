@@ -151,6 +151,8 @@ The local Node test run passed **9/9 tests**:
 - transaction-to-pool ratio versus post-reservation-utilization interpretations;
 - physical capacity overflow;
 - malformed, negative, fractional, leading-zero and zero transaction input;
-- explicit comparison output showing disagreement rather than silently selecting a canonical rule.
+- explicit comparison output showing disagreement rather than silently selecting a canonical rule;
+- ratio sweep at 0.55, 0.59, 0.60, 0.61 and 0.65;
+- exact absolute-limit boundary and one-unit-over cases for both candidate limits.
 
 The harness uses canonical integer strings and basis points (6000 = 0.60), not floating-point division. Its inputs are synthetic common units; this does **not** claim the historical dollar figures are the same unit. The test result is a local run of this harness, not evidence that the existing runtime enforces a threshold or that CI has passed this commit.
