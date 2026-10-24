@@ -79,8 +79,7 @@ After claim (including a replay), the runtime reads `/v1/context/read` for the s
 The test fixture simulates this API in memory and is **not** evidence of persistence across
 Workers isolates or restarts. Before staging deploy, inspect and test the actual
 `iris-memory-staging` service implementation, including concurrent claims, conflict handling,
-receipt persistence, and lookup after a cold start. The Wrangler service name is still a
-placeholder until that service is confirmed.
+receipt persistence, and lookup after a cold start. The memory service source and Wrangler configuration are now in this PR, but the Cloudflare service has not yet been deployed or live-verified. The identity, Trinity, and model-provider service bindings also need real staging services before runtime deployment.
 
 ## Production boundary
 
