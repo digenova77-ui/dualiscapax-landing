@@ -52,6 +52,10 @@ jobs:
       - name: Run Iris authorize regression (Node)
         run: node --test tests/iris-authorize-regression.test.mjs
 
+      # Project-wide receipt gate: DEPTH, work, and learning require a valid receipt.
+      - name: Run Iris receipt gate (Node)
+        run: node --test tests/iris-receipt-gate.test.mjs
+
       # Contract tests for the authorize decision and receipt shape.
       - name: Run Iris authorize contract (Python)
         run: python -m unittest tests.test_iris_authorize_contract -v
