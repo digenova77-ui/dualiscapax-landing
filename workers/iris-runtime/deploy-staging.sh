@@ -25,4 +25,9 @@ npx wrangler deploy --env staging
 
 echo
 echo "Staging deploy complete. Production was not touched."
-echo "Next: point IrisAuthorizeBase at the staging Worker origin and re-run the verification suite."
+if [[ -n "${IRIS_STAGING_URL:-}" ]]; then
+  echo "Running live verification against ${IRIS_STAGING_URL}"
+  node verify-live.mjs
+else
+  echo "Set IRIS_STAGING_URL and run ./post-deploy.sh to prove the deploy."
+fi

@@ -56,6 +56,10 @@ jobs:
       - name: Run Iris receipt gate (Node)
         run: node --test tests/iris-receipt-gate.test.mjs
 
+      # Live verifier unit checks. Does not call a Worker.
+      - name: Run Iris live verifier unit checks
+        run: node --test tests/iris-live-verify.test.mjs
+
       # Contract tests for the authorize decision and receipt shape.
       - name: Run Iris authorize contract (Python)
         run: python -m unittest tests.test_iris_authorize_contract -v

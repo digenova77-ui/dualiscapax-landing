@@ -91,3 +91,35 @@ node workers/iris-runtime/verify-staging.mjs
 ```
 
 Checks wrangler bindings, Worker source shape, and receipt contract. Exits non-zero on failure.
+
+## Post-deploy (implemented)
+
+After `./deploy-staging.sh`:
+
+```bash
+export IRIS_STAGING_URL=https://iris-runtime-staging.<subdomain>.workers.dev
+./post-deploy.sh
+```
+
+`post-deploy.sh` runs the local suites always and the live checks when `IRIS_STAGING_URL` is set.
+
+Live checks (`verify-live.mjs`):
+1. `/health` is ok and `missing` is empty
+2. `force_deny: true` returns `authorized: false`
+3. an allow returns `dualis.receipt.v1` with `rct_` id and 64-char `sha256`
+
+## Page wiring
+
+Iris pages load, in order:
+- `/js/iris-receipt.js`
+- `/js/iris-authorize.js`
+- `/js/iris-boot.js`
+- `/js/iris-session.js`
+
+`iris-boot.js` reads:
+
+```html
+<meta name="iris-authorize-base" content="">
+```
+
+Set `content` to the staging Worker origin on the staging page only. Leave it empty in production. The boot script never sets `window.IrisSigningSecret`.
