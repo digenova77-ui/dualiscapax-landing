@@ -49,7 +49,19 @@ def _arbitrate_domain(domain: str, law_input: Dict[str, Any],
             "reason": "exact function evaluated", "rate": r,
         }
     if law_result is None:
-        law_result = {"mode": "deterministic", "verdict": "PASS", "reason": "no judge registered — default PASS"}
+        law_result = {
+            "mode": "deterministic",
+            "verdict": "REFUSE",
+            "reason": "no judge registered — fail closed",
+        }
+
+    # A malformed judge result must never be interpreted as approval.
+    if not isinstance(law_result, dict) or law_result.get("verdict") not in {"PASS", "REFUSE", "PENDING"}:
+        law_result = {
+            "mode": "deterministic",
+            "verdict": "REFUSE",
+            "reason": "missing or invalid judge verdict — fail closed",
+        }
 
     if pattern_input is None:
         pattern = {"lean": "TIE", "margin": 0.0, "honest_label": "pattern side abstained — no features supplied"}
