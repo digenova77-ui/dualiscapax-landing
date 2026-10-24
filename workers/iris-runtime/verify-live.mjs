@@ -68,8 +68,11 @@ function getJson(url) {
 
 export function checkHealth(result) {
   const missing = result && result.data && result.data.missing;
-  const ok = result && result.status === 200 && result.data && result.data.ok === true && Array.isArray(missing) && missing.length === 0;
-  return { ok, missing: missing || null, reason: ok ? null : "health-not-ok" };
+  const inert = result && result.data && result.data.inert;
+  const missingOk = Array.isArray(missing) && missing.length === 0;
+  const inertOk = !Array.isArray(inert) || inert.length === 0;
+  const ok = result && result.status === 200 && result.data && result.data.ok === true && missingOk && inertOk;
+  return { ok, missing: missing || null, inert: inert || null, reason: ok ? null : "health-not-ok" };
 }
 
 export function checkDeny(result) {

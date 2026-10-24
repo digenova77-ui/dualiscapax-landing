@@ -17,10 +17,16 @@ const REQUIRED_BINDINGS = [
 
 const RECEIPT_CONTRACT = "dualis.receipt.v1";
 const BINDING_TIMEOUT_MS = 1500;
+const MAX_BODY_BYTES = 65536;
+const MAX_SKEW_SECONDS = 300;
+const RATE_LIMIT = 30;
+const RATE_WINDOW_MS = 60_000;
 
-// Same-isolate idempotency. Cross-isolate duplicates need a Durable Object.
+// Same-isolate state. Cross-isolate durability needs a Durable Object.
 const issued = new Map();
 const inflight = new Set();
+const rates = new Map();
+const audit = [];
 
 function json(status, body, extraHeaders) {
   return new Response(JSON.stringify(body), {
@@ -46,6 +52,24 @@ function inertBindings(env) {
 async function sha256Hex(text) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
   return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function recordAudit(entry) {
+  audit.push({ at: new Date().toISOString(), ...entry });
+  if (audit.length > 100) audit.shift();
+}
+
+function rateOk(key) {
+  const now = Date.now();
+  const bucket = rates.get(key) || [];
+  const fresh = bucket.filter((t) => now - t < RATE_WINDOW_MS);
+  if (fresh.length >= RATE_LIMIT) {
+    rates.set(key, fresh);
+    return false;
+  }
+  fresh.push(now);
+  rates.set(key, fresh);
+  return true;
 }
 
 function receiptShape(receipt) {
@@ -135,6 +159,11 @@ export default {
         return json(400, { authorized: false, reason: "invalid-json" });
       }
 
+      const raw = JSON.stringify(body);
+      if (raw.length > MAX_BODY_BYTES) {
+        return json(413, { authorized: false, reason: "body-too-large" });
+      }
+
       const requestId = body && body.request_id;
       if (!requestId || typeof requestId !== "string") {
         return json(400, { authorized: false, reason: "missing-request-id" });
@@ -147,9 +176,16 @@ export default {
 
       const timestamp = request.headers.get("x-timestamp");
       const signature = request.headers.get("x-signature");
+      if (env.IRIS_REQUIRE_SIGNATURE === true && (!timestamp || !signature)) {
+        return json(401, { authorized: false, reason: "signature-required" });
+      }
       if (timestamp || signature) {
         if (!timestamp || !signature) {
           return json(401, { authorized: false, reason: "invalid-signature" });
+        }
+        const skew = Math.abs(Math.floor(Date.now() / 1000) - Number(timestamp));
+        if (!Number.isFinite(skew) || skew > MAX_SKEW_SECONDS) {
+          return json(401, { authorized: false, reason: "timestamp-skew" });
         }
         const expected = await hmacHex(secret, timestamp + "." + JSON.stringify(body));
         if (expected !== signature) {
@@ -157,7 +193,20 @@ export default {
         }
       }
 
+      const principal = (body.principal && body.principal.unity_id) || body.unity_id || "anonymous";
+      if (!rateOk(principal)) {
+        recordAudit({ request_id: requestId, decision: "deny", reason: "rate-limited" });
+        return json(429, { authorized: false, reason: "rate-limited", request_id: requestId });
+      }
+
+      const inputText = typeof body.text === "string" ? body.text : "";
+      const digest = await sha256Hex(inputText);
       if (issued.has(requestId)) {
+        const prior = issued.get(requestId);
+        if (prior.sha256 === digest) {
+          return json(200, { authorized: true, decision: "allow", request_id: requestId, receipt: prior, replay: true });
+        }
+        recordAudit({ request_id: requestId, decision: "deny", reason: "duplicate-request" });
         return json(409, { authorized: false, reason: "duplicate-request", request_id: requestId });
       }
       if (inflight.has(requestId)) {
@@ -167,10 +216,10 @@ export default {
 
       try {
         if (body.force_deny === true) {
+          recordAudit({ request_id: requestId, decision: "deny", reason: "policy" });
           return json(403, { authorized: false, reason: "policy", request_id: requestId });
         }
 
-        const inputText = typeof body.text === "string" ? body.text : "";
         const identity = await callBinding(env.IDENTITY_API, "/check", { request_id: requestId, principal: body.principal || null }, env.IRIS_BINDING_TIMEOUT_MS);
         if (!identity.ok) {
           return json(403, { authorized: false, reason: identity.reason || "identity-denied", request_id: requestId });
@@ -180,7 +229,6 @@ export default {
           return json(403, { authorized: false, reason: law.reason || "law-denied", request_id: requestId });
         }
 
-        const digest = await sha256Hex(inputText);
         const receipt = {
           contract: RECEIPT_CONTRACT,
           unity_id: body.unity_id || "staging",
@@ -194,6 +242,7 @@ export default {
         }
 
         issued.set(requestId, receipt);
+        recordAudit({ request_id: requestId, decision: "allow", receipt_id: receipt.id });
         return json(200, {
           authorized: true,
           decision: "allow",
@@ -217,6 +266,12 @@ export default {
       if (!stored || stored.id !== body.receipt.id || stored.sha256 !== body.receipt.sha256) {
         return json(403, { ok: false, reason: "receipt-unknown" });
       }
+      if (typeof body.text === "string") {
+        const digest = await sha256Hex(body.text);
+        if (digest !== body.receipt.sha256.toLowerCase()) {
+          return json(403, { ok: false, reason: "sha256-mismatch" });
+        }
+      }
       const model = await callBinding(env.MODEL_PROVIDER, "/complete", { receipt: body.receipt, text: body.text || "" });
       if (!model.ok) {
         return json(502, { ok: false, reason: model.reason || "model-denied" });
@@ -237,9 +292,12 @@ export default {
         if (digest !== receipt.sha256.toLowerCase()) return json(200, { valid: false, reason: "sha256-mismatch" });
       }
       const stored = issued.get(receipt.request_id);
+      if (stored && (stored.id !== receipt.id || stored.sha256 !== receipt.sha256.toLowerCase())) {
+        return json(200, { valid: false, reason: "stored-mismatch" });
+      }
       return json(200, {
         valid: true,
-        known: !!(stored && stored.id === receipt.id),
+        known: !!stored,
         contract: RECEIPT_CONTRACT,
         id: receipt.id,
       });
@@ -252,6 +310,10 @@ export default {
         if (receipt.id === id) return json(200, { found: true, receipt });
       }
       return json(404, { found: false, reason: "not-issued" });
+    }
+
+    if (url.pathname === "/v1/audit" && request.method === "GET") {
+      return json(200, { count: audit.length, entries: audit.slice(-20) });
     }
 
     if (url.pathname === "/health") {

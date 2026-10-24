@@ -72,6 +72,10 @@ jobs:
       - name: Run Iris next-ten authorize tests
         run: node --test tests/iris-authorize-next10.test.mjs
 
+      # Replay, skew, size, rate, stored mismatch, infer digest, health, audit, learn.
+      - name: Run Iris next-twenty authorize tests
+        run: node --test tests/iris-authorize-next20.test.mjs
+
       # Contract tests for the authorize decision and receipt shape.
       - name: Run Iris authorize contract (Python)
         run: python -m unittest tests.test_iris_authorize_contract -v

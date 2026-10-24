@@ -164,7 +164,11 @@
       });
       if (w.IrisLive && IrisLive.run) {
         if (!receiptOk(last.ticket)) return { spoken: "Not authorized.", lane: "DENIED", reason: "receipt-required" };
-        return Promise.resolve(IrisLive.run(last.text));
+        return Promise.resolve(IrisLive.run(last.text, last.ticket.receipt));
+      }
+      if (w.IrisLearn && IrisLearn.step) {
+        if (!receiptOk(last.ticket)) return { spoken: "Not authorized.", lane: "DENIED", reason: "receipt-required" };
+        return Promise.resolve(IrisLearn.step(last.text, last.ticket.receipt));
       }
       return Promise.resolve({ spoken: last.text || "I'm Iris.", lane: "LOOK" });
     });

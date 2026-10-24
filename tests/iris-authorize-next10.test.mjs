@@ -45,10 +45,14 @@ function post(path, body, env = ENV, headers = {}) {
   }), env);
 }
 
-test("1. duplicate request_id is 409", async () => {
+test("1. same-body duplicate replays; different body is 409", async () => {
   const first = await post("/v1/authorize", { request_id: "dup-10", text: "a" });
   assert.equal(first.status, 200);
-  const second = await post("/v1/authorize", { request_id: "dup-10", text: "a" });
+  const replay = await post("/v1/authorize", { request_id: "dup-10", text: "a" });
+  const replayData = await replay.json();
+  assert.equal(replay.status, 200);
+  assert.equal(replayData.replay, true);
+  const second = await post("/v1/authorize", { request_id: "dup-10", text: "b" });
   const data = await second.json();
   assert.equal(second.status, 409);
   assert.equal(data.reason, "duplicate-request");
@@ -117,7 +121,7 @@ test("7. infer requires a known receipt", async () => {
 
 test("8. bad HMAC signature is 401", async () => {
   const res = await post("/v1/authorize", { request_id: "sig-10", text: "a" }, ENV, {
-    "x-timestamp": "1",
+    "x-timestamp": String(Math.floor(Date.now() / 1000)),
     "x-signature": "deadbeef",
   });
   const data = await res.json();
