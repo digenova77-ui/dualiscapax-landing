@@ -97,7 +97,7 @@ async function hmacHex(secret, payload) {
   return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function callBinding(binding, path, body, timeoutMs) {
+async function callBinding(binding, path, body, timeoutMs, extraHeaders) {
   if (!binding || typeof binding.fetch !== "function") {
     return { ok: false, reason: "binding-inert" };
   }
@@ -110,7 +110,7 @@ async function callBinding(binding, path, body, timeoutMs) {
     try {
       const res = await binding.fetch("https://binding" + path, {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json", ...(extraHeaders || {}) },
         body: JSON.stringify(body),
       });
       let data = null;
@@ -147,6 +147,7 @@ export default {
       if (missing.length) {
         return json(503, { authorized: false, reason: "bindings-unavailable", missing });
       }
+      if (!env.IRIS_MEMORY_SERVICE_TOKEN) return json(503, { authorized: false, reason: "memory-service-token-unavailable" });
       const inert = inertBindings(env);
       if (inert.length) {
         return json(503, { authorized: false, reason: "binding-inert", missing: inert });
@@ -248,7 +249,7 @@ export default {
           action: body.action || "iris.turn.look",
           input_sha256: digest,
           receipt,
-        }, env.IRIS_BINDING_TIMEOUT_MS);
+        }, env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
         if (claim.status === 409) {
           recordAudit({ request_id: requestId, decision: "deny", reason: "duplicate-request" });
           return json(409, { authorized: false, reason: "duplicate-request", request_id: requestId });
@@ -287,6 +288,7 @@ export default {
     if (url.pathname === "/v1/infer" && request.method === "POST") {
       const missing = missingBindings(env);
       if (missing.length) return json(503, { ok: false, reason: "bindings-unavailable", missing });
+      if (!env.IRIS_MEMORY_SERVICE_TOKEN) return json(503, { ok: false, reason: "memory-service-token-unavailable" });
       let body;
       try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
       if (!receiptShape(body && body.receipt)) {
@@ -294,7 +296,7 @@ export default {
       }
       const storedResult = await callBinding(env.IRIS_MEMORY, "/v1/requests/get", {
         request_id: body.receipt.request_id,
-      }, env.IRIS_BINDING_TIMEOUT_MS);
+      }, env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
       const stored = storedResult.data && storedResult.data.receipt;
       if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true ||
           !receiptShape(stored) || stored.id !== body.receipt.id ||
@@ -318,6 +320,7 @@ export default {
     if (url.pathname === "/v1/receipt/verify" && request.method === "POST") {
       const missing = missingBindings(env);
       if (missing.length) return json(503, { valid: false, reason: "bindings-unavailable", missing });
+      if (!env.IRIS_MEMORY_SERVICE_TOKEN) return json(503, { valid: false, reason: "memory-service-token-unavailable" });
       const inert = inertBindings(env);
       if (inert.length) return json(503, { valid: false, reason: "binding-inert", missing: inert });
       if (!env.TRINITY_HMAC_SECRET) return json(503, { valid: false, reason: "signing-secret-unavailable" });
@@ -331,7 +334,7 @@ export default {
       }
       const storedResult = await callBinding(env.IRIS_MEMORY, "/v1/requests/get", {
         request_id: receipt.request_id,
-      }, env.IRIS_BINDING_TIMEOUT_MS);
+      }, env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
       const stored = storedResult.data && storedResult.data.receipt;
       if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true || !receiptShape(stored)) {
         return json(200, { valid: false, known: false, reason: "receipt-unknown" });
@@ -354,7 +357,7 @@ export default {
       const requestId = id.slice(4);
       const result = await callBinding(env.IRIS_MEMORY, "/v1/requests/get", {
         request_id: requestId,
-      }, env.IRIS_BINDING_TIMEOUT_MS);
+      }, env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
       const receipt = result.data && result.data.receipt;
       if (!result.ok || !result.data || result.data.found !== true || !receiptShape(receipt) || receipt.id !== id) {
         return json(404, { found: false, reason: "not-issued" });
