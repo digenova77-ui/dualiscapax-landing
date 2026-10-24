@@ -2,10 +2,16 @@
 
 This document describes how to connect the Iris pages to the governed staging Worker without touching the production Pages deployment.
 
+## Security boundary (non-negotiable)
+
+`window.IrisSigningSecret` is browser-visible. Any value readable by browser JavaScript is public to that browser. The `IrisAuthorizeBase` option correctly enables a separate staging origin, but neither feature makes a browser-held secret private. Production must use a server-side signer; the staging hook is for verification only.
+
 ## Staging Worker
 
 - Location: `workers/iris-runtime/`
-- Entry: `worker.mjs`
+- Entry: `worker.mjs` (present on the integration branch; not yet on this branch)
+- Required bindings: `IDENTITY_API`, `TRINITY_LAW`, `IRIS_MEMORY`, `MODEL_PROVIDER`
+- Receipt contract: `dualis.receipt.v1` with 64-char lowercase SHA-256
 - Config: `wrangler.toml` (no production routes)
 - Deploy command (staging only):
   ```bash
@@ -13,31 +19,26 @@ This document describes how to connect the Iris pages to the governed staging Wo
   wrangler deploy --env staging
   ```
 
-## Page connection (staging only)
+## Verification before any promotion
 
-Iris pages (`ai/app.html`, `iris.html`, etc.) currently call browser-side `DCLMLook` / BYOK. For staging verification:
-
-1. Set `window.IrisSigningSecret` from a staging-only injection (never in production HTML).
-2. Ensure `js/iris-authorize.js` is loaded before `js/iris-session.js`.
-3. Point the authorize fetch at the staging Worker origin if it differs from the Pages origin (update `IrisAuthorize.authorize` base URL for the staging build only).
-
-## Required regression tests before any promotion
-
-Run:
 ```bash
+node workers/iris-runtime/verify-staging.mjs
+python -m unittest tests.test_iris_authorize_contract -v
 node --test tests/iris-authorize-regression.test.mjs
-node --test workers/iris-runtime/worker.test.mjs
+python -m unittest discover -s tests -v
 ```
 
-Must cover:
+Must pass:
 - Denial (no downstream inference)
 - Authorization timeout (treated as denial)
 - Duplicate `request_id` (409)
 - Concurrent claims (exactly one succeeds)
 - Receipt verification (id + sha256 present on allow)
+- Binding presence check
+- Receipt contract shape
 
 ## Production boundary
 
 - Production Pages deployment remains untouched.
 - No production routes, secrets, or bindings are changed by this staging wiring.
-- `window.IrisSigningSecret` is a browser-visible staging hook only; production requires a server-side signer.
+- Staging deployment should wait until the real-runtime tests and required bindings are verified.
