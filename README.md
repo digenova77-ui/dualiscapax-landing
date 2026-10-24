@@ -2,6 +2,12 @@
 
 [![Pages deploy](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/pages-deploy.yml/badge.svg)](https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/pages-deploy.yml)
 
+### Governed deterministic-first hybrid intelligence and compute
+
+DualisCapax is not merely an authentication, passkey, biometric, or identity product. Identity is one boundary in a broader architecture spanning Iris AI orchestration, DCLM/DC³ deterministic compute, Trinity authorization, Unity identity/provenance, governed memory and durable evidence, edge/cloud/distributed infrastructure, resource and energy accounting, economic coordination, scientific exploration, and real-world operational optimization.
+
+The full project scope, intended causal effects, evidence ladder, and implementation obligations are documented in [the DualisCapax Project Scope](docs/DUALISCAPAX-PROJECT-SCOPE.md). That document distinguishes the system's intended reach from capabilities that have actually been implemented, tested, deployed, and measured.
+
 ### Trinity-governed computing
 
 [Website](https://dualiscapax.ai) · [GitHub repository](https://github.com/digenova77-ui/dualiscapax-landing)
