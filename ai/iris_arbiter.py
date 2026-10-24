@@ -19,8 +19,12 @@ def plus_one_rate(usdc_amount: float, cohort_growth_rate: float, tier: int = 1) 
     """PLUS_ONE_INCENTIVE.md §1.2 — exact, no approximation.
     rate = 0.001 * (1 + cohort_growth_rate) * (1 + 0.1 * (tier - 1))
     Returns the payable amount in USDC (6 decimals)."""
-    if usdc_amount < 0:
-        raise ValueError("usdc_amount must be >= 0")
+    if not math.isfinite(usdc_amount) or usdc_amount < 0:
+        raise ValueError("usdc_amount must be finite and >= 0")
+    if not math.isfinite(cohort_growth_rate):
+        raise ValueError("cohort_growth_rate must be finite")
+    if not isinstance(tier, int) or isinstance(tier, bool) or tier < 1:
+        raise ValueError("tier must be a positive integer")
     rate = 0.001 * (1 + cohort_growth_rate) * (1 + 0.1 * (tier - 1))
     return round(usdc_amount * rate, 6)
 
@@ -76,7 +80,15 @@ def _arbitrate_domain(domain: str, law_input: Dict[str, Any],
                       pattern_input: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """Hybrid engine: deterministic law + pattern intuition, integrated
     per the LAW-WINS decision table."""
-    law_result = LAW_JUDGES[domain](law_input) if domain in LAW_JUDGES else None
+    try:
+        law_result = LAW_JUDGES[domain](law_input) if domain in LAW_JUDGES else None
+    except Exception as exc:
+        # A judge crash is a refusal, never an implicit approval.
+        law_result = {
+            "mode": "deterministic",
+            "verdict": "REFUSE",
+            "reason": f"judge raised {type(exc).__name__} — fail closed",
+        }
 
     if law_result is None and domain == "plus_one_math":
         r = plus_one_rate(**law_input)
