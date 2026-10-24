@@ -106,7 +106,11 @@ node --test workers/iris-runtime/*.test.mjs
 
 `puel-bundle-verifier.mjs` composes the structural and cryptographic layers. It requires signed evidence for identity attestation, the Trinity decision, execution receipt, every resource measurement, and settlement evidence when present. The signed evidence must exactly match the corresponding object in the bundle; missing or duplicate attestations fail closed.
 
-**Trust boundary:** the trusted key registry is explicitly supplied by the caller. A successful result means `SIGNED_EVIDENCE_VERIFIED` under that supplied registry, not that the registry itself is trustworthy, decentralized, or governed. A valid cryptographic signature proves control of a key and integrity of the signed bytes; it does not prove that the issuer's claim is true. The next milestone is an independently governed root-of-trust, key distribution/revocation mechanism, source-specific verifiers, and multi-party policy for the final PUEL verdict. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
+### Root-signed trust registry
+
+`puel-trust-registry.mjs` validates the trust registry against a pinned Ed25519 root public key supplied by the deployment/operator. The root-signed registry defines issuer keys, authorized evidence roles, key validity windows, registry expiry, and revoked key IDs. A modified or expired registry, duplicate key ID, malformed key, or invalid root signature is rejected.
+
+The root public key is still a deployment trust anchor: this code cannot prove how that key was obtained or prevent an operator from replacing it. Key rotation, emergency revocation, rollback prevention for registry versions, independent custody, and recovery from root-key compromise need explicit operational policy. A valid cryptographic signature proves control of a key and integrity of the signed bytes; it does not prove the issuer's claim is true. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
 
 ## Diamond trilogy asset-intent contract v0.1
 
