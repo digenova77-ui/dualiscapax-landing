@@ -93,12 +93,18 @@ test("denied DEPTH ticket blocks provider before any external model call", async
   assert.equal(h.getProviderCalls(), 0);
 });
 
-// Case: admitted DEPTH ticket permits exactly one provider call.
+// Case: admitted DEPTH ticket with a valid receipt permits exactly one provider call.
 test("admitted DEPTH ticket permits one provider call", async () => {
   const h = harness();
   const ticket = {
     ok: true,
     grade: { lane: "DEPTH", burn: 1, grant: "FUEL" },
+    receipt: {
+      contract: "dualis.receipt.v1",
+      id: "rct_depth-1",
+      sha256: "a".repeat(64),
+      request_id: "depth-1",
+    },
   };
 
   const result = await h.api.run("build me a new application", ticket);
@@ -107,6 +113,21 @@ test("admitted DEPTH ticket permits one provider call", async () => {
   assert.equal(result.lane, "DEPTH");
   assert.equal(result.ticket, ticket);
   assert.equal(h.getProviderCalls(), 1);
+});
+
+// Case: DEPTH without an authorized receipt must not call the provider.
+test("DEPTH without receipt does not call the provider", async () => {
+  const h = harness();
+  const ticket = {
+    ok: true,
+    grade: { lane: "DEPTH", burn: 1, grant: "FUEL" },
+  };
+
+  const result = await h.api.run("build me a new application", ticket);
+
+  assert.equal(result.lane, "DEPTH");
+  assert.match(result.spoken, /receipt/i);
+  assert.equal(h.getProviderCalls(), 0);
 });
 
 // Case: LOOK lane never calls the external model provider.

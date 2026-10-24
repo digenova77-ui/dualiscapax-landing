@@ -152,6 +152,20 @@
     if (w.IrisFuel && IrisFuel.admit) return IrisFuel.admit(text);
     return { ok: true, paid: false, grade: { lane: "LOOK", burn: 0, grant: "LOOK" } };
   }
+  function receiptOf(pass) {
+    if (!pass) return null;
+    return pass.receipt || (pass.auth && pass.auth.receipt) || null;
+  }
+  function receiptOk(pass) {
+    var r = receiptOf(pass);
+    if (w.IrisReceipt && IrisReceipt.validReceipt) return IrisReceipt.validReceipt(r);
+    if (!r || typeof r !== "object") return false;
+    if (r.contract !== "dualis.receipt.v1") return false;
+    if (typeof r.id !== "string" || r.id.indexOf("rct_") !== 0) return false;
+    if (typeof r.sha256 !== "string" || !/^[0-9a-f]{64}$/i.test(r.sha256)) return false;
+    if (typeof r.request_id !== "string" || !r.request_id) return false;
+    return true;
+  }
   async function run(text, ticket) {
     var v = scanVeto(text);
     if (v) return { grant: "VETO", spoken: v, lane: "VETO" };
@@ -164,6 +178,9 @@
       return (pass.deny && pass.deny.spoken)
         ? pass.deny
         : { grant: "VETO", lane: "DEPTH", spoken: "Depth is unavailable because authorization was not granted.", ticket: pass };
+    }
+    if (lane === "DEPTH" && !receiptOk(pass)) {
+      return { grant: "VETO", lane: "DEPTH", spoken: "Depth is unavailable because no authorized receipt was issued.", ticket: pass };
     }
 
     var raw = String(text || "");
@@ -178,8 +195,8 @@
       if (here) { here.lane = here.lane || "HERE"; return here; }
     }
     var talk = null;
-    // External model access is reserved for explicitly admitted DEPTH requests.
-    if (lane === "DEPTH" && pass.ok) {
+    // External model access requires an admitted DEPTH ticket AND a valid receipt.
+    if (lane === "DEPTH" && pass.ok && receiptOk(pass)) {
       talk = await xaiTalk(raw, facts);
       if (talk) {
         talk.lane = "DEPTH";
