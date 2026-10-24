@@ -63,7 +63,7 @@ if [[ -n "$IRIS_STAGING_URL" ]]; then
   IRIS_STAGING_UNITY_ID="$IRIS_STAGING_UNITY_ID" \
   node verify-live.mjs
 else
-  echo "Live verification skipped. Run workers/iris-runtime/post-deploy.sh with the staging URL and a newly configured matching secret if needed."
+  echo "Live verification skipped. Re-run this stack script when ready; it rotates secrets and can run the live checks in the same session."
 fi
 
 echo
