@@ -286,6 +286,10 @@ export default {
           return json(503, { authorized: false, reason: claim.reason || "claim-unavailable", request_id: requestId });
         }
         if (claim.data && claim.data.replay === true) {
+          if (claim.data.revoked === true) {
+            metrics.deny += 1;
+            return json(403, { authorized: false, reason: "receipt-revoked", request_id: requestId });
+          }
           const prior = claim.data.receipt;
           if (!receiptShape(prior) || prior.id !== "rct_" + requestId || prior.request_id !== requestId || prior.unity_id !== principal || prior.sha256.toLowerCase() !== digest) {
             return json(503, { authorized: false, reason: "claim-receipt-mismatch", request_id: requestId });
@@ -340,7 +344,7 @@ export default {
           stored.sha256.toLowerCase() !== body.receipt.sha256.toLowerCase()) {
         return json(403, { ok: false, reason: "receipt-unknown" });
       }
-      if (stored.revoked === true) return json(403, { ok: false, reason: "receipt-revoked" });
+      if (storedResult.data.revoked === true || stored.revoked === true) return json(403, { ok: false, reason: "receipt-revoked" });
       if (stored.issued_at) {
         const age = Date.now() - Date.parse(stored.issued_at);
         const ttl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
@@ -388,7 +392,7 @@ export default {
       if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true || !receiptShape(stored)) {
         return json(200, { valid: false, known: false, reason: "receipt-unknown" });
       }
-      if (stored.revoked === true) return json(200, { valid: false, reason: "receipt-revoked" });
+      if (storedResult.data.revoked === true || stored.revoked === true) return json(200, { valid: false, reason: "receipt-revoked" });
       if (stored.issued_at) {
         const age = Date.now() - Date.parse(stored.issued_at);
         const ttl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
