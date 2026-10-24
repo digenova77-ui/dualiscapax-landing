@@ -24,7 +24,11 @@ function validReceipt(receipt, requestId, digest, principal) {
     receipt.id === "rct_" + requestId &&
     typeof receipt.sha256 === "string" &&
     /^[0-9a-f]{64}$/.test(receipt.sha256) &&
-    receipt.sha256 === digest
+    receipt.sha256 === digest &&
+    typeof receipt.action === "string" &&
+    receipt.action === (receipt.action.trim()) &&
+    typeof receipt.issued_at === "string" &&
+    Number.isFinite(Date.parse(receipt.issued_at))
   );
 }
 
