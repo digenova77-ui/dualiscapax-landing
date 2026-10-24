@@ -80,6 +80,17 @@ class IrisArbiterFailClosedTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         module.plus_one_rate(amount, 0.2, 1)
 
+    def test_invalid_math_input_refuses_through_arbiter(self):
+        for module in MODULES:
+            with self.subTest(module=module.__name__):
+                result = module.arbitrate(
+                    "plus_one_math",
+                    {"usdc_amount": -1, "cohort_growth_rate": 0.2, "tier": 1},
+                    {"forced_lean": "PURE"},
+                )
+                self.assertEqual(result["verdict"], "REFUSE")
+                self.assertIn("invalid plus_one_math input", result["deterministic"]["reason"])
+
     def test_invalid_tier_is_rejected(self):
         for module in MODULES:
             with self.subTest(module=module.__name__):
