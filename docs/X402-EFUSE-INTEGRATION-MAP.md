@@ -145,7 +145,7 @@ No test may use real funds or mainnet assets. No value becomes canonical because
 
 - **Repository source inspected:** website x402 JavaScript and Pages route/config files on the historical x402 branch.
 - **Prior test evidence recorded:** compliance receipt claims the counts listed above for its own TEST tree.
-- **CI evidence:** GitHub Actions Iris Runtime Integration run 100 passed **76/76** Node tests for the code state at commit `1ecf8a366c58551d17e9dbade2cd38c7bd8e1914`. Tests use mock service bindings, fake Durable Object storage and a mocked facilitator.
+- **CI evidence:** GitHub Actions Iris Runtime Integration run 111 passed **78/78** Node tests for the code state at commit `02f17b2a66c3c54c40bdbcacda5f819549517aad`. Tests use mock service bindings, fake Durable Object storage and a mocked facilitator.
 - **Not verified:** deployed ledger atomicity, live facilitator operation, real settlement, actual identity/Trinity/memory/model service contracts, front-end-to-paid-runtime wiring, refund/compensation, calibrated energy measurement, Z3-backed threshold proof, or production eFuse/Merit settlement.
 
 The point is not to start x402 from scratch. It is to bring the existing rails together under one explicit transaction contract while preserving what has actually been proven and exposing what still needs to be connected.
