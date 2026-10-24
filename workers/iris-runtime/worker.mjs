@@ -345,7 +345,7 @@ export default {
       if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true ||
           !receiptShape(stored) || stored.id !== body.receipt.id ||
           stored.request_id !== body.receipt.request_id || stored.unity_id !== body.receipt.unity_id ||
-          stored.sha256.toLowerCase() !== body.receipt.sha256.toLowerCase()) {
+          stored.action !== body.receipt.action || stored.sha256.toLowerCase() !== body.receipt.sha256.toLowerCase()) {
         return json(403, { ok: false, reason: "receipt-unknown" });
       }
       if (storedResult.data.revoked === true || stored.revoked === true) return json(403, { ok: false, reason: "receipt-revoked" });
@@ -402,7 +402,7 @@ export default {
         const ttl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
         if (!Number.isFinite(age) || age < -MAX_SKEW_SECONDS * 1000 || age > ttl) return json(200, { valid: false, reason: "receipt-expired" });
       }
-      if (stored.id !== receipt.id || stored.unity_id !== receipt.unity_id ||
+      if (stored.id !== receipt.id || stored.unity_id !== receipt.unity_id || stored.action !== receipt.action ||
           stored.sha256.toLowerCase() !== receipt.sha256.toLowerCase() || stored.request_id !== receipt.request_id) {
         return json(200, { valid: false, reason: "stored-mismatch" });
       }
