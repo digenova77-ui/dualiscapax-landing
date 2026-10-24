@@ -193,18 +193,13 @@ export default {
       if (!timestamp || !signature) {
         return json(401, { authorized: false, reason: "signature-required" });
       }
-      {
-        if (!timestamp || !signature) {
-          return json(401, { authorized: false, reason: "invalid-signature" });
-        }
-        const skew = Math.abs(Math.floor(Date.now() / 1000) - Number(timestamp));
-        if (!Number.isFinite(skew) || skew > MAX_SKEW_SECONDS) {
-          return json(401, { authorized: false, reason: "timestamp-skew" });
-        }
-        const expected = await hmacHex(secret, timestamp + "." + JSON.stringify(body));
-        if (expected !== signature) {
-          return json(401, { authorized: false, reason: "invalid-signature" });
-        }
+      const skew = Math.abs(Math.floor(Date.now() / 1000) - Number(timestamp));
+      if (!Number.isFinite(skew) || skew > MAX_SKEW_SECONDS) {
+        return json(401, { authorized: false, reason: "timestamp-skew" });
+      }
+      const expected = await hmacHex(secret, timestamp + "." + JSON.stringify(body));
+      if (expected !== signature) {
+        return json(401, { authorized: false, reason: "invalid-signature" });
       }
 
       const principal = (body.principal && body.principal.unity_id) || body.unity_id || null;
