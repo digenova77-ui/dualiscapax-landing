@@ -333,6 +333,10 @@ test("real memory Worker revocation blocks both inference and receipt verificati
   }), env);
   assert.equal(revoke.status, 200);
 
+  const replay = await signedPost(env, "/v1/authorize", body);
+  assert.equal(replay.status, 403);
+  assert.equal((await replay.json()).reason, "receipt-revoked");
+
   const infer = await runtime.fetch(new Request("https://iris.test/v1/infer", {
     method: "POST",
     headers: { "content-type": "application/json" },
