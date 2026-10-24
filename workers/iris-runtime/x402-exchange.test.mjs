@@ -172,3 +172,32 @@ test("unsupported methods are refused", async () => {
   const response = await handleExchange(new Request(baseUrl, { method: "DELETE" }), { env: {} });
   assert.equal(response.status, 405);
 });
+
+test("resource binding and authorization window are checked before facilitator calls", async () => {
+  const wrongResource = paymentPayload();
+  wrongResource.resource.url = "https://dualiscapax.ai/a-different-paid-resource";
+  const expired = paymentPayload();
+  expired.payload.authorization.validBefore = String(Math.floor(Date.now() / 1000) - 1);
+  const tooLong = paymentPayload();
+  tooLong.payload.authorization.validBefore = String(Math.floor(Date.now() / 1000) + 301);
+  const futureStart = paymentPayload();
+  futureStart.payload.authorization.validAfter = String(Math.floor(Date.now() / 1000) + 1);
+  for (const payload of [wrongResource, expired, tooLong, futureStart]) {
+    const { fetchImpl, calls } = mockFetch();
+    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: {} });
+    assert.equal(response.status, 402);
+    assert.equal(calls.length, 0);
+  }
+});
+
+test("settlement cannot report a different network or payer than the verified payment", async () => {
+  for (const settle of [
+    { success: true, transaction: "0x" + "c".repeat(64), payer: validAddress, network: "eip155:84532" },
+    { success: true, transaction: "0x" + "c".repeat(64), payer: "0x" + "2".repeat(40), network: "eip155:8453" },
+  ]) {
+    const { fetchImpl } = mockFetch({ settle });
+    const response = await handleExchange(request(paymentPayload()), { fetch: fetchImpl, env: {} });
+    assert.notEqual(response.status, 200);
+    assert.notEqual((await response.json()).exchanged, true);
+  }
+});
