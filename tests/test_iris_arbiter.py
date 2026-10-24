@@ -27,6 +27,20 @@ class IrisArbiterFailClosedTests(unittest.TestCase):
                 self.assertEqual(result["verdict"], "PASS")
                 self.assertEqual(result["deterministic"]["rate"], 0.12)
 
+    def test_negative_amount_is_rejected(self):
+        for module in MODULES:
+            with self.subTest(module=module.__name__):
+                with self.assertRaises(ValueError):
+                    module.plus_one_rate(-1, 0.2, 1)
+
+    def test_non_dict_judge_result_refuses(self):
+        for module in MODULES:
+            with self.subTest(module=module.__name__):
+                module.register_judge("malformed", lambda _: None)
+                result = module.arbitrate("malformed", {}, {"forced_lean": "PURE"})
+                self.assertEqual(result["verdict"], "REFUSE")
+                self.assertIn("invalid judge verdict", result["deterministic"]["reason"])
+
     def test_unregistered_domain_refuses(self):
         for module in MODULES:
             with self.subTest(module=module.__name__):
