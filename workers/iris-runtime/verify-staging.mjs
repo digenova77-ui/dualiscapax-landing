@@ -1,12 +1,7 @@
 /**
  * Staging Worker configuration and receipt-contract verifier.
- * Does not deploy. Checks:
- *   - wrangler.toml declares the four required bindings
- *   - worker.mjs exports a fetch handler
- *   - receipt contract shape
- *   - browser-secret boundary statement
- *
- * Usage: node workers/iris-runtime/verify-staging.mjs
+ * Does not deploy. Checks runtime bindings, durable memory, internal-only
+ * dependency fixture visibility, receipt contract, and browser-secret boundary.
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -21,7 +16,6 @@ const REQUIRED_BINDINGS = [
 
 const RECEIPT_CONTRACT = "dualis.receipt.v1";
 const RECEIPT_HASH_RE = /^[a-f0-9]{64}$/;
-
 const here = dirname(fileURLToPath(import.meta.url));
 
 function checkWrangler(toml) {
@@ -53,20 +47,40 @@ function checkReceipt(receipt, expected) {
   return { ok: true };
 }
 
+function envSection(toml, name) {
+  const marker = `[env.${name}]`;
+  const start = toml.indexOf(marker);
+  if (start < 0) return "";
+  const next = toml.indexOf("\n[env.", start + marker.length);
+  return toml.slice(start, next < 0 ? undefined : next);
+}
+
 const toml = readFileSync(join(here, "wrangler.toml"), "utf8");
 const workerSrc = readFileSync(join(here, "worker.mjs"), "utf8");
 const memoryDir = join(here, "../iris-memory");
 const memoryToml = readFileSync(join(memoryDir, "wrangler.toml"), "utf8");
 const memorySrc = readFileSync(join(memoryDir, "worker.mjs"), "utf8");
+const fixtureToml = readFileSync(join(here, "../iris-staging-dependencies/wrangler.toml"), "utf8");
 
 const wranglerResult = checkWrangler(toml);
 const workerResult = checkWorkerSource(workerSrc);
 const memoryResult = {
-  ok: memoryToml.includes('class_name = "IrisMemoryStore"') && memoryToml.includes('new_sqlite_classes = ["IrisMemoryStore"]') && memorySrc.includes("this.state.storage.transaction") && memorySrc.includes("IRIS_MEMORY_SERVICE_TOKEN"),
   durableObject: memoryToml.includes('class_name = "IrisMemoryStore"'),
   sqliteMigration: memoryToml.includes('new_sqlite_classes = ["IrisMemoryStore"]'),
   atomicTransaction: memorySrc.includes("this.state.storage.transaction"),
   serviceToken: memorySrc.includes("IRIS_MEMORY_SERVICE_TOKEN"),
+  noRoutes: !/\[\[routes\]\]/.test(memoryToml),
+  noPublicWorkersDev: /^workers_dev\s*=\s*false$/m.test(memoryToml),
+};
+memoryResult.ok = Object.values(memoryResult).every((value) => value === true);
+
+const fixtureVisibility = Object.fromEntries(["identity", "trinity", "model"].map((name) => {
+  const section = envSection(fixtureToml, name);
+  return [name, !!section && /^workers_dev\s*=\s*false$/m.test(section)];
+}));
+const internalServicesResult = {
+  ...fixtureVisibility,
+  ok: Object.values(fixtureVisibility).every((value) => value === true),
 };
 
 const receiptResult = checkReceipt(
@@ -83,6 +97,7 @@ const report = {
   wrangler_bindings: wranglerResult,
   worker_source: workerResult,
   durable_memory_service: memoryResult,
+  internal_fixture_visibility: internalServicesResult,
   receipt: receiptResult,
   browser_secret_boundary:
     "window.IrisSigningSecret is browser-visible and is not a private production secret store",
@@ -91,6 +106,6 @@ const report = {
 };
 
 console.log(JSON.stringify(report, null, 2));
-if (!wranglerResult.ok || !workerResult.ok || !memoryResult.ok || !receiptResult.ok) {
+if (!wranglerResult.ok || !workerResult.ok || !memoryResult.ok || !internalServicesResult.ok || !receiptResult.ok) {
   process.exit(1);
 }
