@@ -22,8 +22,7 @@ const MAX_SKEW_SECONDS = 300;
 const RATE_LIMIT = 30;
 const RATE_WINDOW_MS = 60_000;
 
-// Staging-only in-isolate state. Durable cross-isolate claims remain a required follow-up.
-const issued = new Map();
+// The durable memory service is authoritative; only in-flight request suppression is isolate-local.
 const inflight = new Set();
 const rates = new Map();
 const audit = [];
@@ -219,7 +218,7 @@ export default {
           return json(403, { authorized: false, reason: "policy", request_id: requestId });
         }
 
-        const identity = await callBinding(env.IDENTITY_API, "/check", { request_id: requestId, principal: body.principal || null }, env.IRIS_BINDING_TIMEOUT_MS);
+        const identity = await callBinding(env.IDENTITY_API, "/check", { request_id: requestId, principal: { unity_id: principal } }, env.IRIS_BINDING_TIMEOUT_MS);
         if (!identity.ok) {
           return json(403, { authorized: false, reason: identity.reason || "identity-denied", request_id: requestId });
         }
@@ -257,7 +256,6 @@ export default {
           if (!receiptShape(prior) || prior.request_id !== requestId || prior.sha256.toLowerCase() !== digest) {
             return json(503, { authorized: false, reason: "claim-receipt-mismatch", request_id: requestId });
           }
-          issued.set(requestId, prior);
           return json(200, { authorized: true, decision: "allow", request_id: requestId, receipt: prior, replay: true });
         }
         if (!claim.data || claim.data.claimed !== true || !receiptShape(claim.data.receipt) ||
@@ -267,7 +265,6 @@ export default {
         // The atomic claim must persist the receipt in the same transaction.
         // Do not add a second, non-atomic /record step after claiming.
         const storedReceipt = claim.data.receipt;
-        issued.set(requestId, storedReceipt);
         recordAudit({ request_id: requestId, decision: "allow", receipt_id: receipt.id });
         return json(200, {
           authorized: true,
@@ -374,7 +371,7 @@ export default {
         signing_secret: !!env.TRINITY_HMAC_SECRET,
         memory_service_token: !!env.IRIS_MEMORY_SERVICE_TOKEN,
         staging: true,
-        issued_local_cache: issued.size,
+        durable_memory_required: true,
       });
     }
 
