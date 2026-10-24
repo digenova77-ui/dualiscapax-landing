@@ -326,16 +326,16 @@ function pricingReport() {
 
 function trilogyReport() {
   return {
-    protocol: "TRILOGY.CONTRACT.v1",
+    protocol: "TRILOGY.EFUSE.MERIT.UNIFI3.v1",
     law: "LAW WINS",
     boundary: "NOT_FOR_EMISSION",
     instruments: {
-      merit: { kind: "proof", transferable: false, for_sale: false, emits: false },
-      standing: { kind: "callable", emission_source: "origin only", emits: false },
-      residual: { kind: "capacity", prepaid: true, unused_stays: true, emits: false }
+      efuse: { kind: "energy", role: "resource accounting", tradeable: false, emits: false },
+      merit: { kind: "contribution", role: "earned record", for_sale: false, emits: false },
+      unifi3: { kind: "identity", role: "identity evidence", emits: false }
     },
-    operations: ["lock", "burn", "close"],
-    refused: ["mint", "sell merit", "transfer standing"],
+    operations: ["bindIdentity", "accountEnergy", "earnMerit", "close"],
+    refused: ["mint", "sell merit", "trade efuse"],
     spend: "none"
   };
 }
