@@ -248,4 +248,4 @@ Key distinctions carried forward:
 - Trinity authorization, deterministic resource admission, x402 settlement, measured energy and the final receipt must be bound into one idempotent transaction contract.
 
 
-The first executable comparison harness is now present at `workers/iris-runtime/threshold-gauntlet.mjs` with `workers/iris-runtime/threshold-gauntlet.test.mjs`. Its seven local synthetic tests pass. It compares candidate rules only and is deliberately not wired into runtime authorization, x402 charging, or execution. See the integration map for scope, test results and the remaining source-reconciliation work.
+The first executable comparison harness is now present at `workers/iris-runtime/threshold-gauntlet.mjs` with `workers/iris-runtime/threshold-gauntlet.test.mjs`. Its nine local synthetic tests pass. It compares candidate rules only and is deliberately not wired into runtime authorization, x402 charging, or execution. See the integration map for scope, test results and the remaining source-reconciliation work.
