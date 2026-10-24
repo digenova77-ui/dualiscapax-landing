@@ -103,13 +103,17 @@ This endpoint makes the contract inspectable by developers without weakening the
 Test the preparation and validation routes:
 
 ```sh
-node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-runtime/universal-work-route.test.mjs workers/iris-runtime/universal-work-prepare.test.mjs workers/iris-runtime/puel-evidence.test.mjs
+node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-runtime/universal-work-route.test.mjs workers/iris-runtime/universal-work-prepare.test.mjs workers/iris-runtime/puel-evidence.test.mjs workers/iris-runtime/puel-signatures.test.mjs
 ```
 
 ## PUEL — Proof of Universal Legitimacy evidence bundle v0.1
 
 `puel-evidence.mjs` validates a strict, request-bound evidence bundle that ties together the work envelope, identity attestation, exact Trinity allow decision, execution receipt, resource-measurement records, and optional settlement evidence. Mismatched principal, request ID, action, input digest, policy version, or settlement state is rejected. Unknown fields fail closed.
 
-**Important:** the current implementation is a structural binding validator, not the final PUEL proof system. It does not verify signatures, trusted issuer keys, hardware attestations, consensus, meter calibration, or the truth of any source. A valid result is explicitly labelled `STRUCTURALLY_BOUND` with `proof_claim: NOT_CRYPTOGRAPHICALLY_VERIFIED`. This is intentional: a receipt-shaped object or a field saying `verified: true` cannot itself establish legitimacy.
+**Important:** this structural binding gate is not by itself the final PUEL proof system. A valid result is labelled `STRUCTURALLY_BOUND` with `proof_claim: NOT_CRYPTOGRAPHICALLY_VERIFIED`. It does not establish that the evidence issuers are authentic or that their claims are true.
 
-Next proof-system milestones are to define trusted issuer/key registries, canonical signed evidence, revocation and freshness rules, independent verifier behavior, and reproducible test vectors before any status can mean cryptographically verified. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
+### Ed25519 evidence attestations
+
+`puel-signatures.mjs` adds a real cryptographic verification primitive. It verifies an Ed25519 signature over a canonical statement, checks that the statement's SHA-256 matches the exact canonical evidence object, enforces issuer/key/role bindings, and rejects unknown, revoked, expired, stale, future-dated, or role-inappropriate keys. Canonical JSON uses Unicode scalar ordering and rejects non-safe-integer numbers so implementations cannot silently serialize ambiguous numeric values.
+
+The trusted key registry is explicitly supplied by the caller. Therefore a successful result means `CRYPTOGRAPHICALLY_VERIFIED_ATTESTATION` **under that supplied registry**, not that the registry itself is trustworthy, decentralized, or governed. The next milestone is to define and verify the root-of-trust/key-distribution and revocation mechanism, then bind multiple independently issued attestations into one PUEL bundle. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
