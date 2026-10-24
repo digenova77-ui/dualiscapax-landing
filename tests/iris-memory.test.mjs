@@ -177,3 +177,36 @@ test("context read clamps requested history to ten metadata records", async () =
   assert.equal(data.items.length, 10);
   assert.equal(data.items.every((item) => !Object.hasOwn(item, "text")), true);
 });
+
+test("durable revoke persists atomically and is idempotent", async () => {
+  const { post } = harness();
+  const input = claim("revoke-memory-1", "alpha");
+  const claimed = await post("/v1/requests/claim", input);
+  assert.equal(claimed.status, 200);
+
+  const first = await post("/v1/requests/revoke", { id: input.receipt.id });
+  const firstData = await first.json();
+  assert.equal(first.status, 200);
+  assert.equal(firstData.revoked, true);
+  assert.equal(firstData.id, input.receipt.id);
+
+  const second = await post("/v1/requests/revoke", { request_id: input.request_id });
+  const secondData = await second.json();
+  assert.equal(second.status, 200);
+  assert.equal(secondData.revoked, true);
+  assert.equal(secondData.replay, true);
+
+  const lookup = await post("/v1/requests/get", { request_id: input.request_id });
+  const stored = await lookup.json();
+  assert.equal(stored.found, true);
+  assert.equal(stored.revoked, true);
+  assert.deepEqual(stored.receipt, input.receipt);
+});
+
+test("durable revoke refuses unknown receipts", async () => {
+  const { post } = harness();
+  const res = await post("/v1/requests/revoke", { id: "rct-does-not-exist" });
+  assert.equal(res.status, 404);
+  assert.equal((await res.json()).reason, "not-issued");
+});
+
