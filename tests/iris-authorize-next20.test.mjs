@@ -174,6 +174,31 @@ test("infer does not call the model when receipt-bound text digest differs", asy
   assert.equal(modelCalls, 0);
 });
 
+test("infer rejects oversized request bodies before model invocation", async () => {
+  let modelCalls = 0;
+  const env = {
+    ...ENV,
+    MODEL_PROVIDER: {
+      fetch: async () => {
+        modelCalls += 1;
+        return new Response(JSON.stringify({ ok: true }), { status: 200 });
+      },
+    },
+  };
+  const res = await post("/v1/infer", { receipt: { contract: "dualis.receipt.v1" }, text: "x".repeat(70000) }, env);
+  const data = await res.json();
+  assert.equal(res.status, 413);
+  assert.equal(data.reason, "body-too-large");
+  assert.equal(modelCalls, 0);
+});
+
+test("receipt verify rejects oversized request bodies", async () => {
+  const res = await post("/v1/receipt/verify", { receipt: { contract: "dualis.receipt.v1" }, text: "x".repeat(70000) });
+  const data = await res.json();
+  assert.equal(res.status, 413);
+  assert.equal(data.reason, "body-too-large");
+});
+
 test("8. health is not ok when a binding is inert", async () => {
   const env = { ...ENV, MODEL_PROVIDER: {} };
   const res = await worker.fetch(new Request("https://staging.test/health"), env);
