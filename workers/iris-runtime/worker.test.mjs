@@ -162,6 +162,15 @@ test("health reports unavailable until every service binding and origin is confi
   assert.equal((await res.json()).available, false);
 });
 
+test("health rejects a truthy but unusable service binding", async () => {
+  const { env } = fixture({ TRINITY_LAW: {} });
+  const res = await worker.fetch(new Request("https://iris-runtime.test/health"), env);
+  const data = await res.json();
+  assert.equal(res.status, 503);
+  assert.equal(data.available, false);
+  assert.equal(data.bindings.trinity, false);
+});
+
 test("allowed origin receives credentialed CORS headers and preflight is handled without service calls", async () => {
   const { env, calls } = fixture();
   const options = new Request("https://iris-runtime.test/v1/turn", {
