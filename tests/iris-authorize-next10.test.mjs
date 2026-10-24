@@ -15,6 +15,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../workers/iris-runtime/worker.mjs";
+import { memoryBinding } from "./fixtures/iris-memory-binding.mjs";
 
 function allowBinding() {
   return {
@@ -32,7 +33,7 @@ function slowBinding() {
 const ENV = {
   IDENTITY_API: allowBinding(),
   TRINITY_LAW: allowBinding(),
-  IRIS_MEMORY: allowBinding(),
+  IRIS_MEMORY: memoryBinding(),
   MODEL_PROVIDER: allowBinding(),
   TRINITY_HMAC_SECRET: "test-secret",
 };
