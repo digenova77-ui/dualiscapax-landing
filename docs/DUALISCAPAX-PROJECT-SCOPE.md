@@ -163,3 +163,25 @@ A future quantum adapter must be an optional, capability-declared backend behind
 The first engineering milestone is not to claim “quantum on ARM.” It is to implement and benchmark the same well-defined workload on available x86 and ARM targets, compare energy per accepted result, latency, memory, reproducibility, and total cost, then separately evaluate a quantum-inspired algorithm or small simulation. Actual QPU execution remains a distinct future integration requiring accessible hardware/provider credentials and its own validation.
 
 No quantum hardware, quantum advantage, production ARM parity, or measured energy savings is claimed by this scope document. These are capabilities to test, not assumed outcomes.
+
+
+## 9. Historical molecular-orbital symmetry model for deterministic node gating
+
+**Interpretation supplied from the project's historical records; original source artifacts still require recovery and direct verification.** This model is distinct from a quantum virtual machine and from execution on a quantum processor.
+
+The described artifacts are:
+- `DualisCapax_MO_GroupTheory_Reference.pdf` — a quantum-chemistry and molecular-orbital group-theory reference, reportedly covering Hartree–Fock, post-Hartree–Fock, density-functional theory, and point-group symmetry.
+- `dualis_mo_symmetry.py` — a reported Python mapping from point-group character tables (including C2v, D2h, and D3h) to deterministic node/proposal constraints.
+
+The intended computational analogy is that symmetry representations and their direct products provide a structured compatibility test for proposed node or resource assignments. In the described telemetry pipeline, a capacity query such as `get_residual_capacity` would determine whether the relevant structural slot remains available; `evaluate_z3_invariant_product` would evaluate a compatibility/invariant condition; and `process_telemetry_proposal` would use the result when deciding whether a proposal may advance. An unavailable or incompatible slot is intended to fail closed rather than consume downstream authorization or compute resources.
+
+The project language reportedly associates free irreducible-representation capacity with residual capacity, an “Amber Gap” with a rejected/incompatible state, and a fully symmetric result such as A1 with a permitted compatibility result. These are domain mappings, not literal claims that a network node contains molecular orbitals or that molecular physics itself enforces the software boundary. A mathematical analogy only becomes an enforcement mechanism when the implementation defines the state, transition rules, invariants, resource accounting, and rejection path precisely and tests them.
+
+Important proof boundaries:
+- Point-group symmetry and character-table calculations are classical mathematical operations; their use does not by itself constitute quantum computing or quantum advantage.
+- A function named `evaluate_z3_invariant_product` is not evidence of a real Z3 solver. Confirm the dependency, solver invocation, constraints, and satisfiability result in source before claiming SMT-backed proof.
+- The reported $500 eFuse pool cap must be traced to an explicit authoritative configuration or invariant and tested at boundary values. A symmetry result alone does not establish that financial limit.
+- `PROVEN-UPSTREAM` must be tied to a verifiable receipt and a clearly defined proof level; a label alone is not proof of a successful downstream transaction or physical event.
+- No claim is made here that the named files are currently present in the active repository, that the described path is connected to the live telemetry service, or that the model is running in production. Recovery and source/runtime verification are the next steps.
+
+This historical model may be valuable as a deterministic compatibility and capacity-gating technique within DualisCapax. It should be evaluated on correctness, explainability, rejection behavior, resource use, and whether it improves on simpler explicit constraint checks—not treated as quantum hardware.
