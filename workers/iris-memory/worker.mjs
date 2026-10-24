@@ -37,7 +37,7 @@ export default {
       return json(401, { ok: false, reason: "service-auth-required" });
     }
     const url = new URL(request.url);
-    if (url.pathname !== "/v1/requests/claim" && url.pathname !== "/v1/requests/get") {
+    if (url.pathname !== "/v1/requests/claim" && url.pathname !== "/v1/requests/get" && url.pathname !== "/v1/context/read") {
       return json(404, { ok: false, reason: "not-found" });
     }
     let body;
@@ -76,6 +76,20 @@ export class IrisMemoryStore {
       return json(200, record
         ? { ok: true, found: true, receipt: record.receipt, request_id: requestId, action: record.action, principal: record.principal, input_sha256: record.input_sha256 }
         : { ok: true, found: false, request_id: requestId });
+    }
+
+    if (path === "/v1/context/read") {
+      const principal = body && body.principal;
+      if (typeof principal !== "string" || !principal) return json(400, { ok: false, reason: "invalid-principal" });
+      const requested = Number(body.limit);
+      const limit = Number.isInteger(requested) ? Math.min(10, Math.max(1, requested)) : 5;
+      const all = await this.state.storage.list({ prefix: "request:", limit: 1000 });
+      const items = Array.from(all.values())
+        .filter((record) => record.principal === principal && record.request_id !== requestId)
+        .sort((a, b) => String(b.claimed_at).localeCompare(String(a.claimed_at)))
+        .slice(0, limit)
+        .map((record) => ({ request_id: record.request_id, action: record.action, input_sha256: record.input_sha256, receipt_id: record.receipt.id, claimed_at: record.claimed_at }));
+      return json(200, { ok: true, principal, count: items.length, items });
     }
 
     if (path !== "/v1/requests/claim") return json(404, { ok: false, reason: "not-found" });
