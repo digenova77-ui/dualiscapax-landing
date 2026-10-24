@@ -81,7 +81,7 @@ async function attestAll(value) {
 test("verifies the bundle through the root-signed registry entry point", async () => {
   const value = bundle();
   const result = await verifyRootedPuelBundle({
-    bundle: value, attestations: await attestAll(value), registry: registry(), rootPublicKeySpkiBase64: rootPublic, now,
+    bundle: value, attestations: await attestAll(value), registry: registry(), rootPublicKeySpkiBase64: rootPublic, now, minimumRegistryVersion: 2,
   });
   assert.equal(result.valid, true);
   assert.equal(result.status, "ROOTED_PUEL_EVIDENCE_VERIFIED");
@@ -103,7 +103,7 @@ test("rejects issuer evidence when the root-signed registry revokes its key", as
   const payload = { ...registryPayload(2), revoked_key_ids: ["issuer-key-1"] };
   const signedRegistry = { ...payload, root_signature_base64: sign(null, Buffer.from(puelCanonicalJson(payload)), root.privateKey).toString("base64") };
   const result = await verifyRootedPuelBundle({
-    bundle: value, attestations: await attestAll(value), registry: signedRegistry, rootPublicKeySpkiBase64: rootPublic, now,
+    bundle: value, attestations: await attestAll(value), registry: signedRegistry, rootPublicKeySpkiBase64: rootPublic, now, minimumRegistryVersion: 2,
   });
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.endsWith("key-revoked")));
@@ -115,8 +115,29 @@ test("rejects a registry signed by an unpinned root", async () => {
   const payload = registryPayload(2);
   const badRegistry = { ...payload, root_signature_base64: sign(null, Buffer.from(puelCanonicalJson(payload)), otherRoot.privateKey).toString("base64") };
   const result = await verifyRootedPuelBundle({
-    bundle: value, attestations: await attestAll(value), registry: badRegistry, rootPublicKeySpkiBase64: rootPublic, now,
+    bundle: value, attestations: await attestAll(value), registry: badRegistry, rootPublicKeySpkiBase64: rootPublic, now, minimumRegistryVersion: 2,
   });
   assert.equal(result.valid, false);
   assert.ok(result.errors.includes("trust-root-signature-invalid"));
+});
+
+test("rejects verification when no trusted monotonic registry-version floor is supplied", async () => {
+  const value = bundle();
+  const result = await verifyRootedPuelBundle({
+    bundle: value, attestations: await attestAll(value), registry: registry(),
+    rootPublicKeySpkiBase64: rootPublic, now,
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes("trust-registry-version-floor-unconfigured"));
+  assert.deepEqual(result.verified_roles, []);
+});
+
+test("rejects invalid registry-version floors instead of silently defaulting", async () => {
+  const value = bundle();
+  const result = await verifyRootedPuelBundle({
+    bundle: value, attestations: await attestAll(value), registry: registry(),
+    rootPublicKeySpkiBase64: rootPublic, now, minimumRegistryVersion: 0,
+  });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.includes("trust-registry-version-floor-unconfigured"));
 });
