@@ -11,6 +11,8 @@ const checks = {
   atomicTransaction: source.includes("this.state.storage.transaction"),
   claimRoute: source.includes('"/v1/requests/claim"'),
   lookupRoute: source.includes('"/v1/requests/get"'),
+  contextReadRoute: source.includes('"/v1/context/read"'),
+  principalIndex: source.includes('"principal:" + principal'),
   serviceTokenGate: source.includes("IRIS_MEMORY_SERVICE_TOKEN") && source.includes("service-auth-required"),
   noProductionRoutes: !/\[\[routes\]\]|workers_dev\s*=\s*false/.test(config),
 };
