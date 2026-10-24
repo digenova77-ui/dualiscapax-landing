@@ -37,7 +37,7 @@ export default {
       return json(401, { ok: false, reason: "service-auth-required" });
     }
     const url = new URL(request.url);
-    if (url.pathname !== "/v1/requests/claim" && url.pathname !== "/v1/requests/get" && url.pathname !== "/v1/context/read") {
+    if (url.pathname !== "/v1/requests/claim" && url.pathname !== "/v1/requests/get" && url.pathname !== "/v1/context/read" && url.pathname !== "/v1/requests/revoke") {
       return json(404, { ok: false, reason: "not-found" });
     }
     let body;
@@ -65,7 +65,10 @@ export class IrisMemoryStore {
     const path = new URL(request.url).pathname;
     let body;
     try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
-    const requestId = body && body.request_id;
+    const revokeId = path === "/v1/requests/revoke" && body && (body.id || body.request_id);
+    const requestId = path === "/v1/requests/revoke" && typeof revokeId === "string"
+      ? (revokeId.startsWith("rct_") ? revokeId.slice(4) : revokeId)
+      : body && body.request_id;
     if (typeof requestId !== "string" || !requestId || requestId.length > 240) {
       return json(400, { ok: false, reason: "invalid-request-id" });
     }
@@ -74,8 +77,20 @@ export class IrisMemoryStore {
     if (path === "/v1/requests/get") {
       const record = await this.state.storage.get(key);
       return json(200, record
-        ? { ok: true, found: true, receipt: record.receipt, request_id: requestId, action: record.action, principal: record.principal, input_sha256: record.input_sha256 }
+        ? { ok: true, found: true, receipt: record.receipt, revoked: record.revoked === true, request_id: requestId, action: record.action, principal: record.principal, input_sha256: record.input_sha256 }
         : { ok: true, found: false, request_id: requestId });
+    }
+
+    if (path === "/v1/requests/revoke") {
+      const outcome = await this.state.storage.transaction(async (txn) => {
+        const record = await txn.get(key);
+        if (!record) return { kind: "missing" };
+        if (record.revoked === true) return { kind: "replay", receipt_id: record.receipt.id };
+        await txn.put(key, { ...record, revoked: true });
+        return { kind: "revoked", receipt_id: record.receipt.id };
+      });
+      if (outcome.kind === "missing") return json(404, { ok: false, reason: "not-issued" });
+      return json(200, { ok: true, revoked: true, replay: outcome.kind === "replay", id: outcome.receipt_id, request_id: requestId });
     }
 
     if (path === "/v1/context/read") {
@@ -108,7 +123,7 @@ export class IrisMemoryStore {
       const prior = await txn.get(key);
       if (prior) {
         if (prior.principal === principal && prior.action === action && prior.input_sha256 === digest) {
-          return { kind: "replay", receipt: prior.receipt };
+          return { kind: "replay", receipt: prior.receipt, revoked: prior.revoked === true };
         }
         return { kind: "conflict" };
       }
@@ -132,7 +147,7 @@ export class IrisMemoryStore {
       return json(409, { ok: false, reason: "duplicate-request", request_id: requestId });
     }
     if (outcome.kind === "replay") {
-      return json(200, { ok: true, replay: true, receipt: outcome.receipt });
+      return json(200, { ok: true, replay: true, revoked: outcome.revoked === true, receipt: outcome.receipt });
     }
     return json(200, { ok: true, claimed: true, receipt: outcome.receipt });
   }
