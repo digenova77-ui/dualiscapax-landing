@@ -474,7 +474,7 @@ test("idempotency claim with mismatched action fails before memory or provider",
         calls.push({ name: "memory", path: route, body });
         if (route.endsWith("/claim")) return jsonResponse({
           contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
-          action: "iris.inference", input_sha256: body.input_sha256, state: "RESERVED", claimed: true,
+          action: "iris.admin.override", input_sha256: body.input_sha256, state: "RESERVED", claimed: true,
         });
         return jsonResponse({ unity_id: body.unity_id, items: [] });
       },
