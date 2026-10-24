@@ -8,6 +8,7 @@
  * Adapter contracts are versioned under /v1. No secret, prompt, cookie, or user text is logged.
  */
 import { arbitrateCompute } from "./compute-arbitrator.mjs";
+import { decodeHeader, handleExchange } from "../../js/x402-exchange.js";
 
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_TEXT_CHARS = 8000;
@@ -121,6 +122,7 @@ async function handleRequest(request, env) {
       trinity: !!env.TRINITY_LAW,
       memory: !!env.IRIS_MEMORY,
       provider: !!env.MODEL_PROVIDER,
+      payment_ledger: !!env.X402_LEDGER,
     };
     const complete = Object.values(bindings).every(Boolean) &&
       typeof env.IRIS_ALLOWED_ORIGINS === "string" &&
@@ -132,10 +134,12 @@ async function handleRequest(request, env) {
       bindings,
       authorization: "trinity-required",
       persistence: "required",
+      paid_operations: bindings.payment_ledger ? "configured-but-contract-unverified" : "unavailable",
     }, complete ? 200 : 503);
   }
 
-  if (url.pathname !== "/v1/turn") return json({ available: false, reason: "not-found" }, 404);
+  const isPaidTurn = url.pathname === "/v1/paid-turn";
+  if (url.pathname !== "/v1/turn" && !isPaidTurn) return json({ available: false, reason: "not-found" }, 404);
   if (request.method !== "POST") return json({ available: false, reason: "method-not-allowed" }, 405, { allow: "POST" });
 
   const origin = allowedOrigin(request, env);
@@ -169,6 +173,7 @@ async function handleRequest(request, env) {
   if (!hasBinding(env.IDENTITY_API)) return unavailable("identity");
   if (!hasBinding(env.TRINITY_LAW)) return unavailable("trinity");
   if (!hasBinding(env.IRIS_MEMORY)) return unavailable("idempotency-claim");
+  if (isPaidTurn && !hasBinding(env.X402_LEDGER)) return unavailable("payment-ledger");
   if (computePlan.lane === "probabilistic" && !hasBinding(env.MODEL_PROVIDER)) return unavailable("inference");
 
   let identity;
@@ -215,6 +220,157 @@ async function handleRequest(request, env) {
     lawPrincipal !== unityId
   ) {
     return json({ available: false, stage: "trinity", reason: "authorization-denied-or-unbound" }, 403);
+  }
+
+  let paymentContext = null;
+  if (isPaidTurn) {
+    const paymentSignature = request.headers.get("payment-signature");
+    // A challenge is issued only after session verification and a request-bound
+    // Trinity allow. No payment is settled for an unauthorized operation.
+    if (!paymentSignature) return handleExchange(request, { env });
+
+    const paymentSha256 = await sha256(paymentSignature);
+    let paymentClaim;
+    try {
+      paymentClaim = await callJson(env.X402_LEDGER, "/v1/payments/claim", {
+        method: "POST",
+        headers: { "content-type": "application/json", "idempotency-key": requestId },
+        body: JSON.stringify({
+          contract: "dualis.x402.transaction.v1",
+          unity_id: unityId,
+          request_id: requestId,
+          action: computePlan.action,
+          input_sha256: inputSha256,
+          payment_sha256: paymentSha256,
+        }),
+      });
+    } catch { return unavailable("payment-ledger-claim"); }
+
+    if (
+      paymentClaim.contract !== "dualis.x402.transaction.v1" ||
+      paymentClaim.unity_id !== unityId || paymentClaim.request_id !== requestId ||
+      paymentClaim.action !== computePlan.action || paymentClaim.input_sha256 !== inputSha256 ||
+      paymentClaim.payment_sha256 !== paymentSha256
+    ) {
+      return json({ available: false, stage: "payment-ledger", reason: "payment-claim-binding-mismatch" }, 503);
+    }
+    if (paymentClaim.state === "CONFLICT") {
+      return json({ available: false, stage: "payment-ledger", reason: "payment-request-conflict" }, 409);
+    }
+    if (paymentClaim.state === "IN_DOUBT") {
+      return json({ available: false, stage: "payment-ledger", reason: "payment-state-in-doubt" }, 503);
+    }
+    if (paymentClaim.state === "SETTLED" || paymentClaim.state === "EXECUTED") {
+      if (!validPaymentReceipt(paymentClaim.payment_receipt) ||
+          paymentClaim.payment_receipt.transaction !== paymentClaim.transaction) {
+        return json({ available: false, stage: "payment-ledger", reason: "invalid-stored-payment-receipt" }, 503);
+      }
+      paymentContext = {
+        unity_id: unityId, request_id: requestId, action: computePlan.action,
+        input_sha256: inputSha256, payment_sha256: paymentSha256,
+        payment_receipt: paymentClaim.payment_receipt,
+      };
+    } else if (paymentClaim.state === "RESERVED" && paymentClaim.claimed === true) {
+      let paymentResponse;
+      try {
+        paymentResponse = await handleExchange(request, {
+          env,
+          fetch: typeof env.X402_FACILITATOR_FETCH === "function" ? env.X402_FACILITATOR_FETCH : fetch,
+        });
+      } catch {
+        await markPaymentInDoubt(env, {
+          unity_id: unityId, request_id: requestId, action: computePlan.action,
+          input_sha256: inputSha256, payment_sha256: paymentSha256,
+          reason: "facilitator-call-threw",
+        });
+        return unavailable("payment-settlement-in-doubt");
+      }
+
+      if (paymentResponse.status !== 200) {
+        const responseBody = await paymentResponse.clone().json().catch(() => ({}));
+        const responseSettlement = paymentResponse.headers.get("PAYMENT-RESPONSE");
+        let settlementInfo = null;
+        if (responseSettlement) {
+          try { settlementInfo = decodeHeader(responseSettlement); } catch { /* malformed settlement is ambiguous */ }
+        }
+        const possiblySettled = !!(settlementInfo && settlementInfo.transaction);
+        if (paymentResponse.status >= 500 || possiblySettled) {
+          await markPaymentInDoubt(env, {
+            unity_id: unityId, request_id: requestId, action: computePlan.action,
+            input_sha256: inputSha256, payment_sha256: paymentSha256,
+            reason: String(responseBody.error || "facilitator-outcome-ambiguous"),
+          });
+          return unavailable("payment-settlement-in-doubt");
+        }
+        try {
+          const released = await callJson(env.X402_LEDGER, "/v1/payments/release", {
+            method: "POST",
+            headers: { "content-type": "application/json", "idempotency-key": requestId },
+            body: JSON.stringify({
+              contract: "dualis.x402.transaction.v1",
+              unity_id: unityId, request_id: requestId, action: computePlan.action,
+              input_sha256: inputSha256, payment_sha256: paymentSha256,
+              reason: String(responseBody.error || "payment-not-accepted"),
+            }),
+          });
+          if (released.contract !== "dualis.x402.transaction.v1" ||
+              released.request_id !== requestId || released.state !== "RELEASED") {
+            return unavailable("payment-ledger-release");
+          }
+        } catch { return unavailable("payment-ledger-release"); }
+        return paymentResponse;
+      }
+
+      const paymentReceipt = await paymentResponse.json().catch(() => null);
+      if (!validPaymentReceipt(paymentReceipt)) {
+        await markPaymentInDoubt(env, {
+          unity_id: unityId, request_id: requestId, action: computePlan.action,
+          input_sha256: inputSha256, payment_sha256: paymentSha256,
+          reason: "malformed-settlement-receipt",
+        });
+        return unavailable("payment-settlement-in-doubt");
+      }
+
+      let recorded;
+      try {
+        recorded = await callJson(env.X402_LEDGER, "/v1/payments/record", {
+          method: "POST",
+          headers: { "content-type": "application/json", "idempotency-key": requestId },
+          body: JSON.stringify({
+            contract: "dualis.x402.transaction.v1",
+            unity_id: unityId, request_id: requestId, action: computePlan.action,
+            input_sha256: inputSha256, payment_sha256: paymentSha256,
+            payment_receipt: paymentReceipt,
+          }),
+        });
+      } catch {
+        await markPaymentInDoubt(env, {
+          unity_id: unityId, request_id: requestId, action: computePlan.action,
+          input_sha256: inputSha256, payment_sha256: paymentSha256,
+          reason: "settlement-receipt-persistence-failed",
+        });
+        return unavailable("payment-ledger-record");
+      }
+      if (recorded.contract !== "dualis.x402.transaction.v1" ||
+          recorded.unity_id !== unityId || recorded.request_id !== requestId ||
+          recorded.action !== computePlan.action || recorded.input_sha256 !== inputSha256 ||
+          recorded.payment_sha256 !== paymentSha256 || recorded.state !== "SETTLED" ||
+          !validPaymentReceipt(recorded.payment_receipt)) {
+        await markPaymentInDoubt(env, {
+          unity_id: unityId, request_id: requestId, action: computePlan.action,
+          input_sha256: inputSha256, payment_sha256: paymentSha256,
+          reason: "settlement-receipt-not-durably-confirmed",
+        });
+        return unavailable("payment-ledger-record");
+      }
+      paymentContext = {
+        unity_id: unityId, request_id: requestId, action: computePlan.action,
+        input_sha256: inputSha256, payment_sha256: paymentSha256,
+        payment_receipt: recorded.payment_receipt,
+      };
+    } else {
+      return json({ available: false, stage: "payment-ledger", reason: "ambiguous-payment-state" }, 503);
+    }
   }
 
   let claim;
@@ -368,6 +524,56 @@ async function handleRequest(request, env) {
     compute: { lane: computePlan.lane, provider_called: computePlan.provider_required },
     provider: inference.provider || "configured-model-provider",
   });
+}
+
+function validPaymentReceipt(receipt) {
+  return !!receipt && typeof receipt === "object" && !Array.isArray(receipt) &&
+    receipt.exchanged === true && receipt.scheme === "exact" &&
+    typeof receipt.amount === "string" && /^[1-9]\\d*$/.test(receipt.amount) &&
+    /^0x[0-9a-fA-F]{40}$/.test(receipt.asset || "") &&
+    /^0x[0-9a-fA-F]{40}$/.test(receipt.payTo || "") &&
+    /^0x[0-9a-fA-F]{40}$/.test(receipt.payer || "") &&
+    ["eip155:8453", "eip155:84532"].includes(receipt.network) &&
+    /^0x[0-9a-fA-F]{64}$/.test(receipt.transaction || "");
+}
+
+async function markPaymentInDoubt(env, context) {
+  try {
+    await callJson(env.X402_LEDGER, "/v1/payments/in-doubt", {
+      method: "POST",
+      headers: { "content-type": "application/json", "idempotency-key": context.request_id },
+      body: JSON.stringify({ contract: "dualis.x402.transaction.v1", ...context }),
+    });
+  } catch { /* the original operation remains unavailable; reconciliation is required */ }
+}
+
+async function completePaidPayment(env, context, receipt, resultSha256) {
+  if (!context) return true;
+  try {
+    const completed = await callJson(env.X402_LEDGER, "/v1/payments/complete", {
+      method: "POST",
+      headers: { "content-type": "application/json", "idempotency-key": context.request_id },
+      body: JSON.stringify({
+        contract: "dualis.x402.transaction.v1",
+        unity_id: context.unity_id,
+        request_id: context.request_id,
+        action: context.action,
+        input_sha256: context.input_sha256,
+        payment_sha256: context.payment_sha256,
+        payment_receipt: context.payment_receipt,
+        execution_receipt: {
+          receipt_id: receipt.receipt_id,
+          receipt_sha256: receipt.receipt_sha256,
+          result_sha256: resultSha256,
+        },
+      }),
+    });
+    return completed.contract === "dualis.x402.transaction.v1" &&
+      completed.unity_id === context.unity_id &&
+      completed.request_id === context.request_id &&
+      completed.payment_sha256 === context.payment_sha256 &&
+      completed.state === "EXECUTED";
+  } catch { return false; }
 }
 
 function corsHeaders(origin) {
