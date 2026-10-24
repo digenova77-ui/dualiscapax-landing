@@ -282,6 +282,51 @@ async function handleRequest(request, env) {
     return json({ available: false, stage: "trinity", reason: "authorization-denied-or-unbound" }, 403);
   }
 
+  let claim;
+  try {
+    claim = await callJson(env.IRIS_MEMORY, "/v1/requests/claim", {
+      method: "POST",
+      headers: { "content-type": "application/json", "idempotency-key": requestId },
+      body: JSON.stringify({
+        contract: "dualis.idempotency.v1",
+        unity_id: unityId,
+        request_id: requestId,
+        action: computePlan.action,
+        input_sha256: inputSha256,
+      }),
+    });
+  } catch { return unavailable("idempotency-claim"); }
+  if (
+    claim.unity_id !== unityId ||
+    claim.request_id !== requestId ||
+    claim.action !== computePlan.action ||
+    claim.input_sha256 !== inputSha256 ||
+    claim.contract !== "dualis.idempotency.v1"
+  ) {
+    return json({ available: false, stage: "idempotency-claim", reason: "claim-binding-mismatch" }, 503);
+  }
+
+  // The store must distinguish a new reservation, a committed replay, a semantic
+  // conflict, and an unresolved prior effect. A boolean-only claim cannot prove
+  // safe retry behavior, so legacy/ambiguous responses fail closed.
+  if (claim.state === "CONFLICT") {
+    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "settled-payment-operation-conflict" });
+    return json({ available: false, stage: "idempotency-claim", reason: "operation-content-conflict" }, 409);
+  }
+  if (claim.state === "IN_DOUBT") {
+    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "memory-operation-in-doubt-after-payment" });
+    return json({ available: false, stage: "idempotency-claim", reason: "prior-operation-in-doubt" }, 503);
+  }
+  // Only a clean reservation or a validated committed replay may proceed to
+  // payment handling. Conflict, unresolved, and unknown states exit before any
+  // payment-ledger or protected-memory follow-on calls.
+  if (claim.state !== "RESERVED" && claim.state !== "APPLIED") {
+    return json({ available: false, stage: "idempotency-claim", reason: "ambiguous-claim-state" }, 503);
+  }
+  if (claim.state === "RESERVED" && claim.claimed !== true) {
+    return json({ available: false, stage: "idempotency-claim", reason: "ambiguous-claim-state" }, 503);
+  }
+
   let paymentContext = null;
   if (isPaidTurn) {
     const paymentSignature = request.headers.get("payment-signature");
@@ -451,41 +496,7 @@ async function handleRequest(request, env) {
     }
   }
 
-  let claim;
-  try {
-    claim = await callJson(env.IRIS_MEMORY, "/v1/requests/claim", {
-      method: "POST",
-      headers: { "content-type": "application/json", "idempotency-key": requestId },
-      body: JSON.stringify({
-        contract: "dualis.idempotency.v1",
-        unity_id: unityId,
-        request_id: requestId,
-        action: computePlan.action,
-        input_sha256: inputSha256,
-      }),
-    });
-  } catch { return unavailable("idempotency-claim"); }
-  if (
-    claim.unity_id !== unityId ||
-    claim.request_id !== requestId ||
-    claim.action !== computePlan.action ||
-    claim.input_sha256 !== inputSha256 ||
-    claim.contract !== "dualis.idempotency.v1"
-  ) {
-    return json({ available: false, stage: "idempotency-claim", reason: "claim-binding-mismatch" }, 503);
-  }
 
-  // The store must distinguish a new reservation, a committed replay, a semantic
-  // conflict, and an unresolved prior effect. A boolean-only claim cannot prove
-  // safe retry behavior, so legacy/ambiguous responses fail closed.
-  if (claim.state === "CONFLICT") {
-    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "settled-payment-operation-conflict" });
-    return json({ available: false, stage: "idempotency-claim", reason: "operation-content-conflict" }, 409);
-  }
-  if (claim.state === "IN_DOUBT") {
-    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "memory-operation-in-doubt-after-payment" });
-    return json({ available: false, stage: "idempotency-claim", reason: "prior-operation-in-doubt" }, 503);
-  }
   if (claim.state === "APPLIED") {
     const replay = claim.replay;
     if (
@@ -515,10 +526,6 @@ async function handleRequest(request, env) {
       compute: { lane: computePlan.lane, provider_called: false },
       provider: replay.provider || "stored-result",
     });
-  }
-  if (claim.state !== "RESERVED" || claim.claimed !== true) {
-    if (paymentContext) await markPaymentInDoubt(env, { ...paymentContext, reason: "ambiguous-memory-claim-after-payment" });
-    return json({ available: false, stage: "idempotency-claim", reason: "ambiguous-claim-state" }, 503);
   }
 
   let memory = { unity_id: unityId, items: [] };
