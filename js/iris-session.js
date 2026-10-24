@@ -53,25 +53,45 @@
   }
 
   function getSigningSecret() {
-    // Secure context only. Do not hardcode.
-    if (w.IrisSigningSecret) return w.IrisSigningSecret;
-    if (w.localStorage) {
-      try { return localStorage.getItem("dc.iris.signing-secret") || null; } catch (e) {}
-    }
-    return null;
+    // Staging-only compatibility hook. Any value exposed to browser JavaScript
+    // is public to that browser; production must use a server-side signer.
+    return w.IrisSigningSecret || null;
   }
 
-  function buildAuthBody(text, ticket) {
+  function canAuthorize() {
+    if (!w.IrisAuthorize || typeof w.IrisAuthorize.authorize !== "function") return false;
+    if (w.IrisSigningSecret) return true;
+    if (w.IrisAuthorizeBase) return true;
+    return false;
+  }
+
+  function receiptOk(ticket) {
+    var r = ticket && (ticket.receipt || (ticket.auth && ticket.auth.receipt));
+    if (w.IrisReceipt && IrisReceipt.validReceipt) return IrisReceipt.validReceipt(r);
+    if (!r || typeof r !== "object") return false;
+    if (r.contract !== "dualis.receipt.v1") return false;
+    if (typeof r.id !== "string" || r.id.indexOf("rct_") !== 0) return false;
+    if (typeof r.sha256 !== "string" || !/^[0-9a-f]{64}$/i.test(r.sha256)) return false;
+    if (typeof r.request_id !== "string" || !r.request_id) return false;
+    return true;
+  }
+
+  async function buildAuthBody(text, ticket) {
     var lane = (ticket && ticket.grade && ticket.grade.lane) || "LOOK";
     var action = lane === "DEPTH" ? "iris.turn.depth" : lane === "WORK" ? "iris.turn.work" : "iris.turn.look";
+    var input = String(text || "");
+    var digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+    var inputSha256 = Array.from(new Uint8Array(digest))
+      .map(function (b) { return b.toString(16).padStart(2, "0"); })
+      .join("");
     return {
       request_id: id + "-" + Date.now().toString(36),
       action: action,
-      input_sha256: "0000000000000000000000000000000000000000000000000000000000000000", // placeholder; replace with real hash if available
+      input_sha256: inputSha256,
       principal: { unity_id: id },
       compute_lane: lane.toLowerCase(),
       memory_requested: false,
-      text: String(text || "").slice(0, 200)
+      text: input
     };
   }
 
@@ -100,18 +120,31 @@
     emit("think", { text: last.text, ticket: last.ticket });
 
     var secret = getSigningSecret();
-    var authPromise = Promise.resolve(null);
-    if (w.IrisAuthorize && secret && last.ticket && last.ticket.ok) {
-      var body = buildAuthBody(last.text, last.ticket);
-      authPromise = IrisAuthorize.authorize(body, secret).then(function (res) {
+    var authPromise;
+    if (!last.ticket || last.ticket.ok !== true) {
+      last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "clerk-denied" };
+      authPromise = Promise.resolve(null);
+    } else if (!canAuthorize()) {
+      last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "authorize-unavailable" };
+      last.auth = { error: "authorize-unavailable" };
+      emit("authorize-error", { error: "authorize-unavailable" });
+      authPromise = Promise.resolve(null);
+    } else {
+      authPromise = buildAuthBody(last.text, last.ticket).then(function (body) {
+        return w.IrisAuthorize.authorize(body, secret);
+      }).then(function (res) {
         last.auth = res;
         emit("authorize", res);
-        if (!res.ok || !res.data || res.data.authorized !== true) {
+        if (!res || !res.ok || !res.data || res.data.authorized !== true || !receiptOk({ receipt: res.data && res.data.receipt })) {
           last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "authorize-denied" };
+        } else {
+          last.ticket.receipt = res.data.receipt;
+          last.ticket.auth = res.data;
         }
         return res;
       }).catch(function (err) {
         last.auth = { error: String(err) };
+        last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "authorize-error" };
         emit("authorize-error", { error: String(err) });
         return null;
       });
@@ -121,11 +154,22 @@
       if (last.ticket && last.ticket.ok === false) {
         return { spoken: (last.ticket.deny && last.ticket.deny.spoken) || "Not authorized.", lane: "DENIED" };
       }
+      var lane = last.ticket && last.ticket.grade && last.ticket.grade.lane;
+      if ((lane === "DEPTH" || lane === "WORK") && !receiptOk(last.ticket)) {
+        return { spoken: "Not authorized.", lane: "DENIED", reason: "receipt-required" };
+      }
       if (w.DCLMLook && DCLMLook.run) return Promise.resolve(DCLMLook.run(last.text, last.ticket)).then(function (rec) {
         last.rec = rec || null;
         return rec;
       });
-      if (w.IrisLive && IrisLive.run) return Promise.resolve(IrisLive.run(last.text));
+      if (w.IrisLive && IrisLive.run) {
+        if (!receiptOk(last.ticket)) return { spoken: "Not authorized.", lane: "DENIED", reason: "receipt-required" };
+        return Promise.resolve(IrisLive.run(last.text, last.ticket.receipt));
+      }
+      if (w.IrisLearn && IrisLearn.step) {
+        if (!receiptOk(last.ticket)) return { spoken: "Not authorized.", lane: "DENIED", reason: "receipt-required" };
+        return Promise.resolve(IrisLearn.step(last.text, last.ticket.receipt));
+      }
       return Promise.resolve({ spoken: last.text || "I'm Iris.", lane: "LOOK" });
     });
   }
@@ -146,9 +190,10 @@
   function work(job) {
     last.job = job || { kind: "tick" };
     var depth = last.ticket && last.ticket.ok && last.ticket.grade && last.ticket.grade.lane === "DEPTH";
+    var receipt = receiptOk(last.ticket);
     setState(STATE.WORK);
-    emit("work", { job: last.job, depth: !!depth });
-    if (depth && w.CosmicRuntime && CosmicRuntime.step) {
+    emit("work", { job: last.job, depth: !!depth, receipt: receipt });
+    if (depth && receipt && w.CosmicRuntime && CosmicRuntime.step) {
       try { last.job.runtime = CosmicRuntime.step(); } catch (e) {}
     }
     if (w.CosmicFactory && CosmicFactory.tick) {

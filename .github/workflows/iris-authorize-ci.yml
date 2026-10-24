@@ -1,0 +1,104 @@
+# Iris authorize CI
+#
+# Purpose: gate every change to the Iris authorize path so the staging
+# Worker config, receipt contract, and both test suites are checked
+# before the branch can be considered for promotion.
+#
+# What it does NOT do:
+# - Deploy anything
+# - Touch production Pages, routes, or secrets
+# - Require live Cloudflare credentials
+#
+# Triggers:
+# - Push to the PR branch (so every commit is checked)
+# - Pull request targeting main (so the gate is visible on the PR)
+name: Iris authorize CI
+
+on:
+  push:
+    branches:
+      - fix/iris-authorize-fail-closed-20261024
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Node is required for the staging verifier and the regression suite.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Python is required for the authorize contract tests and the full suite.
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Checks that wrangler.toml declares the four required bindings
+      # and that worker.mjs exports a fetch handler with the receipt contract.
+      # Fails if any binding is missing or the source shape is wrong.
+      - name: Verify staging Worker config
+        run: node workers/iris-runtime/verify-staging.mjs
+
+      # Verify the durable memory worker uses a Durable Object and has an atomic claim contract.
+      - name: Verify Iris Memory staging config
+        run: node workers/iris-memory/verify-staging.mjs
+
+      # Verify staging dependency fixtures cannot run without explicit opt-in.
+      - name: Run staging dependency fixture tests
+        run: node --test tests/iris-staging-dependencies.test.mjs
+
+      # Shell syntax checks for staging-only deployers; no deployment occurs in CI.
+      - name: Check staging deploy scripts
+        run: bash -n workers/deploy-iris-staging-stack.sh workers/iris-staging-dependencies/deploy-staging.sh
+
+      # Direct Durable Object contract tests: auth, persistence, replay, conflict, concurrency.
+      - name: Run Iris Memory tests
+        run: node --test tests/iris-memory.test.mjs tests/iris-runtime-memory.integration.test.mjs
+
+      # Client-side regression: denial, timeout, duplicate request_id,
+      # concurrent claims, receipt shape, and production path (no browser secret).
+      - name: Run Iris authorize regression (Node)
+        run: node --test tests/iris-authorize-regression.test.mjs
+
+      # Project-wide receipt gate: DEPTH, work, and learning require a valid receipt.
+      - name: Run Iris receipt gate (Node)
+        run: node --test tests/iris-receipt-gate.test.mjs
+
+      # Live verifier unit checks. Does not call a Worker.
+      - name: Run Iris live verifier unit checks
+        run: node --test tests/iris-live-verify.test.mjs
+
+      # Direct /v1/authorize endpoint tests against the Worker fetch handler.
+      - name: Run Iris authorize endpoint tests
+        run: node --test tests/iris-authorize-endpoint.test.mjs
+
+      # POST /v1/receipt/verify. Does not mint or call a model.
+      - name: Run Iris receipt endpoint tests
+        run: node --test tests/iris-receipt-endpoint.test.mjs
+
+      - name: Run Iris next-forty authorize tests
+        run: node --test tests/iris-authorize-next40.test.mjs
+
+      # Duplicate, concurrent, timeout, infer gate, HMAC, receipt lookup.
+      - name: Run Iris next-ten authorize tests
+        run: node --test tests/iris-authorize-next10.test.mjs
+
+      # Replay, skew, size, rate, stored mismatch, infer digest, health, audit, learn.
+      - name: Run Iris next-twenty authorize tests
+        run: node --test tests/iris-authorize-next20.test.mjs
+
+      # Contract tests for the authorize decision and receipt shape.
+      - name: Run Iris authorize contract (Python)
+        run: python -m unittest tests.test_iris_authorize_contract -v
+
+      # Full Python suite (i18n parity, arbiter, and other project tests).
+      - name: Run full Python suite
+        run: python -m unittest discover -s tests -v

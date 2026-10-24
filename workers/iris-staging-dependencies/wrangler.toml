@@ -1,0 +1,23 @@
+# Staging contract fixtures only. Internal service bindings only; no public workers.dev URLs.
+name = "iris-staging-dependencies"
+main = "worker.mjs"
+compatibility_date = "2026-10-24"
+
+[env.identity]
+name = "identity-api-staging"
+workers_dev = false
+vars = { STAGING_FIXTURE_ROLE = "identity" }
+
+[env.trinity]
+name = "trinity-law-staging"
+workers_dev = false
+vars = { STAGING_FIXTURE_ROLE = "trinity" }
+
+[env.model]
+name = "model-provider-staging"
+workers_dev = false
+vars = { STAGING_FIXTURE_ROLE = "model" }
+
+# For each environment, set these as Worker secrets:
+# STAGING_FIXTURE_ENABLED = "true"  (explicit opt-in; absent means fail closed)
+# STAGING_UNITY_ID = registered staging-only Unity principal
