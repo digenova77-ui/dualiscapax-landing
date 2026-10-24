@@ -53,3 +53,41 @@ Must pass:
 - Production Pages deployment remains untouched.
 - No production routes, secrets, or bindings are changed by this staging wiring.
 - Staging deployment should wait until the real service bindings are pointed at live staging services and the verification suite passes against that Worker.
+
+## Scripts
+
+### Set the HMAC secret (staging only)
+
+```bash
+cd workers/iris-runtime
+./set-secret.sh
+```
+
+You will be prompted for the value. It is stored as a Cloudflare Worker secret and never written to source or the browser. Equivalent direct command:
+
+```bash
+npx wrangler secret put TRINITY_HMAC_SECRET --env staging
+```
+
+Confirm with:
+
+```bash
+npx wrangler secret list --env staging
+```
+
+### Deploy to staging
+
+```bash
+cd workers/iris-runtime
+./deploy-staging.sh
+```
+
+The script runs `verify-staging.mjs` first, then deploys with `wrangler deploy --env staging`. Production is not touched.
+
+### Verify configuration
+
+```bash
+node workers/iris-runtime/verify-staging.mjs
+```
+
+Checks wrangler bindings, Worker source shape, and receipt contract. Exits non-zero on failure.
