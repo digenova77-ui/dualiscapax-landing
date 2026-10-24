@@ -88,6 +88,27 @@ function lawReport() {
   };
 }
 
+function purityReport() {
+  return {
+    protocol: "UNITY.PURITY.v1",
+    law: LAW,
+    boundary: "NOT_FOR_EMISSION",
+    origin: "immutable",
+    fail_closed: true,
+    emission: "HELD",
+    peg_ratio_E: "HELD",
+    live_coin: false,
+    live_wallet: false,
+    measured: {
+      seal_hash: "MEASURED",
+      ed25519_seal: "MEASURED",
+      key_gates: "MEASURED"
+    },
+    hypothetical: ["full residual movement", "live emission", "second pinner"],
+    unknown_never_pass: true
+  };
+}
+
 export default {
   async fetch(request, env) {
     const assets = env && env.ASSETS;
@@ -100,6 +121,10 @@ export default {
 
     if (path === "/law" || path === "/trinity") {
       return json(lawReport());
+    }
+
+    if (path === "/purity" || path === "/purity.json") {
+      return json(purityReport());
     }
 
     if (path === "/seal" || path === "/seal.json" || path === "/unity/status" || path === "/unity/status.json") {
