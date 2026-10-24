@@ -221,6 +221,19 @@ export default {
       }
     }
 
+    
+    if (path === "/donate/confirm" && request.method === "POST") {
+      return request.json().then((body) => {
+        const ref = String(body.ref || "").trim();
+        const rail = String(body.rail || "").trim().slice(0, 16);
+        if (!ref || ref.length < 4 || ref.length > 128 || !/^[A-Za-z0-9_.:@\-]+$/.test(ref)) {
+          return jsonNoStore({ ok: false, reason: "bad_ref" }, 400);
+        }
+        const receipt = "rcpt-" + Date.now().toString(36) + "-" + ref.slice(0, 8);
+        return jsonNoStore({ ok: true, receipt, rail, note: "recorded; company does not hold funds" });
+      }).catch(() => jsonNoStore({ ok: false, reason: "bad_json" }, 400));
+    }
+
     if (path === "/receipts/verify" && request.method === "POST") {
       return request.json()
         .then((body) => jsonNoStore(verifyReceiptChain(body.receipts || [])))

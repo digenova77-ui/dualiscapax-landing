@@ -61,6 +61,25 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <p class="note">Voluntary gift. One method per send. No card. No checkout.</p>
   <p class="foot">DualisCapax · Truth Prevails</p>
 </div>
+  <h2>Confirm a send</h2>
+  <p class="lede">Paste a transaction hash or Interac reference. The page records it and returns a receipt. The company does not hold the funds.</p>
+  <form id="confirm-form" style="margin:.6rem 0 1rem">
+    <input id="confirm-ref" type="text" placeholder="Tx hash or Interac reference" required
+           style="width:100%;margin:0 0 .5rem;padding:.7rem;border:1px solid rgba(158,197,255,.35);background:#0a0b10;color:#f5f5f5;font-family:inherit" />
+    <select id="confirm-rail" style="width:100%;margin:0 0 .5rem;padding:.7rem;border:1px solid rgba(158,197,255,.35);background:#0a0b10;color:#f5f5f5">
+      <option value="interac">Interac</option>
+      <option value="xrp">XRP</option>
+      <option value="zec">Zcash</option>
+      <option value="sol">Solana</option>
+      <option value="eth">Ethereum</option>
+      <option value="pol">Polygon</option>
+      <option value="bsc">BNB</option>
+      <option value="doge">Dogecoin</option>
+      <option value="other">Other</option>
+    </select>
+    <button type="submit" class="go">Record and get receipt</button>
+  </form>
+  <div id="confirm-out" class="panel" hidden></div>
 <script src="/js/payments-config.js"></script>
 <script src="/js/home-quarks.js"></script>
 <script src="/js/no-select.js"></script>
@@ -179,6 +198,33 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
         uri ? 'Tried to open your wallet app. If nothing opened, copy the address below into the wallet yourself.' : 'No automatic wallet link for this chain. Copy the address into your wallet and send on the correct network.',
         'Send only on ' + chainLabel(chain) + '. Wrong network = lost funds.'
       ], addr);
+    });
+  });
+
+  var form = document.getElementById('confirm-form');
+  var out = document.getElementById('confirm-out');
+  if (form) form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var ref = (document.getElementById('confirm-ref').value || '').trim();
+    var rail = document.getElementById('confirm-rail').value;
+    if (!ref || ref.length < 4 || ref.length > 128) return;
+    fetch('/donate/confirm', {
+      method: 'POST',
+      headers: {'content-type':'application/json'},
+      body: JSON.stringify({rail: rail, ref: ref})
+    }).then(function(r){ return r.json(); }).then(function(j){
+      out.hidden = false;
+      while (out.firstChild) out.removeChild(out.firstChild);
+      var s = document.createElement('strong');
+      s.textContent = j.ok ? 'Receipt recorded' : 'Could not record';
+      out.appendChild(s);
+      var p = document.createElement('p');
+      p.style.marginTop = '.4rem';
+      p.textContent = j.ok ? ('Receipt ' + j.receipt + '. Funds go to the address you sent to. This page does not hold them.') : (j.reason || 'Failed');
+      out.appendChild(p);
+    }).catch(function(){
+      out.hidden = false;
+      out.textContent = 'Network error. Try again.';
     });
   });
 })();
