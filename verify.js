@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Verify Trinity edge.
- * Law prevails. Fail-closed. Seal must match.
+ * Law prevails. Fail-closed. Seal must match hash and Ed25519 signature.
  * Usage: node verify.js [baseUrl]
  */
 
@@ -12,7 +12,7 @@ async function get(path) {
   const text = await res.text();
   let body;
   try { body = JSON.parse(text); } catch { body = text; }
-  return { status: res.status, headers: Object.fromEntries(res.headers), body };
+  return { status: res.status, body };
 }
 
 function fail(msg) {
@@ -39,16 +39,19 @@ async function main() {
   const seal = await get("/seal");
   if (seal.status !== 200) fail(`/seal status ${seal.status}`);
   if (seal.body?.status !== "PASS") fail(`/seal status ${seal.body?.status}`);
-  if (seal.body?.match !== true) fail("/seal match false");
+  if (seal.body?.match !== true) fail("/seal hash match false");
   if (seal.body?.unity_hash !== seal.body?.expected) fail("/seal hash mismatch");
+  if (seal.body?.signature_valid !== true) fail("/seal signature_valid false");
+  if (!seal.body?.signature || !seal.body?.public_key) fail("/seal missing signature or public_key");
   if (seal.body?.law !== "LAW WINS") fail("/seal law mismatch");
   if (seal.body?.fail_closed !== true) fail("/seal not fail_closed");
-  console.log("PASS /seal");
+  console.log("PASS /seal (hash + Ed25519)");
 
   const unity = await get("/unity/status");
   if (unity.status !== 200) fail(`/unity/status status ${unity.status}`);
   if (unity.body?.status !== "PASS") fail(`/unity/status ${unity.body?.status}`);
-  console.log("PASS /unity/status");
+  if (unity.body?.signature_valid !== true) fail("/unity/status signature_valid false");
+  console.log("PASS /unity/status (hash + Ed25519)");
 
   if (!process.exitCode) console.log("All checks passed. Law prevails.");
 }
