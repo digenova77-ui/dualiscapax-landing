@@ -22,7 +22,7 @@ const MAX_SKEW_SECONDS = 300;
 const RATE_LIMIT = 30;
 const RATE_WINDOW_MS = 60_000;
 
-// Same-isolate state. Cross-isolate durability needs a Durable Object.
+// Staging-only in-isolate state. Durable cross-isolate claims remain a required follow-up.
 const issued = new Map();
 const inflight = new Set();
 const rates = new Map();
@@ -160,7 +160,7 @@ export default {
       }
 
       const raw = JSON.stringify(body);
-      if (raw.length > MAX_BODY_BYTES) {
+      if (new TextEncoder().encode(raw).byteLength > MAX_BODY_BYTES) {
         return json(413, { authorized: false, reason: "body-too-large" });
       }
 
@@ -176,10 +176,10 @@ export default {
 
       const timestamp = request.headers.get("x-timestamp");
       const signature = request.headers.get("x-signature");
-      if (env.IRIS_REQUIRE_SIGNATURE === true && (!timestamp || !signature)) {
+      if (!timestamp || !signature) {
         return json(401, { authorized: false, reason: "signature-required" });
       }
-      if (timestamp || signature) {
+      {
         if (!timestamp || !signature) {
           return json(401, { authorized: false, reason: "invalid-signature" });
         }
@@ -292,7 +292,8 @@ export default {
         if (digest !== receipt.sha256.toLowerCase()) return json(200, { valid: false, reason: "sha256-mismatch" });
       }
       const stored = issued.get(receipt.request_id);
-      if (stored && (stored.id !== receipt.id || stored.sha256 !== receipt.sha256.toLowerCase())) {
+      if (!stored) return json(200, { valid: false, known: false, reason: "receipt-unknown" });
+      if (stored.id !== receipt.id || stored.sha256 !== receipt.sha256.toLowerCase() || stored.request_id !== receipt.request_id) {
         return json(200, { valid: false, reason: "stored-mismatch" });
       }
       return json(200, {
