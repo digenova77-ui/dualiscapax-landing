@@ -8,7 +8,7 @@
  * Adapter contracts are versioned under /v1. No secret, prompt, cookie, or user text is logged.
  */
 import { arbitrateCompute } from "./compute-arbitrator.mjs";
-import { AMOUNT, PAY_TO, decodeHeader, handleExchange } from "../../js/x402-exchange.js";
+import { decodeHeader, handleExchange } from "../../js/x402-exchange.js";
 
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_TEXT_CHARS = 8000;
@@ -578,7 +578,7 @@ function paymentLedgerHeaders(env, requestId) {
 }
 
 function validPaymentPolicy(env) {
-  return !!env && typeof env.X402_AMOUNT === "string" && /^[1-9]\\d*$/.test(env.X402_AMOUNT) &&
+  return !!env && typeof env.X402_AMOUNT === "string" && /^[1-9]\d*$/.test(env.X402_AMOUNT) &&
     typeof env.X402_PAY_TO === "string" && /^0x[0-9a-fA-F]{40}$/.test(env.X402_PAY_TO);
 }
 
