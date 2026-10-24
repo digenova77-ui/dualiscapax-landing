@@ -233,3 +233,16 @@ Proposed investigation matrix, with the hypothesis kept outside production:
 6. **Evidence threshold:** only promote a numeric rule when the specification names its units and semantics, reproducible experiments support the choice, and regression tests prove enforcement. A protocol timeout is never to be reused as a dollar cap by numeric coincidence.
 
 No payment was sent, no facilitator was called, and no production configuration was changed during this source inspection.
+
+
+### 9.3 Consolidated integration map
+
+The existing x402 website exchange, X401/X402 compliance rail, and historical DCLM/eFuse prototype are now mapped together in [X402 + eFuse + Trinity Integration Map](X402-EFUSE-INTEGRATION-MAP.md). This corrects an earlier too-narrow investigation: relevant x402 work already exists in separate source and evidence families. The remaining engineering task is to reconcile and connect those pieces, not restart x402.
+
+Key distinctions carried forward:
+- website exchange default is 0.01 USDC and its 300-second authorization timeout is not the historical DCLM 300-unit cap;
+- compliance evidence reports a TEST/simulated settlement and does not establish a real payment or deployment;
+- the historical DCLM 300/500 limits and 0.042/kWh assumption are not automatically canonical;
+- pool examples 360/420/520 require their classes and capacity semantics to be reconciled;
+- the proposed 0.60 ratio remains a candidate hypothesis, not a governing law;
+- Trinity authorization, deterministic resource admission, x402 settlement, measured energy and the final receipt must be bound into one idempotent transaction contract.
