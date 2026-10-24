@@ -26,9 +26,9 @@ npx wrangler deploy --env staging
 
 echo
 echo "Staging deploy complete. Production was not touched."
-if [[ -n "${IRIS_STAGING_URL:-}" && -n "${IRIS_STAGING_SIGNING_SECRET:-}" ]]; then
+if [[ -n "${IRIS_STAGING_URL:-}" && -n "${IRIS_STAGING_SIGNING_SECRET:-}" && -n "${IRIS_STAGING_UNITY_ID:-}" ]]; then
   echo "Running live verification against ${IRIS_STAGING_URL}"
   node verify-live.mjs
 else
-  echo "Set IRIS_STAGING_URL and IRIS_STAGING_SIGNING_SECRET, then run ./post-deploy.sh to prove the deploy."
+  echo "Set IRIS_STAGING_URL, IRIS_STAGING_SIGNING_SECRET, and IRIS_STAGING_UNITY_ID, then run ./post-deploy.sh to prove the deploy."
 fi
