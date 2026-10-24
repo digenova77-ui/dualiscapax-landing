@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Iris Arbiter — Domain Decision</title>
+<style>
+  :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#38bdf8; --pass:#22c55e; --refuse:#ef4444; --pending:#f59e0b; }
+  body { margin:0; font-family:system-ui,sans-serif; background:var(--bg); color:var(--text); display:flex; justify-content:center; padding:2rem; }
+  .card { background:var(--card); border-radius:12px; padding:1.5rem 2rem; max-width:520px; width:100%; box-shadow:0 8px 24px rgba(0,0,0,.4); }
+  h1 { margin:0 0 1rem; font-size:1.4rem; }
+  label { display:block; margin:.6rem 0 .2rem; font-size:.9rem; opacity:.8; }
+  input, select { width:100%; padding:.5rem; border-radius:6px; border:1px solid #334155; background:#0f172a; color:var(--text); box-sizing:border-box; }
+  button { margin-top:1rem; padding:.6rem 1.2rem; background:var(--accent); color:#0f172a; border:none; border-radius:6px; font-weight:600; cursor:pointer; }
+  button:hover { filter:brightness(1.1); }
+  .result { margin-top:1.2rem; padding:1rem; border-radius:8px; background:#0f172a; white-space:pre-wrap; font-family:ui-monospace,monospace; font-size:.85rem; }
+  .PASS { border-left:4px solid var(--pass); }
+  .REFUSE { border-left:4px solid var(--refuse); }
+  .PENDING { border-left:4px solid var(--pending); }
+  .ABSTAIN { border-left:4px solid #64748b; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Iris Arbiter</h1>
+  <label>Domain</label>
+  <select id="domain">
+    <option value="">(abstain)</option>
+    <option value="plus_one_math">plus_one_math</option>
+    <option value="custom">custom (registered)</option>
+  </select>
+  <label>USDC amount (plus_one_math)</label>
+  <input id="usdc" type="number" step="0.01" value="100">
+  <label>Cohort growth rate</label>
+  <input id="growth" type="number" step="0.01" value="0.2">
+  <label>Tier</label>
+  <input id="tier" type="number" min="1" value="1">
+  <label>Pattern lean (optional)</label>
+  <select id="lean">
+    <option value="">(abstain)</option>
+    <option>PURE</option>
+    <option>IMPURE</option>
+    <option>TIE</option>
+  </select>
+  <button onclick="run()">Arbitrate</button>
+  <div id="out" class="result">Result will appear here.</div>
+</div>
+<script>
+function plus_one_rate(usdc, growth, tier=1) {
+  if (usdc < 0) throw new Error("usdc_amount must be >= 0");
+  const rate = 0.001 * (1 + growth) * (1 + 0.1 * (tier - 1));
+  return Math.round(usdc * rate * 1e6) / 1e6;
+}
+function arbitrate(domain, law_input, pattern_input) {
+  if (!domain) return { mode:"hybrid-arbiter", verdict:"ABSTAIN", confidence:0, integration_note:"no domain supplied — abstaining" };
+  let law_result;
+  if (domain === "plus_one_math") {
+    const r = plus_one_rate(law_input.usdc_amount, law_input.cohort_growth_rate, law_input.tier||1);
+    law_result = { mode:"deterministic", verdict:"PASS", law:"PLUS_ONE_INCENTIVE.md §1.2", reason:"exact function evaluated", rate:r };
+  } else {
+    law_result = { mode:"deterministic", verdict:"PASS", reason:"custom domain default" };
+  }
+  const lean = (pattern_input && pattern_input.forced_lean) || "TIE";
+  let verdict, confidence, note;
+  const law_v = law_result.verdict;
+  if (law_v === "REFUSE") { verdict="REFUSE"; confidence=1; note="LAW WINS — deterministic refusal stands"; }
+  else if (law_v === "PENDING") {
+    if (lean==="IMPURE") { verdict="PENDING"; confidence=0.35; note="held for evidence; pattern intuition dissents"; }
+    else if (lean==="PURE") { verdict="PENDING"; confidence=0.75; note="held for evidence; pattern intuition agrees"; }
+    else { verdict="PENDING"; confidence=0.5; note="held for evidence"; }
+  } else {
+    if (lean==="PURE") { verdict="PASS"; confidence=0.95; note="law and intuition agree"; }
+    else if (lean==="IMPURE") { verdict="PASS"; confidence=0.6; note="RESIDUAL: law passes but pattern intuition dissents"; }
+    else { verdict="PASS"; confidence=0.8; note="law passes; pattern side abstained"; }
+  }
+  return { mode:"hybrid-arbiter", domain, verdict, confidence, integration_note:note, deterministic:law_result, probabilistic:{lean}, conflict_rule:"LAW WINS" };
+}
+function run() {
+  const domain = document.getElementById("domain").value || null;
+  const law_input = {
+    usdc_amount: parseFloat(document.getElementById("usdc").value)||0,
+    cohort_growth_rate: parseFloat(document.getElementById("growth").value)||0,
+    tier: parseInt(document.getElementById("tier").value)||1
+  };
+  const lean = document.getElementById("lean").value;
+  const pattern_input = lean ? { forced_lean: lean } : null;
+  const result = arbitrate(domain, law_input, pattern_input);
+  const out = document.getElementById("out");
+  out.className = "result " + result.verdict;
+  out.textContent = JSON.stringify(result, null, 2);
+}
+</script>
+</body>
+</html>
