@@ -144,7 +144,7 @@ The point is not to start x402 from scratch. It is to bring the existing rails t
 
 A pure comparison harness now exists at `workers/iris-runtime/threshold-gauntlet.mjs`, with tests at `workers/iris-runtime/threshold-gauntlet.test.mjs`. It is not imported by the production runtime and cannot authorize, charge, or execute anything.
 
-The local Node test run passed **7/7 tests**:
+The local Node test run passed **9/9 tests**:
 - exact integer-ratio boundaries below/at/above 0.60;
 - ratio-only vs absolute-only disagreement at 312/520;
 - scale invariance for the candidate ratio across 216/360, 252/420 and 312/520;
