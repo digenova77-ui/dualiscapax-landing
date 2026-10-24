@@ -8,6 +8,7 @@ function fakeState() {
   const storage = {
     get: async (key) => values.get(key),
     put: async (key, value) => { values.set(key, value); },
+    list: async ({ prefix = "", limit = 1000 } = {}) => new Map(Array.from(values.entries()).filter(([key]) => key.startsWith(prefix)).slice(0, limit)),
     transaction: async (fn) => {
       let release;
       const prior = lock;
