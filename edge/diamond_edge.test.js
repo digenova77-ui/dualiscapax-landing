@@ -219,4 +219,37 @@ assert(geoFr.held.length >= 5, "glass diamond cuts appear in held");
 assert(geoFr.ceiling_claimable === false, "any glass diamond cut blocks ceiling claim");
 assert(geoFr.protocol === "DIAMOND.FRONTIER.MAX.v2", "protocol preserved with diamond cuts");
 
+// --- diamond clarity levels ---
+// Pass band: FL, VVS, VS (exact match). All other clarity grades refuse.
+const CLARITY_LEVELS = [
+  { clarity: "FL", expect: true },
+  { clarity: "IF", expect: false },
+  { clarity: "VVS", expect: true },
+  { clarity: "VVS1", expect: false },
+  { clarity: "VVS2", expect: false },
+  { clarity: "VS", expect: true },
+  { clarity: "VS1", expect: false },
+  { clarity: "VS2", expect: false },
+  { clarity: "SI", expect: false },
+  { clarity: "SI1", expect: false },
+  { clarity: "SI2", expect: false },
+  { clarity: "I", expect: false },
+  { clarity: "I1", expect: false },
+  { clarity: "I2", expect: false },
+  { clarity: "I3", expect: false },
+];
+
+for (const c of CLARITY_LEVELS) {
+  const f = { clarity: c.clarity, color: "D", cut: "Excellent", reflects: "purity" };
+  const g = grade(f);
+  assert(g.pure === c.expect, `clarity ${c.clarity} pure=${g.pure}`);
+  assert(g.clarity.pass === c.expect, `clarity ${c.clarity} axis pass=${g.clarity.pass}`);
+  assert(g.verdict === (c.expect ? "PASS" : "GLASS"), `clarity ${c.clarity} verdict`);
+  if (!c.expect) {
+    assert(g.failed.includes(`clarity:${c.clarity}`), `clarity ${c.clarity} failure recorded`);
+  }
+  // Frontier only for exact FL
+  assert(facesFrontier(f) === (c.clarity === "FL"), `clarity ${c.clarity} faces frontier only if FL`);
+}
+
 console.log("All diamond edge tests passed");
