@@ -1,0 +1,9 @@
+name = "dualiscapax-iris-runtime-staging"
+main = "worker.mjs"
+compatibility_date = "2026-10-23"
+workers_dev = false
+
+# Staging-only Worker entry-point declaration.
+# Intentionally contains no service bindings, routes, secrets, or allowed-origin
+# values. /health must remain unavailable until authorized service bindings and
+# an exact IRIS_ALLOWED_ORIGINS value are configured in the staging environment.
