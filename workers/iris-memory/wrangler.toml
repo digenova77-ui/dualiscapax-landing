@@ -1,0 +1,15 @@
+name = "iris-memory-staging"
+main = "worker.mjs"
+compatibility_date = "2026-10-24"
+
+# Staging only. No routes or production domains are configured.
+[[durable_objects.bindings]]
+name = "IRIS_MEMORY_STORE"
+class_name = "IrisMemoryStore"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["IrisMemoryStore"]
+
+# Set with: npx wrangler secret put IRIS_MEMORY_SERVICE_TOKEN
+# Never commit the token or expose it to browser code.
