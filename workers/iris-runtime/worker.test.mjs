@@ -629,8 +629,9 @@ test("paid runtime returns x402 challenge only after Trinity allows the exact re
   const response = await worker.fetch(paidReq(false), env);
   assert.equal(response.status, 402);
   assert.equal((await response.json()).x402Version, 2);
-  assert.deepEqual(calls.map((call) => call.name), ["identity", "trinity"]);
-  assert.equal(calls.some((call) => call.name === "memory"), false);
+  assert.deepEqual(calls.map((call) => call.name), ["identity", "trinity", "memory"]);
+  assert.equal(calls[2].path, "/v1/requests/claim");
+  assert.equal(calls.some((call) => call.path.endsWith("/context") || call.path.endsWith("/append")), false);
 });
 
 test("paid runtime settles through x402, executes once, persists receipt, then completes payment ledger", async () => {
@@ -652,9 +653,10 @@ test("paid runtime settles through x402, executes once, persists receipt, then c
   assert.equal(data.payment.transaction, "0x" + "c".repeat(64));
   assert.deepEqual(facilitatorCalls, ["/verify", "/settle"]);
   assert.deepEqual(calls.map((call) => call.name), [
-    "identity", "trinity", "paymentLedger", "paymentLedger", "paymentLedger",
-    "memory", "memory", "paymentLedger",
+    "identity", "trinity", "memory", "paymentLedger", "paymentLedger", "paymentLedger",
+    "memory", "paymentLedger",
   ]);
+  assert.equal(calls[2].path, "/v1/requests/claim");
   assert.deepEqual(calls.filter((call) => call.name === "paymentLedger").map((call) => call.path), [
     "/v1/payments/claim", "/v1/payments/attempting", "/v1/payments/record", "/v1/payments/complete",
   ]);
@@ -691,7 +693,7 @@ test("paid runtime never contacts facilitator when Trinity denies the request", 
   assert.equal(response.status, 403);
   assert.deepEqual(facilitatorCalls, []);
   assert.equal(calls.some((call) => call.name === "paymentLedger"), false);
-  assert.equal(calls.some((call) => call.name === "memory"), false);
+  assert.deepEqual(calls.filter((call) => call.name === "memory").map((call) => call.path), ["/v1/requests/claim"]);
 });
 
 test("rejected payment releases the ledger reservation and never executes", async () => {
