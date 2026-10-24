@@ -68,12 +68,17 @@ function fixture(overrides = {}) {
       decision: "allow", authorized: true, request_id: body.request_id,
       action: body.action, input_sha256: body.input_sha256, principal: body.principal,
     })),
+    X402_LEDGER_TOKEN: "test-ledger-token-with-at-least-thirty-two-characters",
     X402_LEDGER: binding("paymentLedger", async (body, request) => {
       const path = new URL(request.url).pathname;
       if (path.endsWith("/claim")) return {
         contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
         action: body.action, input_sha256: body.input_sha256,
         payment_sha256: body.payment_sha256, state: "RESERVED", claimed: true,
+      };
+      if (path.endsWith("/attempting")) return {
+        contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
+        payment_sha256: body.payment_sha256, state: "PAYMENT_ATTEMPTED",
       };
       if (path.endsWith("/record")) return {
         contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
@@ -643,11 +648,11 @@ test("paid runtime settles through x402, executes once, persists receipt, then c
   assert.equal(data.payment.transaction, "0x" + "c".repeat(64));
   assert.deepEqual(facilitatorCalls, ["/verify", "/settle"]);
   assert.deepEqual(calls.map((call) => call.name), [
-    "identity", "trinity", "paymentLedger", "paymentLedger",
+    "identity", "trinity", "paymentLedger", "paymentLedger", "paymentLedger",
     "memory", "memory", "paymentLedger",
   ]);
   assert.deepEqual(calls.filter((call) => call.name === "paymentLedger").map((call) => call.path), [
-    "/v1/payments/claim", "/v1/payments/record", "/v1/payments/complete",
+    "/v1/payments/claim", "/v1/payments/attempting", "/v1/payments/record", "/v1/payments/complete",
   ]);
   assert.equal(calls.find((call) => call.path.endsWith("/append")).body.provenance.payment.transaction, "0x" + "c".repeat(64));
 });
