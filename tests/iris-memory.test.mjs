@@ -49,7 +49,7 @@ function claim(request_id, text, principal = "unity-1", action = "iris.turn.look
   const digest = requireDigest(text);
   return {
     request_id, principal, action, input_sha256: digest,
-    receipt: { contract: "dualis.receipt.v1", unity_id: principal, request_id, sha256: digest, id: "rct_" + request_id },
+    receipt: { contract: "dualis.receipt.v1", unity_id: principal, request_id, sha256: digest, id: "rct_" + request_id, action, issued_at: new Date().toISOString() },
   };
 }
 function requireDigest(text) {
