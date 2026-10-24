@@ -29,6 +29,28 @@ assert(circuitCheck(claimsOver, now).reason === "circuit:claim_rate", "circuit r
 
 assert(circuitCheck("not-array").ok === false, "circuit refuses non-array");
 
+// Window boundary: claims older than window are ignored
+const oldClaims = Array.from({ length: 10 }, (_, i) => ({ ts: now - CIRCUIT.window_ms - 1000 - i * 1000 }));
+assert(circuitCheck(oldClaims, now).ok === true, "circuit ignores claims outside window");
+
+// Mixed: some old, some recent under limit
+const mixed = [
+  ...oldClaims.slice(0, 5),
+  { ts: now - 500 },
+  { ts: now - 600 },
+];
+assert(circuitCheck(mixed, now).ok === true, "circuit counts only recent claims");
+
+// Exact boundary at window edge
+const edgeClaim = [{ ts: now - CIRCUIT.window_ms + 1 }];
+assert(circuitCheck(edgeClaim, now).ok === true, "claim just inside window counts");
+const outsideClaim = [{ ts: now - CIRCUIT.window_ms - 1 }];
+assert(circuitCheck(outsideClaim, now).ok === true, "claim just outside window ignored");
+
+// Empty and null-like
+assert(circuitCheck([], now).ok === true, "empty claims allowed");
+assert(circuitCheck(null).ok === false, "null claims refused");
+
 // --- requireFields ---
 assert(requireFields({ a: 1, b: "x" }, ["a", "b"]).ok === true, "requireFields passes");
 assert(requireFields({ a: 1 }, ["a", "b"]).ok === false, "requireFields refuses missing");
