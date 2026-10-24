@@ -43,19 +43,28 @@ function sameAddress(a, b) {
 }
 
 function railsFromEnv(env) {
-  const payTo = (env && env.X402_PAY_TO) || PAY_TO;
-  const amount = (env && env.X402_AMOUNT) || AMOUNT;
+  const config = env || {};
+  const enableMainnet = config.X402_ENABLE_MAINNET === "true";
+  // Testnet remains available for safe integration testing. Mainnet is opt-in
+  // and requires explicit recipient and exact amount configuration.
+  if (enableMainnet && (!config.X402_PAY_TO || !config.X402_AMOUNT)) {
+    throw new Error("mainnet x402 requires explicit payTo and amount policy");
+  }
+  const payTo = config.X402_PAY_TO || PAY_TO;
+  const amount = config.X402_AMOUNT || AMOUNT;
   if (!ADDRESS.test(payTo) || !/^[1-9]\d*$/.test(amount)) {
     throw new Error("x402 payTo or amount is not exact");
   }
-  return RAILS.map((rail) => ({
-    ...rail,
-    payTo,
-    amount,
-    facilitator:
-      (env && env["X402_FACILITATOR_" + rail.network.split(":")[1]]) || rail.facilitator,
-    extra: { ...rail.extra }
-  }));
+  return RAILS
+    .filter((rail) => rail.network === "eip155:84532" || enableMainnet)
+    .map((rail) => ({
+      ...rail,
+      payTo,
+      amount,
+      facilitator:
+        config["X402_FACILITATOR_" + rail.network.split(":")[1]] || rail.facilitator,
+      extra: { ...rail.extra }
+    }));
 }
 
 export function requirementOf(rail) {
