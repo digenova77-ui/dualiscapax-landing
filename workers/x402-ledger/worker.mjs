@@ -34,13 +34,18 @@ function validOperation(body) {
     typeof body.payment_sha256 === "string" && DIGEST_RE.test(body.payment_sha256);
 }
 
+function validPaymentPolicy(env) {
+  return !!env && typeof env.X402_AMOUNT === "string" && /^[1-9]\\d*$/.test(env.X402_AMOUNT) &&
+    typeof env.X402_PAY_TO === "string" && ADDRESS_RE.test(env.X402_PAY_TO);
+}
+
 function validPaymentReceipt(receipt, env) {
   const assets = {
     "eip155:8453": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     "eip155:84532": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
   };
-  const expectedAmount = String(env.X402_AMOUNT || "10000");
-  const expectedPayTo = String(env.X402_PAY_TO || "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4");
+  const expectedAmount = String(env.X402_AMOUNT || "");
+  const expectedPayTo = String(env.X402_PAY_TO || "");
   return !!receipt && typeof receipt === "object" && !Array.isArray(receipt) &&
     receipt.exchanged === true && receipt.scheme === "exact" &&
     receipt.amount === expectedAmount &&
@@ -211,9 +216,9 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/health" && request.method === "GET") {
-      return json({ service: "dualis-x402-ledger", available: !!env.TRANSACTIONS && typeof env.LEDGER_TOKEN === "string" && env.LEDGER_TOKEN.length >= 32 });
+      return json({ service: "dualis-x402-ledger", available: !!env.TRANSACTIONS && typeof env.LEDGER_TOKEN === "string" && env.LEDGER_TOKEN.length >= 32 && validPaymentPolicy(env) });
     }
-    if (!env.TRANSACTIONS || typeof env.LEDGER_TOKEN !== "string" || env.LEDGER_TOKEN.length < 32) {
+    if (!env.TRANSACTIONS || typeof env.LEDGER_TOKEN !== "string" || env.LEDGER_TOKEN.length < 32 || !validPaymentPolicy(env)) {
       return json({ available: false, reason: "ledger-not-configured" }, 503);
     }
     if (request.headers.get("authorization") !== "Bearer " + env.LEDGER_TOKEN) {
