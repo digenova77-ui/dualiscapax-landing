@@ -79,7 +79,7 @@ test("authorize returns 503 when the signing secret is missing", async () => {
   assert.equal(data.reason, "signing-secret-unavailable");
 });
 
-test("authorize requires a signature even when a secret is configured", async () => {\n  const res = await post({ request_id: "unsigned-1", text: "hi" }, FULL_ENV, { "x-timestamp": "", "x-signature": "" });\n  const data = await res.json();\n  assert.equal(res.status, 401);\n  assert.equal(data.reason, "signature-required");\n});\n\ntest("authorize requires HMAC even when a signing secret is configured", async () => {
+test("authorize requires HMAC even when a signing secret is configured", async () => {
   const res = await post({ request_id: "unsigned-1", text: "hi" }, FULL_ENV, { "x-timestamp": "", "x-signature": "" });
   const data = await res.json();
   assert.equal(res.status, 401);
