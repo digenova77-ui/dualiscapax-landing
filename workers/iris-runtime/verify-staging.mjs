@@ -32,9 +32,12 @@ function checkWorkerSource(src) {
   const durableLookup = src.includes("/v1/requests/get");
   const contextRead = src.includes("/v1/context/read") && src.includes("readMemoryContext");
   const serviceToken = src.includes("IRIS_MEMORY_SERVICE_TOKEN");
+  const revocationGate = src.includes("/v1/receipt/revoke") && src.includes("receipt-revoked");
+  const expiryGate = src.includes("RECEIPT_TTL_MS") && src.includes("receipt-expired");
+  const metricsEndpoint = src.includes("/v1/metrics") && src.includes("metrics.model") && src.includes("metrics.revoke");
   return {
-    ok: hasFetch && hasAuthorize && hasReceipt && noBrowserSecret && durableClaim && durableLookup && contextRead && serviceToken,
-    hasFetch, hasAuthorize, hasReceipt, noBrowserSecret, durableClaim, durableLookup, contextRead, serviceToken,
+    ok: hasFetch && hasAuthorize && hasReceipt && noBrowserSecret && durableClaim && durableLookup && contextRead && serviceToken && revocationGate && expiryGate && metricsEndpoint,
+    hasFetch, hasAuthorize, hasReceipt, noBrowserSecret, durableClaim, durableLookup, contextRead, serviceToken, revocationGate, expiryGate, metricsEndpoint,
   };
 }
 
@@ -68,6 +71,7 @@ const memoryResult = {
   durableObject: memoryToml.includes('class_name = "IrisMemoryStore"'),
   sqliteMigration: memoryToml.includes('new_sqlite_classes = ["IrisMemoryStore"]'),
   atomicTransaction: memorySrc.includes("this.state.storage.transaction"),
+  durableRevocation: memorySrc.includes('path === "/v1/requests/revoke"') && memorySrc.includes("revoked: true"),
   serviceToken: memorySrc.includes("IRIS_MEMORY_SERVICE_TOKEN"),
   noRoutes: !/\[\[routes\]\]/.test(memoryToml),
   noPublicWorkersDev: /^workers_dev\s*=\s*false$/m.test(memoryToml),
