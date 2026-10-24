@@ -48,6 +48,23 @@ Must pass:
 - Receipt verification (id + sha256 present on allow)
 - Production client path does not require a browser secret
 
+## Atomic claim contract (required for a real staging deployment)
+
+After identity and Trinity allow, the Worker calls `IRIS_MEMORY` at
+`/v1/requests/claim` with `request_id`, verified principal, action,
+server-computed `input_sha256`, and the proposed receipt.
+
+The service must implement this contract atomically across requests and isolates:
+- HTTP 200 with no replay marker means this request acquired the claim.
+- HTTP 200 with `replay: true` must return the original stored receipt; the Worker checks its request ID and text digest before replaying it.
+- HTTP 409 means the request ID is already claimed with a conflicting body or claim.
+- Other non-2xx results fail closed; the Worker must not fall back to local-only state.
+
+A generic stub returning HTTP 200 is sufficient for unit tests only. Before staging deploy,
+verify the actual `iris-memory-staging` service implements this exact contract and persists
+claims and receipts across isolate restarts. The Wrangler service name is currently a
+placeholder until that service is confirmed.
+
 ## Production boundary
 
 - Production Pages deployment remains untouched.
