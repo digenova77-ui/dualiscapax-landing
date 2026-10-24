@@ -79,3 +79,29 @@ test("work validation endpoint rejects GET without touching service bindings", a
   assert.equal(response.status, 405);
   assert.equal(response.headers.get("allow"), "POST");
 });
+
+test("work validation endpoint rejects malformed JSON without execution", async () => {
+  const req = new Request("https://iris-runtime.test/v1/work/validate", {
+    method: "POST",
+    headers: { origin: ORIGIN, "content-type": "application/json" },
+    body: "{not-json"
+  });
+  const response = await worker.fetch(req, env);
+  const body = await response.json();
+  assert.equal(response.status, 400);
+  assert.deepEqual(body.errors, ["invalid-json"]);
+  assert.equal(body.execution_performed, false);
+});
+
+test("work validation endpoint rejects oversized input before validation", async () => {
+  const req = new Request("https://iris-runtime.test/v1/work/validate", {
+    method: "POST",
+    headers: { origin: ORIGIN, "content-type": "application/json" },
+    body: JSON.stringify({ envelope: "x".repeat(17000) })
+  });
+  const response = await worker.fetch(req, env);
+  const body = await response.json();
+  assert.equal(response.status, 413);
+  assert.deepEqual(body.errors, ["body-too-large"]);
+  assert.equal(body.execution_performed, false);
+});
