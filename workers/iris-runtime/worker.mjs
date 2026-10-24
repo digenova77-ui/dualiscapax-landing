@@ -8,6 +8,7 @@
  * Adapter contracts are versioned under /v1. No secret, prompt, cookie, or user text is logged.
  */
 import { arbitrateCompute } from "./compute-arbitrator.mjs";
+import { validateWorkEnvelope } from "./universal-work-contract.mjs";
 import { decodeHeader, handleExchange } from "../../js/x402-exchange.js";
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -139,11 +140,30 @@ async function handleRequest(request, env) {
   }
 
   const isPaidTurn = url.pathname === "/v1/paid-turn";
-  if (url.pathname !== "/v1/turn" && !isPaidTurn) return json({ available: false, reason: "not-found" }, 404);
+  const isWorkValidation = url.pathname === "/v1/work/validate";
+  if (url.pathname !== "/v1/turn" && !isPaidTurn && !isWorkValidation) return json({ available: false, reason: "not-found" }, 404);
   if (request.method !== "POST") return json({ available: false, reason: "method-not-allowed" }, 405, { allow: "POST" });
 
   const origin = allowedOrigin(request, env);
   if (!origin) return json({ available: false, stage: "origin", reason: "origin-not-authorized" }, 403);
+
+  // This endpoint validates a work envelope only. It does not authenticate a principal,
+  // invoke Trinity, execute work, meter resources, charge, or settle anything.
+  if (isWorkValidation) {
+    const body = await readBody(request);
+    if (body === null) return json({ valid: false, errors: ["body-too-large"], execution_performed: false }, 413);
+    if (body === undefined) return json({ valid: false, errors: ["invalid-json"], execution_performed: false }, 400);
+    const result = validateWorkEnvelope(body);
+    return json({
+      contract: "dualis.work.validation.v1",
+      valid: result.valid,
+      errors: result.errors,
+      execution_performed: false,
+      authorization_performed: false,
+      metering_performed: false,
+      settlement_performed: false,
+    }, result.valid ? 200 : 422);
+  }
 
   // A caller-stable ID is mandatory: generating a new ID server-side cannot protect retries.
   const requestId = request.headers.get("x-request-id");
