@@ -118,4 +118,44 @@ assert(claimRequiresLock({}, validReceipts).reason.startsWith("uninitialized:"),
 const broken = [{ id: "bad" }];
 assert(claimRequiresLock({ lock_id: "x" }, broken).ok === false, "broken chain refused");
 
+// --- diamond face (grade bands and axes) ---
+const faceBands = [
+  { clarity: "FL", color: "D", cut: "Excellent", reflects: "purity", expect: true },
+  { clarity: "VVS", color: "E", cut: "Very Good", reflects: "purity", expect: true },
+  { clarity: "VS", color: "F", cut: "Excellent", reflects: "purity", expect: true },
+  { clarity: "SI", color: "D", cut: "Excellent", reflects: "purity", expect: false },
+  { clarity: "FL", color: "G", cut: "Excellent", reflects: "purity", expect: false },
+  { clarity: "FL", color: "D", cut: "Good", reflects: "purity", expect: false },
+  { clarity: "FL", color: "D", cut: "Excellent", reflects: "other", expect: false },
+];
+
+for (const b of faceBands) {
+  const result = grade(b);
+  assert(result.pure === b.expect, `face band ${b.clarity}/${b.color}/${b.cut}/${b.reflects} pure=${result.pure}`);
+  assert(result.verdict === (b.expect ? "PASS" : "GLASS"), "verdict matches pure");
+}
+
+// Individual axis failure details
+const clarityFail = grade({ clarity: "I", color: "D", cut: "Excellent", reflects: "purity" });
+assert(clarityFail.clarity.pass === false, "clarity axis fails");
+assert(clarityFail.failed.includes("clarity:I"), "clarity failure recorded");
+
+const colorFail = grade({ clarity: "FL", color: "G", cut: "Excellent", reflects: "purity" });
+assert(colorFail.color.pass === false, "color axis fails");
+assert(colorFail.failed.includes("color:G"), "color failure recorded");
+
+const cutFail = grade({ clarity: "FL", color: "D", cut: "Poor", reflects: "purity" });
+assert(cutFail.cut.pass === false, "cut axis fails");
+assert(cutFail.failed.includes("cut:Poor"), "cut failure recorded");
+
+const reflectsFail = grade({ clarity: "FL", color: "D", cut: "Excellent", reflects: "glass" });
+assert(reflectsFail.pure === false, "reflects failure");
+assert(reflectsFail.failed.includes("reflects:not-purity"), "reflects failure recorded");
+
+// facesFrontier requires all max bands
+assert(facesFrontier({ clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" }) === true, "max face");
+assert(facesFrontier({ clarity: "VVS", color: "D", cut: "Excellent", reflects: "purity" }) === false, "VVS not frontier");
+assert(facesFrontier({ clarity: "FL", color: "E", cut: "Excellent", reflects: "purity" }) === false, "E not frontier");
+assert(facesFrontier({ clarity: "FL", color: "D", cut: "Very Good", reflects: "purity" }) === false, "VG not frontier");
+
 console.log("All diamond edge tests passed");
