@@ -96,6 +96,18 @@ async function hmacHex(secret, payload) {
   return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+async function readMemoryContext(env, principal, requestId) {
+  const result = await callBinding(env.IRIS_MEMORY, "/v1/context/read", {
+    principal,
+    request_id: requestId,
+    limit: 5,
+  }, env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
+  if (!result.ok || !result.data || result.data.ok !== true || !Array.isArray(result.data.items)) {
+    return { ok: false, reason: result.reason || "memory-context-unavailable" };
+  }
+  return { ok: true, items: result.data.items };
+}
+
 async function callBinding(binding, path, body, timeoutMs, extraHeaders) {
   if (!binding || typeof binding.fetch !== "function") {
     return { ok: false, reason: "binding-inert" };
@@ -256,7 +268,9 @@ export default {
           if (!receiptShape(prior) || prior.request_id !== requestId || prior.sha256.toLowerCase() !== digest) {
             return json(503, { authorized: false, reason: "claim-receipt-mismatch", request_id: requestId });
           }
-          return json(200, { authorized: true, decision: "allow", request_id: requestId, receipt: prior, replay: true });
+          const context = await readMemoryContext(env, principal, requestId);
+          if (!context.ok) return json(503, { authorized: false, reason: context.reason, request_id: requestId });
+          return json(200, { authorized: true, decision: "allow", request_id: requestId, receipt: prior, memory_context: context.items, replay: true });
         }
         if (!claim.data || claim.data.claimed !== true || !receiptShape(claim.data.receipt) ||
             claim.data.receipt.request_id !== requestId || claim.data.receipt.sha256.toLowerCase() !== digest) {
@@ -265,12 +279,15 @@ export default {
         // The atomic claim must persist the receipt in the same transaction.
         // Do not add a second, non-atomic /record step after claiming.
         const storedReceipt = claim.data.receipt;
-        recordAudit({ request_id: requestId, decision: "allow", receipt_id: receipt.id });
+        const context = await readMemoryContext(env, principal, requestId);
+        if (!context.ok) return json(503, { authorized: false, reason: context.reason, request_id: requestId });
+        recordAudit({ request_id: requestId, decision: "allow", receipt_id: storedReceipt.id });
         return json(200, {
           authorized: true,
           decision: "allow",
           request_id: requestId,
           receipt: storedReceipt,
+          memory_context: context.items,
         });
       } finally {
         inflight.delete(requestId);
@@ -302,7 +319,9 @@ export default {
           return json(403, { ok: false, reason: "sha256-mismatch" });
         }
       }
-      const model = await callBinding(env.MODEL_PROVIDER, "/complete", { receipt: body.receipt, text: body.text || "" });
+      const context = await readMemoryContext(env, stored.unity_id, body.receipt.request_id);
+      if (!context.ok) return json(503, { ok: false, reason: context.reason });
+      const model = await callBinding(env.MODEL_PROVIDER, "/complete", { receipt: body.receipt, text: body.text || "", memory_context: context.items });
       if (!model.ok) {
         return json(502, { ok: false, reason: model.reason || "model-denied" });
       }
