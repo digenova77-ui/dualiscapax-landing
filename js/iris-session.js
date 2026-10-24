@@ -53,25 +53,27 @@
   }
 
   function getSigningSecret() {
-    // Secure context only. Do not hardcode.
-    if (w.IrisSigningSecret) return w.IrisSigningSecret;
-    if (w.localStorage) {
-      try { return localStorage.getItem("dc.iris.signing-secret") || null; } catch (e) {}
-    }
-    return null;
+    // Staging-only compatibility hook. Any value exposed to browser JavaScript
+    // is public to that browser; production must use a server-side signer.
+    return w.IrisSigningSecret || null;
   }
 
-  function buildAuthBody(text, ticket) {
+  async function buildAuthBody(text, ticket) {
     var lane = (ticket && ticket.grade && ticket.grade.lane) || "LOOK";
     var action = lane === "DEPTH" ? "iris.turn.depth" : lane === "WORK" ? "iris.turn.work" : "iris.turn.look";
+    var input = String(text || "");
+    var digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+    var inputSha256 = Array.from(new Uint8Array(digest))
+      .map(function (b) { return b.toString(16).padStart(2, "0"); })
+      .join("");
     return {
       request_id: id + "-" + Date.now().toString(36),
       action: action,
-      input_sha256: "0000000000000000000000000000000000000000000000000000000000000000", // placeholder; replace with real hash if available
+      input_sha256: inputSha256,
       principal: { unity_id: id },
       compute_lane: lane.toLowerCase(),
       memory_requested: false,
-      text: String(text || "").slice(0, 200)
+      text: input.slice(0, 200)
     };
   }
 
@@ -100,18 +102,27 @@
     emit("think", { text: last.text, ticket: last.ticket });
 
     var secret = getSigningSecret();
-    var authPromise = Promise.resolve(null);
-    if (w.IrisAuthorize && secret && last.ticket && last.ticket.ok) {
-      var body = buildAuthBody(last.text, last.ticket);
-      authPromise = IrisAuthorize.authorize(body, secret).then(function (res) {
+    var authPromise;
+    if (!last.ticket || last.ticket.ok !== true) {
+      authPromise = Promise.resolve(null);
+    } else if (!w.IrisAuthorize || typeof w.IrisAuthorize.authorize !== "function" || !secret) {
+      last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "authorize-unavailable" };
+      last.auth = { error: "authorize-unavailable" };
+      emit("authorize-error", { error: "authorize-unavailable" });
+      authPromise = Promise.resolve(null);
+    } else {
+      authPromise = buildAuthBody(last.text, last.ticket).then(function (body) {
+        return w.IrisAuthorize.authorize(body, secret);
+      }).then(function (res) {
         last.auth = res;
         emit("authorize", res);
-        if (!res.ok || !res.data || res.data.authorized !== true) {
+        if (!res || !res.ok || !res.data || res.data.authorized !== true) {
           last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "authorize-denied" };
         }
         return res;
       }).catch(function (err) {
         last.auth = { error: String(err) };
+        last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "authorize-error" };
         emit("authorize-error", { error: String(err) });
         return null;
       });
