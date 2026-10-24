@@ -122,7 +122,7 @@ async function handleRequest(request, env) {
       trinity: !!env.TRINITY_LAW,
       memory: !!env.IRIS_MEMORY,
       provider: !!env.MODEL_PROVIDER,
-      payment_ledger: !!env.X402_LEDGER && typeof env.X402_LEDGER_TOKEN === "string" && env.X402_LEDGER_TOKEN.length >= 32,
+      payment_ledger: !!env.X402_LEDGER && typeof env.X402_LEDGER_TOKEN === "string" && env.X402_LEDGER_TOKEN.length >= 32 && validPaymentPolicy(env),
     };
     const complete = Object.values(bindings).every(Boolean) &&
       typeof env.IRIS_ALLOWED_ORIGINS === "string" &&
@@ -174,6 +174,7 @@ async function handleRequest(request, env) {
   if (!hasBinding(env.TRINITY_LAW)) return unavailable("trinity");
   if (!hasBinding(env.IRIS_MEMORY)) return unavailable("idempotency-claim");
   if (isPaidTurn && (!hasBinding(env.X402_LEDGER) || typeof env.X402_LEDGER_TOKEN !== "string" || env.X402_LEDGER_TOKEN.length < 32)) return unavailable("payment-ledger");
+  if (isPaidTurn && !validPaymentPolicy(env)) return unavailable("payment-policy");
   if (computePlan.lane === "probabilistic" && !hasBinding(env.MODEL_PROVIDER)) return unavailable("inference");
 
   let identity;
@@ -576,13 +577,18 @@ function paymentLedgerHeaders(env, requestId) {
   };
 }
 
+function validPaymentPolicy(env) {
+  return !!env && typeof env.X402_AMOUNT === "string" && /^[1-9]\\d*$/.test(env.X402_AMOUNT) &&
+    typeof env.X402_PAY_TO === "string" && /^0x[0-9a-fA-F]{40}$/.test(env.X402_PAY_TO);
+}
+
 function validPaymentReceipt(receipt, env) {
   const assets = {
     "eip155:8453": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
     "eip155:84532": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
   };
-  const expectedAmount = String(env.X402_AMOUNT || AMOUNT);
-  const expectedPayTo = String(env.X402_PAY_TO || PAY_TO);
+  const expectedAmount = String(env.X402_AMOUNT || "");
+  const expectedPayTo = String(env.X402_PAY_TO || "");
   return !!receipt && typeof receipt === "object" && !Array.isArray(receipt) &&
     receipt.exchanged === true && receipt.scheme === "exact" &&
     receipt.amount === expectedAmount &&
