@@ -40,14 +40,15 @@ function envWith(model) {
     IRIS_MEMORY_SERVICE_TOKEN: "test-memory-token",
   };
 }
-async function sign(body, secret = "test-secret") {
+async function sign(body, secret = "test-secret", path = "/v1/authorize") {
   const timestamp = String(Math.floor(Date.now() / 1000));
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(timestamp + "." + JSON.stringify(body)));
+  const signedPayload = path === "/v1/receipt/revoke" ? timestamp + ".POST./v1/receipt/revoke." + JSON.stringify(body) : timestamp + "." + JSON.stringify(body);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signedPayload));
   return { "x-timestamp": timestamp, "x-signature": Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("") };
 }
 async function post(path, body, env, headers = {}) {
-  const signed = await sign(body, env.TRINITY_HMAC_SECRET);
+  const signed = await sign(body, env.TRINITY_HMAC_SECRET, path);
   return worker.fetch(new Request("https://staging.test" + path, {
     method: "POST",
     headers: { "content-type": "application/json", ...signed, ...headers },
@@ -184,5 +185,23 @@ test("14. inference rejects receipts missing issued_at or action", async () => {
   const res = await post("/v1/infer", { receipt: incomplete, text: "hello" }, env);
   assert.equal(res.status, 403);
   assert.equal((await res.json()).reason, "receipt-required");
+});
+
+test("15. authorization signature cannot be replayed against receipt revocation", async () => {
+  const env = envWith();
+  const issued = await post("/v1/authorize", { ...base, request_id: "cross-route-target-40", text: "hello" }, env);
+  const auth = await issued.json();
+  const replayBody = { ...base, request_id: "cross-route-new-40", text: "new request", id: auth.receipt.id };
+  const authorizeSignature = await sign(replayBody, env.TRINITY_HMAC_SECRET, "/v1/authorize");
+  const res = await worker.fetch(new Request("https://staging.test/v1/receipt/revoke", {
+    method: "POST",
+    headers: { "content-type": "application/json", ...authorizeSignature },
+    body: JSON.stringify(replayBody),
+  }), env);
+  assert.equal(res.status, 401);
+  assert.equal((await res.json()).reason, "invalid-signature");
+
+  const verify = await post("/v1/receipt/verify", { receipt: auth.receipt, text: "hello" }, env);
+  assert.equal((await verify.json()).valid, true);
 });
 
