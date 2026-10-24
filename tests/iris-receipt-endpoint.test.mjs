@@ -41,6 +41,7 @@ function verify(body, env = FULL_ENV) {
 
 const good = {
   contract: "dualis.receipt.v1",
+  unity_id: "test-unity",
   id: "rct_r1",
   sha256: "a".repeat(64),
   request_id: "r1",
