@@ -13,10 +13,10 @@
 </header>
 <main>
   <h1>HTTP 402</h1>
-  <p class="lead">0.01 USDC. Exact. The receipt is withheld until the facilitator settles.</p>
+  <p class="lead">Testnet default: 0.01 test USDC. Mainnet is disabled unless explicitly configured. The receipt is withheld until settlement.</p>
   <form id="exchange">
-    <label class="check"><input type="radio" name="network" value="eip155:8453" checked> Base</label>
-    <label class="check"><input type="radio" name="network" value="eip155:84532"> Base Sepolia</label>
+    <label class="check"><input type="radio" name="network" value="eip155:8453"> Base (mainnet, opt-in)</label>
+    <label class="check"><input type="radio" name="network" value="eip155:84532" checked> Base Sepolia (testnet)</label>
     <button type="submit">Exchange</button>
   </form>
   <p id="status" role="status">Asking the exchange.</p>
@@ -35,7 +35,7 @@ function say(text) { status.textContent = text; }
 
 function chosen() {
   const picked = form.querySelector("input[name=network]:checked");
-  return picked ? picked.value : "eip155:8453";
+  return picked ? picked.value : "eip155:84532";
 }
 
 async function readRequired(response) {
