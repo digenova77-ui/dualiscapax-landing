@@ -53,7 +53,7 @@ jobs:
 
       # Direct Durable Object contract tests: auth, persistence, replay, conflict, concurrency.
       - name: Run Iris Memory tests
-        run: node --test tests/iris-memory.test.mjs
+        run: node --test tests/iris-memory.test.mjs tests/iris-runtime-memory.integration.test.mjs
 
       # Client-side regression: denial, timeout, duplicate request_id,
       # concurrent claims, receipt shape, and production path (no browser secret).
