@@ -51,6 +51,14 @@ jobs:
       - name: Verify Iris Memory staging config
         run: node workers/iris-memory/verify-staging.mjs
 
+      # Verify staging dependency fixtures cannot run without explicit opt-in.
+      - name: Run staging dependency fixture tests
+        run: node --test tests/iris-staging-dependencies.test.mjs
+
+      # Shell syntax checks for staging-only deployers; no deployment occurs in CI.
+      - name: Check staging deploy scripts
+        run: bash -n workers/deploy-iris-staging-stack.sh workers/iris-staging-dependencies/deploy-staging.sh
+
       # Direct Durable Object contract tests: auth, persistence, replay, conflict, concurrency.
       - name: Run Iris Memory tests
         run: node --test tests/iris-memory.test.mjs tests/iris-runtime-memory.integration.test.mjs
