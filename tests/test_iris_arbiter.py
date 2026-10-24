@@ -63,6 +63,30 @@ class IrisArbiterFailClosedTests(unittest.TestCase):
                 result = module.arbitrate("blocked", {}, {"forced_lean": "PURE"})
                 self.assertEqual(result["verdict"], "REFUSE")
 
+    def test_judge_exception_refuses(self):
+        for module in MODULES:
+            with self.subTest(module=module.__name__):
+                def broken_judge(_):
+                    raise RuntimeError("judge unavailable")
+                module.register_judge("broken", broken_judge)
+                result = module.arbitrate("broken", {}, {"forced_lean": "PURE"})
+                self.assertEqual(result["verdict"], "REFUSE")
+                self.assertIn("judge raised RuntimeError", result["deterministic"]["reason"])
+
+    def test_non_finite_amount_is_rejected(self):
+        for module in MODULES:
+            with self.subTest(module=module.__name__):
+                for amount in (float("nan"), float("inf"), float("-inf")):
+                    with self.assertRaises(ValueError):
+                        module.plus_one_rate(amount, 0.2, 1)
+
+    def test_invalid_tier_is_rejected(self):
+        for module in MODULES:
+            with self.subTest(module=module.__name__):
+                for tier in (0, -1, 1.5, True):
+                    with self.assertRaises(ValueError):
+                        module.plus_one_rate(100, 0.2, tier)
+
     def test_pending_stays_pending(self):
         for module in MODULES:
             with self.subTest(module=module.__name__):
