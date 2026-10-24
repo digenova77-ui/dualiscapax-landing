@@ -128,3 +128,52 @@ test("claim rejects a receipt whose digest does not match", async () => {
   assert.equal(res.status, 400);
   assert.equal((await res.json()).reason, "invalid-claim");
 });
+
+
+test("context reads never cross Unity-principal boundaries", async () => {
+  const { post } = harness();
+  await post("/v1/requests/claim", claim("private-a", "alpha", "unity-a"));
+  await post("/v1/requests/claim", claim("private-b", "beta", "unity-b"));
+
+  const a = await post("/v1/context/read", { request_id: "current-a", principal: "unity-a", limit: 10 });
+  const aData = await a.json();
+  assert.equal(a.status, 200);
+  assert.deepEqual(aData.items.map((item) => item.request_id), ["private-a"]);
+  assert.equal(JSON.stringify(aData).includes("private-b"), false);
+
+  const b = await post("/v1/context/read", { request_id: "current-b", principal: "unity-b", limit: 10 });
+  const bData = await b.json();
+  assert.equal(b.status, 200);
+  assert.deepEqual(bData.items.map((item) => item.request_id), ["private-b"]);
+  assert.equal(JSON.stringify(bData).includes("private-a"), false);
+});
+
+test("request IDs cannot be replayed across principals or actions", async () => {
+  const { post } = harness();
+  const first = await post("/v1/requests/claim", claim("global-id-1", "alpha", "unity-a", "iris.turn.look"));
+  assert.equal(first.status, 200);
+
+  const otherPrincipal = await post("/v1/requests/claim", claim("global-id-1", "alpha", "unity-b", "iris.turn.look"));
+  assert.equal(otherPrincipal.status, 409);
+
+  const otherAction = await post("/v1/requests/claim", claim("global-id-1", "alpha", "unity-a", "admin.write"));
+  assert.equal(otherAction.status, 409);
+
+  const lookup = await post("/v1/requests/get", { request_id: "global-id-1" });
+  const data = await lookup.json();
+  assert.equal(data.principal, "unity-a");
+  assert.equal(data.action, "iris.turn.look");
+});
+
+test("context read clamps requested history to ten metadata records", async () => {
+  const { post } = harness();
+  for (let i = 0; i < 12; i += 1) {
+    await post("/v1/requests/claim", claim("bounded-" + i, "alpha", "unity-bounded"));
+  }
+  const res = await post("/v1/context/read", { request_id: "current-bounded", principal: "unity-bounded", limit: 999 });
+  const data = await res.json();
+  assert.equal(res.status, 200);
+  assert.equal(data.count, 10);
+  assert.equal(data.items.length, 10);
+  assert.equal(data.items.every((item) => !Object.hasOwn(item, "text")), true);
+});
