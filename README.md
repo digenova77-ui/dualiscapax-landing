@@ -6,7 +6,7 @@
 
 DualisCapax is not merely an authentication, passkey, biometric, or identity product. Identity is one boundary in a broader architecture spanning Iris AI orchestration, DCLM/DC³ deterministic compute, Trinity authorization, Unity identity/provenance, governed memory and durable evidence, edge/cloud/distributed infrastructure, resource and energy accounting, economic coordination, scientific exploration, and real-world operational optimization.
 
-The full project scope, intended causal effects, evidence ladder, and implementation obligations are documented in [the DualisCapax Project Scope](docs/DUALISCAPAX-PROJECT-SCOPE.md). That document distinguishes the system's intended reach from capabilities that have actually been implemented, tested, deployed, and measured.
+The full project scope, intended causal effects, evidence ladder, and implementation obligations are documented in [the DualisCapax Project Scope](docs/DUALISCAPAX-PROJECT-SCOPE.md). The existing payment, energy-accounting and deterministic-law work is assembled in the [x402 + eFuse + Trinity Integration Map](docs/X402-EFUSE-INTEGRATION-MAP.md), which separates recovered source and historical test evidence from unconnected or unverified runtime claims. These documents distinguish intended reach from capabilities actually implemented, tested, deployed, and measured.
 
 **Strategic application:** [Residual Law Finance](docs/RESIDUAL-LAW-FINANCE.md) explores how the architecture could identify, validate, and lawfully recover measurable residual value across real-world operations. This is a strategic thesis requiring pilots and outcome validation, not a claim of proven market scale or deployed financial services.
 
