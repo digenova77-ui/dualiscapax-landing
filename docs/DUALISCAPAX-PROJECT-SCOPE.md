@@ -137,3 +137,13 @@ This boundary is not a reduction in project ambition. It is the rule that the si
 ## 6. Canonical summary
 
 **DualisCapax is a governed deterministic-first hybrid intelligence, compute, resource-accounting, evidence, and real-world operations architecture. Identity is one input; authorization is one control; compute and intelligence are capabilities; evidence and measurement connect execution to reality; and verified outcomes are the standard for claiming impact.**
+
+
+## 7. Residual Law Finance — strategic application
+
+Residual Law Finance is a proposed financial and operational application of the wider DualisCapax architecture. It seeks to identify residual value—waste, underused capacity, discrepancies, avoidable cost, or unrealized operational value—then establish a credible baseline, classify uncertainty, authorize any intervention, measure actual results, and reconcile value before any financial claim or settlement.
+
+It is not merely identity or authentication, and it is not permission to label every estimated gap as money, profit, debt, or an asset. A candidate residual must be distinguished from a verified and attributable outcome. No finding automatically authorizes a protected action, creates an obligation, mints a token, or triggers payment.
+
+The business thesis, candidate initial markets, outcome-based fee hypotheses, measurement protocol, unit economics, safeguards, regulatory boundary, and milestone plan are documented in [Residual Law Finance](RESIDUAL-LAW-FINANCE.md). The thesis is ambitious but not yet market-validated; its scale must be established through repeatable pilots and independently reproducible outcomes.
+
