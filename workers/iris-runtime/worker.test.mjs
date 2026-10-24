@@ -57,6 +57,9 @@ function fixture(overrides = {}) {
   });
   const env = {
     IRIS_ALLOWED_ORIGINS: "https://dualiscapax.ai",
+    X402_AMOUNT: AMOUNT,
+    X402_PAY_TO: PAY_TO,
+    X402_ENABLE_MAINNET: "true",
     IDENTITY_API: binding("identity", async () => ({ verified: true, unity_id: "unity_user_123" })),
     IRIS_MEMORY: binding("memory", async (body, request) => {
       const route = new URL(request.url).pathname;
