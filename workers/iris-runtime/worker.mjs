@@ -93,6 +93,45 @@ export default {
       });
     }
 
+    if (url.pathname === "/v1/receipt/verify" && request.method === "POST") {
+      const missing = missingBindings(env);
+      if (missing.length) {
+        return json(503, { valid: false, reason: "bindings-unavailable", missing });
+      }
+      if (!env.TRINITY_HMAC_SECRET) {
+        return json(503, { valid: false, reason: "signing-secret-unavailable" });
+      }
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return json(400, { valid: false, reason: "invalid-json" });
+      }
+      const receipt = body && body.receipt;
+      if (!receipt || typeof receipt !== "object") {
+        return json(200, { valid: false, reason: "missing-receipt" });
+      }
+      if (receipt.contract !== RECEIPT_CONTRACT) {
+        return json(200, { valid: false, reason: "bad-contract" });
+      }
+      if (typeof receipt.id !== "string" || !receipt.id.startsWith("rct_")) {
+        return json(200, { valid: false, reason: "bad-id" });
+      }
+      if (typeof receipt.sha256 !== "string" || !/^[0-9a-f]{64}$/i.test(receipt.sha256)) {
+        return json(200, { valid: false, reason: "bad-sha256" });
+      }
+      if (typeof receipt.request_id !== "string" || !receipt.request_id) {
+        return json(200, { valid: false, reason: "bad-request-id" });
+      }
+      if (typeof body.text === "string") {
+        const digest = await sha256Hex(body.text);
+        if (digest !== receipt.sha256.toLowerCase()) {
+          return json(200, { valid: false, reason: "sha256-mismatch" });
+        }
+      }
+      return json(200, { valid: true, contract: RECEIPT_CONTRACT, id: receipt.id });
+    }
+
     if (url.pathname === "/health") {
       const missing = missingBindings(env);
       return json(200, {
