@@ -214,7 +214,7 @@ const geoFacets = [
   })),
 ];
 const geoFr = frontierReport(geoFacets);
-assert(geoFr.facing.length >= 5, "pure diamond cuts appear in facing");
+assert(geoFr.facing.length === 1 && geoFr.facing[0] === "geo-floor", "only pure floor faces frontier");
 assert(geoFr.held.length >= 5, "glass diamond cuts appear in held");
 assert(geoFr.ceiling_claimable === false, "any glass diamond cut blocks ceiling claim");
 assert(geoFr.protocol === "DIAMOND.FRONTIER.MAX.v2", "protocol preserved with diamond cuts");
