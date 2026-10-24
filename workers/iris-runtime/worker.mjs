@@ -427,17 +427,30 @@ export default {
 
     if (url.pathname === "/v1/receipt/revoke" && request.method === "POST") {
       if (!env.IRIS_MEMORY_SERVICE_TOKEN) return json(503, { ok: false, reason: "memory-service-token-unavailable" });
+      if (!env.TRINITY_HMAC_SECRET) return json(503, { ok: false, reason: "signing-secret-unavailable" });
+      const type = request.headers.get("content-type") || "";
+      if (!type.includes("application/json")) return json(415, { ok: false, reason: "unsupported-media-type" });
+      const timestamp = request.headers.get("x-timestamp");
+      const signature = request.headers.get("x-signature");
+      if (!timestamp || !signature) return json(401, { ok: false, reason: "signature-required" });
+      const skew = Math.abs(Math.floor(Date.now() / 1000) - Number(timestamp));
+      if (!Number.isFinite(skew) || skew > MAX_SKEW_SECONDS) return json(401, { ok: false, reason: "timestamp-skew" });
       let body;
       try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
+      if (new TextEncoder().encode(JSON.stringify(body)).byteLength > MAX_BODY_BYTES) return json(413, { ok: false, reason: "body-too-large" });
+      const expected = await hmacHex(env.TRINITY_HMAC_SECRET, timestamp + "." + JSON.stringify(body));
+      if (expected !== signature) return json(401, { ok: false, reason: "invalid-signature" });
       const id = body && (body.id || body.request_id);
-      if (!id) return json(400, { ok: false, reason: "missing-id" });
+      if (typeof id !== "string" || !id || id.length > 133 || !/^(rct_)?[A-Za-z0-9._:-]{1,128}$/.test(id)) {
+        return json(400, { ok: false, reason: "invalid-id" });
+      }
       const revoked = await callBinding(env.IRIS_MEMORY, "/v1/requests/revoke", { id }, env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
       if (!revoked.ok || !revoked.data || revoked.data.ok !== true) {
         return json(revoked.status === 404 ? 404 : 503, { ok: false, reason: (revoked.data && revoked.data.reason) || "revoke-unavailable" });
       }
       metrics.revoke += 1;
       recordAudit({ request_id: revoked.data.request_id || id, decision: "revoke", receipt_id: revoked.data.id || id });
-      return json(200, { ok: true, id: revoked.data.id || id });
+      return json(200, { ok: true, id: revoked.data.id || id, replay: revoked.data.replay === true });
     }
 
     if (url.pathname === "/v1/metrics" && request.method === "GET") {
