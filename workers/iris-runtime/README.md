@@ -100,10 +100,10 @@ This endpoint makes the contract inspectable by developers without weakening the
 
 `POST /v1/work/prepare` accepts a task description plus request/policy/module metadata, hashes the exact UTF-8 input with SHA-256, validates the resulting `dualis.work.v1` envelope, and returns it only if structurally valid. The caller-provided Unity ID is metadata only: the endpoint explicitly returns `identity_verified: false`. It does not authorize or execute the task, measure resource use, calculate a charge, or settle payment. Do not use this endpoint as an execution permission check.
 
-Test the preparation and validation routes:
+Run the contract gauntlet:
 
 ```sh
-node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-runtime/universal-work-route.test.mjs workers/iris-runtime/universal-work-prepare.test.mjs workers/iris-runtime/puel-evidence.test.mjs workers/iris-runtime/puel-signatures.test.mjs
+node --test workers/iris-runtime/*.test.mjs
 ```
 
 ## PUEL — Proof of Universal Legitimacy evidence bundle v0.1
@@ -114,6 +114,16 @@ node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-r
 
 ### Ed25519 evidence attestations
 
-`puel-signatures.mjs` adds a real cryptographic verification primitive. It verifies an Ed25519 signature over a canonical statement, checks that the statement's SHA-256 matches the exact canonical evidence object, enforces issuer/key/role bindings, and rejects unknown, revoked, expired, stale, future-dated, or role-inappropriate keys. Canonical JSON uses Unicode scalar ordering and rejects non-safe-integer numbers so implementations cannot silently serialize ambiguous numeric values.
+`puel-signatures.mjs` adds a cryptographic verification primitive. It verifies an Ed25519 signature over a canonical statement, checks that the statement's SHA-256 matches the exact canonical evidence object, enforces issuer/key/role bindings, and rejects unknown, revoked, expired, stale, future-dated, or role-inappropriate keys. Canonical JSON uses Unicode scalar ordering and rejects non-safe-integer numbers.
 
 The trusted key registry is explicitly supplied by the caller. Therefore a successful result means `CRYPTOGRAPHICALLY_VERIFIED_ATTESTATION` **under that supplied registry**, not that the registry itself is trustworthy, decentralized, or governed. The next milestone is to define and verify the root-of-trust/key-distribution and revocation mechanism, then bind multiple independently issued attestations into one PUEL bundle. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
+
+## Diamond trilogy asset-intent contract v0.1
+
+`trilogy-asset-contract.mjs` formalizes distinct policy roles for the trilogy:
+
+- **eFuse:** resource-accounting reference; may record measurement evidence or quote resource cost, but this contract does not measure energy or establish a redeemable peg.
+- **Merit:** utility/access entitlement; this policy permits access evaluation and access grants/revocations, not transfer, trading, or cash-out.
+- **Unity:** non-transferable identity credential; this policy permits identity verification and principal binding, not trading or transfer.
+
+The validator accepts only an explicit allowlisted intent and reports that no authorization, ledger write, issuance, transfer, or settlement occurred. These are policy boundaries only: the inventory explicitly reports that no token implementation, live balance verification, or settlement is enabled by this contract. Any future asset movement requires a separately reviewed contract, Trinity authorization bound to the exact action, durable idempotency, evidence, and an approved settlement implementation.
