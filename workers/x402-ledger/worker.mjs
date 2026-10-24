@@ -96,6 +96,9 @@ export class PaymentTransaction {
         if (JSON.stringify(current.operation) !== JSON.stringify(operation)) {
           return baseReply(body, "CONFLICT");
         }
+        if (current.state === "PAYMENT_ATTEMPTED" || current.state === "IN_DOUBT") {
+          return baseReply(body, "IN_DOUBT");
+        }
         if (current.state === "RELEASED" ||
             (current.state === "RESERVED" && current.lease_until <= now)) {
           const claimToken = crypto.randomUUID();
