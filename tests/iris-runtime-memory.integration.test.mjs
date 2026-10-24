@@ -333,6 +333,10 @@ test("real memory Worker revocation blocks both inference and receipt verificati
   assert.equal(replay.status, 403);
   assert.equal((await replay.json()).reason, "receipt-revoked");
 
+  const directLookup = await runtime.fetch(new Request("https://iris.test/v1/receipt/" + issued.receipt.id, { method: "GET" }), env);
+  assert.equal(directLookup.status, 410);
+  assert.equal((await directLookup.json()).reason, "receipt-revoked");
+
   const infer = await runtime.fetch(new Request("https://iris.test/v1/infer", {
     method: "POST",
     headers: { "content-type": "application/json" },
