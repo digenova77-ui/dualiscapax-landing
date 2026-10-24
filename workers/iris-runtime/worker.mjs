@@ -246,6 +246,10 @@ export default {
           input_sha256: digest,
           receipt,
         }, env.IRIS_BINDING_TIMEOUT_MS);
+        if (claim.status === 409) {
+          recordAudit({ request_id: requestId, decision: "deny", reason: "duplicate-request" });
+          return json(409, { authorized: false, reason: "duplicate-request", request_id: requestId });
+        }
         if (!claim.ok) {
           return json(503, { authorized: false, reason: claim.reason || "claim-unavailable", request_id: requestId });
         }
@@ -257,11 +261,6 @@ export default {
           issued.set(requestId, prior);
           return json(200, { authorized: true, decision: "allow", request_id: requestId, receipt: prior, replay: true });
         }
-        if (!claim.data || claim.data.claimed !== true) {
-          recordAudit({ request_id: requestId, decision: "deny", reason: "duplicate-request" });
-          return json(409, { authorized: false, reason: "duplicate-request", request_id: requestId });
-        }
-
         const memory = await callBinding(env.IRIS_MEMORY, "/record", { request_id: requestId, receipt }, env.IRIS_BINDING_TIMEOUT_MS);
         if (!memory.ok) {
           return json(503, { authorized: false, reason: memory.reason || "memory-denied", request_id: requestId });
