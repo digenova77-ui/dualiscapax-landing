@@ -34,6 +34,7 @@ async function testSignature(body, secret = "test-secret") {
   return { "x-timestamp": timestamp, "x-signature": Array.from(new Uint8Array(signature)).map((b) => b.toString(16).padStart(2, "0")).join("") };
 }
 async function post(body, env = FULL_ENV, headers = {}) {
+  if (body && typeof body === "object" && !Array.isArray(body)) body = { ...body, principal: body.principal || { unity_id: body.unity_id || "test-unity" } };
   let authHeaders = {};
   if (typeof body !== "string" && !("x-timestamp" in headers) && !("x-signature" in headers)) authHeaders = await testSignature(body, env.TRINITY_HMAC_SECRET || "test-secret");
   return worker.fetch(new Request("https://staging.test/v1/authorize", {
