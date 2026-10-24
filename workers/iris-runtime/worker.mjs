@@ -295,8 +295,14 @@ export default {
             return json(403, { authorized: false, reason: "receipt-revoked", request_id: requestId });
           }
           const prior = claim.data.receipt;
-          if (!receiptShape(prior) || prior.id !== "rct_" + requestId || prior.request_id !== requestId || prior.unity_id !== principal || prior.sha256.toLowerCase() !== digest) {
+          if (!receiptShape(prior) || prior.id !== "rct_" + requestId || prior.request_id !== requestId || prior.unity_id !== principal || prior.sha256.toLowerCase() !== digest || prior.action !== action) {
             return json(503, { authorized: false, reason: "claim-receipt-mismatch", request_id: requestId });
+          }
+          const priorAge = Date.now() - Date.parse(prior.issued_at);
+          const priorTtl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
+          if (!Number.isFinite(priorAge) || priorAge < -MAX_SKEW_SECONDS * 1000 || priorAge > priorTtl) {
+            metrics.deny += 1;
+            return json(403, { authorized: false, reason: "receipt-expired", request_id: requestId });
           }
           const context = await readMemoryContext(env, principal, requestId);
           if (!context.ok) return json(503, { authorized: false, reason: context.reason, request_id: requestId });
