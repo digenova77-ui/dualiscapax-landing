@@ -15,7 +15,7 @@ function json(status, body) {
   });
 }
 
-function validReceipt(receipt, requestId, digest, principal) {
+function validReceipt(receipt, requestId, digest, principal, action) {
   return !!(
     receipt &&
     receipt.contract === RECEIPT_CONTRACT &&
@@ -26,7 +26,8 @@ function validReceipt(receipt, requestId, digest, principal) {
     /^[0-9a-f]{64}$/.test(receipt.sha256) &&
     receipt.sha256 === digest &&
     typeof receipt.action === "string" &&
-    receipt.action === (receipt.action.trim()) &&
+    receipt.action === action &&
+    receipt.action === receipt.action.trim() &&
     typeof receipt.issued_at === "string" &&
     Number.isFinite(Date.parse(receipt.issued_at))
   );
@@ -119,7 +120,7 @@ export class IrisMemoryStore {
     const receipt = body.receipt;
     if (typeof principal !== "string" || !principal || typeof action !== "string" || !action ||
         typeof digest !== "string" || !/^[0-9a-f]{64}$/.test(digest) ||
-        !validReceipt(receipt, requestId, digest, principal)) {
+        !validReceipt(receipt, requestId, digest, principal, action)) {
       return json(400, { ok: false, reason: "invalid-claim" });
     }
 
