@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';">
 <title>Donate · DualisCapax</title>
 <meta name="theme-color" content="#050505"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -68,31 +69,65 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   var MAIL = 'donate@dualiscapax.ai';
   var pay = window.DC_PAYMENTS || {};
   var panel = document.getElementById('panel');
-  function show(html){
+
+  function clearPanel(){
+    while (panel.firstChild) panel.removeChild(panel.firstChild);
     panel.hidden = false;
-    panel.innerHTML = html;
+  }
+  function el(tag, text, cls){
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function show(title, lines, addr){
+    clearPanel();
+    panel.appendChild(el('strong', title));
+    lines.forEach(function(line){
+      var p = el('p', line);
+      p.style.marginTop = '.4rem';
+      panel.appendChild(p);
+    });
+    if (addr){
+      var box = el('div', addr, 'addr');
+      panel.appendChild(box);
+    }
     try { panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
   }
   function openUrl(url){
-    if (!url) return;
+    if (!url || typeof url !== 'string') return;
+    if (!/^(mailto:|trinity:|solana:|bitcoincash:|dogecoin:|digibyte:|zcash:|ripple:)/i.test(url)) return;
     try {
       var a = document.createElement('a');
-      a.href = url; a.rel = 'noopener'; a.target = '_blank';
+      a.href = url; a.rel = 'noopener noreferrer'; a.target = '_blank';
       document.body.appendChild(a); a.click(); a.remove();
-    } catch (e) { try { location.href = url; } catch (e2) {} }
+    } catch (e) {}
   }
-  function interacMail(){
-    var sub = encodeURIComponent('Interac e-Transfer · DualisCapax research');
-    var body = encodeURIComponent('Send Interac e-Transfer to this Autodeposit email:\n' + MAIL + '\n\nAmount: (you choose)\nMemo: DualisCapax research gift\n');
-    return 'mailto:' + MAIL + '?subject=' + sub + '&body=' + body;
-  }
-  function eftMail(){
-    var sub = encodeURIComponent('EFT · DualisCapax research');
-    var body = encodeURIComponent('Please reply with EFT instructions request, or send Interac to ' + MAIL + ' (Autodeposit).\n');
-    return 'mailto:' + MAIL + '?subject=' + sub + '&body=' + body;
+  function validAddr(chain, addr){
+    if (!addr || typeof addr !== 'string') return false;
+    addr = addr.trim();
+    switch (chain) {
+      case 'eth': case 'pol': case 'bsc': case 'link':
+        return /^0x[a-fA-F0-9]{40}$/.test(addr);
+      case 'sol':
+        return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr);
+      case 'bch':
+        return /^(bitcoincash:)?[qp][a-z0-9]{41}$/i.test(addr) || /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(addr);
+      case 'doge':
+        return /^D[5-9A-HJ-NP-U][1-9A-HJ-NP-Za-km-z]{32}$/.test(addr);
+      case 'dgb':
+        return /^(dgb1|[DS])[a-zA-HJ-NP-Z0-9]{25,62}$/.test(addr);
+      case 'zec':
+        return /^t1[a-zA-HJ-NP-Z0-9]{33}$/.test(addr);
+      case 'xrp':
+        return /^r[1-9A-HJ-NP-Za-km-z]{24,34}$/.test(addr);
+      case 'dot':
+        return /^[1-9A-HJ-NP-Za-km-z]{47,48}$/.test(addr);
+      default: return false;
+    }
   }
   function walletUri(chain, addr){
-    if (!addr) return null;
+    if (!validAddr(chain, addr)) return null;
     switch (chain) {
       case 'eth': case 'link': return 'trinity:' + addr;
       case 'pol': return 'trinity:' + addr + '@137';
@@ -107,29 +142,43 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     }
   }
   function chainLabel(chain){
-    return ({xrp:'XRP',zec:'Zcash',sol:'Solana',eth:'Trinity',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK (Trinity)',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
+    return ({xrp:'XRP',zec:'Zcash',sol:'Solana',eth:'Ethereum',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
   }
   function addrFor(chain){
     var map = {xrp:pay.research_xrp,zec:pay.research_zec,sol:pay.research_sol,eth:pay.research_eth,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,bch:pay.research_bch,doge:pay.ai_doge};
-    return map[chain] || '';
+    return (map[chain] || '').trim();
   }
   document.getElementById('interac').addEventListener('click', function(){
-    openUrl(interacMail());
-    show('<strong>Interac e-Transfer</strong><p>Your email app should open with <em>' + MAIL + '</em> ready. In your bank app, send Interac to that same Autodeposit address.</p><div class="addr">' + MAIL + '</div><p style="margin-top:.6rem">If email did not open: open your bank → Interac → send to the address above.</p>');
+    var sub = encodeURIComponent('Interac e-Transfer · DualisCapax research');
+    var body = encodeURIComponent('Send Interac e-Transfer to this Autodeposit email:\n' + MAIL + '\n\nAmount: (you choose)\nMemo: DualisCapax research gift\n');
+    openUrl('mailto:' + MAIL + '?subject=' + sub + '&body=' + body);
+    show('Interac e-Transfer', [
+      'Your email app should open with ' + MAIL + ' ready.',
+      'In your bank app, send Interac to that same Autodeposit address.',
+      'If email did not open: open your bank → Interac → send to the address below.'
+    ], MAIL);
   });
   document.getElementById('eft').addEventListener('click', function(){
-    openUrl(eftMail());
-    show('<strong>EFT</strong><p>Email opened for the research desk. Prefer Interac Autodeposit when you can:</p><div class="addr">' + MAIL + '</div>');
+    var sub = encodeURIComponent('EFT · DualisCapax research');
+    var body = encodeURIComponent('Please reply with EFT instructions request, or send Interac to ' + MAIL + ' (Autodeposit).\n');
+    openUrl('mailto:' + MAIL + '?subject=' + sub + '&body=' + body);
+    show('EFT', [
+      'Email opened for the research desk.',
+      'Prefer Interac Autodeposit when you can.'
+    ], MAIL);
   });
   ['xrp','zec','sol','eth','pol','bsc','link','dot','dgb','bch','doge'].forEach(function(chain){
-    var el = document.getElementById(chain);
-    if (!el) return;
+    var btn = document.getElementById(chain);
+    if (!btn) return;
     var addr = addrFor(chain);
-    if (!pay.crypto_enabled || !addr) { el.hidden = true; return; }
-    el.addEventListener('click', function(){
+    if (!pay.crypto_enabled || !validAddr(chain, addr)) { btn.hidden = true; return; }
+    btn.addEventListener('click', function(){
       var uri = walletUri(chain, addr);
       if (uri) openUrl(uri);
-      show('<strong>' + chainLabel(chain) + '</strong><p>' + (uri ? 'Tried to open your wallet app. If nothing opened, copy the address below into the wallet yourself.' : 'No automatic wallet link for this chain. Copy the address into your wallet and send on the correct network.') + '</p><div class="addr">' + addr + '</div><p style="margin-top:.6rem">Send only on <strong>' + chainLabel(chain) + '</strong>. Wrong network = lost funds.</p>');
+      show(chainLabel(chain), [
+        uri ? 'Tried to open your wallet app. If nothing opened, copy the address below into the wallet yourself.' : 'No automatic wallet link for this chain. Copy the address into your wallet and send on the correct network.',
+        'Send only on ' + chainLabel(chain) + '. Wrong network = lost funds.'
+      ], addr);
     });
   });
 })();
