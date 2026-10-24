@@ -40,10 +40,10 @@ test("prepare rejects malformed plans and never returns an envelope", async () =
   delete invalid.policy_version;
   const response = await worker.fetch(request("/v1/work/prepare", invalid), env);
   const body = await response.json();
-  assert.equal(response.status, 422);
+  assert.equal(response.status, 400);
   assert.equal(body.valid, false);
-  assert.equal(body.envelope, null);
-  assert.ok(body.errors.includes("invalid-policy-version"));
+  assert.equal(body.envelope, undefined);
+  assert.deepEqual(body.errors, ["invalid-prepare-input"]);
 });
 
 test("prepare rejects unknown fields rather than silently ignoring them", async () => {
