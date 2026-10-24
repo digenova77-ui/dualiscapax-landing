@@ -314,3 +314,40 @@ test("Trinity dependency timeout fails closed without creating a durable claim",
   assert.equal((await lookup.json()).found, false);
 });
 
+test("real memory Worker revocation blocks both inference and receipt verification", async () => {
+  const env = integratedEnv();
+  const body = {
+    request_id: "integration-durable-revoke",
+    principal: { unity_id: "unity-integration" },
+    action: "iris.turn.look",
+    text: "revoke me",
+  };
+  const auth = await signedPost(env, "/v1/authorize", body);
+  const issued = await auth.json();
+  assert.equal(auth.status, 200);
+
+  const revoke = await runtime.fetch(new Request("https://iris.test/v1/receipt/revoke", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ id: issued.receipt.id }),
+  }), env);
+  assert.equal(revoke.status, 200);
+
+  const infer = await runtime.fetch(new Request("https://iris.test/v1/infer", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ receipt: issued.receipt, text: "revoke me" }),
+  }), env);
+  assert.equal(infer.status, 403);
+  assert.equal((await infer.json()).reason, "receipt-revoked");
+
+  const verify = await runtime.fetch(new Request("https://iris.test/v1/receipt/verify", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ receipt: issued.receipt, text: "revoke me" }),
+  }), env);
+  assert.equal(verify.status, 200);
+  assert.equal((await verify.json()).valid, false);
+  assert.equal((await verify.clone().json()).reason, "receipt-revoked");
+});
+
