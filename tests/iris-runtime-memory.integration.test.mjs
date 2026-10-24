@@ -347,7 +347,8 @@ test("real memory Worker revocation blocks both inference and receipt verificati
     body: JSON.stringify({ receipt: issued.receipt, text: "revoke me" }),
   }), env);
   assert.equal(verify.status, 200);
-  assert.equal((await verify.json()).valid, false);
-  assert.equal((await verify.clone().json()).reason, "receipt-revoked");
+  const verifyData = await verify.json();
+  assert.equal(verifyData.valid, false);
+  assert.equal(verifyData.reason, "receipt-revoked");
 });
 
