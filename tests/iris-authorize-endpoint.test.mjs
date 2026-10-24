@@ -107,6 +107,15 @@ test("authorize denies force_deny and does not return a receipt", async () => {
   assert.equal(data.receipt, undefined);
 });
 
+test("identity result must match the requested Unity principal", async () => {
+  const env = { ...FULL_ENV, IDENTITY_API: { fetch: async () => new Response(JSON.stringify({ ok: true, verified: true, unity_id: "different-unity" }), { status: 200 }) } };
+  const res = await post({ request_id: "identity-mismatch-1", text: "hello" }, env);
+  const data = await res.json();
+  assert.equal(res.status, 403);
+  assert.equal(data.reason, "identity-unverified");
+  assert.equal(data.receipt, undefined);
+});
+
 test("authorize rejects a missing principal", async () => {
   const body = { request_id: "no-principal-1", text: "hi" };
   const headers = await testSignature(body);
