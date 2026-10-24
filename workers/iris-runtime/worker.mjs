@@ -553,7 +553,7 @@ async function handleRequest(request, env) {
 function validPaymentReceipt(receipt) {
   return !!receipt && typeof receipt === "object" && !Array.isArray(receipt) &&
     receipt.exchanged === true && receipt.scheme === "exact" &&
-    typeof receipt.amount === "string" && /^[1-9]\\d*$/.test(receipt.amount) &&
+    typeof receipt.amount === "string" && /^[1-9]\d*$/.test(receipt.amount) &&
     /^0x[0-9a-fA-F]{40}$/.test(receipt.asset || "") &&
     /^0x[0-9a-fA-F]{40}$/.test(receipt.payTo || "") &&
     /^0x[0-9a-fA-F]{40}$/.test(receipt.payer || "") &&
