@@ -168,3 +168,17 @@ The local Node test run passed **9/9 tests**:
 - exact absolute-limit boundary and one-unit-over cases for both candidate limits.
 
 The harness uses canonical integer strings and basis points (6000 = 0.60), not floating-point division. Its inputs are synthetic common units; this does **not** claim the historical dollar figures are the same unit. The test result is a local run of this harness, not evidence that the existing runtime enforces a threshold or that CI has passed this commit.
+
+
+## 9. Omnisoftware universal work contract — first executable slice
+
+The integration branch now contains:
+
+- `workers/iris-runtime/universal-work-contract.mjs`: strict envelope validation, resource-measurement record validation, and transparent quote decomposition.
+- `workers/iris-runtime/universal-work-contract.test.mjs`: automated Node tests for valid/invalid envelopes, separation of complexity descriptors from energy, cost decomposition, energy double-counting, and measurement provenance.
+- `schemas/dualis-work-v1.schema.json`: machine-readable JSON Schema for work envelopes and resource measurement records.
+- `docs/UNIVERSAL-DECISION-RESOURCE-ECONOMY.md`: economic and architecture contract.
+
+This is a standalone first slice and is **not yet wired into the Iris request path**. It does not authorize or execute work, meter physical energy, establish a canonical eFuse peg, or settle payments. Trinity remains the authorization gate. Complexity class and features are descriptors/estimates, not a direct energy measurement. Measurement validation checks structure and provenance fields but cannot independently prove that a meter reading is true.
+
+The quote helper returns `QUOTE_ONLY`, never a settled charge, and rejects a quote that separately charges energy when the provider cost already includes it. Next: execute the test suite in CI, align JSON Schema and JavaScript validation against shared fixtures, then integrate the contract at the runtime boundary without weakening existing Trinity, idempotency, payment, or receipt checks.
