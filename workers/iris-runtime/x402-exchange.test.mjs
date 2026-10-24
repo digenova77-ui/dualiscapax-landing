@@ -201,3 +201,16 @@ test("settlement cannot report a different network or payer than the verified pa
     assert.notEqual((await response.json()).exchanged, true);
   }
 });
+
+test("non-canonical authorization timestamps are refused before facilitator", async () => {
+  const leadingZero = paymentPayload();
+  leadingZero.payload.authorization.validAfter = "00";
+  const invalidBefore = paymentPayload();
+  invalidBefore.payload.authorization.validBefore = "0" + invalidBefore.payload.authorization.validBefore;
+  for (const payload of [leadingZero, invalidBefore]) {
+    const { fetchImpl, calls } = mockFetch();
+    const response = await handleExchange(request(payload), { fetch: fetchImpl, env: {} });
+    assert.equal(response.status, 402);
+    assert.equal(calls.length, 0);
+  }
+});
