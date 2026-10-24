@@ -130,3 +130,69 @@ test("runtime denies when durable memory service authentication is misconfigured
   assert.equal(res.status, 503);
   assert.equal(data.authorized, false);
 });
+
+
+test("Trinity denial occurs before durable claim and leaves no receipt", async () => {
+  const env = integratedEnv();
+  env.TRINITY_LAW = {
+    fetch: async (_url, init) => {
+      const body = JSON.parse(init.body || "{}");
+      return new Response(JSON.stringify({
+        ok: true,
+        authorized: false,
+        decision: "deny",
+        request_id: body.request_id,
+        principal: { unity_id: body.principal },
+        action: body.action,
+        input_sha256: body.input_sha256,
+      }), { status: 200 });
+    },
+  };
+  let providerCalls = 0;
+  env.MODEL_PROVIDER = {
+    fetch: async () => {
+      providerCalls += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    },
+  };
+
+  const body = { request_id: "integration-trinity-deny", principal: { unity_id: "unity-integration" }, action: "iris.turn.look", text: "must not persist" };
+  const denied = await signedPost(env, "/v1/authorize", body);
+  assert.equal(denied.status, 403);
+  assert.equal((await denied.json()).authorized, false);
+  assert.equal(providerCalls, 0);
+
+  const lookup = await env.IRIS_MEMORY.fetch("https://memory.test/v1/requests/get", {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN },
+    body: JSON.stringify({ request_id: "integration-trinity-deny" }),
+  });
+  assert.equal(lookup.status, 200);
+  assert.equal((await lookup.json()).found, false);
+});
+
+test("identity mismatch blocks Trinity evaluation and durable claim", async () => {
+  const env = integratedEnv();
+  let trinityCalls = 0;
+  env.IDENTITY_API = {
+    fetch: async () => new Response(JSON.stringify({ ok: true, verified: true, unity_id: "different-unity" }), { status: 200 }),
+  };
+  env.TRINITY_LAW = {
+    fetch: async () => {
+      trinityCalls += 1;
+      return new Response(JSON.stringify({ ok: true, authorized: true, decision: "allow" }), { status: 200 });
+    },
+  };
+
+  const body = { request_id: "integration-identity-mismatch", principal: { unity_id: "unity-integration" }, action: "iris.turn.look", text: "must not persist" };
+  const denied = await signedPost(env, "/v1/authorize", body);
+  assert.equal(denied.status, 403);
+  assert.equal(trinityCalls, 0);
+
+  const lookup = await env.IRIS_MEMORY.fetch("https://memory.test/v1/requests/get", {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN },
+    body: JSON.stringify({ request_id: "integration-identity-mismatch" }),
+  });
+  assert.equal((await lookup.json()).found, false);
+});
