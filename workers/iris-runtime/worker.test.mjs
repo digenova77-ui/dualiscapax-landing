@@ -726,3 +726,25 @@ test("ambiguous facilitator outcome marks payment in doubt and blocks execution"
   ]);
   assert.equal(calls.some((call) => call.name === "memory"), false);
 });
+
+test("core runtime health is independent of optional paid-payment configuration", async () => {
+  const { env } = fixture({
+    X402_LEDGER: undefined,
+    X402_LEDGER_TOKEN: undefined,
+    X402_AMOUNT: undefined,
+    X402_PAY_TO: undefined,
+  });
+  const response = await worker.fetch(new Request("https://iris-runtime.test/health"), env);
+  const body = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(body.available, true);
+  assert.equal(body.paid_operations, "unavailable");
+});
+
+test("paid runtime fails closed without explicit amount and recipient policy", async () => {
+  const { env, calls } = fixture({ X402_AMOUNT: undefined, X402_PAY_TO: undefined });
+  const response = await worker.fetch(paidReq(false), env);
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).stage, "payment-policy");
+  assert.equal(calls.length, 0);
+});
