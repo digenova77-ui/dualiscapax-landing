@@ -1,38 +1,55 @@
 /**
- * Iris authorize regression suite.
+ * Iris authorize regression suite (main client-side test file).
  *
- * Covers the client-side contract for the authorize path:
- *   - Denial blocks downstream inference
- *   - Timeout is treated as denial
- *   - Duplicate request_id is refused
- *   - Concurrent claims are serialized (exactly one succeeds)
- *   - Successful authorization returns a receipt
- *   - Missing secret is fail-closed
- *   - Production path does not require a browser secret
+ * Purpose
+ * -------
+ * Lock the client contract for the authorize path so later changes
+ * cannot silently weaken fail-closed behavior, receipt shape, or the
+ * production/staging secret boundary.
  *
- * Run with: node --test tests/iris-authorize-regression.test.mjs
+ * Cases covered
+ * -------------
+ * 1. Denial blocks the turn and does not call downstream
+ * 2. Timeout is treated as denial
+ * 3. Duplicate request_id is refused
+ * 4. Concurrent claims with the same request_id are serialized
+ * 5. Successful authorization returns a receipt
+ * 6. Missing secret is treated as unavailable (fail closed)
+ * 7. Production path does not require a browser secret
+ *
+ * How to run
+ * ----------
+ *   node --test tests/iris-authorize-regression.test.mjs
  *
  * These tests use in-memory stubs. They do not call live services
- * or require Cloudflare credentials.
+ * and do not require Cloudflare credentials.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-// Minimal in-memory stubs for the client helper contract.
-// Each behavior name maps to a deterministic response so the tests
-// can assert on status, authorized flag, and receipt shape.
+/**
+ * Minimal in-memory stub for the client helper contract.
+ *
+ * @param {"deny"|"timeout"|"duplicate"|"allow"} behavior
+ *   Controls the response so each test can assert a single path.
+ * @returns {{ authorize: (body: object, secret?: string) => Promise<object> }}
+ */
 function makeAuthorizeStub(behavior) {
   return {
     authorize: async (body, secret) => {
+      // Denial: policy rejected the claim.
       if (behavior === "deny") {
         return { status: 403, ok: false, data: { authorized: false, reason: "policy" } };
       }
+      // Timeout: the authorize call never returned.
       if (behavior === "timeout") {
         throw new Error("timeout");
       }
+      // Duplicate: the request_id was already claimed.
       if (behavior === "duplicate") {
         return { status: 409, ok: false, data: { authorized: false, reason: "duplicate-request" } };
       }
+      // Allow: decision is allow and a receipt is returned.
       if (behavior === "allow") {
         return {
           status: 200,
@@ -45,13 +62,16 @@ function makeAuthorizeStub(behavior) {
           }
         };
       }
+      // Fallback: unexpected behavior is a server error.
       return { status: 500, ok: false, data: null };
     }
   };
 }
 
-// Case: denial must stop the turn.
-// Downstream callers (DCLMLook, IrisLive) must not run when authorized is false.
+// ---------------------------------------------------------------------------
+// Case 1: denial blocks the turn
+// ---------------------------------------------------------------------------
+// When authorized is false, DCLMLook and IrisLive must not run.
 test("denial blocks turn and does not call downstream", async () => {
   const calls = [];
   const w = {
@@ -68,7 +88,9 @@ test("denial blocks turn and does not call downstream", async () => {
   assert.equal(calls.length, 0);               // no downstream calls
 });
 
-// Case: timeout is treated as denial.
+// ---------------------------------------------------------------------------
+// Case 2: timeout is treated as denial
+// ---------------------------------------------------------------------------
 // A hanging or failed authorize call must not proceed to inference.
 test("timeout is treated as denial", async () => {
   const w = {
@@ -85,7 +107,9 @@ test("timeout is treated as denial", async () => {
   assert.equal(caught, true);                  // exception was raised
 });
 
-// Case: duplicate request_id is refused.
+// ---------------------------------------------------------------------------
+// Case 3: duplicate request_id is refused
+// ---------------------------------------------------------------------------
 // The server must reject a second claim with the same idempotency key.
 test("duplicate request_id is refused", async () => {
   const w = {
@@ -97,9 +121,11 @@ test("duplicate request_id is refused", async () => {
   assert.equal(res.data.reason, "duplicate-request");  // explicit reason
 });
 
-// Case: concurrent claims with the same request_id.
-// The client sends a stable request_id; the server must serialize so
-// exactly one claim succeeds and the other is refused.
+// ---------------------------------------------------------------------------
+// Case 4: concurrent claims are serialized
+// ---------------------------------------------------------------------------
+// The client sends a stable request_id. The server must ensure exactly
+// one claim succeeds and the other is refused.
 test("concurrent claims with same request_id are serialized by server", async () => {
   const seen = new Set();
   const stub = {
@@ -122,7 +148,9 @@ test("concurrent claims with same request_id are serialized by server", async ()
   assert.equal(denied, 1);                     // the other is refused
 });
 
-// Case: successful authorization returns a receipt.
+// ---------------------------------------------------------------------------
+// Case 5: successful authorization returns a receipt
+// ---------------------------------------------------------------------------
 // The receipt must carry an id (rct_ prefix) and a 64-char sha256.
 test("successful authorization returns receipt shape", async () => {
   const w = {
@@ -137,7 +165,9 @@ test("successful authorization returns receipt shape", async () => {
   assert.equal(res.data.receipt.sha256.length, 64);  // hash length
 });
 
-// Case: missing secret is treated as unavailable (fail closed).
+// ---------------------------------------------------------------------------
+// Case 6: missing secret is fail-closed
+// ---------------------------------------------------------------------------
 // If no signing material is present, the client must not proceed.
 test("missing secret is treated as unavailable (fail closed)", async () => {
   const secret = null;
@@ -145,7 +175,9 @@ test("missing secret is treated as unavailable (fail closed)", async () => {
   assert.equal(available, false);              // unavailable
 });
 
-// Case: production path does not require a browser secret.
+// ---------------------------------------------------------------------------
+// Case 7: production path does not require a browser secret
+// ---------------------------------------------------------------------------
 // In production IrisSigningSecret is absent. The client posts to
 // IrisAuthorizeBase and the server holds the key.
 test("production path does not require a browser secret", async () => {
