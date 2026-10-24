@@ -24,10 +24,19 @@ const FULL_ENV = {
   TRINITY_HMAC_SECRET: "test-secret",
 };
 
-function post(body, env = FULL_ENV) {
+async function testSignature(body, secret = "test-secret") {
+  const timestamp = String(Math.floor(Date.now() / 1000));
+  const payload = timestamp + "." + JSON.stringify(body);
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  return { "x-timestamp": timestamp, "x-signature": Array.from(new Uint8Array(signature)).map((b) => b.toString(16).padStart(2, "0")).join("") };
+}
+async function post(body, env = FULL_ENV, headers = {}) {
+  let authHeaders = {};
+  if (typeof body !== "string" && !("x-timestamp" in headers) && !("x-signature" in headers)) authHeaders = await testSignature(body, env.TRINITY_HMAC_SECRET || "test-secret");
   return worker.fetch(new Request("https://staging.test/v1/authorize", {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", ...authHeaders, ...headers },
     body: typeof body === "string" ? body : JSON.stringify(body),
   }), env);
 }
@@ -69,7 +78,7 @@ test("authorize returns 503 when the signing secret is missing", async () => {
   assert.equal(data.reason, "signing-secret-unavailable");
 });
 
-test("authorize denies force_deny and does not return a receipt", async () => {
+test("authorize requires a signature even when a secret is configured", async () => {\n  const res = await post({ request_id: "unsigned-1", text: "hi" }, FULL_ENV, { "x-timestamp": "", "x-signature": "" });\n  const data = await res.json();\n  assert.equal(res.status, 401);\n  assert.equal(data.reason, "signature-required");\n});\n\ntest("authorize denies force_deny and does not return a receipt", async () => {
   const res = await post({ request_id: "deny-1", force_deny: true, text: "no" });
   const data = await res.json();
   assert.equal(res.status, 403);
