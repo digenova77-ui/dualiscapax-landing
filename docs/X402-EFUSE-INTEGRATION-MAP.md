@@ -124,7 +124,8 @@ No test may use real funds or mainnet assets. No value becomes canonical because
 ## 6. Concrete work remaining — implementation status
 
 **Implemented in code on the integration branch:**
-- Existing website x402 v2 exchange restored into this branch at `js/x402-exchange.js`, `functions/api/x402/exchange.js` and `x402.html`.
+- Existing website x402 v2 exchange restored into this branch at `js/x402-exchange.js`, `functions/api/x402/exchange.js` and `x402.html`; Base mainnet is now opt-in and the page defaults to Base Sepolia testnet.
+- Paid runtime requires explicit `X402_AMOUNT` and `X402_PAY_TO` configuration; missing policy fails closed rather than silently using defaults.
 - Facilitator HTTP failures, resource mismatch, malformed/expired/overlong authorization windows, mismatched payer and mismatched settlement network fail closed.
 - `POST /v1/paid-turn` now shares the governed runtime's session verification and exact Trinity authorization path; it obtains an x402 challenge only after authorization.
 - Durable payment transaction state machine implemented with a Cloudflare Durable Object in `workers/x402-ledger/worker.mjs`: RESERVED → PAYMENT_ATTEMPTED → SETTLED → EXECUTED, with RELEASED and IN_DOUBT handling.
@@ -145,7 +146,7 @@ No test may use real funds or mainnet assets. No value becomes canonical because
 
 - **Repository source inspected:** website x402 JavaScript and Pages route/config files on the historical x402 branch.
 - **Prior test evidence recorded:** compliance receipt claims the counts listed above for its own TEST tree.
-- **CI evidence:** GitHub Actions Iris Runtime Integration run 111 passed **78/78** Node tests for the code state at commit `02f17b2a66c3c54c40bdbcacda5f819549517aad`. Tests use mock service bindings, fake Durable Object storage and a mocked facilitator.
+- **CI evidence:** GitHub Actions Iris Runtime Integration run 132 passed **81/81** Node tests for the code state at commit `d7e089753b758c8684dd2b54ddbfd2999f257a7a`. Tests use mock service bindings, fake Durable Object storage and a mocked facilitator.
 - **Not verified:** deployed ledger atomicity, live facilitator operation, real settlement, actual identity/Trinity/memory/model service contracts, front-end-to-paid-runtime wiring, refund/compensation, calibrated energy measurement, Z3-backed threshold proof, or production eFuse/Merit settlement.
 
 The point is not to start x402 from scratch. It is to bring the existing rails together under one explicit transaction contract while preserving what has actually been proven and exposing what still needs to be connected.
