@@ -91,14 +91,21 @@ def _arbitrate_domain(domain: str, law_input: Dict[str, Any],
         }
 
     if law_result is None and domain == "plus_one_math":
-        r = plus_one_rate(**law_input)
-        law_result = {
-            "mode": "deterministic",
-            "verdict": "PASS",
-            "law": "PLUS_ONE_INCENTIVE.md §1.2",
-            "reason": "exact function evaluated",
-            "rate": r,
-        }
+        try:
+            r = plus_one_rate(**law_input)
+            law_result = {
+                "mode": "deterministic",
+                "verdict": "PASS",
+                "law": "PLUS_ONE_INCENTIVE.md §1.2",
+                "reason": "exact function evaluated",
+                "rate": r,
+            }
+        except (TypeError, ValueError, OverflowError) as exc:
+            law_result = {
+                "mode": "deterministic",
+                "verdict": "REFUSE",
+                "reason": f"invalid plus_one_math input ({type(exc).__name__}) — fail closed",
+            }
 
     if law_result is None:
         law_result = {
