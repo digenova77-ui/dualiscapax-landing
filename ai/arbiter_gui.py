@@ -8,6 +8,7 @@ Run: python ai/arbiter_gui.py
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 import json
+import math
 from typing import Any, Callable, Dict, Optional
 
 # ---------------------------------------------------------------------------
