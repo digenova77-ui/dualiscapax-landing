@@ -74,6 +74,8 @@ Inference and receipt verification query `IRIS_MEMORY` at `/v1/requests/get` wit
 A missing record, malformed response, timeout, or binding error must deny the operation.
 This is the source of truth; isolate-local maps are not authoritative.
 
+After claim (including a replay), the runtime reads `/v1/context/read` for the same principal before returning authorization. Inference reads it again immediately before calling the model provider. Context is a bounded list of prior authorized activity metadata (request ID, action, input digest, receipt ID, timestamp); it deliberately does not store or return raw prompt text. The principal index and claim record are updated in the same Durable Object transaction.
+
 The test fixture simulates this API in memory and is **not** evidence of persistence across
 Workers isolates or restarts. Before staging deploy, inspect and test the actual
 `iris-memory-staging` service implementation, including concurrent claims, conflict handling,
