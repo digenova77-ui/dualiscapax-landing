@@ -101,17 +101,20 @@ export function checkAllow(result) {
   return { ok, receipt: receipt || null, reason: ok ? null : "allow-receipt-invalid" };
 }
 
-export async function verifyLive(base, signingSecret) {
+export async function verifyLive(base, signingSecret, unityId) {
   if (!base) throw new Error("IRIS_STAGING_URL is required");
   if (!signingSecret) throw new Error("IRIS_STAGING_SIGNING_SECRET is required; secret is never printed");
+  if (!unityId || !unityId.trim()) throw new Error("IRIS_STAGING_UNITY_ID is required; refusing to invent an identity");
   const health = checkHealth(await getJson(join(base, "/health")));
   const deny = checkDeny(await postJson(join(base, "/v1/authorize"), {
     request_id: "deny-" + Date.now().toString(36),
+    principal: { unity_id: unityId },
     force_deny: true,
     text: "deny",
   }, signingSecret));
   const allow = checkAllow(await postJson(join(base, "/v1/authorize"), {
     request_id: "allow-" + Date.now().toString(36),
+    principal: { unity_id: unityId },
     text: "hello",
   }, signingSecret));
   return { ok: health.ok && deny.ok && allow.ok, health, deny, allow };
@@ -121,6 +124,7 @@ const isMain = process.argv[1] && process.argv[1].endsWith("verify-live.mjs");
 if (isMain) {
   const base = process.env.IRIS_STAGING_URL;
   const signingSecret = process.env.IRIS_STAGING_SIGNING_SECRET;
+  const unityId = process.env.IRIS_STAGING_UNITY_ID;
   if (!base) {
     console.error("IRIS_STAGING_URL is not set. Refusing to guess a staging origin.");
     process.exit(2);
@@ -129,7 +133,11 @@ if (isMain) {
     console.error("IRIS_STAGING_SIGNING_SECRET is not set. Refusing unsigned live authorization checks.");
     process.exit(2);
   }
-  verifyLive(base, signingSecret).then((report) => {
+  if (!unityId) {
+    console.error("IRIS_STAGING_UNITY_ID is not set. Refusing to invent an identity.");
+    process.exit(2);
+  }
+  verifyLive(base, signingSecret, unityId).then((report) => {
     console.log(JSON.stringify(report, null, 2));
     process.exit(report.ok ? 0 : 1);
   }).catch((err) => {
