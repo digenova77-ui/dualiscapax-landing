@@ -23,6 +23,7 @@ const FULL_ENV = {
   IRIS_MEMORY: memoryBinding(),
   MODEL_PROVIDER: allowBinding(),
   TRINITY_HMAC_SECRET: "test-secret",
+  IRIS_MEMORY_SERVICE_TOKEN: "test-memory-token",
 };
 
 async function testSignature(body, secret = "test-secret") {
