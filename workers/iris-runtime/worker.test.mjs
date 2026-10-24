@@ -256,7 +256,7 @@ test("same request ID and same input replay the original committed result withou
             }
             return jsonResponse({
               contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
-              input_sha256: body.input_sha256, state: "APPLIED", claimed: false,
+              action: body.action, input_sha256: body.input_sha256, state: "APPLIED", claimed: false,
               replay: prior.replay,
             });
           }
@@ -311,7 +311,7 @@ test("concurrent duplicate requests cannot both reserve or execute", async () =>
           const prior = records.get(key);
           if (prior) {
             const state = prior.input_sha256 !== body.input_sha256 ? "CONFLICT" : "IN_DOUBT";
-            return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state, claimed: false });
+            return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state, claimed: false });
           }
           records.set(key, { state: "RESERVED", input_sha256: body.input_sha256 });
           return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
