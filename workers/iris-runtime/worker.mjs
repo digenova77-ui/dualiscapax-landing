@@ -116,11 +116,12 @@ export default {
 async function handleRequest(request, env) {
   const url = new URL(request.url);
   if (url.pathname === "/health" && request.method === "GET") {
+    const hasBinding = (binding) => !!binding && typeof binding.fetch === "function";
     const bindings = {
-      identity: !!env.IDENTITY_API,
-      trinity: !!env.TRINITY_LAW,
-      memory: !!env.IRIS_MEMORY,
-      provider: !!env.MODEL_PROVIDER,
+      identity: hasBinding(env.IDENTITY_API),
+      trinity: hasBinding(env.TRINITY_LAW),
+      memory: hasBinding(env.IRIS_MEMORY),
+      provider: hasBinding(env.MODEL_PROVIDER),
     };
     const complete = Object.values(bindings).every(Boolean) &&
       typeof env.IRIS_ALLOWED_ORIGINS === "string" &&
