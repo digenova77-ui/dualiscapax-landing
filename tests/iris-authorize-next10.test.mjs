@@ -37,10 +37,19 @@ const ENV = {
   TRINITY_HMAC_SECRET: "test-secret",
 };
 
-function post(path, body, env = ENV, headers = {}) {
+async function testSignature(body, secret = "test-secret") {
+  const timestamp = String(Math.floor(Date.now() / 1000));
+  const payload = timestamp + "." + JSON.stringify(body);
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  return { "x-timestamp": timestamp, "x-signature": Array.from(new Uint8Array(signature)).map((b) => b.toString(16).padStart(2, "0")).join("") };
+}
+async function post(path, body, env = ENV, headers = {}) {
+  let authHeaders = {};
+  if (!("x-timestamp" in headers) && !("x-signature" in headers)) authHeaders = await testSignature(body, env.TRINITY_HMAC_SECRET || "test-secret");
   return worker.fetch(new Request("https://staging.test" + path, {
     method: "POST",
-    headers: { "content-type": "application/json", ...headers },
+    headers: { "content-type": "application/json", ...authHeaders, ...headers },
     body: JSON.stringify(body),
   }), env);
 }
