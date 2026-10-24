@@ -23,6 +23,16 @@ The claim response is a strict versioned contract and must echo `contract: "dual
 
 These are adapter contracts, not assertions that the services currently implement them. Do not create duplicate production services to satisfy a placeholder contract; inventory the existing source of truth first.
 
+## Trinity policy boundary
+
+The runtime treats Trinity as the authorization decision point, after server-side session verification and before the durable claim, private-memory read, provider call, or persistence. It accepts an allow only when the response matches the verified Unity ID, exact action, caller-stable request ID, and input SHA-256. Missing, denied, malformed, or mismatched decisions fail closed.
+
+The request schema for this version is exactly `{ "text": string }`. Extra fields are rejected before identity or Trinity calls, so client-supplied tickets, roles, or metadata cannot be silently ignored while a different payload is authorized. The input digest is SHA-256 of the exact UTF-8 text passed to the compute/inference planner.
+
+The standing policy names `TRUTH_OR_NOTHING`, `NO_FORCE`, `HOST_SAFE`, `CLEANUP_FIRST`, and Father-only write authority are not magical effects of naming them in a prompt or README. They must be explicitly represented and enforced by the authoritative Trinity policy and by the protected service that performs each action. This inference endpoint does not implement general write actions or prove Father-only write authority; any future write route needs its own exact action binding and explicit principal/authority check. `CLEANUP_FIRST` likewise needs a concrete, auditable cleanup/state-transition contract before it can be claimed as enforced.
+
+Trinity is not identity authentication, consensus, Sybil resistance, execution, energy metering, Merit issuance, or settlement. The runtime delegates authentication to `IDENTITY_API`, computation to the deterministic planner or model provider, and durable idempotency/persistence to `IRIS_MEMORY`.
+
 Set `IRIS_ALLOWED_ORIGINS` to exact, authorized staging origins only. Do not use wildcards. The checked-in `wrangler.toml` intentionally contains no route, service binding, secret, or origin, so the runtime should remain unavailable until explicitly configured.
 
 ## Security ordering
