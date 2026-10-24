@@ -1,0 +1,34 @@
+name: Iris Runtime Integration
+
+on:
+  pull_request:
+    paths:
+      - "workers/iris-runtime/**"
+      - "workers/x402-ledger/**"
+      - ".github/workflows/iris-runtime-integration.yml"
+  push:
+    branches:
+      - "integration/iris-runtime-main-20261024"
+    paths:
+      - "workers/iris-runtime/**"
+      - "workers/x402-ledger/**"
+      - ".github/workflows/iris-runtime-integration.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: iris-runtime-integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  runtime-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test governed Iris runtime and compute arbitrator
+        run: node --test workers/iris-runtime/*.test.mjs workers/x402-ledger/*.test.mjs

@@ -1,0 +1,13 @@
+name = "dualiscapax-iris-runtime-staging"
+main = "worker.mjs"
+compatibility_date = "2026-10-23"
+workers_dev = false
+
+# Staging-only Worker entry-point declaration. No public route is configured.
+# This service binding only connects the staged runtime to the isolated ledger.
+# Identity, Trinity, memory, model bindings, X402_LEDGER_TOKEN and exact origins
+# must still be configured by an authorized staging operator.
+
+[[services]]
+binding = "X402_LEDGER"
+service = "dualis-x402-ledger"

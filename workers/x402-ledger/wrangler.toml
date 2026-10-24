@@ -1,0 +1,12 @@
+name = "dualis-x402-ledger"
+main = "worker.mjs"
+compatibility_date = "2026-09-04"
+workers_dev = false
+
+[[durable_objects.bindings]]
+name = "TRANSACTIONS"
+class_name = "PaymentTransaction"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PaymentTransaction"]
