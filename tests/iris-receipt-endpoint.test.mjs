@@ -64,6 +64,8 @@ const good = {
   id: "rct_r1",
   sha256: "a".repeat(64),
   request_id: "r1",
+  action: "iris.turn.look",
+  issued_at: new Date().toISOString(),
 };
 
 test("receipt verify fails closed when a binding is missing", async () => {
