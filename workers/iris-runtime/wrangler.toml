@@ -1,0 +1,27 @@
+name = "iris-runtime-staging"
+main = "worker.mjs"
+compatibility_date = "2026-10-24"
+
+# Staging only. No production routes or account IDs.
+[env.staging]
+name = "iris-runtime-staging"
+
+# Required service bindings (placeholders — replace with real services before deploy)
+[[env.staging.services]]
+binding = "IDENTITY_API"
+service = "identity-api-staging"
+
+[[env.staging.services]]
+binding = "TRINITY_LAW"
+service = "trinity-law-staging"
+
+[[env.staging.services]]
+binding = "IRIS_MEMORY"
+service = "iris-memory-staging"
+
+[[env.staging.services]]
+binding = "MODEL_PROVIDER"
+service = "model-provider-staging"
+
+# HMAC secret must be set as a Worker secret, never in source:
+# wrangler secret put TRINITY_HMAC_SECRET --env staging
