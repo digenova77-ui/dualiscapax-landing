@@ -48,6 +48,7 @@ const ENV = {
   MODEL_PROVIDER: allowBinding(),
   TRINITY_HMAC_SECRET: "test-secret",
   IRIS_MEMORY_SERVICE_TOKEN: "test-memory-token",
+  IRIS_DIAGNOSTICS_TOKEN: "test-diagnostics-token",
 };
 
 async function testSignature(body, secret = "test-secret") {
@@ -207,9 +208,27 @@ test("8. health is not ok when a binding is inert", async () => {
   assert.ok(data.inert.includes("MODEL_PROVIDER"));
 });
 
-test("9. audit records an allow", async () => {
+test("diagnostics are unavailable when no server-side token is configured", async () => {
+  const env = { ...ENV };
+  delete env.IRIS_DIAGNOSTICS_TOKEN;
+  const res = await worker.fetch(new Request("https://staging.test/v1/audit"), env);
+  assert.equal(res.status, 404);
+});
+
+test("diagnostics reject missing or incorrect authorization", async () => {
+  const missing = await worker.fetch(new Request("https://staging.test/v1/metrics"), ENV);
+  assert.equal(missing.status, 401);
+  const wrong = await worker.fetch(new Request("https://staging.test/v1/audit", {
+    headers: { authorization: "Bearer wrong-token" },
+  }), ENV);
+  assert.equal(wrong.status, 401);
+});
+
+test("9. audit records an allow with diagnostics authorization", async () => {
   await post("/v1/authorize", { request_id: "aud-20", text: "hello" });
-  const res = await worker.fetch(new Request("https://staging.test/v1/audit"), ENV);
+  const res = await worker.fetch(new Request("https://staging.test/v1/audit", {
+    headers: { authorization: "Bearer " + ENV.IRIS_DIAGNOSTICS_TOKEN },
+  }), ENV);
   const data = await res.json();
   assert.ok(data.entries.some((e) => e.request_id === "aud-20" && e.decision === "allow"));
 });
