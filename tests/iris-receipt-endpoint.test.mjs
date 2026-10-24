@@ -114,7 +114,7 @@ async function signedHeaders(body) {
 }
 
 test("an authorize allow receipt verifies", async () => {
-  const authBody = { request_id: "chain-1", text: "hello" };
+  const authBody = { request_id: "chain-1", text: "hello", principal: { unity_id: "test-unity" } };
   const auth = await worker.fetch(new Request("https://staging.test/v1/authorize", {
     method: "POST",
     headers: await signedHeaders(authBody),
