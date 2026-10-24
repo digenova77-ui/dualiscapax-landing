@@ -107,6 +107,19 @@ test("concurrent conflicting claims produce exactly one winner", async () => {
   assert.deepEqual(statuses, [200, 409]);
 });
 
+test("context read returns bounded prior activity for the same principal", async () => {
+  const { post } = harness();
+  await post("/v1/requests/claim", claim("ctx-prior", "alpha"));
+  const res = await post("/v1/context/read", { request_id: "ctx-current", principal: "unity-1", limit: 5 });
+  const data = await res.json();
+  assert.equal(res.status, 200);
+  assert.equal(data.ok, true);
+  assert.equal(data.count, 1);
+  assert.equal(data.items[0].request_id, "ctx-prior");
+  assert.equal(data.items[0].receipt_id, "rct_ctx-prior");
+  assert.equal(data.items[0].text, undefined);
+});
+
 test("claim rejects a receipt whose digest does not match", async () => {
   const { post } = harness();
   const input = claim("bad-receipt-1", "alpha");
