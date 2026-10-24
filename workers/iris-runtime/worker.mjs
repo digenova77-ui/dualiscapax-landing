@@ -75,6 +75,8 @@ function receiptShape(receipt) {
   return !!(
     receipt &&
     receipt.contract === RECEIPT_CONTRACT &&
+    typeof receipt.unity_id === "string" &&
+    receipt.unity_id &&
     typeof receipt.id === "string" &&
     receipt.id.startsWith("rct_") &&
     typeof receipt.sha256 === "string" &&
@@ -265,7 +267,7 @@ export default {
         }
         if (claim.data && claim.data.replay === true) {
           const prior = claim.data.receipt;
-          if (!receiptShape(prior) || prior.request_id !== requestId || prior.sha256.toLowerCase() !== digest) {
+          if (!receiptShape(prior) || prior.id !== "rct_" + requestId || prior.request_id !== requestId || prior.unity_id !== principal || prior.sha256.toLowerCase() !== digest) {
             return json(503, { authorized: false, reason: "claim-receipt-mismatch", request_id: requestId });
           }
           const context = await readMemoryContext(env, principal, requestId);
@@ -273,7 +275,8 @@ export default {
           return json(200, { authorized: true, decision: "allow", request_id: requestId, receipt: prior, memory_context: context.items, replay: true });
         }
         if (!claim.data || claim.data.claimed !== true || !receiptShape(claim.data.receipt) ||
-            claim.data.receipt.request_id !== requestId || claim.data.receipt.sha256.toLowerCase() !== digest) {
+            claim.data.receipt.id !== "rct_" + requestId || claim.data.receipt.request_id !== requestId ||
+            claim.data.receipt.unity_id !== principal || claim.data.receipt.sha256.toLowerCase() !== digest) {
           return json(503, { authorized: false, reason: "claim-contract-invalid", request_id: requestId });
         }
         // The atomic claim must persist the receipt in the same transaction.
@@ -309,7 +312,7 @@ export default {
       const stored = storedResult.data && storedResult.data.receipt;
       if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true ||
           !receiptShape(stored) || stored.id !== body.receipt.id ||
-          stored.request_id !== body.receipt.request_id ||
+          stored.request_id !== body.receipt.request_id || stored.unity_id !== body.receipt.unity_id ||
           stored.sha256.toLowerCase() !== body.receipt.sha256.toLowerCase()) {
         return json(403, { ok: false, reason: "receipt-unknown" });
       }
@@ -350,7 +353,8 @@ export default {
       if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true || !receiptShape(stored)) {
         return json(200, { valid: false, known: false, reason: "receipt-unknown" });
       }
-      if (stored.id !== receipt.id || stored.sha256.toLowerCase() !== receipt.sha256.toLowerCase() || stored.request_id !== receipt.request_id) {
+      if (stored.id !== receipt.id || stored.unity_id !== receipt.unity_id ||
+          stored.sha256.toLowerCase() !== receipt.sha256.toLowerCase() || stored.request_id !== receipt.request_id) {
         return json(200, { valid: false, reason: "stored-mismatch" });
       }
       return json(200, {
