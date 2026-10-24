@@ -461,11 +461,15 @@ export default {
       return json(200, { ok: true, id: revoked.data.id || id, replay: revoked.data.replay === true });
     }
 
-    if (url.pathname === "/v1/metrics" && request.method === "GET") {
-      return json(200, { ...metrics });
-    }
-
-    if (url.pathname === "/v1/audit" && request.method === "GET") {
+    if ((url.pathname === "/v1/metrics" || url.pathname === "/v1/audit") && request.method === "GET") {
+      // Operational diagnostics can contain request identifiers and policy outcomes.
+      // Keep them unavailable by default and require a dedicated server-side token.
+      if (!env.IRIS_DIAGNOSTICS_TOKEN) return json(404, { ok: false, reason: "not-found" });
+      const authorization = request.headers.get("authorization") || "";
+      if (authorization !== "Bearer " + env.IRIS_DIAGNOSTICS_TOKEN) {
+        return json(401, { ok: false, reason: "diagnostics-authorization-required" });
+      }
+      if (url.pathname === "/v1/metrics") return json(200, { ...metrics });
       return json(200, { count: audit.length, entries: audit.slice(-20) });
     }
 
