@@ -10,6 +10,40 @@ The production client path (`js/iris-authorize.js` → `authorizeProduction`) po
 
 ## Staging Worker
 
+## Fast path: deploy an isolated contract-test stack
+
+The repository now contains explicitly fake dependency fixtures under
+`workers/iris-staging-dependencies/`. They remove the need to invent external
+endpoints just to exercise the complete runtime-to-memory flow. They are **not**
+real identity verification, a production Trinity policy engine, or an external
+AI model:
+
+- Identity fixture accepts only one operator-supplied staging Unity ID.
+- Trinity fixture allows only `iris.turn.look` and independently recomputes the text digest.
+- Model fixture returns a deterministic marker and never calls an external model.
+- Every fixture fails closed unless `STAGING_FIXTURE_ENABLED=true` and
+  `STAGING_UNITY_ID` are configured as Worker secrets.
+
+From a trusted machine with Wrangler authenticated to the intended Cloudflare
+account, run:
+
+```bash
+bash workers/deploy-iris-staging-stack.sh
+```
+
+The script runs local verifiers/tests first, generates fresh memory and HMAC
+secrets in memory, configures staging-only Worker secrets, deploys memory,
+deploys the three dependency fixtures, then deploys `iris-runtime-staging`.
+It asks for the runtime `workers.dev` URL so it can run live checks. It never
+deploys Pages or configures production routes. If the live checks are skipped,
+the script does not print secrets; rerun the stack script to rotate secrets and
+perform the live check in the same session.
+
+**Boundary:** passing this gauntlet proves the Worker-to-Worker contracts,
+durable claim, receipt lookup, and fixture-backed inference path. It does not
+prove real Unity identity, real Trinity policy, or real model inference. Replace
+the fixture bindings with approved staging providers before any production use.
+
 - Location: `workers/iris-runtime/`
 - Entry: `worker.mjs`
 - Config: `wrangler.toml` (staging environment only; no production routes)
