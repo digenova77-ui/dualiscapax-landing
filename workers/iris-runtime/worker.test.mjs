@@ -210,7 +210,7 @@ test("same request ID with changed input is rejected before a second effect", as
           if (prior) {
             // Model the required durable-store behavior: the operation key is
             // already bound, so a changed semantic request cannot be claimed.
-            return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
+            return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
           }
           claims.set(key, { action: body.action, input_sha256: body.input_sha256 });
           return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
@@ -252,7 +252,7 @@ test("same request ID and same input replay the original committed result withou
           const prior = records.get(key);
           if (prior?.state === "APPLIED") {
             if (prior.input_sha256 !== body.input_sha256) {
-              return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
+              return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
             }
             return jsonResponse({
               contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
@@ -346,7 +346,7 @@ test("duplicate request ID fails closed before memory context or provider infere
         const body = await request.clone().json().catch(() => ({}));
         const route = new URL(request.url).pathname;
         calls.push({ name: "memory", path: route, body });
-        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
+        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
         return jsonResponse({ unity_id: body.unity_id, items: [] });
       },
     },
