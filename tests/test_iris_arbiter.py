@@ -1,10 +1,15 @@
 import importlib
 import unittest
 
-MODULES = (
-    importlib.import_module("ai.iris_arbiter"),
-    importlib.import_module("ai.arbiter_gui"),
-)
+# Core arbiter always available
+MODULES = [importlib.import_module("ai.iris_arbiter")]
+
+# GUI module requires tkinter; skip it when the display library is absent
+try:
+    import tkinter  # noqa: F401
+    MODULES.append(importlib.import_module("ai.arbiter_gui"))
+except ImportError:
+    pass
 
 
 class IrisArbiterFailClosedTests(unittest.TestCase):

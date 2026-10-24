@@ -54,6 +54,13 @@ def _arbitrate_domain(domain: str, law_input: Dict[str, Any],
             "verdict": "REFUSE",
             "reason": f"judge raised {type(exc).__name__} — fail closed",
         }
+    # A registered judge that returns None is malformed, not unregistered.
+    if domain in LAW_JUDGES and law_result is None:
+        law_result = {
+            "mode": "deterministic",
+            "verdict": "REFUSE",
+            "reason": "missing or invalid judge verdict — fail closed",
+        }
     if law_result is None and domain == "plus_one_math":
         try:
             r = plus_one_rate(**law_input)
