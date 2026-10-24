@@ -693,7 +693,7 @@ test("paid runtime never contacts facilitator when Trinity denies the request", 
   assert.equal(response.status, 403);
   assert.deepEqual(facilitatorCalls, []);
   assert.equal(calls.some((call) => call.name === "paymentLedger"), false);
-  assert.deepEqual(calls.filter((call) => call.name === "memory").map((call) => call.path), ["/v1/requests/claim"]);
+  assert.equal(calls.some((call) => call.name === "memory"), false);
 });
 
 test("rejected payment releases the ledger reservation and never executes", async () => {
@@ -709,7 +709,7 @@ test("rejected payment releases the ledger reservation and never executes", asyn
   assert.deepEqual(calls.filter((call) => call.name === "paymentLedger").map((call) => call.path), [
     "/v1/payments/claim", "/v1/payments/attempting", "/v1/payments/release",
   ]);
-  assert.equal(calls.some((call) => call.name === "memory"), false);
+  assert.deepEqual(calls.filter((call) => call.name === "memory").map((call) => call.path), ["/v1/requests/claim"]);
 });
 
 test("ambiguous facilitator outcome marks payment in doubt and blocks execution", async () => {
@@ -726,7 +726,7 @@ test("ambiguous facilitator outcome marks payment in doubt and blocks execution"
   assert.deepEqual(calls.filter((call) => call.name === "paymentLedger").map((call) => call.path), [
     "/v1/payments/claim", "/v1/payments/attempting", "/v1/payments/in-doubt",
   ]);
-  assert.equal(calls.some((call) => call.name === "memory"), false);
+  assert.deepEqual(calls.filter((call) => call.name === "memory").map((call) => call.path), ["/v1/requests/claim"]);
 });
 
 test("core runtime health is independent of optional paid-payment configuration", async () => {
