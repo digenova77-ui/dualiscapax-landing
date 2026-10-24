@@ -58,7 +58,7 @@ npx wrangler deploy --env staging
 
 echo
 echo "=== Live gauntlet ==="
-if [[ -z "${IRIS_STAGING_URL:-}" ]]; then
+if [[ -z "${IRIS_STAGING_URL:-}" && -t 0 ]]; then
   read -r -p "Paste the iris-runtime-staging workers.dev URL from Wrangler (blank skips live checks): " IRIS_STAGING_URL
 fi
 if [[ -n "$IRIS_STAGING_URL" ]]; then
