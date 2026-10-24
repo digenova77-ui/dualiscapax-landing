@@ -10,6 +10,7 @@ class MemoryStorage {
 }
 
 const TOKEN = "test-ledger-token-with-at-least-thirty-two-characters";
+const POLICY = { X402_AMOUNT: "10000", X402_PAY_TO: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4" };
 const OP = {
   contract: "dualis.x402.transaction.v1",
   unity_id: "unity_user_123",
@@ -43,7 +44,7 @@ async function call(object, path, body) {
 }
 
 test("payment transaction progresses atomically from reserve through settled to executed", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   const claim = await call(object, "/v1/payments/claim", OP);
   assert.equal(claim.body.state, "RESERVED");
   assert.equal(claim.body.claimed, true);
@@ -68,7 +69,7 @@ test("payment transaction progresses atomically from reserve through settled to 
 });
 
 test("same request with a different payment digest cannot replace a settled payment", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   const claim = await call(object, "/v1/payments/claim", OP);
   await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
   await call(object, "/v1/payments/record", { ...OP, payment_receipt: PAYMENT });
@@ -77,14 +78,14 @@ test("same request with a different payment digest cannot replace a settled paym
 });
 
 test("operation binding cannot change under an existing request ID", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   await call(object, "/v1/payments/claim", OP);
   const conflict = await call(object, "/v1/payments/claim", { ...OP, input_sha256: "9".repeat(64) });
   assert.equal(conflict.body.state, "CONFLICT");
 });
 
 test("payment cannot be recorded before an attempt or with a malformed receipt", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   const claim = await call(object, "/v1/payments/claim", OP);
   const premature = await call(object, "/v1/payments/record", { ...OP, payment_receipt: PAYMENT });
   assert.equal(premature.body.state, "CONFLICT");
@@ -100,14 +101,14 @@ test("payment cannot be recorded before an attempt or with a malformed receipt",
 });
 
 test("attempting requires the exact live reservation token", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   await call(object, "/v1/payments/claim", OP);
   const bad = await call(object, "/v1/payments/attempting", { ...OP, claim_token: "wrong-token" });
   assert.equal(bad.body.state, "CONFLICT");
 });
 
 test("known unpaid reservation can be released and retried with a new payment digest", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   const claim = await call(object, "/v1/payments/claim", OP);
   await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
   const released = await call(object, "/v1/payments/release", { ...OP, reason: "invalid_signature" });
@@ -118,7 +119,7 @@ test("known unpaid reservation can be released and retried with a new payment di
 });
 
 test("ambiguous payment cannot be silently reset to a fresh charge", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   const claim = await call(object, "/v1/payments/claim", OP);
   await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
   const doubtful = await call(object, "/v1/payments/in-doubt", { ...OP, reason: "facilitator_timeout" });
@@ -131,10 +132,11 @@ test("ledger Worker requires the service token and routes authenticated requests
   const objects = new Map();
   const env = {
     LEDGER_TOKEN: TOKEN,
+    ...POLICY,
     TRANSACTIONS: {
       idFromName(name) { return name; },
       get(id) {
-        if (!objects.has(id)) objects.set(id, new PaymentTransaction({ storage: new MemoryStorage() }));
+        if (!objects.has(id)) objects.set(id, new PaymentTransaction({ storage: new MemoryStorage() }, POLICY));
         return objects.get(id);
       },
     },
@@ -154,7 +156,7 @@ test("ledger Worker requires the service token and routes authenticated requests
 });
 
 test("ledger refuses a receipt whose token asset does not match its network", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   const claim = await call(object, "/v1/payments/claim", OP);
   await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
   const response = await call(object, "/v1/payments/record", {
@@ -165,7 +167,7 @@ test("ledger refuses a receipt whose token asset does not match its network", as
 });
 
 test("concurrent duplicate claim cannot start a second payment attempt", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   const first = await call(object, "/v1/payments/claim", OP);
   const second = await call(object, "/v1/payments/claim", OP);
   assert.equal(first.body.claimed, true);
@@ -175,7 +177,7 @@ test("concurrent duplicate claim cannot start a second payment attempt", async (
 });
 
 test("releasing a known-unpaid payment reservation is idempotent", async () => {
-  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const object = new PaymentTransaction({ storage: new MemoryStorage() }, POLICY);
   const claim = await call(object, "/v1/payments/claim", OP);
   await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
   const first = await call(object, "/v1/payments/release", { ...OP, reason: "invalid_signature" });
@@ -186,7 +188,7 @@ test("releasing a known-unpaid payment reservation is idempotent", async () => {
 
 test("retry after release clears prior settlement fields without undefined durable values", async () => {
   const storage = new MemoryStorage();
-  const object = new PaymentTransaction({ storage });
+  const object = new PaymentTransaction({ storage }, POLICY);
   const claim = await call(object, "/v1/payments/claim", OP);
   await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
   await call(object, "/v1/payments/release", { ...OP, reason: "invalid_signature" });
