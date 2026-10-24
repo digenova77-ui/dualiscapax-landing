@@ -133,3 +133,36 @@ test("10. revoke is recorded in metrics", async () => {
   const metrics = await (await worker.fetch(new Request("https://staging.test/v1/metrics"), env)).json();
   assert.ok(metrics.revoke >= 1);
 });
+
+test("11. unsigned receipt revocation is rejected", async () => {
+  const env = envWith();
+  const issued = await post("/v1/authorize", { ...base, request_id: "unsigned-revoke-40", text: "hello" }, env);
+  const auth = await issued.json();
+  const res = await worker.fetch(new Request("https://staging.test/v1/receipt/revoke", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ id: auth.receipt.id }),
+  }), env);
+  assert.equal(res.status, 401);
+  assert.equal((await res.json()).reason, "signature-required");
+
+  const verify = await post("/v1/receipt/verify", { receipt: auth.receipt, text: "hello" }, env);
+  assert.equal((await verify.json()).valid, true);
+});
+
+test("12. receipt revocation rejects an invalid HMAC signature", async () => {
+  const env = envWith();
+  const issued = await post("/v1/authorize", { ...base, request_id: "bad-sign-revoke-40", text: "hello" }, env);
+  const auth = await issued.json();
+  const res = await worker.fetch(new Request("https://staging.test/v1/receipt/revoke", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-timestamp": String(Math.floor(Date.now() / 1000)), "x-signature": "0".repeat(64) },
+    body: JSON.stringify({ id: auth.receipt.id }),
+  }), env);
+  assert.equal(res.status, 401);
+  assert.equal((await res.json()).reason, "invalid-signature");
+
+  const verify = await post("/v1/receipt/verify", { receipt: auth.receipt, text: "hello" }, env);
+  assert.equal((await verify.json()).valid, true);
+});
+
