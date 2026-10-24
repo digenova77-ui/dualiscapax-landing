@@ -97,6 +97,26 @@ test("authorize denies force_deny and does not return a receipt", async () => {
   assert.equal(data.receipt, undefined);
 });
 
+test("authorize rejects a missing principal", async () => {
+  const body = { request_id: "no-principal-1", text: "hi" };
+  const headers = await testSignature(body);
+  const res = await worker.fetch(new Request("https://staging.test/v1/authorize", {
+    method: "POST",
+    headers: { "content-type": "application/json", ...headers },
+    body: JSON.stringify(body),
+  }), FULL_ENV);
+  const data = await res.json();
+  assert.equal(res.status, 400);
+  assert.equal(data.reason, "missing-principal");
+});
+
+test("authorize rejects an input digest that does not match the text", async () => {
+  const res = await post({ request_id: "digest-mismatch-1", text: "hello", input_sha256: "0".repeat(64) });
+  const data = await res.json();
+  assert.equal(res.status, 400);
+  assert.equal(data.reason, "input-digest-mismatch");
+});
+
 test("authorize allow returns dualis.receipt.v1 with sha256 of the text", async () => {
   const res = await post({ request_id: "allow-1", text: "hello" });
   const data = await res.json();
