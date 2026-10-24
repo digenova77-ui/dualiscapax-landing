@@ -190,4 +190,36 @@ assert(octagonFr.facing.includes("octagon-face"), "pure octagon faces");
 assert(octagonFr.held.some(h => h.name === "octagon-bad"), "glass octagon held");
 assert(octagonFr.ceiling_claimable === false, "glass octagon prevents claim");
 
+// --- octahedron face ---
+// Shape (octahedron) is orthogonal to purity bands; grade depends only on clarity/color/cut/reflects.
+const octahedronPure = { name: "octahedron", kind: "face", shape: "octahedron", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" };
+const octahedronG = grade(octahedronPure);
+assert(octahedronG.pure === true && octahedronG.verdict === "PASS", "octahedron pure face grades PASS");
+assert(facesFrontier(octahedronPure) === true, "octahedron pure faces frontier");
+
+const octahedronGlass = { name: "octahedron", kind: "face", shape: "octahedron", clarity: "SI", color: "G", cut: "Good", reflects: "purity" };
+const octahedronG2 = grade(octahedronGlass);
+assert(octahedronG2.pure === false && octahedronG2.verdict === "GLASS", "octahedron out-of-band grades GLASS");
+assert(facesFrontier(octahedronGlass) === false, "octahedron glass does not face frontier");
+
+// Octahedron with mixed axes
+const octahedronVVS = { name: "octahedron", kind: "face", shape: "octahedron", clarity: "VVS", color: "E", cut: "Very Good", reflects: "purity" };
+assert(grade(octahedronVVS).pure === true, "octahedron VVS E VG purity passes");
+assert(facesFrontier(octahedronVVS) === false, "octahedron VVS not frontier");
+
+const octahedronNoReflects = { name: "octahedron", kind: "face", shape: "octahedron", clarity: "FL", color: "D", cut: "Excellent", reflects: "glass" };
+assert(grade(octahedronNoReflects).pure === false, "octahedron non-purity refuses");
+assert(grade(octahedronNoReflects).failed.includes("reflects:not-purity"), "octahedron reflects failure recorded");
+
+// Octahedron in frontierReport
+const octahedronFacets = [
+  { name: "octahedron-floor", kind: "floor", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
+  { name: "octahedron-face", kind: "face", shape: "octahedron", clarity: "VS", color: "F", cut: "Excellent", reflects: "purity" },
+  { name: "octahedron-bad", kind: "face", shape: "octahedron", clarity: "I", color: "G", cut: "Poor", reflects: "other" },
+];
+const octahedronFr = frontierReport(octahedronFacets);
+assert(octahedronFr.facing.includes("octahedron-face"), "pure octahedron faces");
+assert(octahedronFr.held.some(h => h.name === "octahedron-bad"), "glass octahedron held");
+assert(octahedronFr.ceiling_claimable === false, "glass octahedron prevents claim");
+
 console.log("All diamond edge tests passed");
