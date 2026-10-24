@@ -85,9 +85,18 @@ test("operation binding cannot change under an existing request ID", async () =>
 
 test("payment cannot be recorded before an attempt or with a malformed receipt", async () => {
   const object = new PaymentTransaction({ storage: new MemoryStorage() });
-  await call(object, "/v1/payments/claim", OP);
+  const claim = await call(object, "/v1/payments/claim", OP);
   const premature = await call(object, "/v1/payments/record", { ...OP, payment_receipt: PAYMENT });
   assert.equal(premature.body.state, "CONFLICT");
+
+  await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
+  const malformed = await call(object, "/v1/payments/record", {
+    ...OP, payment_receipt: { ...PAYMENT, amount: "999999" },
+  });
+  assert.equal(malformed.body.state, "CONFLICT");
+
+  const valid = await call(object, "/v1/payments/record", { ...OP, payment_receipt: PAYMENT });
+  assert.equal(valid.body.state, "SETTLED");
 });
 
 test("attempting requires the exact live reservation token", async () => {
@@ -142,4 +151,15 @@ test("ledger Worker requires the service token and routes authenticated requests
   }), env);
   assert.equal(allowed.status, 200);
   assert.equal((await allowed.json()).state, "RESERVED");
+});
+
+test("ledger refuses a receipt whose token asset does not match its network", async () => {
+  const object = new PaymentTransaction({ storage: new MemoryStorage() });
+  const claim = await call(object, "/v1/payments/claim", OP);
+  await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
+  const response = await call(object, "/v1/payments/record", {
+    ...OP,
+    payment_receipt: { ...PAYMENT, asset: "0x" + "a".repeat(40) },
+  });
+  assert.equal(response.body.state, "CONFLICT");
 });
