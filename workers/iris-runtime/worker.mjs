@@ -8,7 +8,7 @@
  * Adapter contracts are versioned under /v1. No secret, prompt, cookie, or user text is logged.
  */
 import { arbitrateCompute } from "./compute-arbitrator.mjs";
-import { decodeHeader, handleExchange } from "../../js/x402-exchange.js";
+import { AMOUNT, PAY_TO, decodeHeader, handleExchange } from "../../js/x402-exchange.js";
 
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_TEXT_CHARS = 8000;
@@ -261,7 +261,7 @@ async function handleRequest(request, env) {
       return json({ available: false, stage: "payment-ledger", reason: "payment-state-in-doubt" }, 503);
     }
     if (paymentClaim.state === "SETTLED" || paymentClaim.state === "EXECUTED") {
-      if (!validPaymentReceipt(paymentClaim.payment_receipt) ||
+      if (!validPaymentReceipt(paymentClaim.payment_receipt, env) ||
           paymentClaim.payment_receipt.transaction !== paymentClaim.transaction) {
         return json({ available: false, stage: "payment-ledger", reason: "invalid-stored-payment-receipt" }, 503);
       }
@@ -340,7 +340,7 @@ async function handleRequest(request, env) {
       }
 
       const paymentReceipt = await paymentResponse.json().catch(() => null);
-      if (!validPaymentReceipt(paymentReceipt)) {
+      if (!validPaymentReceipt(paymentReceipt, env)) {
         await markPaymentInDoubt(env, {
           unity_id: unityId, request_id: requestId, action: computePlan.action,
           input_sha256: inputSha256, payment_sha256: paymentSha256,
@@ -373,7 +373,7 @@ async function handleRequest(request, env) {
           recorded.unity_id !== unityId || recorded.request_id !== requestId ||
           recorded.action !== computePlan.action || recorded.input_sha256 !== inputSha256 ||
           recorded.payment_sha256 !== paymentSha256 || recorded.state !== "SETTLED" ||
-          !validPaymentReceipt(recorded.payment_receipt)) {
+          !validPaymentReceipt(recorded.payment_receipt, env)) {
         await markPaymentInDoubt(env, {
           unity_id: unityId, request_id: requestId, action: computePlan.action,
           input_sha256: inputSha256, payment_sha256: paymentSha256,
@@ -576,12 +576,20 @@ function paymentLedgerHeaders(env, requestId) {
   };
 }
 
-function validPaymentReceipt(receipt) {
+function validPaymentReceipt(receipt, env) {
+  const assets = {
+    "eip155:8453": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "eip155:84532": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  };
+  const expectedAmount = String(env.X402_AMOUNT || AMOUNT);
+  const expectedPayTo = String(env.X402_PAY_TO || PAY_TO);
   return !!receipt && typeof receipt === "object" && !Array.isArray(receipt) &&
     receipt.exchanged === true && receipt.scheme === "exact" &&
-    typeof receipt.amount === "string" && /^[1-9]\d*$/.test(receipt.amount) &&
+    receipt.amount === expectedAmount &&
     /^0x[0-9a-fA-F]{40}$/.test(receipt.asset || "") &&
+    receipt.asset.toLowerCase() === String(assets[receipt.network] || "").toLowerCase() &&
     /^0x[0-9a-fA-F]{40}$/.test(receipt.payTo || "") &&
+    receipt.payTo.toLowerCase() === expectedPayTo.toLowerCase() &&
     /^0x[0-9a-fA-F]{40}$/.test(receipt.payer || "") &&
     ["eip155:8453", "eip155:84532"].includes(receipt.network) &&
     /^0x[0-9a-fA-F]{64}$/.test(receipt.transaction || "");
