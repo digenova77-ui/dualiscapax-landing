@@ -201,6 +201,9 @@ export default {
 
       const inputText = typeof body.text === "string" ? body.text : "";
       const digest = await sha256Hex(inputText);
+      if (body.input_sha256 !== undefined && (typeof body.input_sha256 !== "string" || body.input_sha256.toLowerCase() !== digest)) {
+        return json(400, { authorized: false, reason: "input-digest-mismatch", request_id: requestId });
+      }
       if (issued.has(requestId)) {
         const prior = issued.get(requestId);
         if (prior.sha256 === digest) {
