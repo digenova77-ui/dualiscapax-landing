@@ -73,7 +73,7 @@
       principal: { unity_id: id },
       compute_lane: lane.toLowerCase(),
       memory_requested: false,
-      text: input.slice(0, 200)
+      text: input
     };
   }
 
@@ -104,6 +104,7 @@
     var secret = getSigningSecret();
     var authPromise;
     if (!last.ticket || last.ticket.ok !== true) {
+      last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "clerk-denied" };
       authPromise = Promise.resolve(null);
     } else if (!w.IrisAuthorize || typeof w.IrisAuthorize.authorize !== "function" || !secret) {
       last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "authorize-unavailable" };
