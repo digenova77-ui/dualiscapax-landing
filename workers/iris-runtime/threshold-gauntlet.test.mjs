@@ -62,3 +62,29 @@ test("candidate comparison exposes disagreements instead of choosing a canonical
     ["combined-60", "REJECT"],
   ]);
 });
+
+test("candidate ratio sweep shows 0.60 is a tested point, not a privileged law", () => {
+  const scaled = proposal("312", "520");
+  const verdicts = [5500, 5900, 6000, 6100, 6500].map((ratioBps) => [
+    ratioBps,
+    evaluateThresholdCandidate(scaled, {
+      kind: "ratio", ratioBps, ratioMode: "tx_to_pool",
+    }).decision,
+  ]);
+  assert.deepEqual(verdicts, [
+    [5500, "REJECT"],
+    [5900, "REJECT"],
+    [6000, "ACCEPT"],
+    [6100, "ACCEPT"],
+    [6500, "ACCEPT"],
+  ]);
+});
+
+test("absolute candidate limits enforce exact boundary and one-unit-over behavior", () => {
+  const atBothLimits = proposal("300", "500");
+  const overTx = proposal("301", "500");
+  const overPool = proposal("300", "501");
+  assert.equal(evaluateThresholdCandidate(atBothLimits, absolute300500).decision, "ACCEPT");
+  assert.equal(evaluateThresholdCandidate(overTx, absolute300500).decision, "REJECT");
+  assert.equal(evaluateThresholdCandidate(overPool, absolute300500).decision, "REJECT");
+});
