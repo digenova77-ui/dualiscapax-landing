@@ -75,6 +75,7 @@ function fixture(overrides = {}) {
         contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
         action: body.action, input_sha256: body.input_sha256,
         payment_sha256: body.payment_sha256, state: "RESERVED", claimed: true,
+        claim_token: "test-claim-token-1234567890",
       };
       if (path.endsWith("/attempting")) return {
         contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
