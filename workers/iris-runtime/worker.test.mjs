@@ -644,8 +644,7 @@ test("paid runtime settles through x402, executes once, persists receipt, then c
   assert.deepEqual(facilitatorCalls, ["/verify", "/settle"]);
   assert.deepEqual(calls.map((call) => call.name), [
     "identity", "trinity", "paymentLedger", "paymentLedger",
-    "memory", "paymentLedger",
-    "memory", "paymentLedger",
+    "memory", "memory", "paymentLedger",
   ]);
   assert.deepEqual(calls.filter((call) => call.name === "paymentLedger").map((call) => call.path), [
     "/v1/payments/claim", "/v1/payments/record", "/v1/payments/complete",
