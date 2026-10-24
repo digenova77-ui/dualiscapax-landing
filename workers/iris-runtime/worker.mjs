@@ -426,6 +426,10 @@ export default {
       if (!result.ok || !result.data || result.data.found !== true || !receiptShape(receipt) || receipt.id !== id) {
         return json(404, { found: false, reason: "not-issued" });
       }
+      if (result.data.revoked === true || receipt.revoked === true) return json(410, { found: false, reason: "receipt-revoked", id });
+      const receiptAge = Date.now() - Date.parse(receipt.issued_at);
+      const receiptTtl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
+      if (!Number.isFinite(receiptAge) || receiptAge < -MAX_SKEW_SECONDS * 1000 || receiptAge > receiptTtl) return json(410, { found: false, reason: "receipt-expired", id });
       return json(200, { found: true, receipt });
     }
 
