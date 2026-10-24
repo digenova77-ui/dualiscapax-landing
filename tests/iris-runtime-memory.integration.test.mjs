@@ -196,3 +196,56 @@ test("identity mismatch blocks Trinity evaluation and durable claim", async () =
   });
   assert.equal((await lookup.json()).found, false);
 });
+
+test("ambiguous claim timeout recovers through durable idempotent replay", async () => {
+  const env = integratedEnv();
+  env.IRIS_BINDING_TIMEOUT_MS = 5;
+  const underlying = env.IRIS_MEMORY;
+  let claimCalls = 0;
+  env.IRIS_MEMORY = {
+    fetch: async (url, init) => {
+      if (new URL(url).pathname === "/v1/requests/claim" && claimCalls++ === 0) {
+        // Simulate a Durable Object commit whose response is lost/late.
+        const committed = await underlying.fetch(url, init);
+        assert.equal(committed.status, 200);
+        await new Promise((resolve) => setTimeout(resolve, 30));
+        return committed;
+      }
+      return underlying.fetch(url, init);
+    },
+  };
+
+  const body = {
+    request_id: "integration-ambiguous-claim",
+    principal: { unity_id: "unity-integration" },
+    action: "iris.turn.look",
+    text: "recover me",
+  };
+
+  const first = await signedPost(env, "/v1/authorize", body);
+  const firstData = await first.json();
+  assert.equal(first.status, 503);
+  assert.equal(firstData.authorized, false);
+
+  // The first call timed out at the runtime boundary, but the durable claim
+  // committed. Retrying the identical signed request must return that receipt.
+  const retry = await signedPost(env, "/v1/authorize", body);
+  const retryData = await retry.json();
+  assert.equal(retry.status, 200);
+  assert.equal(retryData.authorized, true);
+  assert.equal(retryData.replay, true);
+  assert.equal(retryData.receipt.id, "rct_integration-ambiguous-claim");
+
+  const lookup = await underlying.fetch("https://memory.test/v1/requests/get", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN,
+    },
+    body: JSON.stringify({ request_id: body.request_id }),
+  });
+  const stored = await lookup.json();
+  assert.equal(stored.found, true);
+  assert.equal(stored.receipt.id, retryData.receipt.id);
+});
+
