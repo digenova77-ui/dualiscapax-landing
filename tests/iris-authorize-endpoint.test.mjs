@@ -125,6 +125,18 @@ test("identity result must match the requested Unity principal", async () => {
   assert.equal(data.receipt, undefined);
 });
 
+test("Trinity allow must bind the exact input digest", async () => {
+  const env = { ...FULL_ENV, TRINITY_LAW: { fetch: async (_url, init) => {
+    const body = JSON.parse(init.body || "{}");
+    return new Response(JSON.stringify({ ok: true, authorized: true, decision: "allow", request_id: body.request_id, principal: { unity_id: body.principal }, action: body.action, input_sha256: "f".repeat(64) }), { status: 200 });
+  } } };
+  const res = await post({ request_id: "trinity-digest-mismatch-1", text: "hello" }, env);
+  const data = await res.json();
+  assert.equal(res.status, 403);
+  assert.equal(data.reason, "trinity-binding-mismatch");
+  assert.equal(data.receipt, undefined);
+});
+
 test("authorize rejects a missing principal", async () => {
   const body = { request_id: "no-principal-1", text: "hi" };
   const headers = await testSignature(body);
