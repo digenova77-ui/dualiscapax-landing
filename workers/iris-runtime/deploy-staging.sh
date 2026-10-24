@@ -4,8 +4,9 @@
 #
 # Prerequisites:
 #   - wrangler authenticated (wrangler login or CLOUDFLARE_API_TOKEN)
-#   - Four staging services exist: identity-api-staging, trinity-law-staging,
+#   - Staging services exist: identity-api-staging, trinity-law-staging,
 #     iris-memory-staging, model-provider-staging
+#   - IRIS_MEMORY_SERVICE_TOKEN is configured as a secret on both Iris Workers
 #   - TRINITY_HMAC_SECRET set as a Worker secret (see set-secret.sh)
 #
 # Usage:
@@ -25,9 +26,9 @@ npx wrangler deploy --env staging
 
 echo
 echo "Staging deploy complete. Production was not touched."
-if [[ -n "${IRIS_STAGING_URL:-}" ]]; then
+if [[ -n "${IRIS_STAGING_URL:-}" && -n "${IRIS_STAGING_SIGNING_SECRET:-}" ]]; then
   echo "Running live verification against ${IRIS_STAGING_URL}"
   node verify-live.mjs
 else
-  echo "Set IRIS_STAGING_URL and run ./post-deploy.sh to prove the deploy."
+  echo "Set IRIS_STAGING_URL and IRIS_STAGING_SIGNING_SECRET, then run ./post-deploy.sh to prove the deploy."
 fi
