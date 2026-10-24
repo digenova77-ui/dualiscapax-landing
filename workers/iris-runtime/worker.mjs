@@ -350,10 +350,16 @@ export default {
     const receiptGet = url.pathname.match(/^\/v1\/receipt\/([^/]+)$/);
     if (receiptGet && request.method === "GET") {
       const id = decodeURIComponent(receiptGet[1]);
-      for (const receipt of issued.values()) {
-        if (receipt.id === id) return json(200, { found: true, receipt });
+      if (!id.startsWith("rct_")) return json(400, { found: false, reason: "invalid-receipt-id" });
+      const requestId = id.slice(4);
+      const result = await callBinding(env.IRIS_MEMORY, "/v1/requests/get", {
+        request_id: requestId,
+      }, env.IRIS_BINDING_TIMEOUT_MS);
+      const receipt = result.data && result.data.receipt;
+      if (!result.ok || !result.data || result.data.found !== true || !receiptShape(receipt) || receipt.id !== id) {
+        return json(404, { found: false, reason: "not-issued" });
       }
-      return json(404, { found: false, reason: "not-issued" });
+      return json(200, { found: true, receipt });
     }
 
     if (url.pathname === "/v1/audit" && request.method === "GET") {
@@ -368,7 +374,7 @@ export default {
         missing,
         inert,
         staging: true,
-        issued: issued.size,
+        issued_local_cache: issued.size,
       });
     }
 
