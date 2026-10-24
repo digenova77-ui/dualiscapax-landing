@@ -11,13 +11,15 @@
  *
  * Frontier (maximum):
  *   clarity === "FL" && color === "D" && cut === "Excellent" && reflects === "purity"
+ *
+ * Protocol: DIAMOND.FRONTIER.MAX.v2 (Ronin-derived controls added)
  */
 export const CLARITY_PASS = new Set(["FL", "VVS", "VS"]);
 export const COLOR_PASS = new Set(["D", "E", "F"]);
 export const CUT_PASS = new Set(["Excellent", "Very Good"]);
 
 export const DIAMOND = {
-  protocol: "DIAMOND.FRONTIER.MAX.v1",
+  protocol: "DIAMOND.FRONTIER.MAX.v2",
   law: "LAW WINS",
   origin: "immutable",
   boundary: "NOT_FOR_EMISSION",
@@ -69,7 +71,7 @@ export function frontierReport(facets) {
   const floor = facets.find((f) => f.kind === "floor");
   const floorHolds = floor ? grade(floor).pure : false;
   return {
-    protocol: "DIAMOND.FRONTIER.MAX.v1",
+    protocol: "DIAMOND.FRONTIER.MAX.v2",
     facing,
     held,
     ceiling_claimable: held.length === 0 && floorHolds,
@@ -122,7 +124,6 @@ export const DEFAULT_FACETS = [
   { name: "standing", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
   { name: "ceiling", kind: "ceiling", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
 ];
-
 
 /** Append-only receipt chain check. Pure. */
 export function wordOf(r) {
@@ -199,4 +200,46 @@ export function standingProbe() {
     boundary: "NOT_FOR_EMISSION",
     note: "edge probe; live token_engine not imported here",
   };
+}
+
+// --- Ronin-derived controls (DIAMOND.FRONTIER.MAX.v2) ---
+
+/** Circuit breaker: refuse excessive claims in a window. Pure. */
+export const CIRCUIT = {
+  max_claims_per_window: 3,
+  window_ms: 24 * 60 * 60 * 1000,
+  max_index_delta: 0.15,
+};
+
+export function circuitCheck(claims, now = Date.now()) {
+  if (!Array.isArray(claims)) return { ok: false, reason: "claims not array", boundary: "NOT_FOR_EMISSION" };
+  const recent = claims.filter(c => c && typeof c.ts === "number" && now - c.ts < CIRCUIT.window_ms);
+  if (recent.length >= CIRCUIT.max_claims_per_window) {
+    return { ok: false, reason: "circuit:claim_rate", boundary: "NOT_FOR_EMISSION" };
+  }
+  return { ok: true };
+}
+
+/** Fail-closed on missing or empty required fields (prevents uninitialized-threshold class). */
+export function requireFields(obj, required) {
+  if (!obj || typeof obj !== "object") return { ok: false, reason: "obj not object", boundary: "NOT_FOR_EMISSION" };
+  for (const k of required) {
+    if (obj[k] == null || obj[k] === "") {
+      return { ok: false, reason: `uninitialized:${k}`, boundary: "NOT_FOR_EMISSION" };
+    }
+  }
+  return { ok: true };
+}
+
+/** Claim must reference a prior lock receipt in a verified chain. */
+export function claimRequiresLock(claim, receipts) {
+  const req = requireFields(claim, ["lock_id"]);
+  if (!req.ok) return req;
+  const chain = verifyReceiptChain(receipts);
+  if (!chain.ok) return { ok: false, reason: chain.reason, boundary: "NOT_FOR_EMISSION" };
+  const lock = Array.isArray(receipts) ? receipts.find(r => r && r.id === claim.lock_id) : null;
+  if (!lock || lock.kind !== "lock") {
+    return { ok: false, reason: "no matching lock receipt", boundary: "NOT_FOR_EMISSION" };
+  }
+  return { ok: true, lock };
 }
