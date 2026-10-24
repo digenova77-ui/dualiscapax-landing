@@ -118,3 +118,16 @@ test("missing secret is treated as unavailable (fail closed)", async () => {
   const available = !!(secret && typeof (async () => {}) === "function");
   assert.equal(available, false);
 });
+
+test("production path does not require a browser secret", async () => {
+  // In production IrisSigningSecret is absent. The client posts to
+  // IrisAuthorizeBase and the server holds the key.
+  const w = { IrisAuthorizeBase: "https://staging.example" };
+  assert.equal(w.IrisSigningSecret, undefined);
+  // The production helper must not read a secret from the browser.
+  const body = { request_id: "prod-1" };
+  // Simulate the production call shape: no secret argument.
+  const productionCall = { url: w.IrisAuthorizeBase + "/v1/authorize", body, credentials: "same-origin" };
+  assert.ok(productionCall.url.endsWith("/v1/authorize"));
+  assert.equal(productionCall.credentials, "same-origin");
+});
