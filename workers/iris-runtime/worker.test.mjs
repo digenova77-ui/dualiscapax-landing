@@ -111,11 +111,19 @@ test("happy path verifies identity, exact Trinity binding, claim ordering, and s
     "the durable claim must bind the same digest Trinity authorized");
 });
 
+test("extra client-controlled fields are rejected before identity or Trinity", async () => {
+  const { env, calls } = fixture();
+  const res = await worker.fetch(req({ text: "do something", ticket: { ok: true, authorized: true } }), env);
+  assert.equal(res.status, 400);
+  assert.equal((await res.json()).reason, "invalid-input");
+  assert.equal(calls.length, 0);
+});
+
 test("browser-supplied authorization ticket cannot bypass Trinity deny", async () => {
   const { env, calls } = fixture({
     TRINITY_LAW: { async fetch() { calls.push({ name: "trinity" }); return jsonResponse({ decision: "deny", authorized: false, request_id: "unused" }); } },
   });
-  const res = await worker.fetch(req({ text: "do something", ticket: { ok: true, authorized: true } }), env);
+  const res = await worker.fetch(req({ text: "do something" }), env);
   assert.equal(res.status, 403);
   assert.equal(calls.some(c => c.name === "provider"), false);
   assert.equal(calls.some(c => c.name === "memory"), false);
