@@ -34,12 +34,12 @@ function checkWorkerSource(src) {
   const hasAuthorize = src.includes("/v1/authorize");
   const hasReceipt = src.includes(RECEIPT_CONTRACT);
   const noBrowserSecret = !src.includes("IrisSigningSecret");
+  const durableClaim = src.includes("/v1/requests/claim");
+  const durableLookup = src.includes("/v1/requests/get");
+  const serviceToken = src.includes("IRIS_MEMORY_SERVICE_TOKEN");
   return {
-    ok: hasFetch && hasAuthorize && hasReceipt && noBrowserSecret,
-    hasFetch,
-    hasAuthorize,
-    hasReceipt,
-    noBrowserSecret,
+    ok: hasFetch && hasAuthorize && hasReceipt && noBrowserSecret && durableClaim && durableLookup && serviceToken,
+    hasFetch, hasAuthorize, hasReceipt, noBrowserSecret, durableClaim, durableLookup, serviceToken,
   };
 }
 
@@ -54,9 +54,20 @@ function checkReceipt(receipt, expected) {
 
 const toml = readFileSync(join(here, "wrangler.toml"), "utf8");
 const workerSrc = readFileSync(join(here, "worker.mjs"), "utf8");
+const memoryDir = join(here, "../iris-memory");
+const memoryToml = readFileSync(join(memoryDir, "wrangler.toml"), "utf8");
+const memorySrc = readFileSync(join(memoryDir, "worker.mjs"), "utf8");
 
 const wranglerResult = checkWrangler(toml);
 const workerResult = checkWorkerSource(workerSrc);
+const memoryResult = {
+  ok: memoryToml.includes('class_name = "IrisMemoryStore"') && memoryToml.includes('new_sqlite_classes = ["IrisMemoryStore"]') && memorySrc.includes("this.state.storage.transaction") && memorySrc.includes("IRIS_MEMORY_SERVICE_TOKEN"),
+  durableObject: memoryToml.includes('class_name = "IrisMemoryStore"'),
+  sqliteMigration: memoryToml.includes('new_sqlite_classes = ["IrisMemoryStore"]'),
+  atomicTransaction: memorySrc.includes("this.state.storage.transaction"),
+  serviceToken: memorySrc.includes("IRIS_MEMORY_SERVICE_TOKEN"),
+};
+
 const receiptResult = checkReceipt(
   {
     contract: RECEIPT_CONTRACT,
@@ -70,6 +81,7 @@ const receiptResult = checkReceipt(
 const report = {
   wrangler_bindings: wranglerResult,
   worker_source: workerResult,
+  durable_memory_service: memoryResult,
   receipt: receiptResult,
   browser_secret_boundary:
     "window.IrisSigningSecret is browser-visible and is not a private production secret store",
@@ -78,6 +90,6 @@ const report = {
 };
 
 console.log(JSON.stringify(report, null, 2));
-if (!wranglerResult.ok || !workerResult.ok || !receiptResult.ok) {
+if (!wranglerResult.ok || !workerResult.ok || !memoryResult.ok || !receiptResult.ok) {
   process.exit(1);
 }
