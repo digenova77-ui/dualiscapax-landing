@@ -1,13 +1,14 @@
 /**
  * IrisSession — one environment.
  * The clerk stage precedes think(): admit() then LOOK before the external model call.
+ * When IrisAuthorize and a signing secret are available, the clerk calls /v1/authorize.
  */
 (function (w) {
-  var VERSION = "iris-session-2026-09-22-clerk";
+  var VERSION = "iris-session-2026-10-24-authorize";
   var STATE = { IDLE: "idle", LISTEN: "listen", THINK: "think", SPEAK: "speak", WORK: "work" };
   var id = "iris-" + Date.now().toString(36);
   var state = STATE.IDLE;
-  var last = { text: "", spoken: "", job: null, ticket: null, rec: null };
+  var last = { text: "", spoken: "", job: null, ticket: null, rec: null, auth: null };
   var listeners = [];
 
   function emit(kind, extra) {
@@ -51,6 +52,29 @@
     return { ok: true, paid: false, grade: { lane: "LOOK", burn: 0, grant: "LOOK" } };
   }
 
+  function getSigningSecret() {
+    // Secure context only. Do not hardcode.
+    if (w.IrisSigningSecret) return w.IrisSigningSecret;
+    if (w.localStorage) {
+      try { return localStorage.getItem("dc.iris.signing-secret") || null; } catch (e) {}
+    }
+    return null;
+  }
+
+  function buildAuthBody(text, ticket) {
+    var lane = (ticket && ticket.grade && ticket.grade.lane) || "LOOK";
+    var action = lane === "DEPTH" ? "iris.turn.depth" : lane === "WORK" ? "iris.turn.work" : "iris.turn.look";
+    return {
+      request_id: id + "-" + Date.now().toString(36),
+      action: action,
+      input_sha256: "0000000000000000000000000000000000000000000000000000000000000000", // placeholder; replace with real hash if available
+      principal: { unity_id: id },
+      compute_lane: lane.toLowerCase(),
+      memory_requested: false,
+      text: String(text || "").slice(0, 200)
+    };
+  }
+
   function attach(host) {
     if (w.IrisSphere && IrisSphere.mount) {
       try { IrisSphere.mount(host || "#presence" || "#iris-sphere"); } catch (e) {}
@@ -74,12 +98,36 @@
     last.ticket = admit(last.text);
     setState(STATE.THINK);
     emit("think", { text: last.text, ticket: last.ticket });
-    if (w.DCLMLook && DCLMLook.run) return Promise.resolve(DCLMLook.run(last.text, last.ticket)).then(function (rec) {
-      last.rec = rec || null;
-      return rec;
+
+    var secret = getSigningSecret();
+    var authPromise = Promise.resolve(null);
+    if (w.IrisAuthorize && secret && last.ticket && last.ticket.ok) {
+      var body = buildAuthBody(last.text, last.ticket);
+      authPromise = IrisAuthorize.authorize(body, secret).then(function (res) {
+        last.auth = res;
+        emit("authorize", res);
+        if (!res.ok || !res.data || res.data.authorized !== true) {
+          last.ticket = { ok: false, deny: { spoken: "Not authorized." }, reason: "authorize-denied" };
+        }
+        return res;
+      }).catch(function (err) {
+        last.auth = { error: String(err) };
+        emit("authorize-error", { error: String(err) });
+        return null;
+      });
+    }
+
+    return authPromise.then(function () {
+      if (last.ticket && last.ticket.ok === false) {
+        return { spoken: (last.ticket.deny && last.ticket.deny.spoken) || "Not authorized.", lane: "DENIED" };
+      }
+      if (w.DCLMLook && DCLMLook.run) return Promise.resolve(DCLMLook.run(last.text, last.ticket)).then(function (rec) {
+        last.rec = rec || null;
+        return rec;
+      });
+      if (w.IrisLive && IrisLive.run) return Promise.resolve(IrisLive.run(last.text));
+      return Promise.resolve({ spoken: last.text || "I'm Iris.", lane: "LOOK" });
     });
-    if (w.IrisLive && IrisLive.run) return Promise.resolve(IrisLive.run(last.text));
-    return Promise.resolve({ spoken: last.text || "I'm Iris.", lane: "LOOK" });
   }
 
   function speak(rec) {
@@ -132,7 +180,8 @@
       hasLook: !!(w.DCLMLook && DCLMLook.run),
       hasFuel: !!(w.IrisFuel && IrisFuel.admit),
       hasFactory: !!(w.CosmicFactory && CosmicFactory.tick),
-      hasRuntime: !!(w.CosmicRuntime && CosmicRuntime.step)
+      hasRuntime: !!(w.CosmicRuntime && CosmicRuntime.step),
+      hasAuthorize: !!(w.IrisAuthorize && IrisAuthorize.authorize)
     };
   }
 
