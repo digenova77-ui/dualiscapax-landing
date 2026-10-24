@@ -114,8 +114,10 @@ export class PaymentTransaction {
           const record = {
             ...current, payment_sha256: body.payment_sha256, state: "RESERVED",
             claim_token: claimToken, lease_until: now + 30_000, updated_at: now,
-            payment_receipt: undefined, execution_receipt: undefined, transaction: undefined,
           };
+          delete record.payment_receipt;
+          delete record.execution_receipt;
+          delete record.transaction;
           await txn.put(key, record);
           return baseReply(body, "RESERVED", { claimed: true, claim_token: claimToken });
         }
