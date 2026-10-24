@@ -183,3 +183,17 @@ test("releasing a known-unpaid payment reservation is idempotent", async () => {
   assert.equal(first.body.state, "RELEASED");
   assert.equal(second.body.state, "RELEASED");
 });
+
+test("retry after release clears prior settlement fields without undefined durable values", async () => {
+  const storage = new MemoryStorage();
+  const object = new PaymentTransaction({ storage });
+  const claim = await call(object, "/v1/payments/claim", OP);
+  await call(object, "/v1/payments/attempting", { ...OP, claim_token: claim.body.claim_token });
+  await call(object, "/v1/payments/release", { ...OP, reason: "invalid_signature" });
+  const retry = await call(object, "/v1/payments/claim", { ...OP, payment_sha256: "9".repeat(64) });
+  assert.equal(retry.body.state, "RESERVED");
+  const record = await storage.get("transaction");
+  assert.equal(Object.hasOwn(record, "payment_receipt"), false);
+  assert.equal(Object.hasOwn(record, "execution_receipt"), false);
+  assert.equal(Object.hasOwn(record, "transaction"), false);
+});
