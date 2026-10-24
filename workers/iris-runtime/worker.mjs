@@ -149,7 +149,14 @@ async function handleRequest(request, env) {
 
   const body = await readBody(request);
   if (body === null) return json({ available: false, stage: "request", reason: "body-too-large" }, 413);
-  if (!body || typeof body.text !== "string" || !body.text.trim() || body.text.length > MAX_TEXT_CHARS) {
+  // Keep the authorization digest bound to the complete accepted semantic input.
+  // This version accepts only { text }; reject extra client-controlled fields rather
+  // than silently ignoring data that a caller might believe Trinity authorized.
+  if (
+    !body || typeof body !== "object" || Array.isArray(body) ||
+    Object.keys(body).length !== 1 || !Object.hasOwn(body, "text") ||
+    typeof body.text !== "string" || !body.text.trim() || body.text.length > MAX_TEXT_CHARS
+  ) {
     return json({ available: false, stage: "request", reason: "invalid-input" }, 400);
   }
 
