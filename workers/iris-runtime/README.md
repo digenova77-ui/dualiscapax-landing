@@ -83,3 +83,15 @@ Every response must echo the contract, Unity ID, request ID, action, input diges
 The runtime verifies that a stored settlement receipt has the exact scheme, amount shape, recipient, asset, network, payer and transaction-hash shape. The x402 facilitator is still the authority for cryptographic signature/chain verification; the runtime additionally binds the returned receipt to the ledger's idempotent request.
 
 **Current deployment status:** the Durable Object ledger implementation and staging service-binding declaration now exist in source. They are not deployed or configured with secrets, and the runtime still lacks the identity, Trinity, memory and model service bindings. The paid route therefore remains unavailable until authorized staging configuration. Local tests use fake Durable Object storage/service bindings and a mocked facilitator; they prove state-machine logic and runtime control flow, not deployed Cloudflare atomicity or a live payment. Do not attach this route to production or use real funds until the ledger, compensation path, staging facilitator, exact price policy and operator approval are verified.
+
+## Universal work-envelope validation
+
+`POST /v1/work/validate` accepts the `dualis.work.v1` envelope and returns structural validation errors. It is a read-only developer-facing contract check: it does **not** authenticate identity, invoke Trinity, execute a module, measure resources, price work, charge a user, or settle payment. A valid envelope is not authorization to execute it.
+
+Configure the exact allowed staging origin before browser access. Requests from unconfigured origins fail closed. Example local test run:
+
+```sh
+node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-runtime/universal-work-route.test.mjs
+```
+
+This endpoint makes the contract inspectable by developers without weakening the separate Trinity authorization gate for consequential operations.
