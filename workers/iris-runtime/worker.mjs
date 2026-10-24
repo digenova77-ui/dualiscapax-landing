@@ -234,6 +234,7 @@ async function handleRequest(request, env) {
   if (
     claim.unity_id !== unityId ||
     claim.request_id !== requestId ||
+    claim.action !== computePlan.action ||
     claim.input_sha256 !== inputSha256 ||
     claim.contract !== "dualis.idempotency.v1"
   ) {
