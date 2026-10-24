@@ -122,7 +122,7 @@ async function handleRequest(request, env) {
       trinity: !!env.TRINITY_LAW,
       memory: !!env.IRIS_MEMORY,
       provider: !!env.MODEL_PROVIDER,
-      payment_ledger: !!env.X402_LEDGER,
+      payment_ledger: !!env.X402_LEDGER && typeof env.X402_LEDGER_TOKEN === "string" && env.X402_LEDGER_TOKEN.length >= 32,
     };
     const complete = Object.values(bindings).every(Boolean) &&
       typeof env.IRIS_ALLOWED_ORIGINS === "string" &&
@@ -173,7 +173,7 @@ async function handleRequest(request, env) {
   if (!hasBinding(env.IDENTITY_API)) return unavailable("identity");
   if (!hasBinding(env.TRINITY_LAW)) return unavailable("trinity");
   if (!hasBinding(env.IRIS_MEMORY)) return unavailable("idempotency-claim");
-  if (isPaidTurn && !hasBinding(env.X402_LEDGER)) return unavailable("payment-ledger");
+  if (isPaidTurn && (!hasBinding(env.X402_LEDGER) || typeof env.X402_LEDGER_TOKEN !== "string" || env.X402_LEDGER_TOKEN.length < 32)) return unavailable("payment-ledger");
   if (computePlan.lane === "probabilistic" && !hasBinding(env.MODEL_PROVIDER)) return unavailable("inference");
 
   let identity;
@@ -234,7 +234,7 @@ async function handleRequest(request, env) {
     try {
       paymentClaim = await callJson(env.X402_LEDGER, "/v1/payments/claim", {
         method: "POST",
-        headers: { "content-type": "application/json", "idempotency-key": requestId },
+        headers: paymentLedgerHeaders(env, requestId),
         body: JSON.stringify({
           contract: "dualis.x402.transaction.v1",
           unity_id: unityId,
@@ -270,7 +270,25 @@ async function handleRequest(request, env) {
         input_sha256: inputSha256, payment_sha256: paymentSha256,
         payment_receipt: paymentClaim.payment_receipt,
       };
-    } else if (paymentClaim.state === "RESERVED" && paymentClaim.claimed === true) {
+    } else if (paymentClaim.state === "RESERVED" && paymentClaim.claimed === true && typeof paymentClaim.claim_token === "string" && paymentClaim.claim_token.length >= 16) {
+      let attempt;
+      try {
+        attempt = await callJson(env.X402_LEDGER, "/v1/payments/attempting", {
+          method: "POST",
+          headers: paymentLedgerHeaders(env, requestId),
+          body: JSON.stringify({
+            contract: "dualis.x402.transaction.v1",
+            unity_id: unityId, request_id: requestId, action: computePlan.action,
+            input_sha256: inputSha256, payment_sha256: paymentSha256,
+            claim_token: paymentClaim.claim_token,
+          }),
+        });
+      } catch { return unavailable("payment-ledger-attempt"); }
+      if (attempt.contract !== "dualis.x402.transaction.v1" ||
+          attempt.unity_id !== unityId || attempt.request_id !== requestId ||
+          attempt.payment_sha256 !== paymentSha256 || attempt.state !== "PAYMENT_ATTEMPTED") {
+        return json({ available: false, stage: "payment-ledger", reason: "payment-attempt-not-confirmed" }, 503);
+      }
       let paymentResponse;
       try {
         paymentResponse = await handleExchange(request, {
@@ -305,7 +323,7 @@ async function handleRequest(request, env) {
         try {
           const released = await callJson(env.X402_LEDGER, "/v1/payments/release", {
             method: "POST",
-            headers: { "content-type": "application/json", "idempotency-key": requestId },
+            headers: paymentLedgerHeaders(env, requestId),
             body: JSON.stringify({
               contract: "dualis.x402.transaction.v1",
               unity_id: unityId, request_id: requestId, action: computePlan.action,
@@ -335,7 +353,7 @@ async function handleRequest(request, env) {
       try {
         recorded = await callJson(env.X402_LEDGER, "/v1/payments/record", {
           method: "POST",
-          headers: { "content-type": "application/json", "idempotency-key": requestId },
+          headers: paymentLedgerHeaders(env, requestId),
           body: JSON.stringify({
             contract: "dualis.x402.transaction.v1",
             unity_id: unityId, request_id: requestId, action: computePlan.action,
@@ -550,6 +568,14 @@ async function handleRequest(request, env) {
   });
 }
 
+function paymentLedgerHeaders(env, requestId) {
+  return {
+    "content-type": "application/json",
+    "idempotency-key": requestId,
+    authorization: "Bearer " + env.X402_LEDGER_TOKEN,
+  };
+}
+
 function validPaymentReceipt(receipt) {
   return !!receipt && typeof receipt === "object" && !Array.isArray(receipt) &&
     receipt.exchanged === true && receipt.scheme === "exact" &&
@@ -565,7 +591,7 @@ async function markPaymentInDoubt(env, context) {
   try {
     await callJson(env.X402_LEDGER, "/v1/payments/in-doubt", {
       method: "POST",
-      headers: { "content-type": "application/json", "idempotency-key": context.request_id },
+      headers: paymentLedgerHeaders(env, context.request_id),
       body: JSON.stringify({ contract: "dualis.x402.transaction.v1", ...context }),
     });
   } catch { /* the original operation remains unavailable; reconciliation is required */ }
