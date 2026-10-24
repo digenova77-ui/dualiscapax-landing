@@ -83,9 +83,10 @@ export class IrisMemoryStore {
       if (typeof principal !== "string" || !principal) return json(400, { ok: false, reason: "invalid-principal" });
       const requested = Number(body.limit);
       const limit = Number.isInteger(requested) ? Math.min(10, Math.max(1, requested)) : 5;
-      const all = await this.state.storage.list({ prefix: "request:", limit: 1000 });
-      const items = Array.from(all.values())
-        .filter((record) => record.principal === principal && record.request_id !== requestId)
+      const requestIds = await this.state.storage.get("principal:" + principal) || [];
+      const records = await Promise.all(requestIds.filter((id) => id !== requestId).map((id) => this.state.storage.get("request:" + id)));
+      const items = records
+        .filter((record) => record && record.principal === principal)
         .sort((a, b) => String(b.claimed_at).localeCompare(String(a.claimed_at)))
         .slice(0, limit)
         .map((record) => ({ request_id: record.request_id, action: record.action, input_sha256: record.input_sha256, receipt_id: record.receipt.id, claimed_at: record.claimed_at }));
@@ -120,6 +121,10 @@ export class IrisMemoryStore {
         claimed_at: new Date().toISOString(),
       };
       await txn.put(key, record);
+      const principalKey = "principal:" + principal;
+      const previousIds = await txn.get(principalKey) || [];
+      const nextIds = [requestId, ...previousIds.filter((id) => id !== requestId)].slice(0, 100);
+      await txn.put(principalKey, nextIds);
       return { kind: "claimed", receipt };
     });
 
