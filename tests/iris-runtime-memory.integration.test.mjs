@@ -78,7 +78,8 @@ async function signedPost(env, path, body) {
   const payload = JSON.stringify(body);
   const timestamp = String(Math.floor(Date.now() / 1000));
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(env.TRINITY_HMAC_SECRET), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(timestamp + "." + payload));
+  const signedPayload = path === "/v1/receipt/revoke" ? timestamp + ".POST./v1/receipt/revoke." + payload : timestamp + "." + payload;
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signedPayload));
   const signature = Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
   return runtime.fetch(new Request("https://iris.test" + path, {
     method: "POST",
