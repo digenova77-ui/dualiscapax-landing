@@ -15,11 +15,12 @@ function json(status, body) {
   });
 }
 
-function validReceipt(receipt, requestId, digest) {
+function validReceipt(receipt, requestId, digest, principal) {
   return !!(
     receipt &&
     receipt.contract === RECEIPT_CONTRACT &&
     receipt.request_id === requestId &&
+    receipt.unity_id === principal &&
     receipt.id === "rct_" + requestId &&
     typeof receipt.sha256 === "string" &&
     /^[0-9a-f]{64}$/.test(receipt.sha256) &&
@@ -84,7 +85,7 @@ export class IrisMemoryStore {
     const receipt = body.receipt;
     if (typeof principal !== "string" || !principal || typeof action !== "string" || !action ||
         typeof digest !== "string" || !/^[0-9a-f]{64}$/.test(digest) ||
-        !validReceipt(receipt, requestId, digest)) {
+        !validReceipt(receipt, requestId, digest, principal)) {
       return json(400, { ok: false, reason: "invalid-claim" });
     }
 
