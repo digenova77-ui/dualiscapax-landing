@@ -45,7 +45,8 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <h2>Canada — bank</h2>
   <button type="button" class="go" id="interac">Open Interac e-Transfer</button>
   <button type="button" class="rail" id="eft">Open email for EFT instructions</button>
-  <h2>Crypto — one chain per send</h2>
+  <h2>Crypto payment options</h2>
+  <p class="lede">Send on one chain only. Click a button to open a wallet link or copy the address.</p>
   <button type="button" class="rail" id="xrp" data-chain="xrp">Open XRP send</button>
   <button type="button" class="rail" id="zec" data-chain="zec">Open Zcash send</button>
   <button type="button" class="rail" id="sol" data-chain="sol">Open Solana send</button>
@@ -110,6 +111,17 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     if (addr){
       var box = el('div', addr, 'addr');
       panel.appendChild(box);
+      var copy = el('button', 'Copy address', 'rail');
+      copy.type = 'button';
+      copy.style.marginTop = '.5rem';
+      copy.addEventListener('click', function(){
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(addr).then(function(){ copy.textContent = 'Copied'; }).catch(function(){ copy.textContent = 'Copy failed'; });
+        } else {
+          copy.textContent = 'Select and copy';
+        }
+      });
+      panel.appendChild(copy);
     }
     try { panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
   }
