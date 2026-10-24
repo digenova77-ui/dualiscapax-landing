@@ -45,8 +45,9 @@ def pattern_score(features: Dict[str, Any]) -> Dict[str, Any]:
 
 def _arbitrate_domain(domain: str, law_input: Dict[str, Any],
                       pattern_input: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    judge_registered = domain in LAW_JUDGES
     try:
-        law_result = LAW_JUDGES[domain](law_input) if domain in LAW_JUDGES else None
+        law_result = LAW_JUDGES[domain](law_input) if judge_registered else None
     except Exception as exc:
         # A judge crash is a refusal, never an implicit approval.
         law_result = {
@@ -54,7 +55,7 @@ def _arbitrate_domain(domain: str, law_input: Dict[str, Any],
             "verdict": "REFUSE",
             "reason": f"judge raised {type(exc).__name__} — fail closed",
         }
-    if law_result is None and domain == "plus_one_math":
+    if law_result is None and domain == "plus_one_math" and not judge_registered:
         try:
             r = plus_one_rate(**law_input)
             law_result = {
@@ -67,7 +68,7 @@ def _arbitrate_domain(domain: str, law_input: Dict[str, Any],
                 "mode": "deterministic", "verdict": "REFUSE",
                 "reason": f"invalid plus_one_math input ({type(exc).__name__}) — fail closed",
             }
-    if law_result is None:
+    if law_result is None and not judge_registered:
         law_result = {
             "mode": "deterministic",
             "verdict": "REFUSE",
