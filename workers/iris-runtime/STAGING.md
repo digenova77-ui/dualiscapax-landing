@@ -22,6 +22,15 @@ The production client path (`js/iris-authorize.js` → `authorizeProduction`) po
   ```bash
   wrangler secret put TRINITY_HMAC_SECRET --env staging
   ```
+- Memory service token (same random value configured as a secret in both Workers):
+  ```bash
+  # In workers/iris-memory:
+  npx wrangler secret put IRIS_MEMORY_SERVICE_TOKEN
+  # In workers/iris-runtime:
+  npx wrangler secret put IRIS_MEMORY_SERVICE_TOKEN --env staging
+  ```
+  Never put this token in source, browser code, command logs, or committed config.
+- Durable memory service: workers/iris-memory/ uses a SQLite-backed Durable Object. Deploy this service first; it must be reachable as the iris-memory-staging service binding.
 - Receipt contract: `dualis.receipt.v1` with 64-char lowercase SHA-256
 - Deploy command (staging only):
   ```bash
@@ -117,10 +126,13 @@ Checks wrangler bindings, Worker source shape, and receipt contract. Exits non-z
 
 ## Post-deploy (implemented)
 
+Before deploying the runtime, deploy the durable memory service from workers/iris-memory/ and configure IRIS_MEMORY_SERVICE_TOKEN in both Workers. Then deploy the runtime with the required identity, Trinity, and model-provider staging bindings configured.
+
 After `./deploy-staging.sh`:
 
 ```bash
 export IRIS_STAGING_URL=https://iris-runtime-staging.<subdomain>.workers.dev
+export IRIS_STAGING_SIGNING_SECRET='<same value as the staging TRINITY_HMAC_SECRET>'
 ./post-deploy.sh
 ```
 
