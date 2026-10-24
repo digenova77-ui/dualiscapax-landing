@@ -132,6 +132,48 @@ test("7. infer rejects a sha256 that does not match the text", async () => {
   assert.equal(data.reason, "sha256-mismatch");
 });
 
+test("infer requires receipt-bound text and never calls the model when text is missing", async () => {
+  let modelCalls = 0;
+  const env = {
+    ...ENV,
+    MODEL_PROVIDER: {
+      fetch: async () => {
+        modelCalls += 1;
+        return new Response(JSON.stringify({ ok: true, output: "must not run" }), { status: 200 });
+      },
+    },
+  };
+  const issuedResponse = await post("/v1/authorize", { request_id: "infer-missing-text-20", text: "bound prompt" }, env);
+  const issued = await issuedResponse.json();
+  assert.equal(issuedResponse.status, 200);
+
+  const res = await post("/v1/infer", { receipt: issued.receipt }, env);
+  const data = await res.json();
+  assert.equal(res.status, 400);
+  assert.equal(data.reason, "text-required");
+  assert.equal(modelCalls, 0);
+});
+
+test("infer does not call the model when receipt-bound text digest differs", async () => {
+  let modelCalls = 0;
+  const env = {
+    ...ENV,
+    MODEL_PROVIDER: {
+      fetch: async () => {
+        modelCalls += 1;
+        return new Response(JSON.stringify({ ok: true, output: "must not run" }), { status: 200 });
+      },
+    },
+  };
+  const issuedResponse = await post("/v1/authorize", { request_id: "infer-wrong-text-20", text: "original prompt" }, env);
+  const issued = await issuedResponse.json();
+  const res = await post("/v1/infer", { receipt: issued.receipt, text: "different prompt" }, env);
+  const data = await res.json();
+  assert.equal(res.status, 403);
+  assert.equal(data.reason, "sha256-mismatch");
+  assert.equal(modelCalls, 0);
+});
+
 test("8. health is not ok when a binding is inert", async () => {
   const env = { ...ENV, MODEL_PROVIDER: {} };
   const res = await worker.fetch(new Request("https://staging.test/health"), env);
