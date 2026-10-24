@@ -48,7 +48,12 @@ function integratedEnv() {
     IDENTITY_API: okBinding(),
     TRINITY_LAW: okBinding(),
     IRIS_MEMORY: memoryServiceBinding,
-    MODEL_PROVIDER: okBinding(),
+    MODEL_PROVIDER: {
+      fetch: async (_url, init) => {
+        const payload = JSON.parse(init.body);
+        return new Response(JSON.stringify({ ok: true, received_memory_context: Array.isArray(payload.memory_context) }), { status: 200 });
+      },
+    },
     TRINITY_HMAC_SECRET: "integration-signing-secret",
     IRIS_MEMORY_SERVICE_TOKEN: token,
   };
@@ -75,6 +80,7 @@ test("runtime authorizes, persists, looks up, verifies, and infers using durable
   assert.equal(auth.status, 200);
   assert.equal(issued.authorized, true);
   assert.equal(issued.receipt.unity_id, "unity-integration");
+  assert.ok(Array.isArray(issued.memory_context));
 
   const verify = await runtime.fetch(new Request("https://iris.test/v1/receipt/verify", {
     method: "POST",
@@ -89,7 +95,9 @@ test("runtime authorizes, persists, looks up, verifies, and infers using durable
     body: JSON.stringify({ receipt: issued.receipt, text: "hello" }),
   }), env);
   assert.equal(infer.status, 200);
-  assert.equal((await infer.json()).ok, true);
+  const inferData = await infer.json();
+  assert.equal(inferData.ok, true);
+  assert.equal(inferData.output.received_memory_context, true);
 });
 
 test("runtime denies when durable memory service authentication is misconfigured", async () => {
