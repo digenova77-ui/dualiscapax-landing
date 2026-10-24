@@ -23,6 +23,16 @@ export function memoryBinding() {
         records.set(body.request_id, { input_sha256: body.input_sha256, receipt: body.receipt, principal: body.principal, action: body.action, claimed_at: new Date().toISOString(), request_id: body.request_id });
         return new Response(JSON.stringify({ ok: true, claimed: true, receipt: body.receipt }), { status: 200 });
       }
+      if (path === "/v1/requests/revoke") {
+        const id = body.id || body.request_id;
+        for (const record of records.values()) {
+          if (record.receipt.id === id || record.request_id === id) {
+            record.receipt = { ...record.receipt, revoked: true };
+            return new Response(JSON.stringify({ ok: true, id: record.receipt.id, request_id: record.request_id }), { status: 200 });
+          }
+        }
+        return new Response(JSON.stringify({ ok: false, reason: "not-issued" }), { status: 404 });
+      }
       if (path === "/v1/requests/get") {
         const record = records.get(body.request_id);
         return new Response(JSON.stringify(record

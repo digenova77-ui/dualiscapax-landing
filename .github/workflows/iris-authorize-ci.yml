@@ -84,6 +84,9 @@ jobs:
       - name: Run Iris receipt endpoint tests
         run: node --test tests/iris-receipt-endpoint.test.mjs
 
+      - name: Run Iris next-forty authorize tests
+        run: node --test tests/iris-authorize-next40.test.mjs
+
       # Duplicate, concurrent, timeout, infer gate, HMAC, receipt lookup.
       - name: Run Iris next-ten authorize tests
         run: node --test tests/iris-authorize-next10.test.mjs

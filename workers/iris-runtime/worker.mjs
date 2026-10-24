@@ -21,6 +21,11 @@ const MAX_BODY_BYTES = 65536;
 const MAX_SKEW_SECONDS = 300;
 const RATE_LIMIT = 30;
 const RATE_WINDOW_MS = 60_000;
+const RECEIPT_TTL_MS = 24 * 60 * 60 * 1000;
+const REQUEST_ID_RE = /^[A-Za-z0-9._:-]{1,128}$/;
+const ALLOWED_ACTIONS = new Set(["iris.turn.look", "iris.turn.depth", "iris.turn.work", "iris.turn.learn"]);
+const GATED_ACTIONS = new Set(["iris.turn.depth", "iris.turn.work", "iris.turn.learn"]);
+const metrics = { allow: 0, deny: 0, model: 0, revoke: 0 };
 
 // The durable memory service is authoritative; only in-flight request suppression is isolate-local.
 const inflight = new Set();
@@ -156,6 +161,10 @@ export default {
     }
 
     if (url.pathname === "/v1/authorize" && request.method === "POST") {
+      const type = request.headers.get("content-type") || "";
+      if (!type.includes("application/json")) {
+        return json(415, { authorized: false, reason: "unsupported-media-type" });
+      }
       const missing = missingBindings(env);
       if (missing.length) {
         return json(503, { authorized: false, reason: "bindings-unavailable", missing });
@@ -181,6 +190,9 @@ export default {
       const requestId = body && body.request_id;
       if (!requestId || typeof requestId !== "string") {
         return json(400, { authorized: false, reason: "missing-request-id" });
+      }
+      if (!REQUEST_ID_RE.test(requestId)) {
+        return json(400, { authorized: false, reason: "bad-request-id", request_id: requestId });
       }
 
       const secret = env.TRINITY_HMAC_SECRET;
@@ -233,6 +245,12 @@ export default {
           return json(403, { authorized: false, reason: identity.reason || "identity-unverified", request_id: requestId });
         }
         const action = typeof body.action === "string" && body.action ? body.action : "iris.turn.look";
+        if (!ALLOWED_ACTIONS.has(action)) {
+          return json(400, { authorized: false, reason: "unknown-action", request_id: requestId });
+        }
+        if (GATED_ACTIONS.has(action) && !inputText.trim()) {
+          return json(400, { authorized: false, reason: "text-required", request_id: requestId });
+        }
         const law = await callBinding(env.TRINITY_LAW, "/evaluate", { request_id: requestId, principal, input_sha256: digest, text: inputText, action }, env.IRIS_BINDING_TIMEOUT_MS);
         const lawPrincipal = law.data && (law.data.unity_id || (law.data.principal && law.data.principal.unity_id));
         if (!law.ok || !law.data || law.data.decision !== "allow" || law.data.authorized !== true ||
@@ -247,6 +265,8 @@ export default {
           request_id: requestId,
           sha256: digest,
           id: "rct_" + requestId,
+          action,
+          issued_at: new Date().toISOString(),
         };
 
         // The memory service owns the cross-isolate atomic idempotency claim.
@@ -284,6 +304,7 @@ export default {
         const storedReceipt = claim.data.receipt;
         const context = await readMemoryContext(env, principal, requestId);
         if (!context.ok) return json(503, { authorized: false, reason: context.reason, request_id: requestId });
+        metrics.allow += 1;
         recordAudit({ request_id: requestId, decision: "allow", receipt_id: storedReceipt.id });
         return json(200, {
           authorized: true,
@@ -319,6 +340,12 @@ export default {
           stored.sha256.toLowerCase() !== body.receipt.sha256.toLowerCase()) {
         return json(403, { ok: false, reason: "receipt-unknown" });
       }
+      if (stored.revoked === true) return json(403, { ok: false, reason: "receipt-revoked" });
+      if (stored.issued_at) {
+        const age = Date.now() - Date.parse(stored.issued_at);
+        const ttl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
+        if (Number.isFinite(age) && age > ttl) return json(403, { ok: false, reason: "receipt-expired" });
+      }
       if (typeof body.text !== "string") {
         return json(400, { ok: false, reason: "text-required" });
       }
@@ -328,6 +355,7 @@ export default {
       }
       const context = await readMemoryContext(env, stored.unity_id, body.receipt.request_id);
       if (!context.ok) return json(503, { ok: false, reason: context.reason });
+      metrics.model += 1;
       const model = await callBinding(env.MODEL_PROVIDER, "/complete", { receipt: body.receipt, text: body.text || "", memory_context: context.items });
       if (!model.ok) {
         return json(502, { ok: false, reason: model.reason || "model-denied" });
@@ -360,6 +388,12 @@ export default {
       if (!storedResult.ok || !storedResult.data || storedResult.data.found !== true || !receiptShape(stored)) {
         return json(200, { valid: false, known: false, reason: "receipt-unknown" });
       }
+      if (stored.revoked === true) return json(200, { valid: false, reason: "receipt-revoked" });
+      if (stored.issued_at) {
+        const age = Date.now() - Date.parse(stored.issued_at);
+        const ttl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
+        if (Number.isFinite(age) && age > ttl) return json(200, { valid: false, reason: "receipt-expired" });
+      }
       if (stored.id !== receipt.id || stored.unity_id !== receipt.unity_id ||
           stored.sha256.toLowerCase() !== receipt.sha256.toLowerCase() || stored.request_id !== receipt.request_id) {
         return json(200, { valid: false, reason: "stored-mismatch" });
@@ -385,6 +419,25 @@ export default {
         return json(404, { found: false, reason: "not-issued" });
       }
       return json(200, { found: true, receipt });
+    }
+
+    if (url.pathname === "/v1/receipt/revoke" && request.method === "POST") {
+      if (!env.IRIS_MEMORY_SERVICE_TOKEN) return json(503, { ok: false, reason: "memory-service-token-unavailable" });
+      let body;
+      try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
+      const id = body && (body.id || body.request_id);
+      if (!id) return json(400, { ok: false, reason: "missing-id" });
+      const revoked = await callBinding(env.IRIS_MEMORY, "/v1/requests/revoke", { id }, env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
+      if (!revoked.ok || !revoked.data || revoked.data.ok !== true) {
+        return json(revoked.status === 404 ? 404 : 503, { ok: false, reason: (revoked.data && revoked.data.reason) || "revoke-unavailable" });
+      }
+      metrics.revoke += 1;
+      recordAudit({ request_id: revoked.data.request_id || id, decision: "revoke", receipt_id: revoked.data.id || id });
+      return json(200, { ok: true, id: revoked.data.id || id });
+    }
+
+    if (url.pathname === "/v1/metrics" && request.method === "GET") {
+      return json(200, { ...metrics });
     }
 
     if (url.pathname === "/v1/audit" && request.method === "GET") {
