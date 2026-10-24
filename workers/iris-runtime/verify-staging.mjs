@@ -36,10 +36,11 @@ function checkWorkerSource(src) {
   const noBrowserSecret = !src.includes("IrisSigningSecret");
   const durableClaim = src.includes("/v1/requests/claim");
   const durableLookup = src.includes("/v1/requests/get");
+  const contextRead = src.includes("/v1/context/read") && src.includes("readMemoryContext");
   const serviceToken = src.includes("IRIS_MEMORY_SERVICE_TOKEN");
   return {
-    ok: hasFetch && hasAuthorize && hasReceipt && noBrowserSecret && durableClaim && durableLookup && serviceToken,
-    hasFetch, hasAuthorize, hasReceipt, noBrowserSecret, durableClaim, durableLookup, serviceToken,
+    ok: hasFetch && hasAuthorize && hasReceipt && noBrowserSecret && durableClaim && durableLookup && contextRead && serviceToken,
+    hasFetch, hasAuthorize, hasReceipt, noBrowserSecret, durableClaim, durableLookup, contextRead, serviceToken,
   };
 }
 
