@@ -1,0 +1,46 @@
+name: Deploy Iris staging stack
+
+# Manual, staging-only deployment. Never deploys Pages or production Workers.
+on:
+  workflow_dispatch:
+    inputs:
+      runtime_url:
+        description: "Optional iris-runtime-staging workers.dev URL for live verification after deployment"
+        required: false
+        type: string
+        default: ""
+
+concurrency:
+  group: iris-staging-stack
+  cancel-in-progress: false
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      IRIS_STAGING_UNITY_ID: ${{ secrets.IRIS_STAGING_UNITY_ID }}
+      IRIS_STAGING_URL: ${{ inputs.runtime_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Verify deployment credentials are configured
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "${CLOUDFLARE_API_TOKEN:-}" ]] || { echo "Missing repository secret CLOUDFLARE_API_TOKEN"; exit 1; }
+          [[ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]] || { echo "Missing repository secret CLOUDFLARE_ACCOUNT_ID"; exit 1; }
+          [[ -n "${IRIS_STAGING_UNITY_ID:-}" ]] || { echo "Missing repository secret IRIS_STAGING_UNITY_ID"; exit 1; }
+          npx --yes wrangler whoami
+
+      - name: Deploy isolated staging stack and run local/live gauntlet
+        shell: bash
+        run: bash workers/deploy-iris-staging-stack.sh
