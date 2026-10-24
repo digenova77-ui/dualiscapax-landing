@@ -8,6 +8,8 @@ DualisCapax is not merely an authentication, passkey, biometric, or identity pro
 
 The full project scope, intended causal effects, evidence ladder, and implementation obligations are documented in [the DualisCapax Project Scope](docs/DUALISCAPAX-PROJECT-SCOPE.md). That document distinguishes the system's intended reach from capabilities that have actually been implemented, tested, deployed, and measured.
 
+**Strategic application:** [Residual Law Finance](docs/RESIDUAL-LAW-FINANCE.md) explores how the architecture could identify, validate, and lawfully recover measurable residual value across real-world operations. This is a strategic thesis requiring pilots and outcome validation, not a claim of proven market scale or deployed financial services.
+
 ### Trinity-governed computing
 
 [Website](https://dualiscapax.ai) · [GitHub repository](https://github.com/digenova77-ui/dualiscapax-landing)
