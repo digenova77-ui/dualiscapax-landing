@@ -87,7 +87,11 @@ function receiptShape(receipt) {
     typeof receipt.sha256 === "string" &&
     /^[0-9a-f]{64}$/i.test(receipt.sha256) &&
     typeof receipt.request_id === "string" &&
-    receipt.request_id
+    receipt.request_id &&
+    typeof receipt.action === "string" &&
+    ALLOWED_ACTIONS.has(receipt.action) &&
+    typeof receipt.issued_at === "string" &&
+    Number.isFinite(Date.parse(receipt.issued_at))
   );
 }
 
@@ -348,7 +352,7 @@ export default {
       if (stored.issued_at) {
         const age = Date.now() - Date.parse(stored.issued_at);
         const ttl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
-        if (Number.isFinite(age) && age > ttl) return json(403, { ok: false, reason: "receipt-expired" });
+        if (!Number.isFinite(age) || age < -MAX_SKEW_SECONDS * 1000 || age > ttl) return json(403, { ok: false, reason: "receipt-expired" });
       }
       if (typeof body.text !== "string") {
         return json(400, { ok: false, reason: "text-required" });
@@ -396,7 +400,7 @@ export default {
       if (stored.issued_at) {
         const age = Date.now() - Date.parse(stored.issued_at);
         const ttl = typeof env.IRIS_RECEIPT_TTL_MS === "number" ? env.IRIS_RECEIPT_TTL_MS : RECEIPT_TTL_MS;
-        if (Number.isFinite(age) && age > ttl) return json(200, { valid: false, reason: "receipt-expired" });
+        if (!Number.isFinite(age) || age < -MAX_SKEW_SECONDS * 1000 || age > ttl) return json(200, { valid: false, reason: "receipt-expired" });
       }
       if (stored.id !== receipt.id || stored.unity_id !== receipt.unity_id ||
           stored.sha256.toLowerCase() !== receipt.sha256.toLowerCase() || stored.request_id !== receipt.request_id) {
