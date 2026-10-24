@@ -24,12 +24,15 @@ test("allow passes only with a dualis.receipt.v1 receipt", () => {
       receipt: {
         contract: "dualis.receipt.v1",
         id: "rct_allow-1",
+        unity_id: "unity-1",
         sha256: "d".repeat(64),
         request_id: "allow-1",
       },
     },
   };
   assert.equal(checkAllow(good).ok, true);
+  assert.equal(checkAllow(good, "unity-1").ok, true);
+  assert.equal(checkAllow(good, "different-unity").ok, false);
   assert.equal(checkAllow({ data: { authorized: true } }).ok, false);
   assert.equal(checkAllow({ data: { authorized: true, receipt: { contract: "other", id: "rct_x", sha256: "d".repeat(64), request_id: "x" } } }).ok, false);
 });
