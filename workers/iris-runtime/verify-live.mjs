@@ -85,6 +85,27 @@ export function checkDeny(result) {
   return { ok, reason: ok ? null : "deny-not-fail-closed" };
 }
 
+export function checkInference(result, expectedReceipt) {
+  const data = result && result.data;
+  const ok = !!(
+    result && result.status === 200 && data && data.ok === true &&
+    data.receipt && expectedReceipt && data.receipt.id === expectedReceipt.id &&
+    data.receipt.request_id === expectedReceipt.request_id &&
+    data.output && typeof data.output === "object"
+  );
+  return { ok, provider_output: data && data.output ? data.output : null, reason: ok ? null : "inference-contract-invalid" };
+}
+
+export function checkReceiptVerify(result, expectedReceipt) {
+  const data = result && result.data;
+  const ok = !!(
+    result && result.status === 200 && data && data.valid === true &&
+    data.contract === RECEIPT_CONTRACT && expectedReceipt &&
+    data.id === expectedReceipt.id
+  );
+  return { ok, reason: ok ? null : "receipt-verification-failed" };
+}
+
 export function checkAllow(result, expectedUnityId) {
   const receipt = result && result.data && result.data.receipt;
   const ok = !!(
@@ -122,7 +143,22 @@ export async function verifyLive(base, signingSecret, unityId) {
     principal: { unity_id: unityId },
     text: "hello",
   }, signingSecret), unityId);
-  return { ok: health.ok && deny.ok && allow.ok, health, deny, allow };
+  let inference = { ok: false, reason: "skipped-no-valid-receipt" };
+  let receiptVerification = { ok: false, reason: "skipped-no-valid-receipt" };
+  if (allow.ok) {
+    inference = checkInference(await postJson(join(base, "/v1/infer"), {
+      receipt: allow.receipt,
+      text: "hello",
+    }, signingSecret), allow.receipt);
+    receiptVerification = checkReceiptVerify(await postJson(join(base, "/v1/receipt/verify"), {
+      receipt: allow.receipt,
+      text: "hello",
+    }, signingSecret), allow.receipt);
+  }
+  return {
+    ok: health.ok && deny.ok && allow.ok && inference.ok && receiptVerification.ok,
+    health, deny, allow, inference, receipt_verification: receiptVerification,
+  };
 }
 
 const isMain = process.argv[1] && process.argv[1].endsWith("verify-live.mjs");
