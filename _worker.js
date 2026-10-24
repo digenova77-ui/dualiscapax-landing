@@ -208,7 +208,9 @@ export default {
       "/standing-probe/status": () => status("/standing-probe"),
       "/standing-probe": () => standingProbe(),
       "/trilogy/status": () => status("/trilogy"),
-      "/trilogy": () => trilogyReport()
+      "/trilogy": () => trilogyReport(),
+      "/justice/status": () => status("/justice"),
+      "/justice": () => justiceReport()
     };
     if (Object.prototype.hasOwnProperty.call(edge, clean)) {
       try {
@@ -324,6 +326,27 @@ function pricingReport() {
 }
 
 
+
+function justiceReport() {
+  return {
+    protocol: "DIAMOND.JUSTICE.v1",
+    law: "LAW WINS",
+    origin: "immutable",
+    boundary: "NOT_FOR_EMISSION",
+    order: ["need", "labor", "fruit", "merit"],
+    principles: {
+      look: "free",
+      ability: "earns nothing alone",
+      merit: "follows proof. not for sale",
+      efuse: "ceiling and covenant. not a tradeable charm",
+      unifi3: "identity. bound by evidence",
+      peg: "same for all. no preferred tribe",
+      worth: "not scored"
+    },
+    refused: ["pay for look", "merit without proof", "sell merit", "trade efuse", "emit", "score worth", "prefer a tribe"],
+    spend: "none"
+  };
+}
 function trilogyReport() {
   return {
     protocol: "TRILOGY.EFUSE.MERIT.UNIFI3.v1",
