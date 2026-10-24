@@ -1,3 +1,17 @@
+# Iris authorize CI
+#
+# Purpose: gate every change to the Iris authorize path so the staging
+# Worker config, receipt contract, and both test suites are checked
+# before the branch can be considered for promotion.
+#
+# What it does NOT do:
+# - Deploy anything
+# - Touch production Pages, routes, or secrets
+# - Require live Cloudflare credentials
+#
+# Triggers:
+# - Push to the PR branch (so every commit is checked)
+# - Pull request targeting main (so the gate is visible on the PR)
 name: Iris authorize CI
 
 on:
@@ -15,24 +29,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Node is required for the staging verifier and the regression suite.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
+      # Python is required for the authorize contract tests and the full suite.
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      # Checks that wrangler.toml declares the four required bindings
+      # and that worker.mjs exports a fetch handler with the receipt contract.
+      # Fails if any binding is missing or the source shape is wrong.
       - name: Verify staging Worker config
         run: node workers/iris-runtime/verify-staging.mjs
 
+      # Client-side regression: denial, timeout, duplicate request_id,
+      # concurrent claims, receipt shape, and production path (no browser secret).
       - name: Run Iris authorize regression (Node)
         run: node --test tests/iris-authorize-regression.test.mjs
 
+      # Contract tests for the authorize decision and receipt shape.
       - name: Run Iris authorize contract (Python)
         run: python -m unittest tests.test_iris_authorize_contract -v
 
+      # Full Python suite (i18n parity, arbiter, and other project tests).
       - name: Run full Python suite
         run: python -m unittest discover -s tests -v
