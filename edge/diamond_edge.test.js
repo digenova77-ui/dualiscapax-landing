@@ -252,4 +252,30 @@ for (const c of CLARITY_LEVELS) {
   assert(facesFrontier(f) === (c.clarity === "FL"), `clarity ${c.clarity} faces frontier only if FL`);
 }
 
+// --- diamond cut levels ---
+// Pass band: Excellent, Very Good (exact match). All other cut grades refuse.
+const CUT_LEVELS = [
+  { cut: "Excellent", expect: true },
+  { cut: "Very Good", expect: true },
+  { cut: "Good", expect: false },
+  { cut: "Fair", expect: false },
+  { cut: "Poor", expect: false },
+  { cut: "Ideal", expect: false },
+  { cut: "Premium", expect: false },
+  { cut: "Super Ideal", expect: false },
+];
+
+for (const c of CUT_LEVELS) {
+  const f = { clarity: "FL", color: "D", cut: c.cut, reflects: "purity" };
+  const g = grade(f);
+  assert(g.pure === c.expect, `cut ${c.cut} pure=${g.pure}`);
+  assert(g.cut.pass === c.expect, `cut ${c.cut} axis pass=${g.cut.pass}`);
+  assert(g.verdict === (c.expect ? "PASS" : "GLASS"), `cut ${c.cut} verdict`);
+  if (!c.expect) {
+    assert(g.failed.includes(`cut:${c.cut}`), `cut ${c.cut} failure recorded`);
+  }
+  // Frontier only for exact Excellent
+  assert(facesFrontier(f) === (c.cut === "Excellent"), `cut ${c.cut} faces frontier only if Excellent`);
+}
+
 console.log("All diamond edge tests passed");
