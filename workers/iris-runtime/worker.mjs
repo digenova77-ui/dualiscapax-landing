@@ -316,11 +316,12 @@ export default {
           stored.sha256.toLowerCase() !== body.receipt.sha256.toLowerCase()) {
         return json(403, { ok: false, reason: "receipt-unknown" });
       }
-      if (typeof body.text === "string") {
-        const digest = await sha256Hex(body.text);
-        if (digest !== body.receipt.sha256.toLowerCase()) {
-          return json(403, { ok: false, reason: "sha256-mismatch" });
-        }
+      if (typeof body.text !== "string") {
+        return json(400, { ok: false, reason: "text-required" });
+      }
+      const digest = await sha256Hex(body.text);
+      if (digest !== body.receipt.sha256.toLowerCase()) {
+        return json(403, { ok: false, reason: "sha256-mismatch" });
       }
       const context = await readMemoryContext(env, stored.unity_id, body.receipt.request_id);
       if (!context.ok) return json(503, { ok: false, reason: context.reason });
