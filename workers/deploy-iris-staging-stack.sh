@@ -10,8 +10,10 @@ for command in node npm npx openssl; do
 done
 npx wrangler whoami >/dev/null
 
-read -r -s -p "Registered staging-only Unity ID (input hidden): " IRIS_STAGING_UNITY_ID
-echo
+if [[ -z "${IRIS_STAGING_UNITY_ID:-}" ]]; then
+  read -r -s -p "Registered staging-only Unity ID (input hidden): " IRIS_STAGING_UNITY_ID
+  echo
+fi
 if [[ -z "$IRIS_STAGING_UNITY_ID" ]]; then
   echo "A registered staging-only Unity ID is required; nothing deployed." >&2
   exit 1
@@ -56,7 +58,9 @@ npx wrangler deploy --env staging
 
 echo
 echo "=== Live gauntlet ==="
-read -r -p "Paste the iris-runtime-staging workers.dev URL from Wrangler (blank skips live checks): " IRIS_STAGING_URL
+if [[ -z "${IRIS_STAGING_URL:-}" ]]; then
+  read -r -p "Paste the iris-runtime-staging workers.dev URL from Wrangler (blank skips live checks): " IRIS_STAGING_URL
+fi
 if [[ -n "$IRIS_STAGING_URL" ]]; then
   IRIS_STAGING_URL="$IRIS_STAGING_URL" \
   IRIS_STAGING_SIGNING_SECRET="$TRINITY_HMAC_SECRET" \
