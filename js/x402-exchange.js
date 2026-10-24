@@ -170,7 +170,7 @@ function checkPayload(payload, offer, resourceUrl) {
   if (!NONCE.test(auth.nonce)) return "invalid_payload";
   if (auth.value !== offer.amount) return "invalid_exact_evm_payload_authorization_value_mismatch";
   if (!sameAddress(auth.to, offer.payTo)) return "invalid_exact_evm_payload_recipient_mismatch";
-  if (!/^(0|[1-9]\\d*)$/.test(String(auth.validAfter)) || !/^[1-9]\\d*$/.test(String(auth.validBefore))) return "invalid_authorization_window";
+  if (!/^(0|[1-9]\d*)$/.test(String(auth.validAfter)) || !/^[1-9]\d*$/.test(String(auth.validBefore))) return "invalid_authorization_window";
   const now = Math.floor(Date.now() / 1000);
   const validAfter = Number(auth.validAfter);
   const validBefore = Number(auth.validBefore);
