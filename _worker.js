@@ -1,52 +1,9 @@
 /* Cloudflare Pages Advanced Mode.
- * Preserve the existing landing routes and ASSETS fallback.
- * HUD routes are served by this Pages Worker so they do not depend on a
- * separately deployed Worker route. Apex remains owned by Pages assets.
- * Unity seal verification added: read-only, no-store, fail-closed.
+ * Trinity only. Law prevails.
+ * Capability does not confer authority.
+ * Fail-closed. No decorative routes. No external bridges. No maps.
+ * Read-only verification of the seal and the law.
  */
-
-async function fetchRetry(url, opts, tries = 3) {
-  let last;
-  for (let i = 0; i < tries; i++) {
-    try {
-      const res = await fetch(url, opts);
-      if (res.ok || res.status < 500) return res;
-      last = res;
-    } catch (err) {
-      last = err;
-    }
-    if (i < tries - 1) {
-      await new Promise((r) => setTimeout(r, 200 * Math.pow(2, i)));
-    }
-  }
-  if (last instanceof Response) return last;
-  throw last;
-}
-
-const MAP = {
-  "/look": "/look.html",
-  "/look/": "/look.html",
-  "/look.html": "/look.html",
-  "/alacarte": "/alacarte.html",
-  "/alacarte/": "/alacarte.html",
-  "/alacarte.html": "/alacarte.html",
-  "/sima": "/rte/sima-dclm/index.html",
-  "/sima/": "/rte/sima-dclm/index.html",
-  "/rte": "/rte/index.html",
-  "/rte/": "/rte/index.html",
-  "/aide": "/rte/sima-dclm/index.html",
-  "/aide/": "/rte/sima-dclm/index.html",
-  "/desk": "/rte/sima-dclm/index.html",
-  "/desk/": "/rte/sima-dclm/index.html"
-};
-
-const HUD_RAW = "https://raw.githubusercontent.com/digenova77-ui/dualiscapax-hud/main";
-const HUD_ROUTES = new Map([
-  ["/holographic-core/v2", [HUD_RAW + "/holographic-core/v2/index.html", "text/html; charset=utf-8"]],
-  ["/holographic-core/v2/", [HUD_RAW + "/holographic-core/v2/index.html", "text/html; charset=utf-8"]],
-  ["/holographic-core/v2/index.html", [HUD_RAW + "/holographic-core/v2/index.html", "text/html; charset=utf-8"]],
-  ["/assets/holographic-hostess-40/hostess.svg", [HUD_RAW + "/assets/holographic-hostess-40/hostess.svg", "image/svg+xml; charset=utf-8"]]
-]);
 
 const SEAL_BODY = `center=empty
 mirror=claim_vs_mark→0|1
@@ -69,7 +26,7 @@ road=same_toll_every_step
 THEOREM_U1=hygiene_complete→1_else_0_no_third_value`;
 const EXPECTED_UNITY_HASH = "d95aa793e6bc330710ea6b9acab1ce6ed127c2c89c21715adba5a15e2e5fda41";
 
-function noStoreHeaders(extra = {}) {
+function noStore(extra = {}) {
   return {
     "cache-control": "no-store, must-revalidate",
     "cdn-cache-control": "no-store",
@@ -83,369 +40,65 @@ async function sha256Hex(text) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
+function json(body, status = 200) {
+  return new Response(JSON.stringify(body, null, 2), {
+    status,
+    headers: { "content-type": "application/json; charset=utf-8", ...noStore() }
+  });
+}
+
+const LAW = "LAW WINS";
+
+function lawReport() {
+  return {
+    protocol: "TRINITY.LAW.v1",
+    law: LAW,
+    principle: "Capability does not confer authority.",
+    boundary: "NOT_FOR_EMISSION",
+    origin: "immutable",
+    fail_closed: true,
+    missing_authority: "refusal",
+    missing_evidence: "refusal"
+  };
+}
+
 export default {
   async fetch(request, env) {
     const assets = env && env.ASSETS;
     if (!assets || !assets.fetch) {
-      return new Response("Pages ASSETS binding unavailable", {
-        status: 503,
-        headers: noStoreHeaders()
-      });
+      return new Response("ASSETS binding unavailable", { status: 503, headers: noStore() });
     }
 
     const url = new URL(request.url);
-    const path = url.pathname;
+    const path = url.pathname.length > 1 && url.pathname.endsWith("/") ? url.pathname.slice(0, -1) : url.pathname;
 
-    // Read-only route proves which runtime is answering; no user/request data.
-    if (path === "/iris/status" || path === "/iris/status.json") {
-      return Response.json({
-        runtime: "cloudflare-pages-advanced-mode",
-        route_owner: "dualiscapax-web Pages _worker.js",
-        hud_source: "digenova77-ui/dualiscapax-hud main",
-        hud_path: "/holographic-core/v2",
-        apex_overwrite: false,
-        cache: "no-store"
-      }, { headers: noStoreHeaders({ "x-dc-iris": "pages-bridge" }) });
+    if (path === "/law" || path === "/trinity") {
+      return json(lawReport());
     }
 
-    // Unity seal verification: read-only, fail-closed, no-store.
     if (path === "/seal" || path === "/seal.json" || path === "/unity/status" || path === "/unity/status.json") {
       if (request.method !== "GET" && request.method !== "HEAD") {
-        return new Response("Method not allowed", {
-          status: 405,
-          headers: noStoreHeaders({ allow: "GET, HEAD" })
-        });
+        return new Response("Method not allowed", { status: 405, headers: noStore({ allow: "GET, HEAD" }) });
       }
       try {
         const computed = await sha256Hex(SEAL_BODY);
         const match = computed === EXPECTED_UNITY_HASH;
-        const body = {
+        return json({
           seal: "UNITY_SEAL_v1",
-          center: "empty",
-          mirror: "0|1",
-          exempt: false,
+          law: LAW,
           unity_hash: computed,
           expected: EXPECTED_UNITY_HASH,
-          match: match,
+          match,
           status: match ? "PASS" : "DRIFT",
-          runtime: "cloudflare-pages-advanced-mode",
+          fail_closed: true,
           cache: "no-store"
-        };
-        return Response.json(body, { headers: noStoreHeaders({ "x-dc-unity": match ? "seal-match" : "seal-drift" }) });
-      } catch {
-        return new Response("Seal verification unavailable", {
-          status: 503,
-          headers: noStoreHeaders({ "x-dc-unity": "error" })
-        });
-      }
-    }
-
-    // Isolated HUD paths are explicitly served from the HUD repository.
-    // The homepage and every other path continue through the Pages asset binding.
-    const hud = HUD_ROUTES.get(path);
-    if (hud) {
-      if (request.method !== "GET" && request.method !== "HEAD") {
-        return new Response("Method not allowed", {
-          status: 405,
-          headers: noStoreHeaders({ allow: "GET, HEAD" })
-        });
-      }
-
-      let upstream;
-      try {
-        upstream = await fetchRetry(hud[0], {
-          method: request.method,
-          headers: { accept: request.headers.get("accept") || "*/*" }
         });
       } catch {
-        return new Response("HUD upstream unavailable", {
-          status: 502,
-          headers: noStoreHeaders({ "x-dc-iris": "upstream-error" })
-        });
-      }
-
-      if (!upstream.ok) {
-        return new Response("HUD upstream unavailable", {
-          status: 502,
-          headers: noStoreHeaders({ "x-dc-iris": "upstream-error" })
-        });
-      }
-
-      return new Response(request.method === "HEAD" ? null : await upstream.arrayBuffer(), {
-        status: 200,
-        headers: noStoreHeaders({
-          "content-type": hud[1],
-          "x-dc-iris": "pages-bridge",
-          "x-dc-hud-source": "github-raw"
-        })
-      });
-    }
-
-    // Diamond edge. One table. Trailing slash stripped. Fail-closed.
-    const clean = path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path;
-    const status = (route) => ({ route, live: true, ok: true, ts: new Date().toISOString() });
-    const edge = {
-      "/diamond": () => ({
-        protocol: "DIAMOND.FRONTIER.MAX.v1",
-        law: "LAW WINS",
-        origin: "immutable",
-        boundary: "NOT_FOR_EMISSION",
-        gate: "FL/VVS/VS · D/E/F · Excellent/Very Good · purity",
-        frontier: "FL · D · Excellent · purity",
-        learning: "advisory only — NOT_FOR_EMISSION",
-        faces: FACES
-      }),
-      "/diamond/status": () => status("/diamond"),
-      "/pricing": () => pricingReport(),
-      "/pricing/status": () => status("/pricing"),
-      
-      "/omni/status": () => status("/omni"),
-      "/omni": () => omniSnapshot(),
-      "/frontier/status": () => status("/frontier"),
-      "/frontier": () => frontierReport(),
-      "/purity/status": () => status("/purity"),
-      "/purity": () => purityText(),
-      "/standing-probe/status": () => status("/standing-probe"),
-      "/standing-probe": () => standingProbe(),
-      "/trilogy/status": () => status("/trilogy"),
-      "/trilogy": () => trilogyReport(),
-      "/justice/status": () => status("/justice"),
-      "/justice": () => justiceReport()
-    };
-    if (Object.prototype.hasOwnProperty.call(edge, clean)) {
-      try {
-        const body = edge[clean]();
-        return clean === "/purity" ? textNoStore(body) : jsonNoStore(body);
-      } catch (err) {
-        return jsonNoStore({ ok: false, route: clean, live: false, reason: "route failed", detail: String(err && err.message || err) }, 500);
+        return new Response("Seal verification unavailable", { status: 503, headers: noStore() });
       }
     }
 
-    
-    
-    if (path === "/donate/rails" && request.method === "GET") {
-      return jsonNoStore({
-        ok: true,
-        model: "company advertises; user pays address or architecture directly; company does not process",
-        interac: "donate@dualiscapax.ai",
-        crypto: {
-          xrp: "rNbfUBt3vgUDu9kEL5TxbgLHxtKbyyKyRz",
-          zec: "t1XXgbcak1o85jd4PWwBzatqxbDSkuwSTaZ",
-          sol: "Cus1pLggfxDJC8FJSQv1tRtzDanuzSxjWvSsKA12byDw",
-          eth: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-          pol: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-          bsc: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-          link: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
-          dot: "16946KsPFchfAEC7MNQNSLLJb1kUzBug1fbPqBtbfZtW7X6n",
-          dgb: "dgb1qegfaue6jd8msnlr7akr9ts0akgse6q4f4wgxec",
-          bch: "qqfh32qpv5glgdfy67laswwtjvwqdc0lese3t7vjfc",
-          doge: "D92zKrKoBeUouG5Jqo96Q5DWZ4G7iU8JFK"
-        }
-      });
-    }
-
-    if (path === "/donate/confirm" && request.method === "POST") {
-      return request.json().then((body) => {
-        const ref = String(body.ref || "").trim();
-        const rail = String(body.rail || "").trim().slice(0, 16);
-        const prev = body.prev && typeof body.prev === "object" ? body.prev : null;
-        if (!ref || ref.length < 4 || ref.length > 128 || !/^[A-Za-z0-9_.:@\-]+$/.test(ref)) {
-          return jsonNoStore({ ok: false, reason: "bad_ref" }, 400);
-        }
-        const id = "rcpt:" + Date.now().toString(36) + ":" + ref.slice(0, 12);
-        const finger = prev && prev.id ? finger16(prev) : 0;
-        const receipt = {
-          id,
-          prev: prev && prev.id ? prev.id : null,
-          finger,
-          rail,
-          ref,
-          ts: Date.now(),
-          note: "recorded; company does not hold funds; interaction is with the address or coin, not the company"
-        };
-        return jsonNoStore({ ok: true, receipt });
-      }).catch(() => jsonNoStore({ ok: false, reason: "bad_json" }, 400));
-    }
-
-    if (path === "/receipts/verify" && request.method === "POST") {
-      return request.json()
-        .then((body) => jsonNoStore(verifyReceiptChain(body.receipts || [])))
-        .catch(() => jsonNoStore({ ok: false, reason: "bad json" }, 400));
-    }
-
-    const dest = MAP[path];
-    if (dest) {
-      const target = new URL(request.url);
-      target.pathname = dest;
-      try {
-        return await assets.fetch(new Request(target.toString(), request));
-      } catch {
-        // Keep the existing Pages asset fallback if a friendly route mapping fails.
-      }
-    }
-
-    // In particular, "/" is never rewritten to the HUD; Pages serves the apex.
+    // All other paths fall through to Pages assets. No rewriting. No external fetch.
     return assets.fetch(request);
   }
 };
-
-function jsonNoStore(body, status = 200) {
-  return new Response(JSON.stringify(body, null, 2), {
-    status,
-    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" }
-  });
-}
-function textNoStore(body) {
-  return new Response(body + "\n", {
-    headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff" }
-  });
-}
-const DEFAULT_FACETS = [
-  { name: "foundation", kind: "floor", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "DCLM", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "Iris", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "Twain²", kind: "ring", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "summer", kind: "tree", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "winter", kind: "tree", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "merit", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "standing", kind: "economy", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  { name: "ceiling", kind: "ceiling", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" }
-];
-const CLARITY_PASS = new Set(["FL", "VVS", "VS"]);
-const COLOR_PASS = new Set(["D", "E", "F"]);
-const CUT_PASS = new Set(["Excellent", "Very Good"]);
-function grade(f) {
-  const pure = CLARITY_PASS.has(f.clarity) && COLOR_PASS.has(f.color) && CUT_PASS.has(f.cut) && f.reflects === "purity";
-  return { pure, verdict: pure ? "PASS" : "GLASS" };
-}
-function facesFrontier(f) {
-  return f.clarity === "FL" && f.color === "D" && f.cut === "Excellent" && f.reflects === "purity";
-}
-const FACES = { grade: "diamond", cost: "residual", decision: "DCLM", write: "Twain²", spend: "none" };
-function frontierReport() {
-  const facing = [], held = [];
-  for (const f of DEFAULT_FACETS) {
-    if (f.kind === "ceiling") continue;
-    if (facesFrontier(f)) facing.push(f.name); else held.push(f.name);
-  }
-  const floor = DEFAULT_FACETS.find(f => f.kind === "floor");
-  return { protocol: "DIAMOND.FRONTIER.MAX.v1", facing, held, ceiling_claimable: held.length === 0 && grade(floor).pure, law: "LAW WINS", origin: "immutable", learning: "advisory only — NOT_FOR_EMISSION", faces: FACES };
-}
-function omniSnapshot() {
-  const facets = DEFAULT_FACETS.filter(f => f.kind !== "ceiling").map(f => ({ name: f.name, verdict: grade(f).verdict }));
-  const fr = frontierReport();
-  const floor = DEFAULT_FACETS.find(f => f.kind === "floor");
-  const glass = facets.some(x => x.verdict === "GLASS");
-  return { label: "OMNI", diamond: { floor_holds: grade(floor).pure, rise_ok: !glass, ceiling_reached: !glass, facets }, frontier: { protocol: fr.protocol, facing: fr.facing, held_count: fr.held.length, ceiling_claimable: fr.ceiling_claimable }, contract: { law: "LAW WINS", origin: "immutable", boundary: "NOT_FOR_EMISSION", faces: FACES }, integrity: "UNCHANGED — core not touched" };
-}
-function purityText() {
-  const o = omniSnapshot();
-  const lines = ["DIAMOND PURITY (edge)", "floor: " + (o.diamond.floor_holds ? "HOLD" : "FAIL")];
-  for (const f of o.diamond.facets) lines.push((f.verdict === "PASS" ? "◆ " : "◇ ") + f.name + " " + f.verdict);
-  lines.push("frontier_claimable: " + o.frontier.ceiling_claimable);
-  lines.push("boundary: NOT_FOR_EMISSION");
-  lines.push("spend: none");
-  return lines.join("\n");
-}
-
-const PRICE = {
-  clarity: { FL: 1.00, VVS: 0.82, VS: 0.68 },
-  color: { D: 1.00, E: 0.91, F: 0.85 },
-  cut: { Excellent: 1.00, "Very Good": 0.94 }
-};
-function priceIndex(f) {
-  const c = PRICE.clarity[f.clarity] || 0;
-  const col = PRICE.color[f.color] || 0;
-  const cut = PRICE.cut[f.cut] || 0;
-  const purity = f.reflects === "purity" ? 1 : 0;
-  return { name: f.name, index: +(c * col * cut * purity).toFixed(3), factors: { clarity: c, color: col, cut } };
-}
-function pricingReport() {
-  const facets = DEFAULT_FACETS.filter(f => f.kind !== "ceiling").map(priceIndex);
-  return {
-    protocol: "DIAMOND.PRICE.v1",
-    base: "FL·D·Excellent·purity = 1.000",
-    facets,
-    boundary: "NOT_FOR_EMISSION",
-    note: "advisory index — not a spend"
-  };
-}
-
-
-
-function justiceReport() {
-  return {
-    protocol: "DIAMOND.JUSTICE.v1",
-    law: "LAW WINS",
-    origin: "immutable",
-    boundary: "NOT_FOR_EMISSION",
-    order: ["need", "labor", "fruit", "merit"],
-    principles: {
-      look: "free",
-      ability: "earns nothing alone",
-      merit: "follows proof. not for sale",
-      efuse: "ceiling and covenant. not a tradeable charm",
-      unifi3: "identity. bound by evidence",
-      peg: "same for all. no preferred tribe",
-      worth: "not scored"
-    },
-    refused: ["pay for look", "merit without proof", "sell merit", "trade efuse", "emit", "score worth", "prefer a tribe"],
-    spend: "none"
-  };
-}
-function trilogyReport() {
-  return {
-    protocol: "TRILOGY.EFUSE.MERIT.UNIFI3.v1",
-    law: "LAW WINS",
-    boundary: "NOT_FOR_EMISSION",
-    instruments: {
-      efuse: { kind: "energy", role: "resource accounting", tradeable: false, emits: false },
-      merit: { kind: "contribution", role: "earned record", for_sale: false, emits: false },
-      unifi3: { kind: "identity", role: "identity evidence", emits: false }
-    },
-    operations: ["bindIdentity", "accountEnergy", "earnMerit", "close"],
-    refused: ["mint", "sell merit", "trade efuse"],
-    spend: "none"
-  };
-}
-function standingProbe() {
-  return { standing_callable: true, emission_source: "standing() — origin only", boundary: "NOT_FOR_EMISSION" };
-}
-
-function wordOf(r) {
-  if (!r) return "";
-  const copy = {};
-  for (const k of Object.keys(r).sort()) {
-    if (k === "finger" || k === "prev") continue;
-    copy[k] = r[k];
-  }
-  return JSON.stringify(copy);
-}
-
-function finger16(prev) {
-  const s = wordOf(prev);
-  let h = 0x811c9dc5;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  return h & 0xffff;
-}
-
-
-function verifyReceiptChain(receipts) {
-  if (!Array.isArray(receipts) || receipts.length === 0) return { ok: true, length: 0, reason: "empty" };
-  for (let i = 0; i < receipts.length; i++) {
-    const cur = receipts[i];
-    if (!cur || !cur.id || !String(cur.id).startsWith("rcpt:")) return { ok: false, length: i, reason: "bad id" };
-    if (i === 0) {
-      if (cur.finger != null && cur.finger !== 0) return { ok: false, length: 0, reason: "first finger must be 0" };
-      continue;
-    }
-    const prev = receipts[i - 1];
-    if (cur.prev !== prev.id) return { ok: false, length: i, reason: "prev mismatch" };
-    const expected = finger16(prev);
-    if (cur.finger !== expected) return { ok: false, length: i, reason: "finger mismatch", expected };
-  }
-  return { ok: true, length: receipts.length, last: receipts[receipts.length - 1].id };
-}
