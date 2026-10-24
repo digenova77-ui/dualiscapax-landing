@@ -89,10 +89,16 @@ test("runtime authorizes, persists, looks up, verifies, and infers using durable
   }), env);
   assert.equal((await verify.json()).valid, true);
 
+  const nextBody = { request_id: "integration-2", principal: { unity_id: "unity-integration" }, action: "iris.turn.look", text: "next" };
+  const nextAuth = await signedPost(env, "/v1/authorize", nextBody);
+  const nextIssued = await nextAuth.json();
+  assert.equal(nextAuth.status, 200);
+  assert.ok(nextIssued.memory_context.some((item) => item.request_id === "integration-1"));
+
   const infer = await runtime.fetch(new Request("https://iris.test/v1/infer", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ receipt: issued.receipt, text: "hello" }),
+    body: JSON.stringify({ receipt: nextIssued.receipt, text: "next" }),
   }), env);
   assert.equal(infer.status, 200);
   const inferData = await infer.json();
