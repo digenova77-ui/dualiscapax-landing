@@ -35,7 +35,7 @@ function validOperation(body) {
 }
 
 function validPaymentPolicy(env) {
-  return !!env && typeof env.X402_AMOUNT === "string" && /^[1-9]\\d*$/.test(env.X402_AMOUNT) &&
+  return !!env && typeof env.X402_AMOUNT === "string" && /^[1-9]\d*$/.test(env.X402_AMOUNT) &&
     typeof env.X402_PAY_TO === "string" && ADDRESS_RE.test(env.X402_PAY_TO);
 }
 
