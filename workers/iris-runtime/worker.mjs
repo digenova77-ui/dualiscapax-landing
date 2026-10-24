@@ -141,11 +141,50 @@ async function handleRequest(request, env) {
 
   const isPaidTurn = url.pathname === "/v1/paid-turn";
   const isWorkValidation = url.pathname === "/v1/work/validate";
-  if (url.pathname !== "/v1/turn" && !isPaidTurn && !isWorkValidation) return json({ available: false, reason: "not-found" }, 404);
+  const isWorkPrepare = url.pathname === "/v1/work/prepare";
+  if (url.pathname !== "/v1/turn" && !isPaidTurn && !isWorkValidation && !isWorkPrepare) return json({ available: false, reason: "not-found" }, 404);
   if (request.method !== "POST") return json({ available: false, reason: "method-not-allowed" }, 405, { allow: "POST" });
 
   const origin = allowedOrigin(request, env);
   if (!origin) return json({ available: false, stage: "origin", reason: "origin-not-authorized" }, 403);
+
+  // Prepare creates a content-bound envelope only. Caller-supplied identity is metadata,
+  // not authentication or authority; this endpoint never executes or authorizes work.
+  if (isWorkPrepare) {
+    const body = await readBody(request);
+    if (body === null) return json({ valid: false, errors: ["body-too-large"], execution_performed: false }, 413);
+    if (body === undefined) return json({ valid: false, errors: ["invalid-json"], execution_performed: false }, 400);
+    const allowed = ["request_id", "unity_id", "action", "module", "policy_version", "input", "complexity", "resource_budget", "verification"];
+    if (!body || typeof body !== "object" || Array.isArray(body) ||
+        Object.keys(body).length !== allowed.length || Object.keys(body).some((key) => !allowed.includes(key)) ||
+        typeof body.input !== "string" || !body.input.trim() || body.input.length > MAX_TEXT_CHARS) {
+      return json({ valid: false, errors: ["invalid-prepare-input"], execution_performed: false }, 400);
+    }
+    const envelope = {
+      contract: "dualis.work.v1",
+      request_id: body.request_id,
+      input_sha256: await sha256(body.input),
+      unity_id: body.unity_id,
+      action: body.action,
+      module: body.module,
+      policy_version: body.policy_version,
+      complexity: body.complexity,
+      resource_budget: body.resource_budget,
+      verification: body.verification,
+    };
+    const result = validateWorkEnvelope(envelope);
+    return json({
+      contract: "dualis.work.preparation.v1",
+      valid: result.valid,
+      errors: result.errors,
+      envelope: result.valid ? envelope : null,
+      execution_performed: false,
+      authorization_performed: false,
+      metering_performed: false,
+      settlement_performed: false,
+      identity_verified: false,
+    }, result.valid ? 200 : 422);
+  }
 
   // This endpoint validates a work envelope only. It does not authenticate a principal,
   // invoke Trinity, execute work, meter resources, charge, or settle anything.
