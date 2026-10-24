@@ -168,7 +168,6 @@ export class PaymentTransaction {
         if (current.state === "RELEASED") return baseReply(body, "RELEASED");
         if (current.state !== "PAYMENT_ATTEMPTED") return baseReply(body, current.state === "IN_DOUBT" ? "IN_DOUBT" : "CONFLICT");
         const record = { ...current, state: "RELEASED", updated_at: now, release_reason: String(body.reason || "payment-not-accepted").slice(0, 160) };
-        delete record.payment_sha256;
         delete record.payment_receipt;
         delete record.transaction;
         await txn.put(key, record);
