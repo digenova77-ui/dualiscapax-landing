@@ -34,3 +34,20 @@ jobs:
           node-version: "22"
       - name: Check Trinity verifier syntax
         run: node --check verify.js
+
+  live-edge-smoke:
+    name: Live Trinity edge verification
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify live .ai law, Trinity, seal and Unity status
+        env:
+          BASE_URL: https://dualiscapax.ai
+        run: timeout 45s node verify.js "$BASE_URL"
