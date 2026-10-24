@@ -82,11 +82,17 @@
    * Public entry. In production (no window.IrisSigningSecret) the
    * browser never supplies a secret. Staging may set the hook for tests.
    */
+  function withTimeout(promise, ms) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () { reject(new Error("timeout")); }, ms);
+      promise.then(function (v) { clearTimeout(timer); resolve(v); }, function (e) { clearTimeout(timer); reject(e); });
+    });
+  }
+
   async function authorize(body) {
-    if (w.IrisSigningSecret) {
-      return authorizeStaging(body);
-    }
-    return authorizeProduction(body);
+    var ms = typeof w.IrisAuthorizeTimeoutMs === "number" ? w.IrisAuthorizeTimeoutMs : 4000;
+    var call = w.IrisSigningSecret ? authorizeStaging(body) : authorizeProduction(body);
+    return withTimeout(call, ms);
   }
 
   w.IrisAuthorize = {

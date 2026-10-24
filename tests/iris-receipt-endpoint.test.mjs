@@ -8,11 +8,19 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../workers/iris-runtime/worker.mjs";
 
+function allowBinding() {
+  return {
+    fetch: async () => new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    }),
+  };
+}
 const FULL_ENV = {
-  IDENTITY_API: {},
-  TRINITY_LAW: {},
-  IRIS_MEMORY: {},
-  MODEL_PROVIDER: {},
+  IDENTITY_API: allowBinding(),
+  TRINITY_LAW: allowBinding(),
+  IRIS_MEMORY: allowBinding(),
+  MODEL_PROVIDER: allowBinding(),
   TRINITY_HMAC_SECRET: "test-secret",
 };
 
@@ -60,14 +68,14 @@ test("receipt verify rejects a missing receipt", async () => {
   const res = await verify({});
   const data = await res.json();
   assert.equal(data.valid, false);
-  assert.equal(data.reason, "missing-receipt");
+  assert.equal(data.reason, "bad-receipt");
 });
 
 test("receipt verify rejects a bad contract", async () => {
   const res = await verify({ receipt: { ...good, contract: "other" } });
   const data = await res.json();
   assert.equal(data.valid, false);
-  assert.equal(data.reason, "bad-contract");
+  assert.equal(data.reason, "bad-receipt");
 });
 
 test("receipt verify accepts a well-formed receipt", async () => {

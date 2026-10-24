@@ -1,13 +1,12 @@
 /**
  * Iris Runtime — staging Worker (non-production).
  *
- * Implements /v1/authorize with fail-closed behavior.
- * Required bindings (must be present in wrangler.toml [env.staging]):
- *   IDENTITY_API, TRINITY_LAW, IRIS_MEMORY, MODEL_PROVIDER
+ * /v1/authorize is fail-closed.
+ * Required bindings: IDENTITY_API, TRINITY_LAW, IRIS_MEMORY, MODEL_PROVIDER
+ * HMAC secret: TRINITY_HMAC_SECRET (Worker secret, never in source).
  *
- * The HMAC secret is expected to be supplied as a Worker secret
- * (TRINITY_HMAC_SECRET), never as a browser-visible value.
- * This file contains no production routes.
+ * MODEL_PROVIDER is not called from authorize. Inference is /v1/infer
+ * and requires a previously issued dualis.receipt.v1 receipt.
  */
 const REQUIRED_BINDINGS = [
   "IDENTITY_API",
@@ -17,11 +16,22 @@ const REQUIRED_BINDINGS = [
 ];
 
 const RECEIPT_CONTRACT = "dualis.receipt.v1";
+const BINDING_TIMEOUT_MS = 1500;
 
-function json(status, body) {
+// Same-isolate idempotency. Cross-isolate duplicates need a Durable Object.
+const issued = new Map();
+const inflight = new Set();
+
+function json(status, body, extraHeaders) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "content-type": "application/json" },
+    headers: {
+      "content-type": "application/json",
+      "access-control-allow-origin": "*",
+      "access-control-allow-headers": "content-type, x-timestamp, x-signature",
+      "access-control-allow-methods": "GET, POST, OPTIONS",
+      ...(extraHeaders || {}),
+    },
   });
 }
 
@@ -29,25 +39,93 @@ function missingBindings(env) {
   return REQUIRED_BINDINGS.filter((name) => !env[name]);
 }
 
+function inertBindings(env) {
+  return REQUIRED_BINDINGS.filter((name) => !env[name] || typeof env[name].fetch !== "function");
+}
+
 async function sha256Hex(text) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function receiptShape(receipt) {
+  return !!(
+    receipt &&
+    receipt.contract === RECEIPT_CONTRACT &&
+    typeof receipt.id === "string" &&
+    receipt.id.startsWith("rct_") &&
+    typeof receipt.sha256 === "string" &&
+    /^[0-9a-f]{64}$/i.test(receipt.sha256) &&
+    typeof receipt.request_id === "string" &&
+    receipt.request_id
+  );
+}
+
+async function hmacHex(secret, payload) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function callBinding(binding, path, body, timeoutMs) {
+  if (!binding || typeof binding.fetch !== "function") {
+    return { ok: false, reason: "binding-inert" };
+  }
+  const limit = typeof timeoutMs === "number" ? timeoutMs : BINDING_TIMEOUT_MS;
+  let timer;
+  const timeout = new Promise((resolve) => {
+    timer = setTimeout(() => resolve({ ok: false, reason: "timeout" }), limit);
+  });
+  const call = (async () => {
+    try {
+      const res = await binding.fetch("https://binding" + path, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      let data = null;
+      try { data = await res.json(); } catch (e) {}
+      return { ok: res.ok && (!data || data.ok !== false && data.decision !== "deny"), status: res.status, data };
+    } catch (err) {
+      return { ok: false, reason: "binding-error" };
+    }
+  })();
+  try {
+    return await Promise.race([call, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "access-control-allow-origin": "*",
+          "access-control-allow-headers": "content-type, x-timestamp, x-signature",
+          "access-control-allow-methods": "GET, POST, OPTIONS",
+        },
+      });
+    }
+
     if (url.pathname === "/v1/authorize" && request.method === "POST") {
       const missing = missingBindings(env);
       if (missing.length) {
-        return json(503, {
-          authorized: false,
-          reason: "bindings-unavailable",
-          missing,
-        });
+        return json(503, { authorized: false, reason: "bindings-unavailable", missing });
+      }
+      const inert = inertBindings(env);
+      if (inert.length) {
+        return json(503, { authorized: false, reason: "binding-inert", missing: inert });
       }
 
       let body;
@@ -62,82 +140,129 @@ export default {
         return json(400, { authorized: false, reason: "missing-request-id" });
       }
 
-      // Server-side secret only. Never read from the request body.
       const secret = env.TRINITY_HMAC_SECRET;
       if (!secret) {
         return json(503, { authorized: false, reason: "signing-secret-unavailable" });
       }
 
-      // Minimal fail-closed decision: deny if the body explicitly requests denial
-      // or if required identity fields are absent. Real Trinity binding would
-      // replace this with a call to env.TRINITY_LAW.
-      if (body.force_deny === true) {
-        return json(403, { authorized: false, reason: "policy", request_id: requestId });
+      const timestamp = request.headers.get("x-timestamp");
+      const signature = request.headers.get("x-signature");
+      if (timestamp || signature) {
+        if (!timestamp || !signature) {
+          return json(401, { authorized: false, reason: "invalid-signature" });
+        }
+        const expected = await hmacHex(secret, timestamp + "." + JSON.stringify(body));
+        if (expected !== signature) {
+          return json(401, { authorized: false, reason: "invalid-signature" });
+        }
       }
 
-      const inputText = typeof body.text === "string" ? body.text : "";
-      const digest = await sha256Hex(inputText);
-      const receiptId = "rct_" + requestId;
+      if (issued.has(requestId)) {
+        return json(409, { authorized: false, reason: "duplicate-request", request_id: requestId });
+      }
+      if (inflight.has(requestId)) {
+        return json(409, { authorized: false, reason: "concurrent-claim", request_id: requestId });
+      }
+      inflight.add(requestId);
 
-      return json(200, {
-        authorized: true,
-        decision: "allow",
-        request_id: requestId,
-        receipt: {
+      try {
+        if (body.force_deny === true) {
+          return json(403, { authorized: false, reason: "policy", request_id: requestId });
+        }
+
+        const inputText = typeof body.text === "string" ? body.text : "";
+        const identity = await callBinding(env.IDENTITY_API, "/check", { request_id: requestId, principal: body.principal || null }, env.IRIS_BINDING_TIMEOUT_MS);
+        if (!identity.ok) {
+          return json(403, { authorized: false, reason: identity.reason || "identity-denied", request_id: requestId });
+        }
+        const law = await callBinding(env.TRINITY_LAW, "/evaluate", { request_id: requestId, text: inputText, action: body.action || "iris.turn.look" }, env.IRIS_BINDING_TIMEOUT_MS);
+        if (!law.ok) {
+          return json(403, { authorized: false, reason: law.reason || "law-denied", request_id: requestId });
+        }
+
+        const digest = await sha256Hex(inputText);
+        const receipt = {
           contract: RECEIPT_CONTRACT,
           unity_id: body.unity_id || "staging",
           request_id: requestId,
           sha256: digest,
-          id: receiptId,
-        },
-      });
+          id: "rct_" + requestId,
+        };
+        const memory = await callBinding(env.IRIS_MEMORY, "/record", { request_id: requestId, receipt }, env.IRIS_BINDING_TIMEOUT_MS);
+        if (!memory.ok) {
+          return json(403, { authorized: false, reason: memory.reason || "memory-denied", request_id: requestId });
+        }
+
+        issued.set(requestId, receipt);
+        return json(200, {
+          authorized: true,
+          decision: "allow",
+          request_id: requestId,
+          receipt,
+        });
+      } finally {
+        inflight.delete(requestId);
+      }
+    }
+
+    if (url.pathname === "/v1/infer" && request.method === "POST") {
+      const missing = missingBindings(env);
+      if (missing.length) return json(503, { ok: false, reason: "bindings-unavailable", missing });
+      let body;
+      try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
+      if (!receiptShape(body && body.receipt)) {
+        return json(403, { ok: false, reason: "receipt-required" });
+      }
+      const stored = issued.get(body.receipt.request_id);
+      if (!stored || stored.id !== body.receipt.id || stored.sha256 !== body.receipt.sha256) {
+        return json(403, { ok: false, reason: "receipt-unknown" });
+      }
+      const model = await callBinding(env.MODEL_PROVIDER, "/complete", { receipt: body.receipt, text: body.text || "" });
+      if (!model.ok) {
+        return json(502, { ok: false, reason: model.reason || "model-denied" });
+      }
+      return json(200, { ok: true, receipt: body.receipt, output: model.data || null });
     }
 
     if (url.pathname === "/v1/receipt/verify" && request.method === "POST") {
       const missing = missingBindings(env);
-      if (missing.length) {
-        return json(503, { valid: false, reason: "bindings-unavailable", missing });
-      }
-      if (!env.TRINITY_HMAC_SECRET) {
-        return json(503, { valid: false, reason: "signing-secret-unavailable" });
-      }
+      if (missing.length) return json(503, { valid: false, reason: "bindings-unavailable", missing });
+      if (!env.TRINITY_HMAC_SECRET) return json(503, { valid: false, reason: "signing-secret-unavailable" });
       let body;
-      try {
-        body = await request.json();
-      } catch {
-        return json(400, { valid: false, reason: "invalid-json" });
-      }
+      try { body = await request.json(); } catch { return json(400, { valid: false, reason: "invalid-json" }); }
       const receipt = body && body.receipt;
-      if (!receipt || typeof receipt !== "object") {
-        return json(200, { valid: false, reason: "missing-receipt" });
-      }
-      if (receipt.contract !== RECEIPT_CONTRACT) {
-        return json(200, { valid: false, reason: "bad-contract" });
-      }
-      if (typeof receipt.id !== "string" || !receipt.id.startsWith("rct_")) {
-        return json(200, { valid: false, reason: "bad-id" });
-      }
-      if (typeof receipt.sha256 !== "string" || !/^[0-9a-f]{64}$/i.test(receipt.sha256)) {
-        return json(200, { valid: false, reason: "bad-sha256" });
-      }
-      if (typeof receipt.request_id !== "string" || !receipt.request_id) {
-        return json(200, { valid: false, reason: "bad-request-id" });
-      }
+      if (!receiptShape(receipt)) return json(200, { valid: false, reason: "bad-receipt" });
       if (typeof body.text === "string") {
         const digest = await sha256Hex(body.text);
-        if (digest !== receipt.sha256.toLowerCase()) {
-          return json(200, { valid: false, reason: "sha256-mismatch" });
-        }
+        if (digest !== receipt.sha256.toLowerCase()) return json(200, { valid: false, reason: "sha256-mismatch" });
       }
-      return json(200, { valid: true, contract: RECEIPT_CONTRACT, id: receipt.id });
+      const stored = issued.get(receipt.request_id);
+      return json(200, {
+        valid: true,
+        known: !!(stored && stored.id === receipt.id),
+        contract: RECEIPT_CONTRACT,
+        id: receipt.id,
+      });
+    }
+
+    const receiptGet = url.pathname.match(/^\/v1\/receipt\/([^/]+)$/);
+    if (receiptGet && request.method === "GET") {
+      const id = decodeURIComponent(receiptGet[1]);
+      for (const receipt of issued.values()) {
+        if (receipt.id === id) return json(200, { found: true, receipt });
+      }
+      return json(404, { found: false, reason: "not-issued" });
     }
 
     if (url.pathname === "/health") {
       const missing = missingBindings(env);
+      const inert = inertBindings(env);
       return json(200, {
-        ok: missing.length === 0,
+        ok: missing.length === 0 && inert.length === 0 && !!env.TRINITY_HMAC_SECRET,
         missing,
+        inert,
         staging: true,
+        issued: issued.size,
       });
     }
 

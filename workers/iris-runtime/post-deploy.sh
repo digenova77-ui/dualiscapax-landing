@@ -13,6 +13,7 @@ node --test tests/iris-receipt-gate.test.mjs
 node --test tests/test_iris_provider_gate.mjs
 node --test tests/iris-authorize-endpoint.test.mjs
 node --test tests/iris-receipt-endpoint.test.mjs
+node --test tests/iris-authorize-next10.test.mjs
 python -m unittest tests.test_iris_authorize_contract -v
 
 if [[ -n "${IRIS_STAGING_URL:-}" ]]; then

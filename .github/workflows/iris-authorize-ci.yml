@@ -68,6 +68,10 @@ jobs:
       - name: Run Iris receipt endpoint tests
         run: node --test tests/iris-receipt-endpoint.test.mjs
 
+      # Duplicate, concurrent, timeout, infer gate, HMAC, receipt lookup.
+      - name: Run Iris next-ten authorize tests
+        run: node --test tests/iris-authorize-next10.test.mjs
+
       # Contract tests for the authorize decision and receipt shape.
       - name: Run Iris authorize contract (Python)
         run: python -m unittest tests.test_iris_authorize_contract -v

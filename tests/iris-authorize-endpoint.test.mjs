@@ -8,11 +8,19 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import worker from "../workers/iris-runtime/worker.mjs";
 
+function allowBinding() {
+  return {
+    fetch: async () => new Response(JSON.stringify({ ok: true, decision: "allow" }), {
+      status: 200,
+      headers: { "content-type": "application/json" },
+    }),
+  };
+}
 const FULL_ENV = {
-  IDENTITY_API: {},
-  TRINITY_LAW: {},
-  IRIS_MEMORY: {},
-  MODEL_PROVIDER: {},
+  IDENTITY_API: allowBinding(),
+  TRINITY_LAW: allowBinding(),
+  IRIS_MEMORY: allowBinding(),
+  MODEL_PROVIDER: allowBinding(),
   TRINITY_HMAC_SECRET: "test-secret",
 };
 
