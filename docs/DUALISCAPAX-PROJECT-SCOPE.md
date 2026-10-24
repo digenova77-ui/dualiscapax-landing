@@ -147,3 +147,19 @@ It is not merely identity or authentication, and it is not permission to label e
 
 The business thesis, candidate initial markets, outcome-based fee hypotheses, measurement protocol, unit economics, safeguards, regulatory boundary, and milestone plan are documented in [Residual Law Finance](RESIDUAL-LAW-FINANCE.md). The thesis is ambitious but not yet market-validated; its scale must be established through repeatable pilots and independently reproducible outcomes.
 
+
+## 8. Quantum-capable compute strategy across x86 and ARM
+
+DualisCapax should treat compute capability as a portable workload layer rather than assume that one processor architecture is the universal execution target. x86-64 and ARM systems can both host deterministic workloads, quantum-inspired classical algorithms, and classical simulation of small quantum circuits, subject to library, compiler, instruction-set, memory, and performance constraints. ARM edge nodes may be attractive where power efficiency and deployment footprint matter; x86 servers may be attractive for existing infrastructure, high-memory workloads, and accelerator availability. Neither advantage should be assumed without benchmarking the actual workload.
+
+Three execution classes must remain distinct:
+
+1. **Deterministic classical compute:** reproducible, explicitly specified calculations and policy checks, with versioned inputs, outputs, and evidence.
+2. **Quantum-inspired or quantum-simulated compute:** classical algorithms influenced by quantum methods, or classical simulation of quantum circuits. These may support optimization and research, but are not actual quantum execution. Simulation costs can grow exponentially with simulated qubit count for general state-vector methods.
+3. **Quantum processor execution:** work submitted to an actual quantum processing unit through a provider or locally connected device. An ARM or x86 host may prepare, schedule, validate, and post-process a job, but the host CPU itself does not become quantum hardware.
+
+A future quantum adapter must be an optional, capability-declared backend behind the same workload contract. It must record backend identity, software and circuit versions, input/output digests, job identifiers, shots or repetitions where relevant, calibration/context supplied by the provider, uncertainty, cost, latency, and verification method. Probabilistic quantum output must not be mislabeled as deterministic proof. Where a result controls a consequential action, it must be checked against an explicit acceptance criterion and, where feasible, a classical reference or independent validation path.
+
+The first engineering milestone is not to claim “quantum on ARM.” It is to implement and benchmark the same well-defined workload on available x86 and ARM targets, compare energy per accepted result, latency, memory, reproducibility, and total cost, then separately evaluate a quantum-inspired algorithm or small simulation. Actual QPU execution remains a distinct future integration requiring accessible hardware/provider credentials and its own validation.
+
+No quantum hardware, quantum advantage, production ARM parity, or measured energy savings is claimed by this scope document. These are capabilities to test, not assumed outcomes.
