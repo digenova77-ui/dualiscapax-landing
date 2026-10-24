@@ -237,9 +237,13 @@ export default {
         if (!identity.ok || !identity.data || identity.data.verified !== true || verifiedUnityId !== principal) {
           return json(403, { authorized: false, reason: identity.reason || "identity-unverified", request_id: requestId });
         }
-        const law = await callBinding(env.TRINITY_LAW, "/evaluate", { request_id: requestId, principal, input_sha256: digest, text: inputText, action: body.action || "iris.turn.look" }, env.IRIS_BINDING_TIMEOUT_MS);
-        if (!law.ok) {
-          return json(403, { authorized: false, reason: law.reason || "law-denied", request_id: requestId });
+        const action = typeof body.action === "string" && body.action ? body.action : "iris.turn.look";
+        const law = await callBinding(env.TRINITY_LAW, "/evaluate", { request_id: requestId, principal, input_sha256: digest, text: inputText, action }, env.IRIS_BINDING_TIMEOUT_MS);
+        const lawPrincipal = law.data && (law.data.unity_id || (law.data.principal && law.data.principal.unity_id));
+        if (!law.ok || !law.data || law.data.decision !== "allow" || law.data.authorized !== true ||
+            law.data.request_id !== requestId || lawPrincipal !== principal ||
+            law.data.action !== action || law.data.input_sha256 !== digest) {
+          return json(403, { authorized: false, reason: law.reason || "trinity-binding-mismatch", request_id: requestId });
         }
 
         const receipt = {
@@ -255,7 +259,7 @@ export default {
         const claim = await callBinding(env.IRIS_MEMORY, "/v1/requests/claim", {
           request_id: requestId,
           principal,
-          action: body.action || "iris.turn.look",
+          action,
           input_sha256: digest,
           receipt,
         }, env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
