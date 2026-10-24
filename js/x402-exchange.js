@@ -264,7 +264,7 @@ export async function handleExchange(request, options) {
   } catch (err) {
     return jsonResponse(500, { error: "facilitator did not verify" });
   }
-  if (!verified.json || verified.json.isValid !== true) {
+  if (!verified.ok || !verified.json || verified.json.isValid !== true) {
     const why = (verified.json && verified.json.invalidReason) || "invalid_payload";
     return requiredResponse(resourceUrl, rails, why, {
       success: false,
@@ -283,7 +283,7 @@ export async function handleExchange(request, options) {
   }
   const settlement = settled.json || {};
   const transaction = String(settlement.transaction || "");
-  if (settlement.success !== true || !TX.test(transaction)) {
+  if (!settled.ok || settlement.success !== true || !TX.test(transaction)) {
     return requiredResponse(resourceUrl, rails, settlement.errorReason || "unexpected_settle_error", {
       success: false,
       errorReason: settlement.errorReason || "unexpected_settle_error",
