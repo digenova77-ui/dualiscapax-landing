@@ -60,6 +60,10 @@ jobs:
       - name: Run Iris live verifier unit checks
         run: node --test tests/iris-live-verify.test.mjs
 
+      # Direct /v1/authorize endpoint tests against the Worker fetch handler.
+      - name: Run Iris authorize endpoint tests
+        run: node --test tests/iris-authorize-endpoint.test.mjs
+
       # Contract tests for the authorize decision and receipt shape.
       - name: Run Iris authorize contract (Python)
         run: python -m unittest tests.test_iris_authorize_contract -v

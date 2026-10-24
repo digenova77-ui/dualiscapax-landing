@@ -11,6 +11,7 @@ node workers/iris-runtime/verify-staging.mjs
 node --test tests/iris-authorize-regression.test.mjs
 node --test tests/iris-receipt-gate.test.mjs
 node --test tests/test_iris_provider_gate.mjs
+node --test tests/iris-authorize-endpoint.test.mjs
 python -m unittest tests.test_iris_authorize_contract -v
 
 if [[ -n "${IRIS_STAGING_URL:-}" ]]; then
