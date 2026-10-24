@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "workers/iris-runtime/**"
+      - "workers/x402-ledger/**"
       - ".github/workflows/iris-runtime-integration.yml"
   push:
     branches:
@@ -29,4 +30,4 @@ jobs:
         with:
           node-version: "22"
       - name: Test governed Iris runtime and compute arbitrator
-        run: node --test workers/iris-runtime/*.test.mjs
+        run: node --test workers/iris-runtime/*.test.mjs workers/x402-ledger/*.test.mjs
