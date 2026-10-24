@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import worker, { canonicalJson as runtimeCanonicalJson } from "./worker.mjs";
+import { AMOUNT, PAY_TO, encodeHeader, requirementOf } from "../../js/x402-exchange.js";
 
 function compareUnicodeScalars(a, b) {
   const left = Array.from(a, (character) => character.codePointAt(0));
@@ -67,6 +68,31 @@ function fixture(overrides = {}) {
       decision: "allow", authorized: true, request_id: body.request_id,
       action: body.action, input_sha256: body.input_sha256, principal: body.principal,
     })),
+    X402_LEDGER: binding("paymentLedger", async (body, request) => {
+      const path = new URL(request.url).pathname;
+      if (path.endsWith("/claim")) return {
+        contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
+        action: body.action, input_sha256: body.input_sha256,
+        payment_sha256: body.payment_sha256, state: "RESERVED", claimed: true,
+      };
+      if (path.endsWith("/record")) return {
+        contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
+        action: body.action, input_sha256: body.input_sha256,
+        payment_sha256: body.payment_sha256, state: "SETTLED",
+        payment_receipt: body.payment_receipt,
+      };
+      if (path.endsWith("/complete")) return {
+        contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
+        payment_sha256: body.payment_sha256, state: "EXECUTED",
+      };
+      if (path.endsWith("/release")) return {
+        contract: body.contract, request_id: body.request_id, state: "RELEASED",
+      };
+      if (path.endsWith("/in-doubt")) return {
+        contract: body.contract, request_id: body.request_id, state: "IN_DOUBT",
+      };
+      return { state: "UNKNOWN" };
+    }),
     MODEL_PROVIDER: binding("provider", async () => ({ output: "Iris response", provider: "test-provider", confidence: 0.8 })),
     ...overrides,
   };
@@ -559,4 +585,78 @@ test("malformed durable receipt hash is rejected", async () => {
   const res = await worker.fetch(req(), env);
   assert.equal(res.status, 503);
   assert.equal((await res.json()).reason, "persistence-unconfirmed");
+});
+
+function paidReq(payment = true) {
+  const url = "https://iris-runtime.test/v1/paid-turn";
+  const rail = {
+    scheme: "exact", network: "eip155:8453", amount: AMOUNT,
+    asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    payTo: PAY_TO, maxTimeoutSeconds: 300,
+    extra: { name: "USD Coin", version: "2", assetTransferMethod: "eip3009" },
+  };
+  const headers = {
+    origin: "https://dualiscapax.ai", "content-type": "application/json",
+    "x-request-id": "paid-request-test-1234",
+  };
+  if (payment) headers["payment-signature"] = encodeHeader({
+    x402Version: 2,
+    resource: { url, mimeType: "application/json" },
+    accepted: requirementOf(rail),
+    payload: {
+      signature: "0x" + "a".repeat(130),
+      authorization: {
+        from: "0x" + "1".repeat(40), to: PAY_TO, value: AMOUNT,
+        validAfter: "0", validBefore: String(Math.floor(Date.now() / 1000) + 60),
+        nonce: "0x" + "b".repeat(64),
+      },
+    },
+  });
+  return new Request(url, { method: "POST", headers, body: JSON.stringify({ text: "6 * 7" }) });
+}
+
+test("paid runtime returns x402 challenge only after Trinity allows the exact request", async () => {
+  const { env, calls } = fixture();
+  const response = await worker.fetch(paidReq(false), env);
+  assert.equal(response.status, 402);
+  assert.equal((await response.json()).x402Version, 2);
+  assert.deepEqual(calls.map((call) => call.name), ["identity", "trinity"]);
+  assert.equal(calls.some((call) => call.name === "memory"), false);
+});
+
+test("paid runtime settles through x402, executes once, persists receipt, then completes payment ledger", async () => {
+  const { env, calls } = fixture();
+  const facilitatorCalls = [];
+  env.X402_FACILITATOR_FETCH = async (url, init) => {
+    const path = new URL(url).pathname;
+    facilitatorCalls.push(path);
+    if (path.endsWith("/verify")) return Response.json({ isValid: true, payer: "0x" + "1".repeat(40) });
+    return Response.json({
+      success: true, transaction: "0x" + "c".repeat(64),
+      payer: "0x" + "1".repeat(40), network: "eip155:8453",
+    });
+  };
+  const response = await worker.fetch(paidReq(true), env);
+  const data = await response.json();
+  assert.equal(response.status, 200, JSON.stringify(data));
+  assert.equal(data.result, "42");
+  assert.equal(data.payment.transaction, "0x" + "c".repeat(64));
+  assert.deepEqual(facilitatorCalls, ["/verify", "/settle"]);
+  assert.deepEqual(calls.map((call) => call.name), [
+    "identity", "trinity", "paymentLedger", "paymentLedger",
+    "memory", "paymentLedger",
+    "memory", "paymentLedger",
+  ]);
+  assert.deepEqual(calls.filter((call) => call.name === "paymentLedger").map((call) => call.path), [
+    "/v1/payments/claim", "/v1/payments/record", "/v1/payments/complete",
+  ]);
+  assert.equal(calls.find((call) => call.path.endsWith("/append")).body.provenance.payment.transaction, "0x" + "c".repeat(64));
+});
+
+test("paid runtime refuses before identity when the durable payment ledger is missing", async () => {
+  const { env, calls } = fixture({ X402_LEDGER: undefined });
+  const response = await worker.fetch(paidReq(false), env);
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).stage, "payment-ledger");
+  assert.equal(calls.length, 0);
 });
