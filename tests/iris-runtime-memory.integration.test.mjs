@@ -27,6 +27,14 @@ function fakeState() {
   };
 }
 
+function identityBinding() {
+  return { fetch: async (_url, init) => {
+    const body = JSON.parse(init.body || "{}");
+    const unityId = body.principal && body.principal.unity_id;
+    return new Response(JSON.stringify({ ok: true, verified: !!unityId, unity_id: unityId }), { status: 200 });
+  } };
+}
+
 function okBinding() {
   return { fetch: async () => new Response(JSON.stringify({ ok: true, decision: "allow" }), { status: 200 }) };
 }
@@ -45,7 +53,7 @@ function integratedEnv() {
     fetch: (url, init) => memoryWorker.fetch(new Request(url, init), memoryEnv),
   };
   return {
-    IDENTITY_API: okBinding(),
+    IDENTITY_API: identityBinding(),
     TRINITY_LAW: okBinding(),
     IRIS_MEMORY: memoryServiceBinding,
     MODEL_PROVIDER: {
