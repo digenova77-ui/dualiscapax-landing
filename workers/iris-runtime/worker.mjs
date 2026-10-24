@@ -208,14 +208,6 @@ export default {
       if (body.input_sha256 !== undefined && (typeof body.input_sha256 !== "string" || body.input_sha256.toLowerCase() !== digest)) {
         return json(400, { authorized: false, reason: "input-digest-mismatch", request_id: requestId });
       }
-      if (issued.has(requestId)) {
-        const prior = issued.get(requestId);
-        if (prior.sha256 === digest) {
-          return json(200, { authorized: true, decision: "allow", request_id: requestId, receipt: prior, replay: true });
-        }
-        recordAudit({ request_id: requestId, decision: "deny", reason: "duplicate-request" });
-        return json(409, { authorized: false, reason: "duplicate-request", request_id: requestId });
-      }
       if (inflight.has(requestId)) {
         return json(409, { authorized: false, reason: "concurrent-claim", request_id: requestId });
       }
@@ -376,9 +368,11 @@ export default {
       const missing = missingBindings(env);
       const inert = inertBindings(env);
       return json(200, {
-        ok: missing.length === 0 && inert.length === 0 && !!env.TRINITY_HMAC_SECRET,
+        ok: missing.length === 0 && inert.length === 0 && !!env.TRINITY_HMAC_SECRET && !!env.IRIS_MEMORY_SERVICE_TOKEN,
         missing,
         inert,
+        signing_secret: !!env.TRINITY_HMAC_SECRET,
+        memory_service_token: !!env.IRIS_MEMORY_SERVICE_TOKEN,
         staging: true,
         issued_local_cache: issued.size,
       });
