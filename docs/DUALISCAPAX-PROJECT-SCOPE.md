@@ -246,3 +246,6 @@ Key distinctions carried forward:
 - pool examples 360/420/520 require their classes and capacity semantics to be reconciled;
 - the proposed 0.60 ratio remains a candidate hypothesis, not a governing law;
 - Trinity authorization, deterministic resource admission, x402 settlement, measured energy and the final receipt must be bound into one idempotent transaction contract.
+
+
+The first executable comparison harness is now present at `workers/iris-runtime/threshold-gauntlet.mjs` with `workers/iris-runtime/threshold-gauntlet.test.mjs`. Its seven local synthetic tests pass. It compares candidate rules only and is deliberately not wired into runtime authorization, x402 charging, or execution. See the integration map for scope, test results and the remaining source-reconciliation work.
