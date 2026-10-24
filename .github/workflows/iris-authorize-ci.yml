@@ -1,0 +1,38 @@
+name: Iris authorize CI
+
+on:
+  push:
+    branches:
+      - fix/iris-authorize-fail-closed-20261024
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify staging Worker config
+        run: node workers/iris-runtime/verify-staging.mjs
+
+      - name: Run Iris authorize regression (Node)
+        run: node --test tests/iris-authorize-regression.test.mjs
+
+      - name: Run Iris authorize contract (Python)
+        run: python -m unittest tests.test_iris_authorize_contract -v
+
+      - name: Run full Python suite
+        run: python -m unittest discover -s tests -v
