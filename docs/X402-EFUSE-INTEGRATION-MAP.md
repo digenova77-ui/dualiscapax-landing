@@ -138,3 +138,19 @@ No test may use real funds or mainnet assets. No value becomes canonical because
 - **Not verified in this pass:** raw compliance tree reproduction, current live route, live facilitator operation, real settlement, live calibrated energy measurement, Z3-backed threshold proof, production eFuse/Merit settlement, or a unified end-to-end execution path.
 
 The point is not to start x402 from scratch. It is to bring the existing rails together under one explicit transaction contract while preserving what has actually been proven and exposing what still needs to be connected.
+
+
+## 8. Executable threshold gauntlet (isolated, synthetic)
+
+A pure comparison harness now exists at `workers/iris-runtime/threshold-gauntlet.mjs`, with tests at `workers/iris-runtime/threshold-gauntlet.test.mjs`. It is not imported by the production runtime and cannot authorize, charge, or execute anything.
+
+The local Node test run passed **7/7 tests**:
+- exact integer-ratio boundaries below/at/above 0.60;
+- ratio-only vs absolute-only disagreement at 312/520;
+- scale invariance for the candidate ratio across 216/360, 252/420 and 312/520;
+- transaction-to-pool ratio versus post-reservation-utilization interpretations;
+- physical capacity overflow;
+- malformed, negative, fractional, leading-zero and zero transaction input;
+- explicit comparison output showing disagreement rather than silently selecting a canonical rule.
+
+The harness uses canonical integer strings and basis points (6000 = 0.60), not floating-point division. Its inputs are synthetic common units; this does **not** claim the historical dollar figures are the same unit. The test result is a local run of this harness, not evidence that the existing runtime enforces a threshold or that CI has passed this commit.
