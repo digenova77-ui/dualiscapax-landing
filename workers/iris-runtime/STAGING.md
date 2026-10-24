@@ -133,6 +133,7 @@ After `./deploy-staging.sh`:
 ```bash
 export IRIS_STAGING_URL=https://iris-runtime-staging.<subdomain>.workers.dev
 export IRIS_STAGING_SIGNING_SECRET='<same value as the staging TRINITY_HMAC_SECRET>'
+export IRIS_STAGING_UNITY_ID='<registered staging Unity ID>'
 ./post-deploy.sh
 ```
 
