@@ -2,7 +2,7 @@
 
 **Status:** integration specification / source reconciliation; not a claim of live integration.
 
-**Purpose:** assemble the existing x402 work, deterministic law/capacity logic, Unity identity, Merit/eFuse accounting, and evidence receipts into one coherent path without treating separate prototypes as if they were already connected.
+**Purpose:** preserve the source reconciliation and executable integration status for x402, deterministic law/capacity logic, Unity identity, Merit/eFuse accounting and evidence receipts. The paid runtime and durable ledger are now implemented in the integration branch; they are not deployed.
 
 ## 1. Recovered source families — keep their identities distinct
 
@@ -64,7 +64,7 @@ The likely mistake would be to infer the ratio from two constants and then treat
 
 ## 3. Intended integrated transaction path
 
-The following is the target contract to implement and test; it is not a claim that these components are currently connected.
+A staging-only code path now implements this transaction sequence across `workers/iris-runtime/worker.mjs`, `js/x402-exchange.js` and `workers/x402-ledger/worker.mjs`. It is connected in source and covered by mocked integration tests; it is not deployed, and tests do not establish live facilitator or deployed Durable Object behavior.
 
 1. **Intent:** Iris/client submits a stable request ID, operation, identity reference and canonical resource request. The client cannot self-assert proof, energy or authority.
 2. **Identity:** Unity/session verifier establishes the principal and credential state.
@@ -121,21 +121,32 @@ Sweep candidate ratios around 0.60, but include alternatives selected from the d
 
 No test may use real funds or mainnet assets. No value becomes canonical because it happens to pass a fixture.
 
-## 6. Concrete integration work remaining
+## 6. Concrete work remaining — implementation status
 
-1. Recover and compare the raw `x402-compliance` source tree against the website JavaScript rail; record commit/tree hashes and reconcile the two partial findings.
-2. Reconcile the `0.001` proposal price against the website's `10000` USDC base-unit default; choose a price per operation only in a versioned policy after product semantics are explicit.
-3. Recover the original DCLM/Z3 threshold source and identify whether 300/500 are absolute ceilings, pool-class limits, examples, or an old policy. Resolve the 520 district pool conflict.
-4. Implement the deterministic policy as a pure function with exact integer/canonical units; run all candidate policy families side by side and publish machine-readable fixtures plus test output.
-5. Bind the selected policy version into Trinity authorization, atomic reservation, payment requirements, metering record and final receipt.
-6. Add end-to-end tests for unpaid 402 → valid TEST payment → authorized execution → receipt; reject invalid payment, missing Trinity approval, exhausted capacity, replay and ambiguous settlement.
-7. Verify actual deployment routes/bindings and perform read-only staging probes before describing the path as deployed. Production payment, mainnet, issuance and settlement remain outside this integration spec.
+**Implemented in code on the integration branch:**
+- Existing website x402 v2 exchange restored into this branch at `js/x402-exchange.js`, `functions/api/x402/exchange.js` and `x402.html`.
+- Facilitator HTTP failures, resource mismatch, malformed/expired/overlong authorization windows, mismatched payer and mismatched settlement network fail closed.
+- `POST /v1/paid-turn` now shares the governed runtime's session verification and exact Trinity authorization path; it obtains an x402 challenge only after authorization.
+- Durable payment transaction state machine implemented with a Cloudflare Durable Object in `workers/x402-ledger/worker.mjs`: RESERVED → PAYMENT_ATTEMPTED → SETTLED → EXECUTED, with RELEASED and IN_DOUBT handling.
+- Ledger calls use a service token; a staging service binding is declared but no route or secrets are configured.
+- Threshold interpretation remains isolated in the integer-arithmetic candidate harness and is not wired into enforcement.
+
+**Next engineering gates:**
+1. Deploy the ledger to an isolated staging environment, configure the service token, and verify real Durable Object transaction atomicity and concurrency—not just fake-storage tests.
+2. Bind the existing identity, Trinity, memory and model services to the staging runtime, configure exact allowed origins, and run end-to-end tests through the real service contracts.
+3. Reconcile the raw historical `x402-compliance` tree against the restored website rail and close the two recorded partial findings (non-canonical payee-key casing and deeply nested proof-shaped fields).
+4. Decide the paid-operation price and network policy. The existing website default is 10000 USDC base units (0.01 USDC); the historical 0.001 proposal is not canonical. Do not change live pricing or use mainnet funds without explicit approval.
+5. Wire the front end to the governed `/v1/paid-turn` endpoint using the real Unity session. The restored `x402.html` page still calls the standalone `/api/x402/exchange` receipt endpoint; it is not yet the paid compute UI.
+6. Define and test a real refund/compensation process for cases where settlement succeeds but execution or durable persistence fails. The current code marks those states IN_DOUBT and fails closed; it does not claim automatic refunds.
+7. Recover the original DCLM/Z3 threshold source and resolve whether 300/500 are absolute ceilings, pool-class limits, examples, or an old policy. Resolve the 520 district-pool conflict before promoting any candidate threshold.
+8. Only after these gates pass, configure and verify staging routes; then request separate authorization for any production route, mainnet payment, issuance or settlement.
 
 ## 7. Evidence grading
 
 - **Repository source inspected:** website x402 JavaScript and Pages route/config files on the historical x402 branch.
 - **Prior test evidence recorded:** compliance receipt claims the counts listed above for its own TEST tree.
-- **Not verified in this pass:** raw compliance tree reproduction, current live route, live facilitator operation, real settlement, live calibrated energy measurement, Z3-backed threshold proof, production eFuse/Merit settlement, or a unified end-to-end execution path.
+- **CI evidence:** GitHub Actions Iris Runtime Integration run 100 passed **76/76** Node tests for the code state at commit `1ecf8a366c58551d17e9dbade2cd38c7bd8e1914`. Tests use mock service bindings, fake Durable Object storage and a mocked facilitator.
+- **Not verified:** deployed ledger atomicity, live facilitator operation, real settlement, actual identity/Trinity/memory/model service contracts, front-end-to-paid-runtime wiring, refund/compensation, calibrated energy measurement, Z3-backed threshold proof, or production eFuse/Merit settlement.
 
 The point is not to start x402 from scratch. It is to bring the existing rails together under one explicit transaction contract while preserving what has actually been proven and exposing what still needs to be connected.
 
