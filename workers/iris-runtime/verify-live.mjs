@@ -85,7 +85,7 @@ export function checkDeny(result) {
   return { ok, reason: ok ? null : "deny-not-fail-closed" };
 }
 
-export function checkAllow(result) {
+export function checkAllow(result, expectedUnityId) {
   const receipt = result && result.data && result.data.receipt;
   const ok = !!(
     result &&
@@ -95,6 +95,11 @@ export function checkAllow(result) {
     receipt.contract === RECEIPT_CONTRACT &&
     typeof receipt.id === "string" &&
     receipt.id.startsWith("rct_") &&
+    typeof receipt.request_id === "string" &&
+    receipt.request_id.length > 0 &&
+    typeof receipt.unity_id === "string" &&
+    receipt.unity_id.length > 0 &&
+    (!expectedUnityId || receipt.unity_id === expectedUnityId) &&
     typeof receipt.sha256 === "string" &&
     SHA256_RE.test(receipt.sha256)
   );
@@ -116,7 +121,7 @@ export async function verifyLive(base, signingSecret, unityId) {
     request_id: "allow-" + Date.now().toString(36),
     principal: { unity_id: unityId },
     text: "hello",
-  }, signingSecret));
+  }, signingSecret), unityId);
   return { ok: health.ok && deny.ok && allow.ok, health, deny, allow };
 }
 
