@@ -91,6 +91,24 @@ Must pass:
 - Receipt verification (id + sha256 present on allow)
 - Production client path does not require a browser secret
 
+## Operational diagnostics
+
+The runtime's `/v1/metrics` and `/v1/audit` endpoints are disabled by default.
+They can reveal request identifiers and policy outcomes, so they require a dedicated
+server-side Worker secret:
+
+```bash
+cd workers/iris-runtime
+npx wrangler secret put IRIS_DIAGNOSTICS_TOKEN --env staging
+```
+
+Use a fresh random value distinct from `TRINITY_HMAC_SECRET` and
+`IRIS_MEMORY_SERVICE_TOKEN`. Send it only from a trusted operator-side client
+as `Authorization: Bearer <token>`. Never embed it in browser code or commit it.
+If the secret is absent, the endpoints return 404; missing or incorrect credentials
+return 401. Metrics are still isolate-local counters, not durable or globally
+aggregated telemetry.
+
 ## Durable claim and receipt contract (required for staging)
 
 The Identity and Trinity service response contracts are also strict:
