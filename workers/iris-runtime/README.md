@@ -106,11 +106,11 @@ node --test workers/iris-runtime/*.test.mjs
 
 `puel-bundle-verifier.mjs` composes the structural and cryptographic layers. It requires signed evidence for identity attestation, the Trinity decision, execution receipt, every resource measurement, and settlement evidence when present. The signed evidence must exactly match the corresponding object in the bundle; missing or duplicate attestations fail closed.
 
-### Root-signed trust registry
+### Rooted PUEL verification
 
-`puel-trust-registry.mjs` validates the trust registry against a pinned Ed25519 root public key supplied by the deployment/operator. The root-signed registry defines issuer keys, authorized evidence roles, key validity windows, registry expiry, and revoked key IDs. A modified or expired registry, duplicate key ID, malformed key, or invalid root signature is rejected.
+`puel-rooted-verifier.mjs` is the end-to-end verifier entry point: it first verifies the root-signed trust registry against the pinned root public key, checks the minimum accepted registry version to prevent simple rollback, then verifies all required signed evidence using only keys from that registry. Tests cover a complete valid bundle, a stale registry version, a revoked issuer key, and a registry signed by the wrong root.
 
-The root public key is still a deployment trust anchor: this code cannot prove how that key was obtained or prevent an operator from replacing it. Key rotation, emergency revocation, rollback prevention for registry versions, independent custody, and recovery from root-key compromise need explicit operational policy. A valid cryptographic signature proves control of a key and integrity of the signed bytes; it does not prove the issuer's claim is true. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
+The root public key is still a deployment trust anchor: this code cannot prove how that key was obtained or prevent an operator from replacing it. Production use still requires protected root-key custody, monotonic registry-version storage, emergency rotation/recovery, real issuer integration, and independent verifier tests. A valid signature proves control of a key and integrity of the signed bytes; it does not prove the issuer's claim is true. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
 
 ## Diamond trilogy asset-intent contract v0.1
 
