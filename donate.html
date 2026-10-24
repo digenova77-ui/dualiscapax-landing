@@ -63,6 +63,11 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <p class="note">Voluntary gift. One method per send. No card. No checkout.</p>
   <p class="foot">DualisCapax · Truth Prevails</p>
 </div>
+    <h2>Local receipt chain</h2>
+  <p class="lede">Receipts stay in this browser. Export them. The company does not store them.</p>
+  <div id="chain-view" class="panel" hidden></div>
+  <button type="button" class="rail" id="export-chain">Export chain</button>
+  <button type="button" class="rail" id="clear-chain">Clear local chain</button>
   <h2>Confirm a send</h2>
   <p class="lede">Paste a transaction hash or Interac reference. The page records it and returns a receipt. The company does not hold the funds.</p>
   <form id="confirm-form" style="margin:.6rem 0 1rem">
@@ -216,7 +221,38 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
 
   var form = document.getElementById('confirm-form');
   var out = document.getElementById('confirm-out');
+  var view = document.getElementById('chain-view');
+  var KEY = 'dc-donate-chain';
   var chain = [];
+  try { chain = JSON.parse(localStorage.getItem(KEY) || '[]'); if (!Array.isArray(chain)) chain = []; } catch (e) { chain = []; }
+  function saveChain(){ try { localStorage.setItem(KEY, JSON.stringify(chain)); } catch (e) {} }
+  function paintChain(){
+    if (!view) return;
+    while (view.firstChild) view.removeChild(view.firstChild);
+    if (!chain.length) { view.hidden = true; return; }
+    view.hidden = false;
+    var s = document.createElement('strong');
+    s.textContent = 'Local chain (' + chain.length + ')';
+    view.appendChild(s);
+    chain.forEach(function(r, i){
+      var p = document.createElement('p');
+      p.style.marginTop = '.35rem';
+      p.textContent = (i+1) + '. ' + r.id + ' · ' + (r.rail || '') + ' · finger ' + r.finger;
+      view.appendChild(p);
+    });
+  }
+  paintChain();
+  document.getElementById('export-chain') && document.getElementById('export-chain').addEventListener('click', function(){
+    var blob = new Blob([JSON.stringify(chain, null, 2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'donate-receipts.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  document.getElementById('clear-chain') && document.getElementById('clear-chain').addEventListener('click', function(){
+    chain = []; saveChain(); paintChain();
+  });
   function renderOut(title, lines){
     out.hidden = false;
     while (out.firstChild) out.removeChild(out.firstChild);
@@ -242,7 +278,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
       body: JSON.stringify({rail: rail, ref: ref, prev: prev})
     }).then(function(r){ return r.json(); }).then(function(j){
       if (!j.ok || !j.receipt) { renderOut('Could not record', [j.reason || 'Failed']); return; }
-      chain.push(j.receipt);
+      chain.push(j.receipt); saveChain(); paintChain();
       return fetch('/receipts/verify', {
         method: 'POST',
         headers: {'content-type':'application/json'},

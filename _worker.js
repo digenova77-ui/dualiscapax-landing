@@ -222,6 +222,28 @@ export default {
     }
 
     
+    
+    if (path === "/donate/rails" && request.method === "GET") {
+      return jsonNoStore({
+        ok: true,
+        model: "company advertises; user pays address or architecture directly; company does not process",
+        interac: "donate@dualiscapax.ai",
+        crypto: {
+          xrp: "rNbfUBt3vgUDu9kEL5TxbgLHxtKbyyKyRz",
+          zec: "t1XXgbcak1o85jd4PWwBzatqxbDSkuwSTaZ",
+          sol: "Cus1pLggfxDJC8FJSQv1tRtzDanuzSxjWvSsKA12byDw",
+          eth: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
+          pol: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
+          bsc: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
+          link: "0x0adC5f2Dcb239DAAF3eeB3cc34b3F1BFF5AFBBc4",
+          dot: "16946KsPFchfAEC7MNQNSLLJb1kUzBug1fbPqBtbfZtW7X6n",
+          dgb: "dgb1qegfaue6jd8msnlr7akr9ts0akgse6q4f4wgxec",
+          bch: "qqfh32qpv5glgdfy67laswwtjvwqdc0lese3t7vjfc",
+          doge: "D92zKrKoBeUouG5Jqo96Q5DWZ4G7iU8JFK"
+        }
+      });
+    }
+
     if (path === "/donate/confirm" && request.method === "POST") {
       return request.json().then((body) => {
         const ref = String(body.ref || "").trim();
