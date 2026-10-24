@@ -264,18 +264,20 @@ export default {
           issued.set(requestId, prior);
           return json(200, { authorized: true, decision: "allow", request_id: requestId, receipt: prior, replay: true });
         }
-        const memory = await callBinding(env.IRIS_MEMORY, "/record", { request_id: requestId, receipt }, env.IRIS_BINDING_TIMEOUT_MS);
-        if (!memory.ok) {
-          return json(503, { authorized: false, reason: memory.reason || "memory-denied", request_id: requestId });
+        if (!claim.data || claim.data.claimed !== true || !receiptShape(claim.data.receipt) ||
+            claim.data.receipt.request_id !== requestId || claim.data.receipt.sha256.toLowerCase() !== digest) {
+          return json(503, { authorized: false, reason: "claim-contract-invalid", request_id: requestId });
         }
-
-        issued.set(requestId, receipt);
+        // The atomic claim must persist the receipt in the same transaction.
+        // Do not add a second, non-atomic /record step after claiming.
+        const storedReceipt = claim.data.receipt;
+        issued.set(requestId, storedReceipt);
         recordAudit({ request_id: requestId, decision: "allow", receipt_id: receipt.id });
         return json(200, {
           authorized: true,
           decision: "allow",
           request_id: requestId,
-          receipt,
+          receipt: storedReceipt,
         });
       } finally {
         inflight.delete(requestId);
