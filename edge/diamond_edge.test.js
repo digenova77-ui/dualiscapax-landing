@@ -161,14 +161,18 @@ assert(facesFrontier({ clarity: "FL", color: "D", cut: "Very Good", reflects: "p
 // --- geometric faces ---
 // Shape is orthogonal to purity bands for every geometric face.
 // Grade and frontier depend only on clarity / color / cut / reflects.
-const GEOMETRIC_FACES = [
-  "round", "brilliant", "oval", "princess", "cushion", "emerald",
-  "asscher", "radiant", "pear", "marquise", "heart", "triangle",
-  "trilliant", "hexagon", "octagon", "octahedron", "cube", "tetrahedron",
-  "dodecahedron", "icosahedron", "square", "rectangle", "pentagon"
+const DIAMOND_SHAPES = [
+  // Standard diamond cuts
+  "round", "brilliant", "ideal", "oval", "princess", "cushion",
+  "emerald", "asscher", "radiant", "pear", "marquise", "heart",
+  "triangle", "trilliant", "baguette", "tapered-baguette", "half-moon",
+  "hexagon", "octagon", "square", "rectangle", "pentagon",
+  // Fancy and polyhedral
+  "octahedron", "cube", "tetrahedron", "dodecahedron", "icosahedron",
+  "kite", "shield", "bullet", "trapezoid", "lozenge", "briolette"
 ];
 
-for (const shape of GEOMETRIC_FACES) {
+for (const shape of DIAMOND_SHAPES) {
   // Pure configuration
   const pure = { name: shape, kind: "face", shape, clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" };
   const gPure = grade(pure);
@@ -190,7 +194,7 @@ for (const shape of GEOMETRIC_FACES) {
 // Mixed pure + glass geometric faces in one frontierReport
 const geoFacets = [
   { name: "geo-floor", kind: "floor", clarity: "FL", color: "D", cut: "Excellent", reflects: "purity" },
-  ...GEOMETRIC_FACES.slice(0, 5).map(shape => ({
+  ...DIAMOND_SHAPES.slice(0, 5).map(shape => ({
     name: `${shape}-pure`,
     kind: "face",
     shape,
@@ -199,7 +203,7 @@ const geoFacets = [
     cut: "Excellent",
     reflects: "purity",
   })),
-  ...GEOMETRIC_FACES.slice(5, 10).map(shape => ({
+  ...DIAMOND_SHAPES.slice(5, 10).map(shape => ({
     name: `${shape}-glass`,
     kind: "face",
     shape,
