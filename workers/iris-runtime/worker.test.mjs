@@ -60,7 +60,7 @@ function fixture(overrides = {}) {
     IRIS_MEMORY: binding("memory", async (body, request) => {
       const route = new URL(request.url).pathname;
       if (route.endsWith("/context")) return { unity_id: body.unity_id, items: [] };
-      if (route.endsWith("/claim")) return { contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true };
+      if (route.endsWith("/claim")) return { contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true };
       return { contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), ...durableReceipt(body, body.output, "receipt-1") };
     }),
     TRINITY_LAW: binding("trinity", async (body) => ({
@@ -213,7 +213,7 @@ test("same request ID with changed input is rejected before a second effect", as
             return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "CONFLICT", claimed: false });
           }
           claims.set(key, { action: body.action, input_sha256: body.input_sha256 });
-          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         }
         if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
         return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), ...durableReceipt(body, body.output, "receipt-1") });
@@ -261,7 +261,7 @@ test("same request ID and same input replay the original committed result withou
             });
           }
           records.set(key, { state: "RESERVED", input_sha256: body.input_sha256 });
-          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         }
         if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
         const key = body.unity_id + ":" + body.request_id;
@@ -314,7 +314,7 @@ test("concurrent duplicate requests cannot both reserve or execute", async () =>
             return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state, claimed: false });
           }
           records.set(key, { state: "RESERVED", input_sha256: body.input_sha256 });
-          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+          return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         }
         if (path.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
         return jsonResponse({ contract: body.contract, unity_id: body.unity_id, persisted: true, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, result_sha256: sha256Text(body.output), ...durableReceipt(body, body.output, "receipt-race") });
@@ -425,7 +425,7 @@ test("memory context response for another Unity ID fails before provider", async
         const body = await request.clone().json();
         const route = new URL(request.url).pathname;
         calls.push({ name: "memory", path: route, body });
-        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         if (route.endsWith("/context")) return jsonResponse({ unity_id: "unity_someone_else", items: [{ text: "private" }] });
         return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id });
       },
@@ -453,7 +453,7 @@ test("persistence response must bind Unity ID and request ID", async () => {
         const body = await request.clone().json();
         const route = new URL(request.url).pathname;
         calls.push({ name: "memory", path: route, body });
-        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         if (route.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
         return jsonResponse({ unity_id: "unity_other_999", persisted: true, request_id: "request-other-123" });
       },
@@ -465,6 +465,28 @@ test("persistence response must bind Unity ID and request ID", async () => {
   assert.equal(res.headers.get("cache-control"), "no-store, max-age=0");
 });
 
+test("idempotency claim with mismatched action fails before memory or provider", async () => {
+  const { env, calls } = fixture({
+    IRIS_MEMORY: {
+      async fetch(request) {
+        const body = await request.clone().json();
+        const route = new URL(request.url).pathname;
+        calls.push({ name: "memory", path: route, body });
+        if (route.endsWith("/claim")) return jsonResponse({
+          contract: body.contract, unity_id: body.unity_id, request_id: body.request_id,
+          action: "iris.inference", input_sha256: body.input_sha256, state: "RESERVED", claimed: true,
+        });
+        return jsonResponse({ unity_id: body.unity_id, items: [] });
+      },
+    },
+  });
+  const res = await worker.fetch(req(), env);
+  assert.equal(res.status, 503);
+  assert.equal((await res.json()).reason, "claim-binding-mismatch");
+  assert.equal(calls.some(c => c.path?.endsWith("/context")), false);
+  assert.equal(calls.some(c => c.name === "provider"), false);
+  assert.equal(calls.some(c => c.path?.endsWith("/append")), false);
+});
 test("unsupported method is rejected without calling any binding", async () => {
   const { env, calls } = fixture();
   const res = await worker.fetch(new Request("https://iris-runtime.test/v1/turn", {
@@ -493,7 +515,7 @@ test("oversized private memory context fails before provider inference", async (
         const body = await request.clone().json();
         const route = new URL(request.url).pathname;
         calls.push({ name: "memory", path: route, body });
-        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         if (route.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: Array.from({ length: 13 }, (_, i) => ({ id: i })) });
         return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt", receipt_sha256: "a".repeat(64) });
       },
@@ -511,7 +533,7 @@ test("persistence without a durable receipt hash is not reported as success", as
       async fetch(request) {
         const body = await request.clone().json();
         const route = new URL(request.url).pathname;
-        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         if (route.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
         return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-without-hash" });
       },
@@ -528,7 +550,7 @@ test("malformed durable receipt hash is rejected", async () => {
       async fetch(request) {
         const body = await request.clone().json();
         const route = new URL(request.url).pathname;
-        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
+        if (route.endsWith("/claim")) return jsonResponse({ contract: body.contract, unity_id: body.unity_id, request_id: body.request_id, action: body.action, input_sha256: body.input_sha256, state: "RESERVED", claimed: true });
         if (route.endsWith("/context")) return jsonResponse({ unity_id: body.unity_id, items: [] });
         return jsonResponse({ unity_id: body.unity_id, persisted: true, request_id: body.request_id, receipt_id: "receipt-bad-hash", receipt_sha256: "not-a-hash" });
       },
