@@ -7,7 +7,7 @@ This directory contains an isolated Worker entry point for Iris. It is **not dep
 From the repository root:
 
 ```sh
-node --test workers/iris-runtime/worker.test.mjs workers/iris-runtime/compute-arbitrator.test.mjs tests/test_api_base_trust.mjs
+node --test workers/iris-runtime/*.test.mjs
 ```
 
 ## Required staging bindings
@@ -91,32 +91,22 @@ The runtime verifies that a stored settlement receipt has the exact scheme, amou
 Configure the exact allowed staging origin before browser access. Requests from unconfigured origins fail closed. Example local test run:
 
 ```sh
-node --test workers/iris-runtime/universal-work-contract.test.mjs workers/iris-runtime/universal-work-route.test.mjs
+node --test workers/iris-runtime/*.test.mjs
 ```
-
-This endpoint makes the contract inspectable by developers without weakening the separate Trinity authorization gate for consequential operations.
 
 ### Prepare a content-bound work envelope
 
 `POST /v1/work/prepare` accepts a task description plus request/policy/module metadata, hashes the exact UTF-8 input with SHA-256, validates the resulting `dualis.work.v1` envelope, and returns it only if structurally valid. The caller-provided Unity ID is metadata only: the endpoint explicitly returns `identity_verified: false`. It does not authorize or execute the task, measure resource use, calculate a charge, or settle payment. Do not use this endpoint as an execution permission check.
 
-Run the contract gauntlet:
-
-```sh
-node --test workers/iris-runtime/*.test.mjs
-```
-
 ## PUEL — Proof of Universal Legitimacy evidence bundle v0.1
 
 `puel-evidence.mjs` validates a strict, request-bound evidence bundle that ties together the work envelope, identity attestation, exact Trinity allow decision, execution receipt, resource-measurement records, and optional settlement evidence. Mismatched principal, request ID, action, input digest, policy version, or settlement state is rejected. Unknown fields fail closed.
 
-**Important:** this structural binding gate is not by itself the final PUEL proof system. A valid result is labelled `STRUCTURALLY_BOUND` with `proof_claim: NOT_CRYPTOGRAPHICALLY_VERIFIED`. It does not establish that the evidence issuers are authentic or that their claims are true.
+`puel-signatures.mjs` verifies Ed25519 signatures over canonical statements, checks each signature's digest against the exact canonical evidence object, enforces issuer/key/role bindings, and rejects unknown, revoked, expired, stale, future-dated, or role-inappropriate keys. Canonical JSON uses Unicode scalar ordering and rejects non-safe-integer numbers.
 
-### Ed25519 evidence attestations
+`puel-bundle-verifier.mjs` composes the structural and cryptographic layers. It requires signed evidence for identity attestation, the Trinity decision, execution receipt, every resource measurement, and settlement evidence when present. The signed evidence must exactly match the corresponding object in the bundle; missing or duplicate attestations fail closed.
 
-`puel-signatures.mjs` adds a cryptographic verification primitive. It verifies an Ed25519 signature over a canonical statement, checks that the statement's SHA-256 matches the exact canonical evidence object, enforces issuer/key/role bindings, and rejects unknown, revoked, expired, stale, future-dated, or role-inappropriate keys. Canonical JSON uses Unicode scalar ordering and rejects non-safe-integer numbers.
-
-The trusted key registry is explicitly supplied by the caller. Therefore a successful result means `CRYPTOGRAPHICALLY_VERIFIED_ATTESTATION` **under that supplied registry**, not that the registry itself is trustworthy, decentralized, or governed. The next milestone is to define and verify the root-of-trust/key-distribution and revocation mechanism, then bind multiple independently issued attestations into one PUEL bundle. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
+**Trust boundary:** the trusted key registry is explicitly supplied by the caller. A successful result means `SIGNED_EVIDENCE_VERIFIED` under that supplied registry, not that the registry itself is trustworthy, decentralized, or governed. A valid cryptographic signature proves control of a key and integrity of the signed bytes; it does not prove that the issuer's claim is true. The next milestone is an independently governed root-of-trust, key distribution/revocation mechanism, source-specific verifiers, and multi-party policy for the final PUEL verdict. PUEL must not bypass Trinity or mint/settle eFuse, Merit, or Unity assets.
 
 ## Diamond trilogy asset-intent contract v0.1
 
