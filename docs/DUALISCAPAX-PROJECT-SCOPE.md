@@ -208,3 +208,28 @@ To decide whether adjustment is required, recover the original source/specificat
 - if Z3 is claimed, verify an actual solver dependency, submitted constraints, and SAT/UNSAT results rather than trusting a function name.
 
 The ratio is therefore a promising candidate for the *normalized law*, but not yet a verified replacement for the dollar thresholds. The decisive acceptance criterion is behavioral: tests must prove the intended invariant independently of any chosen example amounts.
+
+
+### 9.2 Follow-up: distinguish the x402 hypothesis from a governing ratio
+
+Inspected the separate historical branch `cursor/x402-http-exchange-37b9` read-only, including `x402.html`, `js/x402-exchange.js`, `functions/api/x402/exchange.js`, `_worker.js`, and `wrangler.toml`.
+
+What this source actually shows:
+- The exchange's default amount is `AMOUNT = "10000"`, used as the exact USDC amount in the x402 payment requirements (0.01 USDC in the UI).
+- Both supported rails set `maxTimeoutSeconds: 300`; that is a payment-authorization timeout in seconds, not a $300 spending ceiling.
+- HTTP 500 values in the same module are error response status codes.
+- This branch's exchange source contains no 0.60 ratio, no `SINGLE_TX_LAW_LIMIT`, no `POOL_CAP_LIMIT`, and no `Z3_INVARIANTS` map. The reviewed `wrangler.toml` declares a static brochure deployment and does not establish that this x402 branch is deployed.
+
+This is a meaningful possible source of number confusion: **300 is demonstrably used as a 300-second x402 timeout in this historical branch**, but it does not prove that this is where the separate $300/$500 hypothesis originated. No evidence found so far establishes 0.60 as a protocol requirement or a derived constant.
+
+**Revised disposition:** treat `0.60` as an unverified experimental hypothesis, not a canonical invariant. Treat the $300/$500 pair as unverified historical examples until the original source or derivation is recovered. Do not encode either into production enforcement based only on this evidence.
+
+Proposed investigation matrix, with the hypothesis kept outside production:
+1. **Protocol baseline:** record x402 network, asset, exact amount, pay-to, facilitator, authorization window, verify result, settlement result, and receipt. Keep payment protocol fields separate from compute capacity/budget policy.
+2. **Candidate ratio:** compare candidate ratios across a parameter sweep; include values around 0.60 but do not privilege 0.60 without an objective function or empirical evidence.
+3. **Scale invariance:** hold the ratio constant while changing pool size by orders of magnitude; compare safety and throughput.
+4. **Absolute-bound comparison:** test ratio-only, absolute-cap-only, and combined policies independently on synthetic data. Record false accepts, false rejects, utilization, and exhaustion risk.
+5. **Adversarial cases:** boundary values, fractional rounding, malformed amounts, replayed requests, parallel reservations, and facilitator timeout/failure.
+6. **Evidence threshold:** only promote a numeric rule when the specification names its units and semantics, reproducible experiments support the choice, and regression tests prove enforcement. A protocol timeout is never to be reused as a dollar cap by numeric coincidence.
+
+No payment was sent, no facilitator was called, and no production configuration was changed during this source inspection.
