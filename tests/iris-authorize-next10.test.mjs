@@ -27,6 +27,15 @@ function identityBinding() {
   };
 }
 
+function trinityBinding() {
+  return {
+    fetch: async (_url, init) => {
+      const body = JSON.parse(init.body || "{}");
+      return new Response(JSON.stringify({ ok: true, authorized: true, decision: "allow", request_id: body.request_id, principal: { unity_id: body.principal }, action: body.action, input_sha256: body.input_sha256 }), { status: 200, headers: { "content-type": "application/json" } });
+    },
+  };
+}
+
 function allowBinding() {
   return {
     fetch: async () => new Response(JSON.stringify({ ok: true, decision: "allow" }), { status: 200 }),
@@ -42,7 +51,7 @@ function slowBinding() {
 }
 const ENV = {
   IDENTITY_API: identityBinding(),
-  TRINITY_LAW: allowBinding(),
+  TRINITY_LAW: trinityBinding(),
   IRIS_MEMORY: memoryBinding(),
   MODEL_PROVIDER: allowBinding(),
   TRINITY_HMAC_SECRET: "test-secret",
