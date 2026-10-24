@@ -206,7 +206,9 @@ export default {
       "/purity/status": () => status("/purity"),
       "/purity": () => purityText(),
       "/standing-probe/status": () => status("/standing-probe"),
-      "/standing-probe": () => standingProbe()
+      "/standing-probe": () => standingProbe(),
+      "/trilogy/status": () => status("/trilogy"),
+      "/trilogy": () => trilogyReport()
     };
     if (Object.prototype.hasOwnProperty.call(edge, clean)) {
       try {
@@ -321,6 +323,22 @@ function pricingReport() {
   };
 }
 
+
+function trilogyReport() {
+  return {
+    protocol: "TRILOGY.CONTRACT.v1",
+    law: "LAW WINS",
+    boundary: "NOT_FOR_EMISSION",
+    instruments: {
+      merit: { kind: "proof", transferable: false, for_sale: false, emits: false },
+      standing: { kind: "callable", emission_source: "origin only", emits: false },
+      residual: { kind: "capacity", prepaid: true, unused_stays: true, emits: false }
+    },
+    operations: ["lock", "burn", "close"],
+    refused: ["mint", "sell merit", "transfer standing"],
+    spend: "none"
+  };
+}
 function standingProbe() {
   return { standing_callable: true, emission_source: "standing() — origin only", boundary: "NOT_FOR_EMISSION" };
 }
