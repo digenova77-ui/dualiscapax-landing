@@ -98,12 +98,12 @@ adapter. It is deliberately not attached to Pages or deployed by this PR. It
 requires all three server-side configuration values:
 
 - `IRIS_SESSION_VERIFIER`: service binding whose `POST https://iris-session/verify`
-  endpoint validates the incoming session cookie and returns
-  `{ "authenticated": true, "unity_id": "<verified-id>" }` only for a valid session.
+  endpoint validates the incoming `x-iris-session-token` header (or approved session cookie) and returns
+  `{ "valid": true, "unity_id": "<verified-id>" }` (or `authenticated: true`) only for a valid session.
 - `IRIS_RUNTIME`: service binding to the governed runtime Worker.
 - `TRINITY_HMAC_SECRET`: Worker secret shared with that runtime.
 
-The proxy requires an exact same-origin `Origin`, rejects absent sessions, derives
+The browser client forwards the existing tab-scoped `uf_session_token` as `x-iris-session-token` only to the validated same-origin endpoint. The proxy requires an exact same-origin `Origin`, rejects absent sessions, derives
 the Unity principal from the verifier response (never from browser-supplied identity),
 recomputes the text digest, drops unrecognized request fields, signs the canonical
 body server-side, and forwards only to the runtime binding. Missing bindings fail
