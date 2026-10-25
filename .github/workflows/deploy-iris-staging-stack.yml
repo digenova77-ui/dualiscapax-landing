@@ -1,13 +1,9 @@
 name: Deploy Iris staging stack
 
 # Manual, staging-only deployment. Never deploys Pages or production Workers.
+# The staging runtime URL is discovered automatically after Wrangler deploys it.
 on:
   workflow_dispatch:
-    inputs:
-      runtime_url:
-        description: "Required HTTPS iris-runtime-staging workers.dev URL for mandatory live verification"
-        required: true
-        type: string
 
 concurrency:
   group: iris-staging-stack
@@ -21,7 +17,6 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       IRIS_STAGING_UNITY_ID: ${{ secrets.IRIS_STAGING_UNITY_ID }}
-      IRIS_STAGING_URL: ${{ inputs.runtime_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,15 +26,13 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Verify deployment credentials and live URL are configured
+      - name: Verify deployment credentials are configured
         shell: bash
         run: |
           set -euo pipefail
           [[ -n "${CLOUDFLARE_API_TOKEN:-}" ]] || { echo "Missing repository secret CLOUDFLARE_API_TOKEN"; exit 1; }
           [[ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]] || { echo "Missing repository secret CLOUDFLARE_ACCOUNT_ID"; exit 1; }
           [[ -n "${IRIS_STAGING_UNITY_ID:-}" ]] || { echo "Missing repository secret IRIS_STAGING_UNITY_ID"; exit 1; }
-          [[ -n "${IRIS_STAGING_URL:-}" ]] || { echo "Missing required input runtime_url; refusing a deploy without live verification."; exit 1; }
-          node workers/iris-runtime/staging-url.mjs "$IRIS_STAGING_URL" || { echo "runtime_url must be the exact HTTPS iris-runtime-staging workers.dev origin; nothing deployed."; exit 1; }
           npx --yes wrangler whoami
 
       - name: Deploy isolated staging stack and run mandatory live gauntlet
