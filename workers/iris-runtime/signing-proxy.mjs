@@ -148,8 +148,8 @@ async function handleAuthorize(request, env) {
     action: input.action,
     input_sha256: digest,
     principal: { unity_id: session.unityId },
-    compute_lane: typeof input.compute_lane === "string" ? input.compute_lane : input.action.slice("iris.turn.".length).toUpperCase(),
-    memory_requested: input.memory_requested === true,
+    compute_lane: input.action.slice("iris.turn.".length).toUpperCase(),
+    memory_requested: false,
     text: input.text,
   };
   const timestamp = String(Math.floor(Date.now() / 1000));
