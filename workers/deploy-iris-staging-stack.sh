@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
 # Deploy a complete isolated Iris staging stack: memory + explicit dependency fixtures + runtime.
 # Never deploys Pages, production routes, or production Workers.
-# A valid workers.dev URL is mandatory; deployment cannot silently skip the live gauntlet.
+# The runtime URL is discovered from Wrangler's deploy output unless explicitly supplied.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-for command in node npm npx openssl; do
+for command in node npm npx openssl grep tail mktemp; do
   command -v "$command" >/dev/null 2>&1 || { echo "Missing required command: $command" >&2; exit 1; }
 done
 
-if [[ -z "${IRIS_STAGING_URL:-}" && -t 0 ]]; then
-  read -r -p "HTTPS iris-runtime-staging workers.dev URL (required): " IRIS_STAGING_URL
-fi
-if [[ -z "${IRIS_STAGING_URL:-}" ]]; then
-  echo "IRIS_STAGING_URL is required; refusing to deploy without live verification." >&2
-  exit 1
-fi
-if ! node workers/iris-runtime/staging-url.mjs "$IRIS_STAGING_URL"; then
-  echo "IRIS_STAGING_URL must be the exact HTTPS iris-runtime-staging workers.dev origin; nothing deployed." >&2
-  exit 1
+# Local operators may supply the URL, but GitHub Actions no longer asks users to find it.
+# In CI, discover the URL from the runtime deployment output below.
+if [[ -n "${IRIS_STAGING_URL:-}" ]]; then
+  if ! node workers/iris-runtime/staging-url.mjs "$IRIS_STAGING_URL"; then
+    echo "IRIS_STAGING_URL must be the exact HTTPS iris-runtime-staging workers.dev origin." >&2
+    exit 1
+  fi
 fi
 
 npx wrangler whoami >/dev/null
@@ -69,11 +66,32 @@ done
 cd "$ROOT/workers/iris-staging-dependencies"
 for env_name in identity trinity model; do npx wrangler deploy --env "$env_name"; done
 
-echo "=== Deploy Iris Runtime staging Worker ==="
+echo "=== Deploy Iris Runtime staging Worker and discover its URL ==="
 put_secret "workers/iris-runtime" IRIS_MEMORY_SERVICE_TOKEN "$IRIS_MEMORY_SERVICE_TOKEN" staging
 put_secret "workers/iris-runtime" TRINITY_HMAC_SECRET "$TRINITY_HMAC_SECRET" staging
 cd "$ROOT/workers/iris-runtime"
-npx wrangler deploy --env staging
+
+deploy_log="$(mktemp)"
+if ! npx wrangler deploy --env staging 2>&1 | tee "$deploy_log"; then
+  rm -f "$deploy_log"
+  exit 1
+fi
+
+if [[ -z "${IRIS_STAGING_URL:-}" ]]; then
+  IRIS_STAGING_URL="$(grep -Eo 'https://iris-runtime-staging\.[a-z0-9-]+\.workers\.dev' "$deploy_log" | tail -n 1 || true)"
+fi
+rm -f "$deploy_log"
+
+if [[ -z "${IRIS_STAGING_URL:-}" ]]; then
+  echo "Runtime deployed, but Wrangler did not print its workers.dev URL; live gauntlet cannot safely run." >&2
+  echo "Check that workers.dev is enabled for this Cloudflare account, then rerun with IRIS_STAGING_URL set." >&2
+  exit 1
+fi
+if ! node staging-url.mjs "$IRIS_STAGING_URL"; then
+  echo "Discovered runtime URL did not match the staging-only URL policy; refusing live verification." >&2
+  exit 1
+fi
+echo "Discovered Iris staging runtime URL; proceeding with live verification."
 
 echo
 echo "=== Mandatory live gauntlet: health -> deny -> authorize -> infer -> receipt verification ==="
