@@ -97,8 +97,8 @@ Must pass:
 adapter. It is deliberately not attached to Pages or deployed by this PR. It
 requires all three server-side configuration values:
 
-- `IRIS_SESSION_VERIFIER`: service binding whose `POST https://iris-session/verify`
-  endpoint accepts `POST /api/session/verify` with `{ "session_token": "<tab-token>" }` and returns
+- `IRIS_SESSION_VERIFIER`: service binding whose `POST https://iris-session/api/session/verify`
+  endpoint accepts `{ "session_token": "<tab-token>" }` and returns
   `{ "valid": true, "unity_id": "<verified-id>" }` (or `authenticated: true`) only for a valid session.
 - `IRIS_RUNTIME`: service binding to the governed runtime Worker.
 - `TRINITY_HMAC_SECRET`: Worker secret shared with that runtime.
