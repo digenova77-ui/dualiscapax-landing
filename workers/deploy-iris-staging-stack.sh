@@ -21,18 +21,11 @@ fi
 
 npx wrangler whoami >/dev/null
 
+# Use a unique, ephemeral identity exclusively for this isolated fixture run.
+# It is propagated only to staging fixture secrets and the live verifier; it is not
+# a production identity and does not need to be stored as a repository secret.
 if [[ -z "${IRIS_STAGING_UNITY_ID:-}" ]]; then
-  if [[ -t 0 ]]; then
-    read -r -s -p "Registered staging-only Unity ID (input hidden): " IRIS_STAGING_UNITY_ID
-    echo
-  else
-    echo "IRIS_STAGING_UNITY_ID is required; nothing deployed." >&2
-    exit 1
-  fi
-fi
-if [[ -z "$IRIS_STAGING_UNITY_ID" ]]; then
-  echo "A registered staging-only Unity ID is required; nothing deployed." >&2
-  exit 1
+  IRIS_STAGING_UNITY_ID="staging-test-$(openssl rand -hex 12)"
 fi
 
 IRIS_MEMORY_SERVICE_TOKEN="$(openssl rand -hex 32)"
