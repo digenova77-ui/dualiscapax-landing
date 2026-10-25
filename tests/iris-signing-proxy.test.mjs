@@ -27,7 +27,7 @@ function envWith({ sessionData = { authenticated: true, unity_id: "unity:verifie
         assert.equal(url, "https://iris-session/api/session/verify");
         assert.deepEqual(JSON.parse(init.body), { session_token: "signed-session-token" });
         return new Response(JSON.stringify(sessionData), {
-          status: sessionData.authenticated ? 200 : 401,
+          status: (sessionData.authenticated === true || sessionData.valid === true) ? 200 : 401,
           headers: { "content-type": "application/json" },
         });
       },
@@ -71,7 +71,7 @@ test("proxy derives principal, digest and HMAC from trusted server-side inputs",
 });
 
 test("proxy overwrites browser identity and signs the canonical server body", async () => {
-  const { env, calls } = envWith();
+  const { env, calls } = envWith({ sessionData: { valid: true, unity_id: "unity:verified-42" } });
   const text = "hello governed runtime";
   const digestBytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
   const digest = Array.from(new Uint8Array(digestBytes)).map((b) => b.toString(16).padStart(2, "0")).join("");
