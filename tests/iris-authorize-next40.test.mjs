@@ -58,6 +58,28 @@ async function post(path, body, env, headers = {}) {
 }
 const base = { principal: { unity_id: "test-unity" } };
 
+test("CORS reflects only an explicitly configured origin", async () => {
+  const env = envWith();
+  env.IRIS_ALLOWED_ORIGINS = "https://iris-staging.example.test, https://dualiscapax.com";
+  const allowed = await worker.fetch(new Request("https://staging.test/health", {
+    headers: { origin: "https://dualiscapax.com" },
+  }), env);
+  assert.equal(allowed.headers.get("access-control-allow-origin"), "https://dualiscapax.com");
+
+  const denied = await worker.fetch(new Request("https://staging.test/health", {
+    headers: { origin: "https://attacker.example" },
+  }), env);
+  assert.equal(denied.headers.get("access-control-allow-origin"), null);
+});
+
+test("CORS is disabled when no allowed origins are configured", async () => {
+  const env = envWith();
+  const response = await worker.fetch(new Request("https://staging.test/health", {
+    headers: { origin: "https://dualiscapax.com" },
+  }), env);
+  assert.equal(response.headers.get("access-control-allow-origin"), null);
+});
+
 test("1. non-JSON content type is 415", async () => {
   const res = await worker.fetch(new Request("https://staging.test/v1/authorize", {
     method: "POST", headers: { "content-type": "text/plain" }, body: "nope",
