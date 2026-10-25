@@ -44,6 +44,22 @@ The previous `docs/ops/ENVIRONMENT.md` included stale statements claiming that t
 4. Capture the GitHub Actions run URL, deployment URL, commit SHA, route-check results, and failure responses. Only then report a live pass.
 5. Keep DNS, secrets, production services, and production promotion untouched unless explicitly approved.
 
+
+### 6. Dashboard and PR evidence added 2026-10-25
+
+The user supplied Cloudflare dashboard screenshots showing the `dualiscapax-landing` project connected to GitHub, with the production branch set to `main` and automatic deployments enabled. The project's Settings page shows the Pages-style Build configuration, Pages Functions bindings, and variables/secrets section. This confirms that this project is a Pages project; it does not reveal the exact configured build command because the edit panel has not been opened.
+
+The GitHub PR check screen for PR #177 showed:
+- Cloudflare Pages — Building (failed check in the PR summary)
+- Workers Builds: `dualiscapax-landing` — failed
+- Two Vercel checks — deployment rate limited, retry in 24 hours
+- Iris/Trinity live edge verification — skipped
+- Other checks successful
+
+These are separate checks. The Vercel rate limits do not diagnose the Cloudflare build. The skipped live verification is not a pass. The screenshots do not expose the full Cloudflare build logs, so the exact cause of the Pages check failure remains unconfirmed.
+
+**Safety consequence:** merging this PR is not merely a documentation change because the dashboard shows automatic deployments enabled for `main`. Do not merge it as a workaround for CI failures or to attempt to repair Cloudflare. Keep it in review until the intended promotion path is explicitly approved and build checks are understood. Do not change production settings based on a guessed build command.
+
 ## Verification boundary
 
 This audit and its proposed instructions are source-only changes. No deployment was run. No production change was made. No current Cloudflare account state or live deployment hash was verified by this report.
