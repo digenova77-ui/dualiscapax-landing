@@ -91,6 +91,14 @@ Must pass:
 - Receipt verification (id + sha256 present on allow)
 - Production client path does not require a browser secret
 
+## Browser CORS boundary
+
+Cross-origin browser access is disabled unless an operator configures the
+`IRIS_ALLOWED_ORIGINS` Worker variable as a comma-separated list of exact
+origins (scheme, host, and port only; no wildcard). Configure only the approved
+staging frontend origin(s). An absent allowlist means no cross-origin browser
+access. Same-origin production calls do not need CORS permission.
+
 ## Operational diagnostics
 
 The runtime's `/v1/metrics` and `/v1/audit` endpoints are disabled by default.
