@@ -395,6 +395,30 @@ export default {
       return json(result, allowed.ok ? 200 : 403);
     }
 
+    // Staged: health endpoint mirroring the static /health.json body.
+    if (path === "/healthz") {
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        return new Response("Method not allowed", { status: 405, headers: noStore({ allow: "GET, HEAD" }) });
+      }
+      return json({ ok: true, authority: "NONE" });
+    }
+
+    // Staged: DCLM ingest. Fail-closed until a real backend is bound.
+    if (path === "/v2/dclm/ingest") {
+      if (request.method !== "POST") {
+        return json({ verdict: "HOLE", why: "method-not-allowed", authority: "NONE" }, 405);
+      }
+      if (!env.DCLM_INGEST_URL || !env.DCLM_INGEST_TOKEN) {
+        return json({ verdict: "HOLE", why: "DCLM backend not bound", authority: "NONE" }, 503);
+      }
+      const upstream = await fetch(env.DCLM_INGEST_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${env.DCLM_INGEST_TOKEN}` },
+        body: await request.text()
+      });
+      return new Response(await upstream.text(), { status: upstream.status, headers: { "content-type": "application/json; charset=utf-8", ...noStore() } });
+    }
+
     // All other paths fall through to Pages assets. No rewriting. No external fetch.
     return assets.fetch(request);
   }
