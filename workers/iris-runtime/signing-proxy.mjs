@@ -79,8 +79,9 @@ async function verifySession(request, env) {
   if (!env.IRIS_SESSION_VERIFIER || typeof env.IRIS_SESSION_VERIFIER.fetch !== "function") {
     return { ok: false, status: 503, reason: "session-verifier-unavailable" };
   }
+  const sessionToken = request.headers.get("x-iris-session-token");
   const cookie = request.headers.get("cookie");
-  if (!cookie) return { ok: false, status: 401, reason: "session-required" };
+  if (!sessionToken && !cookie) return { ok: false, status: 401, reason: "session-required" };
 
   let response;
   try {
@@ -88,7 +89,8 @@ async function verifySession(request, env) {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        cookie,
+        ...(cookie ? { cookie } : {}),
+        ...(sessionToken ? { "x-iris-session-token": sessionToken } : {}),
         ...(request.headers.get("authorization") ? { authorization: request.headers.get("authorization") } : {}),
       },
       body: "{}",
