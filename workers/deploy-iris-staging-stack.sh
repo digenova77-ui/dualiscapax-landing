@@ -17,8 +17,8 @@ if [[ -z "${IRIS_STAGING_URL:-}" ]]; then
   echo "IRIS_STAGING_URL is required; refusing to deploy without live verification." >&2
   exit 1
 fi
-if ! node -e 'const u = new URL(process.argv[1]); if (u.protocol !== "https:" || !u.hostname.endsWith(".workers.dev") || u.username || u.password) process.exit(1)' "$IRIS_STAGING_URL"; then
-  echo "IRIS_STAGING_URL must be a valid HTTPS workers.dev URL; nothing deployed." >&2
+if ! node workers/iris-runtime/staging-url.mjs "$IRIS_STAGING_URL"; then
+  echo "IRIS_STAGING_URL must be the exact HTTPS iris-runtime-staging workers.dev origin; nothing deployed." >&2
   exit 1
 fi
 
