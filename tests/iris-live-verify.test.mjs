@@ -4,7 +4,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkHealth, checkDeny, checkAllow, checkInference, checkReceiptVerify } from "../workers/iris-runtime/verify-live.mjs";
+import { checkHealth, checkDeny, checkAllow, checkInference, checkReceiptVerify, verifyLive } from "../workers/iris-runtime/verify-live.mjs";
 
 test("health passes only when ok and missing is empty", () => {
   assert.equal(checkHealth({ status: 200, data: { ok: true, missing: [] } }).ok, true);
@@ -49,4 +49,20 @@ test("receipt verification must confirm the exact persisted receipt ID", () => {
   assert.equal(checkReceiptVerify({ status: 200, data: { valid: true, contract: "dualis.receipt.v1", id: receipt.id } }, receipt).ok, true);
   assert.equal(checkReceiptVerify({ status: 200, data: { valid: false } }, receipt).ok, false);
   assert.equal(checkReceiptVerify({ status: 200, data: { valid: true, contract: "dualis.receipt.v1", id: "rct_other" } }, receipt).ok, false);
+});
+
+
+test("live verifier refuses non-staging hosts before making network calls", async () => {
+  await assert.rejects(
+    () => verifyLive("https://dualiscapax.ai", "test-secret", "unity-test"),
+    /exact HTTPS iris-runtime-staging workers\.dev origin/
+  );
+  await assert.rejects(
+    () => verifyLive("https://production.account123.workers.dev", "test-secret", "unity-test"),
+    /exact HTTPS iris-runtime-staging workers\.dev origin/
+  );
+  await assert.rejects(
+    () => verifyLive("http://iris-runtime-staging.account123.workers.dev", "test-secret", "unity-test"),
+    /exact HTTPS iris-runtime-staging workers\.dev origin/
+  );
 });
