@@ -75,6 +75,9 @@ jobs:
       - name: Run Iris signing proxy tests
         run: node --test tests/iris-signing-proxy.test.mjs
 
+      - name: Run Iris signing proxy runtime integration tests
+        run: node --test tests/iris-signing-proxy-runtime.integration.test.mjs
+
       # Project-wide receipt gate: DEPTH, work, and learning require a valid receipt.
       - name: Run Iris receipt gate (Node)
         run: node --test tests/iris-receipt-gate.test.mjs
