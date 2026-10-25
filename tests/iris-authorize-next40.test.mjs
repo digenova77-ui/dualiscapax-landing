@@ -38,6 +38,7 @@ function envWith(model) {
     MODEL_PROVIDER: model || { fetch: async () => new Response(JSON.stringify({ ok: true }), { status: 200 }) },
     TRINITY_HMAC_SECRET: "test-secret",
     IRIS_MEMORY_SERVICE_TOKEN: "test-memory-token",
+    IRIS_DIAGNOSTICS_TOKEN: "test-diagnostics-token",
   };
 }
 async function sign(body, secret = "test-secret", path = "/v1/authorize") {
@@ -112,7 +113,7 @@ test("7. revoked receipt cannot infer", async () => {
 test("8. metrics expose allow and model counts", async () => {
   const env = envWith();
   await post("/v1/authorize", { ...base, request_id: "met-40", text: "hello" }, env);
-  const res = await worker.fetch(new Request("https://staging.test/v1/metrics"), env);
+  const res = await worker.fetch(new Request("https://staging.test/v1/metrics", { headers: { authorization: "Bearer " + env.IRIS_DIAGNOSTICS_TOKEN } }), env);
   const data = await res.json();
   assert.ok(data.allow >= 1);
   assert.equal(typeof data.model, "number");
