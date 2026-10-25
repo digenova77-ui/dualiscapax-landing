@@ -101,7 +101,7 @@ async function verifySession(request, env) {
   if (!response.ok) return { ok: false, status: 401, reason: "session-invalid" };
   let data;
   try { data = await response.json(); } catch { return { ok: false, status: 503, reason: "session-verifier-invalid-response" }; }
-  if (data?.authenticated !== true || typeof data.unity_id !== "string" || !data.unity_id.trim()) {
+  if ((data?.authenticated !== true && data?.valid !== true) || typeof data.unity_id !== "string" || !data.unity_id.trim()) {
     return { ok: false, status: 401, reason: "session-invalid" };
   }
   return { ok: true, unityId: data.unity_id };
