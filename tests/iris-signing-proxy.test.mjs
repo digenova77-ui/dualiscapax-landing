@@ -24,8 +24,8 @@ function envWith({ sessionData = { authenticated: true, unity_id: "unity:verifie
     IRIS_SESSION_VERIFIER: {
       fetch: async (url, init) => {
         calls.session += 1;
-        assert.equal(url, "https://iris-session/verify");
-        assert.equal(init.headers["x-iris-session-token"], "signed-session-token");
+        assert.equal(url, "https://iris-session/api/session/verify");
+        assert.deepEqual(JSON.parse(init.body), { session_token: "signed-session-token" });
         return new Response(JSON.stringify(sessionData), {
           status: sessionData.authenticated ? 200 : 401,
           headers: { "content-type": "application/json" },
