@@ -149,8 +149,7 @@ async function callBinding(binding, path, body, timeoutMs, extraHeaders) {
   }
 }
 
-export default {
-  async fetch(request, env) {
+async function handleRequest(request, env) {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
@@ -488,5 +487,28 @@ export default {
     }
 
     return json(404, { error: "not-found" });
+}
+
+export default {
+  async fetch(request, env) {
+    const response = await handleRequest(request, env);
+    const headers = new Headers(response.headers);
+    // Never reflect arbitrary origins. Cross-origin browser access is opt-in
+    // through an exact comma-separated allowlist configured server-side.
+    headers.delete("access-control-allow-origin");
+    const origin = request.headers.get("origin");
+    const allowedOrigins = String(env.IRIS_ALLOWED_ORIGINS || "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    if (origin && allowedOrigins.includes(origin)) {
+      headers.set("access-control-allow-origin", origin);
+      headers.set("vary", "Origin");
+    }
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
   },
 };
