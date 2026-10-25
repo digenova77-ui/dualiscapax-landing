@@ -47,6 +47,10 @@ jobs:
       - name: Verify staging Worker config
         run: node workers/iris-runtime/verify-staging.mjs
 
+      # Validate the deployment target before any staging deploy can proceed.
+      - name: Test exact Iris staging Worker URL guard
+        run: node --test workers/iris-runtime/staging-url.test.mjs
+
       # Verify the durable memory worker uses a Durable Object and has an atomic claim contract.
       - name: Verify Iris Memory staging config
         run: node workers/iris-memory/verify-staging.mjs
