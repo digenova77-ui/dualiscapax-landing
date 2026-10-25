@@ -80,20 +80,14 @@ async function verifySession(request, env) {
     return { ok: false, status: 503, reason: "session-verifier-unavailable" };
   }
   const sessionToken = request.headers.get("x-iris-session-token");
-  const cookie = request.headers.get("cookie");
-  if (!sessionToken && !cookie) return { ok: false, status: 401, reason: "session-required" };
+  if (!sessionToken) return { ok: false, status: 401, reason: "session-required" };
 
   let response;
   try {
-    response = await env.IRIS_SESSION_VERIFIER.fetch("https://iris-session/verify", {
+    response = await env.IRIS_SESSION_VERIFIER.fetch("https://iris-session/api/session/verify", {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        ...(cookie ? { cookie } : {}),
-        ...(sessionToken ? { "x-iris-session-token": sessionToken } : {}),
-        ...(request.headers.get("authorization") ? { authorization: request.headers.get("authorization") } : {}),
-      },
-      body: "{}",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ session_token: sessionToken }),
     });
   } catch {
     return { ok: false, status: 503, reason: "session-verifier-unavailable" };
