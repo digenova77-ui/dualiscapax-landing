@@ -10,7 +10,7 @@ function makeRequest(body, overrides = {}) {
     headers: {
       "content-type": "application/json",
       origin: "https://dualiscapax.com",
-      cookie: "session=opaque-test",
+      "x-iris-session-token": "signed-session-token",
       ...overrides,
     },
     body: typeof body === "string" ? body : JSON.stringify(body),
@@ -25,7 +25,7 @@ function envWith({ sessionData = { authenticated: true, unity_id: "unity:verifie
       fetch: async (url, init) => {
         calls.session += 1;
         assert.equal(url, "https://iris-session/verify");
-        assert.equal(init.headers.cookie, "session=opaque-test");
+        assert.equal(init.headers["x-iris-session-token"], "signed-session-token");
         return new Response(JSON.stringify(sessionData), {
           status: sessionData.authenticated ? 200 : 401,
           headers: { "content-type": "application/json" },
@@ -105,7 +105,7 @@ test("proxy rejects cross-origin requests before session verification", async ()
 
 test("proxy rejects requests without an authenticated browser session", async () => {
   const { env, calls } = envWith();
-  const response = await proxy.fetch(makeRequest({ request_id: "proxy-4", action: "iris.turn.look", text: "x" }, { cookie: "" }), env);
+  const response = await proxy.fetch(makeRequest({ request_id: "proxy-4", action: "iris.turn.look", text: "x" }, { "x-iris-session-token": "" }), env);
   assert.equal(response.status, 401);
   assert.equal(calls.session, 0);
   assert.equal(calls.runtime, 0);
