@@ -5,9 +5,9 @@ import vm from "node:vm";
 
 const source = fs.readFileSync(new URL("../js/iris-authorize.js", import.meta.url), "utf8");
 
-function loadAuthorize({ href = "https://dualiscapax.com/app", base = "/api/iris" } = {}) {
+function loadAuthorize({ href = "https://dualiscapax.com/app", base = "/api/iris", sessionToken = null } = {}) {
   const calls = [];
-  const window = { location: { href }, IrisAuthorizeBase: base };
+  const window = { location: { href }, IrisAuthorizeBase: base, sessionStorage: { getItem: (key) => key === "uf_session_token" ? sessionToken : null } };
   const context = {
     window,
     URL,
@@ -32,6 +32,13 @@ test("production authorize sends only to the same-origin HTTPS signer", async ()
   assert.equal(calls[0].url, "https://dualiscapax.com/api/iris/v1/authorize");
   assert.equal(calls[0].init.credentials, "same-origin");
   assert.equal(calls[0].init.headers["x-signature"], undefined);
+});
+
+test("production authorize forwards the existing tab session token only to the same-origin proxy", async () => {
+  const { authorize, calls } = loadAuthorize({ sessionToken: "opaque-session-token" });
+  await authorize.authorizeProduction({ request_id: "session-forward" });
+  assert.equal(calls[0].url, "https://dualiscapax.com/api/iris/v1/authorize");
+  assert.equal(calls[0].init.headers["x-iris-session-token"], "opaque-session-token");
 });
 
 test("production authorize rejects a cross-origin signing base before network access", async () => {
