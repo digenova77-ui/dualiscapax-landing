@@ -6,11 +6,11 @@
 
 [Website](https://dualiscapax.ai) · [GitHub repository](https://github.com/digenova77-ui/dualiscapax-landing)
 
-> **Capability does not confer authority.**
+> **TRINITY. One law. Simple. Binding. Universal.**
 
-The sole law is **LAW WINS**.
+**Trinity is the sole authorization authority.** No agent, workflow, service, deployment rail, or model may create a parallel authority or bypass the governing decision.
 
-Missing authority or required evidence results in refusal, not an implicit grant. Fail-closed. Boundary: NOT_FOR_EMISSION.
+Missing, invalid, stale, or mismatched authorization evidence means **DENY**. No implicit grants. No success claims without verifiable evidence. Fail closed.
 
 ## Unity Seal (UNITY_SEAL_v1)
 
@@ -32,16 +32,16 @@ Match reports PASS; drift or error reports DRIFT or 503.
 
 All other paths fall through to Pages assets. No maps. No external bridges. No decorative routes.
 
-## Principles
+## Enforcement contract
 
-- **Trinity governs.** Authorization is enforced at the execution boundary.
-- **Fail closed.** Missing authority or evidence is refusal.
-- **LAW WINS.** The sole law.
-- **Minimize complexity.** Remove scaffolding that does not enforce the law.
+- **One authority:** Trinity decides whether a governed action is permitted.
+- **Identity-bound:** authorization must bind the exact principal, action, request ID, and input digest.
+- **Atomic idempotency:** claim the request only after a matching Trinity allow.
+- **Fail closed:** missing bindings, errors, timeouts, and mismatches deny execution.
+- **Proof required:** receipts and live deployment evidence must be verified before claiming success.
+- **No paper routes:** a workflow that only prints status or refers to absent files is not an operational integration.
 
-## Governing principle
-
-**Intelligence may propose. Computation may execute. Trinity governs whether execution is permitted.**
+**Intelligence may propose. Computation may execute. Trinity alone authorizes.**
 
 Autonomy is reliable operation within defined authority boundaries.
 
