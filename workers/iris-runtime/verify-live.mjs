@@ -15,6 +15,7 @@
 import { createHmac } from "node:crypto";
 import { request } from "node:https";
 import { request as httpRequest } from "node:http";
+import { isValidIrisStagingUrl } from "./staging-url.mjs";
 
 const RECEIPT_CONTRACT = "dualis.receipt.v1";
 const SHA256_RE = /^[a-f0-9]{64}$/i;
@@ -129,6 +130,7 @@ export function checkAllow(result, expectedUnityId) {
 
 export async function verifyLive(base, signingSecret, unityId) {
   if (!base) throw new Error("IRIS_STAGING_URL is required");
+  if (!isValidIrisStagingUrl(base)) throw new Error("IRIS_STAGING_URL must be the exact HTTPS iris-runtime-staging workers.dev origin");
   if (!signingSecret) throw new Error("IRIS_STAGING_SIGNING_SECRET is required; secret is never printed");
   if (!unityId || !unityId.trim()) throw new Error("IRIS_STAGING_UNITY_ID is required; refusing to invent an identity");
   const health = checkHealth(await getJson(join(base, "/health")));
