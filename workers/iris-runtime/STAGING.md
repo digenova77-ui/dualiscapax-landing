@@ -91,6 +91,20 @@ Must pass:
 - Receipt verification (id + sha256 present on allow)
 - Production client path does not require a browser secret
 
+## Request-size and authorization-origin guards
+
+The runtime reads request JSON through a bounded stream reader and rejects bodies
+larger than 64 KiB before parsing on authorization, inference, receipt verification,
+and revocation routes.
+
+The browser production authorization client rejects cross-origin `IrisAuthorizeBase`
+values and requires HTTPS except for localhost development. This is a client-side
+destination guard, **not** a server-side signer or session-authentication implementation.
+The Pages endpoint at the configured same-origin path must still verify the user's
+authenticated session, derive the Unity identity from that session, sign server-side,
+and route to the governed runtime. Do not enable production inference until that
+server-side integration is implemented and verified against real identity services.
+
 ## Browser CORS boundary
 
 Cross-origin browser access is disabled unless an operator configures the
