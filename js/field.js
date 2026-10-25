@@ -45,6 +45,32 @@
     return particles;
   }
 
+  function links(particles, distance) {
+    var pairs = [];
+    var limit = typeof distance === "number" ? distance : 120;
+    for (var i = 0; i < particles.length; i++) {
+      for (var j = i + 1; j < particles.length; j++) {
+        var a = particles[i];
+        var b = particles[j];
+        var dx = a.x - b.x;
+        var dy = a.y - b.y;
+        if (dx * dx + dy * dy <= limit * limit) pairs.push([i, j]);
+      }
+    }
+    return pairs;
+  }
+
+  function push(particles, x, y, width, height) {
+    particles.push({
+      x: Math.max(0, Math.min(width, x)),
+      y: Math.max(0, Math.min(height, y)),
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: (Math.random() - 0.5) * 1.2
+    });
+    if (particles.length > 140) particles.shift();
+    return particles;
+  }
+
   function mount(canvas) {
     if (!canvas || !canvas.getContext) return null;
     var reduce = root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -67,6 +93,17 @@
       if (!running) return;
       step(particles, canvas.clientWidth, canvas.clientHeight, pointer);
       ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+      var pairs = links(particles, 120);
+      ctx.strokeStyle = "rgba(99, 247, 221, 0.18)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (var n = 0; n < pairs.length; n++) {
+        var a = particles[pairs[n][0]];
+        var b = particles[pairs[n][1]];
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+      }
+      ctx.stroke();
       ctx.fillStyle = "rgba(99, 247, 221, 0.55)";
       for (var i = 0; i < particles.length; i++) {
         var p = particles[i];
@@ -82,6 +119,10 @@
       var rect = canvas.getBoundingClientRect();
       pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top };
     });
+    root.addEventListener("click", function (event) {
+      var rect = canvas.getBoundingClientRect();
+      push(particles, event.clientX - rect.left, event.clientY - rect.top, canvas.clientWidth, canvas.clientHeight);
+    });
     root.document.addEventListener("visibilitychange", function () {
       var hidden = root.document.hidden;
       if (hidden) running = false;
@@ -91,7 +132,7 @@
     return { version: VERSION, count: particles.length };
   }
 
-  var api = { version: VERSION, create: create, step: step, mount: mount };
+  var api = { version: VERSION, create: create, step: step, links: links, push: push, mount: mount };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.DualisField = api;
   if (typeof document !== "undefined") {
