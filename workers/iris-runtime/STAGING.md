@@ -91,6 +91,31 @@ Must pass:
 - Receipt verification (id + sha256 present on allow)
 - Production client path does not require a browser secret
 
+## Server-side signing proxy contract (not yet wired to Pages)
+
+`workers/iris-runtime/signing-proxy.mjs` implements the same-origin authorization
+adapter. It is deliberately not attached to Pages or deployed by this PR. It
+requires all three server-side configuration values:
+
+- `IRIS_SESSION_VERIFIER`: service binding whose `POST https://iris-session/verify`
+  endpoint validates the incoming session cookie and returns
+  `{ "authenticated": true, "unity_id": "<verified-id>" }` only for a valid session.
+- `IRIS_RUNTIME`: service binding to the governed runtime Worker.
+- `TRINITY_HMAC_SECRET`: Worker secret shared with that runtime.
+
+The proxy requires an exact same-origin `Origin`, rejects absent sessions, derives
+the Unity principal from the verifier response (never from browser-supplied identity),
+recomputes the text digest, drops unrecognized request fields, signs the canonical
+body server-side, and forwards only to the runtime binding. Missing bindings fail
+closed. Regression tests use explicit fake bindings and do not establish that a
+real session-verifier service exists.
+
+**Release blocker:** before connecting this adapter to Pages, implement/identify the
+real session verifier, map the actual Cloudflare service bindings, deploy to isolated
+staging, and prove a real signed-in session can authorize while unsigned, expired,
+cross-origin, and mismatched-identity requests fail. Do not point production Pages
+at fixture services or the staging runtime.
+
 ## Request-size and authorization-origin guards
 
 The runtime reads request JSON through a bounded stream reader and rejects bodies
