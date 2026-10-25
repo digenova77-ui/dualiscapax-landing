@@ -60,6 +60,13 @@ These are separate checks. The Vercel rate limits do not diagnose the Cloudflare
 
 **Safety consequence:** merging this PR is not merely a documentation change because the dashboard shows automatic deployments enabled for `main`. Do not merge it as a workaround for CI failures or to attempt to repair Cloudflare. Keep it in review until the intended promotion path is explicitly approved and build checks are understood. Do not change production settings based on a guessed build command.
 
+
+### 7. Isolated Pages preview rail drafted
+
+Added `.github/workflows/pages-preview-deploy.yml` on this review branch. It is manual-only, refuses the `main` branch, runs the existing deterministic route and unit checks, validates/packages the lander, performs the token preflight, and invokes `wrangler pages deploy` with the selected non-main branch name. It does not promote to production or modify DNS.
+
+This workflow is **not yet merged or executed**. GitHub Actions secrets must be configured for it, and the resulting preview URL and routes must be inspected before relying on it. Adding this workflow does not itself remove the Cloudflare dashboard's existing Pages/Workers Builds status checks; those are external integration checks and may require a dashboard-side change after a working preview path is proven.
+
 ## Verification boundary
 
 This audit and its proposed instructions are source-only changes. No deployment was run. No production change was made. No current Cloudflare account state or live deployment hash was verified by this report.
