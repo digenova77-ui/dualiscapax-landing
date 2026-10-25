@@ -53,9 +53,18 @@
       throw new Error("authorize-insecure-origin-denied");
     }
 
+    var headers = { "content-type": "application/json" };
+    // The existing gate stores its signed session token in tab-scoped sessionStorage.
+    // Forward it only to this already-validated same-origin endpoint; never log it.
+    try {
+      var sessionToken = w.sessionStorage && w.sessionStorage.getItem("uf_session_token");
+      if (sessionToken) headers["x-iris-session-token"] = sessionToken;
+    } catch (e) {
+      // Storage access can be blocked; the server-side proxy must then fail closed.
+    }
     var res = await fetch(targetUrl.href, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: headers,
       body: JSON.stringify(body),
       credentials: "same-origin"
     });
