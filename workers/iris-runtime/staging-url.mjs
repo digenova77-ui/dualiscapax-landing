@@ -3,6 +3,8 @@
  * Accepts only https://iris-runtime-staging.<account-subdomain>.workers.dev/
  * with no credentials, non-default port, path, query, or fragment.
  */
+import { pathToFileURL } from "node:url";
+
 export function isValidIrisStagingUrl(value) {
   if (typeof value !== "string" || value.length === 0 || value.trim() !== value) return false;
   try {
@@ -21,7 +23,7 @@ export function isValidIrisStagingUrl(value) {
   }
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   if (!isValidIrisStagingUrl(process.argv[2])) {
     console.error("Expected the HTTPS origin of iris-runtime-staging.<account-subdomain>.workers.dev with no path, query, fragment, or credentials.");
     process.exitCode = 1;
