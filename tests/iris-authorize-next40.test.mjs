@@ -132,7 +132,7 @@ test("10. revoke is recorded in metrics", async () => {
   const issued = await post("/v1/authorize", { ...base, request_id: "rec-40", text: "hello" }, env);
   const auth = await issued.json();
   await post("/v1/receipt/revoke", { id: auth.receipt.id }, env);
-  const metrics = await (await worker.fetch(new Request("https://staging.test/v1/metrics"), env)).json();
+  const metrics = await (await worker.fetch(new Request("https://staging.test/v1/metrics", { headers: { authorization: "Bearer " + env.IRIS_DIAGNOSTICS_TOKEN } }), env)).json();
   assert.ok(metrics.revoke >= 1);
 });
 
