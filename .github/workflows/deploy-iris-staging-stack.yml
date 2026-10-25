@@ -39,7 +39,7 @@ jobs:
           [[ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]] || { echo "Missing repository secret CLOUDFLARE_ACCOUNT_ID"; exit 1; }
           [[ -n "${IRIS_STAGING_UNITY_ID:-}" ]] || { echo "Missing repository secret IRIS_STAGING_UNITY_ID"; exit 1; }
           [[ -n "${IRIS_STAGING_URL:-}" ]] || { echo "Missing required input runtime_url; refusing a deploy without live verification."; exit 1; }
-          node -e 'const u = new URL(process.argv[1]); if (u.protocol !== "https:" || !u.hostname.endsWith(".workers.dev") || u.username || u.password) process.exit(1)' "$IRIS_STAGING_URL" || { echo "runtime_url must be an HTTPS workers.dev URL"; exit 1; }
+          node workers/iris-runtime/staging-url.mjs "$IRIS_STAGING_URL" || { echo "runtime_url must be the exact HTTPS iris-runtime-staging workers.dev origin; nothing deployed."; exit 1; }
           npx --yes wrangler whoami
 
       - name: Deploy isolated staging stack and run mandatory live gauntlet
