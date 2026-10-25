@@ -4,7 +4,7 @@
 
 ### Trinity-governed computing
 
-[Website](https://dualiscapax.ai) · [GitHub repository](https://github.com/digenova77-ui/dualiscapax-landing)
+[Website](https://dualiscapax.com) · [GitHub repository](https://github.com/digenova77-ui/dualiscapax-landing)
 
 > **TRINITY. One law. Simple. Binding. Universal.**
 
@@ -18,8 +18,8 @@ Canonical measure. Empty center, Mirror ∈ {0,1}, exempt=false∀, same toll, f
 
 Read-only verification (no-store):
 
-- https://dualiscapax.ai/seal
-- https://dualiscapax.ai/unity/status
+- https://dualiscapax.com/seal
+- https://dualiscapax.com/unity/status
 
 Expected unity_hash: d95aa793e6bc330710ea6b9acab1ce6ed127c2c89c21715adba5a15e2e5fda41
 
