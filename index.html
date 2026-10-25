@@ -7,6 +7,10 @@
   <script type="module" crossorigin src="/assets/scene-manifest-BjFSetx2.js"></script>
   <script type="module" crossorigin src="/assets/main-aLcyOp8b.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/main-CR0t-DG4.css">
+  <style>
+    #field{position:fixed;inset:0;z-index:1;width:100%;height:100%;pointer-events:none}
+    body > div:first-of-type{position:relative;z-index:5}
+  </style>
 </head>
 <body>
 <div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;background:#0d1117;color:#e6edf3;padding:10px 16px;display:flex;align-items:center;gap:12px;font-size:14px;border-bottom:1px solid #30363d">
@@ -15,6 +19,8 @@
   <a href="https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/pages-deploy.yml"><img alt="Pages deploy" src="https://github.com/digenova77-ui/dualiscapax-landing/actions/workflows/pages-deploy.yml/badge.svg"></a>
 </div>
   <canvas id="scene"></canvas>
+  <canvas id="field" aria-hidden="true"></canvas>
+  <script src="/js/field.js"></script>
 
 </body>
 </html>

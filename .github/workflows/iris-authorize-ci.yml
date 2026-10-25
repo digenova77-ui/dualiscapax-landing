@@ -102,3 +102,7 @@ jobs:
       # Full Python suite (i18n parity, arbiter, and other project tests).
       - name: Run full Python suite
         run: python -m unittest discover -s tests -v
+
+      - name: Run field tests
+        run: node --test tests/field.test.mjs
+
