@@ -38,10 +38,33 @@
   async function authorizeProduction(body) {
     var base = (w.IrisAuthorizeBase || "").replace(/\/$/, "");
     if (!base) throw new Error("authorize-base-unavailable");
-    var url = base + "/v1/authorize";
-    var res = await fetch(url, {
+    if (!w.location || !w.location.href) throw new Error("authorize-origin-unavailable");
+
+    var pageUrl;
+    var targetUrl;
+    try {
+      pageUrl = new URL(w.location.href);
+      targetUrl = new URL(base + "/v1/authorize", pageUrl);
+    } catch (e) {
+      throw new Error("authorize-base-invalid");
+    }
+    if (targetUrl.origin !== pageUrl.origin) throw new Error("authorize-cross-origin-denied");
+    if (targetUrl.protocol !== "https:" && targetUrl.hostname !== "localhost" && targetUrl.hostname !== "127.0.0.1") {
+      throw new Error("authorize-insecure-origin-denied");
+    }
+
+    var headers = { "content-type": "application/json" };
+    // The existing gate stores its signed session token in tab-scoped sessionStorage.
+    // Forward it only to this already-validated same-origin endpoint; never log it.
+    try {
+      var sessionToken = w.sessionStorage && w.sessionStorage.getItem("uf_session_token");
+      if (sessionToken) headers["x-iris-session-token"] = sessionToken;
+    } catch (e) {
+      // Storage access can be blocked; the server-side proxy must then fail closed.
+    }
+    var res = await fetch(targetUrl.href, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: headers,
       body: JSON.stringify(body),
       credentials: "same-origin"
     });

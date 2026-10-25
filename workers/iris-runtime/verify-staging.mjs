@@ -35,9 +35,11 @@ function checkWorkerSource(src) {
   const revocationGate = src.includes("/v1/receipt/revoke") && src.includes("receipt-revoked");
   const expiryGate = src.includes("RECEIPT_TTL_MS") && src.includes("receipt-expired");
   const metricsEndpoint = src.includes("/v1/metrics") && src.includes("metrics.model") && src.includes("metrics.revoke");
+  const diagnosticsProtected = src.includes("IRIS_DIAGNOSTICS_TOKEN") && src.includes("diagnostics-authorization-required");
+  const corsAllowlist = src.includes("IRIS_ALLOWED_ORIGINS") && src.includes("headers.delete(\"access-control-allow-origin\")") && src.includes("allowedOrigins.includes(origin)");
   return {
-    ok: hasFetch && hasAuthorize && hasReceipt && noBrowserSecret && durableClaim && durableLookup && contextRead && serviceToken && revocationGate && expiryGate && metricsEndpoint,
-    hasFetch, hasAuthorize, hasReceipt, noBrowserSecret, durableClaim, durableLookup, contextRead, serviceToken, revocationGate, expiryGate, metricsEndpoint,
+    ok: hasFetch && hasAuthorize && hasReceipt && noBrowserSecret && durableClaim && durableLookup && contextRead && serviceToken && revocationGate && expiryGate && metricsEndpoint && diagnosticsProtected && corsAllowlist,
+    hasFetch, hasAuthorize, hasReceipt, noBrowserSecret, durableClaim, durableLookup, contextRead, serviceToken, revocationGate, expiryGate, metricsEndpoint, diagnosticsProtected, corsAllowlist,
   };
 }
 

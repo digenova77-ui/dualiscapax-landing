@@ -53,6 +53,45 @@ function inertBindings(env) {
   return REQUIRED_BINDINGS.filter((name) => !env[name] || typeof env[name].fetch !== "function");
 }
 
+async function readJsonLimited(request, maxBytes = MAX_BODY_BYTES) {
+  const declaredLength = Number(request.headers.get("content-length"));
+  if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
+    try { await request.body?.cancel(); } catch {}
+    return { ok: false, reason: "body-too-large" };
+  }
+
+  if (!request.body) return { ok: false, reason: "invalid-json" };
+  const reader = request.body.getReader();
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > maxBytes) {
+        try { await reader.cancel(); } catch {}
+        return { ok: false, reason: "body-too-large" };
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return { ok: false, reason: "invalid-json" };
+  }
+
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  try {
+    return { ok: true, value: JSON.parse(new TextDecoder().decode(bytes)) };
+  } catch {
+    return { ok: false, reason: "invalid-json" };
+  }
+}
+
 async function sha256Hex(text) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
   return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -149,8 +188,7 @@ async function callBinding(binding, path, body, timeoutMs, extraHeaders) {
   }
 }
 
-export default {
-  async fetch(request, env) {
+async function handleRequest(request, env) {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
@@ -179,17 +217,12 @@ export default {
         return json(503, { authorized: false, reason: "binding-inert", missing: inert });
       }
 
-      let body;
-      try {
-        body = await request.json();
-      } catch {
-        return json(400, { authorized: false, reason: "invalid-json" });
+      const parsed = await readJsonLimited(request);
+      if (!parsed.ok) {
+        const status = parsed.reason === "body-too-large" ? 413 : 400;
+        return json(status, { authorized: false, reason: parsed.reason });
       }
-
-      const raw = JSON.stringify(body);
-      if (new TextEncoder().encode(raw).byteLength > MAX_BODY_BYTES) {
-        return json(413, { authorized: false, reason: "body-too-large" });
-      }
+      const body = parsed.value;
 
       const requestId = body && body.request_id;
       if (!requestId || typeof requestId !== "string") {
@@ -330,11 +363,12 @@ export default {
       const missing = missingBindings(env);
       if (missing.length) return json(503, { ok: false, reason: "bindings-unavailable", missing });
       if (!env.IRIS_MEMORY_SERVICE_TOKEN) return json(503, { ok: false, reason: "memory-service-token-unavailable" });
-      let body;
-      try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
-      if (new TextEncoder().encode(JSON.stringify(body)).byteLength > MAX_BODY_BYTES) {
-        return json(413, { ok: false, reason: "body-too-large" });
+      const parsed = await readJsonLimited(request);
+      if (!parsed.ok) {
+        const status = parsed.reason === "body-too-large" ? 413 : 400;
+        return json(status, { ok: false, reason: parsed.reason });
       }
+      const body = parsed.value;
       if (!receiptShape(body && body.receipt)) {
         return json(403, { ok: false, reason: "receipt-required" });
       }
@@ -378,11 +412,12 @@ export default {
       const inert = inertBindings(env);
       if (inert.length) return json(503, { valid: false, reason: "binding-inert", missing: inert });
       if (!env.TRINITY_HMAC_SECRET) return json(503, { valid: false, reason: "signing-secret-unavailable" });
-      let body;
-      try { body = await request.json(); } catch { return json(400, { valid: false, reason: "invalid-json" }); }
-      if (new TextEncoder().encode(JSON.stringify(body)).byteLength > MAX_BODY_BYTES) {
-        return json(413, { valid: false, reason: "body-too-large" });
+      const parsed = await readJsonLimited(request);
+      if (!parsed.ok) {
+        const status = parsed.reason === "body-too-large" ? 413 : 400;
+        return json(status, { valid: false, reason: parsed.reason });
       }
+      const body = parsed.value;
       const receipt = body && body.receipt;
       if (!receiptShape(receipt)) return json(200, { valid: false, reason: "bad-receipt" });
       if (typeof body.text === "string") {
@@ -443,9 +478,12 @@ export default {
       if (!timestamp || !signature) return json(401, { ok: false, reason: "signature-required" });
       const skew = Math.abs(Math.floor(Date.now() / 1000) - Number(timestamp));
       if (!Number.isFinite(skew) || skew > MAX_SKEW_SECONDS) return json(401, { ok: false, reason: "timestamp-skew" });
-      let body;
-      try { body = await request.json(); } catch { return json(400, { ok: false, reason: "invalid-json" }); }
-      if (new TextEncoder().encode(JSON.stringify(body)).byteLength > MAX_BODY_BYTES) return json(413, { ok: false, reason: "body-too-large" });
+      const parsed = await readJsonLimited(request);
+      if (!parsed.ok) {
+        const status = parsed.reason === "body-too-large" ? 413 : 400;
+        return json(status, { ok: false, reason: parsed.reason });
+      }
+      const body = parsed.value;
       const expected = await hmacHex(env.TRINITY_HMAC_SECRET, timestamp + ".POST./v1/receipt/revoke." + JSON.stringify(body));
       if (expected !== signature) return json(401, { ok: false, reason: "invalid-signature" });
       const id = body && (body.id || body.request_id);
@@ -461,11 +499,15 @@ export default {
       return json(200, { ok: true, id: revoked.data.id || id, replay: revoked.data.replay === true });
     }
 
-    if (url.pathname === "/v1/metrics" && request.method === "GET") {
-      return json(200, { ...metrics });
-    }
-
-    if (url.pathname === "/v1/audit" && request.method === "GET") {
+    if ((url.pathname === "/v1/metrics" || url.pathname === "/v1/audit") && request.method === "GET") {
+      // Operational diagnostics can contain request identifiers and policy outcomes.
+      // Keep them unavailable by default and require a dedicated server-side token.
+      if (!env.IRIS_DIAGNOSTICS_TOKEN) return json(404, { ok: false, reason: "not-found" });
+      const authorization = request.headers.get("authorization") || "";
+      if (authorization !== "Bearer " + env.IRIS_DIAGNOSTICS_TOKEN) {
+        return json(401, { ok: false, reason: "diagnostics-authorization-required" });
+      }
+      if (url.pathname === "/v1/metrics") return json(200, { ...metrics });
       return json(200, { count: audit.length, entries: audit.slice(-20) });
     }
 
@@ -484,5 +526,28 @@ export default {
     }
 
     return json(404, { error: "not-found" });
+}
+
+export default {
+  async fetch(request, env) {
+    const response = await handleRequest(request, env);
+    const headers = new Headers(response.headers);
+    // Never reflect arbitrary origins. Cross-origin browser access is opt-in
+    // through an exact comma-separated allowlist configured server-side.
+    headers.delete("access-control-allow-origin");
+    const origin = request.headers.get("origin");
+    const allowedOrigins = String(env.IRIS_ALLOWED_ORIGINS || "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    if (origin && allowedOrigins.includes(origin)) {
+      headers.set("access-control-allow-origin", origin);
+      headers.set("vary", "Origin");
+    }
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
   },
 };
