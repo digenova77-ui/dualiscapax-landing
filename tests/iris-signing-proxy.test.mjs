@@ -83,6 +83,8 @@ test("proxy overwrites browser identity and signs the canonical server body", as
     input_sha256: digest,
     force_deny: true,
     arbitrary_admin: true,
+    compute_lane: "ADMIN",
+    memory_requested: true,
   }), env);
   assert.equal(response.status, 200);
   assert.equal(calls.runtime, 1);
@@ -91,6 +93,8 @@ test("proxy overwrites browser identity and signs the canonical server body", as
   assert.equal(calls.forwarded.input_sha256, digest);
   assert.equal(calls.forwarded.force_deny, undefined);
   assert.equal(calls.forwarded.arbitrary_admin, undefined);
+  assert.equal(calls.forwarded.compute_lane, "LOOK");
+  assert.equal(calls.forwarded.memory_requested, false);
   assert.equal(response.headers.get("access-control-allow-origin"), null);
   assert.equal(response.headers.get("cache-control"), "no-store");
 });
