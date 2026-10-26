@@ -177,9 +177,32 @@ export class AuditLog {
       if (existing) {
         return Response.json({ claimed: false, first_claimed_at: existing.claimed_at });
       }
-      const record = { ...entry, claimed_at: new Date().toISOString() };
+      const claimed_at = new Date().toISOString();
+      // Claim and record are one operation. When the caller supplies
+      // the decision record, it is written here, BEFORE the claim:
+      // the claim is the commit point. If the record write fails, no
+      // claim stands and the caller refuses closed — an allow can
+      // never be issued claimed but unrecorded. The record is
+      // stamped with the claim's own timestamp and carries it in
+      // its decision, so the durable record matches the allow the
+      // caller goes on to issue. Like /record, the write is
+      // insert-if-absent: a retry after a failed claim write finds
+      // the first record and is not blocked by it.
+      const { record: decisionRecord, ...claimEntry } = entry;
+      if (decisionRecord) {
+        const recordKey = `req:${entry.request_id}`;
+        const existingRecord = await this.state.storage.get(recordKey);
+        if (!existingRecord) {
+          const stored = { ...decisionRecord, recorded_at: claimed_at };
+          if (stored.decision && typeof stored.decision === "object") {
+            stored.decision = { ...stored.decision, claimed_at };
+          }
+          await this.state.storage.put(recordKey, stored);
+        }
+      }
+      const record = { ...claimEntry, claimed_at };
       await this.state.storage.put(key, record);
-      return Response.json({ claimed: true, claimed_at: record.claimed_at });
+      return Response.json({ claimed: true, claimed_at });
     }
 
     if (request.method === "GET" && url.pathname.startsWith("/get/")) {
@@ -492,6 +515,24 @@ export default {
         action,
         input_sha256: inputSha256,
         principal: { unity_id: unityId },
+        // The durable record of this allow, written by the claim
+        // itself in the same atomic operation (see /claim above) —
+        // the record the separate recordAudit call used to write
+        // afterwards, best-effort. claimed_at is added to its
+        // decision by the claim, from the claim's own timestamp.
+        record: {
+          request_id: requestId,
+          decision: {
+            decision: "allow",
+            authorized: true,
+            request_id: requestId,
+            action,
+            input_sha256: inputSha256,
+            principal: { unity_id: unityId },
+            remaining: limitResult.remaining,
+          },
+          original_body: body,
+        },
       });
       if (!claim.claimed) {
         const unavailable = Boolean(claim.error);
@@ -516,7 +557,9 @@ export default {
         claimed_at: claim.claimed_at,
       };
 
-      await recordAudit(env, requestId, result, body);
+      // No recordAudit call here: the durable record of this allow
+      // was written inside the claim, atomically with it. Recording
+      // again after the fact would reinstate the split this closes.
       return json(result, 200);
     }
 
