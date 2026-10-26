@@ -366,6 +366,30 @@ export default {
         return json(deny, 400);
       }
 
+      // Environment binding. A request that declares an environment
+      // is bound to the deployment it names: the declaration must
+      // match this worker's own configured environment (the
+      // ENVIRONMENT var, a deploy-time value like SIGNING_SECRET).
+      // A mismatch is refused here, before the policy decision. If
+      // this deployment has not declared its own environment, a
+      // declared one cannot be verified and the request fails
+      // closed — the same posture the ingest route takes toward an
+      // unbound backend. A request that declares no environment
+      // (the existing client sends none) makes no claim about the
+      // deployment and is unchanged.
+      if (typeof body.environment === "string") {
+        if (typeof env.ENVIRONMENT !== "string" || env.ENVIRONMENT === "") {
+          const deny = { decision: "deny", authorized: false, reason: "environment-unverifiable" };
+          await recordAudit(env, requestId, deny, body);
+          return json(deny, 503);
+        }
+        if (body.environment !== env.ENVIRONMENT) {
+          const deny = { decision: "deny", authorized: false, reason: "environment-mismatch" };
+          await recordAudit(env, requestId, deny, body);
+          return json(deny, 403);
+        }
+      }
+
       const allowed = evaluatePolicy({
         unityId,
         action,
