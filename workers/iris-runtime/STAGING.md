@@ -34,10 +34,13 @@ bash workers/deploy-iris-staging-stack.sh
 The script runs local verifiers/tests first, generates fresh memory and HMAC
 secrets in memory, configures staging-only Worker secrets, deploys memory,
 deploys the three dependency fixtures, then deploys `iris-runtime-staging`.
-It asks for the runtime `workers.dev` URL so it can run live checks. It never
-deploys Pages or configures production routes. If the live checks are skipped,
-the script does not print secrets; rerun the stack script to rotate secrets and
-perform the live check in the same session.
+It reads the runtime's `workers.dev` URL from Wrangler's deployment output and
+uses that validated URL for the mandatory live checks, so GitHub Actions users
+do not have to discover or enter it manually. For a trusted local run, an
+operator may optionally set `IRIS_STAGING_URL` in advance; the value is strictly
+validated before deployment. It never deploys Pages or configures production
+routes. If the live checks fail, the script exits non-zero and does not claim
+the gauntlet passed.
 
 **Boundary:** passing this gauntlet proves the Worker-to-Worker contracts,
 durable claim, receipt lookup, and fixture-backed inference path. It does not
