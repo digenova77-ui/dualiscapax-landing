@@ -164,6 +164,24 @@ export class AuditLog {
       return Response.json({ ok: true });
     }
 
+    // Atomic idempotency claim. This instance is addressed by
+    // idFromName(request_id), so every request carrying the same
+    // request_id serializes through this one Durable Object, and the
+    // get -> put sequence below cannot interleave with a concurrent
+    // claim for the same request_id. First claimant wins; every later
+    // claim for the same request_id is refused.
+    if (request.method === "POST" && url.pathname === "/claim") {
+      const entry = await request.json();
+      const key = `claim:${entry.request_id}`;
+      const existing = await this.state.storage.get(key);
+      if (existing) {
+        return Response.json({ claimed: false, first_claimed_at: existing.claimed_at });
+      }
+      const record = { ...entry, claimed_at: new Date().toISOString() };
+      await this.state.storage.put(key, record);
+      return Response.json({ claimed: true, claimed_at: record.claimed_at });
+    }
+
     if (request.method === "GET" && url.pathname.startsWith("/get/")) {
       const requestId = decodeURIComponent(url.pathname.slice(5));
       const record = await this.state.storage.get(`req:${requestId}`);
@@ -257,6 +275,26 @@ async function recordAudit(env, requestId, decision, originalBody) {
     });
   } catch {
     // Audit failure must not change the authorization decision.
+  }
+}
+
+// Claim a request_id after a matching allow, before the allow is
+// returned. Unlike recordAudit this FAILS CLOSED: a missing binding,
+// a claim-service error, or an already-claimed request_id all come
+// back as claimed:false, and the caller must refuse the request.
+async function claimRequest(env, requestId, claimBody) {
+  if (!env.AUDIT_LOG) return { claimed: false, error: "audit-binding-missing" };
+  try {
+    const id = env.AUDIT_LOG.idFromName(requestId || "unknown");
+    const stub = env.AUDIT_LOG.get(id);
+    const res = await stub.fetch("https://audit/claim", {
+      method: "POST",
+      body: JSON.stringify(claimBody),
+    });
+    if (!res.ok) return { claimed: false, error: `claim-http-${res.status}` };
+    return await res.json();
+  } catch {
+    return { claimed: false, error: "claim-unavailable" };
   }
 }
 
@@ -375,24 +413,48 @@ export default {
         memoryRequested: body.memory_requested === true,
       });
 
-      const result = allowed.ok
-        ? {
-            decision: "allow",
-            authorized: true,
-            request_id: requestId,
-            action,
-            input_sha256: inputSha256,
-            principal: { unity_id: unityId },
-            remaining: limitResult.remaining,
-          }
-        : {
-            decision: "deny",
-            authorized: false,
-            reason: allowed.reason,
-          };
+      if (!allowed.ok) {
+        const deny = { decision: "deny", authorized: false, reason: allowed.reason };
+        await recordAudit(env, requestId, deny, body);
+        return json(deny, 403);
+      }
+
+      // Atomic idempotency: claim the request_id after the matching
+      // allow and before the allow is returned (the order the README's
+      // law states). Each request_id can be authorized exactly once.
+      // A duplicate is refused 409; any failure of the claim itself
+      // refuses closed 503 — an allow is never issued unclaimed.
+      const claim = await claimRequest(env, requestId, {
+        request_id: requestId,
+        action,
+        input_sha256: inputSha256,
+        principal: { unity_id: unityId },
+      });
+      if (!claim.claimed) {
+        const unavailable = Boolean(claim.error);
+        const deny = {
+          decision: "deny",
+          authorized: false,
+          reason: unavailable ? "claim-unavailable" : "duplicate-request",
+          request_id: requestId,
+        };
+        await recordAudit(env, requestId, deny, body);
+        return json(deny, unavailable ? 503 : 409);
+      }
+
+      const result = {
+        decision: "allow",
+        authorized: true,
+        request_id: requestId,
+        action,
+        input_sha256: inputSha256,
+        principal: { unity_id: unityId },
+        remaining: limitResult.remaining,
+        claimed_at: claim.claimed_at,
+      };
 
       await recordAudit(env, requestId, result, body);
-      return json(result, allowed.ok ? 200 : 403);
+      return json(result, 200);
     }
 
     // Staged: health endpoint mirroring the static /health.json body.
