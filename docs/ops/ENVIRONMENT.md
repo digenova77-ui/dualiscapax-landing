@@ -1,6 +1,6 @@
 # Cloudflare Pages publishing path
 
-**Scope:** `dualiscapax.ai` landing site in `digenova77-ui/dualiscapax-landing`.
+**Scope:** landing site in `digenova77-ui/dualiscapax-landing`. Canonical apex: `dualiscapax.com`, served by Cloudflare Pages. `dualiscapax.ai` chains to the canonical apex by permanent redirect (see `docs/ops/CLOUDFLARE-REDIRECT-AI-TO-COM.md`).
 
 ## Runtime
 
@@ -37,7 +37,7 @@ Check the printed commit and SHA-256 before using the archive. The output ZIP is
 
 ## Manual Cloudflare Pages upload
 
-1. Sign in to the Cloudflare dashboard and open **Workers & Pages → dualiscapax-web** (confirm this is the project actually bound to `dualiscapax.ai` before continuing).
+1. Sign in to the Cloudflare dashboard and open the production Pages project (confirm the project actually bound to `dualiscapax.com` before continuing; the project name is recorded inconsistently — `dualiscapax-landing` in `wrangler.toml` and the deploy workflows, `dualiscapax-web` in earlier dashboard references — and must be reconciled in the dashboard before the next deploy).
 2. Use a **preview/staging deployment** first if the project provides one. Upload the exact `dist/cloudflare/lander-<commit>.zip` package using the Pages upload/deployment interface.
 3. Confirm the deployed preview serves `/` and existing routes correctly, then check:
    - `/iris/status` returns JSON with `runtime: cloudflare-pages-advanced-mode`.
@@ -59,8 +59,8 @@ A source commit or locally generated ZIP is not a deployment. A successful Pages
 
 As of 2026-10-17:
 
-- **Apex owner:** Cloudflare Pages project bound to `dualiscapax.ai`. Preferred publish path is the manual ZIP produced by `package-cloudflare-pages` (or local `pack_hierarchical_flat_zip.py`). Git-connected Workers Builds on `dualiscapax-landing` / `dualiscapax-depth` have been observed failing (missing `previews` block resolved in root `wrangler.toml`; stale/rolled build token remains a dashboard-only repair). Automatic Git builds are not the production rail.
-- **Root `wrangler.toml`:** `name = "dualiscapax-web"`, `pages_build_output_dir = "."`, empty `[previews]` block present so `npx wrangler preview` can run if Builds is retained.
+- **Apex owner:** Cloudflare Pages project bound to the canonical apex `dualiscapax.com`. `dualiscapax.ai` chains to it by permanent redirect (zone Redirect Rule; see `docs/ops/CLOUDFLARE-REDIRECT-AI-TO-COM.md`). Preferred publish path is the manual ZIP produced by `package-cloudflare-pages` (or local `pack_hierarchical_flat_zip.py`). Git-connected Workers Builds on `dualiscapax-landing` / `dualiscapax-depth` have been observed failing (missing `previews` block resolved in root `wrangler.toml`; stale/rolled build token remains a dashboard-only repair). Automatic Git builds are not the production rail.
+- **Root `wrangler.toml`:** `name = "dualiscapax-landing"` as committed on `main`, `pages_build_output_dir = "."`, no `[previews]` block (Pages rejects it; it is a Workers Builds construct). Earlier references to the project as `dualiscapax-web` are unreconciled and require dashboard confirmation before the next deploy.
 - **Pages handler:** root `_worker.js` (Advanced Mode) owns route bridge for HUD paths and `/iris/status`. Apex `/` stays on Pages assets.
 - **Depth / API workers:** Standalone Workers (previously under `server/` or `workers/`) are source-only. Auto-deploy workflow `workers-live.yml` is retired. Operator deploys with local `wrangler` when seated. `dualiscapax-depth.digenova77.workers.dev` currently returns 404.
 - **GitHub Actions:** Majority of historical workflows are `disabled_manually`. Active ones include packaging (artifact only, not deploy), deterministic checks, and smoke tests. They do not promote to the live apex.

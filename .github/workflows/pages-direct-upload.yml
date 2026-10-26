@@ -150,10 +150,10 @@ jobs:
         run: |
           set -euo pipefail
           sleep 8
-          code=$(curl -sS -o /tmp/live.html -w '%{http_code}' --max-time 25 https://dualiscapax.ai/ || echo 000)
+          code=$(curl -sS -o /tmp/live.html -w '%{http_code}' --max-time 25 https://dualiscapax.com/ || echo 000)
           echo "live_http=$code"
           if [ "$code" != "200" ]; then
-            echo "::error::dualiscapax.ai returned $code after deploy"
+            echo "::error::dualiscapax.com returned $code after deploy"
             exit 1
           fi
           if ! grep -qi 'DualisCapax\|Dualiscapax' /tmp/live.html; then
