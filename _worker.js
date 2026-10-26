@@ -249,6 +249,19 @@ async function verifySignature(request, secret) {
   );
 }
 
+function timingSafeEqualHex(a, b) {
+  // Constant-time equality for hex digests: the loop always runs the
+  // full length and never branches on the compared content.
+  let diff = a.length ^ b.length;
+  const len = Math.max(a.length, b.length);
+  for (let i = 0; i < len; i++) {
+    const ca = i < a.length ? a.charCodeAt(i) : 0;
+    const cb = i < b.length ? b.charCodeAt(i) : 0;
+    diff |= ca ^ cb;
+  }
+  return diff === 0;
+}
+
 async function checkRateLimit(env, unityId, limit, windowMs) {
   if (!env.RATE_LIMITER) return { allowed: true, remaining: limit };
   const id = env.RATE_LIMITER.idFromName(unityId);
@@ -400,6 +413,23 @@ export default {
         !/^[a-f0-9]{64}$/.test(inputSha256)
       ) {
         const deny = { decision: "deny", authorized: false, reason: "malformed-request" };
+        await recordAudit(env, requestId, deny, body);
+        return json(deny, 400);
+      }
+
+      // Digest binding: input_sha256 is the SHA-256 hex digest of the
+      // submitted input text — the body's `text` member, with an absent
+      // or non-string `text` treated as the empty string. That is the
+      // contract the Iris client computes (js/iris-session.js) and the
+      // staging runtime enforces (workers/iris-runtime/worker.mjs);
+      // this endpoint previously only checked the digest's format.
+      // Recompute it and refuse before any policy decision when the
+      // declared digest does not match: a digest that cannot be
+      // verified is never echoed back as bound.
+      const inputText = typeof body.text === "string" ? body.text : "";
+      const recomputedSha256 = await sha256Hex(inputText);
+      if (!timingSafeEqualHex(recomputedSha256, inputSha256)) {
+        const deny = { decision: "deny", authorized: false, reason: "input-digest-mismatch" };
         await recordAudit(env, requestId, deny, body);
         return json(deny, 400);
       }
