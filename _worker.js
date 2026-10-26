@@ -232,7 +232,7 @@ async function verifySignature(request, secret) {
 }
 
 async function checkRateLimit(env, unityId, limit, windowMs) {
-  if (!env.RATE_LIMITER) return { allowed: true, remaining: limit };
+  if (!env.RATE_LIMITER) return { allowed: false, unavailable: true, remaining: 0 };
   const id = env.RATE_LIMITER.idFromName(unityId);
   const stub = env.RATE_LIMITER.get(id);
   const res = await stub.fetch("https://limiter/check", {
@@ -343,6 +343,15 @@ export default {
       }
 
       const limitResult = await checkRateLimit(env, unityId, 10, 60_000);
+      if (limitResult.unavailable) {
+        // The limiter binding is absent: this deployment cannot
+        // count requests, so it must not silently stop counting.
+        // Refuse closed — the same posture the claim takes toward a
+        // missing audit binding — rather than allowing uncounted.
+        const deny = { decision: "deny", authorized: false, reason: "rate-limiter-unavailable" };
+        await recordAudit(env, requestId, deny, body);
+        return json(deny, 503);
+      }
       if (!limitResult.allowed) {
         return json(
           {
