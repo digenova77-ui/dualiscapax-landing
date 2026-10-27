@@ -361,6 +361,12 @@ export default {
       if (digest !== body.receipt.sha256.toLowerCase()) {
         return json(403, { ok: false, reason: "sha256-mismatch" });
       }
+      // Paid/depth actions remain closed until a canonical server-side Fuel
+      // reservation API is configured. A browser balance is never authority.
+      if (GATED_ACTIONS.has(stored.action)) {
+        return json(503, { ok: false, reason: "fuel-ledger-unavailable", request_id: body.receipt.request_id });
+      }
+
       const context = await readMemoryContext(env, stored.unity_id, body.receipt.request_id);
       if (!context.ok) return json(503, { ok: false, reason: context.reason });
 
@@ -400,7 +406,10 @@ export default {
         { ...executionArgs, output: model.data || null }, env.IRIS_BINDING_TIMEOUT_MS,
         { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
       if (!completed.ok || !completed.data || completed.data.ok !== true || completed.data.state !== "SUCCEEDED") {
-        // Never make a second provider call just because result persistence failed.
+        // Mark an unresolved attempt UNKNOWN where possible; this endpoint never
+        // downgrades a durable SUCCEEDED result. Never re-call the provider.
+        await callBinding(env.IRIS_MEMORY, "/v1/inference/unknown", executionArgs,
+          env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
         return json(503, { ok: false, reason: "inference-result-persistence-unconfirmed", state: "UNKNOWN" });
       }
       return json(200, { ok: true, receipt: body.receipt, output: completed.data.output });
