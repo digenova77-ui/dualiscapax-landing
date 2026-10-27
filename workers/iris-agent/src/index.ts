@@ -118,7 +118,7 @@ async function inspectRepositoryFile(request: Request, env: Env): Promise<Respon
     if (!fileResponse.ok) return json({ error: fileResponse.status === 404 ? "file_not_found" : "file_read_failed", status: "not_verified" }, fileResponse.status === 404 ? 404 : 502);
     const file = await fileResponse.json() as { type?: string; path?: string; sha?: string; size?: number; encoding?: string; content?: string; html_url?: string };
     if (file.type !== "file" || !file.content || file.encoding !== "base64" || (file.size ?? 0) > 12000) return json({ error: "unsupported_or_oversized_file", status: "not_verified" }, 413);
-    const binary = atob(file.content.replace(/\\s/g, ""));
+    const binary = atob(file.content.replace(/\s/g, ""));
     const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
     if (bytes.byteLength > 12000) return json({ error: "unsupported_or_oversized_file", status: "not_verified" }, 413);
     const digest = await crypto.subtle.digest("SHA-256", bytes);
