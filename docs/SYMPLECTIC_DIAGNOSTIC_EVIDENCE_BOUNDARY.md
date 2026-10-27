@@ -1,40 +1,50 @@
-# Symplectic diagnostic: evidence boundary
+# Symplectic diagnostic and performance-claim evidence boundary
 
 ## Scope inspected
 
-This note records a narrow inspection of `pipe.html` and the dedicated test workflow. It is not a repository-wide or mathematical-physics certification.
+This is a focused source inspection, not a repository-wide or mathematical-physics certification. Files inspected include `pipe.html`, `tests/test_symplectic_invariant.py`, `.github/workflows/symplectic-invariant.yml`, `js/dsap-engine.js`, `js/api-unified.js`, and relevant portions of `dclm-gateway.html`.
 
-## What the current page does
+## Symplectic display in `pipe.html`
 
-In `pipe.html`, the visual stage is assembled from CSS rings, gradients, and animation. The page includes a diagnostic block with fixed display strings:
+The visual stage uses CSS rings, gradients, and animation. Its diagnostic block displays fixed strings:
 
 - `det(M) ≡ 1.000000000000`
 - `R_eff ≤ 4.18e-13`
 - `watchdog < 4.20 ms`
 
-The inspected page does not compute those values in the diagnostic block. The nearby CSS comments explicitly describe the geometry as a visualisation. These numbers therefore must not be interpreted as live measurements produced by this page.
+The diagnostic block does not calculate these values. The comments describe the geometry as a visualisation. Treat this display as illustrative, not as a live mathematical measurement.
 
-## What has been verified
+## What the invariant test verifies
 
-The separate Python test suite checks the numerical residual
-`max_ij |(S^T J S - J)_ij|` for selected 4x4 matrices using the convention `J = [[0,I],[-I,0]]`. It includes an identity case, a constructed symplectic case, a determinant-one counterexample, and a dimension rejection case. Its GitHub Actions run passed on the PR commit before merge.
+The separate Python test suite computes the residual `max_ij |(S^T J S - J)_ij|` for selected 4x4 matrices with `J = [[0,I],[-I,0]]`. It covers identity, a constructed symplectic transform, a determinant-one counterexample, and invalid dimensions. Its pull-request workflow passed before merge.
 
-This verifies those test cases and helper implementation only. It does not verify that `pipe.html`, a deployed service, or another runtime uses the tested calculation.
+This verifies those test cases and helper implementation. It does not verify that `pipe.html`, a deployed service, or another runtime uses that calculation.
+
+## Residual-floor claims
+
+In `js/dsap-engine.js`, `R_EFF = 4.18e-13` is a fixed constant returned in the public metadata and `lawFloor()` result. The inspected `energy()` function instead derives an audio signal level from analyser samples; it does not calculate that residual floor. In `js/api-unified.js`, `RESIDUAL_FLOOR = 4.18e-13` is likewise a configured constant included in request metadata. These facts do not prove that no other service computes a related metric; they mean these inspected constants are not evidence of such a computation.
+
+## Latency and watchdog claims
+
+In `js/api-unified.js`, elapsed request time is measured around `fetch()` with `performance.now()` when available, and a client-observed latency note is added when the measured interval is at least 4.20 ms. This is a real client-side timing measurement of the request interval, but it is not proof that a server-side watchdog enforces a 4.20 ms deadline or that the entire system meets that latency bound.
+
+The inspected `dclm-gateway.html` describes its ping as page-frame work measured with `performance.now()`, with a trip threshold at 4.20 ms. That is distinct from server response latency. Any claim of a watchdog must specify the measured interval, clock, sampling method, threshold behavior, failure action, and test evidence.
 
 ## Safe claim language
 
-Until a real runtime calculation is connected and independently checked, describe the page as an **illustrative geometric visualisation**. Do not label the displayed constants as live, measured, or proven outputs.
+- Call the pipe's displayed geometry an **illustrative visualisation** until a live calculation is wired to it.
+- Describe the DSAP residual floor as a **configured constant**, unless a separate measured residual is shown with method and evidence.
+- Describe the API timer as **client-observed request latency**, not as proof of a server-side watchdog.
+- Do not call a claim “verified” solely because a workflow prints that phrase.
 
-## Next verification gate
+## Next verification gates
 
-Before claiming a live implementation:
-
-1. Identify the actual runtime function and its input matrix source.
-2. Compute `S^T J S - J` from that runtime matrix, report a defined norm and tolerance, and fail closed on invalid dimensions/non-finite values.
-3. Test valid transformations and determinant-one non-symplectic counterexamples.
-4. Bind the CI result to the exact commit and deployed version.
-5. Keep display-only/demo values visibly labelled as illustrative.
+1. Identify the runtime function and source data for each claimed metric.
+2. For symplectic claims, calculate `S^T J S - J` on the actual runtime matrix, define the norm and tolerance, reject invalid/non-finite inputs, and test counterexamples.
+3. For latency claims, specify what interval is timed and add tests proving threshold and fail-closed behavior; separately measure server-side latency if that is the claim.
+4. For residual-floor claims, define the quantity mathematically, show the inputs and calculation, and test it against known cases.
+5. Tie CI output to the exact commit and deployed version.
 
 ## Limitations
 
-This note does not establish that no valid symplectic implementation exists elsewhere in the repository or other repositories. It records only the files and behavior described above.
+This note does not establish that no valid implementation exists elsewhere in this or another repository. It records the specific files and behavior inspected above.
