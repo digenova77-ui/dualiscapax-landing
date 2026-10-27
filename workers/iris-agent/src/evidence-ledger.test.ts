@@ -54,6 +54,23 @@ describe("Iris evidence ledger record validation", () => {
     expect(validateEvidenceLedgerRecord(record)).toBe(false);
   });
 
+  it("rejects a verification record mixing passing checks from different revisions", () => {
+    const record = baseRecord();
+    record.status = "LOCAL-VERIFIED";
+    record.verification = [
+      { name: "unit tests", revisionSha: "a".repeat(40), outcome: "PASS", source: "CI run #1" },
+      { name: "type check", revisionSha: "c".repeat(40), outcome: "PASS", source: "CI run #2" },
+    ];
+    record.evidence = [{
+      source: "test artifact",
+      observedAt: "2026-10-27T12:00:00.000Z",
+      outcome: "PASS",
+      sha256: "b".repeat(64),
+      revisionSha: "a".repeat(40),
+    }];
+    expect(validateEvidenceLedgerRecord(record)).toBe(false);
+  });
+
   it("rejects staging status without evidence bound to an exact commit", () => {
     const record = baseRecord();
     record.status = "STAGING-VERIFIED";
