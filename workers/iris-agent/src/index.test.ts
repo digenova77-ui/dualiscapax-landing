@@ -50,3 +50,16 @@ describe("parseRepositoryInspectRequest", () => {
     expect(parseRepositoryInspectRequest(null)).toBeNull();
   });
 });
+
+import { sha256Hex } from "./digest";
+
+describe("sha256Hex", () => {
+  it("returns the SHA-256 digest of the exact input bytes", async () => {
+    const bytes = new TextEncoder().encode("abc");
+    await expect(sha256Hex(bytes)).resolves.toBe("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+  });
+  it("distinguishes different byte sequences", async () => {
+    const encoder = new TextEncoder();
+    await expect(sha256Hex(encoder.encode("abc"))).resolves.not.toBe(await sha256Hex(encoder.encode("abd")));
+  });
+});
