@@ -72,6 +72,56 @@ describe("Iris evidence ledger record validation", () => {
     expect(validateEvidenceLedgerRecord(record)).toBe(false);
   });
 
+  it("accepts staging evidence only when a passing observation and check share a revision", () => {
+    const record = baseRecord();
+    record.status = "STAGING-VERIFIED";
+    record.verification = [{
+      name: "staging smoke test",
+      revisionSha: "a".repeat(40),
+      outcome: "PASS",
+      source: "CI staging test",
+    }];
+    record.evidence = [{
+      source: "staging health response",
+      observedAt: "2026-10-27T12:00:00.000Z",
+      outcome: "PASS",
+      sha256: "b".repeat(64),
+      revisionSha: "a".repeat(40),
+    }];
+    expect(validateEvidenceLedgerRecord(record)).toBe(true);
+    record.evidence[0].revisionSha = "c".repeat(40);
+    expect(validateEvidenceLedgerRecord(record)).toBe(false);
+  });
+
+  it("requires deployment-specific and live-specific evidence for higher statuses", () => {
+    const record = baseRecord();
+    record.status = "PRODUCTION-DEPLOYED";
+    record.verification = [{
+      name: "production deployment check",
+      revisionSha: "a".repeat(40),
+      outcome: "PASS",
+      source: "deployment workflow",
+    }];
+    record.evidence = [{
+      source: "deployment event",
+      observedAt: "2026-10-27T12:00:00.000Z",
+      outcome: "PASS",
+      sha256: "b".repeat(64),
+      revisionSha: "a".repeat(40),
+    }];
+    expect(validateEvidenceLedgerRecord(record)).toBe(true);
+    record.status = "LIVE-VERIFIED";
+    expect(validateEvidenceLedgerRecord(record)).toBe(false);
+    record.evidence.push({
+      source: "live post-deploy health check",
+      observedAt: "2026-10-27T12:01:00.000Z",
+      outcome: "PASS",
+      sha256: "c".repeat(64),
+      revisionSha: "a".repeat(40),
+    });
+    expect(validateEvidenceLedgerRecord(record)).toBe(true);
+  });
+
   it("rejects bearer tokens and private-key material in text fields", () => {
     expect(validateEvidenceLedgerRecord({ ...baseRecord(), goal: "Bearer abcdef123456" })).toBe(false);
     expect(validateEvidenceLedgerRecord({ ...baseRecord(), limitations: ["-----BEGIN PRIVATE KEY-----"] })).toBe(false);
