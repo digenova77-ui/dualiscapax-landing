@@ -90,20 +90,24 @@ export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceL
       !(value.previousRecordDigest === null || (typeof value.previousRecordDigest === "string" && SHA256.test(value.previousRecordDigest))) ||
       !EVIDENCE_STATUSES.includes(value.status as EvidenceStatus)) return false;
 
-  if (!value.evidence.every((entry) => isRecord(entry) &&
+  const evidence = value.evidence as unknown[];
+  const changes = value.changes as unknown[];
+  const verification = value.verification as unknown[];
+
+  if (!evidence.every((entry) => isRecord(entry) &&
     hasOnlyKeys(entry, ["source", "observedAt", "outcome", "sha256", "revisionSha"]) &&
     isSafeText(entry.source, 2000) && isUtc(entry.observedAt) &&
     ["PASS", "FAIL", "SKIPPED", "OBSERVED"].includes(String(entry.outcome)) &&
     typeof entry.sha256 === "string" && SHA256.test(entry.sha256) &&
     (entry.revisionSha === undefined || (typeof entry.revisionSha === "string" && COMMIT_SHA.test(entry.revisionSha))))) return false;
 
-  if (!value.changes.every((change) => isRecord(change) &&
+  if (!changes.every((change) => isRecord(change) &&
     hasOnlyKeys(change, ["repository", "branch", "commitSha", "paths"]) &&
     isSafeText(change.repository, 200) && isSafeText(change.branch, 200) &&
     typeof change.commitSha === "string" && COMMIT_SHA.test(change.commitSha) &&
     Array.isArray(change.paths) && change.paths.every((p) => isSafeText(p, 500)))) return false;
 
-  if (!value.verification.every((check) => isRecord(check) &&
+  if (!verification.every((check) => isRecord(check) &&
     hasOnlyKeys(check, ["name", "revisionSha", "outcome", "source"]) &&
     isSafeText(check.name, 200) && typeof check.revisionSha === "string" &&
     COMMIT_SHA.test(check.revisionSha) && isSafeText(check.source, 2000) &&
@@ -111,10 +115,10 @@ export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceL
 
   // Higher states require actual successful evidence, bound to the exact revision.
   if (["LOCAL-VERIFIED", "STAGING-VERIFIED", "PRODUCTION-DEPLOYED", "LIVE-VERIFIED"].includes(String(value.status))) {
-    const successfulChecks = value.verification.filter((check) => isRecord(check) && check.outcome === "PASS");
+    const successfulChecks = verification.filter((check) => isRecord(check) && check.outcome === "PASS");
     if (successfulChecks.length === 0 || successfulChecks.some((check) =>
       typeof check.revisionSha !== "string" || !COMMIT_SHA.test(check.revisionSha))) return false;
-    const passingEvidence = value.evidence.filter((entry) => isRecord(entry) && entry.outcome === "PASS" &&
+    const passingEvidence = evidence.filter((entry) => isRecord(entry) && entry.outcome === "PASS" &&
       typeof entry.source === "string" && typeof entry.sha256 === "string" && SHA256.test(entry.sha256));
     if (passingEvidence.length === 0) return false;
     // The verification result and its supporting evidence must name the same immutable revision.
@@ -124,11 +128,11 @@ export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceL
       typeof entry.revisionSha === "string" &&
       check.revisionSha.toLowerCase() === entry.revisionSha.toLowerCase()))) return false;
   }
-  const revisionBoundPass = (pattern?: RegExp) => value.evidence.some((entry) =>
+  const revisionBoundPass = (pattern?: RegExp) => evidence.some((entry) =>
     isRecord(entry) && entry.outcome === "PASS" &&
     typeof entry.source === "string" && (!pattern || pattern.test(entry.source)) &&
     typeof entry.revisionSha === "string" && COMMIT_SHA.test(entry.revisionSha) &&
-    value.verification.some((check) => isRecord(check) && check.outcome === "PASS" &&
+    verification.some((check) => isRecord(check) && check.outcome === "PASS" &&
       typeof check.revisionSha === "string" &&
       check.revisionSha.toLowerCase() === entry.revisionSha.toLowerCase()));
 
