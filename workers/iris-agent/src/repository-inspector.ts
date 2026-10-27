@@ -12,6 +12,7 @@ const ALLOWED_REPOSITORIES = new Set([
 ]);
 
 const BLOCKED_PATH_PARTS = [".env", "secret", "credential", "private", "id_rsa", ".pem", ".key", "token", "password", "keystore"];
+const ALLOWED_TEXT_EXTENSIONS = new Set([".md", ".mdx", ".ts", ".tsx", ".js", ".mjs", ".cjs", ".json", ".yaml", ".yml", ".toml", ".html", ".css", ".sh", ".txt"]);
 
 export function parseRepositoryInspectRequest(value: unknown): RepositoryInspectRequest | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
@@ -21,7 +22,8 @@ export function parseRepositoryInspectRequest(value: unknown): RepositoryInspect
   const path = input.path.trim();
   if (!path || path.length > 240 || path.startsWith("/") || path.includes("\\") ||
       path.split("/").some((part) => !part || part === "." || part === "..") ||
-      BLOCKED_PATH_PARTS.some((part) => path.toLowerCase().includes(part))) return null;
+      BLOCKED_PATH_PARTS.some((part) => path.toLowerCase().includes(part)) ||
+      ![...ALLOWED_TEXT_EXTENSIONS].some((ext) => path.toLowerCase().endsWith(ext))) return null;
   let ref: string | undefined;
   if (input.ref !== undefined) {
     if (typeof input.ref !== "string" || !input.ref.trim() || input.ref.length > 120 ||
