@@ -1,6 +1,6 @@
 import { Agent, getAgentByName } from "agents";
 
-type PlanRequest = { goal: string; constraints?: string[] };
+import { parsePlanRequest } from "./validation";
 type PlanResult = { id: string; status: "proposed"; createdAt: string; plan: string };
 type IrisState = { lastPlanId?: string; lastPlanStatus: "idle" | "proposed"; lastPlanAt?: string };
 type Env = {
@@ -15,21 +15,6 @@ const json = (body: unknown, status = 200) =>
     status,
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
   });
-
-export function parsePlanRequest(value: unknown): PlanRequest | null {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
-  const input = value as Record<string, unknown>;
-  if (typeof input.goal !== "string") return null;
-  const goal = input.goal.trim();
-  if (goal.length < 8 || goal.length > 4000) return null;
-  let constraints: string[] | undefined;
-  if (input.constraints !== undefined) {
-    if (!Array.isArray(input.constraints) || input.constraints.length > 20) return null;
-    if (!input.constraints.every((item) => typeof item === "string" && item.length <= 500)) return null;
-    constraints = input.constraints.map((item) => item.trim()).filter(Boolean);
-  }
-  return { goal, ...(constraints ? { constraints } : {}) };
-}
 
 export class IrisAgent extends Agent<Env, IrisState> {
   initialState: IrisState = { lastPlanStatus: "idle" };
