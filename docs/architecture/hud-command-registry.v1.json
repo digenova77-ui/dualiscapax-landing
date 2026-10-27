@@ -1,0 +1,114 @@
+{
+  "schema": "dualis.hud-command-registry.v1",
+  "status": "proposal",
+  "policy": {
+    "trigger_phrases_are_intent_not_authority": true,
+    "unknown_or_ambiguous_target": "ask_clarifying_question",
+    "unavailable_capability": "fail_closed_with_explanation",
+    "sensitive_actions_require_server_side_authorization": true,
+    "trinity_is_sole_authorization_gate": true,
+    "never_treat_client_state_as_authoritative": true
+  },
+  "commands": [
+    {
+      "id": "board.create",
+      "intent": "create",
+      "triggers": ["create", "make me", "build", "generate", "design", "draw"],
+      "target": "scene_object_or_workspace",
+      "risk": "low",
+      "confirmation": "preview_if_destructive_or_ambiguous",
+      "capability": "smart_board.create",
+      "undo": true
+    },
+    {
+      "id": "board.explore",
+      "intent": "explore",
+      "triggers": ["show me", "explore", "find", "inspect", "look at", "where is"],
+      "target": "scene_or_selected_object",
+      "risk": "low",
+      "confirmation": "none_for_read_only",
+      "capability": "smart_board.explore",
+      "undo": false
+    },
+    {
+      "id": "board.edit",
+      "intent": "edit",
+      "triggers": ["change", "move", "resize", "redraw", "replace", "make it bigger"],
+      "target": "selected_scene_object",
+      "risk": "medium",
+      "confirmation": "preview_before_apply_when_material",
+      "capability": "smart_board.edit",
+      "undo": true
+    },
+    {
+      "id": "board.solve",
+      "intent": "solve",
+      "triggers": ["how do we", "why", "solve", "analyze", "compare", "optimize"],
+      "target": "user_problem_or_selected_context",
+      "risk": "low",
+      "confirmation": "none_for_analysis",
+      "capability": "iris.solve",
+      "undo": false
+    },
+    {
+      "id": "board.simulate",
+      "intent": "simulate",
+      "triggers": ["simulate", "test", "run a scenario", "predict", "what if"],
+      "target": "scene_or_explicit_model",
+      "risk": "resource_bounded",
+      "confirmation": "budget_estimate_before_expensive_run",
+      "capability": "simulation.run",
+      "undo": false
+    },
+    {
+      "id": "board.save",
+      "intent": "save",
+      "triggers": ["save", "save as", "make a version"],
+      "target": "current_workspace_or_selected_project",
+      "risk": "low",
+      "confirmation": "confirm_before_overwrite",
+      "capability": "workspace.save",
+      "undo": "version_restore"
+    },
+    {
+      "id": "board.undo",
+      "intent": "undo",
+      "triggers": ["undo", "undo that", "go back one step"],
+      "target": "last_reversible_workspace_change",
+      "risk": "low",
+      "confirmation": "none",
+      "capability": "workspace.undo",
+      "undo": false
+    },
+    {
+      "id": "board.redo",
+      "intent": "redo",
+      "triggers": ["redo", "restore that change"],
+      "target": "last_undone_workspace_change",
+      "risk": "low",
+      "confirmation": "none",
+      "capability": "workspace.redo",
+      "undo": true
+    },
+    {
+      "id": "hud.help",
+      "intent": "help",
+      "triggers": ["help", "show commands", "what can I do here", "where am I"],
+      "target": "current_context",
+      "risk": "low",
+      "confirmation": "none",
+      "capability": "hud.help",
+      "undo": false
+    },
+    {
+      "id": "wallet.prepare_transfer",
+      "intent": "prepare_transfer",
+      "triggers": ["prepare a transfer", "send funds", "pay"],
+      "target": "explicit_wallet_and_recipient",
+      "risk": "financial",
+      "confirmation": "explicit_transaction_review_and_authorization_required",
+      "capability": "wallet.transfer",
+      "undo": false
+    }
+  ]
+}
