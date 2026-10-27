@@ -91,6 +91,10 @@ function skuFromSession(session, env) {
     }
     return { sku: candidate, via: "metadata", amount_total: cents };
   }
+  // An explicit but unknown metadata SKU is a hard failure; never silently reinterpret it by price.
+  if (candidate) {
+    return { sku: null, via: "unknown_metadata_sku", claimed: candidate, amount_total: cents };
+  }
   const linkMap = parseLinkMap(env);
   const pl = session && typeof session.payment_link === "string" ? session.payment_link : session && session.payment_link && session.payment_link.id;
   if (pl && linkMap[pl] && SKU_GRANT[linkMap[pl]]) {
