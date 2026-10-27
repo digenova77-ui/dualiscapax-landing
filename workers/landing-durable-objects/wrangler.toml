@@ -1,0 +1,13 @@
+name = "dualiscapax-landing-do"
+main = "worker.mjs"
+compatibility_date = "2026-10-27"
+
+# Separate Worker required by Cloudflare Pages Durable Object bindings.
+# Deploy this Worker before deploying the Pages project that references it.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter", "AuditLog"]
+
+# Worker Preview configuration is intentionally separate from Pages config.
+# Cloudflare provisions isolated Durable Object namespaces for Worker Previews.
+[previews]
