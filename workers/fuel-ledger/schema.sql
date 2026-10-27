@@ -29,6 +29,12 @@ CREATE INDEX IF NOT EXISTS idx_fuel_ledger_reservation
 CREATE INDEX IF NOT EXISTS idx_fuel_ledger_source
   ON fuel_ledger_entries(source_rail, source_ref);
 
+-- One settlement reference can fund only one grant per rail, even if an adapter
+-- accidentally retries with a different idempotency key.
+CREATE UNIQUE INDEX IF NOT EXISTS uq_fuel_grant_source
+  ON fuel_ledger_entries(source_rail, source_ref)
+  WHERE entry_type = 'grant';
+
 -- Balance is derived, never a mutable counter:
 -- SELECT COALESCE(SUM(units_delta), 0) FROM fuel_ledger_entries WHERE principal_id = ?;
 -- Grant = positive units_delta.
