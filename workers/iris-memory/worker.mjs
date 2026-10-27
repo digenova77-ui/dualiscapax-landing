@@ -42,7 +42,7 @@ export default {
       return json(401, { ok: false, reason: "service-auth-required" });
     }
     const url = new URL(request.url);
-    if (url.pathname !== "/v1/requests/claim" && url.pathname !== "/v1/requests/get" && url.pathname !== "/v1/context/read" && url.pathname !== "/v1/requests/revoke") {
+    if (!["/v1/requests/claim", "/v1/requests/get", "/v1/context/read", "/v1/requests/revoke", "/v1/inference/begin", "/v1/inference/complete", "/v1/inference/unknown"].includes(url.pathname)) {
       return json(404, { ok: false, reason: "not-found" });
     }
     let body;
@@ -78,6 +78,62 @@ export class IrisMemoryStore {
       return json(400, { ok: false, reason: "invalid-request-id" });
     }
     const key = "request:" + requestId;
+
+    if (path.startsWith("/v1/inference/")) {
+      const principal = body && body.principal;
+      const digest = body && body.input_sha256;
+      if (typeof principal !== "string" || !principal ||
+          typeof digest !== "string" || !/^[0-9a-f]{64}$/.test(digest)) {
+        return json(400, { ok: false, reason: "invalid-inference-claim" });
+      }
+      const inferenceKey = "inference:" + requestId;
+      const outcome = await this.state.storage.transaction(async (txn) => {
+        const requestRecord = await txn.get(key);
+        if (!requestRecord || requestRecord.revoked === true ||
+            requestRecord.principal !== principal || requestRecord.input_sha256 !== digest) {
+          return { kind: "receipt-mismatch" };
+        }
+        const current = await txn.get(inferenceKey);
+        if (path === "/v1/inference/begin") {
+          if (!current) {
+            const record = {
+              request_id: requestId, principal, input_sha256: digest,
+              state: "RUNNING", started_at: new Date().toISOString(), attempt_count: 1,
+            };
+            await txn.put(inferenceKey, record);
+            return { kind: "started", record };
+          }
+          if (current.principal !== principal || current.input_sha256 !== digest) return { kind: "conflict" };
+          if (current.state === "SUCCEEDED") return { kind: "succeeded", record: current };
+          if (current.state === "UNKNOWN") return { kind: "unknown", record: current };
+          return { kind: "already-running", record: current };
+        }
+        if (!current || current.principal !== principal || current.input_sha256 !== digest) return { kind: "not-started" };
+        if (path === "/v1/inference/complete") {
+          if (current.state === "SUCCEEDED") return { kind: "succeeded", record: current };
+          if (current.state !== "RUNNING") return { kind: "terminal", record: current };
+          const encoded = JSON.stringify(body.output);
+          if (typeof encoded !== "string" || new TextEncoder().encode(encoded).byteLength > MAX_BODY_BYTES) return { kind: "invalid-output" };
+          const record = { ...current, state: "SUCCEEDED", output: body.output, completed_at: new Date().toISOString() };
+          await txn.put(inferenceKey, record);
+          return { kind: "succeeded", record };
+        }
+        if (current.state === "SUCCEEDED") return { kind: "succeeded", record: current };
+        if (current.state === "UNKNOWN") return { kind: "unknown", record: current };
+        const record = { ...current, state: "UNKNOWN", unknown_at: new Date().toISOString(), reason: "provider-outcome-ambiguous" };
+        await txn.put(inferenceKey, record);
+        return { kind: "unknown", record };
+      });
+      if (outcome.kind === "receipt-mismatch") return json(403, { ok: false, reason: "receipt-mismatch" });
+      if (outcome.kind === "conflict") return json(409, { ok: false, reason: "inference-conflict" });
+      if (outcome.kind === "not-started") return json(409, { ok: false, reason: "inference-not-started" });
+      if (outcome.kind === "invalid-output") return json(413, { ok: false, reason: "output-too-large" });
+      if (outcome.kind === "terminal") return json(409, { ok: false, reason: "inference-terminal", state: outcome.record.state });
+      if (outcome.kind === "already-running") return json(409, { ok: false, reason: "inference-already-running", state: "RUNNING" });
+      if (outcome.kind === "unknown") return json(409, { ok: false, reason: "inference-outcome-unknown", state: "UNKNOWN" });
+      if (outcome.kind === "succeeded") return json(200, { ok: true, state: "SUCCEEDED", replay: path === "/v1/inference/begin" || outcome.record.completed_at !== undefined, output: outcome.record.output });
+      return json(200, { ok: true, state: "RUNNING", claimed: true, attempt_count: 1 });
+    }
 
     if (path === "/v1/requests/get") {
       const record = await this.state.storage.get(key);
