@@ -65,11 +65,11 @@ export default {
           typeof body.sku === "string" ? body.sku : null, typeof body.currency === "string" ? body.currency : null,
           Number.isSafeInteger(body.amount_minor) && body.amount_minor >= 0 ? body.amount_minor : null,
           typeof body.pricing_version === "string" ? body.pricing_version : null,
-          JSON.stringify({ settlement_ref: body.settlement_ref }), Date.now());
+          JSON.stringify({ settlement_ref: body.settlement_ref, adapter_source_ref: body.source_ref }), Date.now());
         const inserted = await insert.run();
         const existing = await database.prepare("SELECT * FROM fuel_ledger_entries WHERE idempotency_key = ?1").bind(body.idempotency_key).first();
         if (!existing || existing.principal_id !== body.principal_id || existing.entry_type !== "grant" ||
-            existing.units_delta !== body.units || existing.source_ref !== body.source_ref) {
+            existing.units_delta !== body.units || existing.source_ref !== body.settlement_ref) {
           return result(409, "idempotency-conflict");
         }
         return result(200, null, { granted: true, replay: !(inserted && inserted.meta && inserted.meta.changes === 1), entry_id: existing.entry_id,
