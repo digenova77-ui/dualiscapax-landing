@@ -1,0 +1,15 @@
+name = "fuel-ledger-staging"
+main = "worker.mjs"
+compatibility_date = "2026-10-24"
+workers_dev = false
+
+# Staging only. Do not add production routes until the D1 concurrency gauntlet passes.
+# Bind a dedicated staging D1 database after creating it and applying schema.sql.
+[[d1_databases]]
+binding = "DB"
+database_name = "dualiscapax-fuel-ledger-staging"
+database_id = "REPLACE_WITH_STAGING_DATABASE_ID"
+
+# Set separately as Worker secrets; never commit values:
+# wrangler secret put FUEL_LEDGER_SERVICE_TOKEN
+# wrangler secret put FUEL_LEDGER_GRANT_TOKEN
