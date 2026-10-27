@@ -13,6 +13,7 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 });
 
 export async function inspectRepositoryFile(request: Request, env: InspectorEnv): Promise<Response> {
+  if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
   const expectedOrigin = env.IRIS_AGENT_ALLOWED_ORIGIN;
   if (!expectedOrigin) return json({ error: "origin_policy_not_configured" }, 503);
   const origin = request.headers.get("origin");
