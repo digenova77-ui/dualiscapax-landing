@@ -142,7 +142,6 @@ export default {
         ).bind(body.reservation_id).first();
         if (priorTerminal) return result(409, "reservation-already-settled");
         return result(503, "settlement-not-confirmed");
-          reservation_id: body.reservation_id, balance_units: await balance(database, body.principal_id) });
       }
       return result(404, "not-found");
     } catch {
