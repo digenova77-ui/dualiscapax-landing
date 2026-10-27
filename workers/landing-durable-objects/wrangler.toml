@@ -7,3 +7,7 @@ compatibility_date = "2026-10-27"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["RateLimiter", "AuditLog"]
+
+# Worker Preview configuration is intentionally separate from Pages config.
+# Cloudflare provisions isolated Durable Object namespaces for Worker Previews.
+[previews]
