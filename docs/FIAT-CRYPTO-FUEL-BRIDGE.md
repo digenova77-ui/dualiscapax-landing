@@ -32,3 +32,24 @@ Keep fiat and crypto as separate settlement adapters, converging only after inde
 - Define idempotent compute reservations/charges and cancellation/refund semantics.
 - Decide whether Fuel units are service credits only or tied to a published compute/energy conversion schedule. Do not claim energy backing until measurement, reserves, and redemption rules exist.
 - Reconcile CAD/USD prices, Stripe fees, tax, refunds, disputes, and chargebacks before public launch.
+
+## Confirmed integration gap (repository inspection, 2026-10-27)
+
+- `js/fuel-ledger.js` describes itself as a local demonstration stub and stores `dc_fuel_balance_v1` in browser localStorage. Its `grant()` and `burn()` methods are client-side; they are not a production ledger.
+- `js/iris-fuel-gate.js` checks that browser-side balance and invokes the local debit method synchronously. It does not call a canonical server-side Fuel balance/reservation endpoint.
+- `workers/iris-runtime/worker.mjs` performs identity verification, Trinity evaluation, and an atomic request/receipt claim through `IRIS_MEMORY`, but the inspected `/v1/authorize` path has no Fuel ledger binding or atomic Fuel charge/reservation. Its comments identify it as staging/non-production.
+- `bind-success.html` explicitly says the return page does not mint Fuel and that only the signed Stripe webhook plus D1 ledger can credit it. This is the correct trust boundary, but the authoritative ledger-to-Iris consumption link is not yet present in the inspected code.
+- The gateway page labels checkout closed. No evidence in this inspection proves that live Stripe checkout, D1 bindings, or a production Iris Fuel ledger is active.
+
+## Next implementation slice
+
+Do not wire browser localStorage into a production grant. Design a private ledger service contract that supports:
+- authenticated balance read;
+- atomic reserve/debit bound to principal + request ID + authorized action + input digest;
+- idempotent settlement/release of the reservation;
+- immutable grant and charge records with payment rail/source references;
+- reconciliation and refund/dispute adjustments as separate ledger entries.
+
+The Iris runtime must first receive a valid Trinity allow, then atomically claim the request and reserve the required Fuel before invoking the model provider. If the authorization or ledger reservation fails, the model provider must not be called. Avoid a separate non-atomic "charge later" step. Define rollback/release behavior for provider failures and retries.
+
+The exact order must be designed carefully so the Trinity authorization receipt, request idempotency claim, and Fuel reservation cannot diverge. This requires integration tests against the actual memory/ledger service contracts before deployment.
