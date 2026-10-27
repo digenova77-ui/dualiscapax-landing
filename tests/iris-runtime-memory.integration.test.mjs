@@ -90,6 +90,9 @@ async function signedPost(env, path, body) {
 
 test("runtime authorizes, persists, looks up, verifies, and infers using durable memory service", async () => {
   const env = integratedEnv();
+  let providerCalls = 0;
+  const provider = env.MODEL_PROVIDER;
+  env.MODEL_PROVIDER = { fetch: async (...args) => { providerCalls += 1; return provider.fetch(...args); } };
   const body = { request_id: "integration-1", principal: { unity_id: "unity-integration" }, action: "iris.turn.look", text: "hello" };
   const auth = await signedPost(env, "/v1/authorize", body);
   const issued = await auth.json();
@@ -120,6 +123,20 @@ test("runtime authorizes, persists, looks up, verifies, and infers using durable
   const inferData = await infer.json();
   assert.equal(inferData.ok, true);
   assert.equal(inferData.output.received_memory_context, true);
+  assert.equal(providerCalls, 1);
+
+  // Replaying the exact valid receipt returns the persisted output and must
+  // never invoke the paid/model provider a second time.
+  const replay = await runtime.fetch(new Request("https://iris.test/v1/infer", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ receipt: nextIssued.receipt, text: "next" }),
+  }), env);
+  assert.equal(replay.status, 200);
+  const replayData = await replay.json();
+  assert.equal(replayData.replay, true);
+  assert.deepEqual(replayData.output, inferData.output);
+  assert.equal(providerCalls, 1);
 });
 
 test("runtime denies when durable memory service authentication is misconfigured", async () => {
@@ -357,3 +374,29 @@ test("real memory Worker revocation blocks both inference and receipt verificati
   assert.equal(verifyData.reason, "receipt-revoked");
 });
 
+
+test("paid Iris actions fail closed until canonical Fuel reservation is available", async () => {
+  const env = integratedEnv();
+  const body = {
+    request_id: "integration-paid-without-ledger",
+    principal: { unity_id: "unity-integration" },
+    action: "iris.turn.depth",
+    text: "paid work must not run",
+  };
+  const auth = await signedPost(env, "/v1/authorize", body);
+  const issued = await auth.json();
+  assert.equal(auth.status, 200);
+  let providerCalls = 0;
+  env.MODEL_PROVIDER = { fetch: async () => {
+    providerCalls += 1;
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  } };
+  const infer = await runtime.fetch(new Request("https://iris.test/v1/infer", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ receipt: issued.receipt, text: body.text }),
+  }), env);
+  assert.equal(infer.status, 503);
+  assert.equal((await infer.json()).reason, "fuel-ledger-unavailable");
+  assert.equal(providerCalls, 0);
+});
