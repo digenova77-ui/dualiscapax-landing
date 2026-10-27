@@ -24,3 +24,29 @@ describe("parsePlanRequest", () => {
     });
   });
 });
+
+import { parseRepositoryInspectRequest } from "./repository-inspector";
+
+describe("parseRepositoryInspectRequest", () => {
+  it("accepts an allowlisted repository and safe file path", () => {
+    expect(parseRepositoryInspectRequest({
+      repository: "digenova77-ui/dualiscapax-landing",
+      path: "workers/iris-agent/src/index.ts",
+      ref: "main",
+    })).toEqual({
+      repository: "digenova77-ui/dualiscapax-landing",
+      path: "workers/iris-agent/src/index.ts",
+      ref: "main",
+    });
+  });
+  it("rejects unknown repositories, traversal, and sensitive paths", () => {
+    expect(parseRepositoryInspectRequest({ repository: "attacker/evil", path: "README.md" })).toBeNull();
+    expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: "../README.md" })).toBeNull();
+    expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: ".env.production" })).toBeNull();
+    expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: "config/private-key.pem" })).toBeNull();
+  });
+  it("rejects invalid refs and malformed requests", () => {
+    expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: "README.md", ref: "../main" })).toBeNull();
+    expect(parseRepositoryInspectRequest(null)).toBeNull();
+  });
+});
