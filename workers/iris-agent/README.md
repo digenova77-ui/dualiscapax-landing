@@ -38,3 +38,13 @@ After deployment, verify /health, then issue an authenticated test plan with a h
 5. Add a separate deployment gate that verifies the exact live revision.
 
 Do not skip directly to unrestricted code execution. This bridge is the safe first vertical slice.
+
+## Read-only repository inspection (implementation in review)
+
+`POST /v1/repository/inspect` is a read-only file observation endpoint. It requires the same dedicated `IRIS_AGENT_GATE_TOKEN` and the separate `GITHUB_READ_TOKEN` Worker secret. The GitHub credential must be least-privilege and read-only; it is never returned in responses.
+
+The first repository allowlist is compiled into `src/repository-inspector.ts`. The caller cannot provide arbitrary URLs. The handler resolves the requested ref to a commit SHA first, then reads the file at that immutable commit. It returns the resolved commit, blob SHA, SHA-256 of the exact bytes, size, source URL, observation timestamp, and explicit limitations.
+
+Requests reject unknown repositories, traversal paths, sensitive-looking filenames, invalid refs, and oversized payloads. Responses are limited to small text files. This is not a general repository crawler and does not grant command execution, write access, authorization power, or deployment capability.
+
+Before staging, configure both secrets through Wrangler secret storage. Do not put them in `vars`, source files, or logs. The implementation remains unverified until the CI workflow passes on the exact revision and the endpoint is separately tested in isolated staging.
