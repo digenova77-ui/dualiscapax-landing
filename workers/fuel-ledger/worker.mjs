@@ -57,6 +57,18 @@ export default {
         }
         // The caller must be a private settlement adapter, not a browser. This Worker
         // does not independently verify Stripe/crypto settlement; adapters must do so.
+        // Treat the same settled source as a replay even if an adapter accidentally
+        // changes its idempotency key. A payment may fund at most one grant.
+        const priorSource = await database.prepare(
+          "SELECT * FROM fuel_ledger_entries WHERE source_rail = ?1 AND source_ref = ?2 AND entry_type = 'grant' LIMIT 1"
+        ).bind(body.source_rail, body.settlement_ref).first();
+        if (priorSource) {
+          if (priorSource.principal_id !== body.principal_id || priorSource.units_delta !== body.units) {
+            return result(409, "settlement-source-conflict");
+          }
+          return result(200, null, { granted: true, replay: true, entry_id: priorSource.entry_id,
+            principal_id: body.principal_id, balance_units: await balance(database, body.principal_id) });
+        }
         const entryId = "fle_" + body.idempotency_key;
         const insert = database.prepare(
           "INSERT INTO fuel_ledger_entries (entry_id, principal_id, entry_type, units_delta, idempotency_key, source_rail, source_ref, sku, currency, amount_minor, pricing_version, metadata_json, created_at) " +
