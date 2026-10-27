@@ -105,7 +105,7 @@ export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceL
       typeof entry.source === "string" && typeof entry.sha256 === "string" && SHA256.test(entry.sha256));
     if (passingEvidence.length === 0) return false;
     // The verification result and its supporting evidence must name the same immutable revision.
-    if (!successfulChecks.some((check) => passingEvidence.some((entry) =>
+    if (!successfulChecks.every((check) => passingEvidence.some((entry) =>
       isRecord(check) && isRecord(entry) &&
       typeof check.revisionSha === "string" &&
       typeof entry.revisionSha === "string" &&
