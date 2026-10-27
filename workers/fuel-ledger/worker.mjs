@@ -1,6 +1,6 @@
 /**
  * Canonical Fuel ledger — staging-first, private service.
- * Every mutating route requires FUEL_LEDGER_SERVICE_TOKEN. Do not expose to browsers.
+ * Runtime routes require FUEL_LEDGER_SERVICE_TOKEN; grants additionally require FUEL_LEDGER_GRANT_TOKEN. Never expose to browsers.
  * Balance is derived from append-only entries; never trust client-supplied balances.
  */
 const MAX_BODY_BYTES = 16384;
@@ -50,6 +50,7 @@ export default {
       }
 
       if (path === "/v1/ledger/grant") {
+        if (!env.FUEL_LEDGER_GRANT_TOKEN || request.headers.get("x-ledger-grant-token") !== env.FUEL_LEDGER_GRANT_TOKEN) return result(401, "settlement-adapter-auth-required");
         if (!validId(body.principal_id) || !validId(body.idempotency_key) || !unitsOk(body.units) ||
             !RAILS.has(body.source_rail) || !validId(body.source_ref) || !validId(body.settlement_ref)) {
           return result(400, "invalid-grant");
@@ -65,13 +66,13 @@ export default {
           Number.isSafeInteger(body.amount_minor) && body.amount_minor >= 0 ? body.amount_minor : null,
           typeof body.pricing_version === "string" ? body.pricing_version : null,
           JSON.stringify({ settlement_ref: body.settlement_ref }), Date.now());
-        await insert.run();
+        const inserted = await insert.run();
         const existing = await database.prepare("SELECT * FROM fuel_ledger_entries WHERE idempotency_key = ?1").bind(body.idempotency_key).first();
         if (!existing || existing.principal_id !== body.principal_id || existing.entry_type !== "grant" ||
             existing.units_delta !== body.units || existing.source_ref !== body.source_ref) {
           return result(409, "idempotency-conflict");
         }
-        return result(200, null, { granted: true, replay: existing.entry_id !== entryId ? true : false, entry_id: existing.entry_id,
+        return result(200, null, { granted: true, replay: !(inserted && inserted.meta && inserted.meta.changes === 1), entry_id: existing.entry_id,
           principal_id: body.principal_id, balance_units: await balance(database, body.principal_id) });
       }
 
@@ -122,19 +123,25 @@ export default {
         const delta = body.outcome === "release" ? -reservation.units_delta : 0;
         const entryType = body.outcome;
         const entryId = "fle_" + body.idempotency_key;
-        await database.prepare(
+        const inserted = await database.prepare(
           "INSERT INTO fuel_ledger_entries (entry_id, principal_id, entry_type, units_delta, idempotency_key, request_id, reservation_id, source_rail, source_ref, metadata_json, created_at) " +
-          "VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 'runtime', ?8, ?9, ?10) ON CONFLICT(idempotency_key) DO NOTHING"
+          "SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, 'runtime', ?8, ?9, ?10 " +
+          "WHERE NOT EXISTS (SELECT 1 FROM fuel_ledger_entries WHERE reservation_id = ?7 AND entry_type IN ('charge','release')) " +
+          "ON CONFLICT(idempotency_key) DO NOTHING"
         ).bind(entryId, body.principal_id, entryType, delta, body.idempotency_key, reservation.request_id,
           body.reservation_id, body.outcome_ref, JSON.stringify({ outcome: body.outcome }), Date.now()).run();
         const existing = await database.prepare("SELECT * FROM fuel_ledger_entries WHERE idempotency_key = ?1").bind(body.idempotency_key).first();
-        if (!existing || existing.principal_id !== body.principal_id || existing.entry_type !== entryType ||
-            existing.reservation_id !== body.reservation_id || existing.units_delta !== delta) return result(409, "idempotency-conflict");
+        if (existing && existing.principal_id === body.principal_id && existing.entry_type === entryType &&
+            existing.reservation_id === body.reservation_id && existing.units_delta === delta) {
+          return result(200, null, { settled: true, outcome: entryType,
+            replay: !(inserted && inserted.meta && inserted.meta.changes === 1),
+            reservation_id: body.reservation_id, balance_units: await balance(database, body.principal_id) });
+        }
         const priorTerminal = await database.prepare(
-          "SELECT entry_type FROM fuel_ledger_entries WHERE reservation_id = ?1 AND entry_type IN ('charge','release') AND entry_id <> ?2 LIMIT 1"
-        ).bind(body.reservation_id, existing.entry_id).first();
+          "SELECT entry_type FROM fuel_ledger_entries WHERE reservation_id = ?1 AND entry_type IN ('charge','release') LIMIT 1"
+        ).bind(body.reservation_id).first();
         if (priorTerminal) return result(409, "reservation-already-settled");
-        return result(200, null, { settled: true, outcome: entryType, replay: existing.entry_id !== entryId,
+        return result(503, "settlement-not-confirmed");
           reservation_id: body.reservation_id, balance_units: await balance(database, body.principal_id) });
       }
       return result(404, "not-found");
