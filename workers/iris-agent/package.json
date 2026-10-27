@@ -1,0 +1,21 @@
+{
+  "name": "@dualiscapax/iris-agent-bridge",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "agents": "^0.3.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20261027.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.45.0"
+  }
+}
