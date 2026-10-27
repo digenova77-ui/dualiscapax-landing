@@ -175,26 +175,6 @@ async function grantAccess(env, { eventId, eventType, sessionId, sku, email, amo
   // Never fall back to KV for a paid grant: event/session claims must be atomic in D1.
   return { ok: false, reason: "d1_claim_not_confirmed", jacket: "identity", persist: false };
 
-  const record = {
-    at: new Date().toISOString(),
-    jacket: JACKET,
-    event_id: eventId,
-    session_id: sessionId,
-    sku,
-    via,
-    grant,
-    email: email || null,
-    amount_total: amountTotal,
-    currency: currency || "cad",
-    status: "granted",
-    delivers: grant.delivers,
-    client_hint:
-      grant.kind === "fuel"
-        ? { action: "credit_fuel", units: grant.units, iris_tier: grant.iris_tier_unlock || null }
-        : { action: "open_seat", term_months: grant.term_months, perpetual: Boolean(grant.perpetual), ip: grant.ip, note: "Identity gate still applies for medical/engineering depth rooms" }
-  };
-
-  return { ok: true, idempotent: false, jacket: JACKET, store: "d1", record };
 }
 
 function json(obj, status) {
