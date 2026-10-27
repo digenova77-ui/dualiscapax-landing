@@ -27,6 +27,20 @@ describe("Iris evidence ledger record validation", () => {
     expect(validateEvidenceLedgerRecord(baseRecord())).toBe(true);
   });
 
+  it("rejects unknown fields and impossible UTC dates instead of silently accepting them", () => {
+    expect(validateEvidenceLedgerRecord({ ...baseRecord(), apiKey: "sentinel-secret" })).toBe(false);
+    expect(validateEvidenceLedgerRecord({ ...baseRecord(), createdAt: "2026-02-31T12:00:00.000Z" })).toBe(false);
+    const record = baseRecord();
+    record.evidence = [{
+      source: "synthetic test",
+      observedAt: "2026-10-27T12:00:00.000Z",
+      outcome: "OBSERVED",
+      sha256: "b".repeat(64),
+      extraSecret: "sentinel-secret",
+    } as never];
+    expect(validateEvidenceLedgerRecord(record)).toBe(false);
+  });
+
   it("rejects unknown statuses and invalid pillar identifiers", () => {
     expect(validateEvidenceLedgerRecord({ ...baseRecord(), status: "DONE" })).toBe(false);
     expect(validateEvidenceLedgerRecord({ ...baseRecord(), pillarIds: ["unregistered-pillar"] })).toBe(false);
