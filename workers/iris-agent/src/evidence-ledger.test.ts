@@ -47,8 +47,11 @@ describe("Iris evidence ledger record validation", () => {
       observedAt: "2026-10-27T12:00:00.000Z",
       outcome: "PASS",
       sha256: "b".repeat(64),
+      revisionSha: "a".repeat(40),
     }];
     expect(validateEvidenceLedgerRecord(record)).toBe(true);
+    record.evidence[0].revisionSha = "c".repeat(40);
+    expect(validateEvidenceLedgerRecord(record)).toBe(false);
   });
 
   it("rejects staging status without evidence bound to an exact commit", () => {
