@@ -90,9 +90,10 @@ export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceL
       !(value.previousRecordDigest === null || (typeof value.previousRecordDigest === "string" && SHA256.test(value.previousRecordDigest))) ||
       !EVIDENCE_STATUSES.includes(value.status as EvidenceStatus)) return false;
 
-  const evidence = value.evidence as unknown[];
-  const changes = value.changes as unknown[];
-  const verification = value.verification as unknown[];
+  // The arrays are cast only after the runtime schema checks below validate every member.
+  const evidence = value.evidence as LedgerEvidence[];
+  const changes = value.changes as EvidenceLedgerRecord["changes"];
+  const verification = value.verification as LedgerVerification[];
 
   if (!evidence.every((entry) => isRecord(entry) &&
     hasOnlyKeys(entry, ["source", "observedAt", "outcome", "sha256", "revisionSha"]) &&
