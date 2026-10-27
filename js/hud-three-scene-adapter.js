@@ -46,7 +46,7 @@
       mesh.position.set(...vector(object.position, [0, 0, 0]));
       mesh.rotation.set(...vector(object.rotation, [0, 0, 0]));
       mesh.scale.set(...vector(object.scale, [1, 1, 1]));
-      mesh.userData = { ...(mesh.userData || {}), hudObject: true, hudId: object.id, hudKind: object.kind, hudLabel: object.label || object.id };
+      mesh.userData = { ...(mesh.userData || {}), hudObject: true, hudId: object.id, hudKind: object.kind, hudLabel: object.label || object.id, hudMaterial: object.material || "cyan" };
       return mesh;
     }
     function serialize(mesh) {
@@ -56,7 +56,7 @@
         position: [mesh.position.x, mesh.position.y, mesh.position.z],
         rotation: [mesh.rotation.x, mesh.rotation.y, mesh.rotation.z],
         scale: [mesh.scale.x, mesh.scale.y, mesh.scale.z],
-        material: "cyan",
+        material: mesh.userData.hudMaterial || "cyan",
         label: mesh.userData.hudLabel
       };
     }
