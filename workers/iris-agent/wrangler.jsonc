@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dualiscapax-iris-agent-staging",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-27",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "ai": { "binding": "AI" },
+  "durable_objects": { "bindings": [{ "name": "IrisAgent", "class_name": "IrisAgent" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["IrisAgent"] }],
+  "vars": { "IRIS_AGENT_ALLOWED_ORIGIN": "https://dualiscapax.com" }
+}
