@@ -2,6 +2,7 @@ import { Agent, getAgentByName } from "agents";
 
 import { parsePlanRequest } from "./validation";
 import { parseRepositoryInspectRequest } from "./repository-inspector";
+import { sha256Hex } from "./digest";
 type PlanResult = { id: string; status: "proposed"; createdAt: string; plan: string };
 type IrisState = { lastPlanId?: string; lastPlanStatus: "idle" | "proposed"; lastPlanAt?: string };
 type Env = {
@@ -121,8 +122,7 @@ async function inspectRepositoryFile(request: Request, env: Env): Promise<Respon
     const binary = atob(file.content.replace(/\s/g, ""));
     const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
     if (bytes.byteLength > 12000) return json({ error: "unsupported_or_oversized_file", status: "not_verified" }, 413);
-    const digest = await crypto.subtle.digest("SHA-256", bytes);
-    const sha256 = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    const sha256 = await sha256Hex(bytes);
     return json({
       status: "read-only-observation",
       observedAt: new Date().toISOString(),
