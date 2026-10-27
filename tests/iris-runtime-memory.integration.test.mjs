@@ -400,3 +400,76 @@ test("paid Iris actions fail closed until canonical Fuel reservation is availabl
   assert.equal((await infer.json()).reason, "fuel-ledger-unavailable");
   assert.equal(providerCalls, 0);
 });
+
+test("concurrent exact inference requests make at most one provider call", async () => {
+  const env = integratedEnv();
+  const body = {
+    request_id: "integration-concurrent-infer",
+    principal: { unity_id: "unity-integration" },
+    action: "iris.turn.look",
+    text: "one attempt only",
+  };
+  const auth = await signedPost(env, "/v1/authorize", body);
+  const issued = await auth.json();
+  assert.equal(auth.status, 200);
+
+  let providerCalls = 0;
+  env.MODEL_PROVIDER = {
+    fetch: async () => {
+      providerCalls += 1;
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      return new Response(JSON.stringify({ ok: true, result: "single execution" }), { status: 200 });
+    },
+  };
+  const inferRequest = () => new Request("https://iris.test/v1/infer", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ receipt: issued.receipt, text: body.text }),
+  });
+  const results = await Promise.all([
+    runtime.fetch(inferRequest(), env),
+    runtime.fetch(inferRequest(), env),
+  ]);
+  const statuses = results.map((res) => res.status).sort();
+  assert.deepEqual(statuses, [200, 409]);
+  assert.equal(providerCalls, 1);
+
+  const retry = await runtime.fetch(inferRequest(), env);
+  assert.equal(retry.status, 200);
+  assert.equal((await retry.json()).replay, true);
+  assert.equal(providerCalls, 1);
+});
+
+test("ambiguous provider failure becomes non-retryable UNKNOWN", async () => {
+  const env = integratedEnv();
+  const body = {
+    request_id: "integration-unknown-provider",
+    principal: { unity_id: "unity-integration" },
+    action: "iris.turn.look",
+    text: "provider may have accepted this",
+  };
+  const auth = await signedPost(env, "/v1/authorize", body);
+  const issued = await auth.json();
+  assert.equal(auth.status, 200);
+
+  let providerCalls = 0;
+  env.MODEL_PROVIDER = {
+    fetch: async () => {
+      providerCalls += 1;
+      return new Response(JSON.stringify({ ok: false, error: "upstream timeout" }), { status: 504 });
+    },
+  };
+  const inferRequest = () => new Request("https://iris.test/v1/infer", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ receipt: issued.receipt, text: body.text }),
+  });
+
+  const first = await runtime.fetch(inferRequest(), env);
+  assert.equal(first.status, 502);
+  assert.equal((await first.json()).state, "UNKNOWN");
+  const retry = await runtime.fetch(inferRequest(), env);
+  assert.equal(retry.status, 409);
+  assert.equal((await retry.json()).reason, "inference-outcome-unknown");
+  assert.equal(providerCalls, 1);
+});
