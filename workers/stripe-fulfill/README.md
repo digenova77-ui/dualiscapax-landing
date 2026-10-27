@@ -11,6 +11,7 @@ This worker is the Stripe settlement adapter, not the Fuel source of truth. A ve
 - D1 is required for fulfillment. KV fallback is deliberately disabled because read-then-write claims are not atomic.
 - D1 uses unique event IDs and checkout session IDs; fuel credits are write-once lots, never a mutable running total.
 - A successful webhook receipt is not proof that Iris has consumed the credit. Runtime integration must be tested separately.
+- Current `js/fuel-ledger.js` is explicitly a browser-local demonstration stub, and `js/iris-fuel-gate.js` reads/debits that client balance. This is not authoritative production accounting. Do not launch paid compute until the governed runtime has a server-side balance/reservation/charge path.
 - This branch does not open checkout, create live Payment Links, change Stripe settings, set secrets, bind Cloudflare resources, or deploy a Worker.
 
 ## Required environment bindings
