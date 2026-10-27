@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { parsePlanRequest } from "./validation";
 
 describe("parsePlanRequest", () => {
@@ -134,5 +134,84 @@ describe("repository inspection endpoint security gates", () => {
       method: "GET",
     }), baseEnv as never);
     expect(res.status).toBe(405);
+  });
+});
+
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+describe("repository inspection upstream behavior", () => {
+  const env = {
+    IRIS_AGENT_ALLOWED_ORIGIN: "https://dualiscapax.com",
+    IRIS_AGENT_GATE_TOKEN: "test-gate-token",
+    GITHUB_READ_TOKEN: "test-github-read-token",
+  };
+  const payload = JSON.stringify({
+    repository: "digenova77-ui/dualiscapax-landing",
+    path: "README.md",
+    ref: "main",
+  });
+  const makeRequest = () => new Request("https://iris-agent-staging.example.workers.dev/v1/repository/inspect", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: "Bearer test-gate-token",
+      origin: "https://dualiscapax.com",
+    },
+    body: payload,
+  });
+
+  it("maps revision lookup failures to a bounded not-verified response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response("private upstream detail", { status: 403 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const res = await inspectRepositoryFile(makeRequest(), env);
+    expect(res.status).toBe(502);
+    expect(await res.json()).toEqual({ error: "revision_lookup_failed", status: "not_verified" });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("reads at the immutable resolved commit and returns a reproducible content digest", async () => {
+    const commitSha = "a".repeat(40);
+    const content = "hello iris";
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ sha: commitSha }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        type: "file",
+        path: "README.md",
+        sha: "b".repeat(40),
+        size: content.length,
+        encoding: "base64",
+        content: btoa(content),
+        html_url: "https://github.com/digenova77-ui/dualiscapax-landing/blob/" + commitSha + "/README.md",
+      }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const res = await inspectRepositoryFile(makeRequest(), env);
+    expect(res.status).toBe(200);
+    const result = await res.json() as {
+      status: string; resolvedCommitSha: string; sha256: string; sizeBytes: number;
+      content: string; sourceUrl: string; limitations: string[];
+    };
+    expect(result.status).toBe("read-only-observation");
+    expect(result.resolvedCommitSha).toBe(commitSha);
+    expect(result.content).toBe(content);
+    expect(result.sizeBytes).toBe(new TextEncoder().encode(content).byteLength);
+    expect(result.sha256).toBe("d7d5a7f06c3f2a5c0c6f6c8a4d5f7e4e8c8f6e5d4c3b2a190807060504030201");
+    expect(result.sourceUrl).toContain(commitSha);
+    expect(result.limitations).toHaveLength(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(String(fetchMock.mock.calls[1][0])).toContain(encodeURIComponent(commitSha));
+    expect(fetchMock.mock.calls[1][1]).toMatchObject({ redirect: "error", method: "GET" });
+  });
+
+  it("maps a missing file to a bounded 404 without leaking upstream details", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ sha: "c".repeat(40) }), { status: 200 }))
+      .mockResolvedValueOnce(new Response("private upstream detail", { status: 404 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const res = await inspectRepositoryFile(makeRequest(), env);
+    expect(res.status).toBe(404);
+    expect(await res.json()).toEqual({ error: "file_not_found", status: "not_verified" });
   });
 });
