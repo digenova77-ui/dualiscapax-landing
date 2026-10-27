@@ -1,0 +1,28 @@
+name: Symplectic Invariant Tests
+
+on:
+  push:
+    branches: ["main", "test/**"]
+    paths:
+      - "tests/test_symplectic_invariant.py"
+      - ".github/workflows/symplectic-invariant.yml"
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  symplectic-invariant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run mathematical invariant tests
+        run: python -m unittest discover -s tests -p "test_symplectic_invariant.py" -v
