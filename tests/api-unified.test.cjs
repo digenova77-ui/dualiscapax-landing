@@ -42,14 +42,14 @@ test("missing API base fails closed without making a request", async () => {
 test("client records elapsed request time and flags a request at the 4.20 ms threshold", async () => {
   const client = makeClient({ timings: [100, 104.2] });
   const result = await client.api.health();
-  assert.equal(result.circuit_breaker_latency_ms, 4.2);
+  assert.ok(Math.abs(result.circuit_breaker_latency_ms - 4.2) < 1e-9);
   assert.equal(result.circuit_note, "client_observed_over_sla");
 });
 
 test("client does not flag a request below the 4.20 ms threshold", async () => {
   const client = makeClient({ timings: [100, 104.19] });
   const result = await client.api.health();
-  assert.equal(result.circuit_breaker_latency_ms, 4.19);
+  assert.ok(Math.abs(result.circuit_breaker_latency_ms - 4.19) < 1e-9);
   assert.equal(result.circuit_note, undefined);
 });
 
