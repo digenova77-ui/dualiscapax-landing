@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parsePlanRequest } from "./index";
+import { parsePlanRequest } from "./validation";
 
 describe("parsePlanRequest", () => {
   it("accepts a bounded goal and constraints", () => {
