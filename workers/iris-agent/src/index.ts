@@ -39,17 +39,22 @@ export class IrisAgent extends Agent<Env, IrisState> {
     if (url.pathname !== "/v1/plan" || request.method !== "POST") return json({ error: "not_found" }, 404);
 
     const expectedOrigin = this.env.IRIS_AGENT_ALLOWED_ORIGIN;
+    if (!expectedOrigin) return json({ error: "origin_policy_not_configured" }, 503);
     const origin = request.headers.get("origin");
-    if (origin && expectedOrigin && origin !== expectedOrigin) return json({ error: "origin_denied" }, 403);
+    if (origin && origin !== expectedOrigin) return json({ error: "origin_denied" }, 403);
     const expectedToken = this.env.IRIS_AGENT_GATE_TOKEN;
     const authorization = request.headers.get("authorization") ?? "";
     if (!expectedToken || authorization !== `Bearer ${expectedToken}`) return json({ error: "unauthorized" }, 401);
     if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) return json({ error: "content_type_must_be_json" }, 415);
     const length = Number(request.headers.get("content-length") ?? "0");
-    if (length > 12_000) return json({ error: "request_too_large" }, 413);
+    if (Number.isFinite(length) && length > 12_000) return json({ error: "request_too_large" }, 413);
 
     let raw: unknown;
-    try { raw = await request.json(); } catch { return json({ error: "invalid_json" }, 400); }
+    try {
+      const body = await request.text();
+      if (new TextEncoder().encode(body).byteLength > 12_000) return json({ error: "request_too_large" }, 413);
+      raw = JSON.parse(body);
+    } catch { return json({ error: "invalid_json" }, 400); }
     const input = parsePlanRequest(raw);
     if (!input) return json({ error: "invalid_plan_request" }, 400);
 
@@ -93,7 +98,7 @@ export default {
       return json({ service: "iris-agent-staging", status: "ready", mode: "planning-only", executionEnabled: false });
     }
     if (url.pathname === "/v1/plan" && request.method === "POST") {
-      const agent = getAgentByName(env.IrisAgent, "staging-planner");
+      const agent = await getAgentByName(env.IrisAgent, "staging-planner");
       return agent.fetch(request);
     }
     return json({ error: "not_found" }, 404);
