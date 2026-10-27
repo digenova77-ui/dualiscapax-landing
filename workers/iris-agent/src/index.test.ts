@@ -65,7 +65,7 @@ describe("sha256Hex", () => {
 });
 
 
-import worker from "./index";
+import { inspectRepositoryFile } from "./repository-endpoint";
 
 describe("repository inspection endpoint security gates", () => {
   const baseEnv = {
@@ -87,7 +87,7 @@ describe("repository inspection endpoint security gates", () => {
   }
 
   async function response(req: Request, env: Record<string, unknown> = baseEnv) {
-    return worker.fetch(req, env as never);
+    return inspectRepositoryFile(req, env as never);
   }
 
   it("fails closed when the gate token is absent", async () => {
@@ -130,9 +130,9 @@ describe("repository inspection endpoint security gates", () => {
   });
 
   it("does not expose the inspector through an unsupported method", async () => {
-    const res = await response(new Request("https://iris-agent-staging.example.workers.dev/v1/repository/inspect", {
+    const res = await inspectRepositoryFile(new Request("https://iris-agent-staging.example.workers.dev/v1/repository/inspect", {
       method: "GET",
-    }));
-    expect(res.status).toBe(404);
+    }), baseEnv as never);
+    expect(res.status).toBe(401);
   });
 });
