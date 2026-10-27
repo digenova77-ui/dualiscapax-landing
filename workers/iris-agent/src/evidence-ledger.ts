@@ -129,13 +129,15 @@ export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceL
       typeof entry.revisionSha === "string" &&
       check.revisionSha.toLowerCase() === entry.revisionSha.toLowerCase()))) return false;
   }
-  const revisionBoundPass = (pattern?: RegExp) => evidence.some((entry) =>
-    isRecord(entry) && entry.outcome === "PASS" &&
-    typeof entry.source === "string" && (!pattern || pattern.test(entry.source)) &&
-    typeof entry.revisionSha === "string" && COMMIT_SHA.test(entry.revisionSha) &&
-    verification.some((check) => isRecord(check) && check.outcome === "PASS" &&
+  const revisionBoundPass = (pattern?: RegExp) => evidence.some((entry) => {
+    if (!isRecord(entry) || entry.outcome !== "PASS" ||
+        typeof entry.source !== "string" || (pattern && !pattern.test(entry.source))) return false;
+    const revisionSha = entry.revisionSha;
+    if (typeof revisionSha !== "string" || !COMMIT_SHA.test(revisionSha)) return false;
+    return verification.some((check) => isRecord(check) && check.outcome === "PASS" &&
       typeof check.revisionSha === "string" &&
-      check.revisionSha.toLowerCase() === entry.revisionSha.toLowerCase()));
+      check.revisionSha.toLowerCase() === revisionSha.toLowerCase());
+  });
 
   if (["STAGING-VERIFIED", "PRODUCTION-DEPLOYED", "LIVE-VERIFIED"].includes(String(value.status))) {
     if (!revisionBoundPass()) return false;
