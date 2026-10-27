@@ -197,7 +197,7 @@ describe("repository inspection upstream behavior", () => {
     expect(result.resolvedCommitSha).toBe(commitSha);
     expect(result.content).toBe(content);
     expect(result.sizeBytes).toBe(new TextEncoder().encode(content).byteLength);
-    expect(result.sha256).toBe("d7d5a7f06c3f2a5c0c6f6c8a4d5f7e4e8c8f6e5d4c3b2a190807060504030201");
+    expect(result.sha256).toBe(await sha256Hex(new TextEncoder().encode(content)));
     expect(result.sourceUrl).toContain(commitSha);
     expect(result.limitations).toHaveLength(2);
     expect(fetchMock).toHaveBeenCalledTimes(2);
