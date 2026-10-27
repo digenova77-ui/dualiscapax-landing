@@ -45,6 +45,11 @@ describe("parseRepositoryInspectRequest", () => {
     expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: ".env.production" })).toBeNull();
     expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: "config/private-key.pem" })).toBeNull();
   });
+  it("rejects non-text extensions even when the path is otherwise safe", () => {
+    expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: "assets/image.png" })).toBeNull();
+    expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: "artifacts/archive.zip" })).toBeNull();
+    expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: "docs/architecture.md" })).not.toBeNull();
+  });
   it("rejects invalid refs and malformed requests", () => {
     expect(parseRepositoryInspectRequest({ repository: "digenova77-ui/dualiscapax-landing", path: "README.md", ref: "../main" })).toBeNull();
     expect(parseRepositoryInspectRequest(null)).toBeNull();
