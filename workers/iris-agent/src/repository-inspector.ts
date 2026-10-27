@@ -20,7 +20,7 @@ export function parseRepositoryInspectRequest(value: unknown): RepositoryInspect
   if (typeof input.repository !== "string" || !ALLOWED_REPOSITORIES.has(input.repository)) return null;
   if (typeof input.path !== "string") return null;
   const path = input.path.trim();
-  if (!path || path.length > 240 || path.startsWith("/") || path.includes("\\") ||
+  if (!path || path.length > 240 || path.startsWith("/") || path.includes("\\") || /[?#\u0000-\u001f\u007f]/.test(path) ||
       path.split("/").some((part) => !part || part === "." || part === "..") ||
       BLOCKED_PATH_PARTS.some((part) => path.toLowerCase().includes(part)) ||
       ![...ALLOWED_TEXT_EXTENSIONS].some((ext) => path.toLowerCase().endsWith(ext))) return null;
