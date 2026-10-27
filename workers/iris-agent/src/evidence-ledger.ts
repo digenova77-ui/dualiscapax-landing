@@ -55,8 +55,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === "object" && !Array.isArray(value);
 }
 
+function hasOnlyKeys(value: Record<string, unknown>, allowed: readonly string[]): boolean {
+  return Object.keys(value).every((key) => allowed.includes(key));
+}
+
 function isUtc(value: unknown): value is string {
-  return typeof value === "string" && ISO_UTC.test(value) && Number.isFinite(Date.parse(value));
+  if (typeof value !== "string" || !ISO_UTC.test(value) || !Number.isFinite(Date.parse(value))) return false;
+  // Reject impossible calendar dates that Date.parse may normalize.
+  return new Date(value).toISOString() === value;
 }
 
 function isSafeText(value: unknown, max = 2000): value is string {
@@ -66,7 +72,11 @@ function isSafeText(value: unknown, max = 2000): value is string {
 
 export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceLedgerRecord {
   if (!isRecord(value)) return false;
-  if (value.schemaVersion !== "iris-evidence-v1" ||
+  if (!hasOnlyKeys(value, [
+        "schemaVersion", "taskId", "createdAt", "updatedAt", "goal", "pillarIds", "status",
+        "proposedSteps", "evidence", "changes", "verification", "limitations", "previousRecordDigest",
+      ]) ||
+      value.schemaVersion !== "iris-evidence-v1" ||
       !isSafeText(value.taskId, 128) ||
       !isUtc(value.createdAt) || !isUtc(value.updatedAt) ||
       Date.parse(value.updatedAt) < Date.parse(value.createdAt) ||
@@ -81,17 +91,20 @@ export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceL
       !EVIDENCE_STATUSES.includes(value.status as EvidenceStatus)) return false;
 
   if (!value.evidence.every((entry) => isRecord(entry) &&
+    hasOnlyKeys(entry, ["source", "observedAt", "outcome", "sha256", "revisionSha"]) &&
     isSafeText(entry.source, 2000) && isUtc(entry.observedAt) &&
     ["PASS", "FAIL", "SKIPPED", "OBSERVED"].includes(String(entry.outcome)) &&
     typeof entry.sha256 === "string" && SHA256.test(entry.sha256) &&
     (entry.revisionSha === undefined || (typeof entry.revisionSha === "string" && COMMIT_SHA.test(entry.revisionSha))))) return false;
 
   if (!value.changes.every((change) => isRecord(change) &&
+    hasOnlyKeys(change, ["repository", "branch", "commitSha", "paths"]) &&
     isSafeText(change.repository, 200) && isSafeText(change.branch, 200) &&
     typeof change.commitSha === "string" && COMMIT_SHA.test(change.commitSha) &&
     Array.isArray(change.paths) && change.paths.every((p) => isSafeText(p, 500)))) return false;
 
   if (!value.verification.every((check) => isRecord(check) &&
+    hasOnlyKeys(check, ["name", "revisionSha", "outcome", "source"]) &&
     isSafeText(check.name, 200) && typeof check.revisionSha === "string" &&
     COMMIT_SHA.test(check.revisionSha) && isSafeText(check.source, 2000) &&
     ["PASS", "FAIL", "SKIPPED"].includes(String(check.outcome)))) return false;
