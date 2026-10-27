@@ -111,17 +111,21 @@ export function validateEvidenceLedgerRecord(value: unknown): value is EvidenceL
       typeof entry.revisionSha === "string" &&
       check.revisionSha.toLowerCase() === entry.revisionSha.toLowerCase()))) return false;
   }
+  const revisionBoundPass = (pattern?: RegExp) => value.evidence.some((entry) =>
+    isRecord(entry) && entry.outcome === "PASS" &&
+    typeof entry.source === "string" && (!pattern || pattern.test(entry.source)) &&
+    typeof entry.revisionSha === "string" && COMMIT_SHA.test(entry.revisionSha) &&
+    value.verification.some((check) => isRecord(check) && check.outcome === "PASS" &&
+      typeof check.revisionSha === "string" &&
+      check.revisionSha.toLowerCase() === entry.revisionSha.toLowerCase()));
+
   if (["STAGING-VERIFIED", "PRODUCTION-DEPLOYED", "LIVE-VERIFIED"].includes(String(value.status))) {
-    if (!value.evidence.some((entry) => isRecord(entry) && entry.revisionSha &&
-      typeof entry.revisionSha === "string" && COMMIT_SHA.test(entry.revisionSha))) return false;
+    if (!revisionBoundPass()) return false;
   }
   if (["PRODUCTION-DEPLOYED", "LIVE-VERIFIED"].includes(String(value.status))) {
-    if (!value.evidence.some((entry) => isRecord(entry) && entry.outcome === "PASS" &&
-      typeof entry.source === "string" && /deployment|deploy/i.test(entry.source))) return false;
+    if (!revisionBoundPass(/deployment|deploy/i)) return false;
   }
-  if (value.status === "LIVE-VERIFIED" &&
-      !value.evidence.some((entry) => isRecord(entry) && entry.outcome === "PASS" &&
-        typeof entry.source === "string" && /live|post-deploy|health/i.test(entry.source))) return false;
+  if (value.status === "LIVE-VERIFIED" && !revisionBoundPass(/live|post-deploy|health/i)) return false;
   return true;
 }
 
