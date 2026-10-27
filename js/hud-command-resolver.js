@@ -30,9 +30,9 @@
       .normalize("NFKC")
       .toLocaleLowerCase("en")
       .replace(/[’']/g, "'")
-      .replace(/[^\\p{L}\\p{N}]+/gu, " ")
+      .replace(/[^\p{L}\p{N}]+/gu, " ")
       .trim()
-      .replace(/\\s+/g, " ");
+      .replace(/\s+/g, " ");
   }
 
   function hasPhrase(text, phrase) {
@@ -72,7 +72,7 @@
     const chosen = matches[0].command;
     const target = typeof opts.target === "string" && opts.target.trim() ? opts.target.trim() : null;
     const needsTarget = ["board.edit", "board.explore", "board.simulate"].includes(chosen.id);
-    if (needsTarget && !target && !/\\b(this|that|selected|current|all)\\b/.test(text)) {
+    if (needsTarget && !target && !/\b(this|that|selected|current|all)\b/.test(text)) {
       return {
         status: "clarify",
         reason: "target_required",
