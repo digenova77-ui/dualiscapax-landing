@@ -92,7 +92,7 @@ describe("repository inspection endpoint security gates", () => {
 
   it("fails closed when the gate token is absent", async () => {
     const res = await response(request(), { ...baseEnv, IRIS_AGENT_GATE_TOKEN: undefined });
-    expect(res.status).toBe(405);
+    expect(res.status).toBe(401);
     expect(await res.json()).toEqual({ error: "unauthorized" });
   });
 
@@ -133,6 +133,6 @@ describe("repository inspection endpoint security gates", () => {
     const res = await inspectRepositoryFile(new Request("https://iris-agent-staging.example.workers.dev/v1/repository/inspect", {
       method: "GET",
     }), baseEnv as never);
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(405);
   });
 });
