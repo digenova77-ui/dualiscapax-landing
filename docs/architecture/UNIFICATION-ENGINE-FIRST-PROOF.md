@@ -1,6 +1,6 @@
 # Unification Engine: First Proof Slice
 
-Status: proposed engineering plan; not evidence of deployed capability.
+Status: non-production proof in progress; current code is not integrated into the live HUD and is not evidence of deployed capability.
 
 ## Product thesis
 
