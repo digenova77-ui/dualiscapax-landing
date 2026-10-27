@@ -61,7 +61,7 @@ export default {
         const insert = database.prepare(
           "INSERT INTO fuel_ledger_entries (entry_id, principal_id, entry_type, units_delta, idempotency_key, source_rail, source_ref, sku, currency, amount_minor, pricing_version, metadata_json, created_at) " +
           "VALUES (?1, ?2, 'grant', ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12) ON CONFLICT(idempotency_key) DO NOTHING"
-        ).bind(entryId, body.principal_id, body.units, body.idempotency_key, body.source_rail, body.source_ref,
+        ).bind(entryId, body.principal_id, body.units, body.idempotency_key, body.source_rail, body.settlement_ref,
           typeof body.sku === "string" ? body.sku : null, typeof body.currency === "string" ? body.currency : null,
           Number.isSafeInteger(body.amount_minor) && body.amount_minor >= 0 ? body.amount_minor : null,
           typeof body.pricing_version === "string" ? body.pricing_version : null,
