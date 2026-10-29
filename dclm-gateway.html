@@ -75,7 +75,7 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
   <p class="kicker">ED-MANIFEST-20260830-V5 · steps 1–5</p>
   <h1 data-i18n="gateway.h1">Gateway control plane</h1>
   <p class="lede" data-i18n="gateway.lede">Nothing on this page is measured. Checkout stays closed. A payment waits on a live link, and there is not one here.</p>
-  <div class="closed"><strong>Checkout closed.</strong> Prices and rails are itemized. No Stripe URLs invented. No <code>sk_</code> keys. Equal-CAD crypto is not an exchange.</div>
+  <div class="closed"><strong>Checkout closed.</strong> Prices and rails are itemized. No Stripe URLs invented. No <code>sk_</code> keys. BTC, ETH, and SOL are not this door.</div>
 
   <section class="step" id="s1">
     <h2>Step 1 · FE-01 · Rail A · capacity + fiat</h2>
@@ -91,16 +91,9 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
   </section>
 
   <section class="step" id="s2">
-    <h2>Step 2 · FE-02 · Rail B · equal-CAD crypto</h2>
-    <p class="lede">Same toll as fiat. 0.00% built-in spread. Validate an address on this device. Deposit addresses stay on Fuel when a rail is bound.</p>
-    <div class="grid">
-      <button type="button" class="rail on" data-asset="BTC"><b>BTC</b><span>Taproot / SegWit · Bech32m</span></button>
-      <button type="button" class="rail" data-asset="ETH"><b>ETH</b><span>EIP-55 · Mainnet / L2</span></button>
-      <button type="button" class="rail" data-asset="SOL"><b>SOL</b><span>Base58 native / SPL</span></button>
-    </div>
-    <input id="addr" autocomplete="off" spellcheck="false" placeholder="Paste a destination to checksum — not a Dualis invoice"/>
-    <p class="meta" id="addrMsg">No address checked.</p>
-    <button type="button" class="cta" disabled>Rail B send closed on this page</button>
+    <h2>Step 2 · FE-02 · not a public chain</h2>
+    <p class="lede">BTC, ETH, and SOL were buttons on the 30 Aug 2026 form. They are not a rail. This door does not take them, and it does not checksum their addresses.</p>
+    <button type="button" class="cta" disabled>No outside chain</button>
   </section>
 
   <section class="step" id="s3">
@@ -118,7 +111,7 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
   <section class="step" id="s5">
     <h2>Step 5 · FE-05 · parallel combos</h2>
     <div class="grid">
-      <div class="combo"><b>PAY-1</b><span>Fiat CAD (Stripe / Interac / wire) ∥ equal-CAD BTC · ETH · SOL. No exchange product.</span></div>
+      <div class="combo"><b>PAY-1</b><span>CAD, when a lawful rail is actually open. Not BTC. Not ETH. Not SOL.</span></div>
       <div class="combo"><b>SEAT-1</b><span>Corporate capacity seat ∥ grassroots / research node. Same peg.</span></div>
       <div class="combo"><b>ACCESS-1</b><span>Closed document packs ∥ sealed attestation. IP stays closed until contract.</span></div>
       <div class="combo"><b>EVAL-1</b><span>Tier 0 sandbox CAD $0 ∥ public measure with Iris.</span></div>
@@ -135,7 +128,7 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
 </div>
 <script>
 (function () {
-  var state = { tier: 'T0', cad: 0, days: 0, asset: 'BTC', addr: '', hash: '', trip: false };
+  var state = { tier: 'T0', cad: 0, days: 0, hash: '', trip: false };
 
   function noteClosed() {
     document.getElementById('hud').classList.remove('trip');
@@ -153,42 +146,11 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
     });
   }
 
-  function setRails() {
-    document.querySelectorAll('.rail').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        document.querySelectorAll('.rail').forEach(function (b) { b.classList.remove('on'); });
-        btn.classList.add('on');
-        state.asset = btn.getAttribute('data-asset');
-        checkAddr();
-      });
-    });
-  }
-
-  function validAddr(asset, v) {
-    if (!v) return null;
-    if (asset === 'BTC') return /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/.test(v);
-    if (asset === 'ETH') return /^0x[0-9a-fA-F]{40}$/.test(v);
-    if (asset === 'SOL') return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v);
-    return false;
-  }
-
-  function checkAddr() {
-    var v = (document.getElementById('addr').value || '').trim();
-    state.addr = v;
-    var msg = document.getElementById('addrMsg');
-    if (!v) { msg.className = 'meta'; msg.textContent = 'No address checked.'; return; }
-    var ok = validAddr(state.asset, v);
-    msg.className = 'meta ' + (ok ? 'ok' : 'bad');
-    msg.textContent = ok ? (state.asset + ' format accepted on device.') : (state.asset + ' format rejected. Seal blocked.');
-  }
-
   async function digest(s) {
     if (!window.crypto || !crypto.subtle) return 'sha256-unavailable';
     var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
     return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
   }
-
-  document.getElementById('addr').addEventListener('input', checkAddr);
 
   document.getElementById('seal').addEventListener('click', async function () {
     if (state.trip) {
@@ -204,8 +166,7 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
       'Corporate float: 0.00%',
       'Royalty credit: CAD $' + state.cad.toFixed(2) + ' (100% when contracted)',
       'Singularity advance: +' + state.days + ' d  (R-CAD-DAY = 1000)',
-      'Rail B asset: ' + state.asset + ' · equal-CAD · 0.00% spread',
-      'Address checked: ' + (state.addr ? 'yes' : 'none'),
+      'Outside chain: none. BTC, ETH, and SOL are not this door.',
       'QR URI: template only — not a live invoice',
       'Status: PREVIEW_NOT_AN_INVOICE'
     ].join('\n');
@@ -215,19 +176,14 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
   });
 
   document.getElementById('purge').addEventListener('click', function () {
-    state = { tier: 'T0', cad: 0, days: 0, asset: 'BTC', addr: '', hash: '', trip: false };
-    document.getElementById('addr').value = '';
+    state = { tier: 'T0', cad: 0, days: 0, hash: '', trip: false };
     document.getElementById('slip').textContent = 'SESSION_PURGED_L0';
-    document.getElementById('addrMsg').className = 'meta';
-    document.getElementById('addrMsg').textContent = 'No address checked.';
     document.querySelectorAll('#tiers .tier').forEach(function (b, i) { b.classList.toggle('on', i === 0); });
-    document.querySelectorAll('.rail').forEach(function (b, i) { b.classList.toggle('on', i === 0); });
     document.getElementById('hud').classList.remove('trip');
     noteClosed();
   });
 
   setTiers();
-  setRails();
   noteClosed();
 })();
 </script>
