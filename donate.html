@@ -55,7 +55,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <button type="button" class="rail" id="link" data-chain="link">Open LINK (Trinity) send</button>
   <button type="button" class="rail" id="dot" data-chain="dot">Open Polkadot send</button>
   <button type="button" class="rail" id="dgb" data-chain="dgb">Open DigiByte send</button>
-  <button type="button" class="rail" id="bch" data-chain="bch">Open Bitcoin Cash send</button>
+  <button type="button" class="rail" id="usdc" data-chain="usdc">Open USDC send</button>
   <button type="button" class="rail" id="doge" data-chain="doge">Open Dogecoin send (Iris time)</button>
   <div class="panel" id="panel" hidden></div>
   <p class="note">Voluntary gift. One method per send. No card. No checkout.</p>
@@ -77,6 +77,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
       <option value="zec">Zcash</option>
       <option value="pol">Polygon</option>
       <option value="bsc">BNB</option>
+      <option value="usdc">USDC</option>
       <option value="doge">Dogecoin</option>
       <option value="other">Other</option>
     </select>
@@ -129,7 +130,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   }
   function openUrl(url){
     if (!url || typeof url !== 'string') return;
-    if (!/^(mailto:|trinity:|bitcoincash:|dogecoin:|digibyte:|zcash:|ripple:)/i.test(url)) return;
+    if (!/^(mailto:|trinity:|dogecoin:|digibyte:|zcash:|ripple:)/i.test(url)) return;
     try {
       var a = document.createElement('a');
       a.href = url; a.rel = 'noopener noreferrer'; a.target = '_blank';
@@ -140,10 +141,8 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     if (!addr || typeof addr !== 'string') return false;
     addr = addr.trim();
     switch (chain) {
-      case 'pol': case 'bsc': case 'link':
+      case 'pol': case 'bsc': case 'link': case 'usdc':
         return /^0x[a-fA-F0-9]{40}$/.test(addr);
-      case 'bch':
-        return /^(bitcoincash:)?[qp][a-z0-9]{41}$/i.test(addr) || /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(addr);
       case 'doge':
         return /^D[5-9A-HJ-NP-U][1-9A-HJ-NP-Za-km-z]{32}$/.test(addr);
       case 'dgb':
@@ -160,10 +159,9 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   function walletUri(chain, addr){
     if (!validAddr(chain, addr)) return null;
     switch (chain) {
-      case 'link': return 'trinity:' + addr;
+      case 'link': case 'usdc': return 'trinity:' + addr;
       case 'pol': return 'trinity:' + addr + '@137';
       case 'bsc': return 'trinity:' + addr + '@56';
-      case 'bch': return 'bitcoincash:' + addr;
       case 'doge': return 'dogecoin:' + addr;
       case 'dgb': return 'digibyte:' + addr;
       case 'zec': return 'zcash:' + addr;
@@ -172,10 +170,10 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     }
   }
   function chainLabel(chain){
-    return ({xrp:'XRP',zec:'Zcash',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
+    return ({xrp:'XRP',zec:'Zcash',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK',dot:'Polkadot',dgb:'DigiByte',usdc:'USDC',doge:'Dogecoin'})[chain] || chain;
   }
   function addrFor(chain){
-    var map = {xrp:pay.research_xrp,zec:pay.research_zec,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,bch:pay.research_bch,doge:pay.ai_doge};
+    var map = {xrp:pay.research_xrp,zec:pay.research_zec,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,usdc:pay.research_usdc,doge:pay.ai_doge};
     return (map[chain] || '').trim();
   }
   document.getElementById('interac').addEventListener('click', function(){
@@ -197,7 +195,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
       'Prefer Interac Autodeposit when you can.'
     ], MAIL);
   });
-  ['xrp','zec','sol','eth','pol','bsc','link','dot','dgb','bch','doge'].forEach(function(chain){
+  ['xrp','zec','pol','bsc','link','dot','dgb','usdc','doge'].forEach(function(chain){
     var btn = document.getElementById(chain);
     if (!btn) return;
     var addr = addrFor(chain);
