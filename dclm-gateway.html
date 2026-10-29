@@ -59,11 +59,11 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
 
   <div class="hud" id="hud">
     <div class="row">
-      <span>Φ <b id="phi">1.000</b></span>
-      <span>M-S <b id="ping">—</b></span>
-      <span>R_eff <b>4.18e-13</b></span>
-      <span>float <b>0.00%</b></span>
-      <span>PII <b>0.00%</b></span>
+      <span>books <b>unset</b></span>
+      <span>floor <b>unset</b></span>
+      <span>joined <b>no</b></span>
+      <span>loop <b>not a link</b></span>
+      <span>bound <b>not measured</b></span>
       <span>ACCESS <b>closed</b></span>
     </div>
     <div class="laws">
@@ -74,7 +74,7 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
 
   <p class="kicker">ED-MANIFEST-20260830-V5 · steps 1–5</p>
   <h1 data-i18n="gateway.h1">Gateway control plane</h1>
-  <p class="lede" data-i18n="gateway.lede">Capacity tier, equal-CAD crypto rail, sealed slip, telemetry, parallel combos. Measure here. Money waits on live Payment Links.</p>
+  <p class="lede" data-i18n="gateway.lede">Nothing on this page is measured. Checkout stays closed. A payment waits on a live link, and there is not one here.</p>
   <div class="closed"><strong>Checkout closed.</strong> Prices and rails are itemized. No Stripe URLs invented. No <code>sk_</code> keys. Equal-CAD crypto is not an exchange.</div>
 
   <section class="step" id="s1">
@@ -137,19 +137,8 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
 (function () {
   var state = { tier: 'T0', cad: 0, days: 0, asset: 'BTC', addr: '', hash: '', trip: false };
 
-  function ping() {
-    var t0 = performance.now();
-    var n = 0; for (var i = 0; i < 64; i++) n += i;
-    var ms = performance.now() - t0;
-    var el = document.getElementById('ping');
-    var hud = document.getElementById('hud');
-    el.textContent = ms.toFixed(3) + ' ms';
-    if (ms >= 4.20) {
-      state.trip = true;
-      hud.classList.add('trip');
-      document.getElementById('phi').textContent = '0.000 FAIL_CLOSED';
-    }
-    return ms;
+  function noteClosed() {
+    document.getElementById('hud').classList.remove('trip');
   }
 
   function setTiers() {
@@ -234,14 +223,12 @@ foot{display:block;margin-top:1.6rem;padding-top:1rem;border-top:1px solid rgba(
     document.querySelectorAll('#tiers .tier').forEach(function (b, i) { b.classList.toggle('on', i === 0); });
     document.querySelectorAll('.rail').forEach(function (b, i) { b.classList.toggle('on', i === 0); });
     document.getElementById('hud').classList.remove('trip');
-    document.getElementById('phi').textContent = '1.000';
-    ping();
+    noteClosed();
   });
 
   setTiers();
   setRails();
-  ping();
-  setInterval(ping, 1000);
+  noteClosed();
 })();
 </script>
 <script src="js/i18n.js"></script><script>document.getElementById('dc-lang-switch')?.addEventListener('change',function(){window.DC_i18n&&DC_i18n.setLang(this.value)});</script>
