@@ -50,8 +50,6 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <p class="lede">Coin interaction: you pay the architecture or the address directly with whatever currency you choose. The company advertises and does not process the payment.</p>
   <button type="button" class="rail" id="xrp" data-chain="xrp">Open XRP send</button>
   <button type="button" class="rail" id="zec" data-chain="zec">Open Zcash send</button>
-  <button type="button" class="rail" id="sol" data-chain="sol">Open Solana send</button>
-  <button type="button" class="rail" id="eth" data-chain="eth">Open Trinity send</button>
   <button type="button" class="rail" id="pol" data-chain="pol">Open Polygon send</button>
   <button type="button" class="rail" id="bsc" data-chain="bsc">Open BNB Chain send</button>
   <button type="button" class="rail" id="link" data-chain="link">Open LINK (Trinity) send</button>
@@ -77,8 +75,6 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
       <option value="interac">Interac</option>
       <option value="xrp">XRP</option>
       <option value="zec">Zcash</option>
-      <option value="sol">Solana</option>
-      <option value="eth">Ethereum</option>
       <option value="pol">Polygon</option>
       <option value="bsc">BNB</option>
       <option value="doge">Dogecoin</option>
@@ -133,7 +129,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   }
   function openUrl(url){
     if (!url || typeof url !== 'string') return;
-    if (!/^(mailto:|trinity:|solana:|bitcoincash:|dogecoin:|digibyte:|zcash:|ripple:)/i.test(url)) return;
+    if (!/^(mailto:|trinity:|bitcoincash:|dogecoin:|digibyte:|zcash:|ripple:)/i.test(url)) return;
     try {
       var a = document.createElement('a');
       a.href = url; a.rel = 'noopener noreferrer'; a.target = '_blank';
@@ -179,10 +175,10 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     }
   }
   function chainLabel(chain){
-    return ({xrp:'XRP',zec:'Zcash',sol:'Solana',eth:'Ethereum',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
+    return ({xrp:'XRP',zec:'Zcash',pol:'Polygon',bsc:'BNB Smart Chain',link:'LINK',dot:'Polkadot',dgb:'DigiByte',bch:'Bitcoin Cash',doge:'Dogecoin'})[chain] || chain;
   }
   function addrFor(chain){
-    var map = {xrp:pay.research_xrp,zec:pay.research_zec,sol:pay.research_sol,eth:pay.research_eth,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,bch:pay.research_bch,doge:pay.ai_doge};
+    var map = {xrp:pay.research_xrp,zec:pay.research_zec,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,bch:pay.research_bch,doge:pay.ai_doge};
     return (map[chain] || '').trim();
   }
   document.getElementById('interac').addEventListener('click', function(){
