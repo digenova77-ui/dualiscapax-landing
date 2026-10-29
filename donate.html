@@ -140,10 +140,8 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     if (!addr || typeof addr !== 'string') return false;
     addr = addr.trim();
     switch (chain) {
-      case 'eth': case 'pol': case 'bsc': case 'link':
+      case 'pol': case 'bsc': case 'link':
         return /^0x[a-fA-F0-9]{40}$/.test(addr);
-      case 'sol':
-        return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr);
       case 'bch':
         return /^(bitcoincash:)?[qp][a-z0-9]{41}$/i.test(addr) || /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(addr);
       case 'doge':
@@ -162,10 +160,9 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   function walletUri(chain, addr){
     if (!validAddr(chain, addr)) return null;
     switch (chain) {
-      case 'eth': case 'link': return 'trinity:' + addr;
+      case 'link': return 'trinity:' + addr;
       case 'pol': return 'trinity:' + addr + '@137';
       case 'bsc': return 'trinity:' + addr + '@56';
-      case 'sol': return 'solana:' + addr;
       case 'bch': return 'bitcoincash:' + addr;
       case 'doge': return 'dogecoin:' + addr;
       case 'dgb': return 'digibyte:' + addr;
