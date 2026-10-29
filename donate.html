@@ -42,6 +42,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
   <h1 data-i18n="donate.h1">A gift with no ticket back</h1>
   <p class="lede" data-i18n="donate.lede">This room is the jar on the shelf. You put something in because the work should keep going. You do not get a pass, a seat, or a share in return. Addresses stay on the page so you can read them with your own eyes.</p>
   <p class="lede">Each button opens a real path: your email app for Interac, or a wallet link for crypto. One method per send. No card. No checkout.</p>
+  <button type="button" class="go" id="donate">Donate</button>
   <h2>Canada — bank</h2>
   <button type="button" class="go" id="interac">Open Interac e-Transfer</button>
   <button type="button" class="rail" id="eft">Open email for EFT instructions</button>
@@ -176,7 +177,7 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
     var map = {xrp:pay.research_xrp,zec:pay.research_zec,pol:pay.research_pol,bsc:pay.research_bsc,link:pay.research_link,dot:pay.research_dot,dgb:pay.research_dgb,usdc:pay.research_usdc,doge:pay.ai_doge};
     return (map[chain] || '').trim();
   }
-  document.getElementById('interac').addEventListener('click', function(){
+  function sendInterac(){
     var sub = encodeURIComponent('Interac e-Transfer · DualisCapax research');
     var body = encodeURIComponent('Send Interac e-Transfer to this Autodeposit email:\n' + MAIL + '\n\nAmount: (you choose)\nMemo: DualisCapax research gift\n');
     openUrl('mailto:' + MAIL + '?subject=' + sub + '&body=' + body);
@@ -185,7 +186,9 @@ h2{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-family:"I
       'In your bank app, send Interac to that same Autodeposit address.',
       'If email did not open: open your bank → Interac → send to the address below.'
     ], MAIL);
-  });
+  }
+  document.getElementById('donate').addEventListener('click', sendInterac);
+  document.getElementById('interac').addEventListener('click', sendInterac);
   document.getElementById('eft').addEventListener('click', function(){
     var sub = encodeURIComponent('EFT · DualisCapax research');
     var body = encodeURIComponent('Please reply with EFT instructions request, or send Interac to ' + MAIL + ' (Autodeposit).\n');
