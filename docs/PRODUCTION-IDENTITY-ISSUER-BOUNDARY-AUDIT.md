@@ -1,0 +1,230 @@
+# Production Identity Issuer — Read-Only Boundary Audit
+
+**Status:** BLOCKED — no production identity proof demonstrated
+**Audited ref:** main at 08a79c91cd060fe9a3746417ddd3ae855d52fcc6
+**Scope:** Read-only source inspection across `dualiscapax-landing` and its companion `dualiscapax-deploy` repository. No runtime, configuration, secret, DNS, route, or deployment changes.
+
+## Executive finding
+
+The repository contains authorization machinery, but the inspected production Pages Worker does not establish that the caller controls the claimed Unity identity. The current /v1/authorize handler validates an HMAC over the request and then reads body.principal.unity_id; the inspected handler does not verify an authenticated user session, passkey ceremony, issuer assertion, or identity-provider response before evaluating its local action policy.
+
+A valid HMAC proves possession of the HMAC key for that request. It does not independently prove that the browser user is the named Unity principal. A client-controlled unity_id must not be treated as authenticated identity.
+
+## Source-backed observations
+
+1. **Production Pages authorization route:** _worker.js, /v1/authorize (around lines 396–555). It calls verifySignature(request, env.SIGNING_SECRET), parses body.principal.unity_id, applies rate limits and evaluatePolicy, then atomically claims request_id. No session-cookie validation, WebAuthn verification, or trusted identity binding appears in this handler.
+2. **Policy function:** _worker.js, evaluatePolicy (around lines 228–240). It checks action/lane/memory compatibility. It is not an identity verifier or an independently governed Trinity decision service.
+3. **Production browser client:** js/iris-authorize.js, authorizeProduction. It posts JSON to IrisAuthorizeBase + /v1/authorize with credentials: same-origin, but does not attach x-timestamp or x-signature.
+4. **Pages Worker request contract:** _worker.js, verifySignature (around lines 243–270) requires both x-timestamp and x-signature, and verifies them against SIGNING_SECRET. If IrisAuthorizeBase points directly at this Worker, the inspected production client and Worker contracts do not match. If a separate signer/backend is intended, its implementation was not found in this repository tree.
+5. **Staging runtime:** workers/iris-runtime/worker.mjs has an IDENTITY_API service binding and calls /check with the requested Unity ID. workers/iris-runtime/wrangler.toml points this at a placeholder service named identity-api-staging.
+6. **Staging identity tests:** tests/iris-authorize-endpoint.test.mjs supplies a mock IDENTITY_API that returns verified: true for any non-empty Unity ID. This tests the Worker binding contract only; it is not identity evidence.
+7. **Staging documentation:** workers/iris-runtime/STAGING.md explicitly says the fixtures do not prove real Unity identity, real Trinity policy, or real model inference, and that real staging services are still required.
+8. **No identity service implementation found in this repository:** the audited `dualiscapax-landing` tree contains no `identity-api-staging` Worker source or production identity service implementation.
+
+## Companion `.com` portal findings (`dualiscapax-deploy`)
+
+The first audit pass was too narrow to the landing repository. The companion deployment repository contains an owner passkey page, so the accurate status is **WebAuthn browser scaffold and Caddy-to-auth-service route present; successful server-backed ceremony not demonstrated**:
+
+1. `webroot/passkey/owner.html` contains real browser calls to `navigator.credentials.create()` and `navigator.credentials.get()`. It obtains registration/authentication options from the server, serializes the credential response, and posts it back for verification. This is a browser-side scaffold, not proof that a server verified any credential.
+2. The page itself labels the implementation a scaffold and says the ceremony endpoints return `501 ceremony_not_wired`. However, the current source Caddyfile routes its `/api/webauthn/*` calls to `127.0.0.1:18801`. The page's notice and the current edge source therefore disagree; neither alone proves the live response.
+3. The page calls `/api/webauthn/register/options`, `/api/webauthn/register/verify`, `/api/webauthn/auth/options`, `/api/webauthn/auth/verify`, and `/api/owner/session`.
+4. The alternate `deploy/sovereign/nginx-dualiscapax-com.conf` proxies `/api/` to `127.0.0.1:8410`, but this is not the current source integration target. The `deploy/live-box/Caddyfile` routes the WebAuthn aliases to `127.0.0.1:18801`.
+5. `handshake/FRONT-INTERFACE.md` specifies the intended `.com`-to-`.ai` passkey handoff and the `.well-known/webauthn` related-origin allowlist. That is a protocol instruction, not evidence that the well-known resource is currently served with the required content or that the live browser supports the feature.
+6. The `dualiscapax-deploy` tree does not contain a static `webroot/.well-known/webauthn` file, but its current Caddy source defines that route directly. The `dualiscapax-landing` repository's `CNAME` names `dualiscapax.ai`; its `wrangler.toml` also describes the Pages project as bound to `.ai`. The two repositories therefore have distinct hosting roles and must not be casually described as one `.com` application.
+
+### Related-origin WebAuthn requirement
+
+Using RP ID `dualiscapax.com` from `https://dualiscapax.ai` is not an ordinary same-site RP ID configuration. It relies on WebAuthn Related Origin Requests: the RP ID domain must serve `https://dualiscapax.com/.well-known/webauthn` over HTTPS with `Content-Type: application/json`, and the `origins` array must explicitly include the exact `.ai` origin(s). The relying party must also validate the `origin` in the WebAuthn client data against its exact allowlist. A design document describing this file does not prove that it is deployed. Browser/client support must be tested on the actual target devices.
+
+## Historical authentication-service evidence requiring revalidation
+
+A separate investigation report committed as `attachments/GROK IMPLEMENTATION .txt` in `scarlet-xenon-lion-dove` is dated 2026-10-16. It reports an existing New Jersey `dualis-auth` service on `127.0.0.1:18801` with POST routes `/register/options`, `/register/verify`, `/auth/options`, and `/auth/verify`; it reports a health check of HTTP 200, zero registered credentials, first enrollment gated by an `x-enrollment-token`, and successful authentication returning `authorization: NOT_GRANTED`. The report also says the intended `.com`/`.ai` RP ID was `dualiscapax.com` and that the `.well-known/webauthn` URL then returned HTTP 200 with `application/octet-stream`, not the required `application/json`.
+
+These are **historical reported findings**, not a live observation on 2026-10-30. The authentication service source and its current systemd/process state are not present in the inspected GitHub repositories, and no current health check or endpoint test was run. The Oct 13 reconciliation report separately says the staged 8410 service design was dead/uninstalled on the box and that the active edge was Caddy, not the proposed Nginx configuration. Do not confuse the staged `/api/` → `8410` owner-page design with the historically reported `dualis-auth` service on `18801`.
+
+**Implementation implication:** before creating a new Better Auth server, a new passkey backend, or another identity service, re-establish whether the existing `dualis-auth` service is still present and whether its four WebAuthn endpoints remain correct. If it is live and source-backed, prefer a reviewed adapter to that existing service over a duplicate authentication stack. Keep `authorization: NOT_GRANTED` as the identity/authentication boundary; Trinity must separately decide every governed action.
+
+### WebAuthn related-origin standard
+
+The `.com` RP ID can be shared with `.ai` only through WebAuthn Related Origin Requests. The WebAuthn Level 3 specification requires the RP ID's HTTPS `/.well-known/webauthn` resource, `application/json`, an `origins` array, and server-side validation of the actual WebAuthn `origin` against the allowed origins. Browser support and the live resource's exact bytes/content type must be tested on target devices. References: https://www.w3.org/TR/2026/REC-webauthn-3-20260825/ and https://web.dev/articles/webauthn-related-origin-requests.
+
+## Corrected live-edge source map and portal contract
+
+The current source `dualiscapax-deploy/deploy/live-box/Caddyfile` provides more precise routing than the alternate Nginx file:
+
+- `/.well-known/webauthn` on `dualiscapax.com` explicitly sets `Content-Type: application/json` and returns the exact two origins `https://dualiscapax.ai` and `https://www.dualiscapax.ai`.
+- `.com` `/register/*`, `/auth/*`, `/account/session`, and `/account/enter` route to `127.0.0.1:18801`.
+- `.com` `/api/webauthn/*` strips the `/api/webauthn` prefix and routes to `127.0.0.1:18801`, matching the owner page's registration/authentication option and verification URL prefix.
+- `.ai` `/account/redeem` also routes to `127.0.0.1:18801`.
+
+This is the source-level intended route. The Oct 13 reconciliation report says Caddy, not Nginx, was the active web server on the New Jersey box. It does not prove that the exact current GitHub Caddyfile revision is installed. The public `.well-known` response was historically reported as `application/octet-stream` despite JSON content, so the source handler and observed public response remain in conflict until a current external probe resolves the first-hop edge.
+
+The checked-in owner page also has two source-contract discrepancies that should be resolved before calling the door ready:
+
+1. `webroot/owner/owner.html` sends the enrollment passphrase in the JSON body to `/api/webauthn/register/options`. The Oct 16 auth-service investigation says first enrollment requires an `x-enrollment-token` header. That is a likely client/server contract mismatch; do not move an enrollment token into browser code or substitute the passphrase without reviewing the service implementation.
+2. The page's proof panel calls `/api/owner/session`, while the inspected Caddy auth route list includes `/account/session` and `/account/enter` but not `/api/owner/session`. The page itself also labels the ceremony endpoints as 501. Confirm the actual deployed page and exact route contract before editing either side.
+
+The alternate `deploy/sovereign/nginx-dualiscapax-com.conf` → `127.0.0.1:8410` design is not the correct integration target. The Oct 13 reconciliation report describes 8410 as a dead/uninstalled staged service design, while the Oct 16 investigation reports `dualis-auth` on 18801. Prefer the existing 18801 service if its current health, source, and contract can be re-established; do not create a second service at 8410.
+
+## Revised consequence
+
+There is an existing `.com` owner-facing WebAuthn scaffold, a Caddy source route to `dualis-auth` on port 18801, and a Caddy source handler for the Related Origin resource. That is meaningful groundwork. The portal's stated 501 posture conflicts with the current Caddy route; the portal's enrollment and session paths also appear inconsistent with the historically reported auth-service contract. The Oct 16 report said there were zero registered credentials and that authentication returned `authorization: NOT_GRANTED`; that report has not been refreshed. No current verified credential, authenticated `.com` session, signed issuer assertion, or `.ai` session has been demonstrated.
+
+## Consequence
+
+The existing HMAC + action-policy + durable-claim path must not be described as authenticated-user authorization. It is a request-signing and policy/claim mechanism whose principal is supplied in the request. The staging fixture cannot close that gap.
+
+The separate .com-to-.ai signed handoff prototype is useful protocol work, but it does not supply a real .com passkey ceremony, issuer key, authenticated source session, or durable .ai redemption.
+
+## Required design before implementation
+
+- **Identity origin:** approve the exact .com WebAuthn relying-party ID and allowed origins. The passkey ceremony must occur in the .com top-level context.
+- **Authenticator ceremony:** choose and implement a maintained WebAuthn server library; verify challenge, origin, RP ID hash, signature, credential ownership, user presence/verification policy, and credential counter semantics server-side.
+- **Account binding:** define how a verified .com account maps to a Unity ID. Never accept the mapping from browser input.
+- **Issuer authority:** independently govern the .com assertion signing key, key ID, rotation and revocation. No private key in browser code or repository.
+- **Relying party:** .ai must create and store its own pending state/nonce, verify issuer/audience/callback and exact challenge binding, and atomically consume state/JTI before issuing its own host-only session.
+- **Transport:** return the assertion through a bounded cross-origin POST; never place it in a URL, fragment, localStorage or referrer-bearing navigation.
+- **Authorization:** identity evidence only establishes who signed in. It does not authorize compute, writing, deployment or payment. Trinity remains the sole authorization gate.
+- **Operations:** separate staging and production keys, origins, databases and service bindings; prove revocation, replay rejection, account recovery, rate limiting, audit privacy and multi-instance behavior.
+
+## Explicit non-actions
+
+This audit does not change _worker.js, js/iris-authorize.js, Wrangler bindings, any auth provider, HMAC secrets, Cloudflare routes, DNS, production Pages, or live services. It does not select an issuer key, appoint an identity authority, or authorize any Trinity decision.
+
+## Primary Iris page wiring — current source trace (2026-10-30)
+
+The production app's own page wiring adds a second, independently verifiable reason the identity-to-authorization path remains closed:
+
+1. **Primary page:** `ai/index.html` links visitors to `/ai/app`, and `ai/app.html` loads `js/iris-authorize.js`, `js/iris-boot.js`, and `js/iris-session.js` in that order.
+2. **No production authorize base is configured in the page:** `ai/app.html` contains `<meta name="iris-authorize-base" content="">`. `js/iris-boot.js` sets `window.IrisAuthorizeBase` only when that value is non-empty. In the checked-in source, the primary app therefore leaves the authorize base unset.
+3. **Fail-closed client behavior:** `js/iris-session.js` checks `canAuthorize()` before continuing. If neither a configured authorize base nor the staging-only browser secret exists, it sets `authorize-unavailable` and returns a denial before the downstream DCLM/model path. This is correct fail-closed behavior, not a successful production connection.
+4. **Principal is not an identity proof:** the same file creates its session ID locally as `iris-${Date.now().toString(36)}` and uses that value as `principal.unity_id` in `buildAuthBody()`. That is a client-generated correlation identifier, not a verified Unity ID. It must not be accepted as identity by a production identity provider.
+5. **Staging identity is fixture-only:** `workers/iris-runtime/STAGING.md` says the fixture accepts an operator-supplied staging Unity ID and does not prove real Unity identity. `tests/iris-authorize-endpoint.test.mjs` supplies an in-memory identity stub that returns `verified: true` for any non-empty requested ID. This is contract-test scaffolding only.
+6. **Client regression tests do not exercise the actual browser helper:** `tests/iris-authorize-regression.test.mjs` uses a local `makeAuthorizeStub()` and hand-built request objects. It does not import `js/iris-authorize.js` or demonstrate that a real browser session reaches a production signer. The endpoint tests likewise call the staging Worker with mocked downstream bindings.
+
+### Resulting state
+
+- **Verified from source:** primary Iris page has an empty authorize-base meta value; boot leaves the base unset; session denies when authorization is unavailable; the submitted Unity ID is generated locally.
+- **Not verified:** a production identity provider, a server-side signer/proxy, an authenticated Unity ID, or a live Trinity-backed production request.
+- **Required before opening:** bind a real authenticated .com identity to a server-issued Unity principal; supply a reviewed server-side authorization adapter that signs only after authenticating the session; connect an independently governed Trinity decision service; then add integration tests using the real client helper and real service contracts in isolated staging.
+
+Do not solve this by setting a browser-visible signing secret, trusting the generated `iris-*` identifier, or pointing production at the staging fixture. No source runtime code or page configuration is changed by this audit update.
+
+
+## Companion .com passkey source-contract verification (2026-10-30)
+
+The companion deployment repository's draft PR [#18](https://github.com/digenova77-ui/dualiscapax-deploy/pull/18), head `21bb4624e83759f18037bded0d75314157c1a883`, now statically checks the browser ceremony sequence against the Caddy source:
+
+- Registration obtains options before invoking `navigator.credentials.create()`, consumes the server-returned challenge and RP/authenticator-selection parameters, and posts the resulting credential to the registration verification route.
+- Authentication obtains options before `navigator.credentials.get()`, consumes the returned challenge/RP ID/allow-list, requires user verification by default, and posts the assertion to the authentication verification route.
+- The credential serializer retains the WebAuthn response fields needed for server-side verification.
+- The browser source does not generate its own challenge or contain the enrollment token.
+- The Caddy alias strips `/api/webauthn` and proxies the four ceremony paths to the existing loopback service.
+
+The companion routing-contract workflow run `41141681843` completed successfully. This is a source-shape regression guard only; it does not execute a browser ceremony, validate the server's challenge store or cryptographic verification, or prove that the Caddy source is deployed.
+
+**Remaining integration blockers are unchanged:** the owner page session path `/api/owner/session` is not represented in the Caddy route list (which contains `/account/session`); enrollment sends a JSON passphrase while historical service evidence describes an `x-enrollment-token` gate; and the actual `dualis-auth` implementation and current runtime state are not present in the checked repositories. No endpoint rewrite or enrollment-policy change is safe without the actual service contract.
+
+No production code, Caddy configuration, secrets, DNS, server process, credential state or deployment was changed.
+
+
+### Companion owner-page browser regression and passphrase lifetime fix (2026-10-30)
+
+The companion deployment PR [#18](https://github.com/digenova77-ui/dualiscapax-deploy/pull/18) has advanced to head `cab23dfa19c30884b0ef3b1b9e803b561598d318`:
+
+- The owner page now clears the enrollment passphrase input immediately after dispatching the serialized enrollment-options request, rather than waiting for the server response.
+- A mocked-browser harness executes the real inline owner-page script and verifies that the passphrase is cleared while the options request is still pending, and that registration/authentication use server-returned challenges and verification endpoints.
+- Browser-flow tests pass 2/2. The passphrase is not logged or persisted by this harness.
+- The companion static route contract and four live-drift classifier fixture tests pass in Routing Contract Checks run `41142307590`.
+- The source inventory passes in run `41142307702`.
+
+The public live-drift probe run `41142307586` confirms the local manifest matches the checked-out webroot, but the public `.com` request returned HTTP 403. The updated checker correctly marks live comparison **unverifiable**, stops the sweep and makes no asset-drift conclusion. This is not evidence that the deployed owner page matches the reviewed source.
+
+The browser harness uses mocked WebAuthn and network services. It does not prove server-side credential verification, a live authenticated owner session, a valid cross-origin handoff, or Trinity authorization. The original service-source/runtime, enrollment-contract and session-route blockers remain unchanged.
+
+
+## Production-to-staging identity bridge: source-level dependency audit (2026-10-30)
+
+A deeper source trace distinguishes the existing production Pages authorization route from the newer staging Iris runtime.
+
+### Production Pages route (_worker.js)
+
+The production Pages /v1/authorize route:
+
+1. Verifies x-timestamp / x-signature using env.SIGNING_SECRET.
+2. Reads body.principal.unity_id directly from the submitted JSON.
+3. Recomputes the input digest and checks action/lane/memory against the local evaluatePolicy function.
+4. Claims the request ID through the Durable Object audit binding.
+
+It does **not** call IDENTITY_API, validate a WebAuthn assertion, validate a signed identity handoff, or independently resolve the supplied Unity ID to an authenticated principal. The HMAC proves possession of the shared request-signing secret; it does not prove that the person represented by the body field owns that Unity ID. The local policy function is not the separate Trinity Law service.
+
+### Browser principal (js/iris-session.js)
+
+The current browser session creates id = "iris-" + Date.now().toString(36) and passes that local correlation ID as principal.unity_id. It is not a verified Unity identity. The production browser helper sends no HMAC headers, while the Pages route requires them. Therefore the primary production browser path remains fail-closed/unwired; a server-side signer alone would still be insufficient if it signed this self-asserted local ID without authenticating it.
+
+### Newer staging runtime (workers/iris-runtime/)
+
+The staging Worker has a stronger interface: it calls IDENTITY_API /check and requires verified: true plus an exact Unity ID match before calling TRINITY_LAW /evaluate. It then checks that Trinity's allow response binds the same request ID, principal, action and input digest before attempting the durable claim.
+
+However, workers/iris-runtime/wrangler.toml points to placeholder service name identity-api-staging; the only checked-in identity implementation is workers/iris-staging-dependencies/worker.mjs. That fixture accepts one operator-configured STAGING_UNITY_ID and explicitly reports external_identity_provider: false. It is not a WebAuthn verifier or a real identity authority. The staging docs explicitly say it is not real identity verification.
+
+Repository-wide GitHub code search for IDENTITY_API, identity-api-staging, and dualis-auth found the runtime contract, fixtures, tests, and two historical attachments, but no checked-in dualis-auth service implementation. The deployment repository contains Caddy route declarations for the loopback auth service, not the service source itself.
+
+### Engineering consequence
+
+Do not wire the current iris-* browser ID into a signer and call that identity integration. The required next component is a real server-side identity verifier that validates the .com WebAuthn assertion/session and returns an authenticated, stable Unity principal to the runtime over a service binding. That provider must own challenge issuance, origin/RP validation, signature verification, credential lookup/revocation, session binding, and replay protection. Only then should the staging runtime's existing IDENTITY_API /check contract be connected to it. Trinity remains a separate decision gate.
+
+The additional source guards in tests/production-identity-wiring.test.mjs now explicitly assert the production Pages identity-verification gap and that the staging binding still resolves to an explicitly fake fixture. These are source regression guards, not live identity proof.
+
+No production Worker, Pages route, Caddy configuration, secret, credential, DNS record, Cloudflare binding, or deployment was changed.
+
+
+## Replit source-of-truth reconciliation (2026-10-30)
+
+A read-only Replit Agent inspection of the existing DualisCapax workspace found a substantive custom WebAuthn implementation in the Replit checkout. This corrects the earlier, narrower conclusion that the identity implementation was absent: it is absent from the inspected GitHub landing/deploy source trees, but it exists in the Replit workspace.
+
+### Replit checkout evidence
+
+- Workspace: DualisCapax (a08cd3f2-766f-419b-8ba9-77878df4f43e).
+- Branch: audit/fix-regression-contracts-20261027.
+- HEAD: 80cea706fcd8fe3b56204c06ff5d2d2cda36d8dd.
+- Worktree: reported clean before and after both read-only audits.
+- No edits, tests, live requests, secret inspection, deployment, fetch, pull, or push were performed.
+- No upstream tracking branch is configured.
+- Cached origin/main: 426e6964d1471432ed9191c826cc57ca6e326a61; the Replit HEAD is 210 commits ahead and zero behind in the cached history.
+- Cached internal backup ref gitsafe-backup/main exactly matches Replit HEAD. This is an internal backup, not proof of a GitHub push.
+- The cached GitHub origin ref does not contain Replit HEAD. Because no remote request was made, the current state of other remote branches is not established by that cached-ref comparison.
+
+The following ten identity files are present at the Replit HEAD and absent from the cached GitHub origin/main tree: server/identity.js; server/worker.js; workers/origin-join/worker.js; workers/origin-join/wrangler.toml; website-packages/unified-frontend/identity-gate.js; server/identity-schema.sql; server/migrations/0008_web_authn_handoff_proof_v2.sql; tests/identity-webauthn-cryptographic.test.mjs; tests/identity-handoff-lifecycle.test.mjs; tests/identity-to-iris-local-contract.test.mjs. Organization-wide GitHub code searches for handleComIdentityRequest, identity_handoff_proof_v2, identity-to-iris-local-contract, and identity-gate.js returned no matching checked-in files in the available repositories.
+
+### Actual Replit identity implementation
+
+The Replit source contains a custom WebAuthn implementation in server/identity.js, mounted by server/worker.js and workers/origin-join/worker.js. The read-only agent trace reports server-side challenge expiry and single-use consumption, exact origin and ceremony-type validation, RP-ID hash validation, user-presence/user-verification flags, credential signature verification against stored credential keys, stored-credential subject binding, assertion-counter handling, handoff expiry/replay/revocation checks, and receiver-side session lookup. It uses a body-only, short-lived signed v2 handoff from .com to .ai and issues a Secure, HttpOnly receiver session only after successful handoff consumption.
+
+The browser implementation in website-packages/unified-frontend/identity-gate.js explicitly requires top-window execution, obtains server-issued registration/assertion options, invokes the browser WebAuthn APIs, posts serialized credentials to the server verification routes, and submits the resulting handoff in a POST body to the .ai receiver. This is source-level implementation evidence, not proof of a deployed or currently reachable service.
+
+### Route and identity contract mismatch
+
+The Replit implementation exposes:
+- POST /auth/register/options
+- POST /auth/register/verify
+- POST /auth/assertion/options
+- POST /auth/assertion/verify
+- POST /auth/consume on the .ai receiver
+- GET /auth/session on the .ai receiver
+
+The deployment repository's current owner page instead calls /api/webauthn/register/options, /api/webauthn/register/verify, /api/webauthn/auth/options, /api/webauthn/auth/verify, and /api/owner/session. The inspected Replit source has no /api/webauthn/* aliases, no /api/owner/session handler, and no IDENTITY_API /check handler. The existing .ai /auth/session is receiver-host-only and cannot be aliased to a .com owner session: the __Host-dc_ai_session cookie is host-only, and a valid identity session does not establish Father/owner writing authority.
+
+The Replit identity implementation resolves its principal from stored credential ownership and persists that subject in identity_session. No authoritative mapping from the browser-generated iris-* or local unity_id to that verified subject was found. Those local IDs must remain correlation labels, never identity evidence.
+
+### Smallest coherent import boundary
+
+A read-only dependency analysis found that copying the ten identity files alone would be incomplete. The smallest coherent identity subset is eleven files: the eight identity-critical source/config/test files (excluding the three-test integration fixture if treated separately) plus shared/iris-staging-config.mjs, shared/iris-cloudflare-release-contract.mjs, and shared/worker-monitoring.mjs; include learning/no-egress-guard.mjs for the local test guard. The unchanged depth Worker and identity-to-Iris integration test require a broader closure of Iris/Film files, database migrations 0001–0008, page assets and generated protected-world build inputs. Whole-file replacement of index.html or ai/app.html would import unrelated application changes and must not be done blindly.
+
+This source import manifest is a planning artifact only. No Replit source has been copied to GitHub, no new branch has been created, and neither the Replit checkout nor GitHub main has been changed.
+
+### Corrected engineering conclusion
+
+The blocker is no longer "there is no WebAuthn implementation." A real custom implementation exists in the Replit workspace. The blocker is source-of-truth synchronization and contract reconciliation: the verified Replit routes differ from the deployment owner page/Caddy contract, the implementation is not present in the cached GitHub main tree, and the staging Iris runtime's IDENTITY_API /check contract is not implemented by the Replit service as currently inspected.
+
+The safe next increment is a separate, draft-only GitHub branch containing a reviewed, minimal identity import and explicit route compatibility tests. It must not merge or deploy. Before implementing the adapter, the public Caddy/owner contract and Worker route attachment must be reconciled; /api/owner/session must remain a distinct owner-authority design decision. Trinity stays separate and remains the only authorization gate.
