@@ -36,6 +36,18 @@ The first audit pass was too narrow to the landing repository. The companion dep
 
 Using RP ID `dualiscapax.com` from `https://dualiscapax.ai` is not an ordinary same-site RP ID configuration. It relies on WebAuthn Related Origin Requests: the RP ID domain must serve `https://dualiscapax.com/.well-known/webauthn` over HTTPS with `Content-Type: application/json`, and the `origins` array must explicitly include the exact `.ai` origin(s). The relying party must also validate the `origin` in the WebAuthn client data against its exact allowlist. A design document describing this file does not prove that it is deployed. Browser/client support must be tested on the actual target devices.
 
+## Historical authentication-service evidence requiring revalidation
+
+A separate investigation report committed as `attachments/GROK IMPLEMENTATION .txt` in `scarlet-xenon-lion-dove` is dated 2026-10-16. It reports an existing New Jersey `dualis-auth` service on `127.0.0.1:18801` with POST routes `/register/options`, `/register/verify`, `/auth/options`, and `/auth/verify`; it reports a health check of HTTP 200, zero registered credentials, first enrollment gated by an `x-enrollment-token`, and successful authentication returning `authorization: NOT_GRANTED`. The report also says the intended `.com`/`.ai` RP ID was `dualiscapax.com` and that the `.well-known/webauthn` URL then returned HTTP 200 with `application/octet-stream`, not the required `application/json`.
+
+These are **historical reported findings**, not a live observation on 2026-10-30. The authentication service source and its current systemd/process state are not present in the inspected GitHub repositories, and no current health check or endpoint test was run. The Oct 13 reconciliation report separately says the staged 8410 service design was dead/uninstalled on the box and that the active edge was Caddy, not the proposed Nginx configuration. Do not confuse the staged `/api/` → `8410` owner-page design with the historically reported `dualis-auth` service on `18801`.
+
+**Implementation implication:** before creating a new Better Auth server, a new passkey backend, or another identity service, re-establish whether the existing `dualis-auth` service is still present and whether its four WebAuthn endpoints remain correct. If it is live and source-backed, prefer a reviewed adapter to that existing service over a duplicate authentication stack. Keep `authorization: NOT_GRANTED` as the identity/authentication boundary; Trinity must separately decide every governed action.
+
+### WebAuthn related-origin standard
+
+The `.com` RP ID can be shared with `.ai` only through WebAuthn Related Origin Requests. The WebAuthn Level 3 specification requires the RP ID's HTTPS `/.well-known/webauthn` resource, `application/json`, an `origins` array, and server-side validation of the actual WebAuthn `origin` against the allowed origins. Browser support and the live resource's exact bytes/content type must be tested on target devices. References: https://www.w3.org/TR/2026/REC-webauthn-3-20260825/ and https://web.dev/articles/webauthn-related-origin-requests.
+
 ## Revised consequence
 
 There is an existing `.com` owner-facing WebAuthn scaffold and a proposed cross-origin RP-ID arrangement. That is meaningful groundwork. It is not yet a working identity issuer: the server ceremony is explicitly unwired, the service behind port 8410 was not found in the companion repository, and the related-origin well-known resource was not found in the inspected source tree. No verified credential, authenticated `.com` session, signed issuer assertion, or `.ai` session has been demonstrated.
