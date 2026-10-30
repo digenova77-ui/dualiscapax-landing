@@ -90,3 +90,22 @@ The separate .com-to-.ai signed handoff prototype is useful protocol work, but i
 ## Explicit non-actions
 
 This audit does not change _worker.js, js/iris-authorize.js, Wrangler bindings, any auth provider, HMAC secrets, Cloudflare routes, DNS, production Pages, or live services. It does not select an issuer key, appoint an identity authority, or authorize any Trinity decision.
+
+## Primary Iris page wiring — current source trace (2026-10-30)
+
+The production app's own page wiring adds a second, independently verifiable reason the identity-to-authorization path remains closed:
+
+1. **Primary page:** `ai/index.html` links visitors to `/ai/app`, and `ai/app.html` loads `js/iris-authorize.js`, `js/iris-boot.js`, and `js/iris-session.js` in that order.
+2. **No production authorize base is configured in the page:** `ai/app.html` contains `<meta name="iris-authorize-base" content="">`. `js/iris-boot.js` sets `window.IrisAuthorizeBase` only when that value is non-empty. In the checked-in source, the primary app therefore leaves the authorize base unset.
+3. **Fail-closed client behavior:** `js/iris-session.js` checks `canAuthorize()` before continuing. If neither a configured authorize base nor the staging-only browser secret exists, it sets `authorize-unavailable` and returns a denial before the downstream DCLM/model path. This is correct fail-closed behavior, not a successful production connection.
+4. **Principal is not an identity proof:** the same file creates its session ID locally as `iris-${Date.now().toString(36)}` and uses that value as `principal.unity_id` in `buildAuthBody()`. That is a client-generated correlation identifier, not a verified Unity ID. It must not be accepted as identity by a production identity provider.
+5. **Staging identity is fixture-only:** `workers/iris-runtime/STAGING.md` says the fixture accepts an operator-supplied staging Unity ID and does not prove real Unity identity. `tests/iris-authorize-endpoint.test.mjs` supplies an in-memory identity stub that returns `verified: true` for any non-empty requested ID. This is contract-test scaffolding only.
+6. **Client regression tests do not exercise the actual browser helper:** `tests/iris-authorize-regression.test.mjs` uses a local `makeAuthorizeStub()` and hand-built request objects. It does not import `js/iris-authorize.js` or demonstrate that a real browser session reaches a production signer. The endpoint tests likewise call the staging Worker with mocked downstream bindings.
+
+### Resulting state
+
+- **Verified from source:** primary Iris page has an empty authorize-base meta value; boot leaves the base unset; session denies when authorization is unavailable; the submitted Unity ID is generated locally.
+- **Not verified:** a production identity provider, a server-side signer/proxy, an authenticated Unity ID, or a live Trinity-backed production request.
+- **Required before opening:** bind a real authenticated .com identity to a server-issued Unity principal; supply a reviewed server-side authorization adapter that signs only after authenticating the session; connect an independently governed Trinity decision service; then add integration tests using the real client helper and real service contracts in isolated staging.
+
+Do not solve this by setting a browser-visible signing secret, trusting the generated `iris-*` identifier, or pointing production at the staging fixture. No source runtime code or page configuration is changed by this audit update.
