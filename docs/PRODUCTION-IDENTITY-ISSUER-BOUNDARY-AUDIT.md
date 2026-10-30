@@ -141,3 +141,39 @@ The companion deployment PR [#18](https://github.com/digenova77-ui/dualiscapax-d
 The public live-drift probe run `41142307586` confirms the local manifest matches the checked-out webroot, but the public `.com` request returned HTTP 403. The updated checker correctly marks live comparison **unverifiable**, stops the sweep and makes no asset-drift conclusion. This is not evidence that the deployed owner page matches the reviewed source.
 
 The browser harness uses mocked WebAuthn and network services. It does not prove server-side credential verification, a live authenticated owner session, a valid cross-origin handoff, or Trinity authorization. The original service-source/runtime, enrollment-contract and session-route blockers remain unchanged.
+
+
+## Production-to-staging identity bridge: source-level dependency audit (2026-10-30)
+
+A deeper source trace distinguishes the existing production Pages authorization route from the newer staging Iris runtime.
+
+### Production Pages route (_worker.js)
+
+The production Pages /v1/authorize route:
+
+1. Verifies x-timestamp / x-signature using env.SIGNING_SECRET.
+2. Reads body.principal.unity_id directly from the submitted JSON.
+3. Recomputes the input digest and checks action/lane/memory against the local evaluatePolicy function.
+4. Claims the request ID through the Durable Object audit binding.
+
+It does **not** call IDENTITY_API, validate a WebAuthn assertion, validate a signed identity handoff, or independently resolve the supplied Unity ID to an authenticated principal. The HMAC proves possession of the shared request-signing secret; it does not prove that the person represented by the body field owns that Unity ID. The local policy function is not the separate Trinity Law service.
+
+### Browser principal (js/iris-session.js)
+
+The current browser session creates id = "iris-" + Date.now().toString(36) and passes that local correlation ID as principal.unity_id. It is not a verified Unity identity. The production browser helper sends no HMAC headers, while the Pages route requires them. Therefore the primary production browser path remains fail-closed/unwired; a server-side signer alone would still be insufficient if it signed this self-asserted local ID without authenticating it.
+
+### Newer staging runtime (workers/iris-runtime/)
+
+The staging Worker has a stronger interface: it calls IDENTITY_API /check and requires verified: true plus an exact Unity ID match before calling TRINITY_LAW /evaluate. It then checks that Trinity's allow response binds the same request ID, principal, action and input digest before attempting the durable claim.
+
+However, workers/iris-runtime/wrangler.toml points to placeholder service name identity-api-staging; the only checked-in identity implementation is workers/iris-staging-dependencies/worker.mjs. That fixture accepts one operator-configured STAGING_UNITY_ID and explicitly reports external_identity_provider: false. It is not a WebAuthn verifier or a real identity authority. The staging docs explicitly say it is not real identity verification.
+
+Repository-wide GitHub code search for IDENTITY_API, identity-api-staging, and dualis-auth found the runtime contract, fixtures, tests, and two historical attachments, but no checked-in dualis-auth service implementation. The deployment repository contains Caddy route declarations for the loopback auth service, not the service source itself.
+
+### Engineering consequence
+
+Do not wire the current iris-* browser ID into a signer and call that identity integration. The required next component is a real server-side identity verifier that validates the .com WebAuthn assertion/session and returns an authenticated, stable Unity principal to the runtime over a service binding. That provider must own challenge issuance, origin/RP validation, signature verification, credential lookup/revocation, session binding, and replay protection. Only then should the staging runtime's existing IDENTITY_API /check contract be connected to it. Trinity remains a separate decision gate.
+
+The additional source guards in tests/production-identity-wiring.test.mjs now explicitly assert the production Pages identity-verification gap and that the staging binding still resolves to an explicitly fake fixture. These are source regression guards, not live identity proof.
+
+No production Worker, Pages route, Caddy configuration, secret, credential, DNS record, Cloudflare binding, or deployment was changed.
