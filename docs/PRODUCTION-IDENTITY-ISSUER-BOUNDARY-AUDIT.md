@@ -48,6 +48,24 @@ These are **historical reported findings**, not a live observation on 2026-10-30
 
 The `.com` RP ID can be shared with `.ai` only through WebAuthn Related Origin Requests. The WebAuthn Level 3 specification requires the RP ID's HTTPS `/.well-known/webauthn` resource, `application/json`, an `origins` array, and server-side validation of the actual WebAuthn `origin` against the allowed origins. Browser support and the live resource's exact bytes/content type must be tested on target devices. References: https://www.w3.org/TR/2026/REC-webauthn-3-20260825/ and https://web.dev/articles/webauthn-related-origin-requests.
 
+## Corrected live-edge source map and portal contract
+
+The current source `dualiscapax-deploy/deploy/live-box/Caddyfile` provides more precise routing than the alternate Nginx file:
+
+- `/.well-known/webauthn` on `dualiscapax.com` explicitly sets `Content-Type: application/json` and returns the exact two origins `https://dualiscapax.ai` and `https://www.dualiscapax.ai`.
+- `.com` `/register/*`, `/auth/*`, `/account/session`, and `/account/enter` route to `127.0.0.1:18801`.
+- `.com` `/api/webauthn/*` strips the `/api/webauthn` prefix and routes to `127.0.0.1:18801`, matching the owner page's registration/authentication option and verification URL prefix.
+- `.ai` `/account/redeem` also routes to `127.0.0.1:18801`.
+
+This is the source-level intended route. The Oct 13 reconciliation report says Caddy, not Nginx, was the active web server on the New Jersey box. It does not prove that the exact current GitHub Caddyfile revision is installed. The public `.well-known` response was historically reported as `application/octet-stream` despite JSON content, so the source handler and observed public response remain in conflict until a current external probe resolves the first-hop edge.
+
+The checked-in owner page also has two source-contract discrepancies that should be resolved before calling the door ready:
+
+1. `webroot/owner/owner.html` sends the enrollment passphrase in the JSON body to `/api/webauthn/register/options`. The Oct 16 auth-service investigation says first enrollment requires an `x-enrollment-token` header. That is a likely client/server contract mismatch; do not move an enrollment token into browser code or substitute the passphrase without reviewing the service implementation.
+2. The page's proof panel calls `/api/owner/session`, while the inspected Caddy auth route list includes `/account/session` and `/account/enter` but not `/api/owner/session`. The page itself also labels the ceremony endpoints as 501. Confirm the actual deployed page and exact route contract before editing either side.
+
+The alternate `deploy/sovereign/nginx-dualiscapax-com.conf` → `127.0.0.1:8410` design is not the correct integration target. The Oct 13 reconciliation report describes 8410 as a dead/uninstalled staged service design, while the Oct 16 investigation reports `dualis-auth` on 18801. Prefer the existing 18801 service if its current health, source, and contract can be re-established; do not create a second service at 8410.
+
 ## Revised consequence
 
 There is an existing `.com` owner-facing WebAuthn scaffold and a proposed cross-origin RP-ID arrangement. That is meaningful groundwork. It is not yet a working identity issuer: the server ceremony is explicitly unwired, the service behind port 8410 was not found in the companion repository, and the related-origin well-known resource was not found in the inspected source tree. No verified credential, authenticated `.com` session, signed issuer assertion, or `.ai` session has been demonstrated.
