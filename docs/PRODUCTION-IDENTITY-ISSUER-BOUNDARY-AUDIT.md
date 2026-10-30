@@ -23,14 +23,14 @@ A valid HMAC proves possession of the HMAC key for that request. It does not ind
 
 ## Companion `.com` portal findings (`dualiscapax-deploy`)
 
-The first audit pass was too narrow to the landing repository. The companion deployment repository contains an owner passkey page, so the accurate status is **WebAuthn browser scaffold present; server-backed ceremony not wired**:
+The first audit pass was too narrow to the landing repository. The companion deployment repository contains an owner passkey page, so the accurate status is **WebAuthn browser scaffold and Caddy-to-auth-service route present; successful server-backed ceremony not demonstrated**:
 
 1. `webroot/passkey/owner.html` contains real browser calls to `navigator.credentials.create()` and `navigator.credentials.get()`. It obtains registration/authentication options from the server, serializes the credential response, and posts it back for verification. This is a browser-side scaffold, not proof that a server verified any credential.
-2. The page itself explicitly labels the implementation a scaffold and says the ceremony endpoints return `501 ceremony_not_wired`. Its proof panel also explicitly treats HTTP 501 as no authenticated session.
+2. The page itself labels the implementation a scaffold and says the ceremony endpoints return `501 ceremony_not_wired`. However, the current source Caddyfile routes its `/api/webauthn/*` calls to `127.0.0.1:18801`. The page's notice and the current edge source therefore disagree; neither alone proves the live response.
 3. The page calls `/api/webauthn/register/options`, `/api/webauthn/register/verify`, `/api/webauthn/auth/options`, `/api/webauthn/auth/verify`, and `/api/owner/session`.
-4. `deploy/sovereign/nginx-dualiscapax-com.conf` proxies `/api/` to `127.0.0.1:8410`, but the inspected `dualiscapax-deploy` repository tree contains no implementation of that owner-auth service or the ceremony handlers. The Nginx route is configuration, not proof the service is installed or running.
+4. The alternate `deploy/sovereign/nginx-dualiscapax-com.conf` proxies `/api/` to `127.0.0.1:8410`, but this is not the current source integration target. The `deploy/live-box/Caddyfile` routes the WebAuthn aliases to `127.0.0.1:18801`.
 5. `handshake/FRONT-INTERFACE.md` specifies the intended `.com`-to-`.ai` passkey handoff and the `.well-known/webauthn` related-origin allowlist. That is a protocol instruction, not evidence that the well-known resource is currently served with the required content or that the live browser supports the feature.
-6. The `dualiscapax-deploy` tree inspected here does not contain a `webroot/.well-known/webauthn` file. The `dualiscapax-landing` repository's `CNAME` names `dualiscapax.ai`; its `wrangler.toml` also describes the Pages project as bound to `.ai`. The two repositories therefore have distinct hosting roles and must not be casually described as one `.com` application.
+6. The `dualiscapax-deploy` tree does not contain a static `webroot/.well-known/webauthn` file, but its current Caddy source defines that route directly. The `dualiscapax-landing` repository's `CNAME` names `dualiscapax.ai`; its `wrangler.toml` also describes the Pages project as bound to `.ai`. The two repositories therefore have distinct hosting roles and must not be casually described as one `.com` application.
 
 ### Related-origin WebAuthn requirement
 
@@ -68,7 +68,7 @@ The alternate `deploy/sovereign/nginx-dualiscapax-com.conf` → `127.0.0.1:8410`
 
 ## Revised consequence
 
-There is an existing `.com` owner-facing WebAuthn scaffold and a proposed cross-origin RP-ID arrangement. That is meaningful groundwork. It is not yet a working identity issuer: the server ceremony is explicitly unwired, the service behind port 8410 was not found in the companion repository, and the related-origin well-known resource was not found in the inspected source tree. No verified credential, authenticated `.com` session, signed issuer assertion, or `.ai` session has been demonstrated.
+There is an existing `.com` owner-facing WebAuthn scaffold, a Caddy source route to `dualis-auth` on port 18801, and a Caddy source handler for the Related Origin resource. That is meaningful groundwork. The portal's stated 501 posture conflicts with the current Caddy route; the portal's enrollment and session paths also appear inconsistent with the historically reported auth-service contract. The Oct 16 report said there were zero registered credentials and that authentication returned `authorization: NOT_GRANTED`; that report has not been refreshed. No current verified credential, authenticated `.com` session, signed issuer assertion, or `.ai` session has been demonstrated.
 
 ## Consequence
 
