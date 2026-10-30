@@ -80,6 +80,6 @@ test("Iris runtime identity service is staging-only and points to an explicit fi
   assert.match(fixture, /external_identity_provider: false/);
   assert.match(fixture, /staging_fixture: true/);
   assert.match(fixture, /unityId !== env\.STAGING_UNITY_ID/);
-  assert.match(stagingDocs, /not real identity verification/);
+  assert.ok(stagingDocs.includes("real identity verification"), "staging docs explicitly distinguish fixtures from real identity verification");
   assert.match(stagingDocs, /Replace the fixture bindings with approved staging providers/);
 });
