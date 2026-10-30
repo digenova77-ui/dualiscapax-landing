@@ -109,3 +109,20 @@ The production app's own page wiring adds a second, independently verifiable rea
 - **Required before opening:** bind a real authenticated .com identity to a server-issued Unity principal; supply a reviewed server-side authorization adapter that signs only after authenticating the session; connect an independently governed Trinity decision service; then add integration tests using the real client helper and real service contracts in isolated staging.
 
 Do not solve this by setting a browser-visible signing secret, trusting the generated `iris-*` identifier, or pointing production at the staging fixture. No source runtime code or page configuration is changed by this audit update.
+
+
+## Companion .com passkey source-contract verification (2026-10-30)
+
+The companion deployment repository's draft PR [#18](https://github.com/digenova77-ui/dualiscapax-deploy/pull/18), head `21bb4624e83759f18037bded0d75314157c1a883`, now statically checks the browser ceremony sequence against the Caddy source:
+
+- Registration obtains options before invoking `navigator.credentials.create()`, consumes the server-returned challenge and RP/authenticator-selection parameters, and posts the resulting credential to the registration verification route.
+- Authentication obtains options before `navigator.credentials.get()`, consumes the returned challenge/RP ID/allow-list, requires user verification by default, and posts the assertion to the authentication verification route.
+- The credential serializer retains the WebAuthn response fields needed for server-side verification.
+- The browser source does not generate its own challenge or contain the enrollment token.
+- The Caddy alias strips `/api/webauthn` and proxies the four ceremony paths to the existing loopback service.
+
+The companion routing-contract workflow run `41141681843` completed successfully. This is a source-shape regression guard only; it does not execute a browser ceremony, validate the server's challenge store or cryptographic verification, or prove that the Caddy source is deployed.
+
+**Remaining integration blockers are unchanged:** the owner page session path `/api/owner/session` is not represented in the Caddy route list (which contains `/account/session`); enrollment sends a JSON passphrase while historical service evidence describes an `x-enrollment-token` gate; and the actual `dualis-auth` implementation and current runtime state are not present in the checked repositories. No endpoint rewrite or enrollment-policy change is safe without the actual service contract.
+
+No production code, Caddy configuration, secrets, DNS, server process, credential state or deployment was changed.
