@@ -126,3 +126,18 @@ The companion routing-contract workflow run `41141681843` completed successfully
 **Remaining integration blockers are unchanged:** the owner page session path `/api/owner/session` is not represented in the Caddy route list (which contains `/account/session`); enrollment sends a JSON passphrase while historical service evidence describes an `x-enrollment-token` gate; and the actual `dualis-auth` implementation and current runtime state are not present in the checked repositories. No endpoint rewrite or enrollment-policy change is safe without the actual service contract.
 
 No production code, Caddy configuration, secrets, DNS, server process, credential state or deployment was changed.
+
+
+### Companion owner-page browser regression and passphrase lifetime fix (2026-10-30)
+
+The companion deployment PR [#18](https://github.com/digenova77-ui/dualiscapax-deploy/pull/18) has advanced to head `cab23dfa19c30884b0ef3b1b9e803b561598d318`:
+
+- The owner page now clears the enrollment passphrase input immediately after dispatching the serialized enrollment-options request, rather than waiting for the server response.
+- A mocked-browser harness executes the real inline owner-page script and verifies that the passphrase is cleared while the options request is still pending, and that registration/authentication use server-returned challenges and verification endpoints.
+- Browser-flow tests pass 2/2. The passphrase is not logged or persisted by this harness.
+- The companion static route contract and four live-drift classifier fixture tests pass in Routing Contract Checks run `41142307590`.
+- The source inventory passes in run `41142307702`.
+
+The public live-drift probe run `41142307586` confirms the local manifest matches the checked-out webroot, but the public `.com` request returned HTTP 403. The updated checker correctly marks live comparison **unverifiable**, stops the sweep and makes no asset-drift conclusion. This is not evidence that the deployed owner page matches the reviewed source.
+
+The browser harness uses mocked WebAuthn and network services. It does not prove server-side credential verification, a live authenticated owner session, a valid cross-origin handoff, or Trinity authorization. The original service-source/runtime, enrollment-contract and session-route blockers remain unchanged.
