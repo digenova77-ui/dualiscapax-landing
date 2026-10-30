@@ -10,26 +10,29 @@ test("primary Iris page leaves production authorize base unset and denies closed
   const html = read("ai/app.html");
   assert.match(html, /<meta name="iris-authorize-base" content="">/);
 
-  const window = {};
-  const document = { querySelector: () => ({ getAttribute: () => "" }) };
-  vm.runInNewContext(read("js/iris-boot.js"), { window, document });
-  assert.equal(window.IrisAuthorizeBase, undefined);
-  assert.equal(window.IrisBoot.base, null);
+  const context = { Promise, Date };
+  context.window = context;
+  context.document = { querySelector: () => ({ getAttribute: () => "" }) };
+  vm.runInNewContext(read("js/iris-boot.js"), context);
+  assert.equal(context.IrisAuthorizeBase, undefined);
+  assert.equal(context.IrisBoot.base, null);
 
-  window.IrisFuel = { admit: () => ({ ok: true, grade: { lane: "LOOK" } }) };
-  vm.runInNewContext(read("js/iris-session.js"), { window, Promise, Date });
-  const result = await window.IrisSession.think("hello");
+  context.IrisFuel = { admit: () => ({ ok: true, grade: { lane: "LOOK" } }) };
+  vm.runInNewContext(read("js/iris-session.js"), context);
+  const result = await context.IrisSession.think("hello");
   assert.equal(result.lane, "DENIED");
   assert.equal(result.spoken, "Not authorized.");
 });
 
 test("IrisSession sends a locally generated correlation ID as unity_id", async () => {
-  const window = {
+  const context = {
+    Promise, Date, crypto: webcrypto,
     IrisAuthorizeBase: "https://auth.example.invalid",
     IrisFuel: { admit: () => ({ ok: true, grade: { lane: "LOOK" } }) },
   };
+  context.window = context;
   let submitted;
-  window.IrisAuthorize = {
+  context.IrisAuthorize = {
     authorize: async (body) => {
       submitted = body;
       return {
@@ -46,9 +49,9 @@ test("IrisSession sends a locally generated correlation ID as unity_id", async (
       };
     },
   };
-  vm.runInNewContext(read("js/iris-session.js"), { window, Promise, Date, crypto: webcrypto });
-  await window.IrisSession.think("hello");
-  assert.equal(submitted.principal.unity_id, window.IrisSession.id());
+  vm.runInNewContext(read("js/iris-session.js"), context);
+  await context.IrisSession.think("hello");
+  assert.equal(submitted.principal.unity_id, context.IrisSession.id());
   assert.match(submitted.principal.unity_id, /^iris-[a-z0-9]+$/);
 });
 
@@ -77,5 +80,5 @@ test("staging identity test is explicitly a permissive mock, not production iden
   const endpointTest = read("tests/iris-authorize-endpoint.test.mjs");
   assert.match(endpointTest, /verified: !!unityId/);
   const stagingDocs = read("workers/iris-runtime/STAGING.md");
-  assert.match(stagingDocs, /do not prove real Unity identity/i);
+  assert.match(stagingDocs, /not real identity verification/i);
 });
