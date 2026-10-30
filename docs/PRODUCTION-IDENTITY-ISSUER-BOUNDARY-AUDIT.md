@@ -2,7 +2,7 @@
 
 **Status:** BLOCKED — no production identity proof demonstrated
 **Audited ref:** main at 08a79c91cd060fe9a3746417ddd3ae855d52fcc6
-**Scope:** Source inspection only. No runtime, configuration, secret, DNS, route, or deployment changes.
+**Scope:** Read-only source inspection across `dualiscapax-landing` and its companion `dualiscapax-deploy` repository. No runtime, configuration, secret, DNS, route, or deployment changes.
 
 ## Executive finding
 
@@ -19,7 +19,26 @@ A valid HMAC proves possession of the HMAC key for that request. It does not ind
 5. **Staging runtime:** workers/iris-runtime/worker.mjs has an IDENTITY_API service binding and calls /check with the requested Unity ID. workers/iris-runtime/wrangler.toml points this at a placeholder service named identity-api-staging.
 6. **Staging identity tests:** tests/iris-authorize-endpoint.test.mjs supplies a mock IDENTITY_API that returns verified: true for any non-empty Unity ID. This tests the Worker binding contract only; it is not identity evidence.
 7. **Staging documentation:** workers/iris-runtime/STAGING.md explicitly says the fixtures do not prove real Unity identity, real Trinity policy, or real model inference, and that real staging services are still required.
-8. **No issuer implementation found:** the audited repository tree contains no identity-api-staging Worker source, WebAuthn/passkey implementation, or production identity service implementation.
+8. **No identity service implementation found in this repository:** the audited `dualiscapax-landing` tree contains no `identity-api-staging` Worker source or production identity service implementation.
+
+## Companion `.com` portal findings (`dualiscapax-deploy`)
+
+The first audit pass was too narrow to the landing repository. The companion deployment repository contains an owner passkey page, so the accurate status is **WebAuthn browser scaffold present; server-backed ceremony not wired**:
+
+1. `webroot/passkey/owner.html` contains real browser calls to `navigator.credentials.create()` and `navigator.credentials.get()`. It obtains registration/authentication options from the server, serializes the credential response, and posts it back for verification. This is a browser-side scaffold, not proof that a server verified any credential.
+2. The page itself explicitly labels the implementation a scaffold and says the ceremony endpoints return `501 ceremony_not_wired`. Its proof panel also explicitly treats HTTP 501 as no authenticated session.
+3. The page calls `/api/webauthn/register/options`, `/api/webauthn/register/verify`, `/api/webauthn/auth/options`, `/api/webauthn/auth/verify`, and `/api/owner/session`.
+4. `deploy/sovereign/nginx-dualiscapax-com.conf` proxies `/api/` to `127.0.0.1:8410`, but the inspected `dualiscapax-deploy` repository tree contains no implementation of that owner-auth service or the ceremony handlers. The Nginx route is configuration, not proof the service is installed or running.
+5. `handshake/FRONT-INTERFACE.md` specifies the intended `.com`-to-`.ai` passkey handoff and the `.well-known/webauthn` related-origin allowlist. That is a protocol instruction, not evidence that the well-known resource is currently served with the required content or that the live browser supports the feature.
+6. The `dualiscapax-deploy` tree inspected here does not contain a `webroot/.well-known/webauthn` file. The `dualiscapax-landing` repository's `CNAME` names `dualiscapax.ai`; its `wrangler.toml` also describes the Pages project as bound to `.ai`. The two repositories therefore have distinct hosting roles and must not be casually described as one `.com` application.
+
+### Related-origin WebAuthn requirement
+
+Using RP ID `dualiscapax.com` from `https://dualiscapax.ai` is not an ordinary same-site RP ID configuration. It relies on WebAuthn Related Origin Requests: the RP ID domain must serve `https://dualiscapax.com/.well-known/webauthn` over HTTPS with `Content-Type: application/json`, and the `origins` array must explicitly include the exact `.ai` origin(s). The relying party must also validate the `origin` in the WebAuthn client data against its exact allowlist. A design document describing this file does not prove that it is deployed. Browser/client support must be tested on the actual target devices.
+
+## Revised consequence
+
+There is an existing `.com` owner-facing WebAuthn scaffold and a proposed cross-origin RP-ID arrangement. That is meaningful groundwork. It is not yet a working identity issuer: the server ceremony is explicitly unwired, the service behind port 8410 was not found in the companion repository, and the related-origin well-known resource was not found in the inspected source tree. No verified credential, authenticated `.com` session, signed issuer assertion, or `.ai` session has been demonstrated.
 
 ## Consequence
 
