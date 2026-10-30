@@ -177,3 +177,54 @@ Do not wire the current iris-* browser ID into a signer and call that identity i
 The additional source guards in tests/production-identity-wiring.test.mjs now explicitly assert the production Pages identity-verification gap and that the staging binding still resolves to an explicitly fake fixture. These are source regression guards, not live identity proof.
 
 No production Worker, Pages route, Caddy configuration, secret, credential, DNS record, Cloudflare binding, or deployment was changed.
+
+
+## Replit source-of-truth reconciliation (2026-10-30)
+
+A read-only Replit Agent inspection of the existing DualisCapax workspace found a substantive custom WebAuthn implementation in the Replit checkout. This corrects the earlier, narrower conclusion that the identity implementation was absent: it is absent from the inspected GitHub landing/deploy source trees, but it exists in the Replit workspace.
+
+### Replit checkout evidence
+
+- Workspace: DualisCapax (a08cd3f2-766f-419b-8ba9-77878df4f43e).
+- Branch: audit/fix-regression-contracts-20261027.
+- HEAD: 80cea706fcd8fe3b56204c06ff5d2d2cda36d8dd.
+- Worktree: reported clean before and after both read-only audits.
+- No edits, tests, live requests, secret inspection, deployment, fetch, pull, or push were performed.
+- No upstream tracking branch is configured.
+- Cached origin/main: 426e6964d1471432ed9191c826cc57ca6e326a61; the Replit HEAD is 210 commits ahead and zero behind in the cached history.
+- Cached internal backup ref gitsafe-backup/main exactly matches Replit HEAD. This is an internal backup, not proof of a GitHub push.
+- The cached GitHub origin ref does not contain Replit HEAD. Because no remote request was made, the current state of other remote branches is not established by that cached-ref comparison.
+
+The following ten identity files are present at the Replit HEAD and absent from the cached GitHub origin/main tree: server/identity.js; server/worker.js; workers/origin-join/worker.js; workers/origin-join/wrangler.toml; website-packages/unified-frontend/identity-gate.js; server/identity-schema.sql; server/migrations/0008_web_authn_handoff_proof_v2.sql; tests/identity-webauthn-cryptographic.test.mjs; tests/identity-handoff-lifecycle.test.mjs; tests/identity-to-iris-local-contract.test.mjs. Organization-wide GitHub code searches for handleComIdentityRequest, identity_handoff_proof_v2, identity-to-iris-local-contract, and identity-gate.js returned no matching checked-in files in the available repositories.
+
+### Actual Replit identity implementation
+
+The Replit source contains a custom WebAuthn implementation in server/identity.js, mounted by server/worker.js and workers/origin-join/worker.js. The read-only agent trace reports server-side challenge expiry and single-use consumption, exact origin and ceremony-type validation, RP-ID hash validation, user-presence/user-verification flags, credential signature verification against stored credential keys, stored-credential subject binding, assertion-counter handling, handoff expiry/replay/revocation checks, and receiver-side session lookup. It uses a body-only, short-lived signed v2 handoff from .com to .ai and issues a Secure, HttpOnly receiver session only after successful handoff consumption.
+
+The browser implementation in website-packages/unified-frontend/identity-gate.js explicitly requires top-window execution, obtains server-issued registration/assertion options, invokes the browser WebAuthn APIs, posts serialized credentials to the server verification routes, and submits the resulting handoff in a POST body to the .ai receiver. This is source-level implementation evidence, not proof of a deployed or currently reachable service.
+
+### Route and identity contract mismatch
+
+The Replit implementation exposes:
+- POST /auth/register/options
+- POST /auth/register/verify
+- POST /auth/assertion/options
+- POST /auth/assertion/verify
+- POST /auth/consume on the .ai receiver
+- GET /auth/session on the .ai receiver
+
+The deployment repository's current owner page instead calls /api/webauthn/register/options, /api/webauthn/register/verify, /api/webauthn/auth/options, /api/webauthn/auth/verify, and /api/owner/session. The inspected Replit source has no /api/webauthn/* aliases, no /api/owner/session handler, and no IDENTITY_API /check handler. The existing .ai /auth/session is receiver-host-only and cannot be aliased to a .com owner session: the __Host-dc_ai_session cookie is host-only, and a valid identity session does not establish Father/owner writing authority.
+
+The Replit identity implementation resolves its principal from stored credential ownership and persists that subject in identity_session. No authoritative mapping from the browser-generated iris-* or local unity_id to that verified subject was found. Those local IDs must remain correlation labels, never identity evidence.
+
+### Smallest coherent import boundary
+
+A read-only dependency analysis found that copying the ten identity files alone would be incomplete. The smallest coherent identity subset is eleven files: the eight identity-critical source/config/test files (excluding the three-test integration fixture if treated separately) plus shared/iris-staging-config.mjs, shared/iris-cloudflare-release-contract.mjs, and shared/worker-monitoring.mjs; include learning/no-egress-guard.mjs for the local test guard. The unchanged depth Worker and identity-to-Iris integration test require a broader closure of Iris/Film files, database migrations 0001–0008, page assets and generated protected-world build inputs. Whole-file replacement of index.html or ai/app.html would import unrelated application changes and must not be done blindly.
+
+This source import manifest is a planning artifact only. No Replit source has been copied to GitHub, no new branch has been created, and neither the Replit checkout nor GitHub main has been changed.
+
+### Corrected engineering conclusion
+
+The blocker is no longer "there is no WebAuthn implementation." A real custom implementation exists in the Replit workspace. The blocker is source-of-truth synchronization and contract reconciliation: the verified Replit routes differ from the deployment owner page/Caddy contract, the implementation is not present in the cached GitHub main tree, and the staging Iris runtime's IDENTITY_API /check contract is not implemented by the Replit service as currently inspected.
+
+The safe next increment is a separate, draft-only GitHub branch containing a reviewed, minimal identity import and explicit route compatibility tests. It must not merge or deploy. Before implementing the adapter, the public Caddy/owner contract and Worker route attachment must be reconciled; /api/owner/session must remain a distinct owner-authority design decision. Trinity stays separate and remains the only authorization gate.
