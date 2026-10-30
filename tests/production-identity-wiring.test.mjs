@@ -57,3 +57,29 @@ test("staging identity test is explicitly a permissive mock, not production iden
   const stagingDocs = read("workers/iris-runtime/STAGING.md");
   assert.ok(stagingDocs.includes("real identity verification"));
 });
+
+
+test("production Pages authorization has no independent Unity identity verifier", () => {
+  const pagesWorker = read("_worker.js");
+  const routeStart = pagesWorker.indexOf('if (path === "/v1/authorize" && request.method === "POST")');
+  assert.ok(routeStart >= 0, "production authorization route must be present");
+  const route = pagesWorker.slice(routeStart, pagesWorker.indexOf('// Staged: health endpoint', routeStart));
+  assert.match(route, /verifySignature\(request, secret\)/, "production route authenticates the HMAC caller");
+  assert.match(route, /const unityId = body\?\.principal\?\.unity_id/, "route obtains Unity ID from request body");
+  assert.doesNotMatch(route, /IDENTITY_API|identity\.verified|verifiedUnityId/, "production route does not independently verify the Unity principal");
+  assert.match(pagesWorker, /function evaluatePolicy\(ctx\)[\s\S]*?return \{ ok: true, policy: ctx\.action \}/, "local policy function accepts after action/lane/memory checks");
+});
+
+test("Iris runtime identity service is staging-only and points to an explicit fixture", () => {
+  const runtimeConfig = read("workers/iris-runtime/wrangler.toml");
+  const fixture = read("workers/iris-staging-dependencies/worker.mjs");
+  const stagingDocs = read("workers/iris-runtime/STAGING.md");
+  assert.match(runtimeConfig, /name = "iris-runtime-staging"/);
+  assert.match(runtimeConfig, /service = "identity-api-staging"/);
+  assert.match(runtimeConfig, /\[env\.staging\]/);
+  assert.match(fixture, /external_identity_provider: false/);
+  assert.match(fixture, /staging_fixture: true/);
+  assert.match(fixture, /unityId !== env\.STAGING_UNITY_ID/);
+  assert.match(stagingDocs, /not real identity verification/);
+  assert.match(stagingDocs, /Replace the fixture bindings with approved staging providers/);
+});
