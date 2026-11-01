@@ -12,9 +12,10 @@ import { memoryBinding } from "./fixtures/iris-memory-binding.mjs";
 function identityBinding() {
   return {
     fetch: async (_url, init) => {
-      const body = JSON.parse(init.body || "{}");
-      const unityId = body.principal && body.principal.unity_id;
-      return new Response(JSON.stringify({ ok: true, verified: !!unityId, unity_id: unityId }), { status: 200, headers: { "content-type": "application/json" } });
+      if (init.headers.origin !== "https://dualiscapax.com" || !init.headers.cookie) {
+        return new Response(JSON.stringify({ ok: false, verified: false }), { status: 401 });
+      }
+      return new Response(JSON.stringify({ ok: true, verified: true, unity_id: "test-unity" }), { status: 200, headers: { "content-type": "application/json" } });
     },
   };
 }
@@ -139,7 +140,7 @@ test("an authorize allow receipt verifies", async () => {
   const authBody = { request_id: "chain-1", text: "hello", principal: { unity_id: "test-unity" } };
   const auth = await worker.fetch(new Request("https://staging.test/v1/authorize", {
     method: "POST",
-    headers: await signedHeaders(authBody),
+    headers: { ...(await signedHeaders(authBody)), origin: "https://dualiscapax.com", cookie: "__Host-unity_session=" + "D".repeat(43) },
     body: JSON.stringify(authBody),
   }), FULL_ENV);
   const issued = await auth.json();
