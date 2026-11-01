@@ -1,17 +1,17 @@
 const API = "/api/unity";
 
-function decodeBase64Url(value) {
+export function decodeBase64Url(value) {
   const padded = value.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - value.length % 4) % 4);
   const binary = atob(padded);
   return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 }
-function encodeBase64Url(value) {
+export function encodeBase64Url(value) {
   const bytes = new Uint8Array(value);
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
-function creationOptions(options) {
+export function creationOptions(options) {
   return {
     ...options,
     challenge: decodeBase64Url(options.challenge),
@@ -19,14 +19,14 @@ function creationOptions(options) {
     excludeCredentials: (options.excludeCredentials || []).map((item) => ({ ...item, id: decodeBase64Url(item.id) })),
   };
 }
-function requestOptions(options) {
+export function requestOptions(options) {
   return {
     ...options,
     challenge: decodeBase64Url(options.challenge),
     allowCredentials: (options.allowCredentials || []).map((item) => ({ ...item, id: decodeBase64Url(item.id) })),
   };
 }
-function registrationJSON(credential) {
+export function registrationJSON(credential) {
   return {
     id: credential.id,
     rawId: encodeBase64Url(credential.rawId),
@@ -39,7 +39,7 @@ function registrationJSON(credential) {
     clientExtensionResults: credential.getClientExtensionResults(),
   };
 }
-function authenticationJSON(credential) {
+export function authenticationJSON(credential) {
   return {
     id: credential.id,
     rawId: encodeBase64Url(credential.rawId),
