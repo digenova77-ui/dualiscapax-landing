@@ -20,9 +20,8 @@ import { memoryBinding } from "./fixtures/iris-memory-binding.mjs";
 function identityBinding() {
   return {
     fetch: async (_url, init) => {
-      const body = JSON.parse(init.body || "{}");
-      const unityId = body.principal && body.principal.unity_id;
-      return new Response(JSON.stringify({ ok: true, verified: !!unityId, unity_id: unityId }), { status: 200, headers: { "content-type": "application/json" } });
+      if (init.headers.origin !== "https://dualiscapax.com" || !init.headers.cookie) return new Response(JSON.stringify({ ok: false, verified: false }), { status: 401 });
+      return new Response(JSON.stringify({ ok: true, verified: true, unity_id: "test-unity" }), { status: 200, headers: { "content-type": "application/json" } });
     },
   };
 }
@@ -71,7 +70,7 @@ async function post(path, body, env = ENV, headers = {}) {
   if (!("x-timestamp" in headers) && !("x-signature" in headers)) authHeaders = await testSignature(body, env.TRINITY_HMAC_SECRET || "test-secret");
   return worker.fetch(new Request("https://staging.test" + path, {
     method: "POST",
-    headers: { "content-type": "application/json", ...authHeaders, ...headers },
+    headers: { "content-type": "application/json", origin: "https://dualiscapax.com", cookie: "__Host-unity_session=" + "E".repeat(43), ...authHeaders, ...headers },
     body: JSON.stringify(body),
   }), env);
 }
@@ -94,7 +93,7 @@ test("2. concurrent in-flight claim is 409", async () => {
   const gate = new Promise((resolve) => { release = resolve; });
   const env = {
     ...ENV,
-    IDENTITY_API: { fetch: (_url, init) => gate.then(() => { const body = JSON.parse(init.body || "{}"); const unityId = body.principal && body.principal.unity_id; return new Response(JSON.stringify({ ok: true, verified: !!unityId, unity_id: unityId }), { status: 200 }); }) },
+    IDENTITY_API: { fetch: (_url, init) => gate.then(() => new Response(JSON.stringify({ ok: true, verified: init.headers.cookie && init.headers.origin === "https://dualiscapax.com", unity_id: "test-unity" }), { status: 200 })) },
   };
   const first = post("/v1/authorize", { request_id: "race-10", text: "a" }, env);
   await new Promise((r) => setTimeout(r, 10));
