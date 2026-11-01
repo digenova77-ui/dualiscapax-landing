@@ -121,7 +121,7 @@ export default {
         });
       } catch { return json(403, { ok: false, reason: "authentication-verification-failed" }); }
       const nextCounter = verified.authenticationInfo?.newCounter;
-      if (!verified.verified || !Number.isSafeInteger(nextCounter) || nextCounter <= stored.credential.counter) return json(403, { ok: false, reason: "assertion-not-verified" });
+      if (!verified.verified || !Number.isSafeInteger(nextCounter) || (stored.credential.counter !== 0 || nextCounter !== 0) && nextCounter <= stored.credential.counter) return json(403, { ok: false, reason: "assertion-not-verified" });
       const updated = await callStore(env, "/credential/counter", { id: body.credential.id, counter: nextCounter });
       if (!updated.ok) return json(409, { ok: false, reason: "credential-counter-conflict" });
       const token = randomToken();
