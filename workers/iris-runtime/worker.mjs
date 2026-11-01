@@ -245,7 +245,10 @@ export default {
 
         const sessionCookie = request.headers.get("cookie");
         const origin = request.headers.get("origin");
-        if (!sessionCookie || origin !== "https://dualiscapax.com") {
+        if (origin !== "https://dualiscapax.com") {
+          return json(403, { authorized: false, reason: "origin-denied", request_id: requestId });
+        }
+        if (!sessionCookie) {
           return json(401, { authorized: false, reason: "verified-session-required", request_id: requestId });
         }
         const identity = await callBinding(env.IDENTITY_API, "/check", { request_id: requestId }, env.IRIS_BINDING_TIMEOUT_MS, {
