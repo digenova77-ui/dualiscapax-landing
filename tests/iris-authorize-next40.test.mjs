@@ -19,9 +19,10 @@ import { memoryBinding } from "./fixtures/iris-memory-binding.mjs";
 
 function identityBinding() {
   return { fetch: async (_url, init) => {
-    const body = JSON.parse(init.body || "{}");
-    const unityId = body.principal && body.principal.unity_id;
-    return new Response(JSON.stringify({ ok: true, verified: true, unity_id: unityId }), { status: 200 });
+    if (init.headers.origin !== "https://dualiscapax.com" || !init.headers.cookie) {
+      return new Response(JSON.stringify({ ok: false, verified: false }), { status: 401 });
+    }
+    return new Response(JSON.stringify({ ok: true, verified: true, unity_id: "test-unity" }), { status: 200 });
   } };
 }
 function trinityBinding() {
@@ -51,7 +52,7 @@ async function post(path, body, env, headers = {}) {
   const signed = await sign(body, env.TRINITY_HMAC_SECRET, path);
   return worker.fetch(new Request("https://staging.test" + path, {
     method: "POST",
-    headers: { "content-type": "application/json", ...signed, ...headers },
+    headers: { "content-type": "application/json", origin: "https://dualiscapax.com", cookie: "__Host-unity_session=" + "A".repeat(43), ...signed, ...headers },
     body: JSON.stringify(body),
   }), env);
 }
@@ -205,3 +206,13 @@ test("15. authorization signature cannot be replayed against receipt revocation"
   assert.equal((await verify.json()).valid, true);
 });
 
+
+test("16. passkey session cookie and exact origin are required", async () => {
+  const env = envWith();
+  const body = { ...base, request_id: "missing-session-40", text: "hello" };
+  const noCookie = await post("/v1/authorize", body, env, { cookie: "" });
+  assert.equal(noCookie.status, 401);
+  assert.equal((await noCookie.json()).reason, "verified-session-required");
+  const wrongOrigin = await post("/v1/authorize", { ...body, request_id: "wrong-origin-40" }, env, { origin: "https://dualiscapax.ai" });
+  assert.equal(wrongOrigin.status, 403);
+});

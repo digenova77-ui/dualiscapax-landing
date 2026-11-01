@@ -1,0 +1,36 @@
+name: Unity Passkey Identity CI
+
+on:
+  pull_request:
+    paths:
+      - "workers/unity-identity/**"
+      - ".github/workflows/unity-identity-ci.yml"
+  push:
+    branches:
+      - unity-passkey-identity-20261101
+    paths:
+      - "workers/unity-identity/**"
+      - ".github/workflows/unity-identity-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: workers/unity-identity
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: workers/unity-identity/package.json
+      - name: Install WebAuthn verifier
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Syntax check
+        run: node --check worker.mjs
+      - name: Test security primitives
+        run: npm test

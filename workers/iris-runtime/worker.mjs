@@ -243,7 +243,18 @@ export default {
           return json(403, { authorized: false, reason: "policy", request_id: requestId });
         }
 
-        const identity = await callBinding(env.IDENTITY_API, "/check", { request_id: requestId, principal: { unity_id: principal } }, env.IRIS_BINDING_TIMEOUT_MS);
+        const sessionCookie = request.headers.get("cookie");
+        const origin = request.headers.get("origin");
+        if (origin !== "https://dualiscapax.com") {
+          return json(403, { authorized: false, reason: "origin-denied", request_id: requestId });
+        }
+        if (!sessionCookie) {
+          return json(401, { authorized: false, reason: "verified-session-required", request_id: requestId });
+        }
+        const identity = await callBinding(env.IDENTITY_API, "/check", { request_id: requestId, principal: { unity_id: principal } }, env.IRIS_BINDING_TIMEOUT_MS, {
+          cookie: sessionCookie,
+          origin,
+        });
         const verifiedUnityId = identity.data && (identity.data.unity_id || (identity.data.principal && identity.data.principal.unity_id));
         if (!identity.ok || !identity.data || identity.data.verified !== true || verifiedUnityId !== principal) {
           return json(403, { authorized: false, reason: identity.reason || "identity-unverified", request_id: requestId });

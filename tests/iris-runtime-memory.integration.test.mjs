@@ -29,9 +29,10 @@ function fakeState() {
 
 function identityBinding() {
   return { fetch: async (_url, init) => {
-    const body = JSON.parse(init.body || "{}");
-    const unityId = body.principal && body.principal.unity_id;
-    return new Response(JSON.stringify({ ok: true, verified: !!unityId, unity_id: unityId }), { status: 200 });
+    if (init.headers.origin !== "https://dualiscapax.com" || !init.headers.cookie) {
+      return new Response(JSON.stringify({ ok: false, verified: false }), { status: 401 });
+    }
+    return new Response(JSON.stringify({ ok: true, verified: true, unity_id: "unity-integration" }), { status: 200 });
   } };
 }
 
@@ -83,7 +84,7 @@ async function signedPost(env, path, body) {
   const signature = Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
   return runtime.fetch(new Request("https://iris.test" + path, {
     method: "POST",
-    headers: { "content-type": "application/json", "x-timestamp": timestamp, "x-signature": signature },
+    headers: { "content-type": "application/json", origin: "https://dualiscapax.com", cookie: "__Host-unity_session=" + "B".repeat(43), "x-timestamp": timestamp, "x-signature": signature },
     body: payload,
   }), env);
 }
