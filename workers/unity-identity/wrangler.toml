@@ -1,0 +1,15 @@
+name = "dualis-unity-identity-staging"
+main = "worker.mjs"
+compatibility_date = "2026-10-24"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+
+[[durable_objects.bindings]]
+name = "UNITY_IDENTITY_STORE"
+class_name = "UnityIdentityStore"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["UnityIdentityStore"]
+
+# Staging-only service. No production routes, custom domains, account IDs, or secrets.
