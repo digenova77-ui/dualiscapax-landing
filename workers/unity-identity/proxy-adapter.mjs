@@ -7,6 +7,27 @@ const ALLOWED = new Set([
 ]);
 const MAX_BYTES = 16_384;
 
+async function readBoundedBody(request) {
+  const reader = request.body?.getReader();
+  if (!reader) return new Uint8Array();
+  const chunks = [];
+  let total = 0;
+  while (true) {
+    const part = await reader.read();
+    if (part.done) break;
+    total += part.value.byteLength;
+    if (total > MAX_BYTES) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(part.value);
+  }
+  const body = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.byteLength; }
+  return body;
+}
+
 export async function proxyUnityIdentity(request, binding) {
   const url = new URL(request.url);
   if (!url.pathname.startsWith(PREFIX + "/")) return null;
@@ -22,8 +43,8 @@ export async function proxyUnityIdentity(request, binding) {
   if (!binding || typeof binding.fetch !== "function") {
     return Response.json({ ok: false, reason: "identity-service-unavailable" }, { status: 503 });
   }
-  const body = await request.arrayBuffer();
-  if (body.byteLength > MAX_BYTES) return Response.json({ ok: false, reason: "body-too-large" }, { status: 413 });
+  const body = await readBoundedBody(request);
+  if (body === null) return Response.json({ ok: false, reason: "body-too-large" }, { status: 413 });
   const headers = new Headers({ "content-type": "application/json", origin: APP_ORIGIN });
   const cookie = request.headers.get("cookie");
   if (cookie) headers.set("cookie", cookie);
