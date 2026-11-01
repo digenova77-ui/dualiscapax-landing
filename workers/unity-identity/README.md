@@ -33,3 +33,7 @@ The Iris runtime must forward the incoming same-origin Origin and session Cookie
 ## Deployment boundary
 
 The Worker is named unity-passkey-identity-staging, workers.dev is disabled, and only an identity Durable Object is declared. No production route, domain, account ID, secret, or service binding is configured. Deployment requires an explicitly authenticated staging Cloudflare account and a staging front-door proxy. Do not deploy to production until runtime integration, review, and end-to-end adversarial tests pass.
+
+## Browser client
+
+`client.js` exports `registerPasskey(handle)`, `authenticatePasskey()`, `getUnitySession()`, and `logoutUnitySession()`. It converts browser WebAuthn binary fields to the JSON representation expected by the server and uses same-origin requests with credentials. It calls `/api/unity/*`; the canonical front-end must proxy those paths to this private service without changing the Origin or Cookie headers. Until that proxy is installed on the actual `.com` front-end, the client is a tested integration module, not a live login button.
