@@ -32,4 +32,4 @@ The Iris runtime must forward the incoming same-origin Origin and session Cookie
 
 ## Deployment boundary
 
-The Worker is named identity-api-staging, workers.dev is disabled, and only an identity Durable Object is declared. No production route, domain, account ID, secret, or service binding is configured. Deployment requires an explicitly authenticated staging Cloudflare account and a staging front-door proxy. Do not deploy to production until runtime integration, review, and end-to-end adversarial tests pass.
+The Worker is named unity-passkey-identity-staging, workers.dev is disabled, and only an identity Durable Object is declared. No production route, domain, account ID, secret, or service binding is configured. Deployment requires an explicitly authenticated staging Cloudflare account and a staging front-door proxy. Do not deploy to production until runtime integration, review, and end-to-end adversarial tests pass.
