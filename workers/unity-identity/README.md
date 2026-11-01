@@ -37,3 +37,19 @@ The Worker is named unity-passkey-identity-staging, workers.dev is disabled, and
 ## Browser client
 
 `client.js` exports `registerPasskey(handle)`, `authenticatePasskey()`, `getUnitySession()`, and `logoutUnitySession()`. It converts browser WebAuthn binary fields to the JSON representation expected by the server and uses same-origin requests with credentials. It calls `/api/unity/*`; the canonical front-end must proxy those paths to this private service without changing the Origin or Cookie headers. Until that proxy is installed on the actual `.com` front-end, the client is a tested integration module, not a live login button.
+
+## Same-origin front-door adapter
+
+`proxy-adapter.mjs` is the small edge adapter the canonical `.com` front-end needs. It accepts only the explicit `/api/unity/*` endpoint list, requires both the request URL and Origin to equal `https://dualiscapax.com`, forwards the Cookie and Origin unchanged through a private service binding, limits the body, and passes the identity service response (including Set-Cookie) back to the browser.
+
+A Cloudflare Pages/Worker front door can call it before its ordinary asset handling:
+
+```js
+import { proxyUnityIdentity } from "./workers/unity-identity/proxy-adapter.mjs";
+
+const identityResponse = await proxyUnityIdentity(request, env.UNITY_IDENTITY_API);
+if (identityResponse) return identityResponse;
+// Continue with normal page/assets handling.
+```
+
+Bind `UNITY_IDENTITY_API` to the private `unity-passkey-identity-staging` service only in the staging environment first. The canonical `.com` front-end source is not this repository's current Pages project (this repository's CNAME is `.ai`), so the adapter is not silently wired into or deployed to the `.ai` site. The actual `.com` front-end must import this adapter or implement the same contract before the browser client can be live.
