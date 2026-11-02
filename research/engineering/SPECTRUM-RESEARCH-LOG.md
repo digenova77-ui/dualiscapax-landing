@@ -216,3 +216,19 @@ Do not rewrite earlier conclusions to make a new result look inevitable. Append 
 - **Commits:** decoder correction `dbc3d6ddaf70bdfc2e13a1a1084efcf1cdae098d`; BOM regression test `143771026380146c8f8b34d99986b66e7d5d52ea`.
 - **CI:** new-head workflow run pending at this correction's log time. Prior run 41456752200 passed before this correction and therefore does not validate it.
 - **Limit:** BOM rejection is now tested, but generated Unicode-value vectors and broader cross-runtime differential testing remain open.
+
+
+### Wave 1d — Unicode known-answer vector and numeric boundary replay
+- **Date:** 2026-11-02
+- **Question:** does the restricted canonical profile produce the same bytes and SHA-256 across Python and Node for non-ASCII scalar string values, and are the exact safe-integer endpoints accepted consistently?
+- **Evidence labels:** D = derived implementation result; M = observed test result; U = untested broader domain.
+- **Implementation:** added a second shared known-answer manifest containing the Unicode scalar string `café μ 🌍`; added Python and Node tests for the same expected digest, rejection of an alternate escaped representation, and acceptance of positive and negative JavaScript safe-integer endpoints. CI path filters now include the Unicode fixture.
+- **Known-answer digest:** `b7c0e2186b6680c8c1dd092e2d9f2f98db10bd264ff018c03092fa9c9d0ca720`.
+- **Local results:** Python 3.13.5 — **19 tests passed** (5 hydrogen + 14 seed); Node.js 22.16.0 — **14 tests passed**. The suite includes the ASCII and Unicode known-answer vectors, duplicate-key rejection, noncanonical whitespace/order/escaping rejection, safe-integer boundaries, unsafe/fractional number rejection, non-ASCII key rejection, unpaired-surrogate rejection, invalid UTF-8 rejection, UTF-8 BOM rejection, schema rejection, and mutation sensitivity.
+- **CI result:** Research reference run `41457310914` completed successfully on code head `5b41d505cdf6bde0fc3b3145a6e868584cd3106b`; its hydrogen, Python seed, and Node seed steps passed. Other repository workflows were still completing when this entry was written; their final statuses must be checked separately.
+- **Commits:** Python Unicode test `1296045ffd7a2399391b7c5ca39fc43abe5516a8`; Node Unicode/boundary tests `4ee2183939040732b11cb7d0a616c99ca2927571`; Unicode fixture `e15dd0a8e0b070db16577a02b0f7e0b2cce28264`; workflow path update `5b41d505cdf6bde0fc3b3145a6e868584cd3106b`.
+- **Assumptions:** object keys remain ASCII; numeric values remain safe integers only; string values are Unicode scalar sequences; Python and Node canonicalizers are compared only under this explicit profile.
+- **Limitations / unknowns:** two known-answer vectors and selected adversarial cases are not an exhaustive proof over all nested manifests. Generated differential tests, additional Unicode edge cases, runtime-version matrix testing, and fuzzing remain outstanding. No physical measurements or cross-domain physical mappings were introduced.
+- **Status:** **LOCAL PASS / RESEARCH CI PASS** for the tested fixtures and cases. No claim of general formal equivalence.
+- **Next falsifiable question:** for a fixed-seed generator producing at least 1,000 valid nested manifests and malformed near-neighbours within the declared profile, do Python and Node always emit identical canonical UTF-8 bytes and SHA-256, and do both reject the same invalid cases?
+- **Next actions:** implement deterministic cross-runtime generated fixtures; add a Python 3.12/3.13 and Node 20/22 matrix; then proceed to the hydrogen energy-level reference test. Keep visualization and physical integration gates unchanged.
