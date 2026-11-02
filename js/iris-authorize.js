@@ -1,9 +1,22 @@
 /**
  * IrisAuthorize — client helper for /v1/authorize.
  *
+ * The Worker requires two things on every /v1/authorize call:
+ *   - the HMAC headers it verifies: x-timestamp (unix seconds) and
+ *     x-signature (hex HMAC-SHA256 of "<timestamp>.<body>"), and
+ *   - the identity issuer's session cookie (__Host-dc_ai_session),
+ *     which is what actually authenticates the principal.
+ * Every request this helper sends therefore carries
+ * credentials: "same-origin" (so the session cookie accompanies it)
+ * and, whenever a signer is available, the HMAC headers in exactly
+ * the Worker's format.
+ *
  * Production path: the browser posts to the application's own backend
  * (IrisAuthorizeBase). The backend holds the HMAC secret and performs
- * the signature. The browser never supplies or sees the secret.
+ * the signature. The browser never supplies or sees the secret. A
+ * hosting page may instead expose an async window.IrisRequestSigner
+ * hook that returns { timestamp, signature } for the body from its
+ * own server-side signer; the helper then attaches those headers.
  *
  * Staging path: window.IrisSigningSecret may be set for controlled
  * verification only. It is browser-visible and is not a production
@@ -31,17 +44,47 @@
   }
 
   /**
+   * The HMAC headers the Worker requires, from whichever signer the
+   * hosting page provides: the async IrisRequestSigner hook first,
+   * then the staging secret. Returns null when no signer is available
+   * (the configured base is then a signing backend of its own, which
+   * attaches the headers server-side before the Worker sees the call).
+   */
+  async function signerHeaders(body) {
+    if (typeof w.IrisRequestSigner === "function") {
+      var signed = await w.IrisRequestSigner(body);
+      if (signed && signed.timestamp && signed.signature) {
+        return { "x-timestamp": String(signed.timestamp), "x-signature": String(signed.signature) };
+      }
+      return null;
+    }
+    if (w.IrisSigningSecret) {
+      var s = await signRequest(body, w.IrisSigningSecret);
+      return { "x-timestamp": s.timestamp, "x-signature": s.signature };
+    }
+    return null;
+  }
+
+  /**
    * Production authorize: browser posts the body to the configured base.
    * The server is expected to hold the secret, verify the session, and
    * return the authorization result. No secret is read from the browser.
+   * The session cookie rides along (credentials: "same-origin") and the
+   * Worker's HMAC headers are attached whenever a signer is available.
    */
   async function authorizeProduction(body) {
     var base = (w.IrisAuthorizeBase || "").replace(/\/$/, "");
     if (!base) throw new Error("authorize-base-unavailable");
     var url = base + "/v1/authorize";
+    var headers = { "content-type": "application/json" };
+    var signed = await signerHeaders(body);
+    if (signed) {
+      headers["x-timestamp"] = signed["x-timestamp"];
+      headers["x-signature"] = signed["x-signature"];
+    }
     var res = await fetch(url, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: headers,
       body: JSON.stringify(body),
       credentials: "same-origin"
     });
@@ -71,7 +114,8 @@
         "x-timestamp": signed.timestamp,
         "x-signature": signed.signature
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      credentials: "same-origin"
     });
     var data = null;
     try { data = await res.json(); } catch (e) {}
