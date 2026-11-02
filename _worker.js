@@ -3,7 +3,10 @@
  * Capability does not confer authority.
  * Fail-closed. No decorative routes. No external bridges. No maps.
  * Read-only verification of the seal, hash, and Ed25519 signature.
- * Authorization endpoint uses env.SIGNING_SECRET + Durable Object bindings.
+ * Authorization endpoint uses env.SIGNING_SECRET + Durable Object bindings
+ * and requires the identity issuer's authenticated session
+ * (env.IDENTITY_DB, __Host-dc_ai_session cookie): a body-supplied
+ * principal is a claim to be matched, never authentication.
  */
 
 const SEAL_BODY = `center=empty
@@ -335,6 +338,61 @@ async function claimRequest(env, requestId, claimBody) {
 }
 
 // ---------------------------------------------------------------------------
+// Authenticated identity session (identity issuer: server/identity.js)
+// ---------------------------------------------------------------------------
+// The identity issuer establishes a session after a verified WebAuthn
+// ceremony and sets it as the __Host-dc_ai_session cookie. The session
+// id itself is never stored: the identity store (env.IDENTITY_DB, table
+// identity_session) holds only its SHA-256 hash, bound to the verified
+// subject, with expiry and revocation. /v1/authorize authenticates the
+// caller from that cookie. A body-supplied principal.unity_id is a
+// claim, never proof: it must match the session subject or the request
+// is refused. With no identity store bound, the session cannot be
+// verified and authorization fails closed — the same posture this file
+// takes toward a missing rate-limiter or audit binding.
+const SESSION_COOKIE = "__Host-dc_ai_session";
+
+function sessionCookieValue(request, name) {
+  const cookie = request.headers.get("Cookie") || "";
+  for (const part of cookie.split(";")) {
+    const [key, ...rest] = part.trim().split("=");
+    if (key === name) return rest.join("=");
+  }
+  return null;
+}
+
+// Returns { subjectId } for a live session, null for no/invalid/expired
+// session, or { unavailable: true } when the session cannot be checked.
+async function authenticateSession(request, env) {
+  if (!env.IDENTITY_DB || typeof env.IDENTITY_DB.prepare !== "function") {
+    return { unavailable: true };
+  }
+  const id = sessionCookieValue(request, SESSION_COOKIE);
+  if (!id) return null;
+  try {
+    const hash = await sha256Hex(id);
+    const session = await env.IDENTITY_DB
+      .prepare(
+        "SELECT subject_id, expires_at FROM identity_session WHERE session_hash = ?1 AND expires_at > ?2 AND revoked_at IS NULL"
+      )
+      .bind(hash, Date.now())
+      .first();
+    if (
+      !session ||
+      typeof session.subject_id !== "string" ||
+      !session.subject_id.trim() ||
+      session.subject_id.length > 200 ||
+      !Number.isSafeInteger(session.expires_at)
+    ) {
+      return null;
+    }
+    return { subjectId: session.subject_id };
+  } catch {
+    return { unavailable: true };
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Main fetch
 // ---------------------------------------------------------------------------
 export default {
@@ -407,14 +465,37 @@ export default {
         return json({ decision: "deny", authorized: false, reason: "invalid-json" }, 400);
       }
 
-      const unityId = body?.principal?.unity_id;
       const action = body?.action;
       const requestId = body?.request_id;
       const inputSha256 = body?.input_sha256;
 
-      if (typeof unityId !== "string") {
+      // Authenticated session first. The principal is whoever the
+      // identity issuer's session says it is; body.principal.unity_id
+      // is never accepted as authentication on its own. A request with
+      // a valid HMAC but no live session — or one naming a different
+      // principal than the session's subject — is refused here,
+      // before rate limiting, policy, or any claim.
+      const session = await authenticateSession(request, env);
+      if (session?.unavailable) {
+        const deny = { decision: "deny", authorized: false, reason: "session-store-unavailable" };
+        await recordAudit(env, requestId, deny, body);
+        return json(deny, 503);
+      }
+      if (!session) {
+        const deny = { decision: "deny", authorized: false, reason: "session-required" };
+        await recordAudit(env, requestId, deny, body);
+        return json(deny, 401);
+      }
+      const claimedUnityId = body?.principal?.unity_id;
+      if (claimedUnityId !== undefined && typeof claimedUnityId !== "string") {
         return json({ decision: "deny", authorized: false, reason: "malformed-request" }, 400);
       }
+      if (typeof claimedUnityId === "string" && claimedUnityId !== session.subjectId) {
+        const deny = { decision: "deny", authorized: false, reason: "principal-mismatch" };
+        await recordAudit(env, requestId, deny, body);
+        return json(deny, 403);
+      }
+      const unityId = session.subjectId;
 
       const limitResult = await checkRateLimit(env, unityId, 10, 60_000);
       if (limitResult.unavailable) {
