@@ -206,3 +206,13 @@ Do not rewrite earlier conclusions to make a new result look inevitable. Append 
 - **Status:** **LOCAL PASS / CI PENDING** for the added cross-language verifier work. Prior CI remains PASS only for the earlier head. Draft PR stays open and unmerged; no deployment, DNS, server, credential, or actuator action occurred.
 - **Next falsifiable question:** for a deterministic suite of generated manifests spanning every allowed JSON value shape, paired Unicode scalar strings, nested arrays/objects, and both safe-integer boundaries, do Python and Node produce byte-identical canonical output and SHA-256 while rejecting every malformed or noncanonical input?
 - **Exact next actions:** (1) wait for and inspect CI on the new head; (2) fix any runtime disagreement before accepting the profile; (3) add generated cross-runtime fixtures and UTF-8/Unicode edge cases; (4) add a hydrogen energy-eigenvalue/reference comparison with model-appropriate reduced-mass and fine-structure caveats; (5) keep the workbench schematic until its plotted points are generated from the numerical model; (6) keep all physical integrations in read-only shadow mode until a separate safety and authorization review.
+
+
+### Wave 1c correction — UTF-8 BOM handling
+- **Date:** 2026-11-02
+- **Finding (F → corrected):** review of the Node byte decoder showed that the default `TextDecoder` BOM behavior strips a UTF-8 BOM before JSON parsing. That could have silently accepted a byte stream outside the declared no-BOM canonical profile.
+- **Correction:** configure the decoder to preserve the BOM code point (`ignoreBOM: true`); JSON parsing then rejects the BOM-prefixed source. Added a regression test that prepends `EF BB BF` to the shared canonical fixture and expects rejection.
+- **Local result:** Node.js 22.16.0 — **11 tests passed, 0 failed** after correction. The Python suite remains **18 passed**. The first BOM regression assertion expected a canonical-byte mismatch; the actual correct failure is earlier JSON parse rejection, so the assertion was narrowed to that behavior.
+- **Commits:** decoder correction `dbc3d6ddaf70bdfc2e13a1a1084efcf1cdae098d`; BOM regression test `143771026380146c8f8b34d99986b66e7d5d52ea`.
+- **CI:** new-head workflow run pending at this correction's log time. Prior run 41456752200 passed before this correction and therefore does not validate it.
+- **Limit:** BOM rejection is now tested, but generated Unicode-value vectors and broader cross-runtime differential testing remain open.
