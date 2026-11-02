@@ -10,6 +10,8 @@ import {
 
 const fixturePath = fileURLToPath(new URL('./fixtures/seed-v1-known-answer.json', import.meta.url));
 const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
+const unicodeFixturePath = fileURLToPath(new URL('./fixtures/seed-v1-unicode-known-answer.json', import.meta.url));
+const unicodeFixture = JSON.parse(await readFile(unicodeFixturePath, 'utf8'));
 const mutableManifest = () => JSON.parse(fixture.canonical_manifest);
 
 test('Python-compatible shared known-answer vector', () => {
@@ -21,6 +23,27 @@ test('Python-compatible shared known-answer vector', () => {
 
 test('canonicalizer preserves fixture bytes', () => {
   assert.equal(canonicalizeManifest(mutableManifest()), fixture.canonical_manifest);
+});
+
+
+test('Unicode scalar known-answer vector matches Python SHA-256', () => {
+  const report = verifyCanonicalManifest(unicodeFixture.canonical_manifest);
+  assert.equal(report.canonical_sha256, unicodeFixture.sha256);
+  assert.match(unicodeFixture.canonical_manifest, /café μ 🌍/);
+});
+
+test('alternate escaped Unicode source is rejected', () => {
+  const escaped = unicodeFixture.canonical_manifest.replace('café', 'caf\\u00e9');
+  assert.throws(() => verifyCanonicalManifest(escaped), /not canonical JSON/);
+});
+
+test('safe-integer boundaries remain accepted', () => {
+  const manifest = mutableManifest();
+  manifest.state.n = Number.MAX_SAFE_INTEGER;
+  const canonical = canonicalizeManifest(manifest);
+  assert.equal(verifyCanonicalManifest(canonical).status, 'PASS');
+  manifest.state.n = -Number.MAX_SAFE_INTEGER;
+  assert.equal(verifyCanonicalManifest(canonicalizeManifest(manifest)).status, 'PASS');
 });
 
 test('duplicate property names are rejected by canonical-byte comparison', () => {
