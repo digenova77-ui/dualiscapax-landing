@@ -137,6 +137,18 @@ def canonical_bytes(manifest: dict[str, Any]) -> bytes:
     return encoded.encode("utf-8")
 
 
+def parse_canonical_manifest(source: str) -> dict[str, Any]:
+    """Parse and require exact canonical source bytes for cross-runtime replay.
+
+    The project profile requires sorted ASCII object keys, compact UTF-8 JSON,
+    safe integers only, and no alternate encodings. It is not RFC 8785/JCS.
+    """
+    manifest = parse_manifest(source)
+    if source != canonical_bytes(manifest).decode("utf-8"):
+        raise ManifestError("source is not canonical JSON")
+    return manifest
+
+
 def commitment_sha256(manifest: dict[str, Any]) -> str:
     """Return SHA-256 commitment to canonical manifest bytes; not a proof of truth."""
     return hashlib.sha256(canonical_bytes(manifest)).hexdigest()
