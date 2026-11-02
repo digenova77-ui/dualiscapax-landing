@@ -1,11 +1,14 @@
 """Standard-library tests for strict seed manifest validation."""
+import json
 import unittest
+from pathlib import Path
 
 from seed_verifier import (
     ManifestError,
     canonical_bytes,
     commitment_sha256,
     parse_manifest,
+    parse_canonical_manifest,
     verification_report,
 )
 
@@ -70,6 +73,50 @@ class SeedVerifierTests(unittest.TestCase):
         manifest["schema_version"] = "dualis.seed.v99"
         with self.assertRaisesRegex(ManifestError, "unsupported schema_version"):
             canonical_bytes(manifest)
+
+    def test_portable_safe_integer_boundaries(self):
+        for value in (-(1 << 53) + 1, (1 << 53) - 1):
+            manifest = dict(BASE)
+            manifest["state"] = {"value": value}
+            canonical_bytes(manifest)
+        for value in (-(1 << 53), 1 << 53):
+            manifest = dict(BASE)
+            manifest["state"] = {"value": value}
+            with self.assertRaisesRegex(ManifestError, "safe range"):
+                canonical_bytes(manifest)
+
+    def test_non_ascii_object_key_rejected(self):
+        manifest = dict(BASE)
+        manifest["state"] = {"é": 1}
+        with self.assertRaisesRegex(ManifestError, "non-ASCII object key"):
+            canonical_bytes(manifest)
+
+    def test_unpaired_surrogate_rejected(self):
+        manifest = dict(BASE)
+        manifest["state"] = {"text": "\ud800"}
+        with self.assertRaisesRegex(ManifestError, "unpaired surrogate"):
+            canonical_bytes(manifest)
+
+    def test_unsupported_python_value_rejected(self):
+        manifest = dict(BASE)
+        manifest["state"] = {"not_json": {1, 2}}
+        with self.assertRaisesRegex(ManifestError, "unsupported value type"):
+            canonical_bytes(manifest)
+
+    def test_canonical_source_fixture_and_noncanonical_rejection(self):
+        fixture_path = Path(__file__).parent / "fixtures" / "seed-v1-known-answer.json"
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        source = fixture["canonical_manifest"]
+        manifest = parse_canonical_manifest(source)
+        self.assertEqual(commitment_sha256(manifest), fixture["sha256"])
+        with self.assertRaisesRegex(ManifestError, "not canonical JSON"):
+            parse_canonical_manifest("\n" + source)
+        duplicate = source.replace(
+            '"model_id":"hydrogen.reference.v1"',
+            '"model_id":"x","model_id":"hydrogen.reference.v1"',
+        )
+        with self.assertRaisesRegex(ManifestError, "duplicate JSON key"):
+            parse_canonical_manifest(duplicate)
 
     def test_report_states_actual_scope(self):
         report = verification_report(BASE)
