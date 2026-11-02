@@ -70,6 +70,11 @@ test('invalid UTF-8 byte sequences are rejected', () => {
   assert.throws(() => verifyCanonicalManifestBytes(Buffer.from([0xff, 0xfe])), /valid UTF-8/);
 });
 
+test('UTF-8 BOM is rejected rather than silently stripped', () => {
+  const bytes = Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(fixture.canonical_manifest, 'utf8')]);
+  assert.throws(() => verifyCanonicalManifestBytes(bytes), /invalid JSON/);
+});
+
 test('wrong schema and unsupported fields are rejected', () => {
   const wrongVersion = fixture.canonical_manifest.replace('dualis.seed.v1', 'dualis.seed.v99');
   assert.throws(() => verifyCanonicalManifest(wrongVersion), /unsupported schema_version/);
