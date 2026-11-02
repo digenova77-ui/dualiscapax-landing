@@ -131,7 +131,7 @@ export function verifyCanonicalManifest(source) {
 export function verifyCanonicalManifestBytes(bytes) {
   let source;
   try {
-    source = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    source = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
   } catch {
     throw new ManifestError('source is not valid UTF-8');
   }
