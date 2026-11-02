@@ -118,6 +118,16 @@ class SeedVerifierTests(unittest.TestCase):
         with self.assertRaisesRegex(ManifestError, "duplicate JSON key"):
             parse_canonical_manifest(duplicate)
 
+    def test_unicode_value_known_answer_and_escape_rejection(self):
+        fixture_path = Path(__file__).parent / "fixtures" / "seed-v1-unicode-known-answer.json"
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        source = fixture["canonical_manifest"]
+        manifest = parse_canonical_manifest(source)
+        self.assertEqual(commitment_sha256(manifest), fixture["sha256"])
+        escaped = source.replace("café", r"caf\u00e9")
+        with self.assertRaisesRegex(ManifestError, "not canonical JSON"):
+            parse_canonical_manifest(escaped)
+
     def test_report_states_actual_scope(self):
         report = verification_report(BASE)
         self.assertEqual(report["status"], "PASS")
