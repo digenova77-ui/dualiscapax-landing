@@ -1,47 +1,52 @@
 name: iris-mint-greet
+
+# Legacy manual mint retained as artifact preparation only.
+# It cannot commit, push, or write repository contents.
+# Father remains the sole writing authority; Trinity remains the sole authorization gate.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/iris-mint-greet.yml"
-      - "AGENT/IRIS-WAV.md"
+
 concurrency:
   group: iris-mint-greet
   cancel-in-progress: false
+
 permissions:
-  contents: write
+  contents: read
+
 jobs:
   mint:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: mint Sonia take
+      - name: Mint Sonia take
         run: |
+          set -euo pipefail
           pip install -q edge-tts
-          python - <<'PY'
-          import asyncio, pathlib
+          mkdir -p audio
+          python3 << 'PY'
+          import asyncio
+          import pathlib
           import edge_tts
+
           text = "Hey. I'm Iris. Talk. That's the whole interface."
           voice = "en-GB-SoniaNeural"
-          out = pathlib.Path("audio")
-          out.mkdir(exist_ok=True)
+          output = pathlib.Path("audio")
           async def main():
-              c = edge_tts.Communicate(text, voice)
-              await c.save(str(out / "iris-greet.mp3"))
+              await edge_tts.Communicate(text, voice).save(str(output / "iris-greet.mp3"))
           asyncio.run(main())
-          print((out / "iris-greet.mp3").stat().st_size)
+          assert (output / "iris-greet.mp3").is_file()
+          assert (output / "iris-greet.mp3").stat().st_size > 0
           PY
-      - name: commit if new
-        run: |
-          git config user.name "unity-wav-clerk"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add audio/iris-greet.mp3
-          if git diff --cached --quiet; then
-            echo "no change"
-          else
-            git commit -m "P0 Iris: mint Sonia greet take"
-            git push
-          fi
+      - name: Upload reviewable artifact only
+        uses: actions/upload-artifact@v4
+        with:
+          name: iris-greeting-legacy-candidate
+          path: audio/iris-greet.mp3
+          if-no-files-found: error
+          retention-days: 7

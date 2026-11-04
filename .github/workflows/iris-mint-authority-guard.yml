@@ -1,0 +1,56 @@
+name: iris-mint-authority-guard
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/iris-greet-mint.yml
+      - .github/workflows/iris-mint-greet.yml
+      - .github/workflows/iris-mint-authority-guard.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  no-autonomous-write:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Enforce artifact-only mint contract
+        run: |
+          set -euo pipefail
+          python3 << 'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          workflows = [
+              Path(".github/workflows/iris-greet-mint.yml"),
+              Path(".github/workflows/iris-mint-greet.yml"),
+          ]
+          errors = []
+          for path in workflows:
+              if not path.is_file():
+                  errors.append(f"{path}: missing workflow")
+                  continue
+              text = path.read_text(encoding="utf-8")
+              if not re.search(r"(?m)^permissions:\s*\n\s+contents:\s*read\s*$", text):
+                  errors.append(f"{path}: must grant contents: read")
+              if re.search(r"(?m)^\s*contents:\s*write\s*$", text):
+                  errors.append(f"{path}: contents: write is forbidden")
+              if re.search(r"(?im)^\s*git\s+push\b", text):
+                  errors.append(f"{path}: git push is forbidden")
+              if re.search(r"(?im)^\s*persist-credentials:\s*true\s*$", text):
+                  errors.append(f"{path}: persisted checkout credentials are forbidden")
+              if "actions/upload-artifact@" not in text:
+                  errors.append(f"{path}: must publish a reviewable artifact")
+          if errors:
+              print("FAIL: mint authority contract violated")
+              for error in errors:
+                  print(f" - {error}")
+              sys.exit(1)
+          print("PASS: both mint workflows are read-only and artifact-only.")
+          print("NOTE: this validates workflow configuration, not Trinity receipt validity or production behavior.")
+          PY

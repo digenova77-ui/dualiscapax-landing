@@ -1,20 +1,22 @@
 name: wav-watch
 
-# Voice hole. Critical. TTS is not success.
+# Repository artifact gate only. Never infer production health from CI.
+# Missing or malformed greeting assets are a hard failure, not a warning.
 on:
-  schedule:
-    - cron: "8,38 * * * *"
+  pull_request:
+    paths:
+      - audio/**
+      - js/iris-wav.js
+      - index.html
+      - .github/workflows/wav-watch.yml
   push:
     branches: [main]
     paths:
       - audio/**
       - js/iris-wav.js
       - index.html
-      - AGENT/TICKETS/L-WAV.json
+      - .github/workflows/wav-watch.yml
   workflow_dispatch:
-  workflow_run:
-    workflows: ["critical-drop"]
-    types: [completed]
 
 permissions:
   contents: read
@@ -24,68 +26,52 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  watch:
+  repository-artifact-gate:
     runs-on: ubuntu-latest
     timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
-      - name: Probe the take on disk and on the street
+        with:
+          persist-credentials: false
+      - name: Require valid local greeting assets and player wiring
         run: |
+          set -euo pipefail
           python3 << 'PY'
-          import json, os, urllib.request
-          from datetime import datetime, timezone
+          import sys
+          import wave
           from pathlib import Path
 
-          def probe(url):
-              rec = {"url": url, "status": None, "ctype": None, "bytes": 0}
-              try:
-                  req = urllib.request.Request(url, method="GET")
-                  with urllib.request.urlopen(req, timeout=15) as r:
-                      data = r.read()
-                      rec["status"] = getattr(r, "status", 200)
-                      rec["ctype"] = r.headers.get("Content-Type")
-                      rec["bytes"] = len(data)
-              except Exception as e:
-                  rec["error"] = type(e).__name__
-                  rec["status"] = getattr(e, "code", None)
-                  if getattr(e, "headers", None):
-                      rec["ctype"] = e.headers.get("Content-Type")
-              return rec
+          required = [
+              Path("audio/iris-greet.wav"),
+              Path("audio/iris-greet.mp3"),
+              Path("js/iris-wav.js"),
+              Path("index.html"),
+          ]
+          missing = [str(path) for path in required if not path.is_file() or path.stat().st_size == 0]
+          if missing:
+              print("FAIL: required greeting artifacts are missing or empty:")
+              for item in missing:
+                  print(f" - {item}")
+              sys.exit(1)
 
-          apex = probe("https://dualiscapax.ai/audio/iris-greet.wav")
-          mp3 = probe("https://dualiscapax.ai/audio/iris-greet.mp3")
-          lander = probe("https://dualiscapax.ai/")
-          html = ""
+          wav_path = Path("audio/iris-greet.wav")
           try:
-              with urllib.request.urlopen("https://dualiscapax.ai/", timeout=15) as r:
-                  html = r.read(20000).decode("utf-8", "replace")
-          except Exception:
-              pass
-          on_disk_wav = Path("audio/iris-greet.wav").is_file()
-          on_disk_mp3 = Path("audio/iris-greet.mp3").is_file()
-          player = Path("js/iris-wav.js").is_file()
-          loaded = "iris-wav.js" in html
-          wav_ok = (
-              apex.get("status") == 200
-              and (apex.get("bytes") or 0) >= 50000
-              and "html" not in (apex.get("ctype") or "").lower()
-          )
-          card = {
-              "kind": "wav-watch",
-              "clerk": "unity:wav.clerk",
-              "watch": "unity:wav.watch",
-              "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-              "sha": os.environ.get("GITHUB_SHA"),
-              "on_disk_wav": on_disk_wav,
-              "on_disk_mp3": on_disk_mp3,
-              "player_on_disk": player,
-              "lander_loads_player": loaded,
-              "apex_wav": {k: apex.get(k) for k in ("status", "ctype", "bytes", "error")},
-              "apex_mp3": {k: mp3.get(k) for k in ("status", "ctype", "bytes", "error")},
-              "verdict": "LIVE" if wav_ok and loaded else "HOLE",
-              "law": "TTS is a mute-guard. TTS is not success. Patch through publisher.clerk on-drop.",
-          }
-          print(json.dumps(card, indent=2))
-          if card["verdict"] != "LIVE":
-              print("WATCH: WAV HOLE — ticket L-WAV stays CRITICAL")
+              with wave.open(str(wav_path), "rb") as audio:
+                  if audio.getnframes() <= 0 or audio.getframerate() <= 0:
+                      raise ValueError("WAV contains no playable frames")
+          except Exception as exc:
+              print(f"FAIL: WAV validation failed: {type(exc).__name__}: {exc}")
+              sys.exit(1)
+
+          html = Path("index.html").read_text(encoding="utf-8")
+          player = Path("js/iris-wav.js").read_text(encoding="utf-8")
+          if "iris-wav.js" not in html:
+              print("FAIL: index.html does not load js/iris-wav.js")
+              sys.exit(1)
+          if "iris-greet.wav" not in player and "iris-greet.mp3" not in player:
+              print("FAIL: player does not reference either greeting asset")
+              sys.exit(1)
+
+          print("PASS: required greeting files exist, WAV parses, and player is wired.")
+          print("NOTE: this is repository validation only; it makes no production claim.")
           PY
