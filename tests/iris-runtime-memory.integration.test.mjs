@@ -122,6 +122,35 @@ test("runtime authorizes, persists, looks up, verifies, and infers using durable
   assert.equal(inferData.output.received_memory_context, true);
 });
 
+test("expired durable receipt replay is denied by authorization", async () => {
+  const env = integratedEnv();
+  const body = {
+    request_id: "integration-expired-replay",
+    principal: { unity_id: "unity-integration" },
+    action: "iris.turn.look",
+    text: "expired replay",
+  };
+  const first = await signedPost(env, "/v1/authorize", body);
+  assert.equal(first.status, 200);
+  const underlying = env.IRIS_MEMORY;
+  env.IRIS_MEMORY = {
+    fetch: async (url, init) => {
+      const response = await underlying.fetch(url, init);
+      if (new URL(url).pathname !== "/v1/requests/claim" || !response.ok) return response;
+      const data = await response.json();
+      if (data.replay === true && data.receipt) {
+        data.receipt.issued_at = new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString();
+      }
+      return new Response(JSON.stringify(data), { status: response.status, headers: { "content-type": "application/json" } });
+    },
+  };
+  const replay = await signedPost(env, "/v1/authorize", body);
+  const result = await replay.json();
+  assert.equal(replay.status, 403);
+  assert.equal(result.authorized, false);
+  assert.equal(result.reason, "receipt-expired");
+});
+
 test("runtime denies when durable memory service authentication is misconfigured", async () => {
   const env = integratedEnv();
   env.IRIS_MEMORY_SERVICE_TOKEN = "wrong-token";
