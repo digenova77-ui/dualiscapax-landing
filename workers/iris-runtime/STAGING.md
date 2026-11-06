@@ -91,6 +91,71 @@ Must pass:
 - Receipt verification (id + sha256 present on allow)
 - Production client path does not require a browser secret
 
+## Server-side signing proxy contract (not yet wired to Pages)
+
+`workers/iris-runtime/signing-proxy.mjs` implements the same-origin authorization
+adapter. It is deliberately not attached to Pages or deployed by this PR. It
+requires all three server-side configuration values:
+
+- `IRIS_SESSION_VERIFIER`: service binding whose `POST https://iris-session/api/session/verify`
+  endpoint accepts `{ "session_token": "<tab-token>" }` and returns
+  `{ "valid": true, "unity_id": "<verified-id>" }` (or `authenticated: true`) only for a valid session.
+- `IRIS_RUNTIME`: service binding to the governed runtime Worker.
+- `TRINITY_HMAC_SECRET`: Worker secret shared with that runtime.
+
+The browser client forwards the existing tab-scoped `uf_session_token` as `x-iris-session-token` only to the validated same-origin endpoint; the proxy passes it to the verifier in the established JSON body contract. The proxy requires an exact same-origin `Origin`, rejects absent sessions, derives
+the Unity principal from the verifier response (never from browser-supplied identity),
+recomputes the text digest, drops unrecognized request fields, signs the canonical
+body server-side, and forwards only to the runtime binding. Missing bindings fail
+closed. Regression tests use explicit fake bindings and do not establish that a
+real session-verifier service exists.
+
+**Release blocker:** before connecting this adapter to Pages, implement/identify the
+real session verifier, map the actual Cloudflare service bindings, deploy to isolated
+staging, and prove a real signed-in session can authorize while unsigned, expired,
+cross-origin, and mismatched-identity requests fail. Do not point production Pages
+at fixture services or the staging runtime.
+
+## Request-size and authorization-origin guards
+
+The runtime reads request JSON through a bounded stream reader and rejects bodies
+larger than 64 KiB before parsing on authorization, inference, receipt verification,
+and revocation routes.
+
+The browser production authorization client rejects cross-origin `IrisAuthorizeBase`
+values and requires HTTPS except for localhost development. This is a client-side
+destination guard, **not** a server-side signer or session-authentication implementation.
+The Pages endpoint at the configured same-origin path must still verify the user's
+authenticated session, derive the Unity identity from that session, sign server-side,
+and route to the governed runtime. Do not enable production inference until that
+server-side integration is implemented and verified against real identity services.
+
+## Browser CORS boundary
+
+Cross-origin browser access is disabled unless an operator configures the
+`IRIS_ALLOWED_ORIGINS` Worker variable as a comma-separated list of exact
+origins (scheme, host, and port only; no wildcard). Configure only the approved
+staging frontend origin(s). An absent allowlist means no cross-origin browser
+access. Same-origin production calls do not need CORS permission.
+
+## Operational diagnostics
+
+The runtime's `/v1/metrics` and `/v1/audit` endpoints are disabled by default.
+They can reveal request identifiers and policy outcomes, so they require a dedicated
+server-side Worker secret:
+
+```bash
+cd workers/iris-runtime
+npx wrangler secret put IRIS_DIAGNOSTICS_TOKEN --env staging
+```
+
+Use a fresh random value distinct from `TRINITY_HMAC_SECRET` and
+`IRIS_MEMORY_SERVICE_TOKEN`. Send it only from a trusted operator-side client
+as `Authorization: Bearer <token>`. Never embed it in browser code or commit it.
+If the secret is absent, the endpoints return 404; missing or incorrect credentials
+return 401. Metrics are still isolate-local counters, not durable or globally
+aggregated telemetry.
+
 ## Durable claim and receipt contract (required for staging)
 
 The Identity and Trinity service response contracts are also strict:

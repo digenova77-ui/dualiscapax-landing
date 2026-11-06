@@ -38,6 +38,7 @@ function envWith(model) {
     MODEL_PROVIDER: model || { fetch: async () => new Response(JSON.stringify({ ok: true }), { status: 200 }) },
     TRINITY_HMAC_SECRET: "test-secret",
     IRIS_MEMORY_SERVICE_TOKEN: "test-memory-token",
+    IRIS_DIAGNOSTICS_TOKEN: "test-diagnostics-token",
   };
 }
 async function sign(body, secret = "test-secret", path = "/v1/authorize") {
@@ -56,6 +57,28 @@ async function post(path, body, env, headers = {}) {
   }), env);
 }
 const base = { principal: { unity_id: "test-unity" } };
+
+test("CORS reflects only an explicitly configured origin", async () => {
+  const env = envWith();
+  env.IRIS_ALLOWED_ORIGINS = "https://iris-staging.example.test, https://dualiscapax.com";
+  const allowed = await worker.fetch(new Request("https://staging.test/health", {
+    headers: { origin: "https://dualiscapax.com" },
+  }), env);
+  assert.equal(allowed.headers.get("access-control-allow-origin"), "https://dualiscapax.com");
+
+  const denied = await worker.fetch(new Request("https://staging.test/health", {
+    headers: { origin: "https://attacker.example" },
+  }), env);
+  assert.equal(denied.headers.get("access-control-allow-origin"), null);
+});
+
+test("CORS is disabled when no allowed origins are configured", async () => {
+  const env = envWith();
+  const response = await worker.fetch(new Request("https://staging.test/health", {
+    headers: { origin: "https://dualiscapax.com" },
+  }), env);
+  assert.equal(response.headers.get("access-control-allow-origin"), null);
+});
 
 test("1. non-JSON content type is 415", async () => {
   const res = await worker.fetch(new Request("https://staging.test/v1/authorize", {
@@ -112,7 +135,7 @@ test("7. revoked receipt cannot infer", async () => {
 test("8. metrics expose allow and model counts", async () => {
   const env = envWith();
   await post("/v1/authorize", { ...base, request_id: "met-40", text: "hello" }, env);
-  const res = await worker.fetch(new Request("https://staging.test/v1/metrics"), env);
+  const res = await worker.fetch(new Request("https://staging.test/v1/metrics", { headers: { authorization: "Bearer " + env.IRIS_DIAGNOSTICS_TOKEN } }), env);
   const data = await res.json();
   assert.ok(data.allow >= 1);
   assert.equal(typeof data.model, "number");
@@ -131,7 +154,7 @@ test("10. revoke is recorded in metrics", async () => {
   const issued = await post("/v1/authorize", { ...base, request_id: "rec-40", text: "hello" }, env);
   const auth = await issued.json();
   await post("/v1/receipt/revoke", { id: auth.receipt.id }, env);
-  const metrics = await (await worker.fetch(new Request("https://staging.test/v1/metrics"), env)).json();
+  const metrics = await (await worker.fetch(new Request("https://staging.test/v1/metrics", { headers: { authorization: "Bearer " + env.IRIS_DIAGNOSTICS_TOKEN } }), env)).json();
   assert.ok(metrics.revoke >= 1);
 });
 
