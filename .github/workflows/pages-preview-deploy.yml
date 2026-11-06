@@ -1,0 +1,68 @@
+name: Pages preview deploy
+
+# Explicit preview rail only. This workflow never targets production branch or DNS.
+# Run manually from a non-main branch after this workflow is merged to main.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-preview-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Refuse production branch
+        run: |
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            echo "Refusing to deploy a preview from main."
+            exit 1
+          fi
+          echo "Preview branch: $GITHUB_REF_NAME"
+
+      - name: Check edge routes
+        run: python3 scripts/check_edge_routes.py
+
+      - name: Unit tests
+        run: python3 scripts/test_omni_match.py -q
+
+      - name: Package and validate
+        run: |
+          python3 scripts/pack_hierarchical_flat_zip.py --lander --check
+          python3 scripts/pack_hierarchical_flat_zip.py --lander
+
+      - name: Cloudflare token preflight
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: ./scripts/cf_token_preflight.sh
+
+      - name: Deploy to Pages preview branch
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -eu
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          rm -rf /tmp/pages-out
+          mkdir -p /tmp/pages-out
+          unzip -q dist/cloudflare/lander-*.zip -d /tmp/pages-out
+          npx --yes wrangler pages deploy /tmp/pages-out \
+            --project-name=dualiscapax-landing \
+            --branch="$GITHUB_REF_NAME" \
+            --commit-dirty=true
+
+      - name: Explain verification boundary
+        run: |
+          echo "Preview deployment was requested for branch: $GITHUB_REF_NAME"
+          echo "This job does not change production DNS or promote the preview."
+          echo "Verify the reported Pages preview URL and routes before any promotion."
