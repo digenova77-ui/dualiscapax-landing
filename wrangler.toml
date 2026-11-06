@@ -2,8 +2,12 @@ name = "dualiscapax-landing"
 pages_build_output_dir = "."
 compatibility_date = "2026-09-04"
 
-# Apex owner: Cloudflare Pages project dualiscapax-landing (bound to dualiscapax.ai).
+# Canonical apex: dualiscapax.com, served by this Cloudflare Pages project.
+# dualiscapax.ai chains to the canonical apex with a permanent redirect
+# (zone Redirect Rule; see docs/ops/CLOUDFLARE-REDIRECT-AI-TO-COM.md).
 # Production rail: wrangler pages deploy of the lander package.
+# Single rail: GitHub Pages is retired (.github/workflows/deploy.yml) and
+# this repository carries no CNAME file and no second serving claim.
 # [previews] is Workers Builds only. Pages rejects it. Do not add it here.
 
 # Secrets (set via wrangler secret put or dashboard):

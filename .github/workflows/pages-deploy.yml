@@ -52,7 +52,16 @@ jobs:
             --commit-dirty=true
 
       - name: Verify routes
-        run: ./scripts/verify_live_routes.sh https://dualiscapax.ai
+        run: ./scripts/verify_live_routes.sh https://dualiscapax.com
 
       - name: Live omni match
-        run: ./scripts/verify_omni_match.sh https://dualiscapax.ai
+        run: ./scripts/verify_omni_match.sh https://dualiscapax.com
+
+      - name: Verify .ai chains to the canonical apex
+        run: |
+          result=$(curl -sS -o /dev/null -w '%{http_code} %{redirect_url}' --max-redirs 0 https://dualiscapax.ai/)
+          echo "dualiscapax.ai -> $result"
+          case "$result" in
+            "301 https://dualiscapax.com/"*) ;;
+            *) echo "::error::dualiscapax.ai does not return 301 to https://dualiscapax.com"; exit 1 ;;
+          esac
