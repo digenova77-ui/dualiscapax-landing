@@ -38,8 +38,22 @@
   async function authorizeProduction(body) {
     var base = (w.IrisAuthorizeBase || "").replace(/\/$/, "");
     if (!base) throw new Error("authorize-base-unavailable");
-    var url = base + "/v1/authorize";
-    var res = await fetch(url, {
+    if (!w.location || !w.location.href) throw new Error("authorize-origin-unavailable");
+
+    var pageUrl;
+    var targetUrl;
+    try {
+      pageUrl = new URL(w.location.href);
+      targetUrl = new URL(base + "/v1/authorize", pageUrl);
+    } catch (e) {
+      throw new Error("authorize-base-invalid");
+    }
+    if (targetUrl.origin !== pageUrl.origin) throw new Error("authorize-cross-origin-denied");
+    if (targetUrl.protocol !== "https:" && targetUrl.hostname !== "localhost" && targetUrl.hostname !== "127.0.0.1") {
+      throw new Error("authorize-insecure-origin-denied");
+    }
+
+    var res = await fetch(targetUrl.href, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(body),
