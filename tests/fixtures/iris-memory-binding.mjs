@@ -36,8 +36,34 @@ export function memoryBinding() {
       if (path === "/v1/requests/get") {
         const record = records.get(body.request_id);
         return new Response(JSON.stringify(record
-          ? { ok: true, found: true, receipt: record.receipt }
+          ? { ok: true, found: true, receipt: record.receipt, revoked: record.revoked === true, principal: record.principal, action: record.action, input_sha256: record.input_sha256 }
           : { ok: true, found: false }), { status: 200 });
+      }
+      if (path.startsWith("/v1/inference/")) {
+        const record = records.get(body.request_id);
+        if (!record || record.revoked === true || record.principal !== body.principal || record.input_sha256 !== body.input_sha256) {
+          return new Response(JSON.stringify({ ok: false, reason: "receipt-mismatch" }), { status: 403 });
+        }
+        if (path === "/v1/inference/begin") {
+          if (!record.inference) {
+            record.inference = { state: "RUNNING", attempt_count: 1 };
+            return new Response(JSON.stringify({ ok: true, state: "RUNNING", claimed: true, attempt_count: 1 }), { status: 200 });
+          }
+          if (record.inference.state === "SUCCEEDED") {
+            return new Response(JSON.stringify({ ok: true, state: "SUCCEEDED", replay: true, output: record.inference.output }), { status: 200 });
+          }
+          const state = record.inference.state;
+          return new Response(JSON.stringify({ ok: false, state, reason: state === "UNKNOWN" ? "inference-outcome-unknown" : "inference-already-running" }), { status: 409 });
+        }
+        if (!record.inference) return new Response(JSON.stringify({ ok: false, reason: "inference-not-started" }), { status: 409 });
+        if (path === "/v1/inference/complete") {
+          if (record.inference.state === "SUCCEEDED") return new Response(JSON.stringify({ ok: true, state: "SUCCEEDED", output: record.inference.output }), { status: 200 });
+          if (record.inference.state !== "RUNNING") return new Response(JSON.stringify({ ok: false, reason: "inference-terminal", state: record.inference.state }), { status: 409 });
+          record.inference = { ...record.inference, state: "SUCCEEDED", output: body.output };
+          return new Response(JSON.stringify({ ok: true, state: "SUCCEEDED", output: record.inference.output }), { status: 200 });
+        }
+        record.inference = { ...record.inference, state: "UNKNOWN" };
+        return new Response(JSON.stringify({ ok: true, state: "UNKNOWN" }), { status: 200 });
       }
       if (path === "/v1/context/read") {
         const items = Array.from(records.values()).filter((record) => record.principal === body.principal && record.request_id !== body.request_id).sort((a, b) => String(b.claimed_at).localeCompare(String(a.claimed_at))).slice(0, Math.min(10, Math.max(1, Number(body.limit) || 5))).map((record) => ({ request_id: record.request_id, action: record.action, input_sha256: record.input_sha256, receipt_id: record.receipt.id, claimed_at: record.claimed_at }));

@@ -361,14 +361,58 @@ export default {
       if (digest !== body.receipt.sha256.toLowerCase()) {
         return json(403, { ok: false, reason: "sha256-mismatch" });
       }
+      // Paid/depth actions remain closed until a canonical server-side Fuel
+      // reservation API is configured. A browser balance is never authority.
+      if (GATED_ACTIONS.has(stored.action)) {
+        return json(503, { ok: false, reason: "fuel-ledger-unavailable", request_id: body.receipt.request_id });
+      }
+
       const context = await readMemoryContext(env, stored.unity_id, body.receipt.request_id);
       if (!context.ok) return json(503, { ok: false, reason: context.reason });
+
+      // Cross-isolate, durable one-attempt claim. A prior success returns the
+      // persisted result; RUNNING/UNKNOWN never triggers a second provider call.
+      const executionArgs = {
+        request_id: body.receipt.request_id,
+        principal: stored.unity_id,
+        input_sha256: digest,
+      };
+      const begun = await callBinding(env.IRIS_MEMORY, "/v1/inference/begin", executionArgs,
+        env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
+      if (!begun.ok || !begun.data || begun.data.ok !== true) {
+        return json(begun.status === 409 ? 409 : 503, {
+          ok: false, reason: (begun.data && begun.data.reason) || begun.reason || "inference-claim-unavailable",
+          state: begun.data && begun.data.state,
+        });
+      }
+      if (begun.data.state === "SUCCEEDED") {
+        return json(200, { ok: true, receipt: body.receipt, output: begun.data.output, replay: true });
+      }
+      if (begun.data.claimed !== true || begun.data.state !== "RUNNING") {
+        return json(409, { ok: false, reason: "inference-not-claimable", state: begun.data.state });
+      }
+
       metrics.model += 1;
       const model = await callBinding(env.MODEL_PROVIDER, "/complete", { receipt: body.receipt, text: body.text || "", memory_context: context.items });
       if (!model.ok) {
-        return json(502, { ok: false, reason: model.reason || "model-denied" });
+        // Provider outcome can be ambiguous (for example, timeout after accept).
+        // Persist UNKNOWN and do not auto-retry or release any future reservation.
+        await callBinding(env.IRIS_MEMORY, "/v1/inference/unknown", executionArgs,
+          env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
+        return json(502, { ok: false, reason: model.reason || "model-outcome-unknown", state: "UNKNOWN" });
       }
-      return json(200, { ok: true, receipt: body.receipt, output: model.data || null });
+
+      const completed = await callBinding(env.IRIS_MEMORY, "/v1/inference/complete",
+        { ...executionArgs, output: model.data || null }, env.IRIS_BINDING_TIMEOUT_MS,
+        { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
+      if (!completed.ok || !completed.data || completed.data.ok !== true || completed.data.state !== "SUCCEEDED") {
+        // Mark an unresolved attempt UNKNOWN where possible; this endpoint never
+        // downgrades a durable SUCCEEDED result. Never re-call the provider.
+        await callBinding(env.IRIS_MEMORY, "/v1/inference/unknown", executionArgs,
+          env.IRIS_BINDING_TIMEOUT_MS, { authorization: "Bearer " + env.IRIS_MEMORY_SERVICE_TOKEN });
+        return json(503, { ok: false, reason: "inference-result-persistence-unconfirmed", state: "UNKNOWN" });
+      }
+      return json(200, { ok: true, receipt: body.receipt, output: completed.data.output });
     }
 
     if (url.pathname === "/v1/receipt/verify" && request.method === "POST") {
