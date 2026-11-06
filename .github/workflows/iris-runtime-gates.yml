@@ -1,0 +1,29 @@
+name: Iris Runtime Fail-Closed Tests
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "workers/iris-runtime/**"
+      - ".github/workflows/iris-runtime-gates.yml"
+  push:
+    branches: ["main", "test/**"]
+    paths:
+      - "workers/iris-runtime/**"
+      - ".github/workflows/iris-runtime-gates.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test fail-closed authorization and inference contracts
+        run: node --test workers/iris-runtime/worker.test.mjs workers/iris-runtime/staging-url.test.mjs
