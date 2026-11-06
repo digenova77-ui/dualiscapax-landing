@@ -4,66 +4,68 @@
 
 ## Runtime
 
-The repository's `wrangler.toml` declares `pages_build_output_dir = "."`. The root `_worker.js` is the Cloudflare Pages Advanced Mode request handler; its `env.ASSETS` binding must be provided by the Pages runtime. The separate `dualiscapax-hud/workers/iris-bridge.js` file is not automatically executed by Pages just because it exists in GitHub.
+The repository's root `wrangler.toml` declares `pages_build_output_dir = "."`. The root `_worker.js` is the Cloudflare Pages Advanced Mode request handler; its `env.ASSETS` binding is provided by the Pages runtime. A separate Worker build must not assume that a Pages configuration is a standalone Workers Preview configuration.
 
-The root Pages worker now explicitly routes:
-- `/holographic-core/v2`, `/holographic-core/v2/`, and `/holographic-core/v2/index.html` to the HUD HTML source.
-- `/assets/holographic-hostess-40/hostess.svg` to the HUD asset.
-- `/iris/status` and `/iris/status.json` to a content-free Pages runtime status.
-- Other requests, including `/`, to the existing Pages asset binding.
-
-The HUD HTML route fetches the current HUD repository's raw GitHub source at request time. A failed upstream fetch returns 502 rather than a fabricated success. This is an initial route bridge, not a claim that the full Iris backend, speech, camera, API, or durable refusal ledger is live.
+The HUD HTML route fetches the current HUD repository's raw GitHub source at request time. A failed upstream fetch returns 502 rather than a fabricated success. This is a route bridge, not proof that the full Iris backend, speech, camera, API, or durable refusal ledger is live.
 
 ## Build the upload package
 
-Run from the landing repository checkout, on the branch/commit you intend to publish:
+Run from the landing repository checkout, on the branch/commit intended for review:
 
 ```sh
 python3 scripts/pack_hierarchical_flat_zip.py --lander --check
 python3 scripts/pack_hierarchical_flat_zip.py --lander
 ```
 
-The packer:
-- Uses only Git-tracked regular files, not untracked local files.
-- Preserves website-relative paths and puts `_worker.js`, `wrangler.toml`, and `index.html` at the ZIP root.
-- Excludes repository-control and engineering-only paths (`.github/`, `docs/`, `scripts/`), plus common credential/private-key names; these must never be part of the public Pages payload.
-- The package validator fails if any excluded internal path appears in the archive.
-- Excludes common credential/private-key names and local dependency/cache directories.
-- Checks for required files, duplicate archive paths, and ZIP CRC errors.
-- Writes `dist/cloudflare/lander-<commit>.zip` and a matching `.sha256` sidecar.
-- Does not upload or deploy anything.
+The packer uses Git-tracked regular files, preserves website-relative paths, puts `_worker.js`, `wrangler.toml`, and `index.html` at the ZIP root, excludes repository-control/engineering paths and common credential/private-key names, checks required files, duplicate paths and ZIP CRC, and writes `dist/cloudflare/lander-<commit>.zip` plus a SHA-256 sidecar. It does not upload or deploy anything.
 
-Check the printed commit and SHA-256 before using the archive. The output ZIP is built from the Git-tracked checkout, so commit any intended changes before packaging.
+## Cloudflare project type and preview command
+
+There are two different Cloudflare deployment products; do not conflate their preview commands.
+
+- **Cloudflare Pages** uses `pages_build_output_dir = "."` and the Pages publishing command `wrangler pages deploy <directory> --project-name=dualiscapax-landing`. The repository's `.github/workflows/pages-deploy.yml` uses this path.
+- **Cloudflare Workers Builds Preview** invokes `npx wrangler preview` and requires a Workers `previews` configuration block. Preview bindings should use isolated/staging resources, especially for Durable Objects. Do not add a Workers `[previews]` block to this Pages configuration as a blind fix.
+
+### Observed failure — 2026-10-25
+
+Cloudflare's connected build log ran `npx wrangler preview` and failed with:
+
+```text
+Your Wrangler configuration needs a `previews` block to run this command.
+```
+
+The same log warned that the Worker uses Durable Objects and they are not included in the suggested Preview configuration. The checked-in root `wrangler.toml` has `pages_build_output_dir = "."`, two Durable Object bindings, and a comment explicitly warning against adding `[previews]` because Pages rejects it. Therefore this is a **Cloudflare project/build-setting mismatch to resolve**, not a reason to alter the Pages config blindly.
+
+Dashboard-side resolution:
+1. Open **Workers & Pages** and select the project associated with the failed build.
+2. Confirm whether the failing project is a **Pages project** or a **Worker connected to Workers Builds**.
+3. If the project is intended to publish the Pages site, stop the Worker Preview command for that Pages project and use the Pages deploy/publish rail instead.
+4. If a standalone Worker Preview is intentionally required, give it a separate Worker-specific Wrangler configuration with a real entry point and Preview-safe bindings/resources; do not point its preview at production resources.
+5. Re-run a preview and capture its URL, commit, build result, and route probes before calling it passed.
+
+The dashboard settings are not editable through the repository's connected GitHub tool. No dashboard setting, DNS, secret, or production deployment is changed by this document.
 
 ## Manual Cloudflare Pages upload
 
-1. Sign in to the Cloudflare dashboard and open **Workers & Pages → dualiscapax-web** (confirm this is the project actually bound to `dualiscapax.ai` before continuing).
-2. Use a **preview/staging deployment** first if the project provides one. Upload the exact `dist/cloudflare/lander-<commit>.zip` package using the Pages upload/deployment interface.
-3. Confirm the deployed preview serves `/` and existing routes correctly, then check:
-   - `/iris/status` returns JSON with `runtime: cloudflare-pages-advanced-mode`.
-   - `/holographic-core/v2` returns the HUD page and response header `x-dc-iris: pages-bridge`.
-   - `/assets/holographic-hostess-40/hostess.svg` returns SVG.
-   - An unavailable upstream returns an explicit 502; it must not be treated as an accepted/healthy Iris state.
-4. Check the Pages deployment logs and any standalone Worker routes for overlap. The independent Worker must not intercept the same paths unexpectedly.
-5. Do not promote the preview to production or change DNS unless David explicitly approves that production cutover.
+1. Open the Pages project actually bound to `dualiscapax.ai` and confirm its identity before continuing.
+2. Use a preview/staging deployment first if available. Upload the exact `dist/cloudflare/lander-<commit>.zip` package using the Pages interface.
+3. Verify the preview serves `/` and existing routes, including `/iris/status`, `/holographic-core/v2`, and `/assets/holographic-hostess-40/hostess.svg`.
+4. Check deployment logs and independent Worker routes for overlap. A failed upstream fetch returning 502 must not be treated as a healthy Iris state.
+5. Do not promote a preview to production or change DNS without explicit approval.
 
-## Rollback
+## Rollback and truth boundary
 
-Keep the previous successful Pages deployment available in the Cloudflare deployment history. If the preview fails any existing route or the checks above, do not promote it. Use Cloudflare's previous deployment rollback mechanism rather than improvising DNS changes.
+Keep the previous successful Pages deployment available. If a preview fails, do not promote it; use Cloudflare's prior deployment rollback mechanism rather than improvising DNS changes.
 
-## Truth boundary
+A source commit or generated ZIP is not a deployment. A successful Pages deployment is not proof that every Iris capability works. Record the actual deployment URL, commit SHA, route checks, and failure responses before reporting a live pass.
 
-A source commit or locally generated ZIP is not a deployment. A successful Pages deployment is not proof that every Iris capability works. Record the actual deployment URL, commit, checks, and failure responses before reporting a live pass.
+## Current rails
 
-## Current rails (Unity floor, Trinity preserved)
+- **Apex owner:** Cloudflare Pages project bound to `dualiscapax.ai`; manual ZIP is the documented fallback/publishing path.
+- **Root `wrangler.toml`:** Pages configuration; it currently has no `[previews]` block. Do not claim that block is present or that the Workers Preview build is fixed.
+- **Pages handler:** root `_worker.js` (Advanced Mode); apex `/` falls through to Pages assets.
+- **Depth/API Workers:** standalone Workers remain separate source/deployment surfaces. A file existing in GitHub does not mean it is deployed.
+- **GitHub Actions:** `.github/workflows/pages-deploy.yml` defines a Pages deployment workflow with route checks, but its existence alone does not prove it has run successfully or that the public apex reflects its output.
+- **Safety boundary:** dashboard token, project type, and project connection settings require operator access. Do not change production DNS or promote an unverified build.
 
-As of 2026-10-17:
-
-- **Apex owner:** Cloudflare Pages project bound to `dualiscapax.ai`. Preferred publish path is the manual ZIP produced by `package-cloudflare-pages` (or local `pack_hierarchical_flat_zip.py`). Git-connected Workers Builds on `dualiscapax-landing` / `dualiscapax-depth` have been observed failing (missing `previews` block resolved in root `wrangler.toml`; stale/rolled build token remains a dashboard-only repair). Automatic Git builds are not the production rail.
-- **Root `wrangler.toml`:** `name = "dualiscapax-web"`, `pages_build_output_dir = "."`, empty `[previews]` block present so `npx wrangler preview` can run if Builds is retained.
-- **Pages handler:** root `_worker.js` (Advanced Mode) owns route bridge for HUD paths and `/iris/status`. Apex `/` stays on Pages assets.
-- **Depth / API workers:** Standalone Workers (previously under `server/` or `workers/`) are source-only. Auto-deploy workflow `workers-live.yml` is retired. Operator deploys with local `wrangler` when seated. `dualiscapax-depth.digenova77.workers.dev` currently returns 404.
-- **GitHub Actions:** Majority of historical workflows are `disabled_manually`. Active ones include packaging (artifact only, not deploy), deterministic checks, and smoke tests. They do not promote to the live apex.
-- **Unification rule:** Nothing is deleted; existing surfaces are transformed or parked. Unity remains the sole framework identity. Trinity, Climate, and prior content are preserved underneath. Dashboard token and project disconnect/reconnect actions stay operator-seated; this repository records the source of truth and the preferred manual path.
-
-A push to `main` is not a live overwrite. Record the actual Pages deployment, commit SHA, and route checks before any claim of production currency.
+A push to `main` is not proof of live deployment. Record the actual Pages deployment, commit SHA, and route checks before claiming production currency.
