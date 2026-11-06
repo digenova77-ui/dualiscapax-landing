@@ -72,18 +72,32 @@ function getJson(url) {
   });
 }
 
+function responseDiagnostics(result) {
+  const data = result && result.data;
+  const diagnostics = { http_status: result && result.status ? result.status : null };
+  if (data && typeof data === "object") {
+    for (const key of ["ok", "authorized", "decision", "reason", "error", "message", "missing", "inert", "staging"]) {
+      if (data[key] !== undefined) diagnostics[key] = data[key];
+    }
+  } else if (result && typeof result.text === "string" && result.text) {
+    // Keep diagnostics small and avoid dumping arbitrary upstream response bodies.
+    diagnostics.response_preview = result.text.slice(0, 180).replace(/[\r\n\t]+/g, " ");
+  }
+  return diagnostics;
+}
+
 export function checkHealth(result) {
   const missing = result && result.data && result.data.missing;
   const inert = result && result.data && result.data.inert;
   const missingOk = Array.isArray(missing) && missing.length === 0;
   const inertOk = !Array.isArray(inert) || inert.length === 0;
   const ok = result && result.status === 200 && result.data && result.data.ok === true && missingOk && inertOk;
-  return { ok, missing: missing || null, inert: inert || null, reason: ok ? null : "health-not-ok" };
+  return { ok, missing: missing || null, inert: inert || null, ...responseDiagnostics(result), reason: ok ? null : "health-not-ok" };
 }
 
 export function checkDeny(result) {
   const ok = result && result.data && result.data.authorized === false;
-  return { ok, reason: ok ? null : "deny-not-fail-closed" };
+  return { ok, ...responseDiagnostics(result), reason: ok ? null : "deny-not-fail-closed" };
 }
 
 export function checkInference(result, expectedReceipt) {
@@ -94,7 +108,7 @@ export function checkInference(result, expectedReceipt) {
     data.receipt.request_id === expectedReceipt.request_id &&
     data.output && typeof data.output === "object"
   );
-  return { ok, provider_output: data && data.output ? data.output : null, reason: ok ? null : "inference-contract-invalid" };
+  return { ok, ...responseDiagnostics(result), provider_output: data && data.output ? data.output : null, reason: ok ? null : "inference-contract-invalid" };
 }
 
 export function checkReceiptVerify(result, expectedReceipt) {
@@ -104,7 +118,7 @@ export function checkReceiptVerify(result, expectedReceipt) {
     data.contract === RECEIPT_CONTRACT && expectedReceipt &&
     data.id === expectedReceipt.id
   );
-  return { ok, reason: ok ? null : "receipt-verification-failed" };
+  return { ok, ...responseDiagnostics(result), reason: ok ? null : "receipt-verification-failed" };
 }
 
 export function checkAllow(result, expectedUnityId) {
@@ -125,7 +139,7 @@ export function checkAllow(result, expectedUnityId) {
     typeof receipt.sha256 === "string" &&
     SHA256_RE.test(receipt.sha256)
   );
-  return { ok, receipt: receipt || null, reason: ok ? null : "allow-receipt-invalid" };
+  return { ok, ...responseDiagnostics(result), receipt: receipt || null, reason: ok ? null : "allow-receipt-invalid" };
 }
 
 export async function verifyLive(base, signingSecret, unityId) {
@@ -133,7 +147,15 @@ export async function verifyLive(base, signingSecret, unityId) {
   if (!isValidIrisStagingUrl(base)) throw new Error("IRIS_STAGING_URL must be the exact HTTPS iris-runtime-staging workers.dev origin");
   if (!signingSecret) throw new Error("IRIS_STAGING_SIGNING_SECRET is required; secret is never printed");
   if (!unityId || !unityId.trim()) throw new Error("IRIS_STAGING_UNITY_ID is required; refusing to invent an identity");
-  const health = checkHealth(await getJson(join(base, "/health")));
+  let healthResponse;
+  // Cloudflare edge propagation can lag a successful Worker deploy. Retry briefly
+  // before declaring health unavailable, while preserving the final response details.
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    healthResponse = await getJson(join(base, "/health"));
+    if (checkHealth(healthResponse).ok || attempt === 4) break;
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+  }
+  const health = checkHealth(healthResponse);
   const deny = checkDeny(await postJson(join(base, "/v1/authorize"), {
     request_id: "deny-" + Date.now().toString(36),
     principal: { unity_id: unityId },
