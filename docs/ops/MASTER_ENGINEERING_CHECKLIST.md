@@ -88,3 +88,12 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Deployment status — 2026-10-17
 
 Source changes are not a deployment. No Cloudflare dashboard credentials or direct deployment tool were available in this work session. Do not mark live deployment as PASS until the manual staging upload, route checks, and rollback target have been recorded. Do not change DNS or touch live servers/databases as part of this recovery.
+
+## Remove deleted depth Worker residue — 2026-10-17
+
+Branch `fix/remove-depth-residue-20261017`. The Worker `dualiscapax-depth` was deleted by David on 2026-10-17 (workers.dev now returns HTTP 404, error code 1042).
+- [x] Live NJ impact — PASS (none found): .com and .ai return 404 for `js/api-config.js` and `js/api-world.js`. The 7 referencing pages are not served on NJ (308/503). The live home pages and their scripts reference no workers.dev host.
+- [x] Removed the default API host from `js/api-config.js` and `js/api-world.js`, and removed its entry from `data/geo-hosts.json`. With no `DC_API_BASE` set, calls return `NO_API_BASE` without any network request (tested in Node with fetch stubbed to throw).
+- [ ] Repoint to an NJ API — NOT APPLICABLE: no equivalent NJ endpoint verified (`dualiscapax.ai/api/health` 404).
+- [ ] Restore the Worker — BLOCKED on David's decision and a valid token. Source recovered from git `7d4d67ce5^:server/` (repo version of 2026-08-31; may differ from what was deployed).
+- Rollback: revert this branch.
