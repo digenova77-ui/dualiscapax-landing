@@ -45,7 +45,7 @@ Check the printed commit and SHA-256 before using the archive. The output ZIP is
    - `/assets/holographic-hostess-40/hostess.svg` returns SVG.
    - An unavailable upstream returns an explicit 502; it must not be treated as an accepted/healthy Iris state.
 4. Check the Pages deployment logs and any standalone Worker routes for overlap. The independent Worker must not intercept the same paths unexpectedly.
-5. Do not promote the preview to production or change DNS unless David explicitly approves that production cutover.
+5. Do not promote the preview to production or change DNS unless the project maintainer explicitly approves that production cutover.
 
 ## Rollback
 
@@ -55,15 +55,15 @@ Keep the previous successful Pages deployment available in the Cloudflare deploy
 
 A source commit or locally generated ZIP is not a deployment. A successful Pages deployment is not proof that every Iris capability works. Record the actual deployment URL, commit, checks, and failure responses before reporting a live pass.
 
-## Current rails (Unity floor, Trinity preserved)
+## Current publishing paths (Unity floor, Trinity preserved)
 
 As of 2026-10-17:
 
-- **Apex owner:** Cloudflare Pages project bound to `dualiscapax.ai`. Preferred publish path is the manual ZIP produced by `package-cloudflare-pages` (or local `pack_hierarchical_flat_zip.py`). Git-connected Workers Builds on `dualiscapax-landing` / `dualiscapax-depth` have been observed failing (missing `previews` block resolved in root `wrangler.toml`; stale/rolled build token remains a dashboard-only repair). Automatic Git builds are not the production rail.
+- **Apex owner:** Cloudflare Pages project bound to `dualiscapax.ai`. Preferred publish path is the manual ZIP produced by `package-cloudflare-pages` (or local `pack_hierarchical_flat_zip.py`). Git-connected Workers Builds on `dualiscapax-landing` / `dualiscapax-depth` have been observed failing (missing `previews` block resolved in root `wrangler.toml`; stale/rolled build token remains a dashboard-only repair). Automatic Git builds are not the production publishing path.
 - **Root `wrangler.toml`:** `name = "dualiscapax-web"`, `pages_build_output_dir = "."`, empty `[previews]` block present so `npx wrangler preview` can run if Builds is retained.
 - **Pages handler:** root `_worker.js` (Advanced Mode) owns route bridge for HUD paths and `/iris/status`. Apex `/` stays on Pages assets.
-- **Depth / API workers:** Standalone Workers (previously under `server/` or `workers/`) are source-only. Auto-deploy workflow `workers-live.yml` is retired. Operator deploys with local `wrangler` when seated. `dualiscapax-depth.digenova77.workers.dev` currently returns 404.
+- **Depth / API workers:** Standalone Workers (previously under `server/` or `workers/`) are source-only. Auto-deploy workflow `workers-live.yml` is retired. An operator deploys manually with the local `wrangler` CLI. `dualiscapax-depth.digenova77.workers.dev` currently returns 404.
 - **GitHub Actions:** Majority of historical workflows are `disabled_manually`. Active ones include packaging (artifact only, not deploy), deterministic checks, and smoke tests. They do not promote to the live apex.
-- **Unification rule:** Nothing is deleted; existing surfaces are transformed or parked. Unity remains the sole framework identity. Trinity, Climate, and prior content are preserved underneath. Dashboard token and project disconnect/reconnect actions stay operator-seated; this repository records the source of truth and the preferred manual path.
+- **Unification rule:** Nothing is deleted; existing surfaces are transformed or parked. Unity remains the sole framework identity. Trinity, Climate, and prior content are preserved underneath. Dashboard token and project disconnect/reconnect actions remain manual operator actions; this repository records the source of truth and the preferred manual path.
 
 A push to `main` is not a live overwrite. Record the actual Pages deployment, commit SHA, and route checks before any claim of production currency.
