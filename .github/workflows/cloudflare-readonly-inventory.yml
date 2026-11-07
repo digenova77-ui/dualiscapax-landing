@@ -1,0 +1,146 @@
+name: Cloudflare Read-Only Inventory
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - ops/cloudflare-readonly-audit-20261023
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-readonly-inventory
+  cancel-in-progress: false
+
+jobs:
+  inventory:
+    name: Verify credential and inventory Cloudflare resources (GET only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify existing credential candidates and inventory
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_PAGES_DEPLOY: ${{ secrets.CF_PAGES_DEPLOY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +x
+          if [[ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]]; then
+            echo "BLOCKED: CLOUDFLARE_ACCOUNT_ID secret is missing."
+            exit 2
+          fi
+
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          token=""
+          verify_candidate() {
+            local label="$1"
+            local candidate="${2:-}"
+            local code
+            if [[ -z "$candidate" ]]; then
+              printf '%s: NOT PRESENT\n' "$label"
+              return 1
+            fi
+            code="$(curl --silent --output "$tmp/verify.json" --write-out '%{http_code}' \
+              --max-time 15 --request GET \
+              --header "Authorization: Bearer $candidate" \
+              --header "Accept: application/json" \
+              "https://api.cloudflare.com/client/v4/user/tokens/verify" || true)"
+            printf '%s token verification HTTP: %s\n' "$label" "${code:-CURL_ERROR}"
+            if [[ "$code" == "200" ]] && jq -e '.success == true and .result.status == "active"' "$tmp/verify.json" >/dev/null 2>&1; then
+              token="$candidate"
+              printf 'Selected credential candidate: %s (value withheld)\n' "$label"
+              return 0
+            fi
+            return 1
+          }
+
+          if ! verify_candidate "CLOUDFLARE_API_TOKEN" "${CLOUDFLARE_API_TOKEN:-}"; then
+            if ! verify_candidate "CF_PAGES_DEPLOY" "${CF_PAGES_DEPLOY:-}"; then
+              echo "BLOCKED: No active token verified. No account inventory calls were made."
+              exit 3
+            fi
+          fi
+
+          base="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}"
+          probe() {
+            local label="$1"
+            local path="$2"
+            local code
+            code="$(curl --silent --output "$tmp/response.json" --write-out '%{http_code}' \
+              --max-time 20 --request GET \
+              --header "Authorization: Bearer $token" \
+              --header "Accept: application/json" \
+              "${base}${path}" || true)"
+            printf '\n== %s ==\nHTTP: %s\n' "$label" "${code:-CURL_ERROR}"
+            if [[ "$code" == "200" ]]; then
+              jq -r '
+                if .success == true then
+                  "API success: true",
+                  ("items: " + ((.result // []) | if type == "array" then length else 1 end | tostring)),
+                  ((.result // []) | if type == "array" then .[] else . end |
+                    [.name // .id // .queue_name // .slug // empty] |
+                    map(select(type == "string" and length > 0)) | .[]?)
+                else
+                  "API success: false (response details withheld)"
+                end
+              ' "$tmp/response.json" 2>/dev/null || echo "Response shape not recognized; body withheld."
+            else
+              echo "Access not confirmed. Response body withheld."
+            fi
+          }
+
+          probe "Workers scripts" "/workers/scripts"
+          probe "Pages projects" "/pages/projects"
+          probe "D1 databases" "/d1/database"
+          probe "Queues" "/queues"
+          probe "Workflows" "/workflows"
+          probe "AI Gateway gateways" "/ai-gateway/gateways"
+
+          for project in dualiscapax-landing dualiscapax; do
+            code="$(curl --silent --output "$tmp/project.json" --write-out '%{http_code}' \
+              --max-time 20 --request GET \
+              --header "Authorization: Bearer $token" \
+              --header "Accept: application/json" \
+              "${base}/pages/projects/${project}" || true)"
+            printf '\n== Pages project detail: %s ==\nHTTP: %s\n' "$project" "${code:-CURL_ERROR}"
+            if [[ "$code" == "200" ]] && jq -e '.success == true' "$tmp/project.json" >/dev/null 2>&1; then
+              jq -r '.result | "name: " + (.name // "unknown"), "production_branch: " + (.production_branch // "unknown"), "domains: " + ((.domains // []) | join(", "))' "$tmp/project.json"
+            else
+              echo "Details unavailable; response body withheld."
+            fi
+          done
+
+          for project in dualiscapax-landing dualiscapax; do
+            code="$(curl --silent --output "$tmp/deployments.json" --write-out '%{http_code}' \
+              --max-time 20 --request GET \
+              --header "Authorization: Bearer $token" \
+              --header "Accept: application/json" \
+              "${base}/pages/projects/${project}/deployments?env=production&per_page=5" || true)"
+            printf '\n== Recent production deployments: %s ==\nHTTP: %s\n' "$project" "${code:-CURL_ERROR}"
+            if [[ "$code" == "200" ]] && jq -e '.success == true' "$tmp/deployments.json" >/dev/null 2>&1; then
+              jq -r '.result[]? | "deployment: " + (.id // "unknown") + " | status: " + (.latest_stage.status // .deployment_trigger.type // "unknown") + " | url: " + (.url // "unknown") + " | created: " + (.created_on // "unknown")' "$tmp/deployments.json"
+            else
+              echo "Deployment details unavailable; response body withheld."
+            fi
+          done
+
+          for domain in dualiscapax.ai dualiscapax.com; do
+            code="$(curl --silent --output "$tmp/zones.json" --write-out '%{http_code}' \
+              --max-time 20 --request GET \
+              --header "Authorization: Bearer $token" \
+              --header "Accept: application/json" \
+              "https://api.cloudflare.com/client/v4/zones?name=${domain}" || true)"
+            printf '\n== Zone lookup: %s ==\nHTTP: %s\n' "$domain" "${code:-CURL_ERROR}"
+            if [[ "$code" == "200" ]] && jq -e '.success == true' "$tmp/zones.json" >/dev/null 2>&1; then
+              jq -r '.result[]? | "zone: " + (.name // "unknown") + " | id: " + (.id // "unknown")' "$tmp/zones.json"
+            else
+              echo "Zone access not confirmed; response body withheld."
+            fi
+          done
+
+          echo
+          echo "Safety: GET-only inventory. No resources were created, changed, deleted, deployed, or published."
