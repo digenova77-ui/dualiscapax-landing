@@ -17,11 +17,15 @@ const limit = ip => {
   return e.c <= LIM;
 };
 
-const ipOf = req =>
-  req.headers["cf-connecting-ip"] ||
-  (req.headers["x-forwarded-for"] || "").split(",")[0].trim() ||
-  req.socket.remoteAddress ||
-  "unknown";
+// Forwarded IP headers are attacker-controlled unless the service is
+// reachable only through a trusted proxy. Default to the transport peer.
+const ipOf = req => {
+  const peer = req.socket.remoteAddress || "unknown";
+  if (process.env.TRUST_PROXY_HEADERS !== "1") return peer;
+  return req.headers["cf-connecting-ip"] ||
+    (req.headers["x-forwarded-for"] || "").split(",")[0].trim() ||
+    peer;
+};
 
 const verify = req =>
   LOCAL && req.headers["x-test-session"] === "valid"
@@ -98,6 +102,11 @@ const server = http.createServer(async (req, res) => {
 
 const wss = new WebSocketServer({ noServer: true });
 server.on("upgrade", (req, socket, head) => {
+  if (!limit(ipOf(req))) {
+    socket.write("HTTP/1.1 429 Too Many Requests\r\nConnection: close\r\n\r\n");
+    socket.destroy();
+    return;
+  }
   if (new URL(req.url || "/", "http://localhost").pathname !== "/iris/rate-ws") {
     socket.destroy();
     return;
