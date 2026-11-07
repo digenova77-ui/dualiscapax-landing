@@ -88,3 +88,13 @@ For each completed item record: date/time UTC, commit SHA or deployed version, e
 ## Deployment status — 2026-10-17
 
 Source changes are not a deployment. No Cloudflare dashboard credentials or direct deployment tool were available in this work session. Do not mark live deployment as PASS until the manual staging upload, route checks, and rollback target have been recorded. Do not change DNS or touch live servers/databases as part of this recovery.
+
+## Rebuild-to-verify protocol principle — 2026-10-17 (PROPOSED)
+
+Declared in branch `spec/rebuild-to-verify-20261017`. Related: #108 (seed, `no_majority_vote_truth`), #109/#110 (Diamond Floor), #111. DF id: PROPOSED DF-015 (not assigned in DIAMOND_FLOOR_EXECUTION_PLAN.md).
+
+- [x] Spec written: `research/rebuild-to-verify/SPEC.md` — proposed.
+- [x] Stdlib reference + tests: `research/rebuild-to-verify/{rtv.py,test_rtv.py}` — PASS locally, 6/6 (`python3 -m unittest -v test_rtv`, Python 3, 2026-10-17). CI: NOT TESTED.
+- [ ] Wire into law core / door — NOT APPLICABLE to this PR (no production change).
+- [ ] Resolve `builder.html:160` "2-of-3 approvals" vs `no_majority_vote_truth` — BLOCKED on owner decision.
+- Remaining risk: reference only; not cross-implementation tested (e.g. Rust rebuild of same log). Rollback: revert branch.
