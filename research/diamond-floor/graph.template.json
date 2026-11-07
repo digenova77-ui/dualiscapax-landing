@@ -1,0 +1,31 @@
+{
+  "schema": "dualis.diamond-derivative.graph.v1",
+  "description": "Template only. Replace all example evidence references with verifiable records before validation.",
+  "nodes": [
+    {"id":"ceiling","layer":"ceiling","domain":"governance","content":{"state":"candidate-view"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"mesh","layer":"mesh","domain":"software","content":{"state":"typed-relations"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"floor","layer":"floor","domain":"science","content":{"state":"three-rings-unified"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"seed","layer":"seed","domain":"earth","content":{"state":"minimal-inputs"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"taproot","layer":"taproot","domain":"identity","content":{"state":"provenance-roots"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"},
+    {"id":"bedrock","layer":"bedrock","domain":"governance","content":{"state":"governing-invariants"},"source_sha256":null,"verified":false,"content_sha256":"REPLACE_WITH_SHA256"}
+  ],
+  "edges": [
+    {"from":"ceiling","to":"mesh","relation":"decomposes-into","verified":false},
+    {"from":"mesh","to":"floor","relation":"reconciles-to","verified":false},
+    {"from":"floor","to":"seed","relation":"derives-inputs-from","verified":false},
+    {"from":"seed","to":"taproot","relation":"resolves-provenance-through","verified":false},
+    {"from":"taproot","to":"bedrock","relation":"checked-against","verified":false}
+  ],
+  "rings": {
+    "authority":{"status":"BLOCKED","evidence_refs":[]},
+    "measurement":{"status":"BLOCKED","evidence_refs":[]},
+    "execution_evidence":{"status":"BLOCKED","evidence_refs":[]}
+  },
+  "invariants": {
+    "canonicalization":{"status":"BLOCKED","evidence_ref":""},
+    "provenance":{"status":"BLOCKED","evidence_ref":""},
+    "no_force":{"status":"BLOCKED","evidence_ref":""},
+    "host_safe":{"status":"BLOCKED","evidence_ref":""},
+    "zero_residue":{"status":"BLOCKED","evidence_ref":""}
+  }
+}

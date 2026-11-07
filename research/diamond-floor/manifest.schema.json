@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dualiscapax.ai/schemas/diamond-floor-manifest.v1.json",
+  "title": "DualisCapax Diamond Floor Artifact Manifest",
+  "type": "object",
+  "required": ["schema", "artifact_id", "sha256", "media_type", "source_url", "creator_credit", "rights_status", "retrieved_at_utc"],
+  "properties": {
+    "schema": {"const": "dualis.diamond-floor.artifact.v1"},
+    "artifact_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "media_type": {"type": "string", "minLength": 1},
+    "original_filename": {"type": "string", "minLength": 1},
+    "source_url": {"type": "string", "format": "uri"},
+    "creator_credit": {"type": "string", "minLength": 1},
+    "rights_status": {"enum": ["public-domain-verified", "license-verified", "permission-granted", "link-only", "needs-review", "restricted"]},
+    "license_url": {"type": ["string", "null"], "format": "uri"},
+    "retrieved_at_utc": {"type": "string", "format": "date-time"},
+    "object_path": {"type": "string"},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}
