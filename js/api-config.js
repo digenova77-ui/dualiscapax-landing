@@ -2,6 +2,9 @@
  * DualisCapax API client config
  * Default World 1 One → API v2. World 0 only if explicitly set.
  * Secret stays on the worker only.
+ *
+ * API origin is trusted code configuration, never a URL query parameter.
+ * A query-string endpoint could silently forward user prompts to an attacker.
  */
 (function (g) {
   var world = g.DC_WORLD === 0 ? 0 : 1;
@@ -11,8 +14,6 @@
   g.DC_API_PATH = world === 1 ? '/v2/chat' : '/v1/chat';
   g.DC_API_BASE = g.DC_API_BASE || 'https://dualiscapax-depth.digenova77.workers.dev';
   try {
-    var q = new URLSearchParams(location.search).get('api');
-    if (q) g.DC_API_BASE = q.replace(/\/$/, '');
     var wq = new URLSearchParams(location.search).get('world');
     if (wq === '1' || /^one$/i.test(wq)) {
       g.DC_WORLD = 1; g.DC_WORLD_NAME = 'ONE'; g.DC_API_VERSION = '2'; g.DC_API_PATH = '/v2/chat';
