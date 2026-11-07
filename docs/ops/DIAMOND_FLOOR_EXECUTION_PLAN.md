@@ -19,14 +19,14 @@ Required direction: authenticate at a valid RP origin, verify the assertion serv
 |---|---|---|---|---|
 | DF-001 | P0 | Preserve Replit workspace | Export or verified Git sync, compared without overwriting either side | BLOCKED: Replit agent paused; workspace not inspected |
 | DF-002 | P0 | Confirm source of truth | Branch, HEAD, entry points, generated assets, deployment rail recorded | PARTIAL |
-| DF-003 | P0 | Correct WebAuthn design | RP ID and origin rules respected; server-side validation documented | IN PROGRESS: incompatibility identified |
-| DF-004 | P0 | Implement one-time handoff | Expiring single-use grant consumed atomically; secure .ai session | BLOCKED: backend/session implementation unconfirmed |
+| DF-003 | P0 | Correct WebAuthn design | RP ID and origin rules respected; server-side validation documented | IN PROGRESS: incompatibility identified; NOTE 2026-10-17: Grok Bot live change G1–G4 runs the ceremony on .com (rp .com) and posts the assertion to .ai /api/v2/task; RP/origin compliance NOT TESTED |
+| DF-004 | P0 | Implement one-time handoff | Expiring single-use grant consumed atomically; secure .ai session | BLOCKED: backend/session implementation unconfirmed; NOTE 2026-10-17: law_v 8 unity_handoff deployed (G1/G2); real-device test NOT TESTED; see checklist "Grok Bot production changes" |
 | DF-005 | P0 | Test identity failure paths | cancel, timeout, invalid/stale/replayed challenge and missing session all fail closed | NOT STARTED |
-| DF-006 | P0 | Enforce domain separation | .com 2D only; .ai 3D only; no redirect loop | NOT STARTED |
+| DF-006 | P0 | Enforce domain separation | .com 2D only; .ai 3D only; no redirect loop | NOT STARTED; NOTE 2026-10-17: .com home now served from NJ (G4, FAIL on device); .com→.ai only via handoff; NOT TESTED |
 | DF-007 | P1 | Audit Iris modules | Canonical page, sphere, session, AV, chat/API paths inventoried | PARTIAL: js/iris-page.js and js/iris-session.js found |
 | DF-008 | P1 | Repair Iris HUD | Responsive, accessible, real controls and truthful states | NOT STARTED |
 | DF-009 | P1 | Verify Iris capabilities | chat/voice/camera/vision only claim capability when actually connected | NOT STARTED |
-| DF-010 | P0 | Verify API v2/kernel | canonical base, schema, auth, failure behavior and real kernel connection tested | BLOCKED: route/backend unverified |
+| DF-010 | P0 | Verify API v2/kernel | canonical base, schema, auth, failure behavior and real kernel connection tested | BLOCKED: route/backend unverified; NOTE 2026-10-17: POST /api/v2/task (.ai) now routes to law core /v2/door (G2); other ops 403 |
 | DF-011 | P1 | Reconcile routes | redirects match intended existing destinations and pass route tests | NOT STARTED |
 | DF-012 | P0 | Build and test | clean build, tests, browser/mobile checks and artifact hash recorded | NOT STARTED |
 | DF-013 | P0 | Staging and rollback | safe preview and rollback verified; release separately approved | BLOCKED: delivery rail unresolved |
