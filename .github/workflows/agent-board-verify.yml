@@ -1,0 +1,29 @@
+name: agent-board-verify
+
+# Rebuild-to-verify the agent board. Fails if the chain breaks or any past line changed.
+on:
+  pull_request:
+    paths:
+      - docs/ops/AGENT_BOARD.jsonl
+      - tools/board.py
+      - tools/test_board.py
+      - .github/workflows/agent-board-verify.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Unit tests
+        run: python3 -m unittest -v tools/test_board.py
+      - name: Rebuild chain and enforce append-only vs base
+        run: |
+          set -euo pipefail
+          git show "${{ github.event.pull_request.base.sha }}:docs/ops/AGENT_BOARD.jsonl" > /tmp/base.jsonl 2>/dev/null || : > /tmp/base.jsonl
+          python3 tools/board.py verify --base /tmp/base.jsonl
