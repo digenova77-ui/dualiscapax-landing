@@ -13,6 +13,28 @@ const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
 const unicodeFixturePath = fileURLToPath(new URL('./fixtures/seed-v1-unicode-known-answer.json', import.meta.url));
 const unicodeFixture = JSON.parse(await readFile(unicodeFixturePath, 'utf8'));
 const mutableManifest = () => JSON.parse(fixture.canonical_manifest);
+const generatedFixturePath = fileURLToPath(new URL('./fixtures/seed-v1-generated-known-answers.json', import.meta.url));
+const generatedFixture = JSON.parse(await readFile(generatedFixturePath, 'utf8'));
+
+test('1000 generated cross-runtime vectors and malformed near-neighbours', () => {
+  assert.equal(generatedFixture.fixture_version, 'dualis.seed.generated-known-answers.v1');
+  assert.equal(generatedFixture.seed, '0xD1A0C0DE');
+  assert.equal(generatedFixture.case_count, 1000);
+  assert.equal(generatedFixture.cases.length, 1000);
+
+  for (let index = 0; index < generatedFixture.cases.length; index += 1) {
+    const vector = generatedFixture.cases[index];
+    assert.equal(vector.index, index);
+    const source = vector.canonical_manifest;
+    const report = verifyCanonicalManifest(source);
+    assert.equal(report.canonical_sha256, vector.sha256, 'SHA-256 differs at vector ' + index);
+    assert.equal(canonicalizeManifest(JSON.parse(source)), source, 'canonical bytes differ at vector ' + index);
+    assert.throws(() => verifyCanonicalManifest(source + '\\n'), /not canonical JSON/);
+    const modelId = '"model_id":"generated.seed.v1.' + index + '"';
+    const duplicate = source.replace(modelId, '"model_id":"duplicate",' + modelId);
+    assert.throws(() => verifyCanonicalManifest(duplicate), /not canonical JSON/);
+  }
+});
 
 test('Python-compatible shared known-answer vector', () => {
   const report = verifyCanonicalManifest(fixture.canonical_manifest);
