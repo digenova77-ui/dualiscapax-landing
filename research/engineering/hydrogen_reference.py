@@ -47,6 +47,7 @@ def nonrelativistic_energy_level_ev(
     reduced_mass_ratio = 1.0 / (1.0 + electron_proton_mass_ratio)
     return -rydberg_ev * reduced_mass_ratio / (n * n)
 
+
 def _require_quantum_numbers(n: int, ell: int, m: int | None = None) -> None:
     if not isinstance(n, int) or isinstance(n, bool) or n < 1:
         raise ValueError("n must be an integer >= 1")
