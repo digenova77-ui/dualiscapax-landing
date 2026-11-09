@@ -29,4 +29,4 @@ RFC 8785 specifies a broader interoperable JSON canonicalization scheme, includi
 
 ## Test contract
 
-Both runtimes consume `fixtures/seed-v1-known-answer.json`. CI checks the same canonical fixture and digest plus malformed-source, duplicate-key, alternate-encoding, safe-integer, Unicode, schema, and mutation cases. Cross-language agreement is limited to this declared profile and the vectors actually tested.
+Both runtimes consume `fixtures/seed-v1-known-answer.json`. CI checks the same canonical fixture and digest plus malformed-source, duplicate-key, alternate-encoding, safe-integer, Unicode, schema, and mutation cases. Cross-language agreement is limited to this declared profile and the vectors actually tested. The generated suite contains 1,000 fixed-seed nested manifests, each with a shared canonical source and SHA-256; both runtimes reject whitespace and duplicate-key near-neighbours for every vector. The fixture is reproducibly rebuilt by generate_seed_vectors.py and checked in CI.
