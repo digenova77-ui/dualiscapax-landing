@@ -10,6 +10,42 @@ from __future__ import annotations
 
 import math
 
+# CODATA 2022 recommended values (NIST): R_infinity, h, c, and e.
+RYDBERG_CONSTANT_M_INV = 10_973_731.568_157
+PLANCK_CONSTANT_J_S = 6.626_070_15e-34
+SPEED_OF_LIGHT_M_S = 299_792_458
+ELEMENTARY_CHARGE_C = 1.602_176_634e-19
+
+
+def nonrelativistic_energy_level_ev(
+    n: int, electron_proton_mass_ratio: float = 0.0
+) -> float:
+    """Return the nonrelativistic Coulomb energy level in eV.
+
+    electron_proton_mass_ratio is m_e / m_p. Zero selects the
+    infinite-nuclear-mass model; the CODATA 2022 ratio supplies the
+    two-body reduced-mass correction for ordinary hydrogen.
+
+    This is not a precision spectroscopy calculation: it omits Dirac
+    fine structure, QED/Lamb shift, nuclear-size, and higher-order recoil
+    corrections. The reference comparison is deliberately tested as a
+    bounded model residual, not as an exact match to the NIST ASD value.
+    """
+    if not isinstance(n, int) or isinstance(n, bool) or n < 1:
+        raise ValueError("n must be an integer >= 1")
+    if (
+        not isinstance(electron_proton_mass_ratio, (int, float))
+        or isinstance(electron_proton_mass_ratio, bool)
+        or not math.isfinite(electron_proton_mass_ratio)
+        or electron_proton_mass_ratio < 0
+    ):
+        raise ValueError("electron_proton_mass_ratio must be finite and >= 0")
+    rydberg_ev = (
+        PLANCK_CONSTANT_J_S * SPEED_OF_LIGHT_M_S * RYDBERG_CONSTANT_M_INV
+        / ELEMENTARY_CHARGE_C
+    )
+    reduced_mass_ratio = 1.0 / (1.0 + electron_proton_mass_ratio)
+    return -rydberg_ev * reduced_mass_ratio / (n * n)
 
 def _require_quantum_numbers(n: int, ell: int, m: int | None = None) -> None:
     if not isinstance(n, int) or isinstance(n, bool) or n < 1:
