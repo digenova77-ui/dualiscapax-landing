@@ -1,4 +1,5 @@
 """Standard-library tests for strict seed manifest validation."""
+import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -127,6 +128,35 @@ class SeedVerifierTests(unittest.TestCase):
         escaped = source.replace("café", r"caf\u00e9")
         with self.assertRaisesRegex(ManifestError, "not canonical JSON"):
             parse_canonical_manifest(escaped)
+
+    def test_1000_generated_cross_runtime_vectors_and_malformed_neighbours(self):
+        fixture_path = Path(__file__).parent / "fixtures" / "seed-v1-generated-known-answers.json"
+        fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
+        self.assertEqual(fixture["fixture_version"], "dualis.seed.generated-known-answers.v1")
+        self.assertEqual(fixture["seed"], "0xD1A0C0DE")
+        self.assertEqual(fixture["case_count"], 1000)
+        self.assertEqual(len(fixture["cases"]), 1000)
+
+        for index, vector in enumerate(fixture["cases"]):
+            self.assertEqual(vector["index"], index)
+            source = vector["canonical_manifest"]
+            manifest = parse_canonical_manifest(source)
+            rebuilt = canonical_bytes(manifest)
+            self.assertEqual(rebuilt.decode("utf-8"), source, f"canonical bytes differ at vector {index}")
+            self.assertEqual(
+                hashlib.sha256(rebuilt).hexdigest(),
+                vector["sha256"],
+                f"SHA-256 differs at vector {index}",
+            )
+            with self.assertRaisesRegex(ManifestError, "not canonical JSON"):
+                parse_canonical_manifest(source + "\\n")
+            duplicate = source.replace(
+                f'"model_id":"generated.seed.v1.{index}"',
+                f'"model_id":"duplicate","model_id":"generated.seed.v1.{index}"',
+                1,
+            )
+            with self.assertRaisesRegex(ManifestError, "duplicate JSON key"):
+                parse_canonical_manifest(duplicate)
 
     def test_report_states_actual_scope(self):
         report = verification_report(BASE)
