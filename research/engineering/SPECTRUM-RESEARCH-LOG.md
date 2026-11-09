@@ -232,3 +232,82 @@ Do not rewrite earlier conclusions to make a new result look inevitable. Append 
 - **Status:** **LOCAL PASS / RESEARCH CI PASS** for the tested fixtures and cases. No claim of general formal equivalence.
 - **Next falsifiable question:** for a fixed-seed generator producing at least 1,000 valid nested manifests and malformed near-neighbours within the declared profile, do Python and Node always emit identical canonical UTF-8 bytes and SHA-256, and do both reject the same invalid cases?
 - **Next actions:** implement deterministic cross-runtime generated fixtures; add a Python 3.12/3.13 and Node 20/22 matrix; then proceed to the hydrogen energy-level reference test. Keep visualization and physical integration gates unchanged.
+
+
+### Wave 1e — generated cross-runtime replay, hydrogen energy residual, and cross-domain evidence review
+- **Date:** 2026-11-09
+- **Research branch / draft:** `research/diamond-floor-recursion-v1` · PR #109 · draft remains OPEN against `main`.
+- **Code head reviewed:** `ff00aaa210d623ff970571dfe405d903f2491d9e`.
+- **Question A:** for 1,000 fixed-seed nested manifests within the declared restricted seed profile, do Python and Node produce identical canonical UTF-8 bytes and SHA-256, and reject the same malformed near-neighbours?
+- **Question B:** does the nonrelativistic Coulomb energy model, with the hydrogen reduced-mass correction, reproduce the NIST hydrogen ionization reference at precision-spectroscopy accuracy?
+- **Evidence labels:** P = published/evaluated physical or mathematical reference; D = derived result from stated inputs; M = observed CI/test result; H = hypothesis awaiting falsification; A = analogy only; U = unknown or unmeasured; F = observed failure/blocker. Labels are local to this entry and do not confer authorization or finality outside this research layer.
+
+#### 1. Computation — generated canonical replay
+
+- **Implementation [D]:** added a fixed-seed LCG generator (`0xD1A0C0DE`) and a checked-in fixture of 1,000 nested manifests. Each vector stores its canonical source bytes and SHA-256. Both Python and Node tests independently parse, validate, reserialize and hash every vector.
+- **Adversarial cases [D]:** for every valid vector, both runtimes reject a trailing-whitespace near-neighbour and a duplicate-`model_id` near-neighbour. This is 1,000 valid vectors plus 2,000 invalid variants per runtime. Existing tests continue to cover Unicode scalar values, safe-integer endpoints, invalid UTF-8, BOM, duplicate keys, schema mismatch and mutation sensitivity.
+- **Scope boundary [P/D]:** the project profile remains intentionally narrower than RFC 8785/JCS: ASCII object keys, Unicode scalar string values, safe integers only, recursive key ordering, compact UTF-8 JSON. It is not JCS-conformant. A SHA-256 match commits to bytes; it does not establish truth, model correctness, identity, authorization, event ordering or distributed consensus.
+- **CI result [M]:** research workflow run `42634245187` passed all four matrix jobs: Python 3.12 + Node 20, Python 3.12 + Node 22, Python 3.13 + Node 20, and Python 3.13 + Node 22. In every job, the deterministic fixture regeneration check, hydrogen tests, Python seed tests and Node seed tests passed.
+- **Interpretation:** this closes Wave 1d's stated generated-vector question for the fixed generator and declared profile. It is not a proof for arbitrary JSON, arbitrary runtimes, non-ASCII keys, floating-point values, or all parser implementations.
+
+#### 2. Physics and energy — hydrogen reference with an explicit residual
+
+- **Inputs [P]:** CODATA 2022 `R∞ = 10,973,731.568157 m⁻¹`, `m_e/m_p = 5.446170214889 × 10⁻⁴`, and exact SI values for `h`, `c`, and `e`. NIST ASD 5.12 reports neutral hydrogen's ionization energy as `13.598434599702 eV` with standard uncertainty `0.000000000012 eV`.
+- **Implementation [D]:** added `nonrelativistic_energy_level_ev(n, electron_proton_mass_ratio)`. The helper computes the Coulomb/Rydberg level with the two-body reduced-mass factor; the default zero ratio preserves the infinite-nuclear-mass limit.
+- **Derived result [D]:** the reduced-mass Schrödinger ground-state binding energy is `13.59828726428329 eV`. Against the NIST ASD value, the residual is `0.000147335418709815 eV`, or `1.08347337798 × 10⁻⁵` relative. That residual is about 12.3 million times the NIST quoted standard uncertainty.
+- **Test result [M]:** the regression test asserts the derived value, the `1/n²` level scaling, and an explicitly bounded relative residual between `10⁻⁶` and `2 × 10⁻⁵`. It does **not** claim agreement within the NIST uncertainty.
+- **Failure / limitation [F/U]:** the simple model is not precision spectroscopy. Dirac fine structure, radiative/QED (including the Lamb shift), nuclear-size and higher-order recoil terms are outside this helper. The observed residual is an expected model-scope gap, not evidence that the NIST reference is wrong.
+- **Diamond material physics [P]:** NIST documents nitrogen-vacancy defects in diamond as real quantum-sensing elements: spin-state preparation/readout supports magnetic-field measurements, and NIST is developing photoelectric readout and material benchmarking. This is a genuine material-to-instrument mechanism. It does not establish a mapping from diamond physics to the DualisCapax architectural Floor or prove the Three Rings hypothesis.
+
+#### 3. Mathematics and the Floor/Ceiling claims
+
+- **D6 archival result [DOCUMENT/IDRIS]:** Deliverable 6's first-hand corpus examination reports the material Floor (F1) and law-of-four Floor (F2) as distinct formulations with identity unresolved; the documentary route found no author who identifies them as one or explicitly distinguishes them. The founder ruling remains reserved.
+- **D6 physics verdict [DOCUMENT/IDRIS]:** the governing architecture has no demonstrated mechanical dependency on diamond's physical properties; diamond is an analogy, while the code mechanisms (structural refusal and explicit gates) must stand on their own. D6 also records one factual defect in the canon's refractive-index superlative; correction/corrigendum remains a founder decision and was not made here.
+- **Span / derivative [H]:** the lower-bound / potential-upper-bound span remains hypothesis-grade. It still lacks a fully specified domain, codomain, variables, units, sampling, uncertainty propagation, failure conditions and a falsifiable mapping. No common calculus object or shared physical law has been derived across hydrogen, Earth, planetary dynamics and the software schema.
+- **No identity promotion:** the generic tuple `(state, rules, interactions, observables, invariants, limits)` is a useful software vocabulary, not a structure-preserving map between physical systems. Visual resemblance and common vocabulary remain analogy, not mechanism.
+
+#### 4. Energy metrology and eFuse
+
+- **Metrology rule [P]:** NIST's traceability policy defines traceability at the level of a measurement result through a documented, unbroken calibration chain, with each link contributing uncertainty. Traceability alone does not guarantee fitness for purpose.
+- **Current state [U]:** no physical meter readings, calibration certificates, instrument identity, measurement method, uncertainty budget, or end-to-end energy traceability chain were supplied or verified in this research branch. No value has been assigned to `E` / `peg_ratio_E`; no energy peg was derived or tested.
+- **Consequence:** eFuse remains an uninstantiated energy primitive at this evidence layer. A software constant or an uncalibrated power estimate cannot be promoted to measured joules or to a validated peg.
+
+#### 5. Distributed systems
+
+- **Theory [P]:** the Fischer–Lynch–Paterson result shows that in a fully asynchronous message-passing system, deterministic consensus may fail to terminate with even one crash-faulty process, despite reliable message delivery.
+- **Implementation status [U]:** the generated hash tests establish deterministic serialization and digest agreement for a shared input corpus. They do not test independent nodes, message reordering, partitions, leader failure, quorum intersection, replay after crash, or consensus termination.
+- **Required before any consensus claim:** state the timing/failure model, fault threshold, quorum rule, durable log semantics, recovery procedure, and liveness assumptions. A matching digest is not a consensus receipt.
+
+#### 6. Real-world control and safety
+
+- **Mathematical baseline [P]:** linear state-space controllability and observability are properties of a specified plant model; their classical rank tests require matrices `A`, `B`, and `C` (or their discrete-time equivalents). A generic schema without a plant model cannot pass these tests.
+- **Safety baseline [P]:** NASA systems-engineering guidance separates verification, validation, qualification testing, acceptance testing and the safety/certification evidence needed before field use.
+- **Current state [U]:** no real plant, state-space matrices, sensor inventory, calibration records, actuator boundary, operating envelope, hazard analysis or recorded sensor dataset is in this branch. No controller was designed or connected; no actuator or external system was operated.
+- **Safe next experiment:** a read-only shadow-mode study on an explicitly selected noncritical plant, using recorded data only, with observability/controllability analysis, uncertainty and hazard review, and a hard-disabled actuator path. This is a proposal, not permission to actuate.
+
+#### 7. Repository, CI and deployment boundary
+
+- **PR state [M]:** PR #109 remains draft/open; no review records were returned and it has not been merged.
+- **Research CI [M]:** run `42634245187` — all four matrix jobs passed.
+- **Other CI [M]:** `42634245190` (Iris/Trinity gauntlet), `42634245228` (Iris authorize CI), `42634245273` (Elite CI), `42634245497` (static i18n), and `42634245274` (symplectic invariant tests) completed successfully. The `Live Trinity edge verification` job was **SKIPPED**, not passed.
+- **Preview status [M/F]:** Vercel reported both branch preview projects Ready at 2026-11-09 14:23:49 UTC. The Cloudflare Workers preview bot reported failed builds for preceding commits `15a2adb` and `f7c49e2`; it had not yet published a row for code head `ff00aaa` at review time. This is a preview-build blocker, not evidence of a production outage.
+- **Boundary:** no merge, production deployment, DNS change, live-server change, policy amendment, eFuse emission, transaction, or external actuation was performed. Vercel preview generation was automatic on the pushed research branch; no production target was selected.
+
+#### 8. Assumptions, uncertainties and next falsifiable question
+
+- **Assumptions:** the generated corpus represents the declared restricted seed profile only; all object keys are ASCII; numeric values are safe integers; strings are Unicode scalar sequences. The hydrogen helper uses the CODATA 2022 constants and a nonrelativistic one-electron Coulomb model with a reduced-mass correction.
+- **Uncertainties:** full cross-runtime behavior outside the tested profile; the physical Floor's relation to the law-of-four Floor; the span candidate's formal domain/codomain; the value and evidence bar for `E`; distributed liveness under an explicit network model; and the observability/safety of any real plant.
+- **Next falsifiable question:** can an independently implemented Dirac-Coulomb hydrogen reference, with reduced-mass/recoil, radiative/QED and proton-size corrections and propagated CODATA uncertainties, predict the NIST ASD 1s ionization reference and resolved 2p fine-structure levels within their stated uncertainties **without fitting to those same reference values**?
+- **Next actions:** (1) derive the correction terms from primary references and document correlated constants; (2) implement an independent high-precision reference path and known-answer tests for 1s and 2p; (3) preserve the current nonrelativistic helper as a baseline and assert its expected residual; (4) separately specify one span candidate to the measurement-contract acceptance standard; (5) design a no-actuation shadow-mode control test only after a real plant and data provenance are identified.
+- **Commit references:** generator `fc920afc788ab98b214f3243c713126861c9f8e9`; generated fixture `15a2adbefc9bb76ff9fc032f76952ad4aeb11de0`; Python generated-vector tests `fae12ceac9ba8793aeee6e7d4a4f03559820d662`; Node generated-vector tests `ba50f50a382b3c044ea8d952620042c9c07805ae`; runtime matrix workflow `1f63d3c5b640e572eb98e0e80472b4846349e81f`; hydrogen energy helper `a4d7fd5b336167a36c0a4a7697954742d8a68d46`; hydrogen energy tests `af4ad1833d80b800413a7fb4d95ffb921b45d498`; profile update / code head `ff00aaa210d623ff970571dfe405d903f2491d9e`.
+- **Status:** **RESEARCH CI PASS** for the exact generated corpus and the bounded hydrogen model tests; **PHYSICS MODEL NOT PRECISION-VALIDATED**; **ENERGY / DISTRIBUTED CONSENSUS / REAL-WORLD CONTROL NOT ESTABLISHED**. No promotion from hypothesis or analogy to law, mechanism, consensus or authorization.
+
+**Primary sources**
+1. NIST CODATA 2022 values: https://physics.nist.gov/cgi-bin/cuu/Value?ryd%7Csearch_for=Rydberg ; https://physics.nist.gov/cgi-bin/cuu/Value?mesmp%7Csearch_for=mass+proton ; https://physics.nist.gov/cgi-bin/cuu/Value?rydhcev%7Csearch_for=Rydberg
+2. NIST Atomic Spectra Database 5.12, neutral hydrogen ionization energy (query): https://physics.nist.gov/cgi-bin/ASD/ie.pl?spectra=H&units=1&at_num_out=on&el_name_out=on&seq_out=on&shells_out=on&level_out=on&e_out=0&unc_out=on&biblio=on
+3. NIST Diamond NV Center Magnetometry: https://www.nist.gov/noac/technology/magnetic-and-electric-fields/nv-center-magnetometry
+4. NIST metrological traceability policy / Technical Note 2156: https://www.nist.gov/metrology/metrological-traceability
+5. RFC 8785, JSON Canonicalization Scheme: https://www.rfc-editor.org/rfc/rfc8785.html
+6. Fischer, Lynch & Paterson, “Impossibility of Distributed Consensus with One Faulty Process,” JACM 32(2), 1985: https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf
+7. Kalman, “Lectures on Controllability and Observability,” NASA-CR-113869, 1968: https://ntrs.nasa.gov/citations/19700032148
+8. NASA Systems Engineering Handbook, verification and validation guidance: https://www.nasa.gov/reference/system-engineering-handbook-appendix/
