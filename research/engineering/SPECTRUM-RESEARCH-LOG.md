@@ -339,3 +339,12 @@ Do not rewrite earlier conclusions to make a new result look inevitable. Append 
 - **Cloudflare Pages [M]:** preview for `be6d384` completed successfully. The latest log-only commit may trigger a further preview.
 - **Cloudflare Workers [F]:** the Worker build for log-only commit `be6d384` failed (build `42dafb58-5004-45e3-9753-ab20ee492f3d`), even though the implementation tree was unchanged from `ff00aaa`. This repetition on log-only commits is evidence for a Worker-specific integration/configuration problem, but that diagnosis remains **HYPOTHESIS** until the dashboard log is inspected. The Worker build for `2ccd257` was still marked IN PROGRESS; no result for `25335a2` had appeared.
 - **Next action for the Worker blocker:** inspect the failed build logs for `f19c9599-6870-4b2d-a14e-9e19933e49bc` and `42dafb58-5004-45e3-9753-ab20ee492f3d`; compare the configured Worker root directory, build command, Wrangler entry point and required bindings against the repository. Do not change the integration or production configuration until the failure cause is evidenced.
+
+
+#### 12. Latest branch check (2026-11-09 14:32 UTC)
+
+- **Current branch head:** `ac93dd817565e6582d0aa285b0a0a20c83498f0b` (research-log-only commit; implementation tree unchanged).
+- **Latest GitHub CI [M]:** research matrix `42635589632` passed all four Python/Node combinations; Iris/Trinity gauntlet `42635588979` passed with live edge verification skipped; Iris authorize `42635588951`, symplectic invariants `42635588987`, static i18n `42635588867`, and Elite CI `42635588801` passed.
+- **Vercel [M]:** both preview status contexts SUCCESS on `ac93dd8`.
+- **Cloudflare Workers [U]:** the newest build for `ac93dd8` was IN PROGRESS (build `f3472527-4da5-4523-8178-78ecc326b440`) at this check. The last completed Worker result remained FAILED for `be6d384` (build `42dafb58-5004-45e3-9753-ab20ee492f3d`). Do not infer a successful Worker preview until the new build reaches a terminal state.
+- **PR:** #109 remains draft/open. No merge, production promotion, DNS or live-server change, or external actuation.
