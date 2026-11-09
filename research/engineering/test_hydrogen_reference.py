@@ -87,6 +87,7 @@ class HydrogenReferenceTests(unittest.TestCase):
             nonrelativistic_energy_level_ev(1, -1.0)
         with self.assertRaises(ValueError):
             nonrelativistic_energy_level_ev(1, float("nan"))
+
     def test_rejects_invalid_inputs(self):
         with self.assertRaises(ValueError):
             radial_wavefunction(0, 0, 1.0)
