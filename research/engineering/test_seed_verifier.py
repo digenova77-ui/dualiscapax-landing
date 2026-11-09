@@ -149,7 +149,7 @@ class SeedVerifierTests(unittest.TestCase):
                 f"SHA-256 differs at vector {index}",
             )
             with self.assertRaisesRegex(ManifestError, "not canonical JSON"):
-                parse_canonical_manifest(source + "\\n")
+                parse_canonical_manifest(source + "\n")
             duplicate = source.replace(
                 f'"model_id":"generated.seed.v1.{index}"',
                 f'"model_id":"duplicate","model_id":"generated.seed.v1.{index}"',
