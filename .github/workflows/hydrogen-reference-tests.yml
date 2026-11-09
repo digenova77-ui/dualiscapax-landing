@@ -1,0 +1,52 @@
+name: Research reference tests
+
+on:
+  pull_request:
+    paths:
+      - "research/engineering/hydrogen_reference.py"
+      - "research/engineering/test_hydrogen_reference.py"
+      - "research/engineering/seed_verifier.py"
+      - "research/engineering/test_seed_verifier.py"
+      - "research/engineering/seed_verifier.mjs"
+      - "research/engineering/seed_verifier.test.mjs"
+      - "research/engineering/fixtures/seed-v1-known-answer.json"
+      - "research/engineering/fixtures/seed-v1-unicode-known-answer.json"
+      - "research/engineering/fixtures/seed-v1-generated-known-answers.json"
+      - "research/engineering/generate_seed_vectors.py"
+      - "research/engineering/CANONICAL-SEED-PROFILE.md"
+      - ".github/workflows/hydrogen-reference-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  research-reference:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+        node-version: ["20", "22"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out proposed branch
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Verify deterministic generated vector fixture
+        working-directory: research/engineering
+        run: python generate_seed_vectors.py --check
+      - name: Run analytic hydrogen reference tests
+        working-directory: research/engineering
+        run: python -m unittest -v test_hydrogen_reference.py
+      - name: Run strict seed verifier tests
+        working-directory: research/engineering
+        run: python -m unittest -v test_seed_verifier.py
+      - name: Run independent Node seed verifier tests
+        working-directory: research/engineering
+        run: node --test seed_verifier.test.mjs
