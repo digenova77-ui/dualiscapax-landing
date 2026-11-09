@@ -321,3 +321,11 @@ Do not rewrite earlier conclusions to make a new result look inevitable. Append 
 - **Vercel [M]:** both Vercel status contexts were SUCCESS on branch head `2ccd257`; preview only.
 - **Cloudflare [F]:** latest published Worker result remains FAILED for implementation head `ff00aaa` (build `f19c9599-6870-4b2d-a14e-9e19933e49bc`). No Cloudflare result for log-only head `2ccd257` was present at this recheck. The failure log remains inaccessible to this run; exact root cause is not known.
 - **Disposition:** PR #109 remains OPEN / DRAFT / unreviewed / unmerged. No production deployment, DNS or live-server operation was performed.
+
+
+#### 10. Preview integration follow-up (2026-11-09 14:29 UTC)
+
+- The branch head at this check was `be6d384ab3210dad0e468132956674e4bc11cc67`. All six GitHub workflow runs listed above had completed; the four-way research matrix and the repository regression, authorization, static, Elite and symplectic workflows passed. The live Trinity edge check remained skipped.
+- Both Vercel status contexts were SUCCESS. Cloudflare Pages reported the branch preview successful at `https://84a0503c.dualiscapax-landing.pages.dev`.
+- Cloudflare Workers had not yet completed the newer preview build for log-only commit `2ccd257` (build `5f986fdd-4a0d-47b6-ac94-0c213bfdbb03`); the preceding implementation commit `ff00aaa` remained a failed Worker build. Root cause still requires the Cloudflare build log.
+- All Cloudflare/Vercel actions above were automatic branch-preview integrations. No manual deploy or production promotion was initiated.
