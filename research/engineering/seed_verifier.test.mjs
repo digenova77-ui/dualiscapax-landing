@@ -29,7 +29,7 @@ test('1000 generated cross-runtime vectors and malformed near-neighbours', () =>
     const report = verifyCanonicalManifest(source);
     assert.equal(report.canonical_sha256, vector.sha256, 'SHA-256 differs at vector ' + index);
     assert.equal(canonicalizeManifest(JSON.parse(source)), source, 'canonical bytes differ at vector ' + index);
-    assert.throws(() => verifyCanonicalManifest(source + '\\n'), /not canonical JSON/);
+    assert.throws(() => verifyCanonicalManifest(source + '\n'), /not canonical JSON/);
     const modelId = '"model_id":"generated.seed.v1.' + index + '"';
     const duplicate = source.replace(modelId, '"model_id":"duplicate",' + modelId);
     assert.throws(() => verifyCanonicalManifest(duplicate), /not canonical JSON/);
