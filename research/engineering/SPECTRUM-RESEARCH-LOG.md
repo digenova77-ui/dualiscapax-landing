@@ -329,3 +329,13 @@ Do not rewrite earlier conclusions to make a new result look inevitable. Append 
 - Both Vercel status contexts were SUCCESS. Cloudflare Pages reported the branch preview successful at `https://84a0503c.dualiscapax-landing.pages.dev`.
 - Cloudflare Workers had not yet completed the newer preview build for log-only commit `2ccd257` (build `5f986fdd-4a0d-47b6-ac94-0c213bfdbb03`); the preceding implementation commit `ff00aaa` remained a failed Worker build. Root cause still requires the Cloudflare build log.
 - All Cloudflare/Vercel actions above were automatic branch-preview integrations. No manual deploy or production promotion was initiated.
+
+
+#### 11. CI and Worker recheck (2026-11-09 14:31 UTC)
+
+- **Implementation tree:** unchanged from `ff00aaa`; later commits `be6d384` and `25335a2` update only this research log.
+- **Latest completed GitHub CI on the log-only head `25335a2` [M]:** research run `42635393010` passed all four runtime combinations; Iris/Trinity gauntlet `42635393042` passed with live edge verification skipped; Iris authorize `42635392999`, static i18n `42635392662`, symplectic invariants `42635392762`, and Elite CI `42635392920` all passed.
+- **Vercel [M]:** both status contexts were SUCCESS on `25335a2`.
+- **Cloudflare Pages [M]:** preview for `be6d384` completed successfully. The latest log-only commit may trigger a further preview.
+- **Cloudflare Workers [F]:** the Worker build for log-only commit `be6d384` failed (build `42dafb58-5004-45e3-9753-ab20ee492f3d`), even though the implementation tree was unchanged from `ff00aaa`. This repetition on log-only commits is evidence for a Worker-specific integration/configuration problem, but that diagnosis remains **HYPOTHESIS** until the dashboard log is inspected. The Worker build for `2ccd257` was still marked IN PROGRESS; no result for `25335a2` had appeared.
+- **Next action for the Worker blocker:** inspect the failed build logs for `f19c9599-6870-4b2d-a14e-9e19933e49bc` and `42dafb58-5004-45e3-9753-ab20ee492f3d`; compare the configured Worker root directory, build command, Wrangler entry point and required bindings against the repository. Do not change the integration or production configuration until the failure cause is evidenced.
